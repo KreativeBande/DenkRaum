@@ -143,7 +143,7 @@
     </div>
     <div class="toolbar">
       <button class="accent" id="startBtn">Eigene Anforderung starten</button>
-      <button class="secondary" id="loadExampleBtn">Beispiel laden: Retouren-Tracking</button>
+      <span id="exampleBtns" style="display:flex;gap:10px;flex-wrap:wrap;"></span>
       <button class="secondary" id="resetBtn">Zurücksetzen</button>
       <button class="secondary" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
     </div>
@@ -234,33 +234,94 @@ const COMPARATORS = {lt:"<", lte:"≤", eq:"=", gte:"≥", gt:">"};
 const COMPARATOR_OPTIONS = [
   ["lt","< kleiner als"],["lte","≤ kleiner/gleich"],["eq","= gleich"],["gte","≥ größer/gleich"],["gt","> größer als"]
 ];
-const NFA_CATEGORIES = ["Performanzeffizienz","Zuverlässigkeit","Benutzbarkeit","Sicherheit","Kompatibilität","Wartbarkeit","Übertragbarkeit"];
+const NFA_CATEGORIES = ["Performanzeffizienz","Zuverlässigkeit","Benutzbarkeit","Sicherheit","Kompatibilität","Wartbarkeit","Übertragbarkeit","Transparenz/Nachvollziehbarkeit"];
 const TEST_METHODS = ["manueller Test","automatisierter Test","Lasttest","Code-/Security-Review","Abnahme durch Fachbereich"];
 const INITIATORS = ["Kunde","Fachbereich/Management","Gesetzgeber/Compliance","Markt/Wettbewerb","IT/Technik"];
 
-const EXAMPLE = {
-  idea:{text:"Kunden fragen ständig telefonisch nach, wo ihre Retoure gerade ist.", initiator:"Kunde", benefit:"Weniger Support-Anrufe und zufriedenere Kund:innen."},
-  analysis:{role:"Online-Kund:in mit laufender Retoure", problem:"Kund:innen haben keinen Einblick in den Status ihrer Retoure und rufen deshalb im Support an.", constraints:"Muss mit dem bestehenden Warenwirtschaftssystem funktionieren; DSGVO-konform.", priority:"muss"},
-  solution:{
-    approach:"Ein Retouren-Tracking-Bereich im Kundenportal, der den aktuellen Status live anzeigt.",
-    fa:[
-      {id:1,text:"den Status meiner Retoure im Kundenportal einsehen"},
-      {id:2,text:"eine Benachrichtigung erhalten, wenn sich der Status ändert"}
-    ],
-    nfa:[
-      {id:1,cat:"Performanzeffizienz",text:"Die Statusseite lädt in unter 2 Sekunden."},
-      {id:2,cat:"Sicherheit",text:"Nur die eingeloggte Kund:in sieht die eigenen Retourendaten."}
-    ]
+const EXAMPLES = [
+  {
+    id:"retouren",
+    title:"Retouren-Tracking",
+    subtitle:"Neutrales Prozess-Beispiel aus dem Kundenservice",
+    data:{
+      idea:{text:"Kunden fragen ständig telefonisch nach, wo ihre Retoure gerade ist.", initiator:"Kunde", benefit:"Weniger Support-Anrufe und zufriedenere Kund:innen."},
+      analysis:{role:"Online-Kund:in mit laufender Retoure", problem:"Kund:innen haben keinen Einblick in den Status ihrer Retoure und rufen deshalb im Support an.", constraints:"Muss mit dem bestehenden Warenwirtschaftssystem funktionieren; DSGVO-konform.", priority:"muss"},
+      solution:{
+        approach:"Ein Retouren-Tracking-Bereich im Kundenportal, der den aktuellen Status live anzeigt.",
+        fa:[
+          {id:1,text:"den Status meiner Retoure im Kundenportal einsehen"},
+          {id:2,text:"eine Benachrichtigung erhalten, wenn sich der Status ändert"}
+        ],
+        nfa:[
+          {id:1,cat:"Performanzeffizienz",text:"Die Statusseite lädt in unter 2 Sekunden."},
+          {id:2,cat:"Sicherheit",text:"Nur die eingeloggte Kund:in sieht die eigenen Retourendaten."}
+        ]
+      },
+      impl:{
+        criteria:[
+          {id:1,relatesTo:"fa-1",text:"Ladezeit Statusseite",comparator:"lte",value:"2",unit:"s"},
+          {id:2,relatesTo:"fa-2",text:"Zustellzeit Statusbenachrichtigung",comparator:"lte",value:"5",unit:"min"},
+          {id:3,relatesTo:"nfa-2",text:"Fremdzugriff auf Retourendaten",comparator:"eq",value:"0",unit:"Fälle"}
+        ]
+      },
+      test:{methods:{1:"automatisierter Test",2:"automatisierter Test",3:"Code-/Security-Review"}}
+    }
   },
-  impl:{
-    criteria:[
-      {id:1,relatesTo:"fa-1",text:"Ladezeit Statusseite",comparator:"lte",value:"2",unit:"s"},
-      {id:2,relatesTo:"fa-2",text:"Zustellzeit Statusbenachrichtigung",comparator:"lte",value:"5",unit:"min"},
-      {id:3,relatesTo:"nfa-2",text:"Fremdzugriff auf Retourendaten",comparator:"eq",value:"0",unit:"Fälle"}
-    ]
+  {
+    id:"souveraenitaet",
+    title:"Digitale Souveränität",
+    subtitle:"Von der Hyperscaler-Abhängigkeit zur prüfbaren EU-Cloud-Strategie",
+    data:{
+      idea:{text:"Die Geschäftsführung will weniger abhängig von US-Hyperscalern sein und mehr Kontrolle über unsere Daten haben.", initiator:"Fachbereich/Management", benefit:"Mehr Kontrolle über Daten, geringeres geopolitisches Risiko, Erfüllung von Compliance-Vorgaben."},
+      analysis:{role:"IT-Leitung / Datenschutzbeauftragte", problem:"Kritische Geschäftsdaten liegen bei außereuropäischen Cloud-Anbietern, deren Rechtsraum (z. B. US Cloud Act) Zugriffe außerhalb der EU-Kontrolle ermöglicht.", constraints:"Bestehende Verträge laufen erst in 18 Monaten aus; Migrationsbudget ist begrenzt; Mitarbeitende sind an bestehende Tools gewöhnt.", priority:"soll"},
+      solution:{
+        approach:"Schrittweise Migration kritischer Workloads auf EU-basierte, souveräne Cloud-Angebote mit Datenresidenz- und Verschlüsselungsgarantien, plus Aufbau eines Datenklassifizierungs-Frameworks.",
+        fa:[
+          {id:1,text:"Geschäftsdaten nach Kritikalität und Schutzbedarf klassifizieren können"},
+          {id:2,text:"kritische Workloads gezielt in eine EU-souveräne Cloud-Umgebung migrieren können"}
+        ],
+        nfa:[
+          {id:1,cat:"Sicherheit",text:"Daten der Kategorie „kritisch“ verlassen zu keinem Zeitpunkt den EU-Rechtsraum."},
+          {id:2,cat:"Übertragbarkeit",text:"Die Migration erfolgt ohne Anbieter-Lock-in, es werden offene Standards und Exportformate genutzt."}
+        ]
+      },
+      impl:{
+        criteria:[
+          {id:1,relatesTo:"fa-2",text:"Anteil kritischer Workloads in EU-souveräner Cloud",comparator:"gte",value:"100",unit:"%"},
+          {id:2,relatesTo:"nfa-1",text:"Datenabflüsse außerhalb des EU-Rechtsraums (kritische Daten)",comparator:"eq",value:"0",unit:"Vorfälle"}
+        ]
+      },
+      test:{methods:{1:"Abnahme durch Fachbereich",2:"Code-/Security-Review"}}
+    }
   },
-  test:{methods:{1:"automatisierter Test",2:"automatisierter Test",3:"Code-/Security-Review"}}
-};
+  {
+    id:"aiact",
+    title:"EU AI Act",
+    subtitle:"Risikoklassifizierung eines KI-Recruiting-Systems",
+    data:{
+      idea:{text:"Wir setzen bereits ein KI-System zur automatisierten Vorauswahl von Bewerbungen ein und müssen wissen, ob und wie uns der EU AI Act betrifft.", initiator:"Gesetzgeber/Compliance", benefit:"Rechtssicherheit, Vermeidung von Bußgeldern, Vertrauen bei Bewerbenden und Aufsichtsbehörden."},
+      analysis:{role:"Compliance-Verantwortliche / HR-Fachbereich", problem:"Unklar ist, in welche Risikokategorie des EU AI Act das eingesetzte Bewerbungs-Scoring-System fällt und welche Pflichten (Dokumentation, menschliche Aufsicht, Transparenz) daraus entstehen.", constraints:"Der AI Act tritt stufenweise in Kraft; Hochrisiko-Pflichten für Recruiting-KI gelten ab einem festen Termin; begrenzte Compliance-Kapazität.", priority:"muss"},
+      solution:{
+        approach:"Risikoklassifizierung des Systems nach Anhang III EU AI Act durchführen, Konformitätsbewertung vorbereiten und ein Compliance-Dossier (Risikomanagement, Daten-Governance, technische Dokumentation, menschliche Aufsicht) aufbauen.",
+        fa:[
+          {id:1,text:"das KI-System eindeutig einer Risikokategorie nach EU AI Act zuordnen können"},
+          {id:2,text:"jede automatisierte Vorauswahl durch eine menschliche Prüfung bestätigen lassen können (Human Oversight)"}
+        ],
+        nfa:[
+          {id:1,cat:"Transparenz/Nachvollziehbarkeit",text:"Jede automatisierte Entscheidung ist für Aufsichtsbehörden und Betroffene nachvollziehbar protokolliert."},
+          {id:2,cat:"Sicherheit",text:"Trainings- und Bewertungsdaten sind gegen Bias-Verzerrung geprüft und dokumentiert."}
+        ]
+      },
+      impl:{
+        criteria:[
+          {id:1,relatesTo:"fa-2",text:"Anteil automatisierter Vorauswahl-Entscheidungen mit menschlicher Bestätigung",comparator:"eq",value:"100",unit:"%"},
+          {id:2,relatesTo:"nfa-1",text:"Vollständige technische Dokumentation gemäß Anhang IV vorhanden",comparator:"eq",value:"1",unit:"Dossier"}
+        ]
+      },
+      test:{methods:{1:"Abnahme durch Fachbereich",2:"Code-/Security-Review"}}
+    }
+  }
+];
 
 function emptyState(){
   return {
@@ -283,7 +344,7 @@ const el = {
   precisionBox:document.getElementById("precisionBox"),
   logList:document.getElementById("logList"),
   startBtn:document.getElementById("startBtn"),
-  loadExampleBtn:document.getElementById("loadExampleBtn"),
+  exampleBtns:document.getElementById("exampleBtns"),
   resetBtn:document.getElementById("resetBtn"),
   beamerToggle:document.getElementById("beamerToggle")
 };
@@ -439,7 +500,22 @@ function startView(){
       <div class="helper">Du startest mit einer rohen Idee im Möglichkeitsraum. In jedem folgenden Raum stellst du dir andere Leitfragen und die Anforderung wird präziser: Problem → Lösung (FA/NFA, User Story) → Meßkriterien → Testfälle. Am Ende siehst du die ganze Reise als Reise-Log.</div>
     </div>
     <div class="card">
-      <h3 style="margin-top:0;">Die fünf Räume</h3>
+      <span class="kicker blue">Beispiele zum Demonstrieren</span>
+      <div class="helper" style="margin-top:6px;">Lade ein vorbereitetes Beispiel, um die Raum-Reise sofort vorzuführen. Jedes Beispiel ist bereits durch alle fünf Räume durchdekliniert.</div>
+      <div class="grid3" style="margin-top:12px;">
+        ${EXAMPLES.map(e => `
+          <div class="card" style="background:rgba(0,0,0,.015);">
+            <strong>${escapeHtml(e.title)}</strong>
+            <p class="mini" style="margin:6px 0 12px 0;">${escapeHtml(e.subtitle)}</p>
+            <button class="secondary" style="width:100%;" onclick="loadExample('${escapeJS(e.id)}')">Beispiel laden</button>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;">Oder: dein eigenes Beispiel</h3>
+      <div class="helper">Du kannst jederzeit ein eigenes Thema entwickeln, statt eines der Beispiele zu laden – die Räume und Leitfragen bleiben gleich, nur die Inhalte sind leer.</div>
+      <h3>Die fünf Räume</h3>
       <ul class="list">
         <li><strong>Möglichkeitsraum</strong> – die rohe Idee, ihr Ursprung und ihr Nutzen</li>
         <li><strong>Analyseraum</strong> – das eigentliche Problem, Rolle, Rahmenbedingungen, Priorität</li>
@@ -449,7 +525,7 @@ function startView(){
       </ul>
       <div class="nav">
         <span></span>
-        <button class="accent" onclick="goStep('room1')">Los geht's – Möglichkeitsraum</button>
+        <button class="accent" onclick="goStep('room1')">Eigenes Beispiel entwickeln – Los geht's</button>
       </div>
     </div>
   `;
@@ -910,17 +986,27 @@ el.startBtn.addEventListener("click", () => {
   render();
 });
 
-el.loadExampleBtn.addEventListener("click", () => {
+function loadExample(id){
+  const ex = EXAMPLES.find(e => e.id === id);
+  if(!ex) return;
+  const d = ex.data;
   state = emptyState();
-  state.idea = JSON.parse(JSON.stringify(EXAMPLE.idea));
-  state.analysis = JSON.parse(JSON.stringify(EXAMPLE.analysis));
-  state.solution = JSON.parse(JSON.stringify(EXAMPLE.solution));
-  state.impl = JSON.parse(JSON.stringify(EXAMPLE.impl));
-  state.test = JSON.parse(JSON.stringify(EXAMPLE.test));
+  state.idea = JSON.parse(JSON.stringify(d.idea));
+  state.analysis = JSON.parse(JSON.stringify(d.analysis));
+  state.solution = JSON.parse(JSON.stringify(d.solution));
+  state.impl = JSON.parse(JSON.stringify(d.impl));
+  state.test = JSON.parse(JSON.stringify(d.test));
   state.step = "room1";
   save();
   render();
-});
+}
+window.loadExample = loadExample;
+
+function renderExampleButtons(){
+  el.exampleBtns.innerHTML = EXAMPLES.map(e =>
+    `<button class="secondary" onclick="loadExample('${escapeJS(e.id)}')" title="${escapeHtml(e.subtitle)}">📎 ${escapeHtml(e.title)}</button>`
+  ).join("");
+}
 
 el.resetBtn.addEventListener("click", () => {
   if(confirm("Möchtest du die Reise wirklich zurücksetzen?")){
@@ -933,6 +1019,7 @@ el.resetBtn.addEventListener("click", () => {
 });
 
 applyBeamerLevel();
+renderExampleButtons();
 render();
 </script>
 </body>
