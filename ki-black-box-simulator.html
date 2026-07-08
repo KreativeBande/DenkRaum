@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KI Black-Box-Simulator</title>
+<style>
+  :root{
+    --bg:#f5f6fb;
+    --panel:#ffffff;
+    --ink:#211f36;
+    --muted:#68647f;
+    --line:#ddd9ee;
+    --accent:#5b21b6;
+    --accent-soft:#ede9fe;
+    --blue:#1d4ed8;
+    --blue-soft:#dbeafe;
+    --green:#065f46;
+    --green-soft:#d1fae5;
+    --amber:#92400e;
+    --amber-soft:#fef3c7;
+    --red:#b91c1c;
+    --red-soft:#fee2e2;
+    --shadow:0 16px 34px rgba(33,31,54,.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#16141f;
+      --panel:#201d2e;
+      --ink:#ece9f7;
+      --muted:#a49fc0;
+      --line:#39344e;
+      --accent:#a78bfa;
+      --accent-soft:#332a52;
+      --blue:#93c5fd;
+      --blue-soft:#1e2f4f;
+      --green:#86efac;
+      --green-soft:#123326;
+      --amber:#fcd34d;
+      --amber-soft:#3a2c0e;
+      --red:#fca5a5;
+      --red-soft:#3a1414;
+      --shadow:0 16px 34px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  html[data-beamer="1"]{zoom:1.3}
+  html[data-beamer="2"]{zoom:1.65}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+  }
+  button,input,textarea,select{font:inherit;color:var(--ink);-webkit-text-fill-color:currentColor}
+  input,textarea,select{appearance:none;-webkit-appearance:none;opacity:1;caret-color:var(--ink)}
+  input::placeholder,textarea::placeholder{color:var(--muted);-webkit-text-fill-color:var(--muted);opacity:1}
+  .wrap{max-width:1400px;margin:0 auto;padding:24px}
+  .hero,.panel{background:var(--panel);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow)}
+  .hero{padding:26px 28px 20px;margin-bottom:18px}
+  .hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+  .hero h1{margin:0 0 8px 0;font-size:clamp(26px,4vw,38px);line-height:1.08}
+  .hero p{margin:0;color:var(--muted);font-size:16px;line-height:1.55;max-width:900px}
+  .signature{text-align:right;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.4;white-space:nowrap;flex-shrink:0}
+  .signature span{display:block;font-weight:500;color:var(--muted);font-size:12px}
+  .signature:hover{color:var(--accent)}
+  .signature:hover span{color:var(--accent)}
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+  button{border:none;background:var(--ink);color:var(--bg);padding:10px 15px;border-radius:13px;cursor:pointer;transition:transform .15s ease;box-shadow:0 8px 18px rgba(33,31,54,.10)}
+  button:hover{transform:translateY(-1px)}
+  button.secondary{background:var(--panel);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+  button.secondary.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+  button.accent{background:var(--accent);color:#fff}
+  button.tiny{padding:6px 10px;border-radius:10px;font-size:12px}
+  button.danger{background:transparent;color:#b91c1c;border:1px solid #fecaca;box-shadow:none}
+  .layout{display:grid;grid-template-columns:340px 1fr;gap:18px}
+  .panel .head{padding:16px 20px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(0,0,0,.015) 0%,transparent 100%)}
+  .panel .body{padding:18px 20px}
+  .side-stack,.main-stack{display:flex;flex-direction:column;gap:14px}
+  .card{border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:15px;box-shadow:0 6px 16px rgba(33,31,54,.03)}
+  .kicker{display:inline-block;padding:7px 11px;border-radius:999px;font-weight:700;font-size:12px;background:var(--accent-soft);color:var(--accent)}
+  .kicker.blue{background:var(--blue-soft);color:var(--blue)}
+  .kicker.green{background:var(--green-soft);color:var(--green)}
+  .kicker.amber{background:var(--amber-soft);color:var(--amber)}
+  .kicker.red{background:var(--red-soft);color:var(--red)}
+  .title-xl{font-size:28px;line-height:1.1;margin:8px 0 6px 0}
+  .question{font-size:19px;line-height:1.3;margin:8px 0 10px 0}
+  .helper{color:var(--muted);font-size:13.5px;line-height:1.55}
+  .field{margin-bottom:12px}
+  .label{display:block;font-weight:700;margin-bottom:6px;font-size:14px}
+  textarea,input[type="text"],input[type="number"],select{
+    width:100%;border:1px solid var(--line);border-radius:13px;padding:11px;background:var(--panel);
+    box-shadow:inset 0 1px 2px rgba(33,31,54,.03);
+  }
+  textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  textarea{min-height:80px;resize:vertical}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .choices-row{display:flex;gap:8px;flex-wrap:wrap}
+  .choice{border:1px solid var(--line);background:var(--panel);padding:10px 14px;border-radius:13px;cursor:pointer;color:var(--ink)}
+  .choice.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700}
+  .progress-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(56px,1fr));gap:6px}
+  .progress-pill{padding:9px 6px;border:1px solid var(--line);border-radius:13px;background:var(--panel);text-align:center;font-size:11px;color:var(--muted);font-weight:700;cursor:default}
+  .progress-pill.clickable{cursor:pointer}
+  .progress-pill.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+  .progress-pill.done{background:var(--green-soft);border-color:var(--green);color:var(--green)}
+  .gauge{display:flex;gap:4px;margin-top:8px}
+  .gauge-seg{flex:1;height:8px;border-radius:6px;background:var(--line)}
+  .gauge-seg.filled{background:var(--accent)}
+  .badge{display:inline-block;padding:7px 11px;border-radius:999px;font-weight:700;font-size:12.5px;background:var(--accent-soft);color:var(--accent)}
+  .mini{font-size:12.5px;color:var(--muted)}
+  .list{margin:0;padding-left:20px;line-height:1.6;font-size:13.5px}
+  .nav{display:flex;justify-content:space-between;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .rows{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+  .row-item{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--panel)}
+  .row-item .row-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:rgba(0,0,0,.02);font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+  tr:last-child td{border-bottom:none}
+  .recap{border:1px solid var(--line);border-radius:14px;padding:13px;background:linear-gradient(180deg,rgba(91,33,182,.04) 0%,transparent 100%)}
+  .recap h4{margin:0 0 6px 0;font-size:13px;color:var(--accent)}
+  .summary-box{border:1px solid var(--line);border-radius:14px;padding:16px;background:rgba(0,0,0,.015);white-space:pre-wrap;line-height:1.55;font-size:13.5px;max-height:480px;overflow-y:auto}
+  .block-section{border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--panel)}
+  .block-section h3{margin:0 0 10px 0}
+  .scenario-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+  .scenario-card{border:1px solid var(--line);border-radius:18px;padding:16px;background:var(--panel);cursor:pointer;transition:transform .15s ease, border-color .15s ease}
+  .scenario-card:hover{transform:translateY(-2px);border-color:var(--accent)}
+  .scenario-card h3{margin:8px 0 6px 0;font-size:18px}
+  .callout{border:1px solid var(--red);border-radius:14px;padding:13px;background:var(--red-soft);color:var(--red);font-size:13.5px;line-height:1.55}
+  .callout strong{color:inherit}
+  .decision-pill{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:700;font-size:12.5px}
+  .decision-pill.positive{background:var(--green-soft);color:var(--green)}
+  .decision-pill.negative{background:var(--red-soft);color:var(--red)}
+  @media (max-width:1100px){
+    .layout,.grid2{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="hero-top">
+      <div>
+        <h1>KI Black-Box-Simulator</h1>
+        <p>Eine (fiktive) KI trifft Entscheidungen – du siehst nur die Eingabe und die Ausgabe, nie die Logik dahinter. Teste die Black Box mit eigenen Eingaben, bilde eine Hypothese, öffne die Box und vergleiche. Am Ende leitest du daraus Anforderungen an eine vertrauenswürdige KI ab.</p>
+      </div>
+      <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
+    </div>
+    <div class="toolbar">
+      <button class="secondary" id="resetBtn">Zurücksetzen</button>
+      <button class="secondary" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
+    </div>
+  </section>
+
+  <div class="layout">
+    <aside class="panel">
+      <div class="head"><strong>Simulator-Status</strong></div>
+      <div class="body side-stack">
+        <div class="card">
+          <h3 style="margin-top:0;font-size:15px;">Schritte</h3>
+          <div class="progress-wrap" id="progressWrap"></div>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0;font-size:15px;">Blackbox-Status</h3>
+          <div id="precisionBox"></div>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0;font-size:15px;">Log</h3>
+          <ul class="list" id="logList"><li>Noch nichts erfasst</li></ul>
+        </div>
+      </div>
+    </aside>
+
+    <main class="panel">
+      <div class="head"><strong id="stepHeadLabel">Schritt</strong></div>
+      <div class="body main-stack" id="mainContent"></div>
+    </main>
+  </div>
+</div>
+
+<script>
+const STEPS = [
+  {id:"start", label:"Start"},
+  {id:"scenario", label:"Szenario"},
+  {id:"testlab", label:"Testlabor"},
+  {id:"reveal", label:"Öffnen"},
+  {id:"requirements", label:"Anforderungen"},
+  {id:"result", label:"Ergebnis"}
+];
+
+const PRECISION = {
+  start:{level:0, label:"Blackbox noch verschlossen"},
+  scenario:{level:1, label:"Szenario gewählt"},
+  testlab:{level:2, label:"Black Box wird getestet"},
+  reveal:{level:4, label:"Black Box geöffnet"},
+  requirements:{level:5, label:"Anforderungen in Arbeit"},
+  result:{level:5, label:"Dokumentation vollständig"}
+};
+
+const SCENARIOS = [
+  {
+    id:"spam",
+    kicker:"blue",
+    title:"Spam-Filter-KI",
+    subtitle:"Eine (fiktive) KI entscheidet, ob eine eingehende E-Mail als Spam markiert wird.",
+    fields:[
+      {id:"links", label:"Anzahl Links in der E-Mail", short:"Links", type:"number", min:0, max:10, step:1, default:1},
+      {id:"buzzwords", label:"Enthält Wörter wie „kostenlos“ oder „Gewinn“?", short:"Buzzwords", type:"select", options:["Nein","Ja"], default:"Nein"},
+      {id:"unknownSender", label:"Ist der Absender unbekannt?", short:"Unbek. Absender", type:"select", options:["Nein","Ja"], default:"Nein"},
+      {id:"nightTime", label:"Wurde die Mail nachts (0–6 Uhr) versendet?", short:"Nachtversand", type:"select", options:["Nein","Ja"], default:"Nein"}
+    ],
+    compute(i){
+      const score = i.links*15 + (i.buzzwords==="Ja"?30:0) + (i.unknownSender==="Ja"?25:0) + (i.nightTime==="Ja"?10:0);
+      return {score, decision: score>=50 ? "Spam" : "Kein Spam", positive: score<50};
+    },
+    revealFormula:"Punkte = Anzahl Links × 15 + (Buzzwords? 30 Punkte) + (unbekannter Absender? 25 Punkte) + (nachts versendet? 10 Punkte). Ab 50 Punkten gilt die Mail als „Spam“.",
+    biasNote:null
+  },
+  {
+    id:"kredit",
+    kicker:"amber",
+    title:"Kredit-Score-KI",
+    subtitle:"Eine (fiktive) KI entscheidet automatisiert über die Vergabe eines Kleinkredits.",
+    fields:[
+      {id:"einkommen", label:"Netto-Einkommen (€/Monat)", short:"Einkommen", type:"number", min:0, max:10000, step:100, default:2500},
+      {id:"kredite", label:"Anzahl bestehender Kredite", short:"Kredite", type:"number", min:0, max:5, step:1, default:1},
+      {id:"jahre", label:"Jahre beim aktuellen Arbeitgeber", short:"Beschäftigungsjahre", type:"number", min:0, max:30, step:1, default:3},
+      {id:"wohngebiet", label:"Wohngebiet", short:"Wohngebiet", type:"select", options:["Stadt","Land"], default:"Stadt"}
+    ],
+    compute(i){
+      const score = i.einkommen/100 - i.kredite*8 + i.jahre*3 + (i.wohngebiet==="Land" ? -15 : 0);
+      return {score, decision: score>=40 ? "Kredit genehmigt" : "Kredit abgelehnt", positive: score>=40};
+    },
+    revealFormula:"Score = Einkommen/100 − bestehende Kredite × 8 + Beschäftigungsjahre × 3 − 15 Punkte, falls Wohngebiet = „Land“. Ab 40 Punkten wird der Kredit genehmigt.",
+    biasNote:"Der Abzug von 15 Punkten für das Wohngebiet „Land“ hat nichts mit der tatsächlichen Kreditwürdigkeit einer Person zu tun. Er ist eine versteckte, kaum begründbare Benachteiligung – eine sogenannte Proxy-Diskriminierung über den Wohnort."
+  },
+  {
+    id:"bewerbung",
+    kicker:"green",
+    title:"Bewerbungs-Filter-KI",
+    subtitle:"Eine (fiktive) KI sortiert Bewerbungen vor und entscheidet, wer zum Gespräch eingeladen wird.",
+    fields:[
+      {id:"erfahrung", label:"Jahre Berufserfahrung", short:"Erfahrung", type:"number", min:0, max:20, step:1, default:3},
+      {id:"abschluss", label:"Hochschulabschluss vorhanden?", short:"Abschluss", type:"select", options:["Nein","Ja"], default:"Ja"},
+      {id:"luecke", label:"Lücke im Lebenslauf (Monate)", short:"CV-Lücke", type:"number", min:0, max:24, step:1, default:0},
+      {id:"geschlecht", label:"Geschlecht laut Lebenslauf", short:"Geschlecht", type:"select", options:["männlich","weiblich","keine Angabe"], default:"keine Angabe"}
+    ],
+    compute(i){
+      const score = i.erfahrung*4 + (i.abschluss==="Ja"?20:0) - i.luecke*1 + (i.geschlecht==="weiblich" ? -20 : 0);
+      return {score, decision: score>=50 ? "Zum Gespräch eingeladen" : "Absage", positive: score>=50};
+    },
+    revealFormula:"Score = Berufserfahrung × 4 + (Abschluss? 20 Punkte) − Lücke in Monaten − 20 Punkte, falls Geschlecht = „weiblich“. Ab 50 Punkten erfolgt eine Einladung.",
+    biasNote:"Der Abzug von 20 Punkten bei „weiblich“ ist eine gelernte Verzerrung, keine fachliche Anforderung. Ein ähnlicher Fall wurde 2018 öffentlich bekannt: Ein internes Recruiting-Tool eines großen Tech-Konzerns wertete systematisch Bewerbungen von Frauen ab, weil es aus historischen, männerdominierten Einstellungsdaten gelernt hatte."
+  }
+];
+
+const REQUIREMENTS = [
+  {id:"transparenz", cat:"Transparenz", kicker:"blue", text:"Nutzer:innen müssen erkennbar darüber informiert werden, dass eine automatisierte KI-Entscheidung getroffen wurde."},
+  {id:"erklaerbarkeit", cat:"Erklärbarkeit", kicker:"blue", text:"Für jede Entscheidung muss eine nachvollziehbare Begründung der wichtigsten Einflussfaktoren bereitgestellt werden können."},
+  {id:"diskriminierungsfreiheit", cat:"Fairness", kicker:"amber", text:"Vor der Produktivsetzung muss ein Bias-Audit prüfen, ob geschützte Merkmale (z. B. Geschlecht, Herkunft) oder Proxy-Merkmale (z. B. Wohnort) unzulässigen Einfluss auf Entscheidungen haben."},
+  {id:"widerspruch", cat:"Kontrolle", kicker:"green", text:"Betroffene müssen eine automatisierte Entscheidung anfechten und eine menschliche Überprüfung verlangen können (Human-in-the-loop)."},
+  {id:"testabdeckung", cat:"Robustheit", kicker:"green", text:"Das System muss systematisch mit Randfällen und seltenen Kombinationen getestet werden, bevor es produktiv geht."},
+  {id:"protokollierung", cat:"Nachvollziehbarkeit", kicker:"blue", text:"Alle Entscheidungen und die zugrunde liegenden Eingabedaten müssen nachvollziehbar protokolliert werden (Audit-Trail)."},
+  {id:"driftkontrolle", cat:"Wartbarkeit", kicker:"amber", text:"Die Entscheidungslogik muss regelmäßig auf Drift und neu entstehende Verzerrungen überprüft werden."},
+  {id:"dokumentation", cat:"Dokumentation", kicker:"", text:"Zweck, Datengrundlage und bekannte Grenzen des Systems müssen dokumentiert und einsehbar sein."}
+];
+
+function emptyState(){
+  return {
+    step:"start",
+    beamerLevel:0,
+    scenarioId:null,
+    draftInputs:{},
+    tests:[],
+    testSeq:0,
+    hypothesis:"",
+    requirements:{}
+  };
+}
+
+let state = JSON.parse(localStorage.getItem("denkraumBlackBox") || "null") || emptyState();
+
+const el = {
+  mainContent:document.getElementById("mainContent"),
+  stepHeadLabel:document.getElementById("stepHeadLabel"),
+  progressWrap:document.getElementById("progressWrap"),
+  precisionBox:document.getElementById("precisionBox"),
+  logList:document.getElementById("logList"),
+  resetBtn:document.getElementById("resetBtn"),
+  beamerToggle:document.getElementById("beamerToggle")
+};
+
+function save(){ localStorage.setItem("denkraumBlackBox", JSON.stringify(state)); }
+
+function escapeHtml(s){
+  return (s || "").toString()
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+}
+function escapeJS(s){ return (s || "").toString().replaceAll("\\","\\\\").replaceAll("'","\\'"); }
+
+function stepIndex(id){ return STEPS.findIndex(s => s.id === id); }
+function goStep(id){ state.step = id; save(); render(); window.scrollTo(0, 0); }
+function nextStep(){ const i = stepIndex(state.step); if(i < STEPS.length - 1) goStep(STEPS[i+1].id); }
+function prevStep(){ const i = stepIndex(state.step); if(i > 0) goStep(STEPS[i-1].id); }
+window.goStep = goStep; window.nextStep = nextStep; window.prevStep = prevStep;
+
+const BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+function applyBeamerLevel(){
+  document.documentElement.setAttribute("data-beamer", String(state.beamerLevel || 0));
+  el.beamerToggle.textContent = BEAMER_LABELS[state.beamerLevel || 0];
+  el.beamerToggle.classList.toggle("active", (state.beamerLevel || 0) > 0);
+}
+el.beamerToggle.addEventListener("click", () => {
+  state.beamerLevel = ((state.beamerLevel || 0) + 1) % BEAMER_LABELS.length;
+  save(); applyBeamerLevel();
+});
+
+function currentScenario(){ return SCENARIOS.find(s => s.id === state.scenarioId) || null; }
+
+function defaultDraftInputs(scenario){
+  const obj = {};
+  scenario.fields.forEach(f => { obj[f.id] = f.default; });
+  return obj;
+}
+
+function chooseScenario(id){
+  const scenario = SCENARIOS.find(s => s.id === id);
+  if(!scenario) return;
+  state.scenarioId = id;
+  state.draftInputs = defaultDraftInputs(scenario);
+  state.tests = [];
+  state.testSeq = 0;
+  state.hypothesis = "";
+  save();
+  goStep("testlab");
+}
+window.chooseScenario = chooseScenario;
+
+function updateDraftNumber(fieldId, val){ state.draftInputs[fieldId] = Number(val); save(); }
+function setDraftSelect(fieldId, val){ state.draftInputs[fieldId] = val; save(); render(); }
+window.updateDraftNumber = updateDraftNumber;
+window.setDraftSelect = setDraftSelect;
+
+function runTest(){
+  const scenario = currentScenario();
+  if(!scenario) return;
+  const inputs = {...state.draftInputs};
+  const result = scenario.compute(inputs);
+  state.testSeq += 1;
+  state.tests.unshift({id:state.testSeq, scenarioId:scenario.id, inputs, decision:result.decision, positive:result.positive});
+  save();
+  render();
+}
+function removeTest(id){
+  state.tests = state.tests.filter(t => t.id !== id);
+  save(); render();
+}
+window.runTest = runTest;
+window.removeTest = removeTest;
+
+function updateHypothesis(val){ state.hypothesis = val; save(); }
+window.updateHypothesis = updateHypothesis;
+
+function setRequirementPriority(reqId, val){
+  state.requirements[reqId] = state.requirements[reqId] === val ? undefined : val;
+  save(); render();
+}
+window.setRequirementPriority = setRequirementPriority;
+
+function priorityLabel(p){
+  return {muss:"Muss (verbindlich)", soll:"Soll (wichtig)", kann:"Kann (optional)"}[p] || "unbeantwortet";
+}
+
+/* ---------- form rendering ---------- */
+function renderInputsForm(scenario){
+  return scenario.fields.map(f => {
+    const val = state.draftInputs[f.id];
+    if(f.type === "number"){
+      return `
+        <div class="field">
+          <label class="label" for="f_${f.id}">${escapeHtml(f.label)} (${f.min}–${f.max})</label>
+          <input type="number" id="f_${f.id}" min="${f.min}" max="${f.max}" step="${f.step}" value="${escapeHtml(String(val))}" oninput="updateDraftNumber('${f.id}', this.value)" />
+        </div>
+      `;
+    }
+    return `
+      <div class="field">
+        <label class="label">${escapeHtml(f.label)}</label>
+        <div class="choices-row">
+          ${f.options.map(o => `<button type="button" class="choice ${val===o ? 'active' : ''}" onclick="setDraftSelect('${f.id}','${escapeJS(o)}')">${escapeHtml(o)}</button>`).join("")}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function formatInputsShort(scenario, inputs){
+  return scenario.fields.map(f => `${f.short}: ${inputs[f.id]}`).join(" · ");
+}
+
+/* ---------- views ---------- */
+function startView(){
+  return `
+    <div class="card">
+      <span class="kicker">Das Black-Box-Problem</span>
+      <div class="title-xl">Du gibst Daten ein – die KI gibt eine Entscheidung aus</div>
+      <div class="helper">Bei vielen KI-Systemen siehst du nur Eingabe und Ausgabe, nicht die Logik dazwischen. Genau das simulierst du hier: Du testest eine fiktive „Black Box“, bildest eine Hypothese über ihre Regeln – und öffnest sie am Ende, um zu sehen, was wirklich dahintersteckt.</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;">Ablauf</h3>
+      <ul class="list">
+        <li><strong>Szenario wählen</strong> – Spam-Filter, Kredit-Score oder Bewerbungs-Filter</li>
+        <li><strong>Testlabor</strong> – eigene Eingaben ausprobieren, nur die Entscheidung sehen, Hypothese notieren</li>
+        <li><strong>Black Box öffnen</strong> – die tatsächliche Logik einsehen und mit deiner Hypothese vergleichen</li>
+        <li><strong>Anforderungsraum</strong> – festlegen, was ein solches System leisten müsste, um vertrauenswürdig zu sein</li>
+        <li><strong>Ergebnis</strong> – alles als Dokumentation exportieren</li>
+      </ul>
+      <div class="helper">Hinweis: Alle Szenarien sind fiktiv und stark vereinfacht. Sie dienen ausschließlich dazu, den Umgang mit intransparenten KI-Entscheidungen und versteckten Verzerrungen (Bias) zu üben.</div>
+      <div class="nav">
+        <span></span>
+        <button class="accent" onclick="goStep('scenario')">Los geht's – Szenario wählen</button>
+      </div>
+    </div>
+  `;
+}
+
+function scenarioView(){
+  return `
+    <div class="card">
+      <span class="kicker">Szenario wählen</span>
+      <div class="question">Welche Black Box möchtest du testen?</div>
+      <div class="helper">Jedes Szenario ist eine eigene, in sich geschlossene fiktive KI. Du siehst nur die Entscheidung, nicht die Formel dahinter – bis du die Box öffnest.</div>
+    </div>
+    <div class="scenario-grid">
+      ${SCENARIOS.map(s => `
+        <div class="scenario-card" onclick="chooseScenario('${s.id}')">
+          <span class="kicker ${s.kicker}">${escapeHtml(s.title)}</span>
+          <h3>${escapeHtml(s.title)}</h3>
+          <p class="helper">${escapeHtml(s.subtitle)}</p>
+          <button class="secondary tiny" onclick="event.stopPropagation(); chooseScenario('${s.id}')">Dieses Szenario testen</button>
+        </div>
+      `).join("")}
+    </div>
+    <div class="nav">
+      <button class="secondary" onclick="prevStep()">Zurück</button>
+      <span></span>
+    </div>
+  `;
+}
+
+function testRowsHtml(scenario){
+  const rows = state.tests.filter(t => t.scenarioId === scenario.id);
+  if(!rows.length) return '<p class="mini">Noch keine Tests durchgeführt.</p>';
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Eingaben</th><th>Entscheidung der Black Box</th><th></th></tr></thead>
+        <tbody>
+          ${rows.map(t => `
+            <tr>
+              <td>${t.id}</td>
+              <td>${escapeHtml(formatInputsShort(scenario, t.inputs))}</td>
+              <td><span class="decision-pill ${t.positive ? 'positive' : 'negative'}">${escapeHtml(t.decision)}</span></td>
+              <td><button class="tiny danger" onclick="removeTest(${t.id})">entfernen</button></td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function testlabView(){
+  const scenario = currentScenario();
+  if(!scenario) return scenarioView();
+  const testCount = state.tests.filter(t => t.scenarioId === scenario.id).length;
+  return `
+    <div class="recap">
+      <h4>Gewähltes Szenario</h4>
+      <p><strong>${escapeHtml(scenario.title)}</strong> – ${escapeHtml(scenario.subtitle)}</p>
+    </div>
+    <div class="card">
+      <span class="kicker ${scenario.kicker}">Testlabor</span>
+      <div class="question">Gib Testwerte ein und beobachte, was die Black Box entscheidet</div>
+      <div class="grid2">${renderInputsForm(scenario)}</div>
+      <div class="nav">
+        <span></span>
+        <button class="accent" onclick="runTest()">🧪 Testen</button>
+      </div>
+    </div>
+    <div class="card">
+      <span class="kicker">Testreihe (${testCount})</span>
+      <div class="helper" style="margin-top:6px;">Variiere gezielt einzelne Werte, um Muster zu erkennen. Du siehst nur die Entscheidung – nicht, warum sie so ausfällt.</div>
+      <div style="margin-top:10px;">${testRowsHtml(scenario)}</div>
+    </div>
+    <div class="card">
+      <span class="kicker">Deine Hypothese</span>
+      <div class="helper" style="margin-top:6px;">Welche Faktoren beeinflussen deiner Meinung nach die Entscheidung am stärksten? Fällt dir etwas Auffälliges oder möglicherweise Unfaires auf?</div>
+      <div class="field" style="margin-top:10px;">
+        <textarea placeholder="z. B. Ich vermute, dass vor allem ... entscheidend ist ..." oninput="updateHypothesis(this.value)">${escapeHtml(state.hypothesis)}</textarea>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="secondary" onclick="goStep('scenario')">Anderes Szenario</button>
+      <button class="accent" onclick="goStep('reveal')">Black Box öffnen</button>
+    </div>
+    ${testCount < 3 ? '<div class="helper" style="text-align:right;">Tipp: Teste mindestens 3–4 unterschiedliche Kombinationen, bevor du die Box öffnest – so erkennst du Muster leichter.</div>' : ''}
+  `;
+}
+
+function revealView(){
+  const scenario = currentScenario();
+  if(!scenario) return scenarioView();
+  const rows = state.tests.filter(t => t.scenarioId === scenario.id);
+  return `
+    <div class="card">
+      <span class="kicker ${scenario.kicker}">Black Box geöffnet</span>
+      <div class="title-xl">${escapeHtml(scenario.title)} – so entscheidet sie wirklich</div>
+      <div class="helper">Formel: ${escapeHtml(scenario.revealFormula)}</div>
+    </div>
+    ${scenario.biasNote ? `<div class="callout"><strong>Versteckte Verzerrung:</strong> ${escapeHtml(scenario.biasNote)}</div>` : ""}
+    <div class="card">
+      <span class="kicker">Deine Hypothese</span>
+      <div class="summary-box" style="margin-top:8px;">${state.hypothesis ? escapeHtml(state.hypothesis) : "Keine Hypothese notiert."}</div>
+    </div>
+    <div class="card">
+      <span class="kicker">Deine Testreihe im Vergleich</span>
+      <div class="helper" style="margin-top:6px;">Jetzt kannst du jeden deiner Tests mit der tatsächlichen Logik abgleichen.</div>
+      <div style="margin-top:10px;">${rows.length ? testRowsHtml(scenario) : '<p class="mini">Du hattest keine Tests durchgeführt – geh zurück ins Testlabor, um es auszuprobieren.</p>'}</div>
+    </div>
+    <div class="nav">
+      <button class="secondary" onclick="goStep('testlab')">Zurück ins Testlabor</button>
+      <button class="accent" onclick="goStep('requirements')">Weiter zum Anforderungsraum</button>
+    </div>
+  `;
+}
+
+function reqRowHtml(r){
+  const priority = state.requirements[r.id];
+  return `
+    <div class="row-item">
+      <div class="row-top"><span class="kicker ${r.kicker}">${escapeHtml(r.cat)}</span></div>
+      <p style="margin:0 0 10px 0;">${escapeHtml(r.text)}</p>
+      <div class="choices-row">
+        ${["muss","soll","kann"].map(p => `<button class="choice ${priority===p ? 'active' : ''}" onclick="setRequirementPriority('${r.id}','${p}')">${priorityLabel(p)}</button>`).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function requirementsView(){
+  const scenario = currentScenario();
+  return `
+    <div class="card">
+      <span class="kicker">Anforderungsraum</span>
+      <div class="title-xl">Was müsste diese KI leisten, damit du ihr vertraust?</div>
+      <div class="helper">${scenario ? `Du hast gerade gesehen, wie „${escapeHtml(scenario.title)}“ intern entscheidet${scenario.biasNote ? " – inklusive einer versteckten Verzerrung" : ""}. ` : ""}Lege für jede Anforderung eine Priorität fest, bevor ein solches System produktiv gehen dürfte.</div>
+    </div>
+    <div class="rows">${REQUIREMENTS.map(reqRowHtml).join("")}</div>
+    <div class="nav">
+      <button class="secondary" onclick="prevStep()">Zurück</button>
+      <button class="accent" onclick="goStep('result')">Abschließen – Ergebnis ansehen</button>
+    </div>
+  `;
+}
+
+function resultView(){
+  const scenario = currentScenario();
+  const rows = scenario ? state.tests.filter(t => t.scenarioId === scenario.id) : [];
+  const reqRows = REQUIREMENTS.filter(r => state.requirements[r.id]);
+  return `
+    <div class="card">
+      <span class="kicker green">Ergebnis</span>
+      <div class="title-xl">Von der Black Box zur Anforderung</div>
+      <div class="helper">Eine kompakte Dokumentation deiner Testreihe, deiner Hypothese, der tatsächlichen Logik und der Anforderungen, die du daraus abgeleitet hast.</div>
+    </div>
+
+    <div class="block-section">
+      <h3><span class="kicker ${scenario ? scenario.kicker : ''}">Szenario</span></h3>
+      <p>${scenario ? `<strong>${escapeHtml(scenario.title)}</strong> – ${escapeHtml(scenario.subtitle)}` : "Kein Szenario gewählt."}</p>
+    </div>
+
+    <div class="block-section">
+      <h3><span class="kicker blue">Testreihe</span></h3>
+      ${rows.length ? testRowsHtml(scenario) : '<p class="mini">keine Tests</p>'}
+    </div>
+
+    <div class="block-section">
+      <h3><span class="kicker">Hypothese</span></h3>
+      <p>${state.hypothesis ? escapeHtml(state.hypothesis) : "keine Hypothese notiert"}</p>
+    </div>
+
+    <div class="block-section">
+      <h3><span class="kicker amber">Tatsächliche Logik</span></h3>
+      <p>${scenario ? escapeHtml(scenario.revealFormula) : "-"}</p>
+      ${scenario && scenario.biasNote ? `<div class="callout" style="margin-top:10px;"><strong>Versteckte Verzerrung:</strong> ${escapeHtml(scenario.biasNote)}</div>` : ""}
+    </div>
+
+    <div class="block-section">
+      <h3><span class="kicker green">Anforderungsprofil</span></h3>
+      ${reqRows.length ? `<ul class="list">${reqRows.map(r => `<li><strong>${escapeHtml(priorityLabel(state.requirements[r.id]))}</strong> – ${escapeHtml(r.cat)}: ${escapeHtml(r.text)}</li>`).join("")}</ul>` : '<p class="mini">keine Anforderungen priorisiert</p>'}
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Exportierbare Kurzfassung</h3>
+      <div class="summary-box">${escapeHtml(buildExportText())}</div>
+      <div class="nav">
+        <button class="secondary" onclick="goStep('requirements')">Zurück zum Anforderungsraum</button>
+        <button class="accent" onclick="downloadText()">Als Text herunterladen</button>
+      </div>
+    </div>
+  `;
+}
+
+function buildExportText(){
+  const scenario = currentScenario();
+  const rows = scenario ? state.tests.filter(t => t.scenarioId === scenario.id) : [];
+  const reqRows = REQUIREMENTS.filter(r => state.requirements[r.id]);
+  return `KI BLACK-BOX-SIMULATOR
+
+1) SZENARIO
+${scenario ? `${scenario.title} – ${scenario.subtitle}` : "-"}
+
+2) TESTREIHE
+${rows.length ? rows.map(t => `- Test ${t.id}: ${formatInputsShort(scenario, t.inputs)} → ${t.decision}`).join("\n") : "- keine Tests"}
+
+3) HYPOTHESE
+${state.hypothesis || "-"}
+
+4) TATSÄCHLICHE LOGIK
+${scenario ? scenario.revealFormula : "-"}
+${scenario && scenario.biasNote ? "Versteckte Verzerrung: " + scenario.biasNote : ""}
+
+5) ANFORDERUNGSPROFIL
+${reqRows.length ? reqRows.map(r => `- ${priorityLabel(state.requirements[r.id])} – ${r.cat}: ${r.text}`).join("\n") : "- keine Anforderungen priorisiert"}
+`;
+}
+
+function downloadText(){
+  const blob = new Blob([buildExportText()], {type:"text/plain;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "ki-black-box-simulator.txt";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+window.downloadText = downloadText;
+
+/* ---------- sidebar rendering ---------- */
+function progressRender(){
+  const activeIdx = stepIndex(state.step);
+  el.progressWrap.innerHTML = STEPS.map((s,i) => {
+    const cls = i < activeIdx ? "done" : i === activeIdx ? "active" : "";
+    const clickable = i <= activeIdx ? "clickable" : "";
+    const onclick = i <= activeIdx ? `onclick="goStep('${s.id}')"` : "";
+    return `<div class="progress-pill ${cls} ${clickable}" ${onclick}>${s.label}</div>`;
+  }).join("");
+}
+
+function precisionRender(){
+  const p = PRECISION[state.step] || PRECISION.start;
+  let label = p.label;
+  if(state.step === "testlab"){
+    const scenario = currentScenario();
+    const count = scenario ? state.tests.filter(t => t.scenarioId === scenario.id).length : 0;
+    label = `Black Box wird getestet · ${count} Test${count===1?"":"s"}`;
+  }
+  const segs = Array.from({length:5}, (_,i) => `<div class="gauge-seg ${i < p.level ? "filled" : ""}"></div>`).join("");
+  el.precisionBox.innerHTML = `<div class="badge">${p.level}/5 · ${escapeHtml(label)}</div><div class="gauge">${segs}</div>`;
+}
+
+function logRender(){
+  const items = [];
+  const scenario = currentScenario();
+  if(scenario) items.push(`🟣 <strong>Szenario:</strong> ${escapeHtml(scenario.title)}`);
+  if(scenario){
+    const count = state.tests.filter(t => t.scenarioId === scenario.id).length;
+    if(count) items.push(`🧪 <strong>Tests:</strong> ${count}`);
+  }
+  if(state.hypothesis) items.push(`📝 <strong>Hypothese</strong> notiert`);
+  const reqCount = REQUIREMENTS.filter(r => state.requirements[r.id]).length;
+  if(reqCount) items.push(`✅ <strong>Anforderungen:</strong> ${reqCount} priorisiert`);
+  el.logList.innerHTML = items.length ? items.map(i => `<li>${i}</li>`).join("") : "<li>Noch nichts erfasst</li>";
+}
+
+function stepLabelFor(step){
+  const found = STEPS.find(s => s.id === step);
+  return found ? found.label : "Schritt";
+}
+
+function renderMain(){
+  let html = "";
+  if(state.step === "start") html = startView();
+  else if(state.step === "scenario") html = scenarioView();
+  else if(state.step === "testlab") html = testlabView();
+  else if(state.step === "reveal") html = revealView();
+  else if(state.step === "requirements") html = requirementsView();
+  else if(state.step === "result") html = resultView();
+  el.mainContent.innerHTML = html;
+  el.stepHeadLabel.textContent = stepLabelFor(state.step);
+}
+
+function render(){
+  progressRender();
+  precisionRender();
+  logRender();
+  renderMain();
+}
+window.render = render;
+
+el.resetBtn.addEventListener("click", () => {
+  if(confirm("Möchtest du den Simulator wirklich zurücksetzen?")){
+    localStorage.removeItem("denkraumBlackBox");
+    state = emptyState();
+    save();
+    applyBeamerLevel();
+    render();
+  }
+});
+
+applyBeamerLevel();
+render();
+</script>
+</body>
+</html>
