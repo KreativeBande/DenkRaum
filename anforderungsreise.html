@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Anforderungs-Reise durch die Räume</title>
+<style>
+  :root{
+    --bg:#f5f6fb;
+    --panel:#ffffff;
+    --ink:#211f36;
+    --muted:#68647f;
+    --line:#ddd9ee;
+    --accent:#5b21b6;
+    --accent-soft:#ede9fe;
+    --blue:#1d4ed8;
+    --blue-soft:#dbeafe;
+    --green:#065f46;
+    --green-soft:#d1fae5;
+    --amber:#92400e;
+    --amber-soft:#fef3c7;
+    --shadow:0 16px 34px rgba(33,31,54,.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#16141f;
+      --panel:#201d2e;
+      --ink:#ece9f7;
+      --muted:#a49fc0;
+      --line:#39344e;
+      --accent:#a78bfa;
+      --accent-soft:#332a52;
+      --blue:#93c5fd;
+      --blue-soft:#1e2f4f;
+      --green:#86efac;
+      --green-soft:#123326;
+      --amber:#fcd34d;
+      --amber-soft:#3a2c0e;
+      --shadow:0 16px 34px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  html[data-beamer="1"]{zoom:1.3}
+  html[data-beamer="2"]{zoom:1.65}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+  }
+  button,input,textarea,select{font:inherit;color:var(--ink);-webkit-text-fill-color:currentColor}
+  input,textarea,select{appearance:none;-webkit-appearance:none;opacity:1;caret-color:var(--ink)}
+  input::placeholder,textarea::placeholder{color:var(--muted);-webkit-text-fill-color:var(--muted);opacity:1}
+  .wrap{max-width:1400px;margin:0 auto;padding:24px}
+  .hero,.panel{background:var(--panel);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow)}
+  .hero{padding:26px 28px 20px;margin-bottom:18px}
+  .hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+  .hero h1{margin:0 0 8px 0;font-size:clamp(26px,4vw,38px);line-height:1.08}
+  .hero p{margin:0;color:var(--muted);font-size:16px;line-height:1.55;max-width:900px}
+  .signature{text-align:right;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.4;white-space:nowrap;flex-shrink:0}
+  .signature span{display:block;font-weight:500;color:var(--muted);font-size:12px}
+  .signature:hover{color:var(--accent)}
+  .signature:hover span{color:var(--accent)}
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+  button{border:none;background:var(--ink);color:var(--bg);padding:10px 15px;border-radius:13px;cursor:pointer;transition:transform .15s ease;box-shadow:0 8px 18px rgba(33,31,54,.10)}
+  button:hover{transform:translateY(-1px)}
+  button.secondary{background:var(--panel);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+  button.secondary.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+  button.accent{background:var(--accent);color:#fff}
+  button.tiny{padding:6px 10px;border-radius:10px;font-size:12px}
+  button.danger{background:transparent;color:#b91c1c;border:1px solid #fecaca;box-shadow:none}
+  .layout{display:grid;grid-template-columns:340px 1fr;gap:18px}
+  .panel .head{padding:16px 20px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(0,0,0,.015) 0%,transparent 100%)}
+  .panel .body{padding:18px 20px}
+  .side-stack,.main-stack{display:flex;flex-direction:column;gap:14px}
+  .card{border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:15px;box-shadow:0 6px 16px rgba(33,31,54,.03)}
+  .kicker{display:inline-block;padding:7px 11px;border-radius:999px;font-weight:700;font-size:12px;background:var(--accent-soft);color:var(--accent)}
+  .kicker.blue{background:var(--blue-soft);color:var(--blue)}
+  .kicker.green{background:var(--green-soft);color:var(--green)}
+  .kicker.amber{background:var(--amber-soft);color:var(--amber)}
+  .title-xl{font-size:28px;line-height:1.1;margin:8px 0 6px 0}
+  .question{font-size:19px;line-height:1.3;margin:8px 0 10px 0}
+  .helper{color:var(--muted);font-size:13.5px;line-height:1.55}
+  .field{margin-bottom:12px}
+  .label{display:block;font-weight:700;margin-bottom:6px;font-size:14px}
+  textarea,input[type="text"],input[type="number"],select{
+    width:100%;border:1px solid var(--line);border-radius:13px;padding:11px;background:var(--panel);
+    box-shadow:inset 0 1px 2px rgba(33,31,54,.03);
+  }
+  textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  textarea{min-height:80px;resize:vertical}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .choices-row{display:flex;gap:8px;flex-wrap:wrap}
+  .choice{border:1px solid var(--line);background:var(--panel);padding:10px 14px;border-radius:13px;cursor:pointer;color:var(--ink)}
+  .choice.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700}
+  .qlist{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+  .qchip{border:1px dashed var(--line);border-radius:12px;padding:9px 12px;font-size:13.5px;line-height:1.4;color:var(--ink);background:transparent}
+  .qchip.clickable{cursor:pointer}
+  .qchip.clickable:hover{border-color:var(--accent);background:var(--accent-soft)}
+  .progress-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(56px,1fr));gap:6px}
+  .progress-pill{padding:9px 6px;border:1px solid var(--line);border-radius:13px;background:var(--panel);text-align:center;font-size:11px;color:var(--muted);font-weight:700;cursor:default}
+  .progress-pill.clickable{cursor:pointer}
+  .progress-pill.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+  .progress-pill.done{background:var(--green-soft);border-color:var(--green);color:var(--green)}
+  .gauge{display:flex;gap:4px;margin-top:8px}
+  .gauge-seg{flex:1;height:8px;border-radius:6px;background:var(--line)}
+  .gauge-seg.filled{background:var(--accent)}
+  .badge-row{display:flex;flex-wrap:wrap;gap:8px}
+  .badge{display:inline-block;padding:7px 11px;border-radius:999px;font-weight:700;font-size:12.5px;background:var(--accent-soft);color:var(--accent)}
+  .mini{font-size:12.5px;color:var(--muted)}
+  .list{margin:0;padding-left:20px;line-height:1.6;font-size:13.5px}
+  .nav{display:flex;justify-content:space-between;gap:10px;margin-top:16px}
+  .rows{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+  .row-item{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--panel)}
+  .row-item .row-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+  .row-item .row-id{font-weight:700;font-size:12.5px;color:var(--accent)}
+  .row-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:rgba(0,0,0,.02);font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+  tr:last-child td{border-bottom:none}
+  .recap{border:1px solid var(--line);border-radius:14px;padding:13px;background:linear-gradient(180deg,rgba(91,33,182,.04) 0%,transparent 100%)}
+  .recap h4{margin:0 0 6px 0;font-size:13px;color:var(--accent)}
+  .summary-box{border:1px solid var(--line);border-radius:14px;padding:16px;background:rgba(0,0,0,.015);white-space:pre-wrap;line-height:1.55;font-size:13.5px;max-height:480px;overflow-y:auto}
+  .journey-section{border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--panel)}
+  .journey-section h3{margin:0 0 10px 0}
+  @media (max-width:1100px){
+    .layout,.grid2,.grid3,.row-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="hero-top">
+      <div>
+        <h1>Anforderungs-Reise durch die Räume</h1>
+        <p>Eine einzelne Anforderung wandert vom Möglichkeitsraum bis in den Testraum. In jedem Raum wird sie präziser: aus der Idee wird ein Problem, aus dem Problem eine Lösung mit FA/NFA und User Story, aus der Lösung meßbare Kriterien, aus den Kriterien geprüfte Testfälle. Jeder Raum zeigt seine typischen Leitfragen.</p>
+      </div>
+      <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
+    </div>
+    <div class="toolbar">
+      <button class="accent" id="startBtn">Eigene Anforderung starten</button>
+      <button class="secondary" id="loadExampleBtn">Beispiel laden: Retouren-Tracking</button>
+      <button class="secondary" id="resetBtn">Zurücksetzen</button>
+      <button class="secondary" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
+    </div>
+  </section>
+
+  <div class="layout">
+    <aside class="panel">
+      <div class="head"><strong>Reise-Status</strong></div>
+      <div class="body side-stack">
+        <div class="card">
+          <h3 style="margin-top:0;font-size:15px;">Räume</h3>
+          <div class="progress-wrap" id="progressWrap"></div>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0;font-size:15px;">Präzisionsgrad</h3>
+          <div id="precisionBox"></div>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0;font-size:15px;">Reise-Log</h3>
+          <ul class="list" id="logList"><li>Noch nichts erfasst</li></ul>
+        </div>
+      </div>
+    </aside>
+
+    <main class="panel">
+      <div class="head"><strong id="roomHeadLabel">Raum</strong></div>
+      <div class="body main-stack" id="mainContent"></div>
+    </main>
+  </div>
+</div>
+
+<script>
+const STEPS = [
+  {id:"start", label:"Start"},
+  {id:"room1", label:"Möglichkeit"},
+  {id:"room2", label:"Analyse"},
+  {id:"room3", label:"Lösung"},
+  {id:"room4", label:"Umsetzung"},
+  {id:"room5", label:"Test"},
+  {id:"result", label:"Reise-Log"}
+];
+
+const PRECISION = {
+  start:{level:0,label:"Noch nichts erfasst"},
+  room1:{level:1,label:"vage – Idee"},
+  room2:{level:2,label:"eingegrenzt – Problem"},
+  room3:{level:3,label:"konkretisiert – Lösung (FA/NFA)"},
+  room4:{level:4,label:"meßbar – Kriterien"},
+  room5:{level:5,label:"geprüft – Testfälle in Arbeit"},
+  result:{level:5,label:"geprüft – vollständige Reise"}
+};
+
+const GUIDING_QUESTIONS = {
+  room1:[
+    "Wer wünscht sich das und warum?",
+    "Welche Chance oder welcher Wert steckt dahinter?",
+    "Ist das schon eine Lösung oder erst ein Symptom?",
+    "Was passiert, wenn wir nichts tun?"
+  ],
+  room2:[
+    "Für wen genau (Rolle/Persona)?",
+    "Was ist das eigentliche Problem – nicht die Lösung?",
+    "Welche Rahmenbedingungen oder Grenzen gelten?",
+    "Wie dringend/wichtig ist es (Muss/Soll/Kann)?",
+    "Wer ist noch betroffen (Stakeholder)?"
+  ],
+  room3:[
+    "Welche Lösungsoptionen gibt es überhaupt?",
+    "Was MUSS das System funktional leisten (FA)?",
+    "Welche Qualität MUSS es haben – Performance, Sicherheit, Usability (NFA)?",
+    "Wie lautet die User Story: Als … möchte ich …, damit …?"
+  ],
+  room4:[
+    "Woran messen wir Erfolg (Meßkriterium/KPI)?",
+    "Welcher Zielwert oder Grenzwert gilt (Parameter)?",
+    "Wie lautet das Akzeptanzkriterium (Given/When/Then)?",
+    "Wer ist für die Umsetzung verantwortlich?"
+  ],
+  room5:[
+    "Wie wird jedes Kriterium geprüft (Testmethode)?",
+    "Wann gilt der Test als bestanden (Sollwert)?",
+    "Wer testet, und wann im Prozess?",
+    "Was passiert, wenn das Kriterium nicht erfüllt wird?"
+  ]
+};
+
+const COMPARATORS = {lt:"<", lte:"≤", eq:"=", gte:"≥", gt:">"};
+const COMPARATOR_OPTIONS = [
+  ["lt","< kleiner als"],["lte","≤ kleiner/gleich"],["eq","= gleich"],["gte","≥ größer/gleich"],["gt","> größer als"]
+];
+const NFA_CATEGORIES = ["Performanzeffizienz","Zuverlässigkeit","Benutzbarkeit","Sicherheit","Kompatibilität","Wartbarkeit","Übertragbarkeit"];
+const TEST_METHODS = ["manueller Test","automatisierter Test","Lasttest","Code-/Security-Review","Abnahme durch Fachbereich"];
+const INITIATORS = ["Kunde","Fachbereich/Management","Gesetzgeber/Compliance","Markt/Wettbewerb","IT/Technik"];
+
+const EXAMPLE = {
+  idea:{text:"Kunden fragen ständig telefonisch nach, wo ihre Retoure gerade ist.", initiator:"Kunde", benefit:"Weniger Support-Anrufe und zufriedenere Kund:innen."},
+  analysis:{role:"Online-Kund:in mit laufender Retoure", problem:"Kund:innen haben keinen Einblick in den Status ihrer Retoure und rufen deshalb im Support an.", constraints:"Muss mit dem bestehenden Warenwirtschaftssystem funktionieren; DSGVO-konform.", priority:"muss"},
+  solution:{
+    approach:"Ein Retouren-Tracking-Bereich im Kundenportal, der den aktuellen Status live anzeigt.",
+    fa:[
+      {id:1,text:"den Status meiner Retoure im Kundenportal einsehen"},
+      {id:2,text:"eine Benachrichtigung erhalten, wenn sich der Status ändert"}
+    ],
+    nfa:[
+      {id:1,cat:"Performanzeffizienz",text:"Die Statusseite lädt in unter 2 Sekunden."},
+      {id:2,cat:"Sicherheit",text:"Nur die eingeloggte Kund:in sieht die eigenen Retourendaten."}
+    ]
+  },
+  impl:{
+    criteria:[
+      {id:1,relatesTo:"fa-1",text:"Ladezeit Statusseite",comparator:"lte",value:"2",unit:"s"},
+      {id:2,relatesTo:"fa-2",text:"Zustellzeit Statusbenachrichtigung",comparator:"lte",value:"5",unit:"min"},
+      {id:3,relatesTo:"nfa-2",text:"Fremdzugriff auf Retourendaten",comparator:"eq",value:"0",unit:"Fälle"}
+    ]
+  },
+  test:{methods:{1:"automatisierter Test",2:"automatisierter Test",3:"Code-/Security-Review"}}
+};
+
+function emptyState(){
+  return {
+    step:"start",
+    beamerLevel:0,
+    idea:{text:"", initiator:"", benefit:""},
+    analysis:{role:"", problem:"", constraints:"", priority:""},
+    solution:{approach:"", fa:[], nfa:[]},
+    impl:{criteria:[]},
+    test:{methods:{}}
+  };
+}
+
+let state = JSON.parse(localStorage.getItem("denkraumReise") || "null") || emptyState();
+
+const el = {
+  mainContent:document.getElementById("mainContent"),
+  roomHeadLabel:document.getElementById("roomHeadLabel"),
+  progressWrap:document.getElementById("progressWrap"),
+  precisionBox:document.getElementById("precisionBox"),
+  logList:document.getElementById("logList"),
+  startBtn:document.getElementById("startBtn"),
+  loadExampleBtn:document.getElementById("loadExampleBtn"),
+  resetBtn:document.getElementById("resetBtn"),
+  beamerToggle:document.getElementById("beamerToggle")
+};
+
+function save(){ localStorage.setItem("denkraumReise", JSON.stringify(state)); }
+
+function escapeHtml(s){
+  return (s || "").toString()
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+}
+function escapeJS(s){ return (s || "").toString().replaceAll("\\","\\\\").replaceAll("'","\\'"); }
+function truncate(s,n){ s = s || ""; return s.length > n ? s.slice(0,n-1) + "…" : s; }
+function nextId(arr){ return arr.reduce((m,x)=>Math.max(m,x.id),0) + 1; }
+
+function stepIndex(id){ return STEPS.findIndex(s => s.id === id); }
+function goStep(id){ state.step = id; save(); render(); window.scrollTo(0, 0); }
+function nextStep(){ const i = stepIndex(state.step); if(i < STEPS.length - 1) goStep(STEPS[i+1].id); }
+function prevStep(){ const i = stepIndex(state.step); if(i > 0) goStep(STEPS[i-1].id); }
+window.nextStep = nextStep;
+window.prevStep = prevStep;
+window.goStep = goStep;
+
+const BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+function applyBeamerLevel(){
+  document.documentElement.setAttribute("data-beamer", String(state.beamerLevel || 0));
+  el.beamerToggle.textContent = BEAMER_LABELS[state.beamerLevel || 0];
+  el.beamerToggle.classList.toggle("active", (state.beamerLevel || 0) > 0);
+}
+el.beamerToggle.addEventListener("click", () => {
+  state.beamerLevel = ((state.beamerLevel || 0) + 1) % BEAMER_LABELS.length;
+  save(); applyBeamerLevel();
+});
+
+/* ---------- state mutators (no full re-render on keystroke, to keep caret position) ---------- */
+function updateIdea(field, val){ state.idea[field] = val; save(); }
+function updateAnalysis(field, val){ state.analysis[field] = val; save(); }
+function setPriority(val){ state.analysis.priority = val; save(); render(); }
+function setInitiator(val){ state.idea.initiator = val; save(); render(); }
+function updateApproach(val){ state.solution.approach = val; save(); }
+
+function addFA(){ state.solution.fa.push({id:nextId(state.solution.fa), text:""}); save(); render(); }
+function removeFA(id){ state.solution.fa = state.solution.fa.filter(f=>f.id!==id); save(); render(); }
+function updateFAText(id,val){ const f = state.solution.fa.find(x=>x.id===id); if(f){ f.text = val; save(); } }
+
+function addNFA(){ state.solution.nfa.push({id:nextId(state.solution.nfa), cat:NFA_CATEGORIES[0], text:""}); save(); render(); }
+function removeNFA(id){ state.solution.nfa = state.solution.nfa.filter(f=>f.id!==id); save(); render(); }
+function updateNFAText(id,val){ const f = state.solution.nfa.find(x=>x.id===id); if(f){ f.text = val; save(); } }
+function updateNFACat(id,val){ const f = state.solution.nfa.find(x=>x.id===id); if(f){ f.cat = val; save(); } }
+
+function addCriterion(){
+  state.impl.criteria.push({id:nextId(state.impl.criteria), relatesTo:"", text:"", comparator:"lte", value:"", unit:""});
+  save(); render();
+}
+function removeCriterion(id){
+  state.impl.criteria = state.impl.criteria.filter(c=>c.id!==id);
+  delete state.test.methods[id];
+  save(); render();
+}
+function updateCriterionField(id, field, val){
+  const c = state.impl.criteria.find(x=>x.id===id);
+  if(c){ c[field] = val; save(); }
+  if(field === "relatesTo" || field === "comparator") render();
+}
+function updateTestMethod(id, val){ state.test.methods[id] = val; save(); }
+
+function insertIntoIdea(q){ state.idea.text = (state.idea.text ? state.idea.text + " " : "") + q; save(); render(); }
+function insertIntoProblem(q){ state.analysis.problem = (state.analysis.problem ? state.analysis.problem + " " : "") + q; save(); render(); }
+function insertIntoApproach(q){ state.solution.approach = (state.solution.approach ? state.solution.approach + " " : "") + q; save(); render(); }
+window.updateIdea = updateIdea;
+window.updateAnalysis = updateAnalysis;
+window.setPriority = setPriority;
+window.setInitiator = setInitiator;
+window.updateApproach = updateApproach;
+window.addFA = addFA; window.removeFA = removeFA; window.updateFAText = updateFAText;
+window.addNFA = addNFA; window.removeNFA = removeNFA; window.updateNFAText = updateNFAText; window.updateNFACat = updateNFACat;
+window.addCriterion = addCriterion; window.removeCriterion = removeCriterion; window.updateCriterionField = updateCriterionField;
+window.updateTestMethod = updateTestMethod;
+window.insertIntoIdea = insertIntoIdea; window.insertIntoProblem = insertIntoProblem; window.insertIntoApproach = insertIntoApproach;
+
+/* ---------- derived / composed text ---------- */
+function priorityLabel(p){
+  return {muss:"Muss (verbindlich)", soll:"Soll (wichtig)", kann:"Kann (optional)"}[p] || "–";
+}
+function comparatorLabel(c){ return COMPARATORS[c] || "="; }
+
+function relatesOptionsHtml(selected){
+  const opts = [];
+  state.solution.fa.forEach(f => opts.push([`fa-${f.id}`, `FA-${f.id}: ${truncate(f.text || "(ohne Text)", 36)}`]));
+  state.solution.nfa.forEach(n => opts.push([`nfa-${n.id}`, `NFA-${n.id} (${n.cat}): ${truncate(n.text || "(ohne Text)", 30)}`]));
+  if(!opts.length) opts.push(["", "– zuerst FA/NFA im Lösungsraum anlegen –"]);
+  return `<option value="">– wählen –</option>` + opts.map(([v,l]) =>
+    `<option value="${escapeHtml(v)}" ${v===selected ? "selected" : ""}>${escapeHtml(l)}</option>`).join("");
+}
+
+function relatedText(relatesTo){
+  if(!relatesTo) return "–";
+  const [kind, idStr] = relatesTo.split("-");
+  const id = Number(idStr);
+  const arr = kind === "fa" ? state.solution.fa : state.solution.nfa;
+  const item = arr.find(x => x.id === id);
+  if(!item) return relatesTo.toUpperCase();
+  return kind === "fa" ? `FA-${id}: ${item.text || "(ohne Text)"}` : `NFA-${id}: ${item.text || "(ohne Text)"}`;
+}
+
+function userStoryText(){
+  const role = state.analysis.role || "Nutzer:in";
+  const fa0 = state.solution.fa[0];
+  if(!fa0 || !fa0.text) return null;
+  const benefit = state.idea.benefit || state.analysis.problem || "einen klaren Nutzen erzielen";
+  return `Als ${role} möchte ich ${fa0.text.replace(/[.!?]+$/,"")}, damit ${benefit.replace(/[.!?]+$/,"")}.`;
+}
+
+function acceptanceCriterionText(c){
+  const role = state.analysis.role || "Nutzer:in";
+  const ctx = relatedText(c.relatesTo);
+  return `Gegeben ${role} nutzt „${ctx}“ — wenn die Funktion ausgeführt wird — dann gilt: ${c.text || "(Kriterium)"} ${comparatorLabel(c.comparator)} ${c.value || "?"}${c.unit || ""}.`;
+}
+
+function testCaseRows(){
+  return state.impl.criteria.map((c,i) => ({
+    testId:`T-${i+1}`,
+    criterionLabel:`${c.text || "(Kriterium)"} ${comparatorLabel(c.comparator)} ${c.value || "?"}${c.unit || ""}`,
+    relates:relatedText(c.relatesTo),
+    method:state.test.methods[c.id] || "manueller Test",
+    status:"offen"
+  }));
+}
+
+/* ---------- guiding questions block ---------- */
+function questionsCard(roomKey, insertFn){
+  const qs = GUIDING_QUESTIONS[roomKey] || [];
+  return `
+    <div class="card">
+      <span class="kicker blue">Leitfragen dieses Raums</span>
+      <div class="helper" style="margin-top:8px;">Das sind typische Fragen, die in diesem Raum gestellt werden.${insertFn ? " Klicke eine Frage an, um sie ins Hauptfeld zu übernehmen." : ""}</div>
+      <ul class="qlist" style="margin-top:10px;">
+        ${qs.map(q => insertFn
+          ? `<li class="qchip clickable" onclick="${insertFn}('${escapeJS(q)}')">${escapeHtml(q)}</li>`
+          : `<li class="qchip">${escapeHtml(q)}</li>`
+        ).join("")}
+      </ul>
+    </div>
+  `;
+}
+
+/* ---------- room views ---------- */
+function startView(){
+  return `
+    <div class="card">
+      <span class="kicker">Idee</span>
+      <div class="title-xl">Wie wandert eine Anforderung durch die Räume?</div>
+      <div class="helper">Du startest mit einer rohen Idee im Möglichkeitsraum. In jedem folgenden Raum stellst du dir andere Leitfragen und die Anforderung wird präziser: Problem → Lösung (FA/NFA, User Story) → Meßkriterien → Testfälle. Am Ende siehst du die ganze Reise als Reise-Log.</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;">Die fünf Räume</h3>
+      <ul class="list">
+        <li><strong>Möglichkeitsraum</strong> – die rohe Idee, ihr Ursprung und ihr Nutzen</li>
+        <li><strong>Analyseraum</strong> – das eigentliche Problem, Rolle, Rahmenbedingungen, Priorität</li>
+        <li><strong>Lösungsraum</strong> – Lösungsansatz, funktionale (FA) und nicht-funktionale (NFA) Anforderungen, User Story</li>
+        <li><strong>Umsetzungsraum</strong> – Meßkriterien, Parameter/Grenzwerte, Akzeptanzkriterien</li>
+        <li><strong>Testraum</strong> – Testmethode je Kriterium, Testfälle, Freigabestatus</li>
+      </ul>
+      <div class="nav">
+        <span></span>
+        <button class="accent" onclick="goStep('room1')">Los geht's – Möglichkeitsraum</button>
+      </div>
+    </div>
+  `;
+}
+
+function room1View(){
+  const i = state.idea;
+  return `
+    ${questionsCard("room1", "insertIntoIdea")}
+    <div class="card">
+      <span class="kicker">Möglichkeitsraum · Raum 1</span>
+      <div class="question">Wie lautet die rohe Idee?</div>
+      <div class="field">
+        <label class="label" for="ideaText">Rohidee / Ausgangssatz</label>
+        <textarea id="ideaText" placeholder="z. B. Kunden fragen ständig telefonisch nach, wo ihre Retoure gerade ist." oninput="updateIdea('text', this.value)">${escapeHtml(i.text)}</textarea>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label class="label">Wer wünscht sich das?</label>
+          <div class="choices-row">
+            ${INITIATORS.map(opt => `<button class="choice ${i.initiator===opt ? 'active' : ''}" onclick="setInitiator('${escapeJS(opt)}')">${opt}</button>`).join("")}
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="ideaBenefit">Erhoffter Nutzen</label>
+          <textarea id="ideaBenefit" placeholder="Warum wäre das gut?" oninput="updateIdea('benefit', this.value)">${escapeHtml(i.benefit)}</textarea>
+        </div>
+      </div>
+      <div class="nav">
+        <button class="secondary" onclick="prevStep()">Zurück</button>
+        <button class="accent" onclick="nextStep()">Weiter in den Analyseraum</button>
+      </div>
+    </div>
+  `;
+}
+
+function room2View(){
+  const a = state.analysis;
+  return `
+    <div class="recap">
+      <h4>Idee bisher (Möglichkeitsraum)</h4>
+      ${state.idea.text
+        ? `<p>${escapeHtml(state.idea.text)}</p><p class="mini"><strong>Herkunft:</strong> ${escapeHtml(state.idea.initiator || "–")} · <strong>Nutzen:</strong> ${escapeHtml(state.idea.benefit || "–")}</p>`
+        : `<p class="mini">Noch keine Idee erfasst.</p>`}
+    </div>
+    ${questionsCard("room2", "insertIntoProblem")}
+    <div class="card">
+      <span class="kicker">Analyseraum · Raum 2</span>
+      <div class="question">Was ist das eigentliche Problem – nicht die Lösung?</div>
+      <div class="grid2">
+        <div class="field">
+          <label class="label" for="anaRole">Betroffene Rolle / Persona</label>
+          <input type="text" id="anaRole" placeholder="z. B. Online-Kund:in mit laufender Retoure" value="${escapeHtml(a.role)}" oninput="updateAnalysis('role', this.value)" />
+        </div>
+        <div class="field">
+          <label class="label">Priorität</label>
+          <div class="choices-row">
+            ${["muss","soll","kann"].map(p => `<button class="choice ${a.priority===p ? 'active' : ''}" onclick="setPriority('${p}')">${priorityLabel(p)}</button>`).join("")}
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label" for="anaProblem">Eigentliches Problem</label>
+        <textarea id="anaProblem" placeholder="Was steckt wirklich dahinter?" oninput="updateAnalysis('problem', this.value)">${escapeHtml(a.problem)}</textarea>
+      </div>
+      <div class="field">
+        <label class="label" for="anaConstraints">Rahmenbedingungen / Grenzen (optional)</label>
+        <textarea id="anaConstraints" placeholder="rechtlich, technisch, organisatorisch …" oninput="updateAnalysis('constraints', this.value)">${escapeHtml(a.constraints)}</textarea>
+      </div>
+      <div class="nav">
+        <button class="secondary" onclick="prevStep()">Zurück</button>
+        <button class="accent" onclick="nextStep()">Weiter in den Lösungsraum</button>
+      </div>
+    </div>
+  `;
+}
+
+function faRowHtml(f){
+  return `
+    <div class="row-item">
+      <div class="row-top">
+        <span class="row-id">FA-${f.id}</span>
+        <button class="tiny danger" onclick="removeFA(${f.id})">entfernen</button>
+      </div>
+      <textarea placeholder="z. B. den Status meiner Retoure im Kundenportal einsehen" oninput="updateFAText(${f.id}, this.value)">${escapeHtml(f.text)}</textarea>
+    </div>
+  `;
+}
+function nfaRowHtml(n){
+  return `
+    <div class="row-item">
+      <div class="row-top">
+        <span class="row-id">NFA-${n.id}</span>
+        <button class="tiny danger" onclick="removeNFA(${n.id})">entfernen</button>
+      </div>
+      <div class="field">
+        <label class="label">Qualitätsmerkmal (ISO/IEC 25010)</label>
+        <select onchange="updateNFACat(${n.id}, this.value)">
+          ${NFA_CATEGORIES.map(c => `<option value="${escapeHtml(c)}" ${c===n.cat ? "selected" : ""}>${escapeHtml(c)}</option>`).join("")}
+        </select>
+      </div>
+      <textarea placeholder="z. B. Die Statusseite lädt in unter 2 Sekunden." oninput="updateNFAText(${n.id}, this.value)">${escapeHtml(n.text)}</textarea>
+    </div>
+  `;
+}
+
+function room3View(){
+  const s = state.solution;
+  const story = userStoryText();
+  return `
+    <div class="recap">
+      <h4>Problem bisher (Analyseraum)</h4>
+      ${state.analysis.problem
+        ? `<p><strong>${escapeHtml(state.analysis.role || "Rolle offen")}:</strong> ${escapeHtml(state.analysis.problem)}</p><p class="mini">${state.analysis.constraints ? "Rahmen: " + escapeHtml(state.analysis.constraints) + " · " : ""}Priorität: ${priorityLabel(state.analysis.priority)}</p>`
+        : `<p class="mini">Noch keine Analyse erfasst.</p>`}
+    </div>
+    ${questionsCard("room3", "insertIntoApproach")}
+    <div class="card">
+      <span class="kicker">Lösungsraum · Raum 3</span>
+      <div class="question">Wie soll das Problem gelöst werden?</div>
+      <div class="field">
+        <label class="label" for="solApproach">Lösungsansatz</label>
+        <textarea id="solApproach" placeholder="z. B. Ein Retouren-Tracking-Bereich im Kundenportal, der den Status live anzeigt." oninput="updateApproach(this.value)">${escapeHtml(s.approach)}</textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span class="kicker green">Funktionale Anforderungen (FA)</span>
+        <button class="tiny secondary" onclick="addFA()">+ FA hinzufügen</button>
+      </div>
+      <div class="helper" style="margin-top:6px;">Was MUSS das System tun? Formuliere jede FA als Tätigkeit aus Sicht der Rolle.</div>
+      <div class="rows">${s.fa.length ? s.fa.map(faRowHtml).join("") : '<p class="mini">Noch keine FA erfasst.</p>'}</div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span class="kicker amber">Nicht-funktionale Anforderungen (NFA)</span>
+        <button class="tiny secondary" onclick="addNFA()">+ NFA hinzufügen</button>
+      </div>
+      <div class="helper" style="margin-top:6px;">Welche Qualität muss erfüllt sein? Orientierung: ISO/IEC 25010.</div>
+      <div class="rows">${s.nfa.length ? s.nfa.map(nfaRowHtml).join("") : '<p class="mini">Noch keine NFA erfasst.</p>'}</div>
+    </div>
+
+    <div class="card">
+      <span class="kicker">User Story (automatisch generiert)</span>
+      <div class="helper" style="margin-top:6px;">Wird aus Rolle + erster FA + Nutzen zusammengesetzt. Klicke „Vorschau aktualisieren“, wenn du Felder geändert hast.</div>
+      <div class="summary-box" style="margin-top:10px;">${story ? escapeHtml(story) : "Noch nicht genug Angaben – Rolle (Analyseraum) und mindestens eine FA werden benötigt."}</div>
+      <div class="nav">
+        <button class="tiny secondary" onclick="render()">🔄 Vorschau aktualisieren</button>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="secondary" onclick="prevStep()">Zurück</button>
+      <button class="accent" onclick="nextStep()">Weiter in den Umsetzungsraum</button>
+    </div>
+  `;
+}
+
+function criterionRowHtml(c){
+  return `
+    <div class="row-item">
+      <div class="row-top">
+        <span class="row-id">K-${c.id}</span>
+        <button class="tiny danger" onclick="removeCriterion(${c.id})">entfernen</button>
+      </div>
+      <div class="field">
+        <label class="label">Bezieht sich auf</label>
+        <select onchange="updateCriterionField(${c.id}, 'relatesTo', this.value)">
+          ${relatesOptionsHtml(c.relatesTo)}
+        </select>
+      </div>
+      <div class="field">
+        <label class="label">Meßkriterium</label>
+        <input type="text" placeholder="z. B. Ladezeit Statusseite" value="${escapeHtml(c.text)}" oninput="updateCriterionField(${c.id}, 'text', this.value)" />
+      </div>
+      <div class="row-grid">
+        <select onchange="updateCriterionField(${c.id}, 'comparator', this.value)">
+          ${COMPARATOR_OPTIONS.map(([v,l]) => `<option value="${v}" ${v===c.comparator ? "selected" : ""}>${l}</option>`).join("")}
+        </select>
+        <input type="text" placeholder="Zielwert" value="${escapeHtml(c.value)}" oninput="updateCriterionField(${c.id}, 'value', this.value)" />
+        <input type="text" placeholder="Einheit" value="${escapeHtml(c.unit)}" oninput="updateCriterionField(${c.id}, 'unit', this.value)" />
+        <span class="mini" style="align-self:center;">${escapeHtml(c.text || "Kriterium")} ${comparatorLabel(c.comparator)} ${escapeHtml(c.value || "?")}${escapeHtml(c.unit || "")}</span>
+      </div>
+    </div>
+  `;
+}
+
+function room4View(){
+  const s = state.solution;
+  const story = userStoryText();
+  return `
+    <div class="recap">
+      <h4>Lösung bisher (Lösungsraum)</h4>
+      ${s.approach ? `<p>${escapeHtml(s.approach)}</p>` : '<p class="mini">Noch kein Lösungsansatz erfasst.</p>'}
+      <p class="mini">${s.fa.length} FA · ${s.nfa.length} NFA${story ? " · User Story vorhanden" : ""}</p>
+    </div>
+    ${questionsCard("room4")}
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span class="kicker">Umsetzungsraum · Raum 4 – Meßkriterien &amp; Parameter</span>
+        <button class="tiny secondary" onclick="addCriterion()">+ Kriterium hinzufügen</button>
+      </div>
+      <div class="helper" style="margin-top:6px;">Woran messen wir Erfolg? Verknüpfe jedes Kriterium mit einer FA/NFA und definiere einen prüfbaren Grenzwert.</div>
+      <div class="rows">${state.impl.criteria.length ? state.impl.criteria.map(criterionRowHtml).join("") : '<p class="mini">Noch keine Meßkriterien erfasst.</p>'}</div>
+    </div>
+
+    <div class="card">
+      <span class="kicker">Akzeptanzkriterien (automatisch generiert)</span>
+      <div class="helper" style="margin-top:6px;">Given/When/Then je Meßkriterium. Klicke „Vorschau aktualisieren“, wenn du Felder geändert hast.</div>
+      <div class="summary-box" style="margin-top:10px;">${state.impl.criteria.length
+        ? escapeHtml(state.impl.criteria.map(acceptanceCriterionText).join("\n\n"))
+        : "Noch keine Kriterien vorhanden."}</div>
+      <div class="nav">
+        <button class="tiny secondary" onclick="render()">🔄 Vorschau aktualisieren</button>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="secondary" onclick="prevStep()">Zurück</button>
+      <button class="accent" onclick="nextStep()">Weiter in den Testraum</button>
+    </div>
+  `;
+}
+
+function room5View(){
+  const criteria = state.impl.criteria;
+  return `
+    <div class="recap">
+      <h4>Umsetzung bisher (Umsetzungsraum)</h4>
+      ${criteria.length ? `
+        <div class="table-wrap" style="margin-top:6px;">
+          <table>
+            <thead><tr><th>Kriterium</th><th>Bezug</th><th>Sollwert</th></tr></thead>
+            <tbody>
+              ${criteria.map(c => `<tr><td>${escapeHtml(c.text || "–")}</td><td>${escapeHtml(relatedText(c.relatesTo))}</td><td>${comparatorLabel(c.comparator)} ${escapeHtml(c.value || "?")}${escapeHtml(c.unit || "")}</td></tr>`).join("")}
+            </tbody>
+          </table>
+        </div>
+      ` : '<p class="mini">Noch keine Meßkriterien erfasst.</p>'}
+    </div>
+    ${questionsCard("room5")}
+    <div class="card">
+      <span class="kicker">Testraum · Raum 5 – Testmethode je Kriterium</span>
+      <div class="helper" style="margin-top:6px;">Wie wird jedes Kriterium geprüft?</div>
+      <div class="rows">
+        ${criteria.length ? criteria.map(c => `
+          <div class="row-item">
+            <div class="row-top"><span class="row-id">${escapeHtml(c.text || "K-" + c.id)}</span></div>
+            <select onchange="updateTestMethod(${c.id}, this.value)">
+              ${TEST_METHODS.map(m => `<option value="${escapeHtml(m)}" ${(state.test.methods[c.id] || "manueller Test")===m ? "selected" : ""}>${escapeHtml(m)}</option>`).join("")}
+            </select>
+          </div>
+        `).join("") : '<p class="mini">Erst im Umsetzungsraum Meßkriterien anlegen.</p>'}
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="kicker">Testfälle (automatisch generiert)</span>
+      <div class="table-wrap" style="margin-top:10px;">
+        <table>
+          <thead><tr><th>Test-ID</th><th>Prüft</th><th>Bezug</th><th>Methode</th><th>Status</th></tr></thead>
+          <tbody>
+            ${testCaseRows().length ? testCaseRows().map(r => `<tr><td>${r.testId}</td><td>${escapeHtml(r.criterionLabel)}</td><td>${escapeHtml(r.relates)}</td><td>${escapeHtml(r.method)}</td><td>${r.status}</td></tr>`).join("")
+              : '<tr><td colspan="5" class="mini">Noch keine Testfälle – lege zuerst Meßkriterien an.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="secondary" onclick="prevStep()">Zurück</button>
+      <button class="accent" onclick="goStep('result')">Reise abschließen – Reise-Log ansehen</button>
+    </div>
+  `;
+}
+
+function precisionForStep(step){ return PRECISION[step] || PRECISION.start; }
+
+function resultView(){
+  const story = userStoryText();
+  const tc = testCaseRows();
+  return `
+    <div class="card">
+      <span class="kicker green">Reise-Log</span>
+      <div class="title-xl">So ist die Anforderung durch die Räume gewandert</div>
+      <div class="helper">Von der vagen Idee bis zu geprüften Testfällen – jede Stufe zeigt, wie viel präziser die Anforderung geworden ist.</div>
+    </div>
+
+    <div class="journey-section">
+      <h3><span class="kicker">1 · Möglichkeitsraum</span></h3>
+      <p>${escapeHtml(state.idea.text || "–")}</p>
+      <p class="mini"><strong>Herkunft:</strong> ${escapeHtml(state.idea.initiator || "–")} · <strong>Erhoffter Nutzen:</strong> ${escapeHtml(state.idea.benefit || "–")}</p>
+    </div>
+
+    <div class="journey-section">
+      <h3><span class="kicker blue">2 · Analyseraum</span></h3>
+      <p><strong>${escapeHtml(state.analysis.role || "Rolle offen")}:</strong> ${escapeHtml(state.analysis.problem || "–")}</p>
+      <p class="mini">${state.analysis.constraints ? "Rahmenbedingungen: " + escapeHtml(state.analysis.constraints) + " · " : ""}Priorität: ${priorityLabel(state.analysis.priority)}</p>
+    </div>
+
+    <div class="journey-section">
+      <h3><span class="kicker green">3 · Lösungsraum</span></h3>
+      <p>${escapeHtml(state.solution.approach || "–")}</p>
+      <p class="mini"><strong>FA:</strong></p>
+      <ul class="list">${state.solution.fa.map(f => `<li>FA-${f.id}: ${escapeHtml(f.text || "–")}</li>`).join("") || '<li>keine</li>'}</ul>
+      <p class="mini"><strong>NFA:</strong></p>
+      <ul class="list">${state.solution.nfa.map(n => `<li>NFA-${n.id} (${escapeHtml(n.cat)}): ${escapeHtml(n.text || "–")}</li>`).join("") || '<li>keine</li>'}</ul>
+      <p class="mini"><strong>User Story:</strong> ${story ? escapeHtml(story) : "–"}</p>
+    </div>
+
+    <div class="journey-section">
+      <h3><span class="kicker amber">4 · Umsetzungsraum</span></h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Kriterium</th><th>Bezug</th><th>Sollwert</th></tr></thead>
+          <tbody>
+            ${state.impl.criteria.map(c => `<tr><td>${escapeHtml(c.text || "–")}</td><td>${escapeHtml(relatedText(c.relatesTo))}</td><td>${comparatorLabel(c.comparator)} ${escapeHtml(c.value || "?")}${escapeHtml(c.unit || "")}</td></tr>`).join("") || '<tr><td colspan="3" class="mini">keine</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+      <p class="mini" style="margin-top:8px;"><strong>Akzeptanzkriterien:</strong></p>
+      <ul class="list">${state.impl.criteria.map(c => `<li>${escapeHtml(acceptanceCriterionText(c))}</li>`).join("") || '<li>keine</li>'}</ul>
+    </div>
+
+    <div class="journey-section">
+      <h3><span class="kicker">5 · Testraum</span></h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Test-ID</th><th>Prüft</th><th>Bezug</th><th>Methode</th><th>Status</th></tr></thead>
+          <tbody>
+            ${tc.map(r => `<tr><td>${r.testId}</td><td>${escapeHtml(r.criterionLabel)}</td><td>${escapeHtml(r.relates)}</td><td>${escapeHtml(r.method)}</td><td>${r.status}</td></tr>`).join("") || '<tr><td colspan="5" class="mini">keine</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Exportierbare Kurzfassung</h3>
+      <div class="summary-box">${escapeHtml(buildExportText())}</div>
+      <div class="nav">
+        <button class="secondary" onclick="prevStep()">Zurück zum Testraum</button>
+        <button class="accent" onclick="downloadText()">Als Text herunterladen</button>
+      </div>
+    </div>
+  `;
+}
+
+function buildExportText(){
+  const story = userStoryText();
+  const tc = testCaseRows();
+  return `ANFORDERUNGS-REISE DURCH DIE RÄUME
+
+1) MÖGLICHKEITSRAUM
+Idee: ${state.idea.text || "-"}
+Herkunft: ${state.idea.initiator || "-"}
+Erhoffter Nutzen: ${state.idea.benefit || "-"}
+
+2) ANALYSERAUM
+Rolle: ${state.analysis.role || "-"}
+Problem: ${state.analysis.problem || "-"}
+Rahmenbedingungen: ${state.analysis.constraints || "-"}
+Priorität: ${priorityLabel(state.analysis.priority)}
+
+3) LÖSUNGSRAUM
+Ansatz: ${state.solution.approach || "-"}
+FA:
+${state.solution.fa.map(f => `- FA-${f.id}: ${f.text || "-"}`).join("\n") || "- keine"}
+NFA:
+${state.solution.nfa.map(n => `- NFA-${n.id} (${n.cat}): ${n.text || "-"}`).join("\n") || "- keine"}
+User Story: ${story || "-"}
+
+4) UMSETZUNGSRAUM
+Meßkriterien:
+${state.impl.criteria.map(c => `- ${c.text || "-"} (${relatedText(c.relatesTo)}): ${comparatorLabel(c.comparator)} ${c.value || "?"}${c.unit || ""}`).join("\n") || "- keine"}
+Akzeptanzkriterien:
+${state.impl.criteria.map(c => `- ${acceptanceCriterionText(c)}`).join("\n") || "- keine"}
+
+5) TESTRAUM
+${tc.map(r => `- ${r.testId}: ${r.criterionLabel} | Bezug: ${r.relates} | Methode: ${r.method} | Status: ${r.status}`).join("\n") || "- keine"}
+`;
+}
+
+function downloadText(){
+  const blob = new Blob([buildExportText()], {type:"text/plain;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "anforderungsreise.txt";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+window.downloadText = downloadText;
+
+/* ---------- sidebar rendering ---------- */
+function progressRender(){
+  const activeIdx = stepIndex(state.step);
+  el.progressWrap.innerHTML = STEPS.map((s,i) => {
+    const cls = i < activeIdx ? "done" : i === activeIdx ? "active" : "";
+    const clickable = i <= activeIdx ? "clickable" : "";
+    const onclick = i <= activeIdx ? `onclick="goStep('${s.id}')"` : "";
+    return `<div class="progress-pill ${cls} ${clickable}" ${onclick}>${s.label}</div>`;
+  }).join("");
+}
+
+function precisionRender(){
+  const p = precisionForStep(state.step);
+  const segs = Array.from({length:5}, (_,i) => `<div class="gauge-seg ${i < p.level ? "filled" : ""}"></div>`).join("");
+  el.precisionBox.innerHTML = `<div class="badge">${p.level}/5 · ${escapeHtml(p.label)}</div><div class="gauge">${segs}</div>`;
+}
+
+function logRender(){
+  const items = [];
+  if(state.idea.text) items.push(`🟣 <strong>Idee:</strong> ${escapeHtml(truncate(state.idea.text,60))}`);
+  if(state.analysis.problem) items.push(`🔵 <strong>Problem:</strong> ${escapeHtml(truncate(state.analysis.problem,60))}`);
+  if(state.solution.fa.length) items.push(`🟢 <strong>FA:</strong> ${state.solution.fa.length} erfasst`);
+  if(state.solution.nfa.length) items.push(`🟢 <strong>NFA:</strong> ${state.solution.nfa.length} erfasst`);
+  if(userStoryText()) items.push(`📝 <strong>User Story</strong> vorhanden`);
+  if(state.impl.criteria.length) items.push(`🟠 <strong>Meßkriterien:</strong> ${state.impl.criteria.length} erfasst`);
+  const tc = testCaseRows();
+  if(tc.length) items.push(`✅ <strong>Testfälle:</strong> ${tc.length} generiert`);
+  el.logList.innerHTML = items.length ? items.map(i => `<li>${i}</li>`).join("") : "<li>Noch nichts erfasst</li>";
+}
+
+function roomHeadLabelFor(step){
+  const found = STEPS.find(s => s.id === step);
+  return found ? found.label : "Raum";
+}
+
+function renderMain(){
+  let html = "";
+  if(state.step === "start") html = startView();
+  else if(state.step === "room1") html = room1View();
+  else if(state.step === "room2") html = room2View();
+  else if(state.step === "room3") html = room3View();
+  else if(state.step === "room4") html = room4View();
+  else if(state.step === "room5") html = room5View();
+  else if(state.step === "result") html = resultView();
+  el.mainContent.innerHTML = html;
+  el.roomHeadLabel.textContent = roomHeadLabelFor(state.step);
+}
+
+function render(){
+  progressRender();
+  precisionRender();
+  logRender();
+  renderMain();
+}
+window.render = render;
+
+/* ---------- toolbar ---------- */
+el.startBtn.addEventListener("click", () => {
+  state = emptyState();
+  state.step = "room1";
+  save();
+  render();
+});
+
+el.loadExampleBtn.addEventListener("click", () => {
+  state = emptyState();
+  state.idea = JSON.parse(JSON.stringify(EXAMPLE.idea));
+  state.analysis = JSON.parse(JSON.stringify(EXAMPLE.analysis));
+  state.solution = JSON.parse(JSON.stringify(EXAMPLE.solution));
+  state.impl = JSON.parse(JSON.stringify(EXAMPLE.impl));
+  state.test = JSON.parse(JSON.stringify(EXAMPLE.test));
+  state.step = "room1";
+  save();
+  render();
+});
+
+el.resetBtn.addEventListener("click", () => {
+  if(confirm("Möchtest du die Reise wirklich zurücksetzen?")){
+    localStorage.removeItem("denkraumReise");
+    state = emptyState();
+    save();
+    applyBeamerLevel();
+    render();
+  }
+});
+
+applyBeamerLevel();
+render();
+</script>
+</body>
+</html>
