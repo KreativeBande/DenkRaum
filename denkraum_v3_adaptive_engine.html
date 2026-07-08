@@ -24,6 +24,10 @@
     }
     *{box-sizing:border-box}
     html,body{margin:0;padding:0}
+    /* Beamer-Modus: zoom statt transform:scale, damit das Layout mitfließt
+       (Panels bleiben proportional) statt Breiten/Höhen manuell zu kompensieren. */
+    html[data-beamer="1"]{zoom:1.35}
+    html[data-beamer="2"]{zoom:1.75}
     body{
       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
       color:var(--ink);
@@ -57,8 +61,16 @@
       backdrop-filter:blur(4px);
     }
     .hero{padding:28px 28px 20px;margin-bottom:18px}
+    .hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
     .hero h1{margin:0 0 8px 0;font-size:clamp(28px,4vw,42px);line-height:1.05}
     .hero p{margin:0;color:var(--muted);font-size:17px;line-height:1.5;max-width:920px}
+    .signature{
+      text-align:right;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;
+      line-height:1.4;white-space:nowrap;flex-shrink:0
+    }
+    .signature span{display:block;font-weight:500;color:var(--muted);font-size:12px}
+    .signature:hover{color:var(--accent)}
+    .signature:hover span{color:var(--accent)}
     .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
     button{
       border:none;background:var(--ink);color:#fff;padding:11px 15px;border-radius:14px;cursor:pointer;
@@ -67,6 +79,7 @@
     }
     button:hover{transform:translateY(-1px)}
     button.secondary{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+    button.secondary.active{background:var(--accent-soft);border-color:#fecaca;color:var(--accent)}
     button.accent{background:var(--accent)}
     .layout{display:grid;grid-template-columns:360px 1fr;gap:18px}
     .panel .head{padding:18px 20px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fcfcfd 0%,#f9fafb 100%)}
@@ -117,10 +130,10 @@
       border:1px solid var(--line);border-radius:18px;padding:14px;background:linear-gradient(180deg,#fafafa 0%,#f8fafc 100%);
       line-height:1.55
     }
-    .progress-wrap{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+    .progress-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(64px,1fr));gap:8px}
     .progress-pill{
       padding:10px 8px;border:1px solid var(--line);border-radius:16px;background:#fff;text-align:center;
-      font-size:12px;color:var(--muted);font-weight:700
+      font-size:12px;color:var(--muted);font-weight:700;min-width:0
     }
     .progress-pill.active{background:var(--accent-soft);border-color:#fecaca;color:var(--accent)}
     .progress-pill.done{background:var(--green-soft);border-color:#a7f3d0;color:var(--green)}
@@ -149,20 +162,25 @@
     }
     @media (max-width:1100px){
       .layout,.grid2,.grid3,.quick-grid,.canvas6{grid-template-columns:1fr}
-      .progress-wrap{grid-template-columns:repeat(3,1fr)}
     }
   </style>
 </head>
 <body>
 <div class="wrap">
   <section class="hero">
-    <h1>Denkraum V3 – Adaptive Engine</h1>
-    <p>Eine spielerische Denk-App mit UX-Flow, Level-System und adaptiver Engine. Du gibst eine Fragestellung ein, die App erkennt Muster, führt dich durch passende Räume und erzeugt am Ende ein Canvas mit Übersetzung, Werkzeugen, Normen und Empfehlung.</p>
+    <div class="hero-top">
+      <div>
+        <h1>Denkraum V3 – Adaptive Engine</h1>
+        <p>Eine spielerische Denk-App mit UX-Flow, Level-System und adaptiver Engine. Du gibst eine Fragestellung ein, die App erkennt Muster, führt dich durch passende Räume und erzeugt am Ende ein Canvas mit Übersetzung, Werkzeugen, Normen und Empfehlung.</p>
+      </div>
+      <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
+    </div>
     <div class="toolbar">
       <button class="accent" id="startBtn">Losdenken</button>
       <button class="secondary" id="loadCakeBtn">Marmorkuchen laden</button>
       <button class="secondary" id="exportBtn">Analyse exportieren</button>
       <button class="secondary" id="resetBtn">Zurücksetzen</button>
+      <button class="secondary" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
     </div>
   </section>
 
@@ -190,7 +208,7 @@
         </div>
 
         <div class="card">
-          <h3 style="margin-top:0;">Was bisher klar ist</h3>
+          <h3 style="margin-top:0;">Deine Antworten</h3>
           <ul class="list" id="stateList"><li>Noch nichts ausgewählt</li></ul>
         </div>
 
@@ -232,6 +250,7 @@ state.problem = state.problem || "";
 state.engine = state.engine || null;
 state.answers = state.answers || {};
 state.score = state.score || 0;
+state.beamerLevel = state.beamerLevel || 0;
 
 const el = {
   problemInput: document.getElementById("problemInput"),
@@ -244,8 +263,21 @@ const el = {
   startBtn: document.getElementById("startBtn"),
   loadCakeBtn: document.getElementById("loadCakeBtn"),
   exportBtn: document.getElementById("exportBtn"),
-  resetBtn: document.getElementById("resetBtn")
+  resetBtn: document.getElementById("resetBtn"),
+  beamerToggle: document.getElementById("beamerToggle")
 };
+
+const BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+function applyBeamerLevel(){
+  document.documentElement.setAttribute("data-beamer", String(state.beamerLevel));
+  el.beamerToggle.textContent = BEAMER_LABELS[state.beamerLevel];
+  el.beamerToggle.classList.toggle("active", state.beamerLevel > 0);
+}
+function toggleBeamerLevel(){
+  state.beamerLevel = (state.beamerLevel + 1) % BEAMER_LABELS.length;
+  save();
+  applyBeamerLevel();
+}
 
 function save(){
   localStorage.setItem("denkraumAdaptiveV3", JSON.stringify(state));
@@ -367,12 +399,18 @@ function engineRender(){
 
 function stateRender(){
   const items = [];
-  if(state.problem) items.push(`Problem: ${state.problem}`);
-  if(state.engine) items.push(`Level: ${state.engine.levelName}`);
-  if(state.engine) items.push(`Dominanter Raum: ${state.engine.dominant}`);
-  if(state.engine) items.push(`Fehlender Raum: ${state.engine.missing}`);
-  Object.entries(state.answers || {}).forEach(([k,v])=>{
-    if(v && typeof v === "string") items.push(`${k}: ${v}`);
+  const passung = state.answers.diagnose_passung;
+  if(passung){
+    items.push(`🎯 <strong>Muster bestätigt:</strong> ${passung === "ja" ? "Ja, passt" : "Teilweise"}`);
+  }
+  const rooms = state.engine ? roomConfig() : [];
+  ["raum1","raum2","raum3","raum4"].forEach((key, i) => {
+    const value = state.answers[key];
+    if(!value) return;
+    const feedback = state.answers[key + "_feedback"] || "";
+    const ok = feedback.startsWith("good");
+    const title = rooms[i] ? rooms[i].title : `Raum ${i + 1}`;
+    items.push(`${ok ? "✅" : "⚠️"} <strong>${title}:</strong> ${value}`);
   });
   if(!items.length) items.push("Noch nichts ausgewählt");
   el.stateList.innerHTML = items.map(i=>`<li>${i}</li>`).join("");
@@ -921,6 +959,9 @@ el.resetBtn.addEventListener("click", () => {
     location.reload();
   }
 });
+
+el.beamerToggle.addEventListener("click", toggleBeamerLevel);
+applyBeamerLevel();
 
 el.problemInput.value = state.problem || "";
 renderQuick();
