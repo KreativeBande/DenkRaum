@@ -117,10 +117,10 @@
       border:1px solid var(--line);border-radius:18px;padding:14px;background:linear-gradient(180deg,#fafafa 0%,#f8fafc 100%);
       line-height:1.55
     }
-    .progress-wrap{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+    .progress-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(64px,1fr));gap:8px}
     .progress-pill{
       padding:10px 8px;border:1px solid var(--line);border-radius:16px;background:#fff;text-align:center;
-      font-size:12px;color:var(--muted);font-weight:700
+      font-size:12px;color:var(--muted);font-weight:700;min-width:0
     }
     .progress-pill.active{background:var(--accent-soft);border-color:#fecaca;color:var(--accent)}
     .progress-pill.done{background:var(--green-soft);border-color:#a7f3d0;color:var(--green)}
@@ -149,7 +149,6 @@
     }
     @media (max-width:1100px){
       .layout,.grid2,.grid3,.quick-grid,.canvas6{grid-template-columns:1fr}
-      .progress-wrap{grid-template-columns:repeat(3,1fr)}
     }
   </style>
 </head>
@@ -190,7 +189,7 @@
         </div>
 
         <div class="card">
-          <h3 style="margin-top:0;">Was bisher klar ist</h3>
+          <h3 style="margin-top:0;">Deine Antworten</h3>
           <ul class="list" id="stateList"><li>Noch nichts ausgewählt</li></ul>
         </div>
 
@@ -367,12 +366,18 @@ function engineRender(){
 
 function stateRender(){
   const items = [];
-  if(state.problem) items.push(`Problem: ${state.problem}`);
-  if(state.engine) items.push(`Level: ${state.engine.levelName}`);
-  if(state.engine) items.push(`Dominanter Raum: ${state.engine.dominant}`);
-  if(state.engine) items.push(`Fehlender Raum: ${state.engine.missing}`);
-  Object.entries(state.answers || {}).forEach(([k,v])=>{
-    if(v && typeof v === "string") items.push(`${k}: ${v}`);
+  const passung = state.answers.diagnose_passung;
+  if(passung){
+    items.push(`🎯 <strong>Muster bestätigt:</strong> ${passung === "ja" ? "Ja, passt" : "Teilweise"}`);
+  }
+  const rooms = state.engine ? roomConfig() : [];
+  ["raum1","raum2","raum3","raum4"].forEach((key, i) => {
+    const value = state.answers[key];
+    if(!value) return;
+    const feedback = state.answers[key + "_feedback"] || "";
+    const ok = feedback.startsWith("good");
+    const title = rooms[i] ? rooms[i].title : `Raum ${i + 1}`;
+    items.push(`${ok ? "✅" : "⚠️"} <strong>${title}:</strong> ${value}`);
   });
   if(!items.length) items.push("Noch nichts ausgewählt");
   el.stateList.innerHTML = items.map(i=>`<li>${i}</li>`).join("");
