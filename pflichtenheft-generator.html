@@ -39,6 +39,13 @@
   html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);}
   body{min-height:100vh;display:flex;flex-direction:column;}
 
+  /* Beamer-Modus: vergrößert die komplette Darstellung inkl. Layout (nicht nur Text) für
+     Präsentationen aus größerer Entfernung. `zoom` statt `transform:scale`, weil zoom das
+     Layout neu fließen lässt (Panels bleiben proportional, Sticky-Header/-Footer bleiben
+     funktionsfähig) — mit transform müssten Breiten/Höhen manuell kompensiert werden. */
+  html[data-beamer="1"]{zoom:1.35;}
+  html[data-beamer="2"]{zoom:1.75;}
+
   header{
     background:var(--bg);
     border-bottom:2px solid var(--border-strong);
@@ -54,6 +61,7 @@
     white-space:nowrap;min-height:40px;touch-action:manipulation;user-select:none;
   }
   .gesamt-btn.active{background:var(--accent);color:#fff;}
+  .gesamt-btn.beamer-level-2{box-shadow:0 0 0 3px var(--accent-soft) inset;}
 
   .pillnav{
     display:flex;gap:8px;flex-wrap:nowrap;margin-top:12px;
@@ -331,6 +339,7 @@
       <div class="subtitle">Schrittweise, regelbasierte Extraktion aus der Quelle „Studierendenakte" — vollständig offline</div>
     </div>
     <button class="gesamt-btn" id="gesamtToggle">📄 Gesamtansicht</button>
+    <button class="gesamt-btn" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
   </div>
   <div class="pillnav" id="pillnav"></div>
 </header>
@@ -1324,7 +1333,8 @@ var state = {
   currentStep: 0,
   results: {},
   done: {},
-  gesamtOpen: false
+  gesamtOpen: false,
+  beamerLevel: 0
 };
 
 function safeSet(key, val){
@@ -1832,6 +1842,25 @@ function toggleGesamt(){
 }
 
 /* ============================================================
+   7a) BEAMER-MODUS — vergrößert die gesamte Darstellung (Layout + Text)
+   für Präsentationen aus größerer Entfernung. 3 Stufen im Kreis:
+   0 = normal, 1 = groß (135%), 2 = sehr groß (175%).
+   ============================================================ */
+var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+function applyBeamerLevel(){
+  document.documentElement.setAttribute("data-beamer", String(state.beamerLevel));
+  var btn = document.getElementById("beamerToggle");
+  btn.textContent = BEAMER_LABELS[state.beamerLevel];
+  btn.classList.toggle("active", state.beamerLevel > 0);
+  btn.classList.toggle("beamer-level-2", state.beamerLevel === 2);
+}
+function toggleBeamerLevel(){
+  state.beamerLevel = (state.beamerLevel + 1) % BEAMER_LABELS.length;
+  safeSet("pfh_beamer", String(state.beamerLevel));
+  applyBeamerLevel();
+}
+
+/* ============================================================
    7b) MASTER-PROMPT (reusable, für andere Dokumente/Kolleg:innen/LLMs)
    ============================================================ */
 function stripHtml(s){
@@ -2055,6 +2084,10 @@ function init(){
   document.getElementById("gesamtToggle").addEventListener("click", toggleGesamt);
   document.getElementById("resetCorpusBtn").addEventListener("click", resetCorpus);
   document.getElementById("resetAllBtn").addEventListener("click", resetAll);
+  document.getElementById("beamerToggle").addEventListener("click", toggleBeamerLevel);
+  var storedBeamer = parseInt(safeGet("pfh_beamer"), 10);
+  state.beamerLevel = (storedBeamer === 1 || storedBeamer === 2) ? storedBeamer : 0;
+  applyBeamerLevel();
   openPromptFooterInit();
   renderPillnav();
   renderMethodCard();

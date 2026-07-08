@@ -108,6 +108,25 @@ ALL DOCX CHECKS PASSED
 
 Die generierte Korpus-Ausgabe folgt exakt dem dokumentierten `## Abschnittsname`-Format und ist damit ohne weitere Anpassung durch dieselbe Parser-Pipeline (`parseCorpus` → `buildSentenceIndex`) verarbeitbar wie der eingebaute Beispiel-Korpus.
 
+## 8) Nachtrag — Beamer-Modus (Vergrößerungs-Button)
+
+Neuer Button „🔍 Beamer-Modus“ im Header, rotiert bei jedem Klick durch 3 Stufen (Normal → Groß 135% → Sehr groß 175% → zurück zu Normal), Zustand persistiert über `sessionStorage` (try/catch-abgesichert, wie beim Korpus). Umsetzung über CSS `zoom` auf `<html>` statt `transform:scale`, da `zoom` einen echten Layout-Reflow auslöst (Panels, Sticky-Header/-Footer, Touch-Ziele bleiben proportional und funktionsfähig) statt nur optisch zu strecken.
+
+Geprüft mit Playwright + echtem Chromium (`/opt/pw-browsers`, Viewport 1280×800 — typische Beamer-/Laptop-Auflösung), da `zoom` in jsdom nicht gerendert wird:
+
+| Prüfpunkt | Stufe 1 (135%) | Stufe 2 (175%) |
+|---|---|---|
+| Horizontales Overflow (`scrollWidth` vs. `clientWidth`) | keins | keins |
+| Rendered-Height `<h1>` (physisch, `getBoundingClientRect`) | 26.0px → 33.0px | 26.0px → 44.0px |
+| Sticky-Header bleibt bei `top:0` beim Scrollen | ✓ | ✓ |
+| Klick auf „Bestätigen“-Button während gezoomt funktioniert (Ergebnis korrekt erzeugt) | — | ✓ (21 Treffer bei „Anforderungen“) |
+| JS-Fehler (console/page error) | 0 | 0 |
+| Zyklus zurück auf Normal (Stufe 0) nach 3. Klick | ✓ (kein Restzustand) | — |
+
+Screenshot-Kontrolle (Stufe 2, „Sehr groß“) zeigt: Titel, Pillnav, Buttons, Badges und die sticky Ergebnis-Topbar mit Navigation („⏮ Start“ / „← Zurück“ / „Weiter →“) skalieren gemeinsam und bleiben bei 1280×800 vollständig lesbar und ohne Abschneiden nutzbar.
+
+Bewusste Design-Entscheidung: „Alles zurücksetzen“ setzt die Beamer-Stufe **nicht** zurück — das ist eine Anzeige-Einstellung für den Raum, kein Extraktionsergebnis.
+
 ## Ergebnis
 
 Alle Abnahmekriterien erfüllt:
