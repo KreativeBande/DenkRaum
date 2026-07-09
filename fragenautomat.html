@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Fragenautomat – Klärungsfragen aus dem Lastenheft</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --panel:#f7f5f0;
+    --panel-2:#f0ede4;
+    --ink:#20241f;
+    --ink-soft:#5b5f56;
+    --border:#d9d4c6;
+    --border-strong:#b9b29e;
+    --accent:#2f5233;
+    --accent-soft:#e4ebe2;
+    --muss:#9a2b1f;
+    --muss-bg:#f8e2de;
+    --kann:#7a4a08;
+    --kann-bg:#f6e6c8;
+    --fa:#1d4f8f;
+    --fa-bg:#dde8f7;
+    --nfa:#5b3a8f;
+    --nfa-bg:#e7ddf4;
+    --warn-bg:#f8e9a6;
+    --warn-ink:#5c4a05;
+    --risk-bg:#f3ded1;
+    --risk-ink:#7a3d10;
+    --oos-bg:#e3e1da;
+    --oos-ink:#41453d;
+    --ms-bg:#dcecdf;
+    --ms-ink:#1f4a2b;
+    --mono: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace;
+    --serif: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);}
+  body{min-height:100vh;display:flex;flex-direction:column;}
+
+  header{
+    background:var(--bg);
+    border-bottom:2px solid var(--border-strong);
+    padding:14px 22px 12px;
+    position:sticky;top:0;z-index:20;
+  }
+  .titlebar{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  h1{font-family:var(--serif);font-size:22px;margin:0;font-weight:700;color:var(--accent);}
+  .subtitle{font-size:14px;color:var(--ink-soft);margin-top:2px;}
+  .gesamt-btn{
+    border:1.5px solid var(--accent);background:var(--bg);color:var(--accent);
+    font-weight:600;font-size:14px;padding:10px 16px;border-radius:20px;cursor:pointer;
+    white-space:nowrap;min-height:40px;touch-action:manipulation;user-select:none;
+  }
+  .gesamt-btn.active{background:var(--accent);color:#fff;}
+
+  .pillnav{
+    display:flex;gap:8px;flex-wrap:nowrap;margin-top:12px;
+    overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;
+    scrollbar-width:none;
+  }
+  .pillnav::-webkit-scrollbar{display:none;}
+  .pill{
+    display:flex;align-items:center;gap:6px;flex-shrink:0;
+    border:1.5px solid var(--border-strong);background:var(--panel);
+    color:var(--ink-soft);font-size:14px;font-weight:600;
+    padding:10px 15px;min-height:40px;border-radius:20px;cursor:pointer;user-select:none;
+    touch-action:manipulation;
+  }
+  .pill .num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:18px;height:18px;border-radius:50%;background:var(--border-strong);color:#fff;font-size:14px;
+  }
+  .pill.done{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+  .pill.done .num{background:var(--accent);}
+  .pill.current{border-color:var(--accent);background:var(--accent);color:#fff;}
+  .pill.current .num{background:#fff;color:var(--accent);}
+
+  main.layout{
+    flex:1;display:flex;gap:0;align-items:stretch;
+    min-height:0;
+  }
+  .left-panel{
+    width:40%;min-width:320px;min-height:0;border-right:2px solid var(--border);
+    background:var(--panel);padding:18px 20px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  }
+  .right-panel{
+    width:60%;min-height:0;padding:18px 22px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  }
+
+  .block-label{
+    font-size:14px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);
+    font-weight:700;margin-bottom:6px;
+  }
+  .corpus-details{
+    border:1.5px solid var(--border-strong);border-radius:10px;
+    background:#fffefb;margin-bottom:16px;overflow:hidden;
+  }
+  .corpus-details summary{
+    list-style:none;cursor:pointer;user-select:none;touch-action:manipulation;
+    padding:12px 14px;font-size:14px;text-transform:uppercase;letter-spacing:0.06em;
+    font-weight:700;color:var(--ink-soft);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .corpus-details summary::-webkit-details-marker{display:none;}
+  .corpus-details summary::after{content:"▾";font-weight:400;text-transform:none;letter-spacing:0;font-size:14px;transition:transform 0.15s;}
+  .corpus-details[open] summary::after{transform:rotate(180deg);}
+  .corpus-details summary:hover{color:var(--accent);}
+  .corpus-details-body{padding:0 14px 14px;}
+  textarea#corpus{
+    width:100%;height:300px;resize:vertical;
+    font-family:var(--mono);font-size:16px;line-height:1.5;
+    border:1.5px solid var(--border-strong);border-radius:8px;
+    padding:12px;background:#fffefb;color:var(--ink);
+  }
+  .corpus-hint{font-size:14px;color:var(--ink-soft);margin-top:6px;line-height:1.5;}
+  .corpus-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+  .btn-mini{
+    font-size:14px;border:1px solid var(--border-strong);background:var(--bg);
+    color:var(--ink-soft);padding:9px 13px;min-height:38px;border-radius:6px;cursor:pointer;
+    touch-action:manipulation;user-select:none;display:inline-flex;align-items:center;
+  }
+
+  .method-card{
+    margin-top:20px;border:1.5px dashed var(--border-strong);border-radius:10px;
+    padding:16px 16px 14px;background:#fffefb;
+  }
+  .method-card h2{font-family:var(--serif);font-size:16px;margin:0 0 4px;color:var(--accent);}
+  .method-card .step-tag{font-size:14px;color:var(--ink-soft);margin-bottom:10px;}
+  .method-card ul{margin:0 0 8px;padding-left:20px;font-size:14px;line-height:1.55;}
+  .method-card li{margin-bottom:7px;}
+  .method-card li code{background:var(--panel-2);padding:1px 5px;border-radius:4px;font-family:var(--mono);font-size:14px;}
+  .run-btn-wrap{
+    position:sticky;bottom:-1px;z-index:9;
+    background:#fffefb;padding-top:12px;margin-top:8px;
+    border-top:1.5px dashed var(--border-strong);
+  }
+  .run-btn{
+    width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:16px;font-weight:700;padding:16px 18px;cursor:pointer;touch-action:manipulation;
+    box-shadow:0 3px 10px rgba(47,82,51,0.35);letter-spacing:0.01em;
+  }
+  .run-btn:active{opacity:0.85;}
+  .run-btn.secondary{background:var(--bg);color:var(--accent);border:1.5px solid var(--accent);}
+
+  .results-empty{
+    color:var(--ink-soft);font-size:14px;border:1.5px dashed var(--border);
+    border-radius:10px;padding:30px;text-align:center;margin-top:10px;
+  }
+  .results-topbar{
+    position:sticky;top:0;z-index:8;
+    background:var(--bg);margin:0 0 14px;padding-bottom:12px;
+    border-bottom:2px solid var(--border);
+  }
+  .results-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;flex-wrap:wrap;gap:6px;}
+  .results-header h2{font-family:var(--serif);font-size:18px;margin:0;color:var(--accent);}
+  .results-count{font-size:14px;color:var(--ink-soft);}
+  .results-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .nav-left-group{display:flex;gap:8px;flex-wrap:wrap;}
+  .nav-btn{
+    border:none;border-radius:8px;font-size:14px;font-weight:700;padding:10px 16px;
+    cursor:pointer;touch-action:manipulation;user-select:none;min-height:40px;
+  }
+  .nav-btn-next{background:var(--accent);color:#fff;}
+  .nav-btn-prev{background:var(--bg);color:var(--accent);border:1.5px solid var(--accent);}
+  .nav-btn-start{background:var(--panel-2);color:var(--ink-soft);border:1.5px solid var(--border-strong);}
+
+  .item-card{
+    border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px;
+    background:#fffefb;
+  }
+  .badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+  .badge{
+    font-size:14px;font-weight:700;padding:3px 9px;border-radius:12px;white-space:nowrap;
+  }
+  .badge.muss{background:var(--muss-bg);color:var(--muss);}
+  .badge.kann{background:var(--kann-bg);color:var(--kann);}
+  .badge.fa{background:var(--fa-bg);color:var(--fa);}
+  .badge.nfa{background:var(--nfa-bg);color:var(--nfa);}
+  .badge.warn{background:var(--warn-bg);color:var(--warn-ink);}
+  .badge.risk{background:var(--risk-bg);color:var(--risk-ink);}
+  .badge.oos{background:var(--oos-bg);color:var(--oos-ink);}
+  .badge.ms{background:var(--ms-bg);color:var(--ms-ink);}
+  .badge.role{background:var(--fa-bg);color:var(--fa);}
+  .badge.nb-absicht{background:#f7e4c2;color:#8a4b08;}
+  .badge.nb-stakeholder{background:#d9eef1;color:#0f5e6b;}
+  .badge.nb-loesung{background:#ecdff5;color:#6b2f8f;}
+  .badge.nb-qualitaet{background:var(--warn-bg);color:var(--warn-ink);}
+  .badge.nb-stoerstelle{background:var(--risk-bg);color:var(--risk-ink);}
+
+  .item-text{font-size:16px;line-height:1.5;font-style:italic;color:var(--ink);
+    border-left:3px solid var(--border-strong);padding-left:10px;margin-bottom:8px;}
+  .item-text mark{background:#fbe89b;padding:0 2px;border-radius:2px;font-style:normal;}
+  .item-meta{font-size:14px;color:var(--ink-soft);font-family:var(--mono);}
+  .item-meta b{color:var(--ink);}
+
+  .frage-list{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+  .frage-item{display:flex;gap:8px;align-items:flex-start;background:var(--panel-2);border-radius:8px;padding:8px 10px;}
+  .frage-num{flex-shrink:0;font-family:var(--mono);font-size:14px;font-weight:700;color:#fff;background:var(--accent);border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;}
+  .frage-text{font-size:16px;line-height:1.5;color:var(--ink);}
+
+  .empty-note{
+    font-size:14px;color:var(--ink-soft);background:var(--panel-2);border-radius:8px;
+    padding:10px 12px;margin-bottom:10px;
+  }
+
+  #gesamtView{display:none;padding:20px 24px;}
+  #gesamtView.active{display:block;}
+  main.layout.hidden{display:none;}
+
+  footer#masterPromptFooter{
+    border-top:2px solid var(--border-strong);
+    background:var(--panel);
+    padding:0;
+    position:sticky;bottom:0;z-index:15;
+    flex-shrink:0;
+  }
+  footer#masterPromptFooter summary{
+    list-style:none;cursor:pointer;user-select:none;touch-action:manipulation;
+    padding:12px 22px;font-size:14px;font-weight:700;color:var(--accent);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  footer#masterPromptFooter summary::-webkit-details-marker{display:none;}
+  footer#masterPromptFooter summary::after{
+    content:"▾";font-weight:400;transition:transform 0.15s;
+  }
+  footer#masterPromptFooter[open] summary::after{transform:rotate(180deg);}
+  footer#masterPromptFooter .footer-prompt-body{
+    padding:0 22px 18px;max-height:45vh;overflow-y:auto;
+  }
+  footer#masterPromptFooter .vortrag-body{
+    font-family:var(--sans);font-size:16px;line-height:1.6;
+  }
+  footer#masterPromptFooter .vt-step{
+    margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);
+  }
+  footer#masterPromptFooter .vt-step:last-of-type{border-bottom:none;}
+  footer#masterPromptFooter .vt-regie{
+    color:var(--accent);font-style:italic;margin:0 0 6px;font-size:14px;
+  }
+  footer#masterPromptFooter .vt-uebergang{
+    color:var(--ink-soft);font-size:14px;margin-top:6px;
+  }
+  footer#masterPromptFooter textarea#promptText{
+    width:100%;height:32vh;font-family:var(--mono);font-size:16px;line-height:1.55;
+    border:1.5px solid var(--border-strong);border-radius:8px;padding:14px;
+    background:#fffefb;color:var(--ink);
+  }
+  .gesamt-inner{max-width:820px;margin:0 auto;}
+  .gesamt-inner h2{font-family:var(--serif);color:var(--accent);font-size:20px;border-bottom:2px solid var(--border);padding-bottom:6px;margin-top:30px;}
+  .gesamt-inner h2:first-child{margin-top:0;}
+  textarea#gesamtText{
+    width:100%;height:60vh;font-family:var(--mono);font-size:16px;line-height:1.55;
+    border:1.5px solid var(--border-strong);border-radius:8px;padding:14px;background:#fffefb;color:var(--ink);
+  }
+  .copy-hint{font-size:14px;color:var(--ink-soft);margin-top:8px;}
+
+  @media (max-width: 860px){
+    main.layout{flex-direction:column;}
+    .left-panel,.right-panel{width:100%;border-right:none;}
+    .left-panel{border-bottom:2px solid var(--border);}
+    textarea#corpus{height:220px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="titlebar">
+    <div>
+      <h1>Fragenautomat</h1>
+      <div class="subtitle">Schrittweise, regelbasierte Extraktion von Klärungsfragen aus dem Lastenheft — nach den vier Nebel-Typen des Denkraum-Modells, kombiniert mit der klassischen Lastenheft-Gliederung</div>
+    </div>
+    <button class="gesamt-btn" id="gesamtToggle">📄 Fragenkatalog</button>
+  </div>
+  <div class="pillnav" id="pillnav"></div>
+</header>
+
+<main class="layout" id="mainLayout">
+  <section class="left-panel">
+    <details class="corpus-details" open>
+      <summary>Quelle: Lastenheft (Beispieltext oder eigener Upload)</summary>
+      <div class="corpus-details-body">
+        <div class="corpus-actions" style="margin-bottom:10px;">
+          <label class="btn-mini" for="fileUpload" style="cursor:pointer;">📤 Lastenheft hochladen (.txt/.md/.docx/.pdf)</label>
+          <input type="file" id="fileUpload" accept=".txt,.md,.docx,.pdf" style="display:none;">
+          <span id="uploadStatus" style="font-size:14px;color:var(--ink-soft);"></span>
+        </div>
+        <textarea id="corpus" spellcheck="false"></textarea>
+        <div class="corpus-actions">
+          <button class="btn-mini" id="resetCorpusBtn">↺ Beispieltext wiederherstellen</button>
+          <button class="btn-mini" id="resetAllBtn" title="Löscht alle bisherigen Ergebnisse und Eingaben">🔄 Alles zurücksetzen</button>
+        </div>
+        <div class="corpus-hint">
+          Format: Abschnittsüberschriften mit <code>## Abschnittsname</code>, darunter Fließtext (Absätze durch Leerzeile trennen). Bei .docx werden Word-Überschriften automatisch zu <code>##</code>-Markern; bei .pdf wird jede Seite zunächst als eigener Abschnitt angelegt — Überschriften danach im Textfeld gern von Hand nachschärfen. Der Beispieltext ist frei konstruiert (kein echtes Dokument) — für den Workshop lädst du dein eigenes Lastenheft hoch oder ersetzt den Text komplett.
+        </div>
+      </div>
+    </details>
+
+    <div class="method-card" id="methodCard">
+      <!-- wird per JS befüllt -->
+    </div>
+  </section>
+
+  <section class="right-panel" id="resultsPanel">
+    <!-- wird per JS befüllt -->
+  </section>
+</main>
+
+<section id="gesamtView">
+  <div class="gesamt-inner">
+    <div class="block-label">Fragenkatalog — für den Workshop</div>
+    <textarea id="gesamtText" readonly></textarea>
+    <div class="copy-hint">Text markieren und kopieren (⌘/Strg+A, dann Kopieren) — als Vorbereitung für Kickoff-, Review- oder Klärungs-Workshops, nicht als fertiges Protokoll.</div>
+  </div>
+</section>
+
+<footer id="masterPromptFooter">
+  <details id="promptDetails">
+    <summary>📋 Master-Prompt — für andere Lastenhefte (aufklappen)</summary>
+    <div class="footer-prompt-body">
+      <textarea id="promptText" readonly></textarea>
+      <div class="copy-hint">Text markieren und kopieren — für Notion, für Kolleg:innen ohne dieses Tool, oder als Anweisung an ein LLM, das dieselbe Fragen-Extraktion manuell auf einem anderen Lastenheft nachvollziehen soll.</div>
+    </div>
+  </details>
+  <details id="handbuchDetails">
+    <summary>📘 Handbuch — Konstruktionslogik (aufklappen)</summary>
+    <div class="footer-prompt-body" style="font-family:var(--sans);font-size:16px;line-height:1.6;">
+      <p><b>Framework des Master-Prompts (oben):</b> RTF — Role (Requirements-Coach/Workshop-Moderator:in), Task (dieselbe neunstufige Fragen-Extraktion auf einem neuen Lastenheft nachvollziehen), Format (identische Nebel-Typ-Badges wie im Tool). Schlank gehalten, weil der Prompt ein Werkzeug für Kolleg:innen ohne dieses Tool ist, nicht ein didaktisches Lehrbeispiel.</p>
+      <p><b>Denkraum-Bezug (Grundregel):</b> Jeder Schritt trägt eine feste Nebel-Typ-Badge (Absichts-, Stakeholder-, Lösungs- oder Qualitätsnebel bzw. Störstelle) und erzeugt Fragen nach dem Sprungmechanismus „Fragen“ bzw. „Messkriterium ergänzen“. Bewusste Designentscheidung: Die vier klassischen Lastenheft-Kapitel Abgrenzung, Annahmen, Risiken und Schnittstellen laufen alle unter „Störstelle“ — das ist kein Fehler, sondern zeigt genau, dass das Denkraum-Artefakt „Störstellen“ (Risiken, Lücken, Annahmen) mehrere klassische RE-Kapitel gleichzeitig abdeckt.</p>
+      <p><b>Unterschied zum Pflichtenheft-Generator:</b> Der Pflichtenheft-Generator arbeitet mit einem echten, unverändert zitierten Ausschreibungsdokument und teils dokumentspezifischen Erkennungslisten (z. B. eine feste Stakeholder-Rollenliste für genau diese eine Studierendenakte). Der Fragenautomat muss dagegen auf JEDEM hochgeladenen Lastenheft funktionieren — deshalb sind alle Erkennungsregeln bewusst generisch gehalten (Wortlisten für Rollen, Qualitätsvokabular, Risikosprache statt Eigennamen). Der mitgelieferte Beispieltext ist deshalb ehrlich als frei konstruiert gekennzeichnet, nicht als echtes Dokument ausgegeben.</p>
+      <p><b>Der eine Punkt, der hier zählt:</b> Ein Fragen-Tool ist nur so glaubwürdig wie seine Quelle für jede Frage — deshalb wird zu jeder generierten Frage immer der auslösende Originalsatz plus Fundstelle mitgeliefert, nie eine freischwebende Frage ohne Beleg.</p>
+      <p><b>Nachbau-Tipp:</b> Wer ein ähnliches Tool baut, sollte Wortlisten immer mit einem Metrik-Gegencheck kombinieren (Zahl/Einheit/Prozent im Satz vorhanden? → dann kein Nebel, kein Diskussionsbedarf) — sonst werden auch bereits präzise Sätze unnötig zur Diskussion gestellt.</p>
+    </div>
+  </details>
+  <details id="vortragDetails">
+    <summary>🎤 Vortrags-Skript — für den Workshop-Auftakt (aufklappen)</summary>
+    <div class="footer-prompt-body vortrag-body">
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: Tool ist geöffnet, Kopfzeile + Pillnav sichtbar, „Quelle: Lastenheft“ ist aufgeklappt.]</i></p>
+      <p><b>0 · Einstieg.</b> Das hier ist ein Fragenautomat — keine KI-Bewertung, sondern regelbasierte Mustererkennung. Er liest ein Lastenheft und schlägt an jeder unscharfen Stelle konkrete Klärungsfragen für den Workshop vor. Jede Frage ist an einen wörtlich zitierten Satz aus dem Dokument gebunden — nichts wird erfunden.</p>
+      <p class="vt-uebergang">Übergang: Fangen wir mit der Zielsetzung an.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Pill „Zielsetzung“ ist aktiv → „Methode bestätigen & anwenden“ klicken.]</i></p>
+      <p><b>1 · Zielsetzung (Absichtsnebel).</b> Sätze mit Verbesserungsvokabular ohne Zahl oder Frist — das ist der Klassiker „Das soll besser werden“. Die Fragen zielen auf das Denkraum-Artefakt „Intent-Kern“: Was genau, woran messen wir es?</p>
+      <p class="vt-uebergang">Übergang: Weiter zu den Rollen im Dokument.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[„Weiter zu ‚Stakeholder & Rollen'" → „Extraktion starten".]</i></p>
+      <p><b>2 · Stakeholder & Rollen (Stakeholder-Nebel).</b> Eine generische Rollen-Wortliste, keine projektspezifische Liste — funktioniert auf jedem Lastenheft. Formulierungen wie „alle Nutzer“ bekommen zusätzlich die Warnbadge „Übergeneralisierung“.</p>
+      <p class="vt-uebergang">Übergang: Von den Rollen zu den eigentlichen Anforderungen.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[„Weiter zu ‚Funktionale Anforderungen'" → „Extraktion starten".]</i></p>
+      <p><b>3 · Funktionale Anforderungen (Lösungsnebel).</b> Modalverben muss/soll/kann markieren Anforderungssätze. Wird dabei ein konkretes System/Tool genannt, erscheint „⚙ Systembezug genannt“ — Signal, um Anforderung und vorweggenommene Lösung zu trennen.</p>
+      <p class="vt-uebergang">Übergang: Weiter zu den nicht-funktionalen Anforderungen.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[„Weiter zu ‚Nicht-funktionale Anforderungen'" → „Extraktion starten".]</i></p>
+      <p><b>4 · Nicht-funktionale Anforderungen (Qualitätsnebel).</b> Generische Qualitätsbegriffe wie „schnell“, „sicher“, „benutzerfreundlich“ ohne begleitende Zahl. Genau hier lohnt sich die Frage „Wie messen wir das?“ am meisten.</p>
+      <p class="vt-uebergang">Übergang: Weiter zur Abgrenzung.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[„Weiter zu ‚Abgrenzung'" → „Extraktion starten".]</i></p>
+      <p><b>5 · Abgrenzung.</b> Explizite Ausschlüsse und zeitlich verschobene/optionale Formulierungen — Kandidaten zur Verifikation, keine bestätigte Out-of-Scope-Liste.</p>
+      <p class="vt-uebergang">Übergang: Weiter zu Annahmen und Rahmenbedingungen.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[„Weiter zu ‚Annahmen & Rahmenbedingungen'" → „Extraktion starten".]</i></p>
+      <p><b>6 · Annahmen & Rahmenbedingungen (Störstelle).</b> Unausgesprochene Annahmen und Restriktionen — im Denkraum-Modell explizit Teil der „Störstellen“.</p>
+      <p class="vt-uebergang">Übergang: Weiter zu den Risiken.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[„Weiter zu ‚Risiken & offene Punkte'" → „Extraktion starten".]</i></p>
+      <p><b>7 · Risiken & offene Punkte.</b> Sechs Risikoarten, bewusst ohne automatische Wahrscheinlichkeits-/Auswirkungsbewertung — das ist Aufgabe des Workshops, nicht des Tools.</p>
+      <p class="vt-uebergang">Übergang: Weiter zu Schnittstellen.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[„Weiter zu ‚Schnittstellen & Abhängigkeiten'" → „Extraktion starten".]</i></p>
+      <p><b>8 · Schnittstellen & Abhängigkeiten.</b> Wo Systeme Daten austauschen, entstehen oft die teuersten Missverständnisse — Richtung, Format, Frequenz, Verantwortlichkeit.</p>
+      <p class="vt-uebergang">Übergang: Letzter Schritt — die Synthese über fehlende Messkriterien.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[„Weiter zu ‚Fehlende Messkriterien'" → „Extraktion starten". Hinweis: setzt Schritte 3+4 voraus.]</i></p>
+      <p><b>9 · Fehlende Messkriterien — Sammel-Check.</b> Fasst alle Muss/Kann- und Qualitätssätze ohne Zahl aus den Schritten 3 und 4 zu einer Checkliste zusammen — ideal als Handout für einen dedizierten Akzeptanzkriterien-Workshop.</p>
+      <p class="vt-uebergang">Übergang: Und damit zum Fragenkatalog.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[„Weiter" auf dem letzten Schritt öffnet automatisch den Fragenkatalog — alternativ jederzeit über „📄 Fragenkatalog" oben rechts.]</i></p>
+      <p><b>Abschluss · Fragenkatalog.</b> Alle neun Schritte als reiner Text zusammengeführt — der Rohstoff für die Workshop-Agenda, nicht das fertige Protokoll.</p></div>
+
+      <p class="vt-regie" style="margin-top:18px;border-top:1.5px solid var(--border);padding-top:14px;">
+      <i><b>Regie-Hinweis:</b> Nicht mit den Nebel-Typ-Namen einsteigen, sondern immer erst zeigen, dass jede Frage an ein wörtliches Zitat gebunden ist — das verankert das Vertrauen. Nulltreffer (z. B. keine Risiken gefunden) nicht entschuldigen, sondern als gültiges, informatives Ergebnis benennen.</i></p>
+    </div>
+  </details>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   1) BEISPIEL-LASTENHEFT — frei konstruiert, zur Demonstration.
+   Kein echtes Dokument (anders als beim Pflichtenheft-Generator) —
+   der Fragenautomat muss auf JEDEM hochgeladenen Lastenheft funktionieren,
+   daher hier bewusst ein generisches Fallbeispiel.
+   ============================================================ */
+var DEFAULT_CORPUS =
+"## 1 Ausgangslage und Ziel\n" +
+"Die Musterfirma GmbH erhält jährlich rund 4.000 Bewerbungen für unterschiedliche Positionen. Der aktuelle Bewerbungsprozess soll durch ein neues digitales Bewerbermanagementsystem deutlich verbessert werden, damit Bewerbungen schneller bearbeitet werden können.\n\n" +
+"Zusätzlich soll die Time-to-Hire spürbar reduziert und die Candidate Experience insgesamt attraktiver gestaltet werden.\n\n" +
+"## 2 Stakeholder und Zielgruppen\n" +
+"Am Bewerbungsprozess sind mehrere Rollen beteiligt: die Recruiter im HR-Team, die Fachbereichsleitung der jeweils ausschreibenden Abteilung, die Bewerbenden selbst sowie die IT-Abteilung für den Betrieb des Systems. Auch der Betriebsrat ist bei der Einführung neuer Auswahlverfahren einzubinden.\n\n" +
+"Alle Nutzer sollen das System ohne vorherige Schulung bedienen können.\n\n" +
+"## 3 Funktionale Anforderungen\n" +
+"Das System muss eingehende Bewerbungen automatisch einer offenen Stelle zuordnen können. Bewerbende müssen den Status ihrer Bewerbung jederzeit über ein Bewerberportal einsehen können.\n\n" +
+"Die Fachbereichsleitung kann Bewerbungen direkt im System kommentieren und bewerten. Es ist außerdem denkbar, eine automatische Terminvorschlagsfunktion für Vorstellungsgespräche zu ergänzen.\n\n" +
+"Das neue System soll eine Anbindung an die bestehende HR-Software ermöglichen, damit Stammdaten übernommener Bewerbender nicht doppelt gepflegt werden müssen.\n\n" +
+"## 4 Nicht-funktionale Anforderungen\n" +
+"Das System muss jederzeit sicher und zuverlässig verfügbar sein. Die Benutzeroberfläche soll intuitiv und benutzerfreundlich gestaltet sein, sodass sich neue Mitarbeitende schnell zurechtfinden.\n\n" +
+"Die Ladezeiten der Bewerberübersicht müssen angemessen sein, auch bei einer hohen Anzahl gleichzeitiger Zugriffe.\n\n" +
+"## 5 Abgrenzung\n" +
+"Ein automatisiertes, KI-gestütztes Ranking von Bewerbungen ist nicht Bestandteil dieses Projekts, könnte aber gegen Ende des Projekts als mögliche Erweiterung geprüft werden.\n\n" +
+"Die Anbindung an Video-Interview-Tools ist optional und wird erst in einer späteren Ausbaustufe betrachtet.\n\n" +
+"## 6 Annahmen und Rahmenbedingungen\n" +
+"Es wird angenommen, dass alle Bewerbungsunterlagen künftig ausschließlich digital eingereicht werden. Das Projekt beschränkt sich auf die Einführung in der Zentrale; die Auslandsstandorte sind zunächst nicht Teil des Rollouts.\n\n" +
+"Vorausgesetzt wird außerdem, dass die bestehende HR-Software eine offene Schnittstelle bereitstellt.\n\n" +
+"## 7 Risiken\n" +
+"Sofern sich die Anbindung an die bestehende HR-Software verzögert, verschiebt sich voraussichtlich auch die Produktivsetzung des gesamten Systems. Ein Teil der Bewerbungsunterlagen liegt aktuell noch papierbasiert vor, was zusätzlichen Digitalisierungsaufwand bedeutet.\n\n" +
+"Die konkrete Ausgestaltung der Schnittstelle zur Terminplanung ist noch zu klären.\n\n" +
+"Die Einführung erfolgt in Zusammenarbeit mit einem externen Dienstleister, der die Systemkonfiguration übernimmt.\n\n" +
+"## 8 Schnittstellen\n" +
+"Das Bewerbermanagementsystem benötigt eine Schnittstelle zur bestehenden HR-Software für den Stammdatenabgleich sowie eine Anbindung an das unternehmensweite E-Mail-System für automatisierte Eingangsbestätigungen. Perspektivisch ist außerdem eine Integration mit dem Kalendersystem für die Terminplanung von Vorstellungsgesprächen vorgesehen.\n";
+
+/* ============================================================
+   2) TEXT-PARSING (generisch, unverändert übertragbar)
+   ============================================================ */
+function parseCorpus(raw){
+  if (!/^##\s+/m.test(raw)){
+    raw = "## Hochgeladenes Dokument\n" + raw;
+  }
+  var lines = raw.split("\n");
+  var sections = [];
+  var current = null;
+  for (var i=0;i<lines.length;i++){
+    var line = lines[i];
+    var m = line.match(/^##\s+(.+)$/);
+    if (m){
+      current = {section: m[1].trim(), body: []};
+      sections.push(current);
+    } else if (current){
+      current.body.push(line);
+    }
+  }
+  var paragraphs = [];
+  sections.forEach(function(sec){
+    var text = sec.body.join("\n");
+    var paras = text.split(/\n\s*\n/);
+    paras.forEach(function(p){
+      var t = p.replace(/\s+/g," ").trim();
+      if (t.length > 0) paragraphs.push({section: sec.section, text: t});
+    });
+  });
+  return paragraphs;
+}
+
+var ABBREV_RE = /\b(z\.\s?B\.|u\.\s?a\.|u\.\s?ä\.|u\.\s?U\.|bzw\.|bspw\.|ca\.|d\.\s?h\.|ggf\.|etc\.|Nr\.|Abs\.|Art\.|inkl\.|exkl\.|v\.\s?a\.|o\.\s?Ä\.|s\.\s?u\.|s\.\s?o\.)/gi;
+
+function splitSentences(text){
+  var protectedText = text.replace(ABBREV_RE, function(m){ return m.replace(/\./g, "§"); });
+  protectedText = protectedText.replace(/(\d)\.(\d{3}\b)/g, "$1§$2");
+  var raw = protectedText.match(/[^.!?]+[.!?]+(\s|$)/g);
+  if (!raw) raw = [protectedText];
+  return raw.map(function(s){ return s.replace(/§/g, ".").trim(); }).filter(function(s){ return s.length>3; });
+}
+
+function buildSentenceIndex(paragraphs){
+  var out = [];
+  paragraphs.forEach(function(p){
+    splitSentences(p.text).forEach(function(s){
+      out.push({text: s, section: p.section});
+    });
+  });
+  return out;
+}
+
+function highlight(sentence, words){
+  var out = sentence;
+  words.forEach(function(w){
+    if (!w) return;
+    var re = new RegExp("(" + w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&") + ")","gi");
+    out = out.replace(re, "<mark>$1</mark>");
+  });
+  return out;
+}
+
+function esc(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
+/* ============================================================
+   3) ERKENNUNGSREGELN — bewusst generisch (keine Eigennamen),
+   damit das Tool auf jedem hochgeladenen Lastenheft funktioniert.
+   ============================================================ */
+var METRIC_RE = /\d|%|prozent|sekunde|minute|stunde|\btag(e|en)?\b|woche|monat|jahr|millisekunde|\bms\b|\bgb\b|\bmb\b|\bkb\b/i;
+function hasMetric(t){ return METRIC_RE.test(t); }
+
+var ZIEL_WORDS = ["verbessern","verbessert","verbesserung","optimieren","optimiert","optimierung","effizienter","effizienz","einfacher","vereinfachen","vereinfacht","beschleunigen","beschleunigt","modernisieren","modernisiert","professionalisieren","zukunftsfähig","zukunftssicher","transparenter","attraktiver","wettbewerbsfähiger","reduzieren","reduziert","steigern","steigert","erhöhen","erhöht","senken","gesenkt"];
+
+var STAKEHOLDER_WORDS = ["nutzer","anwender","kunde","kundin","kunden","mitarbeiter","mitarbeitende","auftraggeber","auftragnehmer","administrator","projektleit","fachbereich","fachabteilung","it-abteilung","geschäftsführung","lieferant","dienstleister","stakeholder","abteilung","ausschuss","gremium","kommission","benutzergruppe","zielgruppe","endanwender","endnutzer","systembetreuung","support","helpdesk","vertrieb","buchhaltung","personalabteilung","betriebsrat","datenschutzbeauftragte","qualitätsmanagement","bewerber","recruiter","hr-team"];
+var OVERGEN_RE = /\b(alle (nutzer|anwender|mitarbeiter|kunden|beteiligten)|jeder (nutzer|anwender|mitarbeiter)|jede(r)? (nutzer|anwender)|\bman\b)\b/i;
+
+var MUSS_RE = /\b(muss|müssen|soll|sollen|sollte|sollten|ist zu|sind zu|erforderlich|zwingend)\b/i;
+var KANN_RE = /\b(kann|können|denkbar|könnte|optional|wünschenswert)\b/i;
+var GENERIC_QUALITY_WORDS = ["schnell","schnelle","schnellen","schnellem","zügig","sicher","sichere","sicheren","sicherheit","benutzerfreundlich","nutzerfreundlich","intuitiv","robust","stabil","zuverlässig","performant","performance","skalierbar","ausreichend","angemessen","einfach","zeitnah","überschaubar","möglichst","hochverfügbar","verfügbar","verfügbarkeit","wartungsarm","wartbar","flexibel","komfortabel","reaktionsschnell","ausfallsicher","barrierefrei","niedrigschwellig"];
+var LOESUNG_WORDS = ["system","software","tool","app","anwendung","plattform","modul","portal","dashboard","datenbank"];
+
+var OOS_RE = /\b(gegen ende des projekts|künftig|zukünftig|zu einem späteren zeitpunkt|später(e|en)?\s+(ausbaustufe|phase)|denkbar|optional)\b/i;
+var NEGATION_RE = /\b(nicht\s+(teil|bestandteil|inhalt|umfasst|enthalten)|ausgeschlossen|außerhalb\s+(des|dieses)\s+(projekts|scopes|vorhabens)|kein(e)?\s+bestandteil)\b/i;
+
+var ANNAHME_RE = /\b(unter der (voraussetzung|annahme)|vorausgesetzt|angenommen|ausgehend von|voraussichtlich)\b/i;
+var RESTRIKTION_RE = /\b(rahmenbedingung|beschränkt sich (auf|nur)|einschränkung|nur.{0,15}(möglich|zulässig))\b/i;
+
+var RISK_RULES = [
+  {kat:"Abhängigkeit", re:/\b(sofern|abhängig|voraussetzung)\b/i},
+  {kat:"Prozess/Medienbruch", re:/\b(manuell|papierbasiert|papierform|medienbruch|noch nicht digital)\b/i},
+  {kat:"Fristen/Compliance", re:/(\d+\s*(jahre?|monate?|tage?)\b.{0,25}(archivier|aufbewahr|einhalten|frist))|((archivier|aufbewahr|frist).{0,25}\d+\s*(jahre?|monate?|tage?))/i},
+  {kat:"Altsystem/Migration", re:/\b(altsystem|legacy|altbestand|bestandssystem)\b/i},
+  {kat:"Offener Punkt", re:/\b(zu klären|unklar|noch offen)\b/i},
+  {kat:"Lieferant/Extern", re:/\b(externe(r|n)?\s+(dienstleister|anbieter|partner)|drittanbieter|drittsystem)\b/i}
+];
+
+var SCHNITTSTELLEN_WORDS = ["schnittstelle","api","integration","datenaustausch","anbindung","drittsystem","import","export","synchronisation","webservice"];
+
+/* ============================================================
+   4) FRAGEN-GENERATOREN — je Nebel-Typ ein Sprungmechanismus
+   (Fragen / Formatwechsel / Perspektivenwechsel / Messkriterium)
+   ============================================================ */
+function fragenAbsicht(trigger){
+  return [
+    'Was genau soll sich bei „' + trigger + '“ verbessern – und woran erkennen wir in einem konkreten Beispiel, dass es gelungen ist?',
+    'Gibt es eine Zahl, einen Prozentsatz oder eine Frist, die diese Aussage belegt? Wenn nein: Wer legt sie bis wann fest?'
+  ];
+}
+function fragenStakeholder(trigger, overgen){
+  var qs = [
+    'Wer genau ist mit „' + trigger + '“ gemeint – eine einzelne Person, eine Rolle oder eine ganze Abteilung?',
+    'Welchen konkreten Bedarf hat „' + trigger + '“ in diesem Zusammenhang – und wodurch unterscheidet sich dieser Bedarf von dem anderer Rollen?'
+  ];
+  if (overgen) qs.push('Stimmt „alle“/„jeder“ hier wirklich – oder gibt es Ausnahmen, Sonderfälle oder Rollen mit anderen Bedürfnissen?');
+  return qs;
+}
+function fragenFA(){
+  return [
+    'Wie würde eine Entwicklerin diese Anforderung lesen – und wie eine Testerin? Wo unterscheiden sich die beiden Sichtweisen?',
+    'Wie sähe ein konkretes Testbeispiel aus, an dem sich zeigt, dass diese Anforderung erfüllt ist?'
+  ];
+}
+function fragenLoesung(trigger){
+  return [
+    'Ist „' + trigger + '“ die Anforderung selbst – oder schon eine vorweggenommene Lösung? Was ist das eigentliche Problem dahinter?',
+    'Welche Alternative gäbe es, um denselben Bedarf auch ohne „' + trigger + '“ zu erfüllen?'
+  ];
+}
+function fragenQualitaet(trigger){
+  return [
+    '„' + trigger + '“ – im Vergleich wozu? Welcher Wert gilt aktuell als Referenz?',
+    'Wie genau messen wir, ob „' + trigger + '“ erfüllt ist? Mit welchem Werkzeug, welchem Schwellenwert?',
+    'Unter welchen Bedingungen (z. B. Nutzerzahl, Lastszenario, Endgerät) muss das gelten?'
+  ];
+}
+function fragenAbgrenzung(trigger){
+  return [
+    'Ist „' + trigger + '“ endgültig ausgeschlossen oder nur zeitlich verschoben? Wer entscheidet das verbindlich?',
+    'Was passiert, wenn während der Umsetzung klar wird, dass „' + trigger + '“ doch gebraucht wird – gibt es einen Änderungsprozess?'
+  ];
+}
+function fragenAnnahme(trigger, typ){
+  if (typ === "Annahme"){
+    return [
+      'Ist die Annahme „' + trigger + '“ bereits bestätigt – oder nur vermutet? Wer prüft sie bis wann?',
+      'Was passiert mit dem Vorhaben, wenn sich diese Annahme als falsch herausstellt?'
+    ];
+  }
+  return [
+    'Wer hat die Rahmenbedingung „' + trigger + '“ festgelegt – und ist sie wirklich unveränderlich?',
+    'Welche Konsequenz hat diese Einschränkung für die übrigen Anforderungen?'
+  ];
+}
+function fragenRisiko(trigger){
+  return [
+    'Was passiert, wenn „' + trigger + '“ eintritt – wie hoch ist die Wahrscheinlichkeit, wie groß die Auswirkung?',
+    'Wer ist für dieses Risiko verantwortlich, und gibt es bereits einen Plan B?'
+  ];
+}
+function fragenSchnittstelle(trigger){
+  return [
+    'Welche Daten fließen über „' + trigger + '“ – in welche Richtung, in welchem Format, wie oft?',
+    'Wer ist verantwortlich, wenn diese Schnittstelle ausfällt oder sich das Format ändert?'
+  ];
+}
+function fragenMesskriterium(text){
+  var short = text.length>80 ? text.slice(0,77)+"…" : text;
+  return ['Woran erkennen wir konkret, dass „' + short + '“ erfüllt ist? Welche Zahl, welcher Test, welches Werkzeug entscheidet?'];
+}
+
+/* ============================================================
+   5) EXTRAKTOREN — jeder gibt ein einheitliches Item-Format zurück:
+   {text, section, highlightWords, badges:[{cls,label}], questions:[...]}
+   ============================================================ */
+function extractZielsetzung(sentences){
+  var res = [];
+  sentences.forEach(function(s){
+    var lower = s.text.toLowerCase();
+    var hit = ZIEL_WORDS.filter(function(w){ return lower.indexOf(w)>-1; });
+    if (hit.length===0) return;
+    if (hasMetric(s.text)) return;
+    res.push({text:s.text, section:s.section, highlightWords:hit, badges:[{cls:"ms", label:"Zielsetzung"}], questions: fragenAbsicht(hit[0])});
+  });
+  return res;
+}
+
+function extractStakeholder(sentences){
+  var res = [];
+  sentences.forEach(function(s){
+    var lower = s.text.toLowerCase();
+    var hit = STAKEHOLDER_WORDS.filter(function(w){ return lower.indexOf(w)>-1; });
+    if (hit.length===0) return;
+    var overgenMatch = s.text.match(OVERGEN_RE);
+    var badges = [{cls:"role", label: cap(hit[0])}];
+    var hw = hit.slice();
+    if (overgenMatch){ badges.push({cls:"warn", label:"Übergeneralisierung"}); hw.push(overgenMatch[0]); }
+    res.push({text:s.text, section:s.section, highlightWords:hw, badges:badges, questions: fragenStakeholder(hit[0], !!overgenMatch)});
+  });
+  return res;
+}
+
+function extractFA(sentences){
+  var res = [];
+  sentences.forEach(function(s){
+    var lower = s.text.toLowerCase();
+    var mussHit = MUSS_RE.test(s.text);
+    var kannHit = KANN_RE.test(s.text);
+    if (!mussHit && !kannHit) return;
+    var qualityHit = GENERIC_QUALITY_WORDS.filter(function(w){ return lower.indexOf(w)>-1; });
+    if (qualityHit.length>0) return;
+    var prio = mussHit ? "Muss" : "Kann";
+    var trigger = mussHit ? s.text.match(MUSS_RE)[0] : s.text.match(KANN_RE)[0];
+    var loesungHit = LOESUNG_WORDS.filter(function(w){ return lower.indexOf(w)>-1; });
+    var badges = [{cls: mussHit?"muss":"kann", label:prio}, {cls:"fa", label:"FA"}];
+    var qs = fragenFA();
+    var hw = [trigger];
+    if (loesungHit.length>0){
+      badges.push({cls:"warn", label:"⚙ Systembezug genannt"});
+      qs = qs.concat(fragenLoesung(loesungHit[0]));
+      hw = hw.concat(loesungHit);
+    }
+    res.push({text:s.text, section:s.section, highlightWords:hw, badges:badges, questions:qs});
+  });
+  return res;
+}
+
+function extractNFA(sentences){
+  var res = [];
+  sentences.forEach(function(s){
+    var lower = s.text.toLowerCase();
+    var hit = GENERIC_QUALITY_WORDS.filter(function(w){ return lower.indexOf(w)>-1; });
+    if (hit.length===0) return;
+    if (hasMetric(s.text)) return;
+    res.push({text:s.text, section:s.section, highlightWords:hit, badges:[{cls:"nfa", label:"NFA"}], questions: fragenQualitaet(hit[0])});
+  });
+  return res;
+}
+
+function extractAbgrenzung(sentences){
+  var res = [];
+  sentences.forEach(function(s){
+    var oosHit = s.text.match(OOS_RE);
+    var negHit = s.text.match(NEGATION_RE);
+    if (!oosHit && !negHit) return;
+    var trigger = negHit ? negHit[0] : oosHit[0];
+    var hw = [];
+    if (oosHit) hw.push(oosHit[0]);
+    if (negHit) hw.push(negHit[0]);
+    res.push({
+      text:s.text, section:s.section, highlightWords:hw,
+      badges:[{cls:"oos", label: negHit ? "Expliziter Ausschluss" : "Zeitlich verschoben/optional"}],
+      questions: fragenAbgrenzung(trigger)
+    });
+  });
+  return res;
+}
+
+function extractAnnahmen(sentences){
+  var res = [];
+  sentences.forEach(function(s){
+    var a = s.text.match(ANNAHME_RE);
+    var r = s.text.match(RESTRIKTION_RE);
+    if (a) res.push({text:s.text, section:s.section, highlightWords:[a[0]], badges:[{cls:"kann", label:"Annahme"}], questions: fragenAnnahme(a[0], "Annahme")});
+    if (r) res.push({text:s.text, section:s.section, highlightWords:[r[0]], badges:[{cls:"oos", label:"Restriktion"}], questions: fragenAnnahme(r[0], "Restriktion")});
+  });
+  return res;
+}
+
+function extractRisiken(sentences){
+  var res = [];
+  var seen = {};
+  sentences.forEach(function(s){
+    RISK_RULES.forEach(function(rule){
+      var m = s.text.match(rule.re);
+      if (!m) return;
+      var key = rule.kat + "|" + s.text;
+      if (seen[key]) return;
+      seen[key] = true;
+      res.push({
+        text:s.text, section:s.section, highlightWords:[m[0]],
+        badges:[{cls:"risk", label:rule.kat}],
+        questions: fragenRisiko(m[0])
+      });
+    });
+  });
+  return res;
+}
+
+function extractSchnittstellen(sentences){
+  var res = [];
+  sentences.forEach(function(s){
+    var lower = s.text.toLowerCase();
+    var hit = SCHNITTSTELLEN_WORDS.filter(function(w){ return lower.indexOf(w)>-1; });
+    if (hit.length===0) return;
+    var label = hit[0]==="api" ? "API" : cap(hit[0]);
+    res.push({text:s.text, section:s.section, highlightWords:hit, badges:[{cls:"ms", label:label}], questions: fragenSchnittstelle(hit[0])});
+  });
+  return res;
+}
+
+function extractMesskriterien(){
+  var fa = state.results["fa"];
+  var nfa = state.results["nfa"];
+  if (!fa || !nfa) return null;
+  return fa.concat(nfa).filter(function(r){ return !hasMetric(r.text); }).map(function(r){
+    return {
+      text: r.text, section: r.section, highlightWords: r.highlightWords,
+      badges: [{cls:"ms", label:"Akzeptanzkriterium fehlt"}],
+      questions: fragenMesskriterium(r.text)
+    };
+  });
+}
+
+/* ============================================================
+   6) SCHRITTE — jeder Schritt trägt eine feste Nebel-Typ-Badge
+   ============================================================ */
+var STEPS = [
+  {
+    id:"ziel", label:"Zielsetzung",
+    title:"Extraktionsprompt: Zielsetzung & Absicht",
+    tag:"Regelbasiert · Satzebene · Sprungmechanismus: Fragen + Messkriterium",
+    nebelBadge:{cls:"nb-absicht", label:"🎯 Absichtsnebel"},
+    bullets:[
+      "<b>R1 Zielsprache:</b> Sätze mit Verbesserungs-/Optimierungsvokabular (z. B. „verbessern“, „optimieren“, „effizienter“, „attraktiver“, „reduzieren“) werden erkannt.",
+      "<b>R2 Fehlendes Messkriterium:</b> Nur Sätze OHNE begleitende Zahl, Frist oder Prozentangabe werden aufgenommen — genau dort liegt der Absichtsnebel (Denkraum-Artefakt „Intent-Kern“).",
+      "Jeder Treffer erzeugt zwei Fragen nach dem Sprungmechanismus „Fragen“: Was genau? Woran messen wir es?"
+    ],
+    extract: extractZielsetzung
+  },
+  {
+    id:"stakeholder", label:"Stakeholder & Rollen",
+    title:"Extraktionsprompt: Stakeholder & Rollen",
+    tag:"Regelbasiert · generische Rollen-Wortliste",
+    nebelBadge:{cls:"nb-stakeholder", label:"👥 Stakeholder-Nebel"},
+    bullets:[
+      "<b>R1 Rollenerkennung:</b> Abgleich mit einer generischen Liste gängiger Rollen-/Akteursbegriffe (Nutzer, Fachbereich, Auftraggeber, Lieferant, Betriebsrat, IT-Abteilung u. v. a.) — funktioniert unabhängig vom konkreten Projekt.",
+      "<b>R2 Übergeneralisierung:</b> Formulierungen wie „alle Nutzer“, „jeder Anwender“ bekommen zusätzlich die Warnbadge „Übergeneralisierung“ — typisches Warnsignal für Stakeholder-Nebel.",
+      "Sprungmechanismus „Fragen“ (Wer genau?) und bei Übergeneralisierung zusätzlich Perspektivenwechsel (Gilt das für alle Rollen gleich?)."
+    ],
+    extract: extractStakeholder
+  },
+  {
+    id:"fa", label:"Funktionale Anforderungen",
+    title:"Extraktionsprompt: Funktionale Anforderungen",
+    tag:"Regelbasiert · Modalverben · Sprungmechanismus: Formatwechsel + Perspektivenwechsel",
+    nebelBadge:{cls:"nb-loesung", label:"🧩 Lösungsnebel"},
+    bullets:[
+      "<b>R1 Verpflichtungsgrad:</b> Modalverben muss/soll/ist zu → Muss; kann/denkbar/optional → Kann.",
+      "<b>R2 Abgrenzung zu NFA:</b> Sätze mit Qualitätsvokabular (siehe Schritt „Nicht-funktionale Anforderungen“) werden hier bewusst ausgeschlossen, um Doppelzählung zu vermeiden.",
+      "<b>R3 Lösungsnebel-Verdacht:</b> Nennt der Satz ein konkretes System/Tool/Modul, erscheint die Zusatzbadge „⚙ Systembezug genannt“ — Signal, um Anforderung und Lösung sauber zu trennen.",
+      "Jede Anforderung bekommt eine Formatwechsel-Frage (Testbeispiel) und bei Lösungsnebel-Verdacht zusätzlich eine Trennungsfrage (Problem vs. Lösung)."
+    ],
+    extract: extractFA
+  },
+  {
+    id:"nfa", label:"Nicht-funktionale Anforderungen",
+    title:"Extraktionsprompt: Nicht-funktionale Anforderungen",
+    tag:"Regelbasiert · Muster (Qualitätsvokabular ohne Messwert)",
+    nebelBadge:{cls:"nb-qualitaet", label:"⚠ Qualitätsnebel"},
+    bullets:[
+      "<b>R1 Qualitätsvokabular:</b> feste Liste generischer Qualitätsbegriffe (schnell, sicher, benutzerfreundlich, skalierbar, angemessen …).",
+      "<b>R2 Fehlender Messwert:</b> Nur Sätze OHNE Zahl/Einheit/Prozentangabe werden aufgenommen — genau dort beginnt der Qualitätsnebel.",
+      "Sprungmechanismus „Messkriterium ergänzen“: Jede Karte bekommt Fragen nach Referenzwert, Messmethode und Geltungsbedingungen."
+    ],
+    extract: extractNFA
+  },
+  {
+    id:"abgrenzung", label:"Abgrenzung",
+    title:"Extraktionsprompt: Abgrenzung / Out of Scope",
+    tag:"Regelbasiert · Muster (geringe Trefferquote erwartet)",
+    nebelBadge:{cls:"nb-stoerstelle", label:"🕳 Störstelle"},
+    bullets:[
+      "<b>R1 Explizite Ausschlüsse:</b> „nicht Bestandteil“, „nicht Teil“, „außerhalb des Projekts“, „ausgeschlossen“.",
+      "<b>R2 Zeitlich verschoben/optional:</b> „gegen Ende des Projekts“, „künftig“, „später“, „optional“, „denkbar“ — Kandidaten zur Verifikation, keine bestätigte Ausschlussliste.",
+      "Fragen zielen darauf, ob der Ausschluss verbindlich ist und wer über spätere Nachforderungen entscheidet."
+    ],
+    extract: extractAbgrenzung
+  },
+  {
+    id:"annahmen", label:"Annahmen & Rahmenbedingungen",
+    title:"Extraktionsprompt: Annahmen & Rahmenbedingungen",
+    tag:"Regelbasiert · Muster",
+    nebelBadge:{cls:"nb-stoerstelle", label:"🕳 Störstelle"},
+    bullets:[
+      "<b>R1 Annahme:</b> „wird angenommen“, „vorausgesetzt“, „ausgehend von“, „voraussichtlich“.",
+      "<b>R2 Restriktion:</b> „beschränkt sich auf“, „Rahmenbedingung“, „nur … möglich/zulässig“.",
+      "Fragen prüfen, ob die Annahme bestätigt ist und was bei Nichtzutreffen passiert."
+    ],
+    extract: extractAnnahmen
+  },
+  {
+    id:"risiken", label:"Risiken & offene Punkte",
+    title:"Extraktionsprompt: Risiko-Register",
+    tag:"Regelbasiert · Muster (6 Risikoarten)",
+    nebelBadge:{cls:"nb-stoerstelle", label:"🕳 Störstelle"},
+    bullets:[
+      "<b>R1–R6:</b> Abhängigkeit, Prozess/Medienbruch, Fristen/Compliance, Altsystem/Migration, offener Punkt, externe Abhängigkeit.",
+      "Bewusst keine automatische Wahrscheinlichkeits-/Auswirkungsbewertung — das ist Aufgabe des Workshops.",
+      "Fragen zielen auf Eintrittswahrscheinlichkeit, Verantwortlichkeit und Plan B."
+    ],
+    extract: extractRisiken
+  },
+  {
+    id:"schnittstellen", label:"Schnittstellen & Abhängigkeiten",
+    title:"Extraktionsprompt: Schnittstellen & Abhängigkeiten",
+    tag:"Regelbasiert · Muster",
+    nebelBadge:{cls:"nb-stoerstelle", label:"🕳 Störstelle"},
+    bullets:[
+      "<b>R1 Schnittstellenvokabular:</b> Schnittstelle, API, Integration, Anbindung, Datenaustausch, Drittsystem u. a.",
+      "Fragen zielen auf Datenrichtung, Format, Frequenz und Verantwortlichkeit bei Ausfall."
+    ],
+    extract: extractSchnittstellen
+  },
+  {
+    id:"messkriterien", label:"Fehlende Messkriterien",
+    title:"Synthese-Prompt: Fehlende Messkriterien — Sammel-Check",
+    tag:"⚙ Generiert aus Schritt 3 + 4 — keine neue Texterkennung",
+    nebelBadge:{cls:"nb-qualitaet", label:"⚠ Qualitätsnebel"},
+    bullets:[
+      "<b>Voraussetzung:</b> Die Schritte „Funktionale Anforderungen“ und „Nicht-funktionale Anforderungen“ müssen bereits gelaufen sein.",
+      "Fasst alle Treffer ohne Zahl/Einheit aus beiden Schritten zu einer Sammel-Checkliste zusammen — ideal als Handout für einen dedizierten Akzeptanzkriterien-Workshop.",
+      "Pro Zeile genau eine Frage nach dem Sprungmechanismus „Messkriterium ergänzen“."
+    ],
+    extract: extractMesskriterien
+  }
+];
+
+/* ============================================================
+   7) STATE & RENDERING
+   ============================================================ */
+var state = {
+  currentStep: 0,
+  results: {},
+  done: {},
+  gesamtOpen: false
+};
+
+function safeSet(key, val){
+  try{ sessionStorage.setItem(key, val); }catch(e){ /* restriktiver WebView-Kontext, ignorieren */ }
+}
+function safeGet(key){
+  try{ return sessionStorage.getItem(key); }catch(e){ return null; }
+}
+
+function getCorpusText(){
+  return document.getElementById("corpus").value;
+}
+
+function resetCorpus(){
+  document.getElementById("corpus").value = DEFAULT_CORPUS;
+  safeSet("frg_corpus", DEFAULT_CORPUS);
+}
+
+function resetAll(){
+  var ok = window.confirm("Wirklich alles zurücksetzen? Das löscht alle bisher erzeugten Fragen (der Quelltext bleibt erhalten).");
+  if (!ok) return;
+  state.results = {};
+  state.done = {};
+  state.currentStep = 0;
+  closeGesamt();
+  renderPillnav();
+  renderMethodCard();
+  renderResults();
+}
+
+function renderPillnav(){
+  var nav = document.getElementById("pillnav");
+  nav.innerHTML = "";
+  var currentEl = null;
+  STEPS.forEach(function(step, idx){
+    var pill = document.createElement("div");
+    pill.className = "pill" + (state.done[step.id] ? " done" : "") + (idx===state.currentStep ? " current" : "");
+    pill.innerHTML = '<span class="num">' + (state.done[step.id] ? "✓" : (idx+1)) + '</span><span>' + step.label + '</span>';
+    pill.onclick = function(){ goToStep(idx); };
+    nav.appendChild(pill);
+    if (idx===state.currentStep) currentEl = pill;
+  });
+  if (currentEl && typeof currentEl.scrollIntoView === "function"){
+    try{ currentEl.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"}); }catch(e){}
+  }
+}
+
+function goToStep(idx){
+  state.currentStep = idx;
+  closeGesamt();
+  renderPillnav();
+  renderMethodCard();
+  renderResults();
+}
+
+function renderMethodCard(){
+  var step = STEPS[state.currentStep];
+  var card = document.getElementById("methodCard");
+  var bulletsHtml = step.bullets.map(function(b){ return "<li>" + b + "</li>"; }).join("");
+  var already = !!state.results.hasOwnProperty(step.id);
+  card.innerHTML =
+    '<h2>' + step.title + '</h2>' +
+    '<div class="step-tag">Schritt ' + (state.currentStep+1) + ' von ' + STEPS.length + ' · ' + step.tag + '</div>' +
+    '<ul>' + bulletsHtml + '</ul>' +
+    '<div class="run-btn-wrap">' +
+      '<button class="run-btn' + (already ? ' secondary' : '') + '" id="runBtn">' +
+        (already ? '↺ Methode erneut anwenden' : '✓ Methode bestätigen &amp; anwenden') +
+      '</button>' +
+    '</div>';
+  document.getElementById("runBtn").onclick = runCurrentStep;
+}
+
+function runCurrentStep(){
+  var step = STEPS[state.currentStep];
+  var paragraphs = parseCorpus(getCorpusText());
+  var sentences = buildSentenceIndex(paragraphs);
+  var results = step.extract(sentences);
+  state.results[step.id] = results;
+  state.done[step.id] = (results !== null);
+  renderPillnav();
+  renderMethodCard();
+  renderResults();
+}
+
+function renderResults(){
+  var step = STEPS[state.currentStep];
+  var panel = document.getElementById("resultsPanel");
+  var results = state.results[step.id];
+  var wasRun = state.results.hasOwnProperty(step.id);
+
+  if (results === null && wasRun){
+    panel.innerHTML = '<div class="results-empty">⚠ Voraussetzung fehlt: Bitte zuerst die Schritte „Funktionale Anforderungen“ und „Nicht-funktionale Anforderungen“ ausführen.</div>';
+    return;
+  }
+  if (!results){
+    panel.innerHTML = '<div class="results-empty">Noch keine Extraktion durchgeführt.<br>Bestätige links die Methode, um „' + step.label + '“ zu erzeugen.</div>';
+    return;
+  }
+
+  var prevIdx = state.currentStep - 1;
+  var nextIdx = state.currentStep + 1;
+  var hasPrev = prevIdx >= 0;
+  var hasNext = nextIdx < STEPS.length;
+
+  var html = '<div class="results-topbar">' +
+    '<div class="results-header"><h2>' + step.label + '</h2>' +
+    '<span class="results-count">' + results.length + ' Frageimpuls' + (results.length===1?'':'e') + '</span></div>' +
+    '<div class="results-nav">' +
+      '<div class="nav-left-group">' +
+        (state.currentStep > 0 ? '<button class="nav-btn nav-btn-start" id="startBtn" title="Zum ersten Schritt">⏮ Start</button>' : '') +
+        (hasPrev ? '<button class="nav-btn nav-btn-prev" id="prevBtn">← „' + STEPS[prevIdx].label + '“</button>' : '') +
+      '</div>' +
+      (hasNext ?
+        '<button class="nav-btn nav-btn-next" id="nextBtn">Weiter zu „' + STEPS[nextIdx].label + '“ →</button>' :
+        '<button class="nav-btn nav-btn-next" id="nextBtn">📄 Zum Fragenkatalog</button>') +
+    '</div></div>';
+
+  if (results.length === 0){
+    html += '<div class="empty-note">Keine Treffer im aktuellen Quelltext — auch das ist ein gültiges Ergebnis, nicht jede Kategorie muss vorkommen.</div>';
+  }
+
+  results.forEach(function(r){
+    var badgesHtml = '<span class="badge ' + step.nebelBadge.cls + '">' + step.nebelBadge.label + '</span>' +
+      r.badges.map(function(b){ return '<span class="badge ' + b.cls + '">' + esc(b.label) + '</span>'; }).join('');
+    var fragenHtml = '<div class="frage-list">' + r.questions.map(function(q,i){
+      return '<div class="frage-item"><span class="frage-num">F' + (i+1) + '</span><span class="frage-text">' + esc(q) + '</span></div>';
+    }).join('') + '</div>';
+    html += '<div class="item-card">' +
+      '<div class="badges">' + badgesHtml + '</div>' +
+      '<div class="item-text">„' + highlight(esc(r.text), r.highlightWords) + '“</div>' +
+      '<div class="item-meta"><b>Fundstelle:</b> ' + esc(r.section) + '</div>' +
+      fragenHtml +
+      '</div>';
+  });
+
+  panel.innerHTML = html;
+  document.getElementById("nextBtn").onclick = function(){
+    if (hasNext){ goToStep(nextIdx); } else { openGesamt(); }
+  };
+  var prevBtn = document.getElementById("prevBtn");
+  if (prevBtn) prevBtn.onclick = function(){ goToStep(state.currentStep - 1); };
+  var startBtn = document.getElementById("startBtn");
+  if (startBtn) startBtn.onclick = function(){ goToStep(0); };
+}
+
+/* ============================================================
+   8) FRAGENKATALOG (Gesamtansicht)
+   ============================================================ */
+function stripHtml(s){
+  return s.replace(/<code>/g,"„").replace(/<\/code>/g,"“").replace(/<[^>]+>/g,"").replace(/&amp;/g,"&");
+}
+
+function buildGesamtText(){
+  var lines = [];
+  lines.push("WORKSHOP-FRAGENKATALOG — aus dem Lastenheft abgeleitet");
+  lines.push("Erzeugt mit Fragenautomat (regelbasiert) — Nebel-Typen nach Michaelas Denkraum-Modell");
+  lines.push("=".repeat(60));
+  lines.push("");
+  STEPS.forEach(function(step, idx){
+    var res = state.results[step.id];
+    lines.push("");
+    lines.push((idx+1) + ". " + step.label.toUpperCase() + " [" + step.nebelBadge.label + "]");
+    lines.push("-".repeat(60));
+    if (!state.results.hasOwnProperty(step.id)){ lines.push("(noch nicht erzeugt)"); return; }
+    if (res === null){ lines.push("(Voraussetzung fehlt — Schritt noch nicht ausführbar)"); return; }
+    if (res.length===0){ lines.push("(keine Treffer im Quelltext)"); return; }
+    res.forEach(function(r, i){
+      lines.push((i+1) + ". Zitat: „" + r.text + "“");
+      lines.push("   Fundstelle: " + r.section);
+      r.questions.forEach(function(q, qi){
+        lines.push("   Frage " + (qi+1) + ": " + q);
+      });
+      lines.push("");
+    });
+  });
+  return lines.join("\n");
+}
+
+function openGesamt(){
+  state.gesamtOpen = true;
+  document.getElementById("mainLayout").classList.add("hidden");
+  document.getElementById("gesamtView").classList.add("active");
+  document.getElementById("gesamtToggle").classList.add("active");
+  document.getElementById("gesamtText").value = buildGesamtText();
+}
+function closeGesamt(){
+  state.gesamtOpen = false;
+  document.getElementById("mainLayout").classList.remove("hidden");
+  document.getElementById("gesamtView").classList.remove("active");
+  document.getElementById("gesamtToggle").classList.remove("active");
+}
+function toggleGesamt(){
+  if (state.gesamtOpen){ closeGesamt(); } else { openGesamt(); }
+}
+
+/* ============================================================
+   9) MASTER-PROMPT (reusable, für andere Lastenhefte/Kolleg:innen/LLMs)
+   ============================================================ */
+function buildMasterPromptText(){
+  var lines = [];
+  lines.push("MASTER-PROMPT: Fragenautomat (regelbasiert, schrittweise, Nebel-Typen)");
+  lines.push("Für die Anwendung auf ein anderes Lastenheft.");
+  lines.push("=".repeat(70));
+  lines.push("");
+  lines.push("ROLLE");
+  lines.push("Du unterstützt bei der schrittweisen Ableitung von Workshop-Klärungsfragen");
+  lines.push("aus einem Lastenheft. Du zeigst VOR jedem Schritt die Erkennungsregeln und den");
+  lines.push("zugehörigen Denkraum-Nebel-Typ, wartest auf Bestätigung, und lieferst danach je");
+  lines.push("Treffer: wörtliches Zitat, Fundstelle (Abschnitt) und 1-3 konkrete Fragen. Du");
+  lines.push("erfindest nichts: Kein Treffer ist ein gültiges Ergebnis und wird als solches");
+  lines.push("benannt, nicht mit Platzhaltern gefüllt.");
+  lines.push("");
+  lines.push("QUELLFORMAT");
+  lines.push("Abschnittsüberschriften mit \"## Abschnittsname\" kennzeichnen, darunter Fließtext");
+  lines.push("(Absätze durch Leerzeile trennen).");
+  lines.push("");
+  lines.push("REIHENFOLGE DER SCHRITTE (Ziel → Wer → Was → Qualität → Grenzen → Annahmen →");
+  lines.push("Risiken → Schnittstellen → Messkriterien-Synthese):");
+  lines.push("");
+
+  STEPS.forEach(function(step, idx){
+    lines.push((idx+1) + ". " + step.label + " [" + step.nebelBadge.label + "] — " + step.tag);
+    step.bullets.forEach(function(b){
+      lines.push("   • " + stripHtml(b));
+    });
+    lines.push("");
+  });
+
+  lines.push("AUSGABEFORMAT JE TREFFER");
+  lines.push("- Zitat (möglichst wörtlich aus der Quelle)");
+  lines.push("- Fundstelle (Abschnittsname)");
+  lines.push("- Nebel-Typ des Schritts + ausgelöste Regel/Kategorie");
+  lines.push("- 1-3 Fragen nach dem passenden Sprungmechanismus (Fragen / Formatwechsel /");
+  lines.push("  Perspektivenwechsel / Messkriterium ergänzen)");
+  lines.push("");
+  lines.push("ARBEITSWEISE");
+  lines.push("- Erst Methode/Regelset zeigen, auf Bestätigung warten, dann anwenden.");
+  lines.push("- Bei Nulltreffern: kurz einordnen, ob das plausibel ist, statt zu raten.");
+  lines.push("- Am Ende alle Schritte zu einem Fragenkatalog zusammenführen.");
+
+  return lines.join("\n");
+}
+
+function openPromptFooterInit(){
+  document.getElementById("promptText").value = buildMasterPromptText();
+}
+
+/* ============================================================
+   10) DOKUMENT-UPLOAD (.txt/.md direkt, .docx via Offline-ZIP/XML-Extraktion,
+   .pdf via PDF.js von cdnjs — einzige Stelle, die Internetzugang benötigt)
+   ============================================================ */
+function readUInt32LE_u(buf, off){ return ((buf[off]) | (buf[off+1]<<8) | (buf[off+2]<<16) | (buf[off+3]<<24)) >>> 0; }
+function readUInt16LE(buf, off){ return buf[off] | (buf[off+1]<<8); }
+
+function findEOCD(buf){
+  var minPos = Math.max(0, buf.length - 65557);
+  for (var i = buf.length - 22; i >= minPos; i--){
+    if (readUInt32LE_u(buf,i) === 0x06054b50) return i;
+  }
+  throw new Error("Keine gültige ZIP/DOCX-Struktur gefunden (EOCD fehlt).");
+}
+function listZipEntries(buf){
+  var eocdOff = findEOCD(buf);
+  var cdOffset = readUInt32LE_u(buf, eocdOff + 16);
+  var cdEntries = readUInt16LE(buf, eocdOff + 10);
+  var entries = [];
+  var ptr = cdOffset;
+  for (var i=0;i<cdEntries;i++){
+    if (readUInt32LE_u(buf, ptr) !== 0x02014b50) throw new Error("Central-Directory beschädigt.");
+    var method = readUInt16LE(buf, ptr+10);
+    var compSize = readUInt32LE_u(buf, ptr+20);
+    var nameLen = readUInt16LE(buf, ptr+28);
+    var extraLen = readUInt16LE(buf, ptr+30);
+    var commentLen = readUInt16LE(buf, ptr+32);
+    var localHeaderOffset = readUInt32LE_u(buf, ptr+42);
+    var name = "";
+    for (var k=0;k<nameLen;k++) name += String.fromCharCode(buf[ptr+46+k]);
+    entries.push({name:name, method:method, compSize:compSize, localHeaderOffset:localHeaderOffset});
+    ptr += 46 + nameLen + extraLen + commentLen;
+  }
+  return entries;
+}
+function getEntryData(buf, entry){
+  var off = entry.localHeaderOffset;
+  if (readUInt32LE_u(buf, off) !== 0x04034b50) throw new Error("Local-File-Header beschädigt für " + entry.name);
+  var nameLen = readUInt16LE(buf, off+26);
+  var extraLen = readUInt16LE(buf, off+28);
+  var dataStart = off + 30 + nameLen + extraLen;
+  return buf.slice(dataStart, dataStart + entry.compSize);
+}
+async function inflateRawBrowser(compressedBytes){
+  var ds = new DecompressionStream("deflate-raw");
+  var writer = ds.writable.getWriter();
+  writer.write(compressedBytes);
+  writer.close();
+  var chunks = [];
+  var reader = ds.readable.getReader();
+  while(true){
+    var r = await reader.read();
+    if (r.done) break;
+    chunks.push(r.value);
+  }
+  var total = chunks.reduce(function(a,c){return a+c.length;},0);
+  var out = new Uint8Array(total);
+  var pos=0;
+  chunks.forEach(function(c){ out.set(c,pos); pos+=c.length; });
+  return out;
+}
+function isHeadingStyleVal(styleVal){
+  return !!styleVal && /^(heading|berschrift|title|titel)/i.test(styleVal);
+}
+function extractParagraphsFromDocxXml(xmlText){
+  var paraBlocks = xmlText.match(/<w:p\b[\s\S]*?<\/w:p>/g) || [];
+  var out = [];
+  paraBlocks.forEach(function(block){
+    var styleMatch = block.match(/<w:pStyle\s+w:val="([^"]*)"/);
+    var styleVal = styleMatch ? styleMatch[1] : null;
+    if (styleVal && /^Verzeichnis/i.test(styleVal)) return;
+    var textMatches = block.match(/<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>/g) || [];
+    var text = textMatches.map(function(t){
+      var m = t.match(/<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>/);
+      return m ? m[1] : "";
+    }).join("");
+    text = text.replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&apos;/g,"'");
+    text = text.replace(/\s+/g," ").trim();
+    if (text.length===0) return;
+    if (/^inhaltsverzeichnis$/i.test(text)) return;
+    out.push({heading: isHeadingStyleVal(styleVal), text: text});
+  });
+  return out;
+}
+function buildCorpusFromDocxParagraphs(paras){
+  var lines = [];
+  var sawHeading = false;
+  paras.forEach(function(p){
+    if (p.heading){ lines.push(""); lines.push("## " + p.text); sawHeading = true; }
+    else { lines.push(p.text); lines.push(""); }
+  });
+  var text = lines.join("\n");
+  if (!sawHeading){ text = "## Hochgeladenes Dokument\n" + text; }
+  else if (!/^\s*##/.test(text.trim())){ text = "## Titelbereich (Dokumentkopf)\n" + text; }
+  return text.trim() + "\n";
+}
+async function extractDocxCorpus(arrayBuffer){
+  var buf = new Uint8Array(arrayBuffer);
+  var entries = listZipEntries(buf);
+  var docEntry = entries.filter(function(e){ return e.name === "word/document.xml"; })[0];
+  if (!docEntry) throw new Error("word/document.xml nicht in der Datei gefunden — ist das eine gültige .docx-Datei?");
+  var compData = getEntryData(buf, docEntry);
+  var xmlBytes = docEntry.method === 8 ? await inflateRawBrowser(compData) : compData;
+  var xmlText = new TextDecoder("utf-8").decode(xmlBytes);
+  var paras = extractParagraphsFromDocxXml(xmlText);
+  return buildCorpusFromDocxParagraphs(paras);
+}
+
+function loadPdfJs(){
+  if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+  return new Promise(function(resolve, reject){
+    var s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js";
+    s.onload = function(){
+      try{
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+        resolve(window.pdfjsLib);
+      }catch(e){ reject(e); }
+    };
+    s.onerror = function(){ reject(new Error("PDF.js konnte nicht geladen werden (keine Internetverbindung?). Bitte Text alternativ per Copy-Paste einfügen.")); };
+    document.head.appendChild(s);
+  });
+}
+async function extractPdfCorpus(arrayBuffer){
+  var pdfjsLib = await loadPdfJs();
+  var pdf = await pdfjsLib.getDocument({data:arrayBuffer}).promise;
+  var lines = [];
+  for (var p=1; p<=pdf.numPages; p++){
+    var page = await pdf.getPage(p);
+    var content = await page.getTextContent();
+    var pageText = content.items.map(function(it){ return it.str; }).join(" ");
+    pageText = pageText.replace(/\s+/g," ").trim();
+    lines.push("## Seite " + p);
+    lines.push(pageText);
+    lines.push("");
+  }
+  return lines.join("\n");
+}
+
+function handleFileUpload(file){
+  var status = document.getElementById("uploadStatus");
+  var ext = (file.name.split(".").pop() || "").toLowerCase();
+  status.textContent = "⏳ Lese " + file.name + " …";
+  if (ext === "txt" || ext === "md"){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      document.getElementById("corpus").value = e.target.result;
+      safeSet("frg_corpus", e.target.result);
+      status.textContent = "✓ " + file.name + " geladen.";
+      resetResultsAfterCorpusChange();
+    };
+    reader.onerror = function(){ status.textContent = "✗ Datei konnte nicht gelesen werden."; };
+    reader.readAsText(file, "utf-8");
+  } else if (ext === "docx"){
+    if (typeof DecompressionStream === "undefined"){
+      status.textContent = "✗ Dieser Browser unterstützt keine .docx-Extraktion (DecompressionStream fehlt). Bitte als .txt einfügen.";
+      return;
+    }
+    var reader2 = new FileReader();
+    reader2.onload = function(e){
+      extractDocxCorpus(e.target.result).then(function(corpusText){
+        document.getElementById("corpus").value = corpusText;
+        safeSet("frg_corpus", corpusText);
+        status.textContent = "✓ " + file.name + " extrahiert.";
+        resetResultsAfterCorpusChange();
+      }).catch(function(err){
+        status.textContent = "✗ Konnte .docx nicht lesen: " + err.message;
+      });
+    };
+    reader2.onerror = function(){ status.textContent = "✗ Datei konnte nicht gelesen werden."; };
+    reader2.readAsArrayBuffer(file);
+  } else if (ext === "pdf"){
+    var reader3 = new FileReader();
+    reader3.onload = function(e){
+      status.textContent = "⏳ Lade PDF-Bibliothek und lese Seiten …";
+      extractPdfCorpus(e.target.result).then(function(corpusText){
+        document.getElementById("corpus").value = corpusText;
+        safeSet("frg_corpus", corpusText);
+        status.textContent = "✓ " + file.name + " extrahiert — Abschnittsgrenzen ggf. von Hand nachschärfen.";
+        resetResultsAfterCorpusChange();
+      }).catch(function(err){
+        status.textContent = "✗ Konnte .pdf nicht lesen: " + err.message;
+      });
+    };
+    reader3.onerror = function(){ status.textContent = "✗ Datei konnte nicht gelesen werden."; };
+    reader3.readAsArrayBuffer(file);
+  } else {
+    status.textContent = "✗ Nicht unterstütztes Format. Bitte .txt, .md, .docx oder .pdf.";
+  }
+}
+function resetResultsAfterCorpusChange(){
+  state.results = {};
+  state.done = {};
+  renderPillnav();
+  renderMethodCard();
+  renderResults();
+}
+
+/* ============================================================
+   11) INIT
+   ============================================================ */
+function init(){
+  var stored = safeGet("frg_corpus");
+  document.getElementById("corpus").value = stored || DEFAULT_CORPUS;
+  document.getElementById("corpus").addEventListener("input", function(e){
+    safeSet("frg_corpus", e.target.value);
+  });
+  document.getElementById("fileUpload").addEventListener("change", function(e){
+    if (e.target.files && e.target.files[0]) handleFileUpload(e.target.files[0]);
+  });
+  document.getElementById("gesamtToggle").addEventListener("click", toggleGesamt);
+  document.getElementById("resetCorpusBtn").addEventListener("click", resetCorpus);
+  document.getElementById("resetAllBtn").addEventListener("click", resetAll);
+  openPromptFooterInit();
+  renderPillnav();
+  renderMethodCard();
+  renderResults();
+}
+init();
+
+})();
+</script>
+</body>
+</html>
