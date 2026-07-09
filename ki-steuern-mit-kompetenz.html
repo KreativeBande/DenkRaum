@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mit Kompetenz KI steuern, nicht hoffen · GPM Karlsruhe</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f5f6fa;--bg3:#eef0f7;
+  --text:#111111;--muted:#555e7a;--faint:#8890aa;
+  --border:#d0d4e0;--border2:#b0b8d0;
+  --accent:#5b48e8;--accent2:#0d9e82;
+  --bad:#d63b3b;--bad-bg:#fff0f0;--bad-border:#f5b8b8;
+  --good:#1a9c6a;--good-bg:#f0faf6;--good-border:#9ddec6;
+  --blue:#2563eb;--blue-bg:#eff6ff;
+  --amber:#b45309;--amber-bg:#fffbeb;
+  --purple:#7c3aed;--purple-bg:#f5f3ff;
+  --teal:#0f766e;--teal-bg:#f0fdfa;
+  --coral:#be185d;--coral-bg:#fdf2f8;
+  --sans:system-ui,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono','Courier New',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:17px;line-height:1.6;min-height:100vh}
+
+/* ── HERO ── */
+.hero{background:var(--accent);color:#fff;padding:20px 40px 16px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.hero-left{flex:1;min-width:240px}
+.hero-back{display:inline-block;font-size:14px;font-weight:600;color:#fff;opacity:.8;text-decoration:none;margin-bottom:10px}
+.hero-back:hover{opacity:1;text-decoration:underline}
+.hero-eye{font-size:14px;letter-spacing:.14em;text-transform:uppercase;opacity:.75;margin-bottom:6px;font-weight:500}
+.hero-title{font-size:clamp(20px,3vw,32px);font-weight:800;letter-spacing:-.02em;line-height:1.2;margin-bottom:0}
+.hero-title span{color:#ffd166}
+.hero-sub{font-size:14px;opacity:.85;margin-top:4px}
+.hero-sig{text-align:right;flex-shrink:0}
+.hero-sig-name{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.01em}
+.hero-sig-url{font-size:14px;color:#ffd166;font-weight:600;text-decoration:none;opacity:.95}
+.hero-sig-url:hover{opacity:1;text-decoration:underline}
+
+/* ── MAIN TABS ── */
+.main-nav{display:flex;background:var(--bg);border-bottom:2px solid var(--border);padding:0 24px;gap:2px;overflow-x:auto}
+.main-tab{background:none;border:none;border-bottom:3px solid transparent;padding:16px 22px;font-size:15px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s;margin-bottom:-2px;font-family:var(--sans);display:flex;align-items:center;gap:8px}
+.main-tab:hover{color:var(--accent)}
+.main-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.main-tab .tab-icon{font-size:18px}
+
+/* ── SECTIONS ── */
+.section{display:none}.section.on{display:block}
+.inner{max-width:1400px;width:90%;margin:0 auto;padding:32px 32px 64px}
+
+/* ── PANEL HEADER ── */
+.ph{margin-bottom:28px}
+.ph-eye{font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.ph-title{font-size:26px;font-weight:800;color:var(--text);letter-spacing:-.01em;margin-bottom:8px}
+.ph-desc{font-size:16px;color:var(--muted);max-width:640px;line-height:1.65}
+
+/* ── OVERVIEW GRID ── */
+.ov-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
+.ov-card{background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:22px 20px;cursor:pointer;transition:border-color .15s,transform .15s}
+.ov-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.ov-num{font-size:30px;font-weight:900;color:var(--accent);margin-bottom:6px}
+.ov-title{font-size:18px;font-weight:700;color:var(--text);margin-bottom:5px}
+.ov-desc{font-size:14px;color:var(--muted);line-height:1.5}
+
+/* ── SUB TABS ── */
+.sub-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.sub-tab{background:var(--bg);border:2px solid var(--border);border-radius:8px;padding:9px 14px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;font-family:var(--sans)}
+.sub-tab:hover{border-color:var(--accent);color:var(--accent)}
+.sub-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* ── STEP RAIL ── */
+.rail{display:flex;align-items:center;gap:0;margin-bottom:24px;background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:14px 20px;overflow-x:auto}
+.rnode{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;min-width:70px;position:relative;flex:1}
+.rnode:not(:last-child)::after{content:'';position:absolute;right:-1px;top:14px;width:calc(100% - 20px);height:2px;background:var(--border);left:50%;z-index:0}
+.rdot{width:28px;height:28px;border-radius:50%;background:var(--bg2);border:2px solid var(--border);z-index:1;transition:all .2s;flex-shrink:0}
+.rlbl{font-size:14px;font-weight:600;color:var(--muted);text-align:center;line-height:1.3}
+.rnode.active .rdot{background:var(--accent);border-color:var(--accent)}
+.rnode.active .rlbl{color:var(--accent)}
+.rnode.done .rdot{background:var(--good);border-color:var(--good)}
+
+/* ── SLIDE ── */
+.slide{display:none}.slide.on{display:block}
+
+/* ── CARD ── */
+.card{background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:22px 24px;margin-bottom:16px}
+.card-label{font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+
+/* ── COMPARE ── */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.cmp-bad{background:var(--bad-bg);border:2px solid var(--bad-border);border-radius:12px;padding:20px}
+.cmp-good{background:var(--good-bg);border:2px solid var(--good-border);border-radius:12px;padding:20px}
+.clabel{font-size:14px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px}
+.cmp-bad .clabel{color:var(--bad)}
+.cmp-good .clabel{color:var(--good)}
+.prompt-box{font-family:var(--mono);font-size:14px;color:var(--text);background:rgba(0,0,0,.05);border-radius:8px;padding:12px 14px;margin-bottom:10px;line-height:1.55;white-space:pre-wrap}
+.reason{font-size:14px;color:var(--muted);line-height:1.55}
+.reason strong{color:var(--text);font-weight:600}
+
+/* ── TOKENS ── */
+.tok-row{display:flex;flex-wrap:wrap;gap:8px;padding:20px;background:var(--bg2);border-radius:10px;border:2px solid var(--border);margin-bottom:12px}
+.tok{display:inline-flex;align-items:center;padding:6px 13px;border-radius:7px;font-family:var(--mono);font-size:14px;font-weight:700;cursor:default;transition:transform .15s}
+.tok:hover{transform:translateY(-2px)}
+.tg{background:#f1f5f9;border:2px solid #94a3b8;color:#334155}
+.tp{background:#ede9fe;border:2px solid #8b5cf6;color:#4c1d95}
+.ta{background:#fef3c7;border:2px solid #f59e0b;color:#78350f}
+.tt{background:#d1fae5;border:2px solid #10b981;color:#064e3b}
+.tb{background:#dbeafe;border:2px solid #3b82f6;color:#1e3a8a}
+.tr{background:#ffe4e6;border:2px solid #f43f5e;color:#881337}
+.tok-legend{font-size:14px;color:var(--muted);margin-top:8px;display:flex;flex-wrap:wrap;gap:10px}
+.tleg{display:flex;align-items:center;gap:5px;font-size:14px}
+.tleg-dot{width:10px;height:10px;border-radius:50%}
+
+/* ── PROB BARS ── */
+.prob-list{display:flex;flex-direction:column;gap:14px;padding:20px;background:var(--bg2);border-radius:10px;border:2px solid var(--border)}
+.prob-item{display:flex;flex-direction:column;gap:6px}
+.prob-label{font-size:15px;font-weight:600;color:var(--text)}
+.prob-row{display:flex;align-items:center;gap:12px}
+.prob-bar-wrap{flex:1;background:var(--bg3);border-radius:8px;height:28px;overflow:hidden;position:relative}
+.prob-bar{display:block;height:100%;border-radius:8px;transition:width .7s ease;width:0%}
+.prob-pct{font-size:15px;font-weight:800;color:var(--text);min-width:42px;text-align:right;flex-shrink:0}
+
+/* ── RISKS ── */
+.risk-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.risk-item{background:var(--bad-bg);border:2px solid var(--bad-border);border-radius:9px;padding:12px 14px}
+.risk-title{font-size:14px;font-weight:700;color:var(--bad);margin-bottom:4px}
+.risk-desc{font-size:14px;color:var(--muted)}
+
+/* ── RESP ── */
+.resp-area{font-family:var(--mono);font-size:14px;line-height:1.7;color:var(--text);white-space:pre-wrap;min-height:80px;background:var(--bg2);border-radius:8px;padding:14px;border:2px solid var(--border)}
+.resp-placeholder{color:var(--faint);font-size:14px}
+.cursor::after{content:'▋';animation:blink .7s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ── FW PICKER ── */
+.fw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.fw-card{border:2px solid var(--border);border-radius:9px;padding:12px 14px;cursor:pointer;transition:all .15s;background:var(--bg)}
+.fw-card:hover{border-color:var(--accent)}
+.fw-card.sel{border-color:var(--accent);background:var(--purple-bg)}
+.fw-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
+.fw-desc{font-size:14px;color:var(--muted)}
+
+/* ── FW BREAKDOWN ── */
+.fw-breakdown{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.fw-part{background:var(--bg2);border-radius:8px;padding:12px 16px;display:flex;flex-direction:column;gap:4px}
+.fw-part-label{font-size:14px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.fw-part-text{font-family:var(--mono);font-size:14px;color:var(--text);white-space:pre-wrap;line-height:1.55}
+
+/* ── KEYWORD HIGHLIGHT ── */
+strong.kw{color:var(--bad);font-weight:800;background:#fff0f0;border-radius:3px;padding:0 2px}
+strong.kw-struct{color:var(--blue);font-weight:800;background:#eff6ff;border-radius:3px;padding:0 2px}
+
+/* ── GOOD TAG ── */
+.gtag{background:#d1fae5;border:1px solid #10b981;color:#064e3b;padding:4px 12px;border-radius:6px;font-size:14px;font-weight:700}
+
+/* ── BUTTONS ── */
+.btn-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+.btn{display:inline-flex;align-items:center;gap:7px;background:var(--bg);border:2px solid var(--border2);border-radius:8px;padding:10px 20px;font-size:15px;font-family:var(--sans);font-weight:700;cursor:pointer;color:var(--text);transition:background .15s,transform .1s}
+.btn:hover{background:var(--bg2)}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-accent{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-accent:hover{background:#4a38d0}
+.hint{font-size:14px;color:var(--faint);margin-left:auto}
+
+/* ── SPIDER CHART ── */
+.spider-wrap{background:var(--bg2);border-radius:10px;border:2px solid var(--border);padding:16px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.spider-legend{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.spider-leg-item{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600}
+.spider-leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.view-toggle{display:flex;gap:8px;margin-bottom:4px}
+.vbtn{background:var(--bg);border:2px solid var(--border);border-radius:7px;padding:7px 16px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--sans);color:var(--muted);transition:all .15s}
+.vbtn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* ── QUOTE ── */
+.quote{border-left:4px solid var(--accent);background:var(--purple-bg);border-radius:0 10px 10px 0;padding:16px 20px;margin-top:16px}
+.quote-main{font-size:16px;font-weight:700;color:var(--text);margin-bottom:5px}
+.quote-sub{font-size:14px;color:var(--muted)}
+
+/* ── STD CARDS (Websuch-Erklärer) ── */
+.std-info{background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:22px 24px;margin-bottom:16px}
+.std-tag{display:inline-block;font-size:14px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:4px 12px;border-radius:6px;margin-bottom:12px}
+.std-name{font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px}
+.std-desc{font-size:16px;color:var(--muted);margin-bottom:14px;line-height:1.6}
+.std-points{list-style:none;display:flex;flex-direction:column;gap:8px}
+.std-points li{font-size:15px;color:var(--text);display:flex;gap:10px;align-items:flex-start;line-height:1.5}
+.std-points li::before{content:'→';flex-shrink:0;font-weight:700;margin-top:1px}
+.bl-blue{border-left:4px solid #3b82f6}
+.bl-amber{border-left:4px solid #f59e0b}
+.bl-coral{border-left:4px solid #f43f5e}
+.bl-purple{border-left:4px solid #8b5cf6}
+.tag-blue{background:#dbeafe;color:#1e3a8a;border:1px solid #93c5fd}
+.tag-amber{background:#fef3c7;color:#78350f;border:1px solid #fcd34d}
+.tag-coral{background:#ffe4e6;color:#881337;border:1px solid #fda4af}
+.tag-purple{background:#ede9fe;color:#4c1d95;border:1px solid #c4b5fd}
+
+/* ── CHIP ROW ── */
+.chip-col{display:flex;flex-direction:column;gap:10px}
+.chip{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:10px;border:2px solid var(--border);background:var(--bg2);font-size:15px;transition:border-color .15s;cursor:default}
+.chip:hover{border-color:var(--accent2)}
+.chip-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.chip-title{color:var(--text);font-weight:700}
+.chip-domain{color:var(--muted);font-size:14px;font-family:var(--mono);margin-top:2px}
+
+/* ── ANSWER BOX ── */
+.answer-box{background:var(--purple-bg);border:2px solid #8b5cf6;border-radius:12px;padding:24px}
+.answer-box .alabel{font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.answer-box p{font-size:16px;color:var(--text);line-height:1.7}
+.answer-box .sources{font-size:14px;color:var(--muted);margin-top:12px;font-family:var(--mono)}
+
+/* ── STEP BADGE ── */
+.step-badge{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;border-radius:40px;padding:7px 20px 7px 7px;font-size:14px;font-weight:700;margin-bottom:18px}
+.sbn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800}
+
+/* ── FOOTER ── */
+footer{background:var(--bg2);border-top:2px solid var(--border);padding:24px 40px 32px;color:var(--muted)}
+.footer-sig{text-align:center;font-size:14px;margin-bottom:20px}
+.footer-details{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.footer-box{border:1px solid var(--border);border-radius:10px;background:var(--bg);overflow:hidden}
+.footer-summary{font-size:15px;font-weight:700;color:var(--text);padding:14px 20px;cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px}
+.footer-summary::-webkit-details-marker{display:none}
+.footer-box[open] .footer-summary{border-bottom:1px solid var(--border);background:var(--bg2)}
+.footer-content{padding:20px 24px}
+.footer-mono{font-family:var(--mono);font-size:14px;line-height:1.65;color:var(--text)}
+.footer-mono pre{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;white-space:pre-wrap;font-size:14px;line-height:1.6;margin-top:8px}
+.footer-sans{font-family:var(--sans);font-size:16px;line-height:1.7;color:var(--text)}
+.footer-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:15px}
+.footer-table th,.footer-table td{padding:8px 12px;border:1px solid var(--border);text-align:left}
+.footer-table th{background:var(--bg2);font-weight:700;color:var(--text)}
+.footer-table td:first-child{font-weight:600;color:var(--accent);white-space:nowrap}
+
+@media(max-width:640px){
+  .hero{padding:32px 20px 28px}
+  .inner{padding:24px 16px 48px}
+  .cmp{grid-template-columns:1fr}
+  .ov-grid{grid-template-columns:1fr}
+  .fw-grid{grid-template-columns:1fr 1fr}
+  .risk-grid{grid-template-columns:1fr}
+  .main-tab{padding:13px 14px;font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  .tok:hover,.ov-card:hover{transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-left">
+    <a class="hero-back" href="./index.html">← Zurück zur Startseite</a>
+    <div class="hero-eye">GPM Karlsruhe · AI4RE · Live-Demonstrator</div>
+    <h1 class="hero-title">Mit Kompetenz KI steuern, <span>nicht hoffen</span></h1>
+    <p class="hero-sub">Wie Requirements-Denken Prompt-Qualität sichert — und wie ein LLM im Web sucht.</p>
+  </div>
+  <div class="hero-sig">
+    <div class="hero-sig-name">Michaela Kühn</div>
+    <a class="hero-sig-url" href="https://www.michaela-kuehn.com" target="_blank">www.michaela-kuehn.com</a>
+  </div>
+</div>
+
+<nav class="main-nav">
+  <button class="main-tab active" onclick="switchMain('demo')"><span class="tab-icon">▶</span> Prompt-Demonstrator</button>
+  <button class="main-tab" onclick="switchMain('web')"><span class="tab-icon">🌐</span> Wie KI im Web sucht</button>
+  <button class="main-tab" onclick="switchMain('std')"><span class="tab-icon">📋</span> Standards &amp; Compliance</button>
+</nav>
+
+<!-- ════════════════════════════════════════════════
+     SECTION 1: PROMPT-DEMONSTRATOR
+════════════════════════════════════════════════ -->
+<div id="sec-demo" class="section on">
+<div class="inner">
+
+  <div class="ph">
+    <div class="ph-eye">Schritt-für-Schritt-Demonstrator</div>
+    <div class="ph-title">Prompt-Qualität live erleben</div>
+    <div class="ph-desc">Wähle ein Beispiel und gehe die 7 Schritte durch. Du siehst, wie ein vager Prompt scheitert — und wie derselbe Prompt mit einem Framework zur präzisen Antwort führt.</div>
+  </div>
+
+  <!-- Beispiel-Picker -->
+  <div class="sub-nav" id="exPicker"></div>
+
+  <!-- Step Rail -->
+  <div class="rail" id="demoRail">
+    <div class="rnode active" onclick="goDemo(0)"><div class="rdot"></div><div class="rlbl">Schlechter<br>Prompt</div></div>
+    <div class="rnode" onclick="goDemo(1)"><div class="rdot"></div><div class="rlbl">Tokeni-<br>sierung</div></div>
+    <div class="rnode" onclick="goDemo(2)"><div class="rdot"></div><div class="rlbl">Wahr-<br>scheinl.</div></div>
+    <div class="rnode" onclick="goDemo(3)"><div class="rdot"></div><div class="rlbl">Antwort<br>(schlecht)</div></div>
+    <div class="rnode" onclick="goDemo(4)"><div class="rdot"></div><div class="rlbl">Guter<br>Prompt</div></div>
+    <div class="rnode" onclick="goDemo(5)"><div class="rdot"></div><div class="rlbl">Antwort<br>(gut)</div></div>
+    <div class="rnode" onclick="goDemo(6)"><div class="rdot"></div><div class="rlbl">Ver-<br>gleich</div></div>
+  </div>
+
+  <div id="ds0" class="slide on"></div>
+  <div id="ds1" class="slide"></div>
+  <div id="ds2" class="slide"></div>
+  <div id="ds3" class="slide"></div>
+  <div id="ds4" class="slide"></div>
+  <div id="ds5" class="slide"></div>
+  <div id="ds6" class="slide"></div>
+
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     SECTION 2: WIE KI IM WEB SUCHT
+════════════════════════════════════════════════ -->
+<div id="sec-web" class="section">
+<div class="inner">
+
+  <div class="ph">
+    <div class="ph-eye">Extrareise</div>
+    <div class="ph-title">Wie ein LLM nach der Tokenisierung im Web sucht</div>
+    <div class="ph-desc">Von deiner Frage bis zur Antwort — Schritt für Schritt, mit guten und schlechten Beispielen.</div>
+  </div>
+
+  <!-- Sub-Tabs -->
+  <div class="sub-nav">
+    <button class="sub-tab active" onclick="showWeb('uebersicht')">Übersicht</button>
+    <button class="sub-tab" onclick="showWeb('w1')">① Prompt</button>
+    <button class="sub-tab" onclick="showWeb('w2')">② Tokenisierung</button>
+    <button class="sub-tab" onclick="showWeb('w3')">③ Suchanfrage</button>
+    <button class="sub-tab" onclick="showWeb('w4')">④ Quellen</button>
+    <button class="sub-tab" onclick="showWeb('w5')">⑤ Antwort</button>
+    <button class="sub-tab" onclick="showWeb('w6')">Compliance</button>
+  </div>
+
+  <!-- Übersicht -->
+  <div id="wp-uebersicht" class="slide on">
+    <div class="ov-grid">
+      <div class="ov-card" onclick="showWeb('w1')"><div class="ov-num">①</div><div class="ov-title">Prompt</div><div class="ov-desc">Du gibst deine Frage ein. Qualität entscheidet über alles Folgende.</div></div>
+      <div class="ov-card" onclick="showWeb('w2')"><div class="ov-num">②</div><div class="ov-title">Tokenisierung</div><div class="ov-desc">Das Modell zerlegt Text in Wortbausteine — die Grundlage jeder KI-Verarbeitung.</div></div>
+      <div class="ov-card" onclick="showWeb('w3')"><div class="ov-num">③</div><div class="ov-title">Suchanfrage</div><div class="ov-desc">Aus Tokens entsteht eine präzise Websuche — oder eine nutzlose.</div></div>
+      <div class="ov-card" onclick="showWeb('w4')"><div class="ov-num">④</div><div class="ov-title">Quellen abrufen</div><div class="ov-desc">Ergebnisse kommen zurück — das Modell bewertet und wählt die besten.</div></div>
+      <div class="ov-card" onclick="showWeb('w5')"><div class="ov-num">⑤</div><div class="ov-title">Antwort</div><div class="ov-desc">Informationen werden zu einer strukturierten Antwort zusammengefügt.</div></div>
+      <div class="ov-card" onclick="showWeb('w6')"><div class="ov-num">⚖</div><div class="ov-title">Compliance</div><div class="ov-desc">ISO 25010, ISO 27001, DSGVO und EU AI Act begleiten jeden Schritt.</div></div>
+    </div>
+  </div>
+
+  <!-- W1: Prompt -->
+  <div id="wp-w1" class="slide">
+    <div class="step-badge"><div class="sbn">1</div>Schritt 1 von 5</div>
+    <div class="ph-title" style="margin-bottom:8px">Dein Prompt — die Eingabe</div>
+    <p class="ph-desc" style="margin-bottom:24px">Je klarer dein Prompt, desto besser die Antwort. Das ist der wichtigste Moment im gesamten Prozess.</p>
+    <div class="cmp">
+      <div class="cmp-bad"><div class="clabel">✗ Schlechter Prompt</div><div class="prompt-box">„Sag mir was über KI"</div><p class="reason"><strong>Problem:</strong> Kein Thema, kein Kontext, kein Ziel. Das Modell weiß nicht, was du brauchst.</p></div>
+      <div class="cmp-good"><div class="clabel">✓ Guter Prompt</div><div class="prompt-box">„Erkläre ISO 25010 Qualitätskriterien für KI-Systeme, einfach erklärt, mit Beispielen"</div><p class="reason"><strong>Warum besser:</strong> Konkretes Thema, klares Ziel, gewünschtes Format angegeben.</p></div>
+    </div>
+    <div class="quote"><div class="quote-main">„Wer Anforderungen beherrscht, kann auch besser prompten."</div><div class="quote-sub">Beide folgen derselben Logik: Präzision ist nicht optional.</div></div>
+  </div>
+
+  <!-- W2: Tokenisierung -->
+  <div id="wp-w2" class="slide">
+    <div class="step-badge"><div class="sbn">2</div>Schritt 2 von 5</div>
+    <div class="ph-title" style="margin-bottom:8px">Tokenisierung — Text wird zerlegt</div>
+    <p class="ph-desc" style="margin-bottom:24px">Das Modell zerschneidet deinen Text in Wortbausteine — sogenannte <strong>Tokens</strong>. Ein Wort kann in mehrere Teile aufgeteilt werden.</p>
+    <div class="card">
+      <div class="card-label">Beispiel-Prompt → Tokens</div>
+      <div class="tok-row">
+        <span class="tok tp">Erkl</span><span class="tok tp">äre</span>
+        <span class="tok tb">ISO</span>
+        <span class="tok tt">250</span><span class="tok tt">10</span>
+        <span class="tok ta">Qual</span><span class="tok ta">ität</span>
+        <span class="tok tr">Kriter</span><span class="tok tr">ien</span>
+        <span class="tok tg">für</span><span class="tok tg">KI</span><span class="tok tg">-</span>
+        <span class="tok tp">System</span><span class="tok tp">e</span>
+      </div>
+      <div class="tok-legend">
+        <span class="tleg"><span class="tleg-dot" style="background:#8b5cf6"></span>Verb / Aktion</span>
+        <span class="tleg"><span class="tleg-dot" style="background:#3b82f6"></span>Standard-Name</span>
+        <span class="tleg"><span class="tleg-dot" style="background:#10b981"></span>Norm-Nummer</span>
+        <span class="tleg"><span class="tleg-dot" style="background:#f59e0b"></span>Qualitätsbegriff</span>
+        <span class="tleg"><span class="tleg-dot" style="background:#f43f5e"></span>Zielwort</span>
+        <span class="tleg"><span class="tleg-dot" style="background:#94a3b8"></span>Verbindungswort</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- W3: Suchanfrage -->
+  <div id="wp-w3" class="slide">
+    <div class="step-badge"><div class="sbn">3</div>Schritt 3 von 5</div>
+    <div class="ph-title" style="margin-bottom:8px">Suchanfrage erzeugen</div>
+    <p class="ph-desc" style="margin-bottom:24px">Aus den Tokens baut das Modell eine Suchanfrage für das Web. Auch hier: präzise Begriffe liefern deutlich bessere Ergebnisse.</p>
+    <div class="cmp">
+      <div class="cmp-bad"><div class="clabel">✗ Schlechte Suchanfrage</div><div class="prompt-box">KI Sachen</div><p class="reason"><strong>Problem:</strong> Zu vage. Millionen irrelevante Treffer. Das Modell findet keine nützlichen Quellen.</p></div>
+      <div class="cmp-good"><div class="clabel">✓ Gute Suchanfrage</div><div class="prompt-box">ISO 25010 AI quality criteria software 2024 explained</div><p class="reason"><strong>Warum besser:</strong> Präzise Englisch-Begriffe, Jahreszahl — trifft genau die richtigen Quellen.</p></div>
+    </div>
+  </div>
+
+  <!-- W4: Quellen -->
+  <div id="wp-w4" class="slide">
+    <div class="step-badge"><div class="sbn">4</div>Schritt 4 von 5</div>
+    <div class="ph-title" style="margin-bottom:8px">Web-Suche &amp; Quellenauswahl</div>
+    <p class="ph-desc" style="margin-bottom:24px">Suchergebnisse kommen zurück. Das Modell liest, bewertet und wählt die relevantesten Quellen aus.</p>
+    <div class="chip-col">
+      <div class="chip"><span class="chip-dot" style="background:#1a9c6a"></span><div><div class="chip-title">ISO 25010 Standard</div><div class="chip-domain">iso.org</div></div></div>
+      <div class="chip"><span class="chip-dot" style="background:#2563eb"></span><div><div class="chip-title">Software Quality Guide</div><div class="chip-domain">bsi-group.com</div></div></div>
+      <div class="chip"><span class="chip-dot" style="background:#7c3aed"></span><div><div class="chip-title">Qualitätsmerkmale KI — Erklärung</div><div class="chip-domain">wikipedia.org</div></div></div>
+      <div class="chip"><span class="chip-dot" style="background:#b45309"></span><div><div class="chip-title">AI Quality Framework 2024</div><div class="chip-domain">arxiv.org</div></div></div>
+      <div class="chip"><span class="chip-dot" style="background:#be185d"></span><div><div class="chip-title">ENISA AI Guidelines</div><div class="chip-domain">enisa.europa.eu</div></div></div>
+    </div>
+  </div>
+
+  <!-- W5: Antwort -->
+  <div id="wp-w5" class="slide">
+    <div class="step-badge"><div class="sbn">5</div>Schritt 5 von 5</div>
+    <div class="ph-title" style="margin-bottom:8px">Antwort zusammenbauen</div>
+    <p class="ph-desc" style="margin-bottom:24px">Das Modell kombiniert die besten Quellen zu einer strukturierten, verständlichen Antwort — mit Quellenangabe.</p>
+    <div class="answer-box">
+      <div class="alabel">Finale Antwort (Beispiel)</div>
+      <p>ISO/IEC 25010:2023 definiert <strong>neun Qualitätsmerkmale</strong> für Software und KI-Systeme: Functional Suitability, Performance Efficiency, Compatibility, Interaction Capability, Reliability, Security, Maintainability, Flexibility und Portability. Für KI ist besonders <strong>Explainability</strong> (Erklärbarkeit, unter Interaction Capability) und <strong>Autonomy</strong> wichtig — das System muss begründen, wie es zu seiner Antwort gelangt. <em>Status: in Kraft seit Februar 2023.</em></p>
+      <p class="sources">Quellen: iso.org · bsi-group.com · enisa.europa.eu</p>
+    </div>
+  </div>
+
+  <!-- W6: Compliance -->
+  <div id="wp-w6" class="slide">
+    <div class="ph-title" style="margin-bottom:8px">Vier Leitplanken auf jedem Schritt</div>
+    <p class="ph-desc" style="margin-bottom:24px">Diese Frameworks begleiten den gesamten Prozess — von der Eingabe bis zur Antwort.</p>
+    <div class="std-info bl-blue">
+      <span class="std-tag tag-blue">ISO/IEC 25010:2023</span>
+      <div class="std-name">Software-Qualität (9 Merkmale, Feb. 2023)</div>
+      <p class="std-desc">ISO/IEC 25010:2023 definiert 9 Qualitätsmerkmale — neu: Interaction Capability (inkl. Explainability) und Flexibility. In Kraft seit Februar 2023.</p>
+      <ul class="std-points"><li>Functional Suitability: Antworten korrekt und vollständig</li><li>Performance Efficiency: effizient, ohne unnötige Umwege</li><li>Interaction Capability / Explainability: KI muss Entscheidungen begründen können</li><li>Flexibility (neu): System ohne Code-Änderung auf anderer Infrastruktur lauffähig</li></ul>
+    </div>
+    <div class="std-info bl-amber">
+      <span class="std-tag tag-amber">ISO 27001</span>
+      <div class="std-name">Informationssicherheit</div>
+      <p class="std-desc">Schützt alle Daten auf dem Weg vom Nutzer ins Web und zurück.</p>
+      <ul class="std-points"><li>Suchanfragen werden verschlüsselt übertragen (HTTPS)</li><li>Vertrauliche Eingaben verlassen nicht den sicheren Bereich</li><li>Zugriff auf externe Quellen wird protokolliert</li></ul>
+    </div>
+    <div class="std-info bl-coral">
+      <span class="std-tag tag-coral">DSGVO</span>
+      <div class="std-name">Datenschutz</div>
+      <p class="std-desc">Verhindert, dass persönliche Daten unkontrolliert ins Internet fließen.</p>
+      <ul class="std-points"><li>Namen, E-Mails oder IDs dürfen nicht in Suchanfragen landen</li><li>Du hast das Recht zu wissen, welche Daten verarbeitet werden</li><li>Kein Tracking der Suchhistorie ohne Einwilligung</li></ul>
+    </div>
+    <div class="std-info bl-purple">
+      <span class="std-tag tag-purple">EU AI Act</span>
+      <div class="std-name">KI-Regulierung</div>
+      <p class="std-desc">Verlangt Transparenz, Erklärbarkeit und Fairness bei KI-Systemen.</p>
+      <ul class="std-points"><li>Die KI muss erklären, wie sie zur Antwort kommt</li><li>Nutzer müssen wissen, dass sie mit einem KI-System sprechen</li><li>Hochrisiko-KI braucht menschliche Aufsicht</li></ul>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     SECTION 3: STANDARDS & COMPLIANCE (mit Token-Demo)
+════════════════════════════════════════════════ -->
+<div id="sec-std" class="section">
+<div class="inner">
+
+  <div class="ph">
+    <div class="ph-eye">Standards &amp; Anforderungen</div>
+    <div class="ph-title">Warum Normen präzises Schreiben verlangen</div>
+    <div class="ph-desc">ISO 25010, ISO 27001, DSGVO und IEEE 29148 fordern dasselbe wie ein guter Prompt: klare Sprache, messbare Kriterien, keine Floskeln. Wähle einen Standard und sieh den Beweis.</div>
+  </div>
+
+  <div class="sub-nav" id="stdPicker"></div>
+
+  <!-- Standard Step Rail -->
+  <div class="rail" id="stdRail">
+    <div class="rnode active" onclick="goStd(0)"><div class="rdot"></div><div class="rlbl">Schlechte<br>Anforderung</div></div>
+    <div class="rnode" onclick="goStd(1)"><div class="rdot"></div><div class="rlbl">Tokeni-<br>sierung</div></div>
+    <div class="rnode" onclick="goStd(2)"><div class="rdot"></div><div class="rlbl">Wahr-<br>scheinl.</div></div>
+    <div class="rnode" onclick="goStd(3)"><div class="rdot"></div><div class="rlbl">KI-Antwort<br>(schwach)</div></div>
+    <div class="rnode" onclick="goStd(4)"><div class="rdot"></div><div class="rlbl">Gute<br>Anforderung</div></div>
+    <div class="rnode" onclick="goStd(5)"><div class="rdot"></div><div class="rlbl">KI-Antwort<br>(präzise)</div></div>
+    <div class="rnode" onclick="goStd(6)"><div class="rdot"></div><div class="rlbl">Ver-<br>gleich</div></div>
+  </div>
+
+  <div id="ss0" class="slide on"></div>
+  <div id="ss1" class="slide"></div>
+  <div id="ss2" class="slide"></div>
+  <div id="ss3" class="slide"></div>
+  <div id="ss4" class="slide"></div>
+  <div id="ss5" class="slide"></div>
+  <div id="ss6" class="slide"></div>
+
+</div>
+</div>
+
+<footer>
+  <div class="footer-sig">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" style="color:var(--accent);font-weight:600;text-decoration:none">www.michaela-kuehn.com</a>
+    &nbsp;·&nbsp; GPM Karlsruhe · AI4RE · ISO/IEC 25010:2023 · ISO 27001 · DSGVO · EU AI Act · IEEE 29148 · NIS 2 · EU AI Act · Digitale Souveränität
+  </div>
+
+  <div class="footer-details">
+
+    <details class="footer-box">
+      <summary class="footer-summary">📄 Systemprompt — Technische Dokumentation</summary>
+      <div class="footer-content footer-mono">
+        <p><strong>Kontext:</strong> Dieses Tool arbeitet vollständig offline. Es gibt keinen Live-API-Aufruf an ein KI-Modell. Alle Antworten sind vorskriptiert und werden per Tipp-Animation simuliert.</p>
+        <p style="margin-top:12px"><strong>Simulierter Systemprompt (würde bei Online-Betrieb gesendet):</strong></p>
+        <pre>Du bist ein erfahrener Requirements Engineer und Prompt-Experte.
+
+Aufgabe: Vergleiche den schlechten und den guten Prompt zu einem
+Anwendungsfall und erkläre in 3 Sätzen, warum der gute Prompt
+zu besseren KI-Ergebnissen führt.
+
+Format:
+- Satz 1: Was fehlt im schlechten Prompt (konkret benennen)
+- Satz 2: Was der gute Prompt hinzufügt (Framework-Elemente)
+- Satz 3: Welches Qualitätskriterium (ISO 25010 / IEEE 29148 /
+  DSGVO / EU AI Act) das stützt
+
+Eingrenzung: Keine Allgemeinaussagen. Keine Floskeln.
+Jeder Satz muss testbar sein.</pre>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">📚 Handbuch — Didaktische Erklärung (PromptSchule-Methodik)</summary>
+      <div class="footer-content footer-sans">
+        <p><strong>Framework: RTF / PACT / CO-STAR / TRACE / RISEN / STAKE</strong> — je nach gewähltem Beispiel und Framework-Karte.</p>
+
+        <p style="margin-top:14px"><strong>Die 5 Dimensionen im Vergleich</strong></p>
+        <table class="footer-table">
+          <tr><th>Dimension</th><th>Schlechter Prompt</th><th>Guter Prompt</th></tr>
+          <tr><td>Rolle</td><td>Fehlt komplett</td><td>Explizit benannt (z.B. „Senior QA Engineer")</td></tr>
+          <tr><td>Aufgabe</td><td>Vage Absicht</td><td>Konkrete Handlungsanweisung mit Verb</td></tr>
+          <tr><td>Kontext</td><td>Kein Stakeholder, kein System</td><td>System, Umgebung, Einschränkungen klar</td></tr>
+          <tr><td>Format</td><td>Beliebig</td><td>Explizit (Gherkin, TRACE, Tabellarisch …)</td></tr>
+          <tr><td>Eingrenzung</td><td>Keine Grenzen</td><td>Scope, Budget, Zeitraum, Ausschlüsse</td></tr>
+        </table>
+
+        <p style="margin-top:14px"><strong>Das eine Prinzip, das hier zählt:</strong><br>
+        Ein Prompt ist eine Anforderung an die KI. Wer Requirements Engineering beherrscht — eindeutig, vollständig, testbar, konsistent (IEEE 29148) — schreibt automatisch bessere Prompts. Der Umkehrschluss gilt genauso: Wer gut promptet, versteht instinktiv, was eine gute Anforderung ausmacht.</p>
+
+        <p style="margin-top:14px"><strong>Nachbau-Tipp:</strong><br>
+        Nimm einen eigenen schlechten Prompt aus dem Arbeitsalltag. Analysiere ihn entlang der 5 Dimensionen: Was fehlt? Welches Framework passt? Schreibe ihn neu — und teste die Antwort-Qualität. Das ist Prompt-Werkstatt in der Praxis.</p>
+      </div>
+    </details>
+
+  </div>
+</footer>
+
+<script>
+// ════════════════════════════════════════════════
+// DATA: DEMO EXAMPLES
+// ════════════════════════════════════════════════
+// ── Keyword highlighting ──────────────────────────────────────────
+// keywords: array of strings to mark bold+red in the prompt text
+function highlightKeywords(text, keywords){
+  if(!keywords||!keywords.length) return escHtml(text);
+  // Escape HTML first, then mark keywords
+  let safe = escHtml(text);
+  keywords.forEach(kw=>{
+    const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    const re = new RegExp(`(${escaped})`,'g');
+    safe = safe.replace(re,'<strong class="kw">$1</strong>');
+  });
+  return safe;
+}
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function highlightStructure(html, labels){
+  if(!labels||!labels.length) return html;
+  labels.forEach(function(lbl){
+    var escaped = lbl.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    var re = new RegExp('('+escaped+')','g');
+    html = html.replace(re,'<strong class="kw-struct">$1</strong>');
+  });
+  return html;
+}
+
+function typeResp(elId, text, cb, keywords){
+  var el = document.getElementById(elId);
+  if(!el) return;
+  el.className = 'resp-area cursor';
+  el.textContent = '';
+  var i = 0;
+  function tick(){
+    if(i < text.length){
+      el.textContent += text[i++];
+      setTimeout(tick, 11);
+    } else {
+      el.classList.remove('cursor');
+      if(keywords && keywords.length){
+        el.innerHTML = highlightKeywords(el.textContent, keywords);
+      }
+      var structKw = [];
+      try{ structKw = JSON.parse(el.dataset.structKw||'[]'); } catch(e){}
+      if(structKw.length){ el.innerHTML = highlightStructure(el.innerHTML, structKw); }
+      if(cb) cb();
+    }
+  }
+  tick();
+}
+// Highlight structural labels (e.g. [ISO 25010 — ...], Risiko:, Control:) bold+accent color
+;
+
+// Each example stores fwAll: mapping from fw key → array of texts per element
+// This lets any framework card show a meaningful breakdown of the same example content
+
+const FW_META = {
+  RTF: {
+    labels: ['R — Rolle', 'T — Task', 'F — Format'],
+    colors: ['#7c3aed','#2563eb','#0f766e']
+  },
+  PACT: {
+    labels: ['P — Purpose', 'A — Action', 'C — Context', 'T — Tone'],
+    colors: ['#7c3aed','#2563eb','#0f766e','#b45309']
+  },
+  'CO-STAR': {
+    labels: ['C — Context', 'O — Objective', 'S — Style', 'T — Tone', 'A — Audience', 'R — Response'],
+    colors: ['#7c3aed','#2563eb','#0f766e','#b45309','#be185d','#1a9c6a']
+  },
+  TRACE: {
+    labels: ['T — Trigger', 'R — Result', 'A — Action', 'C — Condition', 'E — Exception'],
+    colors: ['#7c3aed','#2563eb','#0f766e','#b45309','#be185d']
+  },
+  RISEN: {
+    labels: ['R — Role', 'I — Instructions', 'S — Steps', 'E — End Goal', 'N — Narrowing'],
+    colors: ['#7c3aed','#2563eb','#0f766e','#b45309','#be185d']
+  },
+  STAKE: {
+    labels: ['S — Stakeholder', 'T — Task', 'A — Answer Format', 'K — Kontext', 'E — Example'],
+    colors: ['#7c3aed','#2563eb','#0f766e','#b45309','#be185d']
+  }
+};
+
+const EXAMPLES = [
+  {
+    emoji:'☕', label:'Café-Empfehlung',
+    badPrompt:'Empfiehl mir ein Café.',
+    tokens:[{t:'Empfiehl',c:'tp'},{t:'mir',c:'tg'},{t:'ein',c:'tg'},{t:'Café',c:'ta'},{t:'.',c:'tg'}],
+    probs:[{w:'„Ein gemütliches Café in der Innenstadt…"',p:78,col:'#d63b3b'},{w:'„Ein ruhiges Café mit guten Getränken…"',p:65,col:'#d63b3b'},{w:'Café mit Spezialität (braucht Kontext)',p:18,col:'#94a3b8'},{w:'„In deiner Nähe gibt es…" (ideal)',p:4,col:'#1a9c6a'}],
+    risks:[{t:'False Precision',d:'„gemütlich" ist subjektiv und nicht testbar.'},{t:'Scope Misalignment',d:'Stadtteil, Budget, Anlass fehlen.'},{t:'Hallucination',d:'Erfindet Cafés oder Bewertungen.'},{t:'Over-Reliance',d:'Klingt gut — passt aber nicht zu dir.'}],
+    badResp:'Ein gemütliches Café in der Innenstadt mit gutem Kaffee und Kuchen ist immer eine gute Wahl. Versuche es mal mit einem kleinen unabhängigen Betrieb!',
+    framework:'RTF',
+    keywords:['lokaler Karlsruher Stadtführer','3 Cafés','Geschäftstreffen','Ruhige Atmosphäre, WLAN, Steckdosen','Stadtmitte','max. 10 Min.','Budget: ca. 5€','Name · Adresse · Warum geeignet'],
+    goodPrompt:'Du bist ein lokaler Karlsruher Stadtführer.\n\nEmpfiehl mir 3 Cafés für ein Geschäftstreffen:\n- Ruhige Atmosphäre, WLAN, Steckdosen\n- Stadtmitte, max. 10 Min. Fußweg vom Hauptbahnhof\n- Budget: ca. 5€ pro Person\n\nFormat: Name · Adresse · Warum geeignet',
+    goodTags:['✓ Rolle','✓ Kontext','✓ Eingrenzung','✓ Format'],
+    goodResp:'1. Café Müller · Kaiserstr. 12\n   Ruhig, WLAN stabil, 8 Min. vom Hbf. ✓\n\n2. Coffeebar am Markt · Marktplatz 3\n   Separater Bereich für Meetings, Steckdosen. ✓\n\n3. Bohnenkind · Erbprinzenstr. 17\n   Specialty Coffee, sehr ruhig, 6 Min. zum Hbf. ✓',
+    syllabus:'AI4RE Kap. 2.1: „LLMs produzieren ohne Kontext das Wahrscheinlichste — nicht das Passende."',
+    fwAll:{
+      RTF:    ['Du bist ein lokaler Karlsruher Stadtführer.','Empfiehl mir 3 Cafés für ein Geschäftstreffen:\n- Ruhige Atmosphäre, WLAN, Steckdosen\n- Stadtmitte, max. 10 Min. Fußweg\n- Budget: ca. 5€ pro Person','Format: Name · Adresse · Warum geeignet'],
+      PACT:   ['3 Café-Empfehlungen für ein Geschäftstreffen in Karlsruhe.','Erstelle eine priorisierte Liste mit Begründung.','Stadtmitte, max. 10 Min. vom Hbf, Budget 5€, WLAN nötig.','Sachlich, konkret, kein Marketingsprech.'],
+      'CO-STAR':['Karlsruhe Stadtmitte, Geschäftstreffen, 2 Personen.','3 geeignete Cafés mit Begründung finden.','Tabellarisch: Name, Adresse, Eignung.','Sachlich, direkt.','Berufstätige Fachkräfte, zeitorientiert.','Max. 3 Vorschläge, eine Zeile Begründung je Café.'],
+      TRACE:  ['Nutzer sucht Café für Geschäftstreffen in Karlsruhe.','3 konkrete Cafés mit Adresse und Begründung.','Filtere nach WLAN, Ruhe, Nähe zum Hbf.','Budget max. 5€, Stadtmitte.','Falls keine passenden: günstigste Alternative nennen.'],
+      RISEN:  ['Du bist lokaler Karlsruher Stadtführer.','Empfehle 3 Cafés für ein Geschäftstreffen.','1. Filterkriterien anwenden 2. Top-3 wählen 3. Begründen.','3 priorisierte Café-Empfehlungen mit Adresse.','Nur Cafés in Stadtmitte, max. 10 Min. vom Hbf, WLAN.'],
+      STAKE:  ['Projektmanager, Karlsruhe Stadtmitte, 2 Personen.','3 Cafés für Geschäftstreffen empfehlen.','Name · Adresse · Warum geeignet (3 Stichpunkte je Café).','WLAN, ruhige Atmosphäre, max. 10 Min. vom Hbf, Budget 5€.','Beispiel: Bohnenkind, Erbprinzenstr. 17, Specialty Coffee, sehr ruhig.'],
+    },
+  },
+  {
+    emoji:'📧', label:'E-Mail formulieren',
+    badPrompt:'Schreib mir eine E-Mail für eine Absage.',
+    tokens:[{t:'Schreib',c:'tp'},{t:'mir',c:'tg'},{t:'eine',c:'tg'},{t:'E',c:'ta'},{t:'-Mail',c:'ta'},{t:'für',c:'tg'},{t:'eine',c:'tg'},{t:'Absage',c:'tp'},{t:'.',c:'tg'}],
+    probs:[{w:'„Sehr geehrte Damen und Herren…" (formal)',p:72,col:'#d63b3b'},{w:'„Hallo, leider muss ich absagen…" (informal)',p:58,col:'#d63b3b'},{w:'Kontextspezifisch (braucht Infos)',p:12,col:'#94a3b8'},{w:'Kollegial + Terminvorschlag (ideal)',p:5,col:'#1a9c6a'}],
+    risks:[{t:'False Precision',d:'Ton vollkommen unklar — formal oder locker?'},{t:'Scope Misalignment',d:'Welches Meeting? Wer sind die Empfänger?'},{t:'Hallucination',d:'Erfindet Gründe und Details.'},{t:'Over-Reliance',d:'Text klingt professionell — stimmt aber nicht.'}],
+    badResp:'Sehr geehrte Damen und Herren,\n\nleider muss ich unser Meeting absagen.\nIch bitte um Entschuldigung.\n\nMit freundlichen Grüßen',
+    framework:'PACT',
+    keywords:['Meeting morgen absagen','neuen Termin vorschlagen','Kurze, freundliche Absage-Mail','5-köpfiges Projektteam','Do 14 Uhr','Fr 10 Uhr','Kollegial, direkt','kein Bürokratendeutsch'],
+    goodPrompt:'Purpose: Meeting morgen absagen, neuen Termin vorschlagen.\nAction: Kurze, freundliche Absage-Mail.\nContext: 5-köpfiges Projektteam. Do 14 Uhr → Fr 10 Uhr.\nTone: Kollegial, direkt, kein Bürokratendeutsch.',
+    goodTags:['✓ Purpose','✓ Action','✓ Context','✓ Tone'],
+    goodResp:'Hallo zusammen,\n\nleider muss ich unser Meeting morgen (Do, 14 Uhr)\nkurzfristig absagen — ein Kundentermin kam dazwischen.\n\nPasst es euch Fr, 10 Uhr? Agenda bleibt dieselbe.\n\nKurze Rückmeldung bis heute Abend wäre super.\nGrüße, [Name]',
+    syllabus:'AI4RE Kap. 2.1: „LLMs produzieren ohne Kontext das Wahrscheinlichste — nicht das Passende."',
+    fwAll:{
+      RTF:    ['Du bist ein erfahrener Projektmanager.','Schreib eine Absage-Mail: Do 14 Uhr → Fr 10 Uhr. Team: 5 Personen.','Format: max. 5 Zeilen, kein Betreff nötig.'],
+      PACT:   ['Meeting morgen absagen, neuen Termin vorschlagen.','Kurze, freundliche Absage-Mail.','5-köpfiges Projektteam. Do 14 Uhr → Fr 10 Uhr.','Kollegial, direkt, kein Bürokratendeutsch.'],
+      'CO-STAR':['Internes Projektteam, 5 Personen, agiles Umfeld.','Meeting verschieben und neuen Termin anbieten.','Kurz und direkt, kein langer Fließtext.','Kollegial, auf Augenhöhe.','Projektteam-Mitglieder.','Max. 5 Zeilen, konkreter Alternativtermin.'],
+      TRACE:  ['Kundentermin Do 14 Uhr kollidiert mit Team-Meeting.','Absage + Alternativtermin Fr 10 Uhr.','E-Mail ans 5-köpfige Projektteam senden.','Agenda bleibt identisch, nur Zeitslot ändert sich.','Falls Fr 10 Uhr nicht passt: Abstimmung per Umfrage.'],
+      RISEN:  ['Du bist Projektmanager in einem agilen Team.','Schreibe eine kurze Absage-Mail mit Alternativtermin.','1. Absage begründen 2. Alternativtermin nennen 3. Rückmeldung erbitten.','Fertige, versendbare E-Mail ohne Betreff.','Nur kollegiale Ansprache, max. 5 Zeilen.'],
+      STAKE:  ['5-köpfiges Projektteam, internes agiles Umfeld.','Meeting absagen und neuen Termin vorschlagen.','Kurze E-Mail, max. 5 Zeilen, kein Betreff.','Do 14 Uhr → Fr 10 Uhr, Agenda bleibt identisch.','Beispiel-Endsatz: "Kurze Rückmeldung bis heute Abend wäre super."'],
+    },
+  },
+  {
+    emoji:'📋', label:'User Story: Login',
+    badPrompt:'Schreib mir eine User Story für Login.',
+    tokens:[{t:'Schreib',c:'tp'},{t:'mir',c:'tg'},{t:'eine',c:'tg'},{t:'User',c:'tp'},{t:'Story',c:'tp'},{t:'für',c:'tg'},{t:'Login',c:'ta'},{t:'.',c:'tg'}],
+    probs:[{w:'„Als Benutzer möchte ich mich einloggen…"',p:72,col:'#d63b3b'},{w:'„Als User möchte ich mich anmelden…"',p:58,col:'#d63b3b'},{w:'„Als Projektmanager…" (braucht Kontext)',p:12,col:'#94a3b8'},{w:'„Als PM mit SSO-Zugang…" (ideal)',p:3,col:'#1a9c6a'}],
+    risks:[{t:'False Precision',d:'„optimally" ist nicht testbar.'},{t:'Scope Misalignment',d:'Kein Bezug zu Stakeholdern.'},{t:'Hallucination',d:'Erfindet Akzeptanzkriterien.'},{t:'Over-Reliance',d:'Klingt gut — ist inhaltsleer.'}],
+    badResp:'Als Benutzer möchte ich mich einloggen,\ndamit ich Zugang zum System erhalte.\n\nAkzeptanzkriterien:\n- Benutzername + Passwort eingeben.\n- Korrekte Daten: Weiterleitung.\n- Falsche Daten: Fehlermeldung.',
+    framework:'RTF',
+    keywords:['erfahrene Business Analystin','agilen B2B-Softwareprojekt','SaaS-Plattform','Projektmanager, mittelständisch','Gherkin (Given/When/Then)','3 Akzeptanzkriterien','Sicherheit + einfache Handhabung'],
+    goodPrompt:'Du bist eine erfahrene Business Analystin\nin einem agilen B2B-Softwareprojekt.\n\nSchreib eine User Story für den Login einer SaaS-Plattform.\nNutzer: Projektmanager, mittelständisch.\n\nFormat: Gherkin (Given/When/Then), 3 Akzeptanzkriterien.\nFokus: Sicherheit + einfache Handhabung.',
+    goodTags:['✓ Rolle','✓ Kontext','✓ Zielgruppe','✓ Format','✓ Eingrenzung'],
+    goodResp:'Als Projektmanager möchte ich mich sicher einloggen,\ndamit ich sofort auf meine Projekte zugreifen kann.\n\nSzenario 1: Erfolgreicher Login\n  Given PM ist auf der Login-Seite\n  When er gültige E-Mail + Passwort eingibt\n  Then wird er auf sein Dashboard weitergeleitet\n\nSzenario 2: Fehlgeschlagener Login\n  Given PM gibt falsches Passwort ein\n  Then: Fehlermeldung + Versuch protokolliert\n\nSzenario 3: Kontosperre\n  Given 5× falsch → Konto 15 Min. gesperrt',
+    syllabus:'AI4RE Kap. 3.2: „Ohne Stakeholder-Kontext produziert KI generische Aussagen ohne Testbarkeit."',
+    fwAll:{
+      RTF:    ['Du bist eine erfahrene Business Analystin in einem agilen B2B-Softwareprojekt.','Schreib eine User Story für den Login einer SaaS-Plattform.\nNutzer: Projektmanager, mittelständisch.','Gherkin (Given/When/Then), 3 Akzeptanzkriterien.\nFokus: Sicherheit + einfache Handhabung.'],
+      PACT:   ['User Story für sicheren Login erstellen.','Gherkin-Szenarien mit 3 Akzeptanzkriterien schreiben.','B2B-SaaS, Zielgruppe: Projektmanager mittelständischer Unternehmen.','Fachlich präzise, testbar formuliert.'],
+      'CO-STAR':['Agiles B2B-Softwareprojekt, SaaS-Plattform.','Testbare User Story für Login-Funktionalität.','Gherkin-Format: Given/When/Then.','Professionell, BA-konform.','Projektmanager, mittelständisch.','3 Szenarien mit je einem Akzeptanzkriterium.'],
+      TRACE:  ['Nutzer öffnet Login-Seite der SaaS-Plattform.','User Story mit 3 testbaren Akzeptanzkriterien.','Gherkin-Format anwenden.','Nutzer ist Projektmanager, keine Admin-Rechte.','Bei 5× Fehleingabe: Konto-Sperre 15 Min.'],
+      RISEN:  ['Du bist erfahrene Business Analystin.','Schreibe eine vollständige User Story für den Plattform-Login.','1. Stakeholder definieren 2. Szenarien ableiten 3. AKs formulieren.','Fertige Gherkin User Story mit 3 Szenarien.','Nur Projektmanager-Perspektive, kein Admin-Login.'],
+      STAKE:  ['Projektmanager mittelständisches B2B-SaaS, nicht technisch.','User Story für sicheren Login schreiben.','Gherkin-Format: Given/When/Then, 3 Szenarien.','Sicherheit + einfache Handhabung, kein Admin-Zugang.','Beispiel-Szenario: Given PM auf Login-Seite When gültige E-Mail+PW Then Dashboard.'],
+    },
+  },
+  {
+    emoji:'🧪', label:'Testfälle ableiten',
+    badPrompt:'Generiere Testfälle für die Suchfunktion.',
+    tokens:[{t:'Generiere',c:'tp'},{t:'Test',c:'ta'},{t:'fälle',c:'ta'},{t:'für',c:'tg'},{t:'die',c:'tg'},{t:'Such',c:'tp'},{t:'funktion',c:'tp'},{t:'.',c:'tg'}],
+    probs:[{w:'„Test 1: Suche mit gültigem Begriff"',p:69,col:'#d63b3b'},{w:'„Test 2: Leere Eingabe prüfen"',p:55,col:'#d63b3b'},{w:'Sicherheitstests (braucht Kontext)',p:14,col:'#94a3b8'},{w:'Performance + Grenzwert-Tests (ideal)',p:5,col:'#1a9c6a'}],
+    risks:[{t:'False Precision',d:'Tests klingen vollständig — sind es nicht.'},{t:'Scope Misalignment',d:'Kein Wissen über System, DB, Last.'},{t:'Hallucination',d:'Erfindet Grenzwerte und Fehlerklassen.'},{t:'Over-Reliance',d:'Lücken werden erst bei Bugs sichtbar.'}],
+    badResp:'Test 1: Gültige Suche → Ergebnisse erscheinen.\nTest 2: Leere Eingabe → Fehlermeldung.\nTest 3: Sonderzeichen → Kein Absturz.\nTest 4: Sehr langer Suchbegriff → Abgeschnitten.',
+    framework:'TRACE',
+    keywords:['Senior QA Engineer','B2B-SaaS-Volltextsuche','Elasticsearch','1 Mio. Dokumente','500 gleichzeitige Nutzer','TRACE-Format','Antwortzeit <1s','SQL Injection','Randwerte','Accessibility (Screen Reader)'],
+    goodPrompt:'Du bist ein Senior QA Engineer für eine B2B-SaaS-Volltextsuche\n(Elasticsearch, 1 Mio. Dokumente, 500 gleichzeitige Nutzer).\n\nErstelle 5 Testfälle im TRACE-Format:\nTrigger, Result, Action, Condition, Exception.\n\nFokus: Performance (Antwortzeit <1s), Sicherheit (SQL Injection),\nRandwerte (0 Treffer, max. Treffer), Accessibility (Screen Reader).',
+    goodTags:['✓ Rolle','✓ System-Kontext','✓ Format (TRACE)','✓ Metriken','✓ Scope'],
+    goodResp:'TC-01: Performance\n  Trigger: 500 gleichzeitige Suchen\n  Result: Antwortzeit <1s (p95)\n  Condition: Elasticsearch Cluster 3 Nodes\n  Exception: Alert bei >2s, Auto-Scale\n\nTC-02: SQL Injection\n  Trigger: Eingabe: \'; DROP TABLE--\n  Result: Eingabe sanitized, kein DB-Fehler\n  Exception: Security-Log-Eintrag\n\nTC-03: Null-Treffer\n  Trigger: Suche nach „xQz9##"\n  Result: „Keine Ergebnisse" + Vorschläge',
+    syllabus:'AI4RE Kap. 4.1: „KI übernimmt Testfälle gerne — ohne Systemwissen fehlen Grenzwerte und Sicherheitsaspekte."',
+    fwAll:{
+      RTF:    ['Du bist ein Senior QA Engineer für B2B-SaaS (Elasticsearch, 1 Mio. Dokumente).','Erstelle 5 Testfälle: Performance, SQL Injection, Randwerte, Accessibility.','TRACE-Format: Trigger · Result · Action · Condition · Exception.'],
+      PACT:   ['5 vollständige Testfälle für die Volltextsuche erstellen.','Testfälle im TRACE-Format dokumentieren.','Elasticsearch-Backend, 500 gleichzeitige Nutzer, 1 Mio. Dokumente.','Technisch präzise, reproduzierbar, mit Grenzwerten.'],
+      'CO-STAR':['B2B-SaaS-Plattform, Volltextsuche mit Elasticsearch.','5 Testfälle für Performance, Sicherheit, Randwerte.','Tabellarisch im TRACE-Format.','Technisch exakt, kein Marketingsprech.','Senior QA Engineers und Entwickler.','5 Testfälle, je 5 Felder: Trigger/Result/Action/Condition/Exception.'],
+      TRACE:  ['500 gleichzeitige Suchanfragen auf Elasticsearch.','Antwortzeit <1s (p95), 0 Fehler.','Lasttest mit k6, 3-Node-Cluster.','Datenbasis: 1 Mio. Dokumente, gemischte Sprachen.','Bei >2s: Auto-Scale + Alert an On-Call.'],
+      RISEN:  ['Du bist Senior QA Engineer für eine B2B-SaaS-Suche.','Erstelle 5 Testfälle mit allen TRACE-Feldern.','1. Szenario definieren 2. Grenzwerte setzen 3. Exception planen.','5 fertige, ausführbare Testfälle.','Nur Volltextsuche — kein Filter, kein Facetting.'],
+      STAKE:  ['Senior QA Engineer, Elasticsearch B2B-SaaS, 500 gleichzeitige Nutzer.','5 Testfälle für Volltextsuche erstellen.','TRACE-Format: Trigger/Result/Action/Condition/Exception, 1 Zeile je Feld.','Performance <1s, SQL Injection, Randwerte (0 Treffer), Accessibility.','Beispiel TC-01: Trigger: 500 gleichzeitige Suchen / Result: <1s (p95).'],
+    },
+  },
+  {
+    emoji:'📊', label:'Workshop analysieren',
+    badPrompt:'Fasse den Workshop zusammen.',
+    tokens:[{t:'Fasse',c:'tp'},{t:'den',c:'tg'},{t:'Work',c:'ta'},{t:'shop',c:'ta'},{t:'zu',c:'tg'},{t:'sammen',c:'tg'},{t:'.',c:'tg'}],
+    probs:[{w:'„Im Workshop wurden Themen besprochen…"',p:74,col:'#d63b3b'},{w:'„Die Teilnehmer diskutierten…"',p:60,col:'#d63b3b'},{w:'Strukturiert mit Risiken (braucht Input)',p:10,col:'#94a3b8'},{w:'Entscheidungsprotokoll mit Actions (ideal)',p:4,col:'#1a9c6a'}],
+    risks:[{t:'False Precision',d:'„Zusammenfassung" ohne Input = Fiktion.'},{t:'Scope Misalignment',d:'Kein Wissen über Ziele, Entscheidungen.'},{t:'Hallucination',d:'Erfindet Teilnehmer und Beschlüsse.'},{t:'Over-Reliance',d:'Protokoll klingt echt — stimmt aber nicht.'}],
+    badResp:'Im Workshop wurden verschiedene Themen besprochen.\nDie Teilnehmer tauschten Ideen aus und kamen\nzu einigen Schlussfolgerungen. Wichtige Punkte\nwurden festgehalten und nächste Schritte definiert.',
+    framework:'CO-STAR',
+    keywords:['Requirements-Workshop','8 Stakeholder','3h','Strukturiertes Protokoll','PM und Dev-Team','Sachlich, tabellarisch','Professionell, handlungsorientiert','Projektleiterin + Entwicklungsteam','Max. 1 Seite','Risiken + Next Steps'],
+    goodPrompt:'Context: Requirements-Workshop, 8 Stakeholder, 3h.\nObjective: Strukturiertes Protokoll für PM und Dev-Team.\nStyle: Sachlich, tabellarisch wo möglich.\nTone: Professionell, handlungsorientiert.\nAudience: Projektleiterin + Entwicklungsteam.\nResponse: Max. 1 Seite, mit Risiken + Next Steps.',
+    goodTags:['✓ Context','✓ Objective','✓ Style','✓ Tone','✓ Audience','✓ Response'],
+    goodResp:'WORKSHOP-PROTOKOLL — Requirements Review\n\n1. ENTSCHEIDUNGEN\n   ✓ Scope: MVP ohne KI-Features (Phase 1)\n   ✓ Release-Datum: 15.09. (verbindlich)\n   ✓ Tech-Stack: React + Node.js (einstimmig)\n\n2. OFFENE PUNKTE / RISIKEN\n   ⚠ Schnittstelle Legacy-ERP ungeklärt\n   ⚠ Budgetfreigabe Phase 2 ausständig\n\n3. NÄCHSTE SCHRITTE\n   → Stakeholder-Review: 03.07. (BA)\n   → Technische Machbarkeit: 05.07. (IT)',
+    syllabus:'AI4RE Kap. 5.1.2: „Menschliche Interpretation bleibt unerlässlich, um echte Anforderungen von Ideen zu unterscheiden."',
+    fwAll:{
+      RTF:    ['Du bist eine erfahrene Business Analystin.','Erstelle ein strukturiertes Workshop-Protokoll (Requirements Review, 8 Stakeholder, 3h).','Max. 1 Seite: Entscheidungen, Risiken, Next Steps.'],
+      PACT:   ['Workshop-Ergebnisse dokumentieren für PM und Entwicklungsteam.','Strukturiertes Protokoll mit Entscheidungen und Next Steps erstellen.','Requirements Review, 8 Stakeholder, 3h Dauer.','Professionell, handlungsorientiert, kein Fließtext.'],
+      'CO-STAR':['Requirements-Workshop, 8 Stakeholder, 3h.','Strukturiertes Protokoll für PM und Dev-Team.','Sachlich, tabellarisch wo möglich.','Professionell, handlungsorientiert.','Projektleiterin + Entwicklungsteam.','Max. 1 Seite, mit Risiken + Next Steps.'],
+      TRACE:  ['Workshop-Ergebnisse liegen vor (8 Stakeholder, 3h).','Protokoll mit Entscheidungen, Risiken, Actions.','Inhalte strukturieren und priorisieren.','Nur verbindliche Beschlüsse dokumentieren.','Offene Punkte separat als Risiken markieren.'],
+      RISEN:  ['Du bist erfahrene Business Analystin.','Erstelle ein Workshop-Protokoll nach Requirements-Standard.','1. Entscheidungen 2. Risiken 3. Next Steps mit Verantwortlichen.','Fertiges, versandbereites Protokoll.','Max. 1 Seite, nur verbindliche Beschlüsse.'],
+      STAKE:  ['Projektleiterin + Entwicklungsteam, 8 Stakeholder, agiles B2B-Projekt.','Workshop-Ergebnisse als Protokoll dokumentieren.','Max. 1 Seite: Tabelle Entscheidungen, Risiken, Next Steps mit Owner.','Requirements Review, 3h, verbindliche Beschlüsse + offene Punkte.','Beispiel Next Step: Stakeholder-Review 03.07. (Verantwortlich: BA).'],
+    },
+  },
+];
+
+// ════════════════════════════════════════════════
+// DATA: STANDARDS
+// ════════════════════════════════════════════════
+const STANDARDS = [
+  {
+    id:'iso25010', badge:'ISO/IEC 25010:2023', emoji:'🔵', label:'ISO 25010',
+    color:'#2563eb', colorBg:'#eff6ff',
+    why:'ISO/IEC 25010:2023 (in Kraft seit Februar 2023) zwingt dich, vage Begriffe wie „schnell“ oder „sicher“ durch messbare Kriterien zu ersetzen. Neu: 9 statt 8 Merkmale — Explainability und Autonomy sind jetzt offiziell verankert.',
+    badReq:'Die Anwendung soll schnell und sicher sein\nund eine gute Benutzererfahrung bieten.',
+    tokens:[{t:'Die',c:'tg'},{t:'Anwendung',c:'tp'},{t:'soll',c:'tg'},{t:'schnell',c:'tr'},{t:'und',c:'tg'},{t:'sicher',c:'tr'},{t:'sein',c:'tg'},{t:'und',c:'tg'},{t:'eine',c:'tg'},{t:'gute',c:'tr'},{t:'Benutzer',c:'ta'},{t:'erfahrung',c:'ta'},{t:'bieten',c:'tg'}],
+    tokLegend:'Rot = schwache Wörter ohne Messkriterium (ISO/IEC 25010:2023-Verstoß)',
+    probs:[{w:'„Die App lädt schnell — unter 3 Sekunden."',p:70,col:'#d63b3b'},{w:'„Die App ist sicher — mit Passwort."',p:62,col:'#d63b3b'},{w:'Performance-Metrik (braucht Kontext)',p:15,col:'#94a3b8'},{w:'Lighthouse Score + bcrypt (ideal)',p:4,col:'#1a9c6a'}],
+    badResp:'Die Anwendung lädt Seiten schnell und ist sicher.\nBenutzer haben eine gute Erfahrung beim Navigieren.\nSicherheitsstandards werden eingehalten.',
+    goodReq:'[ISO/IEC 25010:2023 — Performance Efficiency]\nStartseite lädt <2s bei 10 Mbit/s\n(Lighthouse Performance Score ≥90).\n\n[ISO/IEC 25010:2023 — Security]\nPasswörter: bcrypt, cost factor 12.\nAudit-Log für alle Logins.\n\n[ISO/IEC 25010:2023 — Interaction Capability / Explainability]\nJede KI-Entscheidung innerhalb 48h erklärbar.\nErstregistrierung in <3 Min. ohne Hilfe (Usability-Test, n=10).\n\n[ISO/IEC 25010:2023 — Flexibility]\nSystem auf alternativem Cloud-Anbieter lauffähig\nohne Code-Änderung (Portabilitätstest, n=1).',
+    goodTags:['✓ Messbar','✓ Testbar','✓ 2023-Kategorie','✓ Grenzwert','✓ Status: in Kraft'],
+    goodResp:'[Performance] Startseite lädt 1,4s bei 10 Mbit/s.\nLighthouse-Score: 94/100. ✓\n\n[Security] Passwörter bcrypt-gehasht (cost 12).\nAudit-Log aktiv, kein Klartext. ✓\n\n[Interaction/Explainability] Erklärungszeit Ø 11h ≤ 48h. ✓\nErstregistrierung: Ø 2:18 Min. (n=12). ✓\n\n[Flexibility] Cloud-Migration ohne Code-Änderung erfolgreich. ✓\n\nISO/IEC 25010:2023 — Status: in Kraft seit Feb. 2023 ✓',
+    respKeywords:['[Performance]','[Security]','[Interaction/Explainability]','[Flexibility]','ISO/IEC 25010:2023 — Status: in Kraft'],
+    reqKeywords:['[ISO/IEC 25010:2023 — Performance Efficiency]','[ISO/IEC 25010:2023 — Security]','[ISO/IEC 25010:2023 — Interaction Capability / Explainability]','[ISO/IEC 25010:2023 — Flexibility]','Lighthouse Performance Score','bcrypt, cost factor 12'],
+    link:'"Die Anwendung soll schnell sein" ist für Entwickler genauso nutzlos wie "Sag mir was über KI" für die KI — ISO/IEC 25010:2023 verlangt messbare Grenzwerte, benannte Kategorien und testbare Kriterien.',
+  },
+  {
+    id:'iso27001', badge:'ISO 27001', emoji:'🟡', label:'ISO 27001',
+    color:'#b45309', colorBg:'#fffbeb',
+    why:'ISO 27001 verlangt risikobasierte, nachvollziehbare Sicherheitsanforderungen mit klaren Verantwortlichkeiten — keine Floskeln wie „sicher sein".',
+    badReq:'Das System muss sicher sein und Datenschutz gewährleisten.',
+    tokens:[{t:'Das',c:'tg'},{t:'System',c:'tp'},{t:'muss',c:'tg'},{t:'sicher',c:'tr'},{t:'sein',c:'tg'},{t:'und',c:'tg'},{t:'Daten',c:'ta'},{t:'schutz',c:'ta'},{t:'gewähr',c:'tr'},{t:'leisten',c:'tr'}],
+    tokLegend:'Rot = nicht operationalisierbare Begriffe (ISO 27001 Annex A-Verstoß)',
+    probs:[{w:'„Passwort-Schutz einbauen…"',p:68,col:'#d63b3b'},{w:'„SSL-Verschlüsselung verwenden…"',p:55,col:'#d63b3b'},{w:'Risikoklasse + Control (braucht Kontext)',p:13,col:'#94a3b8'},{w:'Control A.8.3 mit Owner + KPI (ideal)',p:4,col:'#1a9c6a'}],
+    badResp:'Das System implementiert Sicherheitsmaßnahmen gemäß Best Practices. Datenschutz wird durch technische und organisatorische Maßnahmen gewährleistet.',
+    goodReq:'[ISO 27001 — A.8.3 Zugriffskontrolle]\nRisiko: Unberechtigter Datenzugriff (hoch).\nControl: MFA für alle Admin-Accounts.\nOwner: IT-Sicherheitsbeauftragter.\nKPI: 0 unberechtigte Zugriffe/Quartal.\nReview: Quartalsweise Audit-Log-Prüfung.',
+    goodTags:['✓ Risikobezug','✓ Control','✓ Owner','✓ KPI','✓ Review'],
+    goodResp:'[A.8.3] MFA implementiert für alle 12 Admin-Accounts.\nLetzte 90 Tage: 0 unberechtigte Zugriffe.\nQuartals-Audit durchgeführt: 15.06. ✓\n\nNächste Überprüfung: 15.09.',
+    respKeywords:['[A.8.3]','MFA implementiert','0 unberechtigte Zugriffe','Quartals-Audit','Nächste Überprüfung:'],
+    reqKeywords:['[ISO 27001 — A.8.3 Zugriffskontrolle]','Risiko:','Control:','Owner:','KPI:','Review:'],
+    link:'Eine ISO 27001-Anforderung ohne Risikoklasse und Control ist wie ein Prompt ohne Kontext — die KI (oder der Entwickler) erfindet, was fehlt.',
+  },
+  {
+    id:'dsgvo', badge:'DSGVO Art. 25', emoji:'🔴', label:'DSGVO',
+    color:'#be185d', colorBg:'#fdf2f8',
+    why:'DSGVO Art. 25 fordert Privacy by Design: Datenschutz muss von Anfang an in Anforderungen stehen — nicht als Nachgedanke. Genau wie ein Prompt: Randbedingungen gehören hinein, nicht als Nachtrag.',
+    badReq:'Das System soll Datenschutz berücksichtigen.',
+    tokens:[{t:'Das',c:'tg'},{t:'System',c:'tp'},{t:'soll',c:'tg'},{t:'Daten',c:'ta'},{t:'schutz',c:'ta'},{t:'berück',c:'tr'},{t:'sichtigen',c:'tr'}],
+    tokLegend:'Rot = „berücksichtigen" ist nicht operationalisierbar (DSGVO Art. 25-Verstoß)',
+    probs:[{w:'„Einwilligungs-Banner einbauen…"',p:71,col:'#d63b3b'},{w:'„Daten verschlüsseln…"',p:59,col:'#d63b3b'},{w:'Datenkategorie + Rechtsgrundlage (braucht Kontext)',p:11,col:'#94a3b8'},{w:'Art. 25 + Datensparsamkeit + Löschfrist (ideal)',p:4,col:'#1a9c6a'}],
+    badResp:'Das System implementiert einen Cookie-Banner und verschlüsselt Nutzerdaten. Datenschutzbestimmungen werden eingehalten.',
+    goodReq:'[DSGVO Art. 25 — Privacy by Design]\nDatenkategorie: Kontaktdaten (Bestandsdaten).\nRechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO.\nDatensparsamkeit: Nur Vorname + E-Mail erheben.\nLöschfrist: 24 Monate nach letzter Aktivität.\nProtokollierung: Löschung wird auditierbar gespeichert.',
+    goodTags:['✓ Datenkategorie','✓ Rechtsgrundlage','✓ Datensparsamkeit','✓ Löschfrist'],
+    goodResp:'[Art. 25] Kontaktdaten: nur Vorname + E-Mail.\nRechtsgrundlage: Art. 6 I lit. b — Vertrag. ✓\nLöschung nach 24 Mon. automatisiert. ✓\nAudit-Trail der Löschvorgänge aktiv. ✓',
+    respKeywords:['[Art. 25]','Kontaktdaten:','Rechtsgrundlage:','Löschung nach 24 Mon.','Audit-Trail'],
+    reqKeywords:['[DSGVO Art. 25 — Privacy by Design]','Datenkategorie:','Rechtsgrundlage:','Datensparsamkeit:','Löschfrist:','Protokollierung:'],
+    link:'„Datenschutz berücksichtigen" ist für Entwickler genauso nutzlos wie „Sag mir was über KI" für die KI — beide brauchen Kontext, Einschränkung und Messbarkeit.',
+  },
+  {
+    id:'ieee29148', badge:'IEEE 29148', emoji:'🟢', label:'IEEE 29148',
+    color:'#0f766e', colorBg:'#f0fdfa',
+    why:'IEEE 29148 definiert 7 Qualitätskriterien für Anforderungen: eindeutig, vollständig, korrekt, konsistent, realisierbar, notwendig, testbar. Dieselben 7 gelten für gute Prompts.',
+    badReq:'Das System soll möglichst benutzerfreundlich sein und gut funktionieren.',
+    tokens:[{t:'Das',c:'tg'},{t:'System',c:'tp'},{t:'soll',c:'tg'},{t:'möglichst',c:'tr'},{t:'benutzer',c:'tr'},{t:'freundlich',c:'tr'},{t:'sein',c:'tg'},{t:'und',c:'tg'},{t:'gut',c:'tr'},{t:'funk',c:'tp'},{t:'tionieren',c:'tp'}],
+    tokLegend:'Rot = „Weak Words" lt. IEEE 29148: möglichst, gut, benutzerfreundlich — alle nicht testbar',
+    probs:[{w:'„Intuitive Navigation einbauen…"',p:73,col:'#d63b3b'},{w:'„Klare Menüstruktur…"',p:61,col:'#d63b3b'},{w:'Konkrete Usability-Metrik (braucht Kontext)',p:12,col:'#94a3b8'},{w:'SUS-Score + Task-Completion-Rate (ideal)',p:4,col:'#1a9c6a'}],
+    badResp:'Das System hat eine intuitive Benutzeroberfläche mit klarer Navigation und guten Funktionen. Benutzer können ihre Aufgaben effizient erledigen.',
+    goodReq:'[IEEE 29148 — Usability]\nEindeutig: Neue Nutzer finden die Hauptfunktion ohne Anleitung.\nMessbar: SUS-Score ≥80 (Usability-Test, n=8, Zielgruppe: Sachbearbeiter).\nTestbar: Task-Completion-Rate ≥90% bei 3 definierten Kernaufgaben.\nNotwendig: Stakeholder-Priorisierung MoSCoW: Must Have.',
+    goodTags:['✓ Eindeutig','✓ Messbar (SUS)','✓ Testbar','✓ Notwendig (MoSCoW)'],
+    goodResp:'[Usability-Test — 12 Teilnehmer]\nSUS-Score: 83,5 / 100 ≥ 80 ✓\nTask-Completion-Rate: 94% ≥ 90% ✓\nHauptfunktion ohne Anleitung gefunden: 11/12 ✓\n\nIEEE 29148-Anforderung: ERFÜLLT ✓',
+    respKeywords:['[Usability-Test — 12 Teilnehmer]','SUS-Score:','Task-Completion-Rate:','Hauptfunktion ohne Anleitung','IEEE 29148-Anforderung: ERFÜLLT'],
+    reqKeywords:['[IEEE 29148 — Usability]','Eindeutig:','Messbar:','Testbar:','Notwendig:'],
+    link:'IEEE 29148 und gute Prompts teilen dieselben 7 Kriterien. „Möglichst benutzerfreundlich" scheitert an beiden — es ist weder eindeutig noch testbar.',
+  },
+,
+  {
+    id:'euaiact', badge:'EU AI Act', emoji:'🤖', label:'EU AI Act',
+    color:'#7c3aed', colorBg:'#f5f3ff',
+    why:'Der EU AI Act zwingt dazu, KI-Systeme nach Risikoklassen zu kategorisieren und konkrete Pflichten zu benennen. „Fair sein" ist keine Anforderung — es ist eine Wunschliste.',
+    badReq:'Unser KI-System soll fair, transparent und sicher sein.',
+    tokens:[{t:'Unser',c:'tg'},{t:'KI',c:'tp'},{t:'-System',c:'tp'},{t:'soll',c:'tg'},{t:'fair',c:'tr'},{t:',',c:'tg'},{t:'transparent',c:'tr'},{t:'und',c:'tg'},{t:'sicher',c:'tr'},{t:'sein',c:'tg'}],
+    tokLegend:'Rot = nicht operationalisierbare Begriffe (EU AI Act Art. 9 — Risikomanagement-Verstoß)',
+    probs:[{w:'„Bias-Tests durchführen…"',p:71,col:'#d63b3b'},{w:'„Erklärungen für Entscheidungen liefern…"',p:62,col:'#d63b3b'},{w:'Risikoklasse + Konformitätsbewertung (braucht Kontext)',p:13,col:'#94a3b8'},{w:'Art. 9 + Hochrisiko-Pflichten + Audit (ideal)',p:4,col:'#1a9c6a'}],
+    badResp:'Das KI-System implementiert Fairness-Metriken und liefert Erklärungen für seine Entscheidungen. Sicherheitsstandards werden eingehalten.',
+    goodReq:'[EU AI Act — Art. 6 Risikoklassifizierung]\nRisikoklasse: Hochrisiko (Personalentscheidungen).\nPflicht: Konformitätsbewertung vor Inbetriebnahme.\n\n[EU AI Act — Art. 9 Risikomanagement]\nBias-Audit: Jährlich durch akkreditierte Stelle.\nMetrik: Demographische Parität ≥95% (Geschlecht, Alter).\n\n[EU AI Act — Art. 13 Transparenz]\nErklärung: Jede Entscheidung innerhalb 48h erklärbar.\nMenschliche Aufsicht: Einspruchsrecht für Betroffene.',
+    goodTags:['✓ Risikoklasse','✓ Konformitätspflicht','✓ Messbare Metrik','✓ Menschliche Aufsicht'],
+    goodResp:'[Risikoklasse] Hochrisiko bestätigt — Konformitätsbewertung abgeschlossen. ✓\n[Bias-Audit] Demographische Parität: 96,2% ≥ 95% ✓\n[Transparenz] Ø Erklärungszeit: 12h ≤ 48h ✓\n[Aufsicht] Einspruchsrecht implementiert, 3 Fälle bearbeitet. ✓\n\nEU AI Act Konformität: BESTÄTIGT ✓',
+    respKeywords:['[Risikoklasse]','[Bias-Audit]','[Transparenz]','[Aufsicht]','EU AI Act Konformität: BESTÄTIGT'],
+    reqKeywords:['[EU AI Act — Art. 6 Risikoklassifizierung]','[EU AI Act — Art. 9 Risikomanagement]','[EU AI Act — Art. 13 Transparenz]','Risikoklasse:','Pflicht:','Bias-Audit:','Metrik:','Erklärung:','Menschliche Aufsicht:'],
+    link:'„Fair sein" ist für Entwickler genauso nutzlos wie „Sag mir was über KI" für die KI — der EU AI Act verlangt messbare Kriterien, Risikoklassen und klare Verantwortlichkeiten.',
+  },
+  {
+    id:'nis2', badge:'NIS 2', emoji:'🛡', label:'NIS 2',
+    color:'#be185d', colorBg:'#fdf2f8',
+    why:'NIS 2 verpflichtet Unternehmen zu konkreten Cybersecurity-Maßnahmen mit Meldefristen und Sanktionen. „IT absichern" ist keine Anforderung — es ist eine Absichtserklärung.',
+    badReq:'Wir müssen unsere IT-Systeme absichern und Cyberangriffe verhindern.',
+    tokens:[{t:'Wir',c:'tg'},{t:'müssen',c:'tg'},{t:'unsere',c:'tg'},{t:'IT',c:'tp'},{t:'-Systeme',c:'tp'},{t:'ab',c:'tr'},{t:'sichern',c:'tr'},{t:'und',c:'tg'},{t:'Cyber',c:'ta'},{t:'angriffe',c:'ta'},{t:'ver',c:'tr'},{t:'hindern',c:'tr'}],
+    tokLegend:'Rot = nicht operationalisierbare Verben (NIS 2 Art. 21 — Maßnahmenpflicht-Verstoß)',
+    probs:[{w:'„Firewall und Antivirus installieren…"',p:74,col:'#d63b3b'},{w:'„Passwörter regelmäßig ändern…"',p:60,col:'#d63b3b'},{w:'Meldepflicht + Incident Response (braucht Kontext)',p:12,col:'#94a3b8'},{w:'Art. 21 + 24h-Meldung + Lieferkette (ideal)',p:4,col:'#1a9c6a'}],
+    badResp:'Das Unternehmen installiert Firewalls und Antivirensoftware. Passwörter werden regelmäßig geändert und Mitarbeiter werden geschult.',
+    goodReq:'[NIS 2 — Art. 21 Sicherheitsmaßnahmen]\nMFA: Pflicht für alle kritischen Systeme ab 01.01.2025.\nPatch-Zyklus: Kritische Schwachstellen ≤72h geschlossen.\n\n[NIS 2 — Art. 23 Meldepflicht]\nErsatzmeldung: ≤24h nach Incident-Erkennung an BSI.\nAbschlussbericht: ≤1 Monat mit Root-Cause-Analyse.\n\n[NIS 2 — Lieferkettensicherheit]\nLieferanten: Sicherheitsbewertung aller kritischen Anbieter.\nKontrolle: Jährliches Audit, Nachweis ISO 27001 oder SOC 2.',
+    goodTags:['✓ MFA-Pflicht','✓ Meldefrist 24h','✓ Patch-Zyklus','✓ Lieferkette'],
+    goodResp:'[Art. 21] MFA aktiv auf 100% kritischer Systeme. ✓\nLetzter kritischer Patch: 18h nach Bekanntwerden. ✓\n\n[Art. 23] Letzter Incident gemeldet: 19h nach Erkennung. ✓\nAbschlussbericht: 22 Tage nach Incident. ✓\n\n[Lieferkette] 14/14 kritische Lieferanten auditiert. ✓\n\nNIS 2 Compliance-Status: KONFORM ✓',
+    respKeywords:['[Art. 21]','[Art. 23]','[Lieferkette]','NIS 2 Compliance-Status: KONFORM'],
+    reqKeywords:['[NIS 2 — Art. 21 Sicherheitsmaßnahmen]','[NIS 2 — Art. 23 Meldepflicht]','[NIS 2 — Lieferkettensicherheit]','MFA:','Patch-Zyklus:','Ersatzmeldung:','Abschlussbericht:','Lieferanten:','Kontrolle:'],
+    link:'„IT absichern" klingt entschlossen — ist aber für Auditoren und Entwickler gleich nutzlos. NIS 2 verlangt Fristen, Metriken und nachweisbare Kontrollen.',
+  },
+  {
+    id:'souv', badge:'Digitale Souveränität', emoji:'🏛', label:'Souveränität',
+    color:'#0f766e', colorBg:'#f0fdfa',
+    why:'Digitale Souveränität ist kein Gefühl — sie ist eine messbare Eigenschaft: Wo liegen die Daten? Wie hoch ist der Open-Source-Anteil? Was kostet der Ausstieg? Ohne diese Zahlen bleibt es Marketing.',
+    badReq:'Wir wollen digital souverän sein und unabhängig von großen Cloud-Anbietern werden.',
+    tokens:[{t:'Wir',c:'tg'},{t:'wollen',c:'tr'},{t:'digital',c:'tp'},{t:'sou',c:'tp'},{t:'verän',c:'tp'},{t:'sein',c:'tg'},{t:'und',c:'tg'},{t:'unab',c:'tr'},{t:'hängig',c:'tr'},{t:'werden',c:'tg'}],
+    tokLegend:'Rot = strategische Wunschbegriffe ohne Messbarkeit (kein Standard — aber klassischer Anforderungsfehler)',
+    probs:[{w:'„Eigene Server aufbauen…"',p:69,col:'#d63b3b'},{w:'„Open-Source-Software bevorzugen…"',p:57,col:'#d63b3b'},{w:'Datenstandort + Exit-Strategie (braucht Kontext)',p:14,col:'#94a3b8'},{w:'EU-Datenstandort + Portabilität + OSS-Quote (ideal)',p:4,col:'#1a9c6a'}],
+    badResp:'Das Unternehmen setzt auf eigene Server und Open-Source-Software. Abhängigkeiten von US-Hyperscalern werden schrittweise reduziert.',
+    goodReq:'[Souveränität — Datenstandort]\nPflicht: 100% der personenbezogenen Daten in EU-Rechenzentren.\nNachweis: Jährlicher Datenstandort-Bericht, zertifiziert nach EUCS.\n\n[Souveränität — Open-Source-Anteil]\nZiel: ≥60% OSS-Anteil in kritischer Infrastruktur bis 2026.\nMetrik: Lizenz-Audit quartalsweise, Anteil in SCA-Tool messbar.\n\n[Souveränität — Exit-Strategie]\nPortabilität: Datenmigration zu alternativem Anbieter ≤30 Tage.\nTest: Jährlicher Exit-Drill mit Nachweis der Wiederherstellungszeit.',
+    goodTags:['✓ EU-Datenstandort','✓ OSS-Quote messbar','✓ Exit-Strategie','✓ Portabilität'],
+    goodResp:'[Datenstandort] 100% EU-Rechenzentren (Frankfurt, Amsterdam). ✓\nEUCS-Zertifikat: gültig bis 12/2025. ✓\n\n[OSS-Anteil] Aktuell: 67% ≥ 60% Ziel. ✓\nLizenz-Audit Q2: 0 kritische Funde. ✓\n\n[Exit-Strategie] Exit-Drill durchgeführt: 18 Tage ≤ 30 Tage. ✓\n\nDigitale Souveränität: ZIELWERTE ERREICHT ✓',
+    respKeywords:['[Datenstandort]','[OSS-Anteil]','[Exit-Strategie]','Digitale Souveränität: ZIELWERTE ERREICHT'],
+    reqKeywords:['[Souveränität — Datenstandort]','[Souveränität — Open-Source-Anteil]','[Souveränität — Exit-Strategie]','Pflicht:','Nachweis:','Ziel:','Metrik:','Portabilität:','Test:'],
+    link:'„Digital souverän werden" ist eine Vision — keine Anforderung. Erst mit EU-Datenstandort, OSS-Quote und Exit-Drill wird daraus etwas Testbares.',
+  },
+];
+
+
+// ════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════
+let exIdx=0, stepDemo=0, badTxtD='', goodTxtD='', selFwD=null;
+let stdIdx=0, stepStd=0, badTxtS='', goodTxtS='';
+
+// ════════════════════════════════════════════════
+// MAIN NAV
+// ════════════════════════════════════════════════
+function switchMain(id){
+  ['demo','web','std'].forEach(s=>{
+    document.getElementById('sec-'+s).classList.remove('on');
+  });
+  document.getElementById('sec-'+id).classList.add('on');
+  document.querySelectorAll('.main-tab').forEach((b,i)=>{
+    b.classList.toggle('active', ['demo','web','std'][i]===id);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ════════════════════════════════════════════════
+// WEB SECTION NAV
+// ════════════════════════════════════════════════
+const WEB_PANELS=['uebersicht','w1','w2','w3','w4','w5','w6'];
+function showWeb(id){
+  WEB_PANELS.forEach(p=>{
+    const el=document.getElementById('wp-'+p);
+    if(el) el.classList.toggle('on',p===id);
+  });
+  document.querySelectorAll('#sec-web .sub-tab').forEach((b,i)=>{
+    b.classList.toggle('active',WEB_PANELS[i]===id);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ════════════════════════════════════════════════
+// DEMO SECTION
+// ════════════════════════════════════════════════
+function initDemo(){
+  const picker=document.getElementById('exPicker');
+  picker.innerHTML=EXAMPLES.map((e,i)=>
+    `<button class="sub-tab${i===0?' active':''}" onclick="switchExample(${i})">${e.emoji} ${e.label}</button>`
+  ).join('');
+  renderDemo();
+}
+
+function switchExample(i){
+  exIdx=i; stepDemo=0; badTxtD=''; goodTxtD=''; selFwD=null;
+  document.querySelectorAll('#exPicker .sub-tab').forEach((b,j)=>b.classList.toggle('active',j===i));
+  renderDemo(); goDemo(0);
+}
+
+function goDemo(n){
+  stepDemo=n;
+  for(let i=0;i<7;i++){
+    document.getElementById('ds'+i).classList.toggle('on',i===n);
+  }
+  document.querySelectorAll('#demoRail .rnode').forEach((nd,i)=>{
+    nd.classList.toggle('active',i===n);
+    nd.classList.toggle('done',i<n);
+  });
+  if(n===2) setTimeout(animateBars, 60);
+  // btnLoadGood wired in renderDemo
+}
+
+function renderDemo(){
+  const ex=EXAMPLES[exIdx];
+  // Slide 0: schlechter Prompt
+  document.getElementById('ds0').innerHTML=`
+    <div class="card"><div class="card-label">Der Prompt — wie er oft aussieht</div>
+    <div class="cmp-bad" style="margin-bottom:0"><div class="clabel">✗ Schlechter Prompt</div>
+    <div class="prompt-box">${ex.badPrompt}</div>
+    <p class="reason">Kein Kontext. Keine Rolle. Kein Format. Keine Einschränkung.</p></div></div>
+    <div class="btn-row"><button class="btn btn-accent" onclick="goDemo(1)">Weiter: Tokenisierung →</button></div>`;
+  // Slide 1: Tokenisierung
+  document.getElementById('ds1').innerHTML=`
+    <div class="card"><div class="card-label">Schritt 1 — Das Modell zerlegt den Prompt in Tokens</div>
+    <div class="tok-row">${ex.tokens.map(t=>`<span class="tok ${t.c}">${t.t}</span>`).join('')}</div>
+    <div class="tok-legend">
+      <span class="tleg"><span class="tleg-dot" style="background:#94a3b8"></span>Verbindungswörter (wenig Info)</span>
+      <span class="tleg"><span class="tleg-dot" style="background:#8b5cf6"></span>Verb / Aktion</span>
+      <span class="tleg"><span class="tleg-dot" style="background:#f59e0b"></span>Thema-Wort</span>
+    </div></div>
+    <div class="btn-row"><button class="btn" onclick="goDemo(0)">← Zurück</button>
+    <button class="btn btn-accent" onclick="goDemo(2)">Weiter: Wahrscheinlichkeiten →</button></div>`;
+  // Slide 2: Wahrscheinlichkeiten
+  window._currentProbs = ex.probs;
+  document.getElementById('ds2').innerHTML=`
+    <div class="card"><div class="card-label">Schritt 2 — Die KI wählt das Wahrscheinlichste, nicht das Passende</div>
+    ${buildProbHTML(ex.probs,'ds2_bars','ds2_spider')}
+    </div>
+    <div class="btn-row"><button class="btn" onclick="goDemo(1)">← Zurück</button>
+    <button class="btn btn-accent" onclick="goDemo(3)">Weiter: KI-Antwort sehen →</button></div>`;
+  // auto-animate bars when slide renders
+  setTimeout(animateBars, 60);
+  // Slide 3: schlechte Antwort
+  document.getElementById('ds3').innerHTML=`
+    <div class="card"><div class="card-label">KI-Antwort — das Wahrscheinlichste, nicht das Passende</div>
+    <div class="cmp-bad" style="margin-bottom:16px"><div class="clabel">✗ Generische Antwort</div>
+    <div class="prompt-box">${ex.badResp}</div></div>
+    <div class="risk-grid">${ex.risks.map(r=>`<div class="risk-item"><div class="risk-title">${r.t}</div><div class="risk-desc">${r.d}</div></div>`).join('')}</div></div>
+    <div class="btn-row"><button class="btn" onclick="goDemo(2)">← Zurück</button>
+    <button class="btn btn-accent" onclick="goDemo(4)">Weiter: Guter Prompt →</button></div>`;
+  // Slide 4: guter Prompt + Framework
+  document.getElementById('ds4').innerHTML=`
+    <div class="card"><div class="card-label">Framework wählen — Prompt aufgeschlüsselt &amp; Schlüsselwörter hervorgehoben</div>
+    <div class="fw-grid">
+      <div class="fw-card${ex.framework==='RTF'?' sel':''}" data-fw="RTF"><div class="fw-name">RTF</div><div class="fw-desc">Rolle · Task · Format</div></div>
+      <div class="fw-card${ex.framework==='PACT'?' sel':''}" data-fw="PACT"><div class="fw-name">PACT</div><div class="fw-desc">Purpose · Action · Context · Tone</div></div>
+      <div class="fw-card${ex.framework==='CO-STAR'?' sel':''}" data-fw="CO-STAR"><div class="fw-name">CO-STAR</div><div class="fw-desc">Context · Objective · Style …</div></div>
+      <div class="fw-card${ex.framework==='TRACE'?' sel':''}" data-fw="TRACE"><div class="fw-name">TRACE</div><div class="fw-desc">Trigger · Result · Action …</div></div>
+      <div class="fw-card${ex.framework==='RISEN'?' sel':''}" data-fw="RISEN"><div class="fw-name">RISEN</div><div class="fw-desc">Role · Instructions · Steps …</div></div>
+      <div class="fw-card${ex.framework==='STAKE'?' sel':''}" data-fw="STAKE"><div class="fw-name">STAKE</div><div class="fw-desc">Stakeholder · Task · Answer · Kontext · Example</div></div>
+    </div>
+    <div id="fwBreakdownArea" style="display:none;margin-top:6px"></div>
+    </div>
+    <div class="btn-row"><button class="btn" onclick="goDemo(3)">← Zurück</button>
+    <button id="btnGo5" class="btn btn-accent" style="display:none" onclick="goDemo(5)">Weiter: Gute Antwort →</button>
+    <span class="hint" id="fwHint">Framework wählen, dann weiter</span></div>`;
+  document.querySelectorAll('#ds4 .fw-card').forEach(card=>{
+    card.addEventListener('click', function(){
+      document.querySelectorAll('#ds4 .fw-card').forEach(c=>c.classList.remove('sel'));
+      this.classList.add('sel');
+      const fw = this.dataset.fw;
+      const ex2 = EXAMPLES[exIdx];
+      const meta = FW_META[fw];
+      const texts = ex2.fwAll[fw] || meta.labels.map((_,i)=> i===0 ? ex2.goodPrompt : '—');
+      const partsHtml = meta.labels.map((lbl,i)=>`
+        <div class="fw-part" style="border-left:4px solid ${meta.colors[i]}">
+          <span class="fw-part-label" style="color:${meta.colors[i]}">${escHtml(lbl)}</span>
+          <span class="fw-part-text">${escHtml(texts[i]||'')}</span>
+        </div>`).join('');
+      // build the formatted prompt for this framework from fwAll texts
+      const fwPrompt = texts.join('\n');
+      const highlightedPrompt = highlightKeywords(fwPrompt, ex2.keywords||[]);
+      const tagsHtml = ex2.goodTags.map(t=>`<span class="gtag">${escHtml(t)}</span>`).join('');
+      document.getElementById('fwBreakdownArea').innerHTML=`
+        <div style="margin-bottom:12px">
+          <div class="card-label" style="margin-bottom:8px">📐 ${escHtml(fw)}-Aufschlüsselung — ${escHtml(ex2.label)}</div>
+          <div class="fw-breakdown">${partsHtml}</div>
+        </div>
+        <div class="cmp-good">
+          <div class="clabel">✓ Prompt im ${escHtml(fw)}-Format — Schlüsselwörter in <span style="color:var(--bad)">rot</span></div>
+          <div class="prompt-box" style="white-space:pre-wrap">${highlightedPrompt}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">${tagsHtml}</div>
+        </div>`;
+      document.getElementById('fwBreakdownArea').style.display='block';
+      document.getElementById('btnGo5').style.display='';
+      document.getElementById('fwHint').style.display='none';
+    });
+  });
+  // Slide 5: gute Antwort
+  document.getElementById('ds5').innerHTML=`
+    <div class="card"><div class="card-label">KI-Antwort mit Framework — präzise und verwendbar</div>
+    <div class="cmp-good"><div class="clabel">✓ Gute Antwort</div>
+    <div class="resp-area" id="dRespGood"><span class="resp-placeholder">Auf „Antwort laden" klicken …</span></div></div></div>
+    <div class="btn-row"><button class="btn" onclick="goDemo(4)">← Zurück</button>
+    <button class="btn btn-accent" id="btnLoadGood">Antwort laden ▶</button>
+    <button id="btnGo6" class="btn btn-accent" style="display:none" onclick="goDemo(6)">Weiter: Vergleich →</button></div>`;
+  // Wire btnLoadGood immediately — fresh element every renderDemo call
+  (function(){
+    var btn = document.getElementById('btnLoadGood');
+    if(btn){ btn.addEventListener('click', function(){
+      this.disabled = true;
+      typeResp('dRespGood', EXAMPLES[exIdx].goodResp, function(){
+        var b6 = document.getElementById('btnGo6');
+        if(b6) b6.style.display = '';
+      }, EXAMPLES[exIdx].keywords||[]);
+    }); }
+  })();
+  // Slide 6: Vergleich
+  document.getElementById('ds6').innerHTML=`
+    <div class="cmp">
+      <div class="cmp-bad"><div class="clabel">✗ Ohne Framework</div><div class="prompt-box" style="font-size:14px">${ex.badResp}</div></div>
+      <div class="cmp-good"><div class="clabel">✓ Mit ${ex.framework}-Framework</div><div class="prompt-box" style="font-size:14px">${ex.goodResp}</div></div>
+    </div>
+    <div class="quote"><div class="quote-main">„Wer Anforderungen beherrscht, kann auch besser prompten."</div><div class="quote-sub">${ex.syllabus}</div></div>
+    <div class="btn-row">
+      <button class="btn" onclick="goDemo(5)">← Zurück</button>
+      <button class="btn btn-accent" onclick="switchExample(${(exIdx+1)%EXAMPLES.length})">Nächstes Beispiel →</button>
+    </div>`;
+}
+
+function drawSpider(canvasId, probs){
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W/2, cy = H/2;
+  const R = Math.min(W,H)*0.38;
+  const n = probs.length;
+  ctx.clearRect(0,0,W,H);
+
+  // grid rings
+  [0.25,0.5,0.75,1].forEach(r=>{
+    ctx.beginPath();
+    for(let i=0;i<n;i++){
+      const angle = (Math.PI*2*i/n) - Math.PI/2;
+      const x = cx + Math.cos(angle)*R*r;
+      const y = cy + Math.sin(angle)*R*r;
+      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = r===1 ? '#b0b8d0' : '#d0d4e0';
+    ctx.lineWidth = r===1 ? 1.5 : 1;
+    ctx.stroke();
+    // ring label
+    if(r<1){
+      ctx.fillStyle='#8890aa';
+      ctx.font='11px system-ui';
+      ctx.fillText(Math.round(r*100)+'%', cx+4, cy - R*r + 4);
+    }
+  });
+
+  // spokes + labels
+  probs.forEach((p,i)=>{
+    const angle = (Math.PI*2*i/n) - Math.PI/2;
+    const x = cx + Math.cos(angle)*R;
+    const y = cy + Math.sin(angle)*R;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(x,y);
+    ctx.strokeStyle='#d0d4e0';
+    ctx.lineWidth=1;
+    ctx.stroke();
+    // label
+    const lx = cx + Math.cos(angle)*(R+28);
+    const ly = cy + Math.sin(angle)*(R+28);
+    ctx.fillStyle='#111';
+    ctx.font='bold 12px system-ui';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    // shorten label
+    const short = p.w.replace(/^„/,'').replace(/…".*$/,'…').replace(/".*/,'').substring(0,28);
+    ctx.fillText(short, lx, ly);
+  });
+
+  // data polygon — animate via requestAnimationFrame
+  let progress = 0;
+  function drawPoly(prog){
+    ctx.clearRect(0,0,W,H);
+    // redraw grid
+    [0.25,0.5,0.75,1].forEach(r=>{
+      ctx.beginPath();
+      for(let i=0;i<n;i++){
+        const angle=(Math.PI*2*i/n)-Math.PI/2;
+        ctx.lineTo(cx+Math.cos(angle)*R*r, cy+Math.sin(angle)*R*r);
+      }
+      ctx.closePath();
+      ctx.strokeStyle=r===1?'#b0b8d0':'#d0d4e0';
+      ctx.lineWidth=r===1?1.5:1;
+      ctx.stroke();
+      if(r<1){ctx.fillStyle='#8890aa';ctx.font='11px system-ui';ctx.fillText(Math.round(r*100)+'%',cx+4,cy-R*r+4);}
+    });
+    probs.forEach((p,i)=>{
+      const angle=(Math.PI*2*i/n)-Math.PI/2;
+      ctx.beginPath();
+      ctx.moveTo(cx,cy);
+      ctx.lineTo(cx+Math.cos(angle)*R, cy+Math.sin(angle)*R);
+      ctx.strokeStyle='#d0d4e0';ctx.lineWidth=1;ctx.stroke();
+      const lx=cx+Math.cos(angle)*(R+28),ly=cy+Math.sin(angle)*(R+28);
+      ctx.fillStyle='#111';ctx.font='bold 12px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';
+      const short=p.w.replace(/^„/,'').replace(/…".*$/,'…').replace(/".*/,'').substring(0,28);
+      ctx.fillText(short,lx,ly);
+    });
+    // data shape
+    ctx.beginPath();
+    probs.forEach((p,i)=>{
+      const angle=(Math.PI*2*i/n)-Math.PI/2;
+      const val=(p.p/100)*prog;
+      const x=cx+Math.cos(angle)*R*val;
+      const y=cy+Math.sin(angle)*R*val;
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.closePath();
+    ctx.fillStyle='rgba(91,72,232,0.18)';
+    ctx.fill();
+    ctx.strokeStyle='#5b48e8';
+    ctx.lineWidth=2.5;
+    ctx.stroke();
+    // dots + pct
+    probs.forEach((p,i)=>{
+      const angle=(Math.PI*2*i/n)-Math.PI/2;
+      const val=(p.p/100)*prog;
+      const x=cx+Math.cos(angle)*R*val;
+      const y=cy+Math.sin(angle)*R*val;
+      ctx.beginPath();
+      ctx.arc(x,y,5,0,Math.PI*2);
+      ctx.fillStyle=p.col;
+      ctx.fill();
+      ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+      if(prog===1){
+        ctx.fillStyle=p.col;
+        ctx.font='bold 13px system-ui';
+        ctx.textAlign='center';
+        ctx.fillText(p.p+'%',x,y-14);
+      }
+    });
+  }
+  function animate(){
+    progress=Math.min(1,progress+0.04);
+    drawPoly(progress);
+    if(progress<1) requestAnimationFrame(animate);
+  }
+  animate();
+}
+
+function buildProbHTML(probs, canvasId, barId){
+  let uid = barId;
+  let html = '<div class="view-toggle">';
+  html += '<button class="vbtn active" id="'+uid+'_bbtn">📊 Balken</button>';
+  html += '<button class="vbtn" id="'+uid+'_sbtn">🕸 Spinnennetz</button>';
+  html += '</div>';
+  html += '<div id="'+barId+'"><div class="prob-list">';
+  probs.forEach(function(p, i){
+    html += '<div class="prob-item">';
+    html += '<div class="prob-label">'+p.w+'</div>';
+    html += '<div class="prob-row">';
+    html += '<div class="prob-bar-wrap">';
+    html += '<div class="prob-bar" id="'+uid+'_bar'+i+'" data-target="'+p.p+'" data-col="'+p.col+'"></div>';
+    html += '</div>';
+    html += '<span class="prob-pct" id="'+uid+'_pct'+i+'" style="color:'+p.col+'">'+p.p+'%</span>';
+    html += '</div></div>';
+  });
+  html += '</div></div>';
+  html += '<div id="'+canvasId+'" style="display:none">';
+  html += '<div class="spider-wrap"><canvas id="'+canvasId+'_cv" width="500" height="340"></canvas></div>';
+  html += '</div>';
+  // animate bars after a short delay
+  setTimeout(function(){
+    probs.forEach(function(p, i){
+      var bar = document.getElementById(uid+'_bar'+i);
+      if(bar){ bar.style.background = p.col; bar.style.width = p.p+'%'; }
+    });
+    // wire toggle buttons
+    var bbtn = document.getElementById(uid+'_bbtn');
+    var sbtn = document.getElementById(uid+'_sbtn');
+    if(bbtn) bbtn.addEventListener('click', function(){
+      bbtn.classList.add('active'); sbtn.classList.remove('active');
+      document.getElementById(barId).style.display='';
+      document.getElementById(canvasId).style.display='none';
+    });
+    if(sbtn) sbtn.addEventListener('click', function(){
+      sbtn.classList.add('active'); bbtn.classList.remove('active');
+      document.getElementById(barId).style.display='none';
+      document.getElementById(canvasId).style.display='';
+      window._currentProbs = probs;
+      drawSpider(canvasId+'_cv', probs);
+    });
+  }, 80);
+  return html;
+}
+
+function showView(type, barId, canvasId, btn){
+  btn.closest('.view-toggle').querySelectorAll('.vbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const bar = document.getElementById(barId);
+  const spider = document.getElementById(canvasId);
+  if(type==='bar'){
+    bar.style.display=''; spider.style.display='none';
+  } else {
+    bar.style.display='none'; spider.style.display='';
+    // get probs from current example
+    const probs = window._currentProbs || [];
+    drawSpider(canvasId+'_cv', probs);
+  }
+}
+
+function animateBars(){
+  // bars are animated internally by buildProbHTML via setTimeout
+  // fallback: re-apply colors in case of rail navigation
+  var probs = EXAMPLES[exIdx].probs;
+  probs.forEach(function(p,i){
+    var bar = document.getElementById('ds2_bars_bar'+i);
+    if(bar){ bar.style.background = p.col; bar.style.width = p.p+'%'; }
+  });
+}
+function animateStdBars(){
+  var probs = STANDARDS[stdIdx].probs;
+  probs.forEach(function(p,i){
+    var bar = document.getElementById('ss2_bars_bar'+i);
+    if(bar){ bar.style.background = p.col; bar.style.width = p.p+'%'; }
+  });
+}
+function showView(type, barId, canvasId, btn){
+  btn.closest('.view-toggle').querySelectorAll('.vbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const bar = document.getElementById(barId);
+  const spider = document.getElementById(canvasId);
+  if(type==='bar'){
+    bar.style.display=''; spider.style.display='none';
+  } else {
+    bar.style.display='none'; spider.style.display='';
+    // get probs from current example
+    const probs = window._currentProbs || [];
+    drawSpider(canvasId+'_cv', probs);
+  }
+}
+
+function animateBars(){
+  // bars are animated internally by buildProbHTML via setTimeout
+  // fallback: re-apply colors in case of rail navigation
+  var probs = EXAMPLES[exIdx].probs;
+  probs.forEach(function(p,i){
+    var bar = document.getElementById('ds2_bars_bar'+i);
+    if(bar){ bar.style.background = p.col; bar.style.width = p.p+'%'; }
+  });
+}
+function animateStdBars(){
+  window._currentProbs = STANDARDS[stdIdx].probs;
+  const probs = STANDARDS[stdIdx].probs;
+  document.querySelectorAll('#ss2_bars .prob-bar').forEach((bar,i)=>{
+    const col = probs[i] ? probs[i].col : '#5b48e8';
+    bar.style.background = col;
+    setTimeout(()=>{ bar.style.width=bar.dataset.target+'%'; },120);
+  });
+  document.querySelectorAll('#ss2_bars .prob-pct').forEach((pct,i)=>{
+    const col = probs[i] ? probs[i].col : '#5b48e8';
+    pct.style.color = col;
+  });
+}
+
+
+// ════════════════════════════════════════════════
+// STANDARDS SECTION
+// ════════════════════════════════════════════════
+function initStd(){
+  var picker = document.getElementById('stdPicker');
+  picker.innerHTML = STANDARDS.map(function(s,i){
+    return '<button class="sub-tab'+(i===0?' active':'')+'" onclick="switchStd('+i+')">'+s.emoji+' '+s.label+'</button>';
+  }).join('');
+  renderStd();
+}
+
+function switchStd(i){
+  stdIdx = i;
+  document.querySelectorAll('#stdPicker .sub-tab').forEach(function(b,j){ b.classList.toggle('active', j===i); });
+  renderStd();
+  goStd(0);
+}
+
+function goStd(n){
+  stepStd = n;
+  for(var i=0;i<7;i++){
+    document.getElementById('ss'+i).classList.toggle('on', i===n);
+  }
+  document.querySelectorAll('#stdRail .rnode').forEach(function(nd,i){
+    nd.classList.toggle('active', i===n);
+    nd.classList.toggle('done', i<n);
+  });
+  if(n===2) setTimeout(animateStdBars, 80);
+  // btnLoadStd wired in renderStd
+}
+
+function renderStd(){
+  var s = STANDARDS[stdIdx];
+  // SS0
+  document.getElementById('ss0').innerHTML =
+    '<div class="card" style="border-left:4px solid '+s.color+'">'+
+    '<div class="card-label">Standard: '+s.badge+' — so sehen vage Anforderungen aus</div>'+
+    '<div class="cmp-bad"><div class="clabel">&#10007; Schlechte Anforderung</div>'+
+    '<div class="prompt-box">'+escHtml(s.badReq)+'</div>'+
+    '<p class="reason">Nicht messbar. Nicht testbar. Nicht eindeutig. — Verstoß gegen '+s.badge+'.</p></div>'+
+    '<div class="quote" style="margin-top:14px"><div class="quote-main">'+escHtml(s.why)+'</div></div>'+
+    '</div>'+
+    '<div class="btn-row"><button class="btn btn-accent" onclick="goStd(1)">Weiter: Tokenisierung &#8594;</button></div>';
+
+  // SS1
+  document.getElementById('ss1').innerHTML =
+    '<div class="card"><div class="card-label">Tokenisierung — die KI "sieht" nur diese Bausteine</div>'+
+    '<div class="tok-row">'+s.tokens.map(function(t){ return '<span class="tok '+t.c+'">'+escHtml(t.t)+'</span>'; }).join('')+'</div>'+
+    '<div class="tok-legend"><span class="tleg"><span class="tleg-dot" style="background:#f43f5e"></span>'+escHtml(s.tokLegend)+'</span></div>'+
+    '</div>'+
+    '<div class="btn-row"><button class="btn" onclick="goStd(0)">&#8592; Zur&#252;ck</button>'+
+    '<button class="btn btn-accent" onclick="goStd(2)">Weiter: Wahrscheinlichkeiten &#8594;</button></div>';
+
+  // SS2
+  document.getElementById('ss2').innerHTML =
+    '<div class="card"><div class="card-label">Wahrscheinlichkeiten — die KI f&#252;llt L&#252;cken mit Annahmen</div>'+
+    buildProbHTML(s.probs, 'ss2_spider', 'ss2_bars')+
+    '</div>'+
+    '<div class="btn-row"><button class="btn" onclick="goStd(1)">&#8592; Zur&#252;ck</button>'+
+    '<button class="btn btn-accent" onclick="goStd(3)">Weiter: KI-Antwort &#8594;</button></div>';
+
+  // SS3
+  document.getElementById('ss3').innerHTML =
+    '<div class="card"><div class="card-label">KI-Antwort auf die vage Anforderung — nutzlos f&#252;r Entwickler</div>'+
+    '<div class="cmp-bad"><div class="clabel">&#10007; Schwache KI-Antwort</div>'+
+    '<div class="prompt-box">'+escHtml(s.badResp)+'</div>'+
+    '<p class="reason"><strong>Problem:</strong> Kein Messkriterium, kein Testfall, keine Verantwortung.</p></div>'+
+    '</div>'+
+    '<div class="btn-row"><button class="btn" onclick="goStd(2)">&#8592; Zur&#252;ck</button>'+
+    '<button class="btn btn-accent" onclick="goStd(4)">Weiter: Gute Anforderung &#8594;</button></div>';
+
+  // SS4
+  var reqHtml = highlightKeywords(s.goodReq, s.goodTags ? s.goodTags.map(function(t){ return t.replace(/^[\u2713]\s*/,''); }) : []);
+  reqHtml = highlightStructure(reqHtml, s.reqKeywords||[]);
+  var tagsHtml = (s.goodTags||[]).map(function(t){ return '<span class="gtag">'+escHtml(t)+'</span>'; }).join('');
+  document.getElementById('ss4').innerHTML =
+    '<div class="card" style="border-left:4px solid '+s.color+'">'+
+    '<div class="card-label">&#10003; Anforderung nach '+s.badge+'-Standard</div>'+
+    '<div class="cmp-good"><div class="clabel">&#10003; Pr&#228;zise, messbar, testbar</div>'+
+    '<div class="prompt-box" id="stdReqBox">'+reqHtml+'</div>'+
+    '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">'+tagsHtml+'</div>'+
+    '</div></div>'+
+    '<div class="btn-row"><button class="btn" onclick="goStd(3)">&#8592; Zur&#252;ck</button>'+
+    '<button class="btn btn-accent" onclick="goStd(5)">Weiter: KI-Antwort &#8594;</button></div>';
+
+  // SS5
+  document.getElementById('ss5').innerHTML =
+    '<div class="card"><div class="card-label">KI-Antwort auf die pr&#228;zise '+escHtml(s.badge)+'-Anforderung</div>'+
+    '<div class="cmp-good"><div class="clabel">&#10003; Pr&#228;zise KI-Antwort</div>'+
+    '<div class="resp-area" id="sRespGood" data-struct-kw="[]">'+
+    '<span class="resp-placeholder">Auf &#8222;Antwort laden&#8220; klicken &#8230;</span></div>'+
+    '</div></div>'+
+    '<div class="btn-row"><button class="btn" onclick="goStd(4)">&#8592; Zur&#252;ck</button>'+
+    '<button class="btn btn-accent" id="btnLoadStd">Antwort laden &#9654;</button>'+
+    '<button id="btnGoStd6" class="btn btn-accent" style="display:none" onclick="goStd(6)">Weiter: Vergleich &#8594;</button></div>';
+  // Wire btnLoadStd immediately — fresh element every renderStd call
+  (function(){
+    var btn = document.getElementById('btnLoadStd');
+    if(btn){ btn.addEventListener('click', function(){
+      this.disabled = true;
+      var s2 = STANDARDS[stdIdx];
+      var el2 = document.getElementById('sRespGood');
+      if(el2) el2.dataset.structKw = JSON.stringify(s2.respKeywords||[]);
+      typeResp('sRespGood', s2.goodResp, function(){
+        var b6 = document.getElementById('btnGoStd6');
+        if(b6) b6.style.display = '';
+      }, s2.goodTags ? s2.goodTags.map(function(t){ return t.replace(/^✓\s*/,''); }) : []);
+    }); }
+  })();
+
+  // SS6
+  document.getElementById('ss6').innerHTML =
+    '<div class="cmp">'+
+    '<div class="cmp-bad"><div class="clabel">&#10007; Vage Anforderung</div>'+
+    '<div class="prompt-box" style="font-size:14px">'+escHtml(s.badResp)+'</div></div>'+
+    '<div class="cmp-good"><div class="clabel">&#10003; '+escHtml(s.badge)+'-konform</div>'+
+    '<div class="prompt-box" style="font-size:14px">'+escHtml(s.goodResp)+'</div></div>'+
+    '</div>'+
+    '<div class="quote"><div class="quote-main">'+escHtml(s.link)+'</div>'+
+    '<div class="quote-sub">Dieselbe Logik — ob Anforderung oder Prompt: Pr&#228;zision ist nicht optional.</div></div>'+
+    '<div class="btn-row">'+
+    '<button class="btn" onclick="goStd(5)">&#8592; Zur&#252;ck</button>'+
+    '<button class="btn btn-accent" onclick="switchStd('+('{')+'(stdIdx+1)%STANDARDS.length'+('}')+'})">N&#228;chster Standard &#8594;</button>'+
+    '</div>';
+}
+
+// ════════════════════════════════════════════════
+// BOOT
+// ════════════════════════════════════════════════
+initDemo();
+initStd();
+</script>
+</body>
+</html>
