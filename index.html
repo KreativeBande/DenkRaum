@@ -39,7 +39,7 @@
     font-family: var(--font-body);
     line-height: 1.55;
   }
-  .wrap { max-width: 860px; margin: 0 auto; padding: 48px 20px 60px; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 48px 20px 60px; }
   h1 {
     font-family: var(--font-display);
     color: var(--accent-strong);
@@ -47,6 +47,7 @@
     margin: 0 0 8px;
   }
   .subtitle { color: var(--muted); font-size: 16px; max-width: 560px; margin: 0 0 36px; }
+  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; align-items: start; }
   .tools { display: grid; gap: 18px; }
   .tool-card {
     display: block;
@@ -93,6 +94,9 @@
   .section:first-of-type { margin-top: 8px; }
   footer { margin-top: 40px; font-size: 13px; color: var(--muted); }
   footer a { color: var(--accent); }
+  @media (max-width: 760px) {
+    .columns { grid-template-columns: 1fr; gap: 0; }
+  }
 </style>
 </head>
 <body>
@@ -100,6 +104,8 @@
   <h1>Michaelas Denkraum</h1>
   <p class="subtitle">Interaktive Werkzeuge für strukturiertes Denken, Anforderungsklärung und Live-Trainings – direkt im Browser, ohne Installation.</p>
 
+  <div class="columns">
+  <div class="column">
   <div class="section">Anforderungsklärung &amp; Requirements Engineering</div>
   <div class="tools">
     <a class="tool-card" href="./tools/denkraum_v3_adaptive_engine.html">
@@ -137,7 +143,9 @@
       <span class="cta">Tool starten →</span>
     </a>
   </div>
+  </div>
 
+  <div class="column">
   <div class="section">KI-Kompetenz &amp; Prompting</div>
   <div class="tools">
     <a class="tool-card" href="./tools/ki-black-box-simulator.html">
@@ -153,6 +161,8 @@
       <p>Zeigt live, wie ein Prompt Tokenisierung, Kontextgewichtung und Wahrscheinlichkeiten durchläuft. Anhand von Beispielen und Qualitätshebeln (Rolle, Kontext, Constraints, Output-Format, Prüfauftrag) macht er sichtbar, wie RE-Denken die Antwortqualität einer KI steuerbar macht – inklusive Glossar und kopierbarer Prompt-Vorlage.</p>
       <span class="cta">Tool starten →</span>
     </a>
+  </div>
+  </div>
   </div>
 
   <footer>Michaela Kühn · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener">www.michaela-kuehn.com</a></footer>
