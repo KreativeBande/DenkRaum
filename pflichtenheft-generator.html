@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Pflichtenheft-Generator – schrittweise Extraktion</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --panel:#f7f5f0;
+    --panel-2:#f0ede4;
+    --ink:#20241f;
+    --ink-soft:#5b5f56;
+    --border:#d9d4c6;
+    --border-strong:#b9b29e;
+    --accent:#2f5233;
+    --accent-soft:#e4ebe2;
+    --muss:#9a2b1f;
+    --muss-bg:#f8e2de;
+    --kann:#7a4a08;
+    --kann-bg:#f6e6c8;
+    --fa:#1d4f8f;
+    --fa-bg:#dde8f7;
+    --nfa:#5b3a8f;
+    --nfa-bg:#e7ddf4;
+    --warn-bg:#f8e9a6;
+    --warn-ink:#5c4a05;
+    --risk-bg:#f3ded1;
+    --risk-ink:#7a3d10;
+    --oos-bg:#e3e1da;
+    --oos-ink:#41453d;
+    --ms-bg:#dcecdf;
+    --ms-ink:#1f4a2b;
+    --mono: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace;
+    --serif: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);}
+  body{min-height:100vh;display:flex;flex-direction:column;}
+
+  /* Beamer-Modus: vergrößert die komplette Darstellung inkl. Layout (nicht nur Text) für
+     Präsentationen aus größerer Entfernung. `zoom` statt `transform:scale`, weil zoom das
+     Layout neu fließen lässt (Panels bleiben proportional, Sticky-Header/-Footer bleiben
+     funktionsfähig) — mit transform müssten Breiten/Höhen manuell kompensiert werden. */
+  html[data-beamer="1"]{zoom:1.35;}
+  html[data-beamer="2"]{zoom:1.75;}
+
+  header{
+    background:var(--bg);
+    border-bottom:2px solid var(--border-strong);
+    padding:14px 22px 12px;
+    position:sticky;top:0;z-index:20;
+  }
+  .titlebar{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  h1{font-family:var(--serif);font-size:22px;margin:0;font-weight:700;color:var(--accent);}
+  .subtitle{font-size:14px;color:var(--ink-soft);margin-top:2px;}
+  .gesamt-btn{
+    border:1.5px solid var(--accent);background:var(--bg);color:var(--accent);
+    font-weight:600;font-size:14px;padding:10px 16px;border-radius:20px;cursor:pointer;
+    white-space:nowrap;min-height:40px;touch-action:manipulation;user-select:none;
+  }
+  .gesamt-btn.active{background:var(--accent);color:#fff;}
+  .gesamt-btn.beamer-level-2{box-shadow:0 0 0 3px var(--accent-soft) inset;}
+
+  .pillnav{
+    display:flex;gap:8px;flex-wrap:nowrap;margin-top:12px;
+    overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;
+    scrollbar-width:none;
+  }
+  .pillnav::-webkit-scrollbar{display:none;}
+  .pill{
+    display:flex;align-items:center;gap:6px;flex-shrink:0;
+    border:1.5px solid var(--border-strong);background:var(--panel);
+    color:var(--ink-soft);font-size:14px;font-weight:600;
+    padding:10px 15px;min-height:40px;border-radius:20px;cursor:pointer;user-select:none;
+    touch-action:manipulation;
+  }
+  .pill .num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:18px;height:18px;border-radius:50%;background:var(--border-strong);color:#fff;font-size:14px;
+  }
+  .pill.done{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+  .pill.done .num{background:var(--accent);}
+  .pill.current{border-color:var(--accent);background:var(--accent);color:#fff;}
+  .pill.current .num{background:#fff;color:var(--accent);}
+
+  main.layout{
+    flex:1;display:flex;gap:0;align-items:stretch;
+    min-height:0;
+  }
+  .left-panel{
+    width:40%;min-width:320px;min-height:0;border-right:2px solid var(--border);
+    background:var(--panel);padding:18px 20px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  }
+  .right-panel{
+    width:60%;min-height:0;padding:18px 22px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  }
+
+  .block-label{
+    font-size:14px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);
+    font-weight:700;margin-bottom:6px;
+  }
+  .corpus-details{
+    border:1.5px solid var(--border-strong);border-radius:10px;
+    background:#fffefb;margin-bottom:16px;overflow:hidden;
+  }
+  .corpus-details summary{
+    list-style:none;cursor:pointer;user-select:none;touch-action:manipulation;
+    padding:12px 14px;font-size:14px;text-transform:uppercase;letter-spacing:0.06em;
+    font-weight:700;color:var(--ink-soft);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .corpus-details summary::-webkit-details-marker{display:none;}
+  .corpus-details summary::after{content:"▾";font-weight:400;text-transform:none;letter-spacing:0;font-size:14px;transition:transform 0.15s;}
+  .corpus-details[open] summary::after{transform:rotate(180deg);}
+  .corpus-details summary:hover{color:var(--accent);}
+  .corpus-details-body{padding:0 14px 14px;}
+  textarea#corpus{
+    width:100%;height:300px;resize:vertical;
+    font-family:var(--mono);font-size:16px;line-height:1.5;
+    border:1.5px solid var(--border-strong);border-radius:8px;
+    padding:12px;background:#fffefb;color:var(--ink);
+  }
+  .corpus-hint{font-size:14px;color:var(--ink-soft);margin-top:6px;line-height:1.5;}
+  .corpus-actions{display:flex;gap:8px;margin-top:8px;}
+  .btn-mini{
+    font-size:14px;border:1px solid var(--border-strong);background:var(--bg);
+    color:var(--ink-soft);padding:9px 13px;min-height:38px;border-radius:6px;cursor:pointer;
+    touch-action:manipulation;user-select:none;display:inline-flex;align-items:center;
+  }
+
+  .method-card{
+    margin-top:20px;border:1.5px dashed var(--border-strong);border-radius:10px;
+    padding:16px 16px 14px;background:#fffefb;
+  }
+  .method-card h2{font-family:var(--serif);font-size:16px;margin:0 0 4px;color:var(--accent);}
+  .method-card .step-tag{font-size:14px;color:var(--ink-soft);margin-bottom:10px;}
+  .method-card ul{margin:0 0 8px;padding-left:20px;font-size:14px;line-height:1.55;}
+  .method-card li{margin-bottom:7px;}
+  .method-card li code{background:var(--panel-2);padding:1px 5px;border-radius:4px;font-family:var(--mono);font-size:14px;}
+  .run-btn-wrap{
+    position:sticky;bottom:-1px;z-index:9;
+    background:#fffefb;padding-top:12px;margin-top:8px;
+    border-top:1.5px dashed var(--border-strong);
+  }
+  .run-btn{
+    width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:16px;font-weight:700;padding:16px 18px;cursor:pointer;touch-action:manipulation;
+    box-shadow:0 3px 10px rgba(47,82,51,0.35);letter-spacing:0.01em;
+  }
+  .run-btn:active{opacity:0.85;}
+  .run-btn.secondary{background:var(--bg);color:var(--accent);border:1.5px solid var(--accent);}
+
+  .results-empty{
+    color:var(--ink-soft);font-size:14px;border:1.5px dashed var(--border);
+    border-radius:10px;padding:30px;text-align:center;margin-top:10px;
+  }
+  .results-topbar{
+    position:sticky;top:0;z-index:8;
+    background:var(--bg);margin:0 0 14px;padding-bottom:12px;
+    border-bottom:2px solid var(--border);
+  }
+  .results-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;flex-wrap:wrap;gap:6px;}
+  .results-header h2{font-family:var(--serif);font-size:18px;margin:0;color:var(--accent);}
+  .results-count{font-size:14px;color:var(--ink-soft);}
+  .results-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .nav-left-group{display:flex;gap:8px;flex-wrap:wrap;}
+  .nav-btn{
+    border:none;border-radius:8px;font-size:14px;font-weight:700;padding:10px 16px;
+    cursor:pointer;touch-action:manipulation;user-select:none;min-height:40px;
+  }
+  .nav-btn-next{background:var(--accent);color:#fff;}
+  .nav-btn-prev{background:var(--bg);color:var(--accent);border:1.5px solid var(--accent);}
+  .nav-btn-start{background:var(--panel-2);color:var(--ink-soft);border:1.5px solid var(--border-strong);}
+
+  .item-card{
+    border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px;
+    background:#fffefb;
+  }
+  .badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+  .badge{
+    font-size:14px;font-weight:700;padding:3px 9px;border-radius:12px;white-space:nowrap;
+  }
+  .badge.muss{background:var(--muss-bg);color:var(--muss);}
+  .badge.kann{background:var(--kann-bg);color:var(--kann);}
+  .badge.fa{background:var(--fa-bg);color:var(--fa);}
+  .badge.nfa{background:var(--nfa-bg);color:var(--nfa);}
+  .badge.warn{background:var(--warn-bg);color:var(--warn-ink);}
+  .badge.risk{background:var(--risk-bg);color:var(--risk-ink);}
+  .badge.oos{background:var(--oos-bg);color:var(--oos-ink);}
+  .badge.ms{background:var(--ms-bg);color:var(--ms-ink);}
+  .badge.role{background:var(--fa-bg);color:var(--fa);}
+
+  .item-text{font-size:16px;line-height:1.5;font-style:italic;color:var(--ink);
+    border-left:3px solid var(--border-strong);padding-left:10px;margin-bottom:8px;}
+  .item-text mark{background:#fbe89b;padding:0 2px;border-radius:2px;font-style:normal;}
+  .item-meta{font-size:14px;color:var(--ink-soft);font-family:var(--mono);}
+  .item-meta b{color:var(--ink);}
+
+  .token-toggle{margin-top:8px;}
+  .token-toggle summary{
+    list-style:none;cursor:pointer;font-size:14px;font-weight:600;color:var(--accent);
+    touch-action:manipulation;user-select:none;display:inline-flex;align-items:center;gap:4px;
+    padding:4px 0;
+  }
+  .token-toggle summary::-webkit-details-marker{display:none;}
+  .token-toggle summary::before{content:"▸";display:inline-block;transition:transform 0.15s;}
+  .token-toggle[open] summary::before{transform:rotate(90deg);}
+  .token-strip{
+    margin-top:8px;padding:10px 12px;background:var(--panel-2);border-radius:8px;
+    font-family:var(--mono);font-size:16px;line-height:2;
+  }
+  .tok{padding:1px 2px;border-radius:3px;}
+  .tok-muss{background:var(--muss-bg);color:var(--muss);font-weight:700;}
+  .tok-kann{background:var(--kann-bg);color:var(--kann);font-weight:700;}
+  .tok-nfa{background:var(--nfa-bg);color:var(--nfa);font-weight:700;}
+  .tok-warn{background:var(--warn-bg);color:var(--warn-ink);font-weight:700;}
+  .tok-produkt{background:var(--oos-bg);color:var(--oos-ink);font-weight:700;}
+  .token-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:14px;color:var(--ink-soft);}
+  .tok-legend-item{display:inline-flex;align-items:center;gap:5px;}
+  .token-summary{margin-top:8px;font-size:16px;color:var(--ink);background:#fffefb;border:1px solid var(--border);border-radius:6px;padding:8px 10px;}
+  .token-summary b{color:var(--accent);}
+
+  .compliance-block{
+    margin-top:16px;border:1.5px dashed var(--border-strong);border-radius:10px;
+    padding:14px 16px;background:var(--panel-2);
+  }
+  .compliance-header{font-weight:700;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .compliance-sub{font-size:14px;color:var(--ink-soft);margin-bottom:10px;}
+  .compliance-row{display:flex;align-items:baseline;gap:10px;padding:6px 0;border-top:1px solid var(--border);flex-wrap:wrap;}
+  .compliance-row:first-of-type{border-top:none;}
+  .compliance-warum{font-size:16px;color:var(--ink-soft);}
+
+  .matrix-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border-strong);border-radius:8px;}
+  table.matrix-table{border-collapse:collapse;width:100%;min-width:760px;font-size:16px;}
+  table.matrix-table th{
+    background:var(--accent);color:#fff;text-align:left;padding:9px 10px;font-size:14px;
+  }
+  table.matrix-table td{padding:9px 10px;border-top:1px solid var(--border);vertical-align:top;background:#fffefb;}
+  table.matrix-table tr:nth-child(even) td{background:var(--panel);}
+  .matrix-empty{color:var(--ink-soft);}
+
+  .kalk-table td{background:#fffefb;}
+  .kalk-phase-row td{
+    background:var(--accent-soft)!important;color:var(--accent);font-weight:700;font-size:14px;
+    padding:8px 10px;
+  }
+  .kalk-grand-row td{
+    background:var(--accent)!important;color:#fff;font-weight:700;font-size:14px;
+  }
+  input.kalk-input{
+    width:80px;font-size:14px;padding:7px 8px;border:1.5px solid var(--border-strong);
+    border-radius:6px;font-family:var(--mono);background:#fff;color:var(--ink);
+  }
+  input.kalk-input:focus{outline:2px solid var(--accent);outline-offset:1px;}
+
+  .empty-note{
+    font-size:14px;color:var(--ink-soft);background:var(--panel-2);border-radius:8px;
+    padding:10px 12px;margin-bottom:10px;
+  }
+
+  .ms-list{border-left:3px solid var(--accent);margin-left:8px;padding-left:0;}
+  .ms-item{position:relative;padding:4px 0 16px 22px;}
+  .ms-item::before{
+    content:"";position:absolute;left:-8px;top:8px;width:12px;height:12px;border-radius:50%;
+    background:var(--accent);border:2px solid #fff;box-shadow:0 0 0 1.5px var(--accent);
+  }
+  .ms-date{font-family:var(--mono);font-size:14px;color:var(--accent);font-weight:700;}
+  .ms-title{font-size:16px;font-weight:700;margin:2px 0 3px;}
+  .ms-detail{font-size:16px;color:var(--ink-soft);line-height:1.5;}
+  .ms-source{font-size:14px;color:var(--ink-soft);font-family:var(--mono);margin-top:3px;}
+
+  #gesamtView{display:none;padding:20px 24px;}
+  #gesamtView.active{display:block;}
+  main.layout.hidden{display:none;}
+
+  footer#masterPromptFooter{
+    border-top:2px solid var(--border-strong);
+    background:var(--panel);
+    padding:0;
+    position:sticky;bottom:0;z-index:15;
+    flex-shrink:0;
+  }
+  footer#masterPromptFooter summary{
+    list-style:none;cursor:pointer;user-select:none;touch-action:manipulation;
+    padding:12px 22px;font-size:14px;font-weight:700;color:var(--accent);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  footer#masterPromptFooter summary::-webkit-details-marker{display:none;}
+  footer#masterPromptFooter summary::after{
+    content:"▾";font-weight:400;transition:transform 0.15s;
+  }
+  footer#masterPromptFooter[open] summary::after{transform:rotate(180deg);}
+  footer#masterPromptFooter .footer-prompt-body{
+    padding:0 22px 18px;max-height:45vh;overflow-y:auto;
+  }
+  footer#masterPromptFooter .vortrag-body{
+    font-family:var(--sans);font-size:16px;line-height:1.6;
+  }
+  footer#masterPromptFooter .vt-step{
+    margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);
+  }
+  footer#masterPromptFooter .vt-step:last-of-type{border-bottom:none;}
+  footer#masterPromptFooter .vt-regie{
+    color:var(--accent);font-style:italic;margin:0 0 6px;font-size:14px;
+  }
+  footer#masterPromptFooter .vt-uebergang{
+    color:var(--ink-soft);font-size:14px;margin-top:6px;
+  }
+  footer#masterPromptFooter textarea#promptText{
+    width:100%;height:32vh;font-family:var(--mono);font-size:16px;line-height:1.55;
+    border:1.5px solid var(--border-strong);border-radius:8px;padding:14px;
+    background:#fffefb;color:var(--ink);
+  }
+  .gesamt-inner{max-width:820px;margin:0 auto;}
+  .gesamt-inner h2{font-family:var(--serif);color:var(--accent);font-size:20px;border-bottom:2px solid var(--border);padding-bottom:6px;margin-top:30px;}
+  .gesamt-inner h2:first-child{margin-top:0;}
+  textarea#gesamtText{
+    width:100%;height:60vh;font-family:var(--mono);font-size:16px;line-height:1.55;
+    border:1.5px solid var(--border-strong);border-radius:8px;padding:14px;background:#fffefb;color:var(--ink);
+  }
+  .copy-hint{font-size:14px;color:var(--ink-soft);margin-top:8px;}
+
+  @media (max-width: 860px){
+    main.layout{flex-direction:column;}
+    .left-panel,.right-panel{width:100%;border-right:none;}
+    .left-panel{border-bottom:2px solid var(--border);}
+    textarea#corpus{height:220px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="titlebar">
+    <div>
+      <h1>Pflichtenheft-Generator</h1>
+      <div class="subtitle">Schrittweise, regelbasierte Extraktion aus der Quelle „Studierendenakte" — vollständig offline</div>
+    </div>
+    <button class="gesamt-btn" id="gesamtToggle">📄 Gesamtansicht</button>
+    <button class="gesamt-btn" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
+  </div>
+  <div class="pillnav" id="pillnav"></div>
+</header>
+
+<main class="layout" id="mainLayout">
+  <section class="left-panel">
+    <details class="corpus-details" open>
+      <summary>Quelle: Studierendenakte (Ausschreibung)</summary>
+      <div class="corpus-details-body">
+        <div class="corpus-actions" style="margin-bottom:10px;">
+          <label class="btn-mini" for="fileUpload" style="cursor:pointer;">📤 Dokument hochladen (.txt/.md/.docx)</label>
+          <input type="file" id="fileUpload" accept=".txt,.md,.docx" style="display:none;">
+          <span id="uploadStatus" style="font-size:14px;color:var(--ink-soft);"></span>
+        </div>
+        <textarea id="corpus" spellcheck="false"></textarea>
+        <div class="corpus-actions">
+          <button class="btn-mini" id="resetCorpusBtn">↺ Original wiederherstellen</button>
+          <button class="btn-mini" id="resetAllBtn" title="Löscht alle bisherigen Ergebnisse und Eingaben">🔄 Alles zurücksetzen</button>
+        </div>
+        <div class="corpus-hint">
+          Format: Abschnittsüberschriften mit <code>## Abschnittsname</code>, darunter Fließtext (Absätze durch Leerzeile trennen). Für eine andere Studienakte kann dieser Text vollständig ersetzt werden — die Regeln unten arbeiten auf jedem so formatierten Text.
+        </div>
+      </div>
+    </details>
+
+    <div class="method-card" id="methodCard">
+      <!-- wird per JS befüllt -->
+    </div>
+  </section>
+
+  <section class="right-panel" id="resultsPanel">
+    <!-- wird per JS befüllt -->
+  </section>
+</main>
+
+<section id="gesamtView">
+  <div class="gesamt-inner">
+    <div class="block-label">Gesamtansicht — vorläufiges Pflichtenheft</div>
+    <textarea id="gesamtText" readonly></textarea>
+    <div class="copy-hint">Text markieren und kopieren (⌘/Strg+A, dann Kopieren) — Endformat noch offen, daher hier als reiner Text zur Weiterverarbeitung.</div>
+  </div>
+</section>
+
+<footer id="masterPromptFooter">
+  <details id="promptDetails">
+    <summary>📋 Master-Prompt — für andere Dokumente (aufklappen)</summary>
+    <div class="footer-prompt-body">
+      <textarea id="promptText" readonly></textarea>
+      <div class="copy-hint">Text markieren und kopieren — für Notion, für Kolleg:innen ohne dieses Tool, oder als Anweisung an ein LLM, das dieselbe Extraktion manuell auf einem anderen Dokument nachvollziehen soll.</div>
+    </div>
+  </details>
+  <details id="handbuchDetails">
+    <summary>📘 Handbuch — Konstruktionslogik (aufklappen)</summary>
+    <div class="footer-prompt-body" style="font-family:var(--sans);font-size:16px;line-height:1.6;">
+      <p><b>Framework des Master-Prompts (oben):</b> RTF — Role (Requirements-Analyst:in), Task (dieselbe 15-Schritt-Extraktion auf einem neuen Ausschreibungstext nachvollziehen), Format (identische Kategorien/Badges wie im Tool). Bewusst schlank gehalten, weil der Prompt ein Werkzeug für Kolleg:innen ohne dieses Tool ist, nicht ein didaktisches Lehrbeispiel.</p>
+      <p><b>IREB/BABOK/PMBOK-Bezug (Grundregel 1):</b> Das Tool referenziert IREB explizit (Nebelarten-Terminologie im Schritt „Unausgesprochene Annahmen"). BABOK und PMBOK werden hier bewusst <i>nicht</i> vertieft: Das Tool bildet die klassische Lastenheft/Pflichtenheft-Extraktion aus einem realen Ausschreibungsdokument nach — das ist genuin IREB-Terrain (Anforderungsermittlung aus Bestandstext), nicht die eher prozess-/stakeholder-orientierte Business-Analyse-Sicht von BABOK oder das projektorientierte Vorgehen von PMBOK. Beide Rahmen wären für ein Modul zu Stakeholder-Analyse oder Projektplanung einschlägiger als für reine Dokumentextraktion.</p>
+      <p><b>Der eine Punkt, der hier zählt:</b> Ein Extraktions-Tool ist nur so glaubwürdig wie sein Quelltext — deshalb arbeitet dieses Tool mit einem echten, unverändert zitierten Ausschreibungsdokument statt mit erfundenen Beispielsätzen.</p>
+      <p><b>Nachbau-Tipp:</b> Wer ein ähnliches Tool baut, sollte die Erkennungsregeln (NORM_RULES, SOUVERAENITAET_DIMENSIONEN etc.) immer mit Status/Datum bei sich entwickelnder Regulatorik versehen (K8) — sonst veraltet die Aussage lautlos, während der Regex weiterläuft.</p>
+    </div>
+  </details>
+  <details id="vortragDetails">
+    <summary>🎤 Vortrags-Skript — für den Live-Auftritt (aufklappen)</summary>
+    <div class="footer-prompt-body vortrag-body">
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: Tool ist geöffnet, Kopfzeile + Pillnav sichtbar, „Quelle: Studierendenakte" ist aufgeklappt — bewusst so lassen, nicht zuklappen.]</i></p>
+      <p><b>0 · Einstieg.</b> Das hier ist ein Pflichtenheft-Generator — aber nicht im Sinne von „die KI schreibt mir das". Was hier steht, ist der vollständige, unveränderte Text einer echten Ausschreibung, der „Digitalen Studierendenakte". Fünfzehn Schritte, jeder mit einer eigenen, nachvollziehbaren Extraktionsregel — keine Blackbox, keine Erfindung.</p>
+      <p class="vt-uebergang">Übergang: Fangen wir mit dem ersten Schritt an — den Stakeholdern.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: Pill „Stakeholder" ist bereits aktiv → Button „Extraktion starten" klicken.]</i></p>
+      <p><b>1 · Stakeholder.</b> Das Tool kennt neun im Dokument benannte Rollen — von den Studierenden bis zum Drittanbieter Ricoh. Für jede Rolle sehen Sie die erste passende Fundstelle als Beleg. Wichtig: Die Einstufung Hoch/Mittel/Niedrig ist rein nach Erwähnungshäufigkeit im Text — das ist <i>keine</i> echte Stakeholder-Analyse, das müssen Sie fachlich verifizieren.</p>
+      <p class="vt-uebergang">Übergang: Weiter zu den Use Cases.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: „Weiter zu ‚Use Cases'" → „Extraktion starten".]</i></p>
+      <p><b>2 · Use Cases.</b> Hier nutzt das Tool die Gliederung des Dokuments selbst: Überschriften wie „Einsatzbereiche – X" werden als eigenständige Use-Case-Kandidaten erkannt, keine Freitextsuche. Nur wenn das Dokument keine solche Gliederung hat, greift ein Fallback über Schlüsselwörter wie „Anwendungsfall" oder „Workflow".</p>
+      <p class="vt-uebergang">Übergang: Von den groben Use Cases zu den feineren Produktfunktionen.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: „Weiter zu ‚Produktfunktionen'" → „Extraktion starten".]</i></p>
+      <p><b>3 · Produktfunktionen.</b> Dieser Schritt schließt die Lücke zwischen den groben Use Cases und einzelnen Anforderungssätzen — wichtig für die spätere Traceability. Der Satz mit den AF-Nummernbereichen wird zerlegt, konkrete „Produktdaten"-Abschnitte werden direkt übernommen. Im Demo-Korpus sind das nur zwei vollständige Funktionen — bei einem vollständigeren Upload wächst die Liste automatisch.</p>
+      <p class="vt-uebergang">Übergang: Jetzt zum Kernstück — den eigentlichen Anforderungen.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: „Weiter zu ‚Anforderungen'" → „Extraktion starten". Danach: eine Karte aufklappen und die Tokenansicht zeigen.]</i></p>
+      <p><b>4 · Anforderungen — das Kernstück.</b> Modalverben wie „muss/soll" markieren Muss-Anforderungen, „kann/optional" Kann-Anforderungen. Eine feste Trigger-Liste unterscheidet FA von NFA. Generische Begriffe ohne Zahl oder Frist bekommen die Badge „Qualitätsnebel". Konkrete Produktnennungen wie HIS-SOS oder FlexNow bekommen die Badge „⚙ produktspezifisch" — bewusst <i>nicht</i> das ⚖-Symbol, das ist exklusiv für normvorgegebene Mittel reserviert.</p>
+      <p class="vt-regie"><i>[Jetzt: Tokenansicht bei einer Karte aufklappen.]</i></p>
+      <p>Und hier der entscheidende Punkt für die Schulung: Das ist <b>keine KI-Bewertung</b>. Das ist wortgenaue Mustererkennung, und genau das macht die Tokenansicht sichtbar — Sie sehen exakt, welches Wort welchen Treffer ausgelöst hat.</p>
+      <p class="vt-uebergang">Übergang: Weiter zu den Qualitätsstandards — welche Normen erkennt das Tool im Text?</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: „Weiter zu ‚Qualitätsstandards'" → „Extraktion starten".]</i></p>
+      <p><b>5 · Qualitätsstandards.</b> Feste Muster für ISO-Normen, DSGVO, BSI-Grundschutz, DIN, IEEE und EU-Regulatorik. Ein Nulltreffer bei DSGVO ist bei älteren Ausschreibungen vor 2018 völlig normal — kein Fehler, sondern ein valides Ergebnis. Unten sehen Sie zusätzlich eine moderne Compliance-Einordnung, bewusst getrennt von der reinen Texterkennung.</p>
+      <p class="vt-uebergang">Übergang: Von Normen zu einem spezifischeren Check — der digitalen Souveränität.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: „Weiter zu ‚Souveränität'" → „Extraktion starten".]</i></p>
+      <p><b>6 · Souveränitätscheck.</b> Sechs feste Prüfdimensionen — Vendor-Lock-in, Datenstandort, Portabilität, Interoperabilität, Zugriffskontrolle, Vertragstransparenz — angelehnt an den CADA-Rahmen, den EU-Kommissionsvorschlag vom 3. Juni 2026, aktuell im Status Vorschlag. Wo der Text keinen Beleg liefert, erscheint die Badge „offen" mit Verweis auf die einschlägige Norm — als aktive Nachfrage beim Anbieter, nicht als stillschweigende Lücke.</p>
+      <p class="vt-uebergang">Übergang: Weiter zu den Risiken.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: „Weiter zu ‚Risiken'" → „Extraktion starten".]</i></p>
+      <p><b>7 · Risiko-Register.</b> Sechs Muster — von Abhängigkeitsformulierungen bis zur Nennung des Drittanbieters Ricoh. Bewusst <i>keine</i> automatische Bewertung von Wahrscheinlichkeit oder Auswirkung — das ist Aufgabe des Projektteams, hier wird nichts erfunden.</p>
+      <p class="vt-uebergang">Übergang: Weiter zu dem, was <i>nicht</i> Teil des Projekts ist.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: „Weiter zu ‚Out of Scope'" → „Extraktion starten".]</i></p>
+      <p><b>8 · Out of Scope.</b> Formulierungen wie „gegen Ende des Projekts" oder „denkbar" markieren Kandidaten — <i>keine</i> bestätigte Ausschlussliste. Ausschreibungen enthalten selten explizite Ausschlüsse, deshalb ist eine geringe Trefferquote hier erwartbar und kein Zeichen für einen Fehler im Tool.</p>
+      <p class="vt-uebergang">Übergang: Weiter zu den unausgesprochenen Annahmen.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: „Weiter zu ‚Annahmen'" → „Extraktion starten".]</i></p>
+      <p><b>9 · Annahmen &amp; Restriktionen.</b> Unausgesprochene Annahmen sind eine eigene IREB-Nebelart und im klassischen Pflichtenheft ein Standardkapitel — hier ergänzt, weil es in der ursprünglichen Auswahl fehlte. Zwei Muster: Annahme-Formulierungen und Restriktions-Formulierungen.</p>
+      <p class="vt-uebergang">Übergang: Weiter zum Budget.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: „Weiter zu ‚Budget'" → „Extraktion starten".]</i></p>
+      <p><b>10 · Budget (vorläufig).</b> Konkrete Beträge mit €/EUR werden direkt erkannt, Kostenbezüge ohne Betrag separat gelistet. Ein Nulltreffer bei konkreten Beträgen ist typisch — Ausschreibungen verweisen das oft in eine separate Bewertungsmatrix.</p>
+      <p class="vt-uebergang">Übergang: Weiter zu den Ressourcen.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: „Weiter zu ‚Ressourcen'" → „Extraktion starten".]</i></p>
+      <p><b>11 · Ressourcen.</b> Die Ressourcentabelle aus dem Anhang wird direkt übernommen — keine Heuristik nötig, da bereits strukturiert vorhanden. Ergänzend eine Freitextsuche nach Scangeräten, IT-Infrastruktur und Projektmitarbeitern.</p>
+      <p class="vt-uebergang">Übergang: Jetzt wird es interessant — Testfälle, die nicht im Text stehen.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: „Weiter zu ‚Testfälle'" → „Extraktion starten". Betonung: hier wechselt der Modus.]</i></p>
+      <p><b>12 · Testfälle — Achtung, Moduswechsel.</b> Das Lastenheft enthält keine Testfälle. Diese werden aus den Ergebnissen von Schritt 4 <i>abgeleitet</i>, nicht im Text gefunden — deshalb muss „Anforderungen" vorher gelaufen sein. Jede Anforderung bekommt genau einen Testfall, der Originaltext wird unverändert als Prüfziel übernommen — keine Paraphrase, kein erfundener Erwartungswert.</p>
+      <p class="vt-uebergang">Übergang: Weiter zum Meilensteinplan.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: „Weiter zu ‚Meilensteine'" → „Extraktion starten".]</i></p>
+      <p><b>13 · Meilensteine.</b> Keine Heuristik nötig — die Quelle enthält bereits eine Tabelle mit elf Umsetzungsphasen. Der Meilenstein ist jeweils das spätestgenannte Enddatum je Phase, chronologisch sortiert, nicht nach der Phasennummer im Dokument.</p>
+      <p class="vt-uebergang">Übergang: Jetzt verknüpfen wir alles bisher Erzeugte — die Traceability-Matrix.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: „Weiter zu ‚Traceability'" → „Extraktion starten".]</i></p>
+      <p><b>14 · Traceability-Matrix.</b> Keine neue Texterkennung — reine Verknüpfung der bisherigen Ergebnisse. Wichtig für die Schulung: Die Spalte Use Case/Produktfunktion ist eine <i>Näherung über gemeinsame Herkunft</i>, keine geprüfte inhaltliche Verknüpfung. Und eine leere Meilenstein-Spalte ist ehrlich, keine Schwäche der Matrix.</p>
+      <p class="vt-uebergang">Übergang: Letzter Schritt — die Kalkulation.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: „Weiter zu ‚Kalkulation'" → „Extraktion starten".]</i></p>
+      <p><b>15 · Kalkulation.</b> Ganz bewusst werden hier <i>keine</i> Personentage oder Tagessätze erfunden — realistische Marktsätze kenne ich nicht zuverlässig, und das wäre ohnehin Bieter-Kalkulation, nicht Auftraggeber-Anforderungsanalyse. Sie sehen eine leere Struktur mit einer Zeile pro Anforderung, gruppiert nach Meilenstein-Phase — Kosten berechnen sich live, sobald Sie PT und Tagessatz eintragen.</p>
+      <p class="vt-uebergang">Übergang: Und damit sind alle fünfzehn Schritte durch — zur Gesamtansicht.</p></div>
+
+      <div class="vt-step"><p class="vt-regie"><i>[Klick: „Weiter" auf dem letzten Schritt öffnet automatisch die Gesamtansicht — alternativ jederzeit über den Button „📄 Gesamtansicht" oben rechts.]</i></p>
+      <p><b>Abschluss · Gesamtansicht.</b> Hier ist das vorläufige Pflichtenheft als reiner Text, alle fünfzehn Schritte zusammengeführt — Endformat bewusst offen, das ist der Rohstoff für die Weiterverarbeitung in Word oder Notion, nicht das fertige Dokument.</p></div>
+
+      <p class="vt-regie" style="margin-top:18px;border-top:1.5px solid var(--border);padding-top:14px;">
+      <i><b>Allgemeine Regie-Hinweise:</b> Nicht mit den Abkürzungen (FA/NFA/AF-Nummern) einsteigen, sondern immer erst die Analogie „echte Ausschreibung, keine Erfindung" bringen — das verankert das Vertrauen in die Extraktion. Bei Schritt 4 (Anforderungen) genug Zeit für die Tokenansicht einplanen, das ist didaktisch der wichtigste Moment im ganzen Tool. Bei Schritt 12 (Testfälle) den Moduswechsel explizit ansagen, sonst wirkt es wie ein Bruch in der „nur Extraktion"-Logik. Nullbefunde (DSGVO vor 2018, Budget ohne Betrag) nicht entschuldigen, sondern als Qualitätsmerkmal der Regel-Engine erklären.</i></p>
+    </div>
+  </details>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   1) QUELLTEXT (Studierendenakte) — editierbar, mit Abschnittsmarkern
+   ============================================================ */
+var DEFAULT_CORPUS =
+"## 1 Einleitung\n" +
+"Die ABC-Hochschule verzeichnet mit ca. 30.000 Studierenden seit Jahren eine konstant hohe Anzahl an Studierenden, sodass bereits kleine Prozessverbesserungen in der Studierenden- und Prüfungsverwaltung zu großen Effekten führen können.\n\n" +
+"Trotz der fortschreitenden Digitalisierung von Prozessen und optimierten Abläufen bestehen im gesamten Studienverlauf Medienbrüche, die den nötigen Aufwand und die Bearbeitungszeit für Studierende und Mitarbeiter erhöhen. Bspw. werden in Studienplatzbewerbungs- und Immatrikulationsprozessen Dokumente und Akten noch nicht digital sondern papierbasiert vorgehalten, da Dokumente von Dritten (z. B. Abiturzeugnisse) nicht digital verfügbar sind.\n\n" +
+"Neben einer Verbesserung der Workflows würden digitale Dokumente auch zu einer Verringerung des benötigten Archivierungsraums führen, da physische Dokumente nicht mehr aufbewahrt werden müssen (derzeit bei Zeugnissen und Urkunden 50 Jahre).\n\n" +
+"## 2.1 Ablauf des Ausschreibungsverfahrens\n" +
+"Der Entwurf eines EVB-IT-Vertrags (EVB-IT-Überlassung Typ A und EVB-IT-Pflege S) soll vom potenziellen Auftragnehmer beigefügt werden.\n\n" +
+"Die Bewertung der Angebote erfolgt mit der als separate Excel-Datei beigefügten Bewertungsmatrix. Diese Excel-Datei enthält mehrere Blätter, die vom potenziellen Auftragnehmer auszufüllen sind.\n\n" +
+"## 3 Anwendungsfälle – Übersicht\n" +
+"Demnach erfolgt eine Auflistung der Produktfunktionen im Rahmen dieses Lastenheftes in Bezug auf die Bewerbungs- und Immatrikulationsdokumente (AF 101–1097), die Zeugnisdokumente (AF 110–130), den Schriftverkehr in Prüfungsämtern (AF 200–235), Formularabwicklung (AF 240–250), schriftliche Prüfungsleistungen (AF 300–330) und Archivierung von Notenlisten (AF 410–420).\n\n" +
+"## 2.2 Einsatzbereiche – Bewerbungs- und Immatrikulationsdokumente\n" +
+"Einmal erfasste Dokumente können während des gesamten Studiums unter Berücksichtigung eines geeigneten Rechtekonzepts innerhalb der Universität wiederholt genutzt werden. Eine erneute Vorlage durch den Studierenden ist dann nicht mehr erforderlich.\n\n" +
+"Darüber hinaus gibt es einen überschaubaren Altbestand nur einmalig in Papierform vorliegender Immatrikulationsunterlagen, auf die bspw. zum Erstellen von Rentenbescheinigungen zugegriffen werden muss. Hierfür soll gegen Ende des Projekts ein Konzept erstellt werden.\n\n" +
+"## 2.2 Einsatzbereiche – Zeugnisdokumente\n" +
+"Wenn Studierende ihren Bachelor-/Masterabschluss erreicht haben, werden ihnen Zeugnisse erstellt und unterschrieben. Kopien davon sind für 50 Jahre zu archivieren. Im Rahmen einer digitalen Studierendenakte kann das digital geschehen und sowohl die nicht unterschriebene Originaldatei als auch ein Scan des unterschriebenen Zeugnisdokuments im System hinterlegt und bei Bedarf Zweitschriften erstellt werden.\n\n" +
+"Zusätzlich ist es denkbar, dass Studierende sich die Dokumente über eine Weboberfläche bei Bedarf selbst ausdrucken bzw. Dritten nach Autorisierung Zugriff gewähren.\n\n" +
+"## 2.2 Einsatzbereiche – Schriftverkehr\n" +
+"Der E-Mail-/Schriftverkehr zwischen Studierenden und der Studienzentrale bzw. den Prüfungsämtern sowie dezentralen Akteuren soll im Rahmen der digitalen Studierendenakte ebenfalls digital verwaltet werden. Dies gilt insbesondere auch für E-Mails einschließlich Anhängen, die per Mausklick in die entsprechende Akte überführt werden sollten.\n\n" +
+"## 2.2 Einsatzbereiche – Schriftliche Prüfungsleistungen\n" +
+"Von Studierenden erbrachte schriftliche Prüfungsleistungen müssen von der Universität nach der Korrektur für eine spätere Einsichtnahme für 3 Jahre archiviert werden. Gleiches gilt für Prüfungsprotokolle.\n\n" +
+"In bestimmten Konstellationen, insbesondere wenn Klausuren ohnehin digital vorliegen, ist es zusätzlich denkbar, die Klausureinsichtnahmen ebenfalls digital zu unterstützen, indem Studierenden die Möglichkeit gegeben wird, vorab über eine Weboberfläche auf die korrigierte Klausur zuzugreifen.\n\n" +
+"## 2.2 Einsatzbereiche – Archivierung von Notenlisten\n" +
+"Zukünftig erfolgt die Notenbekanntgabe durch die Lehrenden per Knopfdruck direkt aus FlexNow heraus. Die digitale Studierendenakte kann hier dazu genutzt werden, um diese freigegebenen Notenlisten zu archivieren.\n\n" +
+"## 2.3 Benutzer / Zielgruppe\n" +
+"Den identifizierten Einsatzbereichen lassen sich sechs Benutzergruppen zuordnen: die Prüfungsämter, das Studierendenbüro und Studium International, dezentrale Serviceeinheiten wie Studiendekanate sowie Prüfungs- und Zulassungsausschüsse, die Lehrenden, die Studierenden und die zentrale Systembetreuung des DMS.\n\n" +
+"## 2.4 Systemvoraussetzungen\n" +
+"Technisch muss eine einzusetzende Dokumentenmanagement-Standardsoftware in der Lage sein, papiergebundene Dokumente zu übernehmen, welche zentral und/oder dezentral digitalisiert wurden. Ebenso muss das einzusetzende System Schnittstellen bieten, die eine Verknüpfung der digitalisierten Dokumente zu bestehenden Studierenden- und Prüfungsdaten ermöglicht.\n\n" +
+"Zudem sollen in der Software Workflows hinterlegt werden, die Standardprozesse abbilden, bestimmte Vorgänge automatisieren und z. B. den Fortschrittsstand auch bei verteilten Zuständigkeiten leicht nachvollziehbar machen.\n\n" +
+"## 2.5 Ressourcen\n" +
+"Auf Hardwareebene werden neben der einzurichtenden IT-Infrastruktur Scangeräte zur Digitalisierung der aktuell auf Papier vorliegenden Dokumente benötigt. Vom potenziellen Auftragnehmer wird dazu ein Konzeptvorschlag erwartet, in welcher Form und in welchem Umfang Scangeräte zur Digitalisierung nötig sind. Hier ist insbesondere zu klären, wie die bereits an der Universität von der Firma Ricoh vorhandenen Geräte unmittelbar genutzt werden können.\n\n" +
+"## 2.6 Übersicht der Meilensteine\n" +
+"Voraussetzung für die Abnahme des Systems durch den Auftraggeber ist die erfolgreiche Umsetzung der Konzepte zu den Anwendungsfällen Schriftverkehr und Bewerbungs- und Immatrikulationsdokumente in einer Testumgebung beim Auftraggeber.\n\n" +
+"## 3.1 Anwendungsfälle – Bewerbungs- und Immatrikulationsdokumente\n" +
+"Die ABC-Hochschule hat ca. 40.000 Bewerber pro Jahr. Als eindeutige ID kann die Bewerbernummer verwendet werden. Sie wird bei jeder Bewerbung neu generiert und wird später zur Matrikelnummer, außer der Student war bereits früher an der ABC-Hochschule immatrikuliert.\n\n" +
+"Für jede Bewerbung soll über die Workflow-Komponente ersichtlich sein, in welchem Bearbeitungszustand sich die Bewerbung befindet. Der Zustand sollte jeweils bei Ausführung von Anwendungsfällen im DMS oder in HIS aktualisiert werden.\n\n" +
+"## 4 Produktdaten – AF 210 E-Mail-Schriftverkehr\n" +
+"Identifikationsattribute des Studierenden werden durch das DMS automatisch erkannt und gespeichert, um eine Verlinkung mit der Studierendenakte zu erreichen.\n\n" +
+"## 4 Produktdaten – AF 320 Korrekturen zu Prüfungsdokumenten\n" +
+"Die digital hinterlegten Prüfungsdokumente einzelner Studierender sollten durch 1...n Prüfer digital mit Korrekturen versehen und benotbar sein.\n";
+
+/* ============================================================
+   2) STRUKTURIERTE DATEN — Meilensteine (Tabelle 2-2, direkt übernommen)
+   ============================================================ */
+var MEILENSTEIN_TABELLE = [
+  {phase:"1. Vorarbeiten und Konzeption", zeitraum:"01–03/2015", ende:"03/2015",
+   detail:"Einarbeitung Themenfeld, Präzisierung Rahmenanforderungen (IT-Landschaft), Gewinnung Projektmitarbeiter, Abstimmung mit zentraler Verwaltung/Prüfungsämtern, Beschaffung DM-System, Rechtekonzept."},
+  {phase:"2. Technische Umsetzung", zeitraum:"05–06/2015", ende:"06/2015",
+   detail:"Installation/Konfiguration technischer Systeme, Anbindung HIS-SOS (Stammdaten), Test der Konzepte zu AF 3.3 und 3.1."},
+  {phase:"3. Piloteinführung in 1–2 Prüfungsämtern", zeitraum:"07–09/2015", ende:"09/2015",
+   detail:"Erfahrungen sammeln, Papier-/E-Mail-Kommunikation erfassen, Zeugnisdokumente erfassen, Schulungen, kontinuierliche Evaluierung."},
+  {phase:"5. Pilot-Einführung im Studierendenbüro", zeitraum:"10–12/2015", ende:"12/2015",
+   detail:"Papier- und E-Mail-Kommunikation für einige Bereiche erfassen und nutzen."},
+  {phase:"8. Fakultätsinterner Schriftverkehr (z. B. Anerkennungsfragen)", zeitraum:"01/2016, 04–10/2016", ende:"10/2016",
+   detail:"Probeweise Nutzung in zwei Studiendekanaten/Prüfungsausschüssen, Evaluation und Übertragung auf weitere Fakultäten."},
+  {phase:"4. Übertragung auf weitere Prüfungsämter", zeitraum:"01–07/2016", ende:"07/2016",
+   detail:"Kontinuierliche Anpassungen/Weiterentwicklung entsprechend den Bedürfnissen."},
+  {phase:"9. Bewerbungsdokumente dezentral", zeitraum:"10–11/2016", ende:"11/2016",
+   detail:"Probeweise Nutzung Bewerbungsunterlagen für dezentrale Zulassungsausschüsse."},
+  {phase:"6. Bewerbungsdokumente zentral (Studierendenbüro)", zeitraum:"06/2015–05/2017", ende:"05/2017",
+   detail:"Analyse Bewerbungsprozesse, Anbindung HISinOne-APP, Piloteinführung, Produktivsetzung 1. und 2. Phase, jeweils mit Evaluation."},
+  {phase:"10. Schriftliche Prüfungsleistungen", zeitraum:"12/2016–08/2017", ende:"08/2017",
+   detail:"Pilotumsetzung mit bereits gescannten Prüfungen, Evaluierung (u. a. Scanprozess-Effizienz), Überführung in uniweites Angebot."},
+  {phase:"7. Digitalisierung Altunterlagen", zeitraum:"05–10/2017", ende:"10/2017",
+   detail:"Evaluation Zugriffsbedarf, Konzepterstellung zur Digitalisierung/Indizierung."},
+  {phase:"11. Abschluss, weitere Szenarien", zeitraum:"09–12/2017", ende:"12/2017",
+   detail:"Fertigstellung Dokumentation, Restarbeiten für Überführung in Dauerbetrieb, Konzeption weiterer Anwendungsszenarien."}
+];
+
+var RESSOURCEN_TABELLE = [
+  {rolle:"Projektkoordination", detail:"Konzeption, Einführung, Prozesserstellung und -umsetzung, Systembetreuung, Anwendersupport", zeitraum:"03/2015–12/2017"},
+  {rolle:"Technische Umsetzung", detail:"Customizing, Anbindung Datenbanken, Programmierung Workflows", zeitraum:"04/2015–12/2017"},
+  {rolle:"Beratung / Digitalisierung", detail:"Beratung und Unterstützungsaufgaben sowie ggf. einmalige Digitalisierung der aktuellen Bestandsakten der zentralen Studierendenverwaltung", zeitraum:"06/2015–12/2017"}
+];
+
+/* ============================================================
+   2b) STRUKTURIERTE DATEN — Use Cases (aus Abschnittsstruktur "Einsatzbereiche"/"Anwendungsfälle")
+   ============================================================ */
+function extractUseCases(sentences, paragraphs){
+  var groups = {};
+  var order = [];
+  paragraphs.forEach(function(p){
+    var m = p.section.match(/(?:Einsatzbereiche|Anwendungsfälle)\s*[–-]\s*(.+)$/i);
+    if (!m) return;
+    var name = m[1].trim();
+    if (/^übersicht$/i.test(name)) return; // wird von "Produktfunktionen" (AF-Nummern) behandelt
+    if (!groups[name]){ groups[name] = []; order.push(name); }
+    groups[name].push(p.text);
+  });
+  var res = order.map(function(name){
+    var full = groups[name].join(" ");
+    return {
+      name: name,
+      text: full.length > 220 ? full.slice(0,217) + "…" : full,
+      section: "Einsatzbereiche/Anwendungsfälle – " + name,
+      highlightWords: []
+    };
+  });
+  if (res.length === 0){
+    // Fallback: Freitext-Suche, falls Quelltext keine "Einsatzbereiche – X"-Gliederung nutzt
+    sentences.forEach(function(s){
+      if (/\b(anwendungsfall|use[- ]case|workflow|prozess)\b/i.test(s.text)){
+        res.push({name:"(unstrukturiert erkannt)", text:s.text, section:s.section, highlightWords:[s.text.match(/\b(anwendungsfall|use[- ]case|workflow|prozess)\b/i)[0]]});
+      }
+    });
+  }
+  return res;
+}
+
+/* ============================================================
+   2b-2) Produktfunktionen (AF-Nummern) — strukturbasiert
+   ============================================================ */
+function extractProduktfunktionen(sentences, paragraphs){
+  var res = [];
+  // Quelle A: Nummernübersicht-Satz "(AF 101–1097)" usw. in der "Anwendungsfälle – Übersicht"
+  paragraphs.forEach(function(p){
+    if (!/Anwendungsfälle\s*[–-]\s*Übersicht/i.test(p.section)) return;
+    var re = /([A-ZÄÖÜ][^,(.]*?)\s*\(AF\s?(\d+)[–-](\d+)\)/g;
+    var m;
+    while ((m = re.exec(p.text)) !== null){
+      res.push({
+        af: "AF " + m[2] + "–" + m[3],
+        name: m[1].trim(),
+        text: null,
+        section: p.section,
+        quelle: "Nummernübersicht"
+      });
+    }
+  });
+  // Quelle B: konkrete Produktdaten-Abschnitte "Produktdaten – AF nnn Name"
+  paragraphs.forEach(function(p){
+    var m = p.section.match(/Produktdaten\s*[–-]\s*AF\s?(\d+)\s+(.+)$/i);
+    if (!m) return;
+    res.push({
+      af: "AF " + m[1],
+      name: m[2].trim(),
+      text: p.text,
+      section: p.section,
+      quelle: "Produktdaten-Abschnitt"
+    });
+  });
+  return res;
+}
+
+/* ============================================================
+   2b-3) Quelltyp-Inferenz (für Transparenz-Badge auf jeder Karte)
+   ============================================================ */
+function inferQuelltyp(section){
+  if (!section) return "Fließtext";
+  if (/^Anhang – Ressourcen$|^Tabelle 2-2/i.test(section)) return "Tabelle";
+  if (/Produktdaten/i.test(section)) return "Produktdaten";
+  if (/Anwendungsfälle\s*[–-]\s*Übersicht|AF\s?\d/i.test(section)) return "Produktfunktion";
+  if (/Diagramm|Abbildung/i.test(section)) return "Diagramm";
+  return "Fließtext";
+}
+var QUELLTYP_BADGE_CLASS = {
+  "Fließtext":"fa", "Tabelle":"ms", "Produktfunktion":"nfa", "Produktdaten":"kann", "Diagramm":"warn"
+};
+function quelltypBadge(section){
+  var typ = inferQuelltyp(section);
+  return '<span class="badge ' + (QUELLTYP_BADGE_CLASS[typ]||"fa") + '" title="Quelltyp">◆ ' + typ + '</span>';
+}
+
+/* ============================================================
+   2c) Qualitätsstandards (Normen)
+   ============================================================ */
+var NORM_RULES = [
+  {re:/\bISO[\s\/-]?\d{3,6}(-\d+)?\b/i, kat:"ISO-Norm"},
+  {re:/\bDSGVO\b|\bGDPR\b/i, kat:"Datenschutz (DSGVO)"},
+  {re:/\bBSI([- ]?Grundschutz)?\b/i, kat:"BSI-Grundschutz"},
+  {re:/\bDIN\s?\d+/i, kat:"DIN-Norm"},
+  {re:/\bIEEE\s?\d+/i, kat:"IEEE-Norm"},
+  {re:/\bNIS[- ]?2\b|\bAI[- ]Act\b|\bKI[- ]Verordnung\b/i, kat:"EU-Regulatorik"},
+  {re:/revisionssicher|GoBD/i, kat:"Archivierungs-/Aufbewahrungsstandard"},
+  {re:/\bEVB[- ]IT\b/i, kat:"Vertragsstandard (öffentliche Beschaffung)"}
+];
+function extractQualitaetsstandards(sentences){
+  var res = [];
+  sentences.forEach(function(s){
+    NORM_RULES.forEach(function(rule){
+      var m = s.text.match(rule.re);
+      if (m) res.push({kat: rule.kat, text: s.text, section: s.section, highlightWords:[m[0]]});
+    });
+  });
+  return res;
+}
+
+/* ============================================================
+   2d) Souveränitätscheck — feste Prüfdimensionen (CADA / Data Act / DSGVO / AI Act / BSI-Grundschutz)
+   ============================================================ */
+var SOUVERAENITAET_DIMENSIONEN = [
+  {name:"Anbieterabhängigkeit / Vendor-Lock-in", re:/standardsoftware|lizenz|proprietär|einzelner anbieter|hersteller/i, ref:"CADA SOV-3"},
+  {name:"Datenstandort / Hosting", re:/cloud|rechenzentrum|on-premise|hosting|server\b/i, ref:"CADA SOV-1, Data Act Art. 23"},
+  {name:"Portabilität / Exportierbarkeit", re:/export|offene(s)?\s?format|standardformat|migration/i, ref:"Data Act Art. 23"},
+  {name:"Interoperabilität / offene Schnittstellen", re:/schnittstelle|api\b|integration/i, ref:"CADA SOV-2"},
+  {name:"Zugriffskontrolle / Rechtekonzept", re:/rechtekonzept|zugriffsrecht|berechtigung/i, ref:"DSGVO Art. 32"},
+  {name:"Transparenz Vertragsbedingungen", re:/evb-it|vertrag(sbedingungen)?|kündigung/i, ref:"CADA SOV-4"}
+];
+function extractSouveraenitaet(sentences){
+  var res = [];
+  SOUVERAENITAET_DIMENSIONEN.forEach(function(dim){
+    var hit = sentences.find(function(s){ return dim.re.test(s.text); });
+    if (hit){
+      res.push({dim: dim.name, ref: dim.ref, status:"belegt", text: hit.text, section: hit.section, highlightWords:[hit.text.match(dim.re)[0]]});
+    } else {
+      res.push({dim: dim.name, ref: dim.ref, status:"offen", text: null, section: null, highlightWords:[]});
+    }
+  });
+  return res;
+}
+
+/* ============================================================
+   2d-2) Compliance-Checkliste — OPTIONALER Zusatz, bewusst NICHT Teil der Extraktion.
+   Vergleicht gegen eine feste, moderne Referenzliste statt Text zu durchsuchen.
+   ============================================================ */
+var COMPLIANCE_CHECKLIST = [
+  {name:"DSGVO (seit 2018)", re:/dsgvo|gdpr/i, warum:"Regelt Verarbeitung personenbezogener Daten (Studierendendaten) — 2015 noch nicht in Kraft."},
+  {name:"ISO/IEC 27001:2022 (Informationssicherheit)", re:/iso[\s\/-]?27001/i, warum:"Standard für Informationssicherheits-Managementsysteme (aktuelle Edition 2022), heute üblicher Ausschreibungsbestandteil bei sensiblen Personendaten."},
+  {name:"BSI IT-Grundschutz", re:/bsi/i, warum:"Deutscher Referenzrahmen für IT-Sicherheit bei öffentlichen Auftraggebern."},
+  {name:"NIS-2-Richtlinie", re:/nis[- ]?2/i, warum:"EU-weite Cybersicherheitsanforderungen, relevant falls die Hochschule als wichtige Einrichtung gilt. Status: EU-Richtlinie (2022/2555) seit Jan. 2023 in Kraft; nationale Umsetzung (NIS2UmsuCG) je Land unterschiedlich weit fortgeschritten."},
+  {name:"EU AI Act", re:/ai[- ]act|ki[- ]verordnung/i, warum:"Relevant, falls KI-Komponenten ergänzt werden (das Dokument erwähnt digitale Klausurkorrektur als Ausblick). Status: Verordnung (EU) 2024/1689, seit August 2024 in Kraft, Pflichten treten gestaffelt bis 2027 in Kraft."},
+  {name:"Barrierefreiheitsstärkungsgesetz (BFSG)", re:/barrierefrei|bfsg/i, warum:"Digitale Angebote für Studierende müssen heute barrierefrei zugänglich sein."}
+];
+function checkCompliance(){
+  var qualityResults = state.results["quality"] || [];
+  var allQualityText = qualityResults.map(function(r){ return r.text; }).join(" ");
+  return COMPLIANCE_CHECKLIST.map(function(c){
+    var belegt = c.re.test(allQualityText);
+    return {name:c.name, warum:c.warum, belegt:belegt};
+  });
+}
+
+var ANNAHME_RE = /\b(unter der (voraussetzung|annahme)|vorausgesetzt|angenommen|ausgehend von|voraussichtlich)\b/i;
+var RESTRIKTION_RE = /\b(rahmenbedingung|beschränkt sich (auf|nur)|einschränkung|nur.{0,15}(möglich|zulässig))\b/i;
+function extractAnnahmen(sentences){
+  var res = [];
+  sentences.forEach(function(s){
+    var a = s.text.match(ANNAHME_RE);
+    var r = s.text.match(RESTRIKTION_RE);
+    if (a) res.push({typ:"Annahme", text:s.text, section:s.section, highlightWords:[a[0]]});
+    if (r) res.push({typ:"Restriktion", text:s.text, section:s.section, highlightWords:[r[0]]});
+  });
+  return res;
+}
+
+/* ============================================================
+   2f) Budget (vorläufig)
+   ============================================================ */
+var BUDGET_ZAHL_RE = /\d[\d.,]*\s?(€|EUR|Euro)\b/i;
+var BUDGET_BEZUG_RE = /\b(kosten|budget|vergütung|preis|angebotspreis|bewertungsmatrix)\b/i;
+function extractBudget(sentences){
+  var res = [];
+  sentences.forEach(function(s){
+    var z = s.text.match(BUDGET_ZAHL_RE);
+    var b = s.text.match(BUDGET_BEZUG_RE);
+    if (z) res.push({typ:"Konkreter Betrag", text:s.text, section:s.section, highlightWords:[z[0]]});
+    else if (b) res.push({typ:"Kostenbezug ohne Betrag", text:s.text, section:s.section, highlightWords:[b[0]]});
+  });
+  return res;
+}
+
+/* ============================================================
+   2g) Ressourcen — Direktübernahme Tabelle + Freitext-Ergänzung
+   ============================================================ */
+var RESSOURCEN_FREITEXT_RE = /\bscangerät|it-infrastruktur|projektmitarbeiter|hardware\b/i;
+function extractRessourcen(sentences){
+  var res = RESSOURCEN_TABELLE.map(function(r){
+    return {typ:"Tabelle (Anhang)", rolle:r.rolle, detail:r.detail, zeitraum:r.zeitraum, text:null, section:"Anhang – Ressourcen"};
+  });
+  sentences.forEach(function(s){
+    var m = s.text.match(RESSOURCEN_FREITEXT_RE);
+    if (m) res.push({typ:"Freitext", rolle:null, detail:null, zeitraum:null, text:s.text, section:s.section, highlightWords:[m[0]]});
+  });
+  return res;
+}
+
+/* ============================================================
+   2h) Testfälle — GENERIERT aus den Anforderungen (Muss+Kann), nicht aus dem Quelltext extrahiert
+   Wichtig für Transparenz: Das Lastenheft enthält keine Testfälle. Diese werden per
+   Vorlage aus jeder bereits gefundenen Anforderung abgeleitet (1:1-Rückverweis).
+   ============================================================ */
+var TESTTYP_RULES = [
+  {re:/zugriff|berechtigung|autorisierung/i, typ:"Zugriffstest"},
+  {re:/jahre|archivier|aufbewahr/i, typ:"Archivierungstest"},
+  {re:/schnittstelle|verknüpfung/i, typ:"Schnittstellentest"},
+  {re:/workflow|zustand|bearbeitungszustand/i, typ:"Prozess-/Workflowtest"}
+];
+function extractTestfaelle(){
+  var anforderungen = state.results["anforderungen"];
+  if (!anforderungen) return null; // Voraussetzung fehlt — Signal für die UI
+  return anforderungen.map(function(r, i){
+    var typ = "Funktionstest";
+    for (var k=0;k<TESTTYP_RULES.length;k++){
+      if (TESTTYP_RULES[k].re.test(r.text)){ typ = TESTTYP_RULES[k].typ; break; }
+    }
+    return {
+      id: "TF-" + (i+1),
+      typ: typ,
+      prio: r.prio,
+      pruefziel: r.text,
+      section: r.section,
+      quelleAnforderungIndex: i
+    };
+  });
+}
+
+/* ============================================================
+   2i) Traceability-Matrix — verknüpft bereits erzeugte Ergebnisse anderer Schritte.
+   Verknüpfungsarten werden je Zelle offen benannt (Texterwähnung / Abschnittsbezug /
+   1:1-Generierung / Schlüsselwortüberlappung) — keine stille "KI-Zuversicht".
+   ============================================================ */
+var STOPWORDS_DE = ["und","oder","der","die","das","den","dem","des","ein","eine","einer","für","von","mit","auf","im","in","zu","zur","zum","werden","wird","soll","sollen","kann","können","sind","ist","bei","als","auch","nicht","noch","nach","aus","an","um"];
+function significantWords(s){
+  return (s||"").toLowerCase().replace(/[^\wäöüß\s-]/g," ").split(/\s+/).filter(function(w){
+    return w.length>5 && STOPWORDS_DE.indexOf(w)===-1;
+  });
+}
+function buildTraceabilityMatrix(){
+  var anforderungen = state.results["anforderungen"];
+  var testfaelle = state.results["testfaelle"];
+  if (!anforderungen) return null;
+  var stakeholderList = state.results["stakeholder"] || [];
+  var usecaseList = state.results["usecases"] || [];
+  var produktList = state.results["produktfunktionen"] || [];
+  var meilensteinList = state.results["meilensteine"] || [];
+
+  return anforderungen.map(function(r, i){
+    // Stakeholder: echte Texterwähnung im Anforderungssatz selbst
+    var stakeholders = STAKEHOLDER_ROLES.filter(function(role){ return role.re.test(r.text); })
+      .map(function(role){ return role.name; });
+
+    // Use Case: Abschnittsbezug (Anforderung stammt aus/nennt denselben Themenbereich)
+    var usecase = usecaseList.filter(function(uc){ return r.section.indexOf(uc.name) > -1; })
+      .map(function(uc){ return uc.name; });
+
+    // Produktfunktion: AF-Nummer im Text ODER Abschnittsbezug
+    var produkt = produktList.filter(function(pf){
+      return r.section === pf.section || (r.text && pf.af && r.text.indexOf(pf.af.replace("AF ","AF ")) > -1);
+    }).map(function(pf){ return pf.af; });
+
+    // Testfall: exakte 1:1-Verknüpfung (per Konstruktion, gleicher Index)
+    var testfall = (testfaelle && testfaelle[i]) ? testfaelle[i].id : null;
+
+    // Meilenstein: Schlüsselwortüberlappung zwischen Abschnittsname und Meilenstein-Detailtext
+    var sectionWords = significantWords(r.section);
+    var meilenstein = meilensteinList.filter(function(ms){
+      var msWords = significantWords(ms.detail + " " + ms.phase);
+      return sectionWords.some(function(w){ return msWords.indexOf(w) > -1; });
+    }).map(function(ms){ return ms.ende + " " + ms.phase; });
+
+    return {
+      anforderung: r.text, prio: r.prio, typ: r.typ, section: r.section,
+      stakeholders: stakeholders, usecase: usecase, produkt: produkt,
+      testfall: testfall, meilenstein: meilenstein
+    };
+  });
+}
+
+/* ============================================================
+   2j) Kalkulations-Gerüst — KEINE erfundenen Zahlen.
+   Nur Struktur (Zeilen + Meilenstein-Gruppierung); PT und Tagessatz trägst du selbst ein,
+   Kosten werden live berechnet. Werte bleiben beim Navigieren erhalten (siehe extract-Aufruf).
+   ============================================================ */
+function extractKalkulation(){
+  var anforderungen = state.results["anforderungen"];
+  if (!anforderungen) return null;
+  var meilensteinList = state.results["meilensteine"] || [];
+  var existing = state.results["kalkulation"];
+  return anforderungen.map(function(r, i){
+    var sectionWords = significantWords(r.section);
+    var matched = meilensteinList.filter(function(ms){
+      var msWords = significantWords(ms.detail + " " + ms.phase);
+      return sectionWords.some(function(w){ return msWords.indexOf(w) > -1; });
+    });
+    var phase = matched.length ? matched[0].phase : "Nicht zugeordnet";
+    var prev = (existing && existing[i]) ? existing[i] : {};
+    return {
+      anforderung: r.text, prio: r.prio, section: r.section, phase: phase,
+      pt: (typeof prev.pt === "number") ? prev.pt : null,
+      tagessatz: (typeof prev.tagessatz === "number") ? prev.tagessatz : null
+    };
+  });
+}
+function formatEuro(n){
+  if (typeof n !== "number" || isNaN(n)) return "–";
+  return n.toLocaleString("de-DE", {maximumFractionDigits:0}) + " €";
+}
+function kalkRowCost(row){
+  if (typeof row.pt === "number" && typeof row.tagessatz === "number"){
+    return row.pt * row.tagessatz;
+  }
+  return null;
+}
+function updateKalkulationValue(idx, field, rawValue){
+  var kalk = state.results["kalkulation"];
+  if (!kalk || !kalk[idx]) return;
+  var num = rawValue === "" ? null : parseFloat(rawValue.replace(",","."));
+  kalk[idx][field] = (num !== null && !isNaN(num)) ? num : null;
+  var costCell = document.getElementById("kost-" + idx);
+  if (costCell) costCell.textContent = formatEuro(kalkRowCost(kalk[idx]));
+  recalcKalkulationTotals();
+}
+function recalcKalkulationTotals(){
+  var kalk = state.results["kalkulation"];
+  if (!kalk) return;
+  var byPhase = {};
+  var grand = 0;
+  var grandKnown = false;
+  kalk.forEach(function(row){
+    var c = kalkRowCost(row);
+    if (c !== null){ grand += c; grandKnown = true; }
+    byPhase[row.phase] = (byPhase[row.phase]||0) + (c||0);
+  });
+  Object.keys(byPhase).forEach(function(phase){
+    var el = document.getElementById("phase-total-" + phase.replace(/[^a-zA-Z0-9]/g,"_"));
+    if (el) el.textContent = formatEuro(byPhase[phase]);
+  });
+  var grandEl = document.getElementById("kalk-grand-total");
+  if (grandEl) grandEl.textContent = grandKnown ? formatEuro(grand) : "–";
+}
+
+
+function parseCorpus(raw){
+  if (!/^##\s+/m.test(raw)){
+    raw = "## Hochgeladenes Dokument\n" + raw;
+  }
+  var lines = raw.split("\n");
+  var sections = [];
+  var current = null;
+  for (var i=0;i<lines.length;i++){
+    var line = lines[i];
+    var m = line.match(/^##\s+(.+)$/);
+    if (m){
+      current = {section: m[1].trim(), body: []};
+      sections.push(current);
+    } else if (current){
+      current.body.push(line);
+    }
+  }
+  var paragraphs = [];
+  sections.forEach(function(sec){
+    var text = sec.body.join("\n");
+    var paras = text.split(/\n\s*\n/);
+    paras.forEach(function(p){
+      var t = p.replace(/\s+/g," ").trim();
+      if (t.length > 0) paragraphs.push({section: sec.section, text: t});
+    });
+  });
+  return paragraphs;
+}
+
+var ABBREV_RE = /\b(z\.\s?B\.|u\.\s?a\.|u\.\s?ä\.|u\.\s?U\.|bzw\.|bspw\.|ca\.|d\.\s?h\.|ggf\.|etc\.|Nr\.|Abs\.|Art\.|inkl\.|exkl\.|v\.\s?a\.|o\.\s?Ä\.|s\.\s?u\.|s\.\s?o\.)/gi;
+
+function splitSentences(text){
+  var protectedText = text.replace(ABBREV_RE, function(m){ return m.replace(/\./g, "§"); });
+  protectedText = protectedText.replace(/(\d)\.(\d{3}\b)/g, "$1§$2");
+  var raw = protectedText.match(/[^.!?]+[.!?]+(\s|$)/g);
+  if (!raw) raw = [protectedText];
+  return raw.map(function(s){ return s.replace(/§/g, ".").trim(); }).filter(function(s){ return s.length>3; });
+}
+
+function buildSentenceIndex(paragraphs){
+  var out = [];
+  paragraphs.forEach(function(p){
+    splitSentences(p.text).forEach(function(s){
+      out.push({text: s, section: p.section});
+    });
+  });
+  return out;
+}
+
+function highlight(sentence, words){
+  var out = sentence;
+  words.forEach(function(w){
+    var re = new RegExp("(" + w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&") + ")","gi");
+    out = out.replace(re, "<mark>$1</mark>");
+  });
+  return out;
+}
+
+function esc(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+/* ============================================================
+   Tokenansicht — zeigt wortweise, welche Regel gegriffen hat
+   (regelbasierte Mustererkennung, KEINE LLM-Bewertung — bewusst so benannt)
+   ============================================================ */
+var MODAL_MUSS_WORDS = ["muss","müssen","soll","sollen","sollte","sollten","erforderlich"];
+var MODAL_KANN_WORDS = ["kann","können","denkbar","könnte","optional"];
+
+function tokenize(text){
+  // Wortblöcke (inkl. Bindestrich/Umlaute) und Trennzeichen getrennt erfassen, um exakt reassemblierbar zu bleiben
+  return text.match(/[\wäöüÄÖÜß-]+|[^\wäöüÄÖÜß-]+/g) || [text];
+}
+
+function classifyToken(wordLower){
+  if (MODAL_MUSS_WORDS.indexOf(wordLower) > -1) return {cls:"tok-muss", label:"Modalverb (Muss)"};
+  if (MODAL_KANN_WORDS.indexOf(wordLower) > -1) return {cls:"tok-kann", label:"Modalverb (Kann)"};
+  if (NFA_WORDS.indexOf(wordLower) > -1) return {cls:"tok-nfa", label:"NFA-Trigger"};
+  if (GENERIC_WORDS.indexOf(wordLower) > -1) return {cls:"tok-warn", label:"Qualitätsnebel-Begriff"};
+  if (PRODUKT_WORDS.some(function(p){ return p.trim()===wordLower; })) return {cls:"tok-produkt", label:"Produktbegriff"};
+  return null;
+}
+
+function buildTokenView(text){
+  var tokens = tokenize(text);
+  var counts = {"tok-muss":0,"tok-kann":0,"tok-nfa":0,"tok-warn":0,"tok-produkt":0};
+  var html = tokens.map(function(tok, i){
+    if (/^[\wäöüÄÖÜß-]+$/.test(tok)){
+      var lower = tok.toLowerCase();
+      var cat = classifyToken(lower);
+      // Bigram-Sonderfall: "ist zu" / "sind zu" als Muss-Trigger
+      if (!cat && (lower==="ist"||lower==="sind")){
+        var next = tokens[i+2] ? tokens[i+2].toLowerCase() : "";
+        if (next === "zu") cat = {cls:"tok-muss", label:"Modalverb (Muss) – Wendung „ist/sind zu“"};
+      }
+      if (cat){ counts[cat.cls]++; return '<span class="tok ' + cat.cls + '" title="' + esc(cat.label) + '">' + esc(tok) + '</span>'; }
+      return '<span class="tok">' + esc(tok) + '</span>';
+    }
+    return esc(tok);
+  }).join("");
+
+  var parts = [];
+  if (counts["tok-muss"]) parts.push(counts["tok-muss"] + "× Modalverb (Muss)");
+  if (counts["tok-kann"]) parts.push(counts["tok-kann"] + "× Modalverb (Kann)");
+  if (counts["tok-nfa"]) parts.push(counts["tok-nfa"] + "× NFA-Trigger");
+  if (counts["tok-warn"]) parts.push(counts["tok-warn"] + "× Qualitätsnebel-Begriff");
+  if (counts["tok-produkt"]) parts.push(counts["tok-produkt"] + "× Produktbegriff");
+  var summary = parts.length ? parts.join(" · ") : "keine Trigger-Wörter im Satz erkannt";
+
+  return '<div class="token-strip">' + html + '</div>' +
+    '<div class="token-legend">' +
+      '<span class="tok-legend-item"><span class="tok tok-muss">muss</span> Modalverb Muss</span>' +
+      '<span class="tok-legend-item"><span class="tok tok-kann">kann</span> Modalverb Kann</span>' +
+      '<span class="tok-legend-item"><span class="tok tok-nfa">Jahre</span> NFA-Trigger</span>' +
+      '<span class="tok-legend-item"><span class="tok tok-warn">geeignet</span> Qualitätsnebel</span>' +
+      '<span class="tok-legend-item"><span class="tok tok-produkt">Ricoh</span> Produktbegriff</span>' +
+    '</div>' +
+    '<div class="token-summary"><b>Regel-Auswertung:</b> ' + esc(summary) + '</div>';
+}
+
+
+var MUSS_RE = /\b(muss|müssen|soll|sollen|sollte|sollten|ist zu|sind zu|erforderlich)\b/i;
+var KANN_RE = /\b(kann|können|denkbar|könnte|optional)\b/i;
+var NFA_WORDS = ["jahre","frist","rechtekonzept","zugriff","autorisierung","berechtigung","schnittstelle","nachvollziehbar","revisionssicher","skalier","performance","geschwindigkeit","verfügbar","zustand","aktualisiert"];
+var GENERIC_WORDS = ["geeignet","angemessen","ausreichend","einfach","schnell","zeitnah","überschaubar","möglichst"];
+var PRODUKT_WORDS = ["his-sos","his ","flexnow","hisinone","ricoh","evb-it","dms"];
+
+function extractAnforderungen(sentences){
+  var res = [];
+  sentences.forEach(function(s){
+    var t = s.text;
+    var lower = t.toLowerCase();
+    var mussHit = MUSS_RE.test(t);
+    var kannHit = KANN_RE.test(t);
+    if (!mussHit && !kannHit) return;
+    var prio = mussHit ? "Muss" : "Kann";
+    var matchedTrigger = mussHit ? t.match(MUSS_RE)[0] : t.match(KANN_RE)[0];
+    var nfaHit = NFA_WORDS.filter(function(w){ return lower.indexOf(w)>-1; });
+    var typ = nfaHit.length>0 ? "NFA" : "FA";
+    var genericHit = GENERIC_WORDS.filter(function(w){ return lower.indexOf(w)>-1; });
+    var hasDigit = /\d/.test(t);
+    var qualitaetsnebel = genericHit.length>0 && !hasDigit;
+    var produktHit = PRODUKT_WORDS.filter(function(w){ return lower.indexOf(w.trim())>-1; });
+    res.push({
+      text: t, section: s.section, prio: prio, typ: typ,
+      qualitaetsnebel: qualitaetsnebel, genericHit: genericHit,
+      produktHit: produktHit,
+      highlightWords: [matchedTrigger].concat(nfaHit).concat(genericHit).concat(produktHit)
+    });
+  });
+  return res;
+}
+
+var STAKEHOLDER_ROLES = [
+  {name:"Studierende", re:/studierende(n)?/i},
+  {name:"Prüfungsämter", re:/prüfungsamt(es|e|ämter)?/i},
+  {name:"Studierendenbüro / Studium International", re:/studierendenbüro|studium international/i},
+  {name:"Dezentrale Serviceeinheiten (Studiendekanate, Zulassungsausschüsse)", re:/studiendekanat|zulassungsausschus/i},
+  {name:"Lehrende / Dozenten", re:/lehrende(n)?|dozent/i},
+  {name:"Zentrale Systembetreuung", re:/systembetreuung/i},
+  {name:"Auftraggeber (ABC-Hochschule)", re:/auftraggeber|abc-hochschule/i},
+  {name:"Auftragnehmer (DMS-Anbieter)", re:/auftragnehmer/i},
+  {name:"Externer Dienstleister – Scangeräte (Ricoh)", re:/ricoh/i}
+];
+
+function extractStakeholder(sentences){
+  var res = [];
+  STAKEHOLDER_ROLES.forEach(function(role){
+    var hits = sentences.filter(function(s){ return role.re.test(s.text); });
+    if (hits.length===0) return;
+    var influence = hits.length>=4 ? "Hoch" : (hits.length>=2 ? "Mittel" : "Niedrig");
+    res.push({
+      name: role.name, count: hits.length, influence: influence,
+      example: hits[0].text, section: hits[0].section,
+      highlightWords: [role.re.source.replace(/[()?|]/g,"").split("|")[0]]
+    });
+  });
+  return res;
+}
+
+var RISK_RULES = [
+  {name:"Abhängigkeitsrisiko", re:/\b(sofern|voraussetzung|abhängig)\b/i, kat:"Abhängigkeit"},
+  {name:"Medienbruch-/Migrationsrisiko", re:/(papierbasiert|papierform|noch nicht digital|physisch)/i, kat:"Datenmigration"},
+  {name:"Fristen-/Compliance-Risiko", re:/\d+\s*jahre?\b.*(archivier|aufbewahr)|((archivier|aufbewahr).*\d+\s*jahre?)/i, kat:"Compliance"},
+  {name:"Datenqualitäts-/Digitalisierungsrisiko (Altbestand)", re:/altbestand/i, kat:"Datenqualität"},
+  {name:"Offener-Punkt-Risiko", re:/(zu klären|unklar)/i, kat:"Offener Punkt"},
+  {name:"Drittanbieter-Abhängigkeit", re:/ricoh/i, kat:"Lieferant"}
+];
+
+function extractRisiken(sentences){
+  var res = [];
+  var seen = {};
+  sentences.forEach(function(s){
+    RISK_RULES.forEach(function(rule){
+      var m = s.text.match(rule.re);
+      if (m){
+        var key = rule.name + "|" + s.text;
+        if (seen[key]) return;
+        seen[key]=true;
+        res.push({
+          kat: rule.kat, name: rule.name, text: s.text, section: s.section,
+          highlightWords: [m[0]]
+        });
+      }
+    });
+  });
+  return res;
+}
+
+var OOS_RULES = [
+  {name:"Zeitlich nachgelagert – zu verifizieren", re:/(gegen ende des projekts|zu einem späteren zeitpunkt|künftig|zukünftig)/i},
+  {name:"Optionale Erweiterung (nicht verpflichtend)", re:/(denkbar|optional)/i}
+];
+
+function extractOOS(sentences){
+  var res = [];
+  var seen = {};
+  sentences.forEach(function(s){
+    OOS_RULES.forEach(function(rule){
+      var m = s.text.match(rule.re);
+      if (m){
+        var key = rule.name + "|" + s.text;
+        if (seen[key]) return;
+        seen[key]=true;
+        res.push({name: rule.name, text: s.text, section: s.section, highlightWords:[m[0]]});
+      }
+    });
+  });
+  return res;
+}
+
+/* ============================================================
+   5) STEP-DEFINITIONEN
+   ============================================================ */
+var STEPS = [
+  {
+    id:"stakeholder", label:"Stakeholder",
+    title:"Extraktionsprompt: Stakeholder-Register",
+    tag:"Regelbasiert · Rollenliste",
+    bullets:[
+      "<b>R1 Rollenerkennung:</b> Abgleich mit einer festen Liste von 9 im Dokument benannten Rollen (Studierende, Prüfungsämter, Studierendenbüro, dezentrale Serviceeinheiten, Lehrende, Systembetreuung, Auftraggeber, Auftragnehmer, Ricoh als Drittanbieter).",
+      "<b>R2 Beleg:</b> Für jede Rolle wird die erste passende Fundstelle als Beispielsatz gezeigt.",
+      "<b>R3 Einfluss (heuristisch):</b> Einstufung Hoch/Mittel/Niedrig <i>allein</i> nach Erwähnungshäufigkeit im Text — <b>keine</b> echte Stakeholder-Analyse, muss von dir fachlich verifiziert werden."
+    ],
+    extract: extractStakeholder
+  },
+  {
+    id:"usecases", label:"Use Cases",
+    title:"Extraktionsprompt: Mögliche Use Cases",
+    tag:"Strukturextraktion · Abschnittsebene",
+    bullets:[
+      "<b>R1 Strukturregel:</b> Abschnittsüberschriften der Form „Einsatzbereiche – X“ bzw. „Anwendungsfälle – X“ werden als eigenständige Use-Case-Kandidaten interpretiert (kein Freitext-Pattern, sondern Nutzung der Dokumentgliederung selbst).",
+      "<b>R2 Zusammenfassung:</b> Alle Absätze unter derselben Use-Case-Überschrift werden zu einer Kurzbeschreibung zusammengeführt.",
+      "<b>R3 Fallback:</b> Enthält der Quelltext keine solche Gliederung, greift eine Freitextsuche nach „Anwendungsfall/Use Case/Workflow/Prozess“."
+    ],
+    extract: function(sentences){ return extractUseCases(sentences, parseCorpus(getCorpusText())); }
+  },
+  {
+    id:"produktfunktionen", label:"Produktfunktionen",
+    title:"Extraktionsprompt: Produktfunktionen (AF-Nummern)",
+    tag:"Strukturextraktion · AF-Nummernbezug",
+    bullets:[
+      "<b>Warum dieser Schritt?</b> Schließt die Lücke zwischen Use Cases (grob) und einzelnen Anforderungssätzen (fein) — verbessert die Traceability.",
+      "<b>R1 Nummernübersicht:</b> Der Satz mit „(AF 101–1097)“ usw. wird in einzelne (Bereich, AF-Bereich)-Paare zerlegt.",
+      "<b>R2 Konkrete Produktdaten-Abschnitte:</b> Abschnittsüberschriften der Form „Produktdaten – AF nnn Name“ werden direkt als Produktfunktion mit Beschreibungstext übernommen.",
+      "Hinweis: Nur 2 Produktfunktionen sind im Demo-Korpus mit vollem Beschreibungstext hinterlegt (AF 210, AF 320) — bei Upload eines vollständigeren Dokuments wächst diese Liste automatisch."
+    ],
+    extract: function(sentences){ return extractProduktfunktionen(sentences, parseCorpus(getCorpusText())); }
+  },
+  {
+    id:"anforderungen", label:"Anforderungen",
+    title:"Extraktionsprompt: Anforderungsdokumentation",
+    tag:"Regelbasiert · Satzebene",
+    bullets:[
+      "<b>R1 Priorität:</b> Sätze mit Modalverben <code>muss/müssen/soll/sollen/ist zu/erforderlich</code> → <b>Muss</b>; Sätze mit <code>kann/können/denkbar/optional</code> (ohne R1-Treffer) → <b>Kann</b>.",
+      "<b>R2 FA/NFA-Klassifikation:</b> Enthält der Satz einen Trigger aus einer festen Liste (z. B. „Jahre“, „Rechtekonzept“, „Zugriff“, „Schnittstelle“, „nachvollziehbar“) → <b>NFA</b>, sonst <b>FA</b>.",
+      "<b>R3 Qualitätsnebel-Warnung:</b> Generische Begriffe (z. B. „angemessen“, „geeignet“, „einfach“) ohne begleitende Zahl/Frist im Satz → Badge <code>⚠ Qualitätsnebel</code>.",
+      "<b>R4 Produktspezifisch:</b> Erwähnung konkreter Systeme (HIS-SOS, FlexNow, HISinOne, Ricoh, EVB-IT) → Badge <code>⚙ produktspezifisch</code>, zur Prüfung ob Norm/Bestandszwang oder vermeidbare Lösungsvorwegnahme. Bewusst <i>nicht</i> das ⚖-Symbol, das im Design-System exklusiv für „Norm schreibt Mittel vor\" reserviert ist (K10) — hier geht es um Produktnennung im Quelltext, nicht um Normvorgabe.",
+      "<b>Tokenansicht:</b> Jede Karte lässt sich aufklappen und zeigt wortgenau, welche Trigger gegriffen haben. Wichtig für die Schulung: Das ist <b>keine KI-Bewertung</b>, sondern nachvollziehbare Mustererkennung — genau das macht die Tokenansicht sichtbar."
+    ],
+    extract: extractAnforderungen
+  },
+  {
+    id:"quality", label:"Qualitätsstandards",
+    title:"Extraktionsprompt: Qualitätsstandards (Normen)",
+    tag:"Regelbasiert · Muster (feste Normliste)",
+    bullets:[
+      "<b>R1 Normerkennung:</b> Feste Muster für ISO-Normen, DSGVO/GDPR, BSI-Grundschutz, DIN, IEEE, EU-Regulatorik (NIS-2, AI Act), GoBD/Revisionssicherheit, EVB-IT.",
+      "Hinweis: Ältere Ausschreibungen (vor 2018) referenzieren oft <i>keine</i> DSGVO — ein Nulltreffer ist hier ein valides, informatives Ergebnis, kein Fehler.",
+      "<b>Optionaler Zusatz (getrennt von der Extraktion):</b> Unten erscheint zusätzlich eine moderne Compliance-Einordnung — ein Abgleich gegen eine feste Liste heutiger Standards, nicht Teil der Texterkennung."
+    ],
+    extract: extractQualitaetsstandards
+  },
+  {
+    id:"souveraenitaet", label:"Souveränität",
+    title:"Extraktionsprompt: Souveränitätscheck",
+    tag:"Checkliste · 6 feste Prüfdimensionen",
+    bullets:[
+      "<b>R1 Feste Dimensionen</b> (dein CADA-Rahmen, EU-Kommissionsvorschlag „Cloud and AI Development Act\" vom 03.06.2026 — Status: Vorschlag, noch nicht in Kraft): Anbieterabhängigkeit, Datenstandort/Hosting, Portabilität, Interoperabilität, Zugriffskontrolle, Vertragstransparenz.",
+      "<b>R2 Je Dimension:</b> Beleg im Text gefunden → Zitat + Fundstelle. Kein Beleg → Badge <code>⚠ offen</code> mit Verweis auf die einschlägige Norm (CADA-Kriterium, Data Act Art. 23, DSGVO Art. 32) zur aktiven Nachfrage beim Anbieter."
+    ],
+    extract: extractSouveraenitaet
+  },
+  {
+    id:"risiken", label:"Risiken",
+    title:"Extraktionsprompt: Risiko-Register",
+    tag:"Regelbasiert · Muster",
+    bullets:[
+      "<b>R1 Abhängigkeit:</b> „sofern“, „Voraussetzung“, „abhängig“.",
+      "<b>R2 Medienbruch/Migration:</b> „papierbasiert“, „papierform“, „noch nicht digital“, „physisch“.",
+      "<b>R3 Fristen/Compliance:</b> Zahl + „Jahre“ in Kombination mit „archivieren“/„aufbewahren“.",
+      "<b>R4 Datenqualität:</b> „Altbestand“.",
+      "<b>R5 Offener Punkt:</b> „zu klären“, „unklar“.",
+      "<b>R6 Drittanbieter:</b> Nennung „Ricoh“.",
+      "Eintrittswahrscheinlichkeit/Auswirkung werden <b>nicht</b> automatisch bewertet — offen markiert, Bewertung ist Aufgabe des Projektteams (keine Erfindung von Werten)."
+    ],
+    extract: extractRisiken
+  },
+  {
+    id:"oos", label:"Out of Scope",
+    title:"Extraktionsprompt: Out-of-Scope-Liste",
+    tag:"Regelbasiert · Muster (geringe Trefferquote erwartet)",
+    bullets:[
+      "<b>R1 Zeitlich nachgelagert:</b> „gegen Ende des Projekts“, „künftig“, „zukünftig“, „zu einem späteren Zeitpunkt“ → Kandidat für spätere Phase, nicht zwingend Ausschluss.",
+      "<b>R2 Optional/nicht verpflichtend:</b> „denkbar“, „optional“ → mögliche Erweiterung, kein fester Bestandteil.",
+      "Hinweis: Ausschreibungstexte enthalten selten explizite Ausschlussformulierungen. Die Treffer sind <b>Kandidaten zur Verifikation beim Auftraggeber</b>, keine bestätigte Out-of-Scope-Liste."
+    ],
+    extract: extractOOS
+  },
+  {
+    id:"annahmen", label:"Annahmen",
+    title:"Extraktionsprompt: Annahmen & Restriktionen",
+    tag:"Regelbasiert · Muster (vorgeschlagene Ergänzung)",
+    bullets:[
+      "<b>Warum dieser Schritt?</b> Unausgesprochene Annahmen sind eine eigene IREB-Nebelart und im klassischen Pflichtenheft ein Standardkapitel — bisher nicht in der Auswahl enthalten.",
+      "<b>R1 Annahme:</b> „unter der Voraussetzung/Annahme“, „vorausgesetzt“, „angenommen“, „ausgehend von“, „voraussichtlich“.",
+      "<b>R2 Restriktion:</b> „Rahmenbedingung“, „beschränkt sich auf/nur“, „Einschränkung“, „nur … möglich/zulässig“."
+    ],
+    extract: extractAnnahmen
+  },
+  {
+    id:"budget", label:"Budget",
+    title:"Extraktionsprompt: Budget (vorläufig)",
+    tag:"Regelbasiert · Muster",
+    bullets:[
+      "<b>R1 Konkreter Betrag:</b> Zahl gefolgt von „€“/„EUR“/„Euro“.",
+      "<b>R2 Kostenbezug ohne Betrag:</b> „Kosten“, „Budget“, „Vergütung“, „Preis“, „Angebotspreis“, „Bewertungsmatrix“.",
+      "Hinweis: Ausschreibungen verweisen Budgetfragen oft in eine separate Bewertungsmatrix/Angebotsvorlage — ein Nulltreffer bei R1 ist dann typisch und kein Extraktionsfehler."
+    ],
+    extract: extractBudget
+  },
+  {
+    id:"ressourcen", label:"Ressourcen",
+    title:"Extraktionsprompt: Ressourcen",
+    tag:"Direktübernahme (Tabelle) + Regelbasiert (Freitext)",
+    bullets:[
+      "<b>R1 Tabelle:</b> Direktübernahme der Ressourcentabelle aus dem Anhang (Rolle, Tätigkeit, Zeitraum) — keine Heuristik nötig, da bereits strukturiert im Dokument vorhanden.",
+      "<b>R2 Freitext-Ergänzung:</b> zusätzliche Erwähnungen von „Scangerät“, „IT-Infrastruktur“, „Projektmitarbeiter“, „Hardware“ im Fließtext."
+    ],
+    extract: extractRessourcen
+  },
+  {
+    id:"testfaelle", label:"Testfälle",
+    title:"Generierungsprompt: Testfälle (aus Anforderungen abgeleitet)",
+    tag:"⚙ Generiert, NICHT aus dem Quelltext extrahiert",
+    bullets:[
+      "<b>Wichtig:</b> Das Lastenheft enthält keine Testfälle — sie werden hier aus den Ergebnissen von Schritt „Anforderungen“ per Vorlage <i>abgeleitet</i>, nicht im Text gefunden. Deshalb: Voraussetzung ist, dass der Schritt „Anforderungen“ bereits gelaufen ist.",
+      "<b>R1 1:1-Ableitung:</b> Jede Anforderung (Muss + Kann) erhält genau einen Testfall (TF-1, TF-2, …) mit Rückverweis auf den exakten Anforderungssatz.",
+      "<b>R2 Testtyp (heuristisch):</b> Schlüsselwörter im Anforderungssatz bestimmen den Testtyp (z. B. „Zugriff“ → Zugriffstest, „Jahre/archivieren“ → Archivierungstest), sonst „Funktionstest“.",
+      "<b>Prüfziel:</b> Der Originaltext der Anforderung wird unverändert als Prüfziel übernommen — keine Paraphrase, kein erfundener Erwartungswert."
+    ],
+    extract: extractTestfaelle
+  },
+  {
+    id:"meilensteine", label:"Meilensteine",
+    title:"Extraktionsprompt: Vorläufiger Meilensteinplan",
+    tag:"Direktübernahme · strukturierte Tabelle",
+    bullets:[
+      "Keine Freitext-Heuristik: Die Quelle enthält bereits Tabelle 2-2 „Umsetzungsphasen“ mit 11 Phasen und Zeiträumen.",
+      "<b>Transformation:</b> Meilenstein = spätestes genanntes Enddatum je Phase.",
+      "Sortierung chronologisch nach Meilenstein-Datum (nicht nach Phasennummer im Dokument, da Phasen dort parallel/verschachtelt verlaufen)."
+    ],
+    extract: function(){ return MEILENSTEIN_TABELLE.slice().sort(function(a,b){
+        return parseMonthYear(a.ende) - parseMonthYear(b.ende);
+      }); }
+  },
+  {
+    id:"matrix", label:"Traceability",
+    title:"Synthese-Prompt: Traceability-Matrix",
+    tag:"Verknüpft bereits erzeugte Ergebnisse — keine neue Texterkennung",
+    bullets:[
+      "<b>Voraussetzung:</b> Schritt „Anforderungen“ muss bereits gelaufen sein (Basis jeder Zeile). Für vollständige Spalten sollten auch Stakeholder, Use Cases, Produktfunktionen, Testfälle und Meilensteine bereits erzeugt sein — fehlende Schritte ergeben leere, nicht erfundene Zellen.",
+      "<b>Spalte Stakeholder:</b> echte Texterwähnung — Rollenname kommt wortwörtlich im Anforderungssatz vor.",
+      "<b>Spalte Use Case / Produktfunktion:</b> Abschnittsbezug — Anforderung stammt aus demselben Dokumentabschnitt. Das ist eine <b>Näherung über gemeinsame Herkunft</b>, keine geprüfte inhaltliche Verknüpfung.",
+      "<b>Spalte Testfall:</b> exakte 1:1-Verknüpfung, da der Testfall direkt aus dieser Anforderung generiert wurde.",
+      "<b>Spalte Meilenstein:</b> Schlüsselwortüberlappung zwischen Abschnittsname und Meilenstein-Beschreibung — meist leer, das ist erwartbar und ehrlich, keine Schwäche der Matrix."
+    ],
+    extract: buildTraceabilityMatrix
+  },
+  {
+    id:"kalkulation", label:"Kalkulation",
+    title:"Kalkulations-Gerüst: Aufwand & Tagessätze",
+    tag:"⚙ Interaktives Gerüst — KEINE automatisch erzeugten Zahlen",
+    bullets:[
+      "<b>Wichtig:</b> Es werden keine Personentage oder Tagessätze erfunden — realistische Marktsätze kenne ich nicht zuverlässig, und das wäre ohnehin Bieter-Kalkulation, nicht Auftraggeber-Anforderungsanalyse.",
+      "<b>R1 Struktur:</b> Für jede Anforderung entsteht eine Zeile mit leeren Eingabefeldern für PT und Tagessatz (€) — du befüllst sie.",
+      "<b>R2 Gruppierung:</b> Zuordnung zur Meilenstein-Phase über dieselbe Schlüsselwortüberlappung wie in der Traceability-Matrix. Ohne Treffer: „Nicht zugeordnet“.",
+      "<b>R3 Live-Berechnung:</b> Kosten je Zeile = PT × Tagessatz, automatisch summiert je Phase und gesamt.",
+      "<b>Voraussetzung:</b> Schritt „Anforderungen“ muss bereits gelaufen sein; für sinnvolle Gruppierung idealerweise auch „Meilensteine“."
+    ],
+    extract: extractKalkulation
+  }
+];
+
+function parseMonthYear(s){
+  var m = s.match(/(\d{2})\/(\d{4})/);
+  if (!m) return 0;
+  return parseInt(m[2],10)*12 + parseInt(m[1],10);
+}
+
+/* ============================================================
+   6) STATE & RENDERING
+   ============================================================ */
+var state = {
+  currentStep: 0,
+  results: {},
+  done: {},
+  gesamtOpen: false,
+  beamerLevel: 0
+};
+
+function safeSet(key, val){
+  try{ sessionStorage.setItem(key, val); }catch(e){ /* restriktiver WebView-Kontext, ignorieren */ }
+}
+function safeGet(key){
+  try{ return sessionStorage.getItem(key); }catch(e){ return null; }
+}
+
+function getCorpusText(){
+  return document.getElementById("corpus").value;
+}
+
+function resetCorpus(){
+  document.getElementById("corpus").value = DEFAULT_CORPUS;
+  safeSet("pfh_corpus", DEFAULT_CORPUS);
+}
+
+function resetAll(){
+  var ok = window.confirm("Wirklich alles zurücksetzen? Das löscht alle bisher erzeugten Ergebnisse und eingetragenen Kalkulationswerte (der Quelltext bleibt erhalten).");
+  if (!ok) return;
+  state.results = {};
+  state.done = {};
+  state.currentStep = 0;
+  closeGesamt();
+  renderPillnav();
+  renderMethodCard();
+  renderResults();
+}
+
+function renderPillnav(){
+  var nav = document.getElementById("pillnav");
+  nav.innerHTML = "";
+  var currentEl = null;
+  STEPS.forEach(function(step, idx){
+    var pill = document.createElement("div");
+    pill.className = "pill" + (state.done[step.id] ? " done" : "") + (idx===state.currentStep ? " current" : "");
+    pill.innerHTML = '<span class="num">' + (state.done[step.id] ? "✓" : (idx+1)) + '</span><span>' + step.label + '</span>';
+    pill.onclick = function(){ goToStep(idx); };
+    nav.appendChild(pill);
+    if (idx===state.currentStep) currentEl = pill;
+  });
+  if (currentEl && typeof currentEl.scrollIntoView === "function"){
+    try{ currentEl.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"}); }catch(e){}
+  }
+}
+
+function goToStep(idx){
+  state.currentStep = idx;
+  closeGesamt();
+  renderPillnav();
+  renderMethodCard();
+  renderResults();
+}
+
+function renderMethodCard(){
+  var step = STEPS[state.currentStep];
+  var card = document.getElementById("methodCard");
+  var bulletsHtml = step.bullets.map(function(b){ return "<li>" + b + "</li>"; }).join("");
+  var already = !!state.results[step.id];
+  card.innerHTML =
+    '<h2>' + step.title + '</h2>' +
+    '<div class="step-tag">Schritt ' + (state.currentStep+1) + ' von ' + STEPS.length + ' · ' + step.tag + '</div>' +
+    '<ul>' + bulletsHtml + '</ul>' +
+    '<div class="run-btn-wrap">' +
+      '<button class="run-btn' + (already ? ' secondary' : '') + '" id="runBtn">' +
+        (already ? '↺ Methode erneut anwenden' : '✓ Methode bestätigen &amp; anwenden') +
+      '</button>' +
+    '</div>';
+  document.getElementById("runBtn").onclick = runCurrentStep;
+}
+
+function runCurrentStep(){
+  var step = STEPS[state.currentStep];
+  var paragraphs = parseCorpus(getCorpusText());
+  var sentences = buildSentenceIndex(paragraphs);
+  var results = step.extract(sentences);
+  state.results[step.id] = results;
+  state.done[step.id] = (results !== null);
+  renderPillnav();
+  renderMethodCard();
+  renderResults();
+}
+
+function renderResults(){
+  var step = STEPS[state.currentStep];
+  var panel = document.getElementById("resultsPanel");
+  var results = state.results[step.id];
+  var wasRun = state.results.hasOwnProperty(step.id);
+
+  if (results === null && wasRun){
+    var missingMap = {
+      testfaelle: "Anforderungen",
+      matrix: "Anforderungen (für die Matrix-Basiszeilen)",
+      kalkulation: "Anforderungen (für die Kalkulationszeilen)"
+    };
+    var missing = missingMap[step.id] || "Anforderungen";
+    panel.innerHTML = '<div class="results-empty">⚠ Voraussetzung fehlt: Bitte zuerst den Schritt „' + missing + '“ ausführen.<br>' +
+      (step.id === "matrix" ? 'Für vollständige Spalten idealerweise auch Stakeholder, Use Cases, Produktfunktionen, Testfälle und Meilensteine.' : '') +
+      (step.id === "kalkulation" ? 'Für sinnvolle Phasen-Gruppierung idealerweise auch „Meilensteine“ zuerst ausführen.' : '') +
+      '</div>';
+    return;
+  }
+  if (!results){
+    panel.innerHTML = '<div class="results-empty">Noch keine Extraktion durchgeführt.<br>Bestätige links die Methode, um „' + step.label + '“ zu erzeugen.</div>';
+    return;
+  }
+
+  var prevIdx = state.currentStep - 1;
+  var nextIdx = state.currentStep + 1;
+  var hasPrev = prevIdx >= 0;
+  var hasNext = nextIdx < STEPS.length;
+
+  var html = '<div class="results-topbar">' +
+    '<div class="results-header"><h2>' + step.label + '</h2>' +
+    '<span class="results-count">' + results.length + ' Treffer</span></div>' +
+    '<div class="results-nav">' +
+      '<div class="nav-left-group">' +
+        (state.currentStep > 0 ? '<button class="nav-btn nav-btn-start" id="startBtn" title="Zum ersten Schritt">⏮ Start</button>' : '') +
+        (hasPrev ? '<button class="nav-btn nav-btn-prev" id="prevBtn">← „' + STEPS[prevIdx].label + '“</button>' : '') +
+      '</div>' +
+      (hasNext ?
+        '<button class="nav-btn nav-btn-next" id="nextBtn">Weiter zu „' + STEPS[nextIdx].label + '“ →</button>' :
+        '<button class="nav-btn nav-btn-next" id="nextBtn">📄 Zur Gesamtansicht</button>') +
+    '</div></div>';
+
+  if (results.length === 0){
+    html += '<div class="empty-note">Keine Treffer im aktuellen Quelltext. Das ist ein gültiges Ergebnis — nicht jede Kategorie muss im Ausgangstext vorkommen (siehe Master-Prompt Regel 7: nichts erfinden, offen markieren).</div>';
+  }
+
+  if (step.id === "anforderungen"){
+    results.forEach(function(r){
+      html += '<div class="item-card"><div class="badges">' +
+        '<span class="badge ' + (r.prio==="Muss"?"muss":"kann") + '">' + r.prio + '</span>' +
+        '<span class="badge ' + (r.typ==="NFA"?"nfa":"fa") + '">' + r.typ + '</span>' +
+        (r.qualitaetsnebel ? '<span class="badge warn">⚠ Qualitätsnebel</span>' : '') +
+        (r.produktHit.length ? '<span class="badge oos">⚙ produktspezifisch</span>' : '') + quelltypBadge(r.section) +
+        '</div>' +
+        '<div class="item-text">„' + highlight(esc(r.text), r.highlightWords) + '“</div>' +
+        '<div class="item-meta"><b>Fundstelle:</b> ' + esc(r.section) + '</div>' +
+        '<details class="token-toggle"><summary>Tokenansicht — wie die Regel-Engine diesen Satz bewertet hat</summary>' +
+          buildTokenView(r.text) +
+        '</details></div>';
+    });
+  } else if (step.id === "stakeholder"){
+    results.forEach(function(r){
+      html += '<div class="item-card"><div class="badges">' +
+        '<span class="badge role">' + esc(r.name) + '</span>' +
+        '<span class="badge kann">Einfluss (heuristisch): ' + r.influence + '</span>' +
+        '<span class="badge fa">' + r.count + '× erwähnt</span>' + quelltypBadge(r.section) +
+        '</div>' +
+        '<div class="item-text">„' + highlight(esc(r.example), r.highlightWords) + '“</div>' +
+        '<div class="item-meta"><b>Fundstelle:</b> ' + esc(r.section) + '</div></div>';
+    });
+  } else if (step.id === "risiken"){
+    results.forEach(function(r){
+      html += '<div class="item-card"><div class="badges">' +
+        '<span class="badge risk">' + esc(r.kat) + '</span>' +
+        '<span class="badge oos">' + esc(r.name) + '</span>' + quelltypBadge(r.section) +
+        '</div>' +
+        '<div class="item-text">„' + highlight(esc(r.text), r.highlightWords) + '“</div>' +
+        '<div class="item-meta"><b>Fundstelle:</b> ' + esc(r.section) + ' · Eintrittswahrsch./Auswirkung: <i>noch zu bewerten</i></div></div>';
+    });
+  } else if (step.id === "oos"){
+    results.forEach(function(r){
+      html += '<div class="item-card"><div class="badges">' +
+        '<span class="badge oos">' + esc(r.name) + '</span>' + quelltypBadge(r.section) +
+        '</div>' +
+        '<div class="item-text">„' + highlight(esc(r.text), r.highlightWords) + '“</div>' +
+        '<div class="item-meta"><b>Fundstelle:</b> ' + esc(r.section) + '</div></div>';
+    });
+  } else if (step.id === "usecases"){
+    results.forEach(function(r){
+      html += '<div class="item-card"><div class="badges">' +
+        '<span class="badge role">' + esc(r.name) + '</span>' + quelltypBadge(r.section) +
+        '</div>' +
+        '<div class="item-text">' + highlight(esc(r.text), r.highlightWords) + '</div>' +
+        '<div class="item-meta"><b>Fundstelle:</b> ' + esc(r.section) + '</div></div>';
+    });
+  } else if (step.id === "produktfunktionen"){
+    results.forEach(function(r){
+      html += '<div class="item-card"><div class="badges">' +
+        '<span class="badge ms">' + esc(r.af) + '</span>' +
+        '<span class="badge role">' + esc(r.name) + '</span>' + quelltypBadge(r.section) +
+        '</div>' +
+        (r.text ? '<div class="item-text">„' + esc(r.text) + '“</div>' : '<div class="empty-note" style="margin:0 0 8px;">Nur Nummernbereich aus der Übersicht bekannt, kein Beschreibungstext im Demo-Korpus hinterlegt.</div>') +
+        '<div class="item-meta"><b>Quelle:</b> ' + esc(r.quelle) + ' · <b>Fundstelle:</b> ' + esc(r.section) + '</div></div>';
+    });
+  } else if (step.id === "quality"){
+    results.forEach(function(r){
+      html += '<div class="item-card"><div class="badges">' +
+        '<span class="badge fa">' + esc(r.kat) + '</span>' + quelltypBadge(r.section) +
+        '</div>' +
+        '<div class="item-text">„' + highlight(esc(r.text), r.highlightWords) + '“</div>' +
+        '<div class="item-meta"><b>Fundstelle:</b> ' + esc(r.section) + '</div></div>';
+    });
+    var compliance = checkCompliance();
+    html += '<div class="compliance-block">' +
+      '<div class="compliance-header">🧭 Optionale Einordnung: Moderne Compliance-Referenzen <span class="badge oos">nicht Teil der Extraktion</span></div>' +
+      '<div class="compliance-sub">Abgleich gegen eine feste, heutige Referenzliste — unabhängig davon, was oben im Quelltext gefunden wurde.</div>';
+    compliance.forEach(function(c){
+      html += '<div class="compliance-row">' +
+        '<span class="badge ' + (c.belegt?'fa':'warn') + '">' + (c.belegt?'✓':'❌') + ' ' + esc(c.name) + '</span>' +
+        '<span class="compliance-warum">' + esc(c.warum) + '</span>' +
+        '</div>';
+    });
+    html += '</div>';
+  } else if (step.id === "souveraenitaet"){
+    results.forEach(function(r){
+      var belegt = r.status === "belegt";
+      html += '<div class="item-card"><div class="badges">' +
+        '<span class="badge ' + (belegt?'fa':'warn') + '">' + esc(r.dim) + '</span>' +
+        '<span class="badge oos">' + (belegt?'✓ belegt':'⚠ offen') + '</span>' +
+        '<span class="badge kann">' + esc(r.ref) + '</span>' +
+        '</div>' +
+        (belegt ?
+          '<div class="item-text">„' + highlight(esc(r.text), r.highlightWords) + '“</div>' :
+          '<div class="empty-note" style="margin:0 0 8px;">Kein Beleg im Quelltext — aktiv beim Anbieter/Auftraggeber nachfragen.</div>') +
+        '<div class="item-meta"><b>Fundstelle:</b> ' + (r.section ? esc(r.section) : '–') + '</div></div>';
+    });
+  } else if (step.id === "annahmen"){
+    results.forEach(function(r){
+      html += '<div class="item-card"><div class="badges">' +
+        '<span class="badge ' + (r.typ==="Annahme"?"kann":"oos") + '">' + esc(r.typ) + '</span>' + quelltypBadge(r.section) +
+        '</div>' +
+        '<div class="item-text">„' + highlight(esc(r.text), r.highlightWords) + '“</div>' +
+        '<div class="item-meta"><b>Fundstelle:</b> ' + esc(r.section) + '</div></div>';
+    });
+  } else if (step.id === "budget"){
+    results.forEach(function(r){
+      html += '<div class="item-card"><div class="badges">' +
+        '<span class="badge ' + (r.typ==="Konkreter Betrag"?"muss":"kann") + '">' + esc(r.typ) + '</span>' + quelltypBadge(r.section) +
+        '</div>' +
+        '<div class="item-text">„' + highlight(esc(r.text), r.highlightWords) + '“</div>' +
+        '<div class="item-meta"><b>Fundstelle:</b> ' + esc(r.section) + '</div></div>';
+    });
+  } else if (step.id === "ressourcen"){
+    results.forEach(function(r){
+      if (r.typ === "Tabelle (Anhang)"){
+        html += '<div class="item-card"><div class="badges">' +
+          '<span class="badge ms">' + esc(r.rolle) + '</span>' +
+          '<span class="badge fa">' + esc(r.zeitraum) + '</span>' + quelltypBadge(r.section) +
+          '</div>' +
+          '<div class="item-text">' + esc(r.detail) + '</div>' +
+          '<div class="item-meta"><b>Fundstelle:</b> ' + esc(r.section) + ' (Direktübernahme)</div></div>';
+      } else {
+        html += '<div class="item-card"><div class="badges"><span class="badge oos">Freitext</span>' + quelltypBadge(r.section) + '</div>' +
+          '<div class="item-text">„' + highlight(esc(r.text), r.highlightWords) + '“</div>' +
+          '<div class="item-meta"><b>Fundstelle:</b> ' + esc(r.section) + '</div></div>';
+      }
+    });
+  } else if (step.id === "meilensteine"){
+    html += '<div class="ms-list">';
+    results.forEach(function(r){
+      html += '<div class="ms-item">' +
+        '<div class="ms-date">' + esc(r.ende) + ' <span class="badge ms">Zeitraum ' + esc(r.zeitraum) + '</span></div>' +
+        '<div class="ms-title">' + esc(r.phase) + '</div>' +
+        '<div class="ms-detail">' + esc(r.detail) + '</div>' +
+        '<div class="ms-source">Fundstelle: Tabelle 2-2, Übersicht der Meilensteine</div>' +
+        '</div>';
+    });
+    html += '</div>';
+  } else if (step.id === "testfaelle"){
+    results.forEach(function(r){
+      html += '<div class="item-card"><div class="badges">' +
+        '<span class="badge ms">' + esc(r.id) + '</span>' +
+        '<span class="badge ' + (r.prio==="Muss"?"muss":"kann") + '">' + esc(r.prio) + '</span>' +
+        '<span class="badge nfa">' + esc(r.typ) + '</span>' +
+        '</div>' +
+        '<div class="item-text">Verifiziere: „' + esc(r.pruefziel) + '“</div>' +
+        '<div class="item-meta"><b>Abgeleitet aus:</b> Anforderung #' + (r.quelleAnforderungIndex+1) + ' · <b>Fundstelle:</b> ' + esc(r.section) + '</div></div>';
+    });
+  } else if (step.id === "matrix"){
+    html += '<div class="matrix-wrap"><table class="matrix-table"><thead><tr>' +
+      '<th>Anforderung</th><th>Stakeholder</th><th>Use Case</th><th>Produktfunktion</th><th>Testfall</th><th>Meilenstein</th>' +
+      '</tr></thead><tbody>';
+    results.forEach(function(r, i){
+      html += '<tr>' +
+        '<td><span class="badge ' + (r.prio==="Muss"?"muss":"kann") + '" style="margin-bottom:4px;">' + esc(r.prio) + '</span><br>' + esc(r.anforderung.length>110?r.anforderung.slice(0,107)+"…":r.anforderung) + '</td>' +
+        '<td>' + (r.stakeholders.length ? r.stakeholders.map(esc).join("<br>") : '<span class="matrix-empty">–</span>') + '</td>' +
+        '<td>' + (r.usecase.length ? r.usecase.map(esc).join("<br>") : '<span class="matrix-empty">–</span>') + '</td>' +
+        '<td>' + (r.produkt.length ? r.produkt.map(esc).join("<br>") : '<span class="matrix-empty">–</span>') + '</td>' +
+        '<td>' + (r.testfall ? esc(r.testfall) : '<span class="matrix-empty">–</span>') + '</td>' +
+        '<td>' + (r.meilenstein.length ? r.meilenstein.map(esc).join("<br>") : '<span class="matrix-empty">–</span>') + '</td>' +
+        '</tr>';
+    });
+    html += '</tbody></table></div>' +
+      '<div class="corpus-hint" style="margin-top:10px;">Leerzellen sind ein ehrliches Ergebnis: „Use Case“/„Produktfunktion“ verknüpfen nur über gemeinsamen Abschnitt, „Meilenstein“ nur über Schlüsselwortüberlappung — kein Treffer heißt hier meist „kein textueller Bezug vorhanden“, nicht „Fehler“.</div>';
+  } else if (step.id === "kalkulation"){
+    var meilensteine = state.results["meilensteine"] || [];
+    var phaseOrder = meilensteine.map(function(ms){ return ms.phase; });
+    var groups = [];
+    var seenPhase = {};
+    results.forEach(function(r){
+      if (!seenPhase[r.phase]){ seenPhase[r.phase]=true; groups.push(r.phase); }
+    });
+    groups.sort(function(a,b){
+      var ia = a==="Nicht zugeordnet" ? 10000 : phaseOrder.indexOf(a); if (ia===-1) ia = 9999;
+      var ib = b==="Nicht zugeordnet" ? 10000 : phaseOrder.indexOf(b); if (ib===-1) ib = 9999;
+      return ia-ib;
+    });
+
+    var phaseTotals = {};
+    var grand = 0, grandKnown = false;
+    results.forEach(function(r){
+      var c = kalkRowCost(r);
+      if (c !== null){ grand += c; grandKnown = true; }
+      phaseTotals[r.phase] = (phaseTotals[r.phase]||0) + (c||0);
+    });
+
+    html += '<div class="matrix-wrap"><table class="matrix-table kalk-table"><thead><tr>' +
+      '<th>Anforderung</th><th>PT</th><th>Tagessatz (€)</th><th>Kosten</th></tr></thead><tbody>';
+    groups.forEach(function(phase){
+      var phaseId = phase.replace(/[^a-zA-Z0-9]/g,"_");
+      html += '<tr class="kalk-phase-row"><td colspan="4">' + esc(phase) +
+        ' — Zwischensumme: <b id="phase-total-' + phaseId + '">' + formatEuro(phaseTotals[phase]) + '</b></td></tr>';
+      results.forEach(function(r, i){
+        if (r.phase !== phase) return;
+        html += '<tr>' +
+          '<td><span class="badge ' + (r.prio==="Muss"?"muss":"kann") + '" style="margin-bottom:4px;">' + esc(r.prio) + '</span><br>' +
+            esc(r.anforderung.length>100?r.anforderung.slice(0,97)+"…":r.anforderung) + '</td>' +
+          '<td><input type="number" inputmode="decimal" class="kalk-input" min="0" step="0.5" placeholder="PT" data-idx="' + i + '" data-field="pt" value="' + (r.pt!==null?r.pt:'') + '"></td>' +
+          '<td><input type="number" inputmode="decimal" class="kalk-input" min="0" step="50" placeholder="€/Tag" data-idx="' + i + '" data-field="tagessatz" value="' + (r.tagessatz!==null?r.tagessatz:'') + '"></td>' +
+          '<td id="kost-' + i + '">' + formatEuro(kalkRowCost(r)) + '</td>' +
+          '</tr>';
+      });
+    });
+    html += '<tr class="kalk-grand-row"><td colspan="3">Gesamtsumme</td><td id="kalk-grand-total">' + (grandKnown?formatEuro(grand):"–") + '</td></tr>';
+    html += '</tbody></table></div>' +
+      '<div class="corpus-hint" style="margin-top:10px;">PT und Tagessatz sind bewusst leer — trage reale Werte ein, die Summen aktualisieren sich automatisch. Beim Wechsel zu einem anderen Schritt und zurück bleiben deine Eingaben erhalten.</div>';
+  }
+
+  panel.innerHTML = html;
+  document.getElementById("nextBtn").onclick = function(){
+    if (hasNext){ goToStep(nextIdx); } else { openGesamt(); }
+  };
+  var prevBtn = document.getElementById("prevBtn");
+  if (prevBtn){
+    prevBtn.onclick = function(){ goToStep(state.currentStep - 1); };
+  }
+  var startBtn = document.getElementById("startBtn");
+  if (startBtn){
+    startBtn.onclick = function(){ goToStep(0); };
+  }
+  panel.querySelectorAll(".kalk-input").forEach(function(inp){
+    inp.addEventListener("input", function(e){
+      updateKalkulationValue(parseInt(e.target.getAttribute("data-idx"),10), e.target.getAttribute("data-field"), e.target.value);
+    });
+  });
+}
+
+/* ============================================================
+   7) GESAMTANSICHT
+   ============================================================ */
+function buildGesamtText(){
+  var lines = [];
+  lines.push("VORLÄUFIGES PFLICHTENHEFT — Digitale Studierendenakte");
+  lines.push("Erzeugt mit Pflichtenheft-Generator (regelbasiert, offline)");
+  lines.push("=".repeat(60));
+  lines.push("");
+
+  function section(num, title, key, renderFn, emptyMsg){
+    var res = state.results[key];
+    lines.push("");
+    lines.push(num + ". " + title);
+    lines.push("-".repeat(60));
+    if (!res){ lines.push("(noch nicht erzeugt)"); return; }
+    if (res.length===0){ lines.push(emptyMsg || "(keine Treffer)"); return; }
+    res.forEach(renderFn);
+  }
+
+  section("1", "STAKEHOLDER-REGISTER", "stakeholder", function(r,i){
+    lines.push((i+1) + ". " + r.name + " — Einfluss (heuristisch): " + r.influence + " (" + r.count + "× erwähnt)");
+    lines.push("   Beispiel: " + r.example);
+    lines.push("   Quelle: " + r.section);
+    lines.push("");
+  });
+
+  section("2", "MÖGLICHE USE CASES", "usecases", function(r,i){
+    lines.push((i+1) + ". " + r.name);
+    lines.push("   " + r.text);
+    lines.push("   Quelle: " + r.section);
+    lines.push("");
+  });
+
+  section("3", "PRODUKTFUNKTIONEN (AF-NUMMERN)", "produktfunktionen", function(r,i){
+    lines.push((i+1) + ". " + r.af + " — " + r.name + " [" + r.quelle + "]");
+    if (r.text) lines.push("   " + r.text);
+    lines.push("   Quelle: " + r.section);
+    lines.push("");
+  });
+
+  section("4", "ANFORDERUNGSDOKUMENTATION", "anforderungen", function(r,i){
+    lines.push((i+1) + ". [" + r.prio + " / " + r.typ + "]" + (r.qualitaetsnebel?" [Qualitätsnebel!]":"") + (r.produktHit.length?" [produktspezifisch]":""));
+    lines.push("   " + r.text);
+    lines.push("   Quelle: " + r.section);
+    lines.push("");
+  });
+
+  section("5", "QUALITÄTSSTANDARDS (NORMEN)", "quality", function(r,i){
+    lines.push((i+1) + ". [" + r.kat + "]");
+    lines.push("   " + r.text);
+    lines.push("   Quelle: " + r.section);
+    lines.push("");
+  }, "(keine Treffer — im Quelltext keine Normverweise gefunden, z. B. typisch bei Ausschreibungen vor 2018/DSGVO)");
+  if (state.results["quality"]){
+    lines.push("   Optionale Einordnung (moderne Compliance, NICHT Teil der Extraktion):");
+    checkCompliance().forEach(function(c){
+      lines.push("   " + (c.belegt?"✓":"❌") + " " + c.name + " — " + c.warum);
+    });
+    lines.push("");
+  }
+
+  section("6", "SOUVERÄNITÄTSCHECK", "souveraenitaet", function(r,i){
+    lines.push((i+1) + ". " + r.dim + " [" + r.ref + "] — " + (r.status==="belegt"?"belegt":"⚠ offen, nachzufragen"));
+    if (r.text) lines.push("   " + r.text);
+    if (r.section) lines.push("   Quelle: " + r.section);
+    lines.push("");
+  });
+
+  section("7", "RISIKO-REGISTER", "risiken", function(r,i){
+    lines.push((i+1) + ". [" + r.kat + "] " + r.name);
+    lines.push("   " + r.text);
+    lines.push("   Quelle: " + r.section + " · Bewertung: noch offen");
+    lines.push("");
+  });
+
+  section("8", "OUT OF SCOPE (Kandidaten, zu verifizieren)", "oos", function(r,i){
+    lines.push((i+1) + ". " + r.name);
+    lines.push("   " + r.text);
+    lines.push("   Quelle: " + r.section);
+    lines.push("");
+  }, "(keine Treffer — im Ausschreibungstext keine expliziten Ausschlüsse gefunden)");
+
+  section("9", "ANNAHMEN & RESTRIKTIONEN", "annahmen", function(r,i){
+    lines.push((i+1) + ". [" + r.typ + "]");
+    lines.push("   " + r.text);
+    lines.push("   Quelle: " + r.section);
+    lines.push("");
+  });
+
+  section("10", "BUDGET (VORLÄUFIG)", "budget", function(r,i){
+    lines.push((i+1) + ". [" + r.typ + "]");
+    lines.push("   " + r.text);
+    lines.push("   Quelle: " + r.section);
+    lines.push("");
+  }, "(keine Treffer — keine Budgetangaben im Quelltext, üblich wenn Kosten in separater Bewertungsmatrix geführt werden)");
+
+  section("11", "RESSOURCEN", "ressourcen", function(r,i){
+    if (r.typ === "Tabelle (Anhang)"){
+      lines.push((i+1) + ". " + r.rolle + " (" + r.zeitraum + ")");
+      lines.push("   " + r.detail);
+    } else {
+      lines.push((i+1) + ". [Freitext]");
+      lines.push("   " + r.text);
+    }
+    lines.push("   Quelle: " + r.section);
+    lines.push("");
+  });
+
+  section("12", "TESTFÄLLE (generiert aus Anforderungen, nicht extrahiert)", "testfaelle", function(r,i){
+    lines.push(r.id + " [" + r.prio + " / " + r.typ + "] — abgeleitet aus Anforderung #" + (r.quelleAnforderungIndex+1));
+    lines.push("   Verifiziere: " + r.pruefziel);
+    lines.push("   Quelle: " + r.section);
+    lines.push("");
+  });
+
+  section("13", "VORLÄUFIGER MEILENSTEINPLAN", "meilensteine", function(r,i){
+    lines.push((i+1) + ". " + r.ende + " — " + r.phase + " (Zeitraum " + r.zeitraum + ")");
+    lines.push("   " + r.detail);
+    lines.push("");
+  });
+
+  section("14", "TRACEABILITY-MATRIX", "matrix", function(r,i){
+    lines.push((i+1) + ". [" + r.prio + "] " + (r.anforderung.length>90?r.anforderung.slice(0,87)+"…":r.anforderung));
+    lines.push("   Stakeholder: " + (r.stakeholders.join(", ")||"–") + " | Use Case: " + (r.usecase.join(", ")||"–"));
+    lines.push("   Produktfunktion: " + (r.produkt.join(", ")||"–") + " | Testfall: " + (r.testfall||"–") + " | Meilenstein: " + (r.meilenstein.join(", ")||"–"));
+    lines.push("");
+  });
+
+  section("15", "KALKULATIONS-GERÜST (Werte selbst eingetragen, nichts erfunden)", "kalkulation", function(r,i){
+    lines.push((i+1) + ". [" + r.prio + " · " + r.phase + "] " + (r.anforderung.length>90?r.anforderung.slice(0,87)+"…":r.anforderung));
+    lines.push("   PT: " + (r.pt!==null?r.pt:"–") + " · Tagessatz: " + (r.tagessatz!==null?formatEuro(r.tagessatz):"–") + " · Kosten: " + formatEuro(kalkRowCost(r)));
+    lines.push("");
+  }, "(keine Zeilen — Voraussetzung „Anforderungen“ fehlt oder Schritt noch nicht ausgeführt)");
+
+  return lines.join("\n");
+}
+
+function openGesamt(){
+  state.gesamtOpen = true;
+  document.getElementById("mainLayout").classList.add("hidden");
+  document.getElementById("gesamtView").classList.add("active");
+  document.getElementById("gesamtToggle").classList.add("active");
+  document.getElementById("gesamtText").value = buildGesamtText();
+}
+function closeGesamt(){
+  state.gesamtOpen = false;
+  document.getElementById("mainLayout").classList.remove("hidden");
+  document.getElementById("gesamtView").classList.remove("active");
+  document.getElementById("gesamtToggle").classList.remove("active");
+}
+function toggleGesamt(){
+  if (state.gesamtOpen){ closeGesamt(); } else { openGesamt(); }
+}
+
+/* ============================================================
+   7a) BEAMER-MODUS — vergrößert die gesamte Darstellung (Layout + Text)
+   für Präsentationen aus größerer Entfernung. 3 Stufen im Kreis:
+   0 = normal, 1 = groß (135%), 2 = sehr groß (175%).
+   ============================================================ */
+var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+function applyBeamerLevel(){
+  document.documentElement.setAttribute("data-beamer", String(state.beamerLevel));
+  var btn = document.getElementById("beamerToggle");
+  btn.textContent = BEAMER_LABELS[state.beamerLevel];
+  btn.classList.toggle("active", state.beamerLevel > 0);
+  btn.classList.toggle("beamer-level-2", state.beamerLevel === 2);
+}
+function toggleBeamerLevel(){
+  state.beamerLevel = (state.beamerLevel + 1) % BEAMER_LABELS.length;
+  safeSet("pfh_beamer", String(state.beamerLevel));
+  applyBeamerLevel();
+}
+
+/* ============================================================
+   7b) MASTER-PROMPT (reusable, für andere Dokumente/Kolleg:innen/LLMs)
+   ============================================================ */
+function stripHtml(s){
+  return s.replace(/<code>/g,"„").replace(/<\/code>/g,"“").replace(/<[^>]+>/g,"").replace(/&amp;/g,"&");
+}
+
+function buildMasterPromptText(){
+  var lines = [];
+  lines.push("MASTER-PROMPT: Pflichtenheft-Generator (regelbasiert, offline, schrittweise)");
+  lines.push("Für die Anwendung auf eine andere Quelle (\"Studienakte\"/Ausschreibung/Lastenheft).");
+  lines.push("=".repeat(70));
+  lines.push("");
+  lines.push("ROLLE");
+  lines.push("Du unterstützt bei der schrittweisen Extraktion eines vorläufigen Pflichtenhefts");
+  lines.push("aus einem Quelldokument (z. B. Ausschreibung, Lastenheft, Fachkonzept).");
+  lines.push("Du zeigst VOR jedem Schritt die Extraktionsregeln, wartest auf Bestätigung,");
+  lines.push("und lieferst danach die Ergebnisliste MIT Zitat, Fundstelle (Abschnitt) und");
+  lines.push("der Regel, die den Treffer ausgelöst hat. Du erfindest nichts: Kein Treffer");
+  lines.push("ist ein gültiges Ergebnis und wird als solches benannt, nicht mit Platzhaltern gefüllt.");
+  lines.push("");
+  lines.push("QUELLFORMAT");
+  lines.push("Abschnittsüberschriften mit \"## Abschnittsname\" kennzeichnen, darunter Fließtext");
+  lines.push("(Absätze durch Leerzeile trennen). Enthält die Quelle Word-Formatvorlagen");
+  lines.push("(Überschrift 1/2/3), können diese automatisch zu \"##\"-Markern übersetzt werden.");
+  lines.push("");
+  lines.push("REIHENFOLGE DER SCHRITTE (bewusst gewählt: Wer → Was → Details → Qualitätslatte");
+  lines.push("→ Souveränitäts-Linse → Risiken → Grenzen → Annahmen → Geld/Leute/Zeit):");
+  lines.push("");
+
+  STEPS.forEach(function(step, idx){
+    lines.push((idx+1) + ". " + step.label + " — " + step.tag);
+    step.bullets.forEach(function(b){
+      lines.push("   • " + stripHtml(b));
+    });
+    lines.push("");
+  });
+
+  lines.push("AUSGABEFORMAT JE TREFFER");
+  lines.push("- Zitat (möglichst wörtlich aus der Quelle)");
+  lines.push("- Fundstelle (Abschnittsname)");
+  lines.push("- ausgelöste Regel / Kategorie (z. B. Muss/Kann, FA/NFA, Risikokategorie)");
+  lines.push("- bei Heuristiken mit Bewertungsanteil (Stakeholder-Einfluss, Risikoeinstufung):");
+  lines.push("  explizit als Heuristik kennzeichnen, nicht als fachlich geprüftes Ergebnis ausgeben");
+  lines.push("");
+  lines.push("ARBEITSWEISE");
+  lines.push("- Erst Methode/Regelset zeigen, auf Bestätigung warten, dann anwenden.");
+  lines.push("- Bei Nulltreffern: kurz einordnen, ob das plausibel ist (z. B. \"Budget wird oft in");
+  lines.push("  separater Bewertungsmatrix geführt, nicht im Lastenheft selbst\") statt zu raten.");
+  lines.push("- Am Ende alle Abschnitte zu einem Fließtext-Entwurf zusammenführen (Gesamtansicht).");
+
+  return lines.join("\n");
+}
+
+function openPromptFooterInit(){
+  document.getElementById("promptText").value = buildMasterPromptText();
+}
+
+/* ============================================================
+   7c) DOKUMENT-UPLOAD (.txt/.md direkt, .docx via Offline-ZIP/XML-Extraktion)
+   ============================================================ */
+function readUInt32LE_u(buf, off){ return ((buf[off]) | (buf[off+1]<<8) | (buf[off+2]<<16) | (buf[off+3]<<24)) >>> 0; }
+function readUInt16LE(buf, off){ return buf[off] | (buf[off+1]<<8); }
+
+function findEOCD(buf){
+  var minPos = Math.max(0, buf.length - 65557);
+  for (var i = buf.length - 22; i >= minPos; i--){
+    if (readUInt32LE_u(buf,i) === 0x06054b50) return i;
+  }
+  throw new Error("Keine gültige ZIP/DOCX-Struktur gefunden (EOCD fehlt).");
+}
+function listZipEntries(buf){
+  var eocdOff = findEOCD(buf);
+  var cdOffset = readUInt32LE_u(buf, eocdOff + 16);
+  var cdEntries = readUInt16LE(buf, eocdOff + 10);
+  var entries = [];
+  var ptr = cdOffset;
+  for (var i=0;i<cdEntries;i++){
+    if (readUInt32LE_u(buf, ptr) !== 0x02014b50) throw new Error("Central-Directory beschädigt.");
+    var method = readUInt16LE(buf, ptr+10);
+    var compSize = readUInt32LE_u(buf, ptr+20);
+    var nameLen = readUInt16LE(buf, ptr+28);
+    var extraLen = readUInt16LE(buf, ptr+30);
+    var commentLen = readUInt16LE(buf, ptr+32);
+    var localHeaderOffset = readUInt32LE_u(buf, ptr+42);
+    var name = "";
+    for (var k=0;k<nameLen;k++) name += String.fromCharCode(buf[ptr+46+k]);
+    entries.push({name:name, method:method, compSize:compSize, localHeaderOffset:localHeaderOffset});
+    ptr += 46 + nameLen + extraLen + commentLen;
+  }
+  return entries;
+}
+function getEntryData(buf, entry){
+  var off = entry.localHeaderOffset;
+  if (readUInt32LE_u(buf, off) !== 0x04034b50) throw new Error("Local-File-Header beschädigt für " + entry.name);
+  var nameLen = readUInt16LE(buf, off+26);
+  var extraLen = readUInt16LE(buf, off+28);
+  var dataStart = off + 30 + nameLen + extraLen;
+  return buf.slice(dataStart, dataStart + entry.compSize);
+}
+async function inflateRawBrowser(compressedBytes){
+  var ds = new DecompressionStream("deflate-raw");
+  var writer = ds.writable.getWriter();
+  writer.write(compressedBytes);
+  writer.close();
+  var chunks = [];
+  var reader = ds.readable.getReader();
+  while(true){
+    var r = await reader.read();
+    if (r.done) break;
+    chunks.push(r.value);
+  }
+  var total = chunks.reduce(function(a,c){return a+c.length;},0);
+  var out = new Uint8Array(total);
+  var pos=0;
+  chunks.forEach(function(c){ out.set(c,pos); pos+=c.length; });
+  return out;
+}
+function isHeadingStyleVal(styleVal){
+  return !!styleVal && /^(heading|berschrift|title|titel)/i.test(styleVal);
+}
+function extractParagraphsFromDocxXml(xmlText){
+  var paraBlocks = xmlText.match(/<w:p\b[\s\S]*?<\/w:p>/g) || [];
+  var out = [];
+  paraBlocks.forEach(function(block){
+    var styleMatch = block.match(/<w:pStyle\s+w:val="([^"]*)"/);
+    var styleVal = styleMatch ? styleMatch[1] : null;
+    if (styleVal && /^Verzeichnis/i.test(styleVal)) return;
+    var textMatches = block.match(/<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>/g) || [];
+    var text = textMatches.map(function(t){
+      var m = t.match(/<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>/);
+      return m ? m[1] : "";
+    }).join("");
+    text = text.replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&apos;/g,"'");
+    text = text.replace(/\s+/g," ").trim();
+    if (text.length===0) return;
+    if (/^inhaltsverzeichnis$/i.test(text)) return;
+    out.push({heading: isHeadingStyleVal(styleVal), text: text});
+  });
+  return out;
+}
+function buildCorpusFromDocxParagraphs(paras){
+  var lines = [];
+  var sawHeading = false;
+  paras.forEach(function(p){
+    if (p.heading){ lines.push(""); lines.push("## " + p.text); sawHeading = true; }
+    else { lines.push(p.text); lines.push(""); }
+  });
+  var text = lines.join("\n");
+  if (!sawHeading){ text = "## Hochgeladenes Dokument\n" + text; }
+  else if (!/^\s*##/.test(text.trim())){ text = "## Titelbereich (Dokumentkopf)\n" + text; }
+  return text.trim() + "\n";
+}
+async function extractDocxCorpus(arrayBuffer){
+  var buf = new Uint8Array(arrayBuffer);
+  var entries = listZipEntries(buf);
+  var docEntry = entries.filter(function(e){ return e.name === "word/document.xml"; })[0];
+  if (!docEntry) throw new Error("word/document.xml nicht in der Datei gefunden — ist das eine gültige .docx-Datei?");
+  var compData = getEntryData(buf, docEntry);
+  var xmlBytes = docEntry.method === 8 ? await inflateRawBrowser(compData) : compData;
+  var xmlText = new TextDecoder("utf-8").decode(xmlBytes);
+  var paras = extractParagraphsFromDocxXml(xmlText);
+  return buildCorpusFromDocxParagraphs(paras);
+}
+
+function handleFileUpload(file){
+  var status = document.getElementById("uploadStatus");
+  var ext = (file.name.split(".").pop() || "").toLowerCase();
+  status.textContent = "⏳ Lese " + file.name + " …";
+  if (ext === "txt" || ext === "md"){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      document.getElementById("corpus").value = e.target.result;
+      safeSet("pfh_corpus", e.target.result);
+      status.textContent = "✓ " + file.name + " geladen.";
+      resetResultsAfterCorpusChange();
+    };
+    reader.onerror = function(){ status.textContent = "✗ Datei konnte nicht gelesen werden."; };
+    reader.readAsText(file, "utf-8");
+  } else if (ext === "docx"){
+    if (typeof DecompressionStream === "undefined"){
+      status.textContent = "✗ Dieser Browser unterstützt keine .docx-Extraktion (DecompressionStream fehlt). Bitte als .txt einfügen.";
+      return;
+    }
+    var reader2 = new FileReader();
+    reader2.onload = function(e){
+      extractDocxCorpus(e.target.result).then(function(corpusText){
+        document.getElementById("corpus").value = corpusText;
+        safeSet("pfh_corpus", corpusText);
+        status.textContent = "✓ " + file.name + " extrahiert.";
+        resetResultsAfterCorpusChange();
+      }).catch(function(err){
+        status.textContent = "✗ Konnte .docx nicht lesen: " + err.message;
+      });
+    };
+    reader2.onerror = function(){ status.textContent = "✗ Datei konnte nicht gelesen werden."; };
+    reader2.readAsArrayBuffer(file);
+  } else {
+    status.textContent = "✗ Nicht unterstütztes Format. Bitte .txt, .md oder .docx.";
+  }
+}
+function resetResultsAfterCorpusChange(){
+  state.results = {};
+  state.done = {};
+  renderPillnav();
+  renderMethodCard();
+  renderResults();
+}
+
+/* ============================================================
+   8) INIT
+   ============================================================ */
+function init(){
+  var stored = safeGet("pfh_corpus");
+  document.getElementById("corpus").value = stored || DEFAULT_CORPUS;
+  document.getElementById("corpus").addEventListener("input", function(e){
+    safeSet("pfh_corpus", e.target.value);
+  });
+  document.getElementById("fileUpload").addEventListener("change", function(e){
+    if (e.target.files && e.target.files[0]) handleFileUpload(e.target.files[0]);
+  });
+  document.getElementById("gesamtToggle").addEventListener("click", toggleGesamt);
+  document.getElementById("resetCorpusBtn").addEventListener("click", resetCorpus);
+  document.getElementById("resetAllBtn").addEventListener("click", resetAll);
+  document.getElementById("beamerToggle").addEventListener("click", toggleBeamerLevel);
+  var storedBeamer = parseInt(safeGet("pfh_beamer"), 10);
+  state.beamerLevel = (storedBeamer === 1 || storedBeamer === 2) ? storedBeamer : 0;
+  applyBeamerLevel();
+  openPromptFooterInit();
+  renderPillnav();
+  renderMethodCard();
+  renderResults();
+}
+init();
+
+})();
+</script>
+</body>
+</html>
