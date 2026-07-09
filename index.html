@@ -1,15 +1,171 @@
-<h1>Michaelas Denkraum Start</h1>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Michaelas Denkraum – Werkzeuge</title>
+<style>
+  :root {
+    --bg: #f6f1e6;
+    --panel: #fbf7ee;
+    --panel-sand: #ede2cb;
+    --ink: #2c2a24;
+    --muted: #6f6a5c;
+    --line: #ddd0b0;
+    --accent: #2f5233;
+    --accent-soft: #dfe8dd;
+    --accent-strong: #1f3a23;
+    --font-display: Georgia, "Iowan Old Style", Palatino, "Palatino Linotype", serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1d1b17;
+      --panel: #262420;
+      --panel-sand: #302c24;
+      --ink: #ece6d8;
+      --muted: #a89f8a;
+      --line: #40392c;
+      --accent: #6fae7c;
+      --accent-soft: #26332a;
+      --accent-strong: #8fcf9c;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    line-height: 1.55;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 48px 20px 60px; }
+  h1 {
+    font-family: var(--font-display);
+    color: var(--accent-strong);
+    font-size: clamp(28px, 4vw, 40px);
+    margin: 0 0 8px;
+  }
+  .subtitle { color: var(--muted); font-size: 16px; max-width: 560px; margin: 0 0 36px; }
+  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; align-items: start; }
+  .tools { display: grid; gap: 18px; }
+  .tool-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 24px 26px;
+    box-shadow: 0 10px 26px rgba(44, 42, 36, 0.08);
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  .tool-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .tool-kicker {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+  }
+  .tool-card h2 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+  .tool-card p { margin: 0; color: var(--muted); font-size: 15px; }
+  .tool-card .cta { margin-top: 14px; font-weight: 700; color: var(--accent-strong); font-size: 14px; }
+  .section {
+    font-family: var(--font-display);
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin: 40px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .section:first-of-type { margin-top: 8px; }
+  footer { margin-top: 40px; font-size: 13px; color: var(--muted); }
+  footer a { color: var(--accent); }
+  @media (max-width: 760px) {
+    .columns { grid-template-columns: 1fr; gap: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Michaelas Denkraum</h1>
+  <p class="subtitle">Interaktive Werkzeuge für strukturiertes Denken, Anforderungsklärung und Live-Trainings – direkt im Browser, ohne Installation.</p>
 
-<p>Eine interaktive Denkraum-App mit adaptiver Engine, die aus einer Problemstellung automatisch das passende Level, Denkmuster und die relevanten Räume ableitet.
-Sie führt Nutzer spielerisch durch strukturierte Fragen, gibt direktes Feedback und erzeugt am Ende ein klares Canvas mit Übersetzung, Werkzeugen, Normen und Handlungsempfehlungen.
-Damit wird aus einer vagen Fragestellung Schritt für Schritt eine fundierte, umsetzbare Analyse. Starten: <a href="./denkraum_v3_adaptive_engine.html">Adaptive Denkraum Engine</a></p>
+  <div class="columns">
+  <div class="column">
+  <div class="section">Anforderungsklärung &amp; Requirements Engineering</div>
+  <div class="tools">
+    <a class="tool-card" href="./tools/denkraum_v3_adaptive_engine.html">
+      <span class="tool-kicker">Adaptive Engine</span>
+      <h2>Denkraum V3 – Adaptive Engine</h2>
+      <p>Interaktive App, die aus einer Problemstellung automatisch Level, Denkmuster und relevante Räume ableitet. Führt spielerisch durch strukturierte Fragen und erzeugt am Ende ein Canvas mit Übersetzung, Werkzeugen, Normen und Handlungsempfehlungen.</p>
+      <span class="cta">Tool starten →</span>
+    </a>
 
-<p>Für die Bühne: <a href="./klarheits-sprint/index.html">Klarheits-Sprint – vom Rohsatz zur zertifizierten Anforderung</a>, ein Live-Trainingstool, das einen vagen Anforderungssatz in vier Stationen zu einer IREB-/ISO-konformen Anforderung schärft.</p>
+    <a class="tool-card" href="./tools/anforderungsreise.html">
+      <span class="tool-kicker">Erklär-Tool</span>
+      <h2>Anforderungs-Reise durch die Räume</h2>
+      <p>Lässt eine einzelne Anforderung vom Möglichkeitsraum bis in den Testraum wandern. Jeder Raum zeigt seine typischen Leitfragen und verfeinert die Anforderung weiter: Idee → Problem → Lösung mit FA/NFA und User Story → Messkriterien/Parameter → Testfälle – am Ende steht ein exportierbares Reise-Log.</p>
+      <span class="cta">Tool starten →</span>
+    </a>
 
-<p>Für Workshops: <a href="./pflichtenheft-generator.html">Pflichtenheft-Generator</a>, der aus einer echten Ausschreibung (Vergabeunterlage) in 15 transparenten, regelbasierten Schritten ein vorläufiges Pflichtenheft ableitet – jede Extraktionsregel wird vor der Anwendung gezeigt und bestätigt, jedes Ergebnis bleibt mit Zitat und Fundstelle belegt.</p>
+    <a class="tool-card" href="./klarheits-sprint/index.html">
+      <span class="tool-kicker">Bühnentool</span>
+      <h2>Klarheits-Sprint – vom Rohsatz zur zertifizierten Anforderung</h2>
+      <p>Live-Trainingstool, das einen vagen Anforderungssatz in vier Stationen (Rohsatz, Nebel-Check, STAKE-Schärfung, Waschmaschine) zu einer IREB-/ISO-konformen Anforderung schärft. Für Vorträge und Workshops, mit Beamer-Modus.</p>
+      <span class="cta">Tool starten →</span>
+    </a>
 
-<p>Zum Erklären des Raum-Modells: <a href="./anforderungsreise.html">Anforderungs-Reise durch die Räume</a>, ein Demo-Tool, das eine einzelne Anforderung vom Möglichkeitsraum bis in den Testraum wandern lässt. Jeder Raum zeigt seine typischen Leitfragen und verfeinert die Anforderung weiter: Idee → Problem → Lösung mit FA/NFA und User Story → Meßkriterien/Parameter → Testfälle – am Ende steht ein exportierbares Reise-Log.</p>
+    <a class="tool-card" href="./tools/fragenautomat.html">
+      <span class="tool-kicker">Workshop-Tool</span>
+      <h2>Fragenautomat – Klärungsfragen aus dem Lastenheft</h2>
+      <p>Leitet in neun Schritten (Zielsetzung, Stakeholder, FA/NFA, Abgrenzung, Annahmen, Risiken, Schnittstellen, fehlende Messkriterien) konkrete Klärungsfragen aus einem eigenen Lastenheft ab – wörtlich zitiert und mit Fundstelle belegt. Upload als .txt/.md/.docx/.pdf, Ergebnis als kopierbarer Fragenkatalog.</p>
+      <span class="cta">Tool starten →</span>
+    </a>
 
-<p>Für den Umgang mit intransparenten KI-Systemen: <a href="./ki-black-box-simulator.html">KI Black-Box-Simulator</a>, der eine fiktive KI (Spam-Filter, Kredit-Score, Bewerbungs-Filter) nur über Ein- und Ausgabe erfahrbar macht. Erst nach eigenen Testreihen und einer Hypothese wird die Black Box geöffnet und mit der tatsächlichen – teils verzerrten – Entscheidungslogik verglichen, bevor daraus Anforderungen an eine vertrauenswürdige KI (Transparenz, Erklärbarkeit, Fairness-Audit, Human-in-the-loop) abgeleitet werden.</p>
+    <a class="tool-card" href="./tools/pflichtenheft-generator.html">
+      <span class="tool-kicker">Workshop-Tool</span>
+      <h2>Pflichtenheft-Generator</h2>
+      <p>Leitet aus einer echten Ausschreibung (Vergabeunterlage) in 15 transparenten, regelbasierten Schritten ein vorläufiges Pflichtenheft ab. Jede Extraktionsregel wird vor der Anwendung gezeigt und bestätigt, jedes Ergebnis bleibt mit Zitat und Fundstelle belegt.</p>
+      <span class="cta">Tool starten →</span>
+    </a>
+  </div>
+  </div>
 
-<p>Für den bewussten Umgang mit Prompts: <a href="./ki-prompt-blackbox-simulator.html">Prompt-Black-Box-Simulator</a>, der live zeigt, wie ein Prompt Tokenisierung, Kontextgewichtung und Wahrscheinlichkeiten durchläuft. Anhand von Beispielen und Qualitätshebeln (Rolle, Kontext, Constraints, Output-Format, Prüfauftrag) macht er sichtbar, wie RE-Denken die „Prompt-Souveränität“ und damit die Antwortqualität einer KI steuerbar macht – inklusive Glossar und kopierbarer Prompt-Vorlage.</p>
+  <div class="column">
+  <div class="section">KI-Kompetenz &amp; Prompting</div>
+  <div class="tools">
+    <a class="tool-card" href="./tools/ki-black-box-simulator.html">
+      <span class="tool-kicker">KI-Trainingstool</span>
+      <h2>KI Black-Box-Simulator</h2>
+      <p>Macht eine fiktive KI (Spam-Filter, Kredit-Score, Bewerbungs-Filter) nur über Ein- und Ausgabe erfahrbar. Erst nach eigenen Testreihen und einer Hypothese wird die Black Box geöffnet und mit der tatsächlichen – teils verzerrten – Entscheidungslogik verglichen, bevor daraus Anforderungen an eine vertrauenswürdige KI abgeleitet werden.</p>
+      <span class="cta">Tool starten →</span>
+    </a>
+
+    <a class="tool-card" href="./tools/ki-prompt-blackbox-simulator.html">
+      <span class="tool-kicker">Prompt-Training</span>
+      <h2>Prompt-Black-Box-Simulator</h2>
+      <p>Zeigt live, wie ein Prompt Tokenisierung, Kontextgewichtung und Wahrscheinlichkeiten durchläuft. Anhand von Beispielen und Qualitätshebeln (Rolle, Kontext, Constraints, Output-Format, Prüfauftrag) macht er sichtbar, wie RE-Denken die Antwortqualität einer KI steuerbar macht – inklusive Glossar und kopierbarer Prompt-Vorlage.</p>
+      <span class="cta">Tool starten →</span>
+    </a>
+  </div>
+  </div>
+  </div>
+
+  <footer>Michaela Kühn · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener">www.michaela-kuehn.com</a></footer>
+</div>
+</body>
+</html>
