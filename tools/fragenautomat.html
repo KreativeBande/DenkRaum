@@ -37,6 +37,8 @@
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);}
+  html[data-beamer="1"]{zoom:1.35}
+  html[data-beamer="2"]{zoom:1.75}
   body{min-height:100vh;display:flex;flex-direction:column;}
 
   header{
@@ -275,6 +277,7 @@
     </div>
     <a class="gesamt-btn" href="../index.html">← Startseite</a>
     <button class="gesamt-btn" id="gesamtToggle">📄 Fragenkatalog</button>
+    <button class="gesamt-btn" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
     <a class="gesamt-btn" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn</a>
   </div>
   <div class="pillnav" id="pillnav"></div>
@@ -1309,6 +1312,20 @@ function resetResultsAfterCorpusChange(){
   renderResults();
 }
 
+var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+function applyBeamerLevel(level){
+  document.documentElement.setAttribute("data-beamer", String(level));
+  var btn = document.getElementById("beamerToggle");
+  btn.textContent = BEAMER_LABELS[level];
+  btn.classList.toggle("active", level > 0);
+}
+function toggleBeamerLevel(){
+  var level = (Number(safeGet("frg_beamer")) || 0) + 1;
+  if (level >= BEAMER_LABELS.length) level = 0;
+  safeSet("frg_beamer", String(level));
+  applyBeamerLevel(level);
+}
+
 /* ============================================================
    11) INIT
    ============================================================ */
@@ -1324,6 +1341,8 @@ function init(){
   document.getElementById("gesamtToggle").addEventListener("click", toggleGesamt);
   document.getElementById("resetCorpusBtn").addEventListener("click", resetCorpus);
   document.getElementById("resetAllBtn").addEventListener("click", resetAll);
+  document.getElementById("beamerToggle").addEventListener("click", toggleBeamerLevel);
+  applyBeamerLevel(Number(safeGet("frg_beamer")) || 0);
   openPromptFooterInit();
   renderPillnav();
   renderMethodCard();
