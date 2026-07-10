@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OKR-Kaskade – von der Vision bis zum ToDo</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f6f5fc;--panel:#ffffff;--ink:#231f34;--muted:#645f7a;--faint:#8f89a6;
+  --line:#ddd8ee;--line2:#c3bce0;
+  --accent:#4f46e5;--accent-soft:#e8e6fb;--accent-strong:#3730a3;
+  --good:#0f766e;--good-bg:#e6f6f4;
+  --amber:#92400e;--amber-bg:#fef3c7;
+  --coral:#be185d;--coral-bg:#fdf2f8;
+  --shadow:0 16px 34px rgba(35,31,52,.08);
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono","SF Mono",Menlo,Consolas,monospace;
+}
+html,body{margin:0;padding:0}
+html[data-beamer="1"]{zoom:1.35}
+html[data-beamer="2"]{zoom:1.75}
+body{
+  font-family:var(--sans);color:var(--ink);background:
+    radial-gradient(circle at top left, #f0eefe 0%, transparent 24%),
+    radial-gradient(circle at top right, #eef4ff 0%, transparent 20%),
+    linear-gradient(180deg,#fbfaff 0%,#f5f4fb 100%);
+  min-height:100vh;line-height:1.55;
+}
+.wrap{max-width:1200px;margin:0 auto;padding:24px}
+
+.hero{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:28px 30px 22px;margin-bottom:20px}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.hero-back{display:inline-block;font-size:14px;font-weight:600;color:var(--accent);text-decoration:none;margin-bottom:10px}
+.hero-back:hover{text-decoration:underline}
+.hero-eye{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:6px}
+.hero h1{margin:0 0 8px 0;font-size:clamp(24px,3.4vw,36px);line-height:1.1}
+.hero p{margin:0;color:var(--muted);font-size:16px;max-width:760px;line-height:1.6}
+.signature{text-align:right;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.4;white-space:nowrap;flex-shrink:0}
+.signature span{display:block;font-weight:500;color:var(--muted);font-size:12px}
+.signature:hover{color:var(--accent)}
+.signature:hover span{color:var(--accent)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.btn{border:1.5px solid var(--line2);background:#fff;color:var(--ink);font-weight:700;font-size:14px;padding:9px 16px;border-radius:20px;cursor:pointer;font-family:var(--sans)}
+.btn:hover{border-color:var(--accent)}
+.btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.ex-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.ex-btn{background:#fff;border:2px solid var(--line);border-radius:12px;padding:12px 16px;cursor:pointer;font-family:var(--sans);text-align:left;flex:1;min-width:220px}
+.ex-btn:hover{border-color:var(--accent)}
+.ex-btn.active{border-color:var(--accent);background:var(--accent-soft)}
+.ex-btn .ex-title{font-weight:800;font-size:15px;color:var(--ink);margin-bottom:3px}
+.ex-btn .ex-desc{font-size:13px;color:var(--muted)}
+
+.rail{display:flex;align-items:center;gap:0;margin-bottom:20px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 18px;overflow-x:auto}
+.rnode{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;min-width:84px;position:relative;flex:1}
+.rnode:not(:last-child)::after{content:'';position:absolute;right:-1px;top:14px;width:calc(100% - 24px);height:2px;background:var(--line);left:50%;z-index:0}
+.rdot{width:26px;height:26px;border-radius:50%;background:var(--bg);border:2px solid var(--line2);z-index:1;transition:all .2s;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--muted)}
+.rlbl{font-size:12.5px;font-weight:600;color:var(--muted);text-align:center;line-height:1.25;white-space:nowrap}
+.rnode.active .rdot{background:var(--accent);border-color:var(--accent);color:#fff}
+.rnode.active .rlbl{color:var(--accent)}
+.rnode.done .rdot{background:var(--good);border-color:var(--good);color:#fff}
+
+.stage{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:28px 30px;margin-bottom:18px}
+.stage-kicker{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:999px;margin-bottom:14px}
+.k-vision{background:var(--accent-soft);color:var(--accent-strong)}
+.k-mission{background:var(--amber-bg);color:var(--amber)}
+.k-strategy{background:var(--good-bg);color:var(--good)}
+.k-okr{background:var(--coral-bg);color:var(--coral)}
+.k-story{background:var(--accent-soft);color:var(--accent-strong)}
+.k-todo{background:var(--good-bg);color:var(--good)}
+
+.stage-body{font-size:19px;line-height:1.6;color:var(--ink);font-weight:600;margin-bottom:10px}
+.stage-sub{font-size:14px;color:var(--muted);margin-bottom:18px}
+
+.okr-obj{font-size:18px;font-weight:800;color:var(--ink);margin-bottom:14px;padding:12px 16px;background:var(--bg);border-radius:12px;border-left:4px solid var(--coral)}
+.kr-list{display:flex;flex-direction:column;gap:10px;margin-bottom:6px}
+.kr-item{display:flex;gap:10px;align-items:flex-start;font-size:15px;color:var(--ink);background:var(--bg);padding:10px 14px;border-radius:10px}
+.kr-item b{color:var(--coral);flex-shrink:0}
+
+.story-box{font-family:var(--mono);font-size:15px;line-height:1.7;color:var(--ink);background:var(--bg);border-radius:12px;padding:16px 18px;margin-bottom:16px;white-space:pre-wrap}
+.ac-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.ac-list li{font-size:14.5px;color:var(--ink);display:flex;gap:8px;align-items:flex-start}
+.ac-list li::before{content:'✓';color:var(--good);font-weight:800;flex-shrink:0}
+
+.todo-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.todo-list li{font-size:15px;color:var(--ink);display:flex;gap:10px;align-items:flex-start;padding:10px 14px;background:var(--bg);border-radius:10px}
+.todo-list li::before{content:'☐';color:var(--good);font-weight:800;flex-shrink:0;font-size:17px}
+
+.derive{border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;padding:12px 16px;font-size:14px;color:var(--accent-strong);line-height:1.55}
+.derive b{color:var(--accent-strong)}
+
+.stage-nav{display:flex;justify-content:space-between;gap:10px;margin-top:4px}
+
+footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);font-size:13px;text-align:center}
+
+@media(max-width:640px){
+  .wrap{padding:16px}
+  .hero{padding:22px 18px 18px}
+  .hero-top{flex-direction:column}
+  .signature{text-align:left}
+  .stage{padding:20px 18px}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="hero-top">
+      <div>
+        <a class="hero-back" href="../index.html">← Zurück zur Startseite</a>
+        <div class="hero-eye">OKR-Kaskade · Demonstrator</div>
+        <h1>Von der Vision zum ToDo</h1>
+        <p>Wähle ein Beispiel und geh die Kaskade Station für Station durch: Vision → Mission (Rooftop Shot &amp; Moonshot) → Strategie → Initiative → OKRs auf drei Ebenen → User Story → ToDos. Jede Station zeigt, wie sie sich aus der vorherigen ableitet — einmal komplett durch den Anforderungspfad, vom Management bis zum eigenen Schreibtisch.</p>
+      </div>
+      <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
+    </div>
+    <div class="toolbar">
+      <button class="btn" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
+      <button class="btn" id="resetBtn">↺ Zurücksetzen</button>
+    </div>
+  </section>
+
+  <div class="ex-nav" id="exNav"></div>
+
+  <div class="rail" id="rail"></div>
+
+  <div class="stage" id="stage"></div>
+
+  <div class="stage-nav">
+    <button class="btn" id="prevBtn">← Vorherige Station</button>
+    <button class="btn" id="nextBtn">Nächste Station →</button>
+  </div>
+</div>
+
+<footer>Didaktischer Demonstrator · alle Beispiele sind frei konstruiert, keine echten Unternehmensdaten.</footer>
+
+<script>
+(function(){
+
+var STAGES = [
+  {key:"vision",   kicker:"Vision",              kclass:"k-vision",  label:"Vision"},
+  {key:"rooftop",  kicker:"Mission — Rooftop Shot", kclass:"k-mission", label:"Mission<br>Rooftop"},
+  {key:"moonshot", kicker:"Mission — Moonshot",   kclass:"k-mission", label:"Mission<br>Moonshot"},
+  {key:"strategy", kicker:"Strategie",            kclass:"k-strategy",label:"Strategie"},
+  {key:"initiative",kicker:"Initiative",          kclass:"k-strategy",label:"Initiative"},
+  {key:"okrCompany",kicker:"OKR — Unternehmen",   kclass:"k-okr",     label:"OKR<br>Unternehmen"},
+  {key:"okrTeam",  kicker:"OKR — Team",           kclass:"k-okr",     label:"OKR<br>Team"},
+  {key:"okrIndiv", kicker:"OKR — Individuum",     kclass:"k-okr",     label:"OKR<br>Individuum"},
+  {key:"story",    kicker:"User Story",           kclass:"k-story",   label:"User<br>Story"},
+  {key:"todos",    kicker:"ToDos",                kclass:"k-todo",    label:"ToDos"}
+];
+
+var EXAMPLES = {
+  daten: {
+    title:"Datengetriebene Entscheidungen",
+    desc:"Von der Bauchgefühl-Kultur zum Live-Dashboard",
+    content:{
+      vision:{type:"text", text:"Jedes Team trifft Entscheidungen mit Daten statt Bauchgefühl.", sub:"Zeithorizont: unbegrenzt — das Leitbild, an dem sich alles andere ausrichtet."},
+      rooftop:{type:"text", text:"Bis Ende nächsten Jahres hat jedes Produktteam ein Live-Dashboard mit seinen drei wichtigsten Kennzahlen.", sub:"Rooftop Shot: konkret, mit heutigen Mitteln in 1–2 Jahren erreichbar.", derive:"Leitet sich aus der Vision ab: ein erster, greifbarer Schritt in Richtung datengetriebener Entscheidungen."},
+      moonshot:{type:"text", text:"In zehn Jahren trifft keine wichtige Entscheidung im Unternehmen mehr ohne datengestützte Prognose.", sub:"Moonshot: ambitioniert, transformativ, Jahrzehnt-Horizont.", derive:"Leitet sich aus der Vision ab: die radikale Vollendung derselben Idee, ohne Rücksicht auf heutige Machbarkeit."},
+      strategy:{type:"text", text:"Wir bauen eine unternehmensweite Self-Service-Datenplattform, statt dass jede Abteilung ihre eigene Insel-Lösung pflegt.", derive:"Leitet sich aus Rooftop Shot und Moonshot ab: der grundsätzliche Weg, auf dem beide erreichbar werden."},
+      initiative:{type:"text", text:"Rollout eines zentralen BI-Tools mit Self-Service-Reporting für alle Teams, startend mit Vertrieb und Kundenservice.", derive:"Leitet sich aus der Strategie ab: das konkrete Programm, mit dem die Plattform-Strategie umgesetzt wird."},
+      okrCompany:{type:"okr", objective:"Eine datengetriebene Entscheidungskultur etablieren.", krs:[
+        "80% aller Teams nutzen wöchentlich mindestens ein Live-Dashboard.",
+        "Time-to-Insight sinkt von 5 Tagen auf 1 Tag.",
+        "Interner Zufriedenheitswert (NPS) der Datenplattform ≥ 40."
+      ], derive:"Leitet sich aus der Initiative ab: das messbare Jahresziel auf Management-Ebene, das den Rollout in Zahlen fasst."},
+      okrTeam:{type:"okr", objective:"Der Vertrieb trifft Entscheidungen live mit Kennzahlen statt mit Wochenberichten.", krs:[
+        "Sales-Dashboard für alle 5 Vertriebsregionen live.",
+        "90% der Vertriebsleiter:innen nutzen es mindestens wöchentlich.",
+        "Forecast-Abweichung sinkt von 25% auf 10%."
+      ], derive:"Leitet sich aus KR1 des Unternehmens-OKR ab: das Team Vertrieb übersetzt den Unternehmenswert in ein eigenes Quartalsziel."},
+      okrIndiv:{type:"okr", objective:"Ich liefere den MVP des Sales-Dashboards.", krs:[
+        "Datenquellen für 3 von 5 Regionen angebunden.",
+        "Prototyp mit 2 Vertriebsleiter:innen validiert.",
+        "Ladezeit unter 2 Sekunden bei 50 gleichzeitigen Nutzer:innen."
+      ], derive:"Leitet sich aus KR1 des Team-OKR ab: mein eigener Beitrag am Schreibtisch zum Team-Ziel."},
+      story:{type:"story", text:"Als Vertriebsleiterin möchte ich die aktuellen Verkaufszahlen meiner Region auf einen Blick sehen, damit ich in der Wochenrunde ohne Rückfrage beim BI-Team entscheiden kann.", ac:[
+        "Dashboard zeigt Umsatz, Pipeline und Zielerreichung.",
+        "Aktualisierung mindestens täglich.",
+        "Ladezeit unter 2 Sekunden.",
+        "Zugriff per bestehendem Login, kein Zusatz-Tool."
+      ], derive:"Leitet sich aus dem Individual-OKR ab: eine konkrete, testbare Anforderung, die zu KR1 und KR3 direkt beiträgt."},
+      todos:{type:"todos", items:[
+        "Datenbankanbindung für Region Nord/Süd/West einrichten",
+        "API-Endpunkt für Live-Kennzahlen bauen",
+        "Dashboard-Komponente „Regionsübersicht” entwickeln",
+        "Usability-Test mit 2 Vertriebsleiter:innen durchführen",
+        "Ladezeit-Test unter Last (50 Nutzer:innen) durchführen",
+        "Deployment auf Produktivsystem"
+      ], derive:"Leitet sich aus der User Story ab: die konkreten Arbeitsschritte, mit denen sie diese Woche umgesetzt wird."}
+    }
+  },
+  ki: {
+    title:"KI-Kompetenz als Kernfähigkeit",
+    desc:"Von der Vision zum ersten Trainingsmodul",
+    content:{
+      vision:{type:"text", text:"Requirements Engineering wird zur Kernkompetenz jeder Rolle, die mit KI arbeitet.", sub:"Zeithorizont: unbegrenzt — das Leitbild, an dem sich alles andere ausrichtet."},
+      rooftop:{type:"text", text:"In 12 Monaten hat jedes Projektteam mindestens eine RE-KI-zertifizierte Person.", sub:"Rooftop Shot: konkret, mit heutigen Mitteln in 1–2 Jahren erreichbar.", derive:"Leitet sich aus der Vision ab: ein erster, messbarer Schritt in Richtung flächendeckender Kompetenz."},
+      moonshot:{type:"text", text:"In zehn Jahren scheitert kein KI-Projekt im Unternehmen mehr an unklaren Anforderungen.", sub:"Moonshot: ambitioniert, transformativ, Jahrzehnt-Horizont.", derive:"Leitet sich aus der Vision ab: die radikale Vollendung derselben Idee."},
+      strategy:{type:"text", text:"Wir bauen ein modulares Trainingsprogramm statt Einzel-Workshops, damit Wissen nachhaltig verankert statt nur einmalig vermittelt wird.", derive:"Leitet sich aus Rooftop Shot und Moonshot ab: der grundsätzliche Weg, auf dem beide erreichbar werden."},
+      initiative:{type:"text", text:"Entwicklung eines RE-KI-Curriculums mit Zertifikat, live erprobt in Pilot-Workshops.", derive:"Leitet sich aus der Strategie ab: das konkrete Programm, mit dem die Trainings-Strategie umgesetzt wird."},
+      okrCompany:{type:"okr", objective:"RE-KI-Kompetenz flächendeckend in der Organisation verankern.", krs:[
+        "50% aller Projektteams haben eine zertifizierte Person.",
+        "Anteil KI-Projekte mit klar dokumentierten Anforderungen steigt von 30% auf 70%.",
+        "Durchschnittliche Nacharbeit durch unklare Anforderungen sinkt um 40%."
+      ], derive:"Leitet sich aus der Initiative ab: das messbare Jahresziel auf Management-Ebene."},
+      okrTeam:{type:"okr", objective:"Das Curriculum ist einsatzbereit und wird angenommen.", krs:[
+        "4 Kernmodule fertig entwickelt und pilotiert.",
+        "90% Teilnehmerzufriedenheit in Pilot-Workshops.",
+        "20 Teilnehmer:innen im ersten Quartal zertifiziert."
+      ], derive:"Leitet sich aus KR1 des Unternehmens-OKR ab: das Team Enablement übersetzt den Unternehmenswert in ein Quartalsziel."},
+      okrIndiv:{type:"okr", objective:"Ich entwickle und teste Modul 1: Prompt-Qualität durch RE-Denken.", krs:[
+        "Modul-Inhalt und Übungen fertiggestellt.",
+        "Pilot mit 8 Teilnehmer:innen durchgeführt.",
+        "Feedback-Score des Moduls ≥ 4,5 von 5."
+      ], derive:"Leitet sich aus KR1 des Team-OKR ab: mein eigener Beitrag am Schreibtisch zum Team-Ziel."},
+      story:{type:"story", text:"Als Workshop-Teilnehmer möchte ich anhand eines echten, schlechten Prompts üben, ihn mit RE-Kriterien zu verbessern, damit ich die Methode direkt auf mein eigenes Projekt übertragen kann.", ac:[
+        "Mindestens 2 reale Beispiele.",
+        "Vorher/Nachher-Vergleich sichtbar.",
+        "Übung in unter 15 Minuten lösbar.",
+        "Transferfrage am Ende des Moduls."
+      ], derive:"Leitet sich aus dem Individual-OKR ab: eine konkrete, testbare Anforderung an Modul 1."},
+      todos:{type:"todos", items:[
+        "2 reale Prompt-Beispiele aus Kundenprojekten (anonymisiert) sammeln",
+        "Vorher/Nachher-Foliensatz erstellen",
+        "Übungsaufgabe mit Zeitlimit entwerfen",
+        "Transferfrage formulieren und testen",
+        "Pilot-Workshop mit 8 Teilnehmer:innen terminieren",
+        "Feedback-Bogen auswerten"
+      ], derive:"Leitet sich aus der User Story ab: die konkreten Arbeitsschritte, mit denen sie diese Woche umgesetzt wird."}
+    }
+  },
+  service: {
+    title:"Kundenerlebnis ohne Wartezeiten",
+    desc:"Von der Vision zur priorisierten Warteschlange",
+    content:{
+      vision:{type:"text", text:"Kein Kunde wartet länger als nötig auf eine Antwort.", sub:"Zeithorizont: unbegrenzt — das Leitbild, an dem sich alles andere ausrichtet."},
+      rooftop:{type:"text", text:"In 12 Monaten beantwortet der Kundenservice 80% aller Anfragen innerhalb von 2 Stunden.", sub:"Rooftop Shot: konkret, mit heutigen Mitteln in 1–2 Jahren erreichbar.", derive:"Leitet sich aus der Vision ab: ein erster, messbarer Schritt in Richtung schnellerer Antworten."},
+      moonshot:{type:"text", text:"In zehn Jahren erhält jeder Kunde eine Antwort in Echtzeit, egal über welchen Kanal.", sub:"Moonshot: ambitioniert, transformativ, Jahrzehnt-Horizont.", derive:"Leitet sich aus der Vision ab: die radikale Vollendung derselben Idee."},
+      strategy:{type:"text", text:"Wir bündeln alle Kanäle in einem System, statt E-Mail, Chat und Telefon getrennt zu bearbeiten.", derive:"Leitet sich aus Rooftop Shot und Moonshot ab: der grundsätzliche Weg, auf dem beide erreichbar werden."},
+      initiative:{type:"text", text:"Einführung einer zentralen Omnichannel-Service-Plattform mit priorisierter Warteschlange.", derive:"Leitet sich aus der Strategie ab: das konkrete Programm, mit dem die Kanal-Strategie umgesetzt wird."},
+      okrCompany:{type:"okr", objective:"Antwortzeiten im Kundenservice drastisch senken.", krs:[
+        "Durchschnittliche Erstantwortzeit sinkt von 8 auf 2 Stunden.",
+        "80% der Anfragen werden ohne Kanalwechsel gelöst.",
+        "Kundenzufriedenheit (CSAT) steigt von 72% auf 88%."
+      ], derive:"Leitet sich aus der Initiative ab: das messbare Jahresziel auf Management-Ebene."},
+      okrTeam:{type:"okr", objective:"Die Omnichannel-Plattform ist live und wird genutzt.", krs:[
+        "Alle 3 Kanäle (E-Mail, Chat, Telefon) in einem System zusammengeführt.",
+        "100% des Teams geschult und im neuen System aktiv.",
+        "Priorisierungsregel senkt Wartezeit dringender Fälle um 50%."
+      ], derive:"Leitet sich aus KR1 und KR2 des Unternehmens-OKR ab: das Team Kundenservice übersetzt den Unternehmenswert in ein Quartalsziel."},
+      okrIndiv:{type:"okr", objective:"Ich baue die Priorisierungsregel für dringende Anfragen.", krs:[
+        "Regelwerk mit 3 Dringlichkeitsstufen definiert und getestet.",
+        "Fehlklassifizierung unter 5% in der Testphase.",
+        "Regel läuft produktiv für 2 Wochen ohne kritischen Vorfall."
+      ], derive:"Leitet sich aus KR3 des Team-OKR ab: mein eigener Beitrag am Schreibtisch zum Team-Ziel."},
+      story:{type:"story", text:"Als Kundenservice-Mitarbeiter möchte ich dringende Anfragen automatisch priorisiert oben in meiner Warteschlange sehen, damit ich sie zuerst bearbeite, ohne jede Anfrage einzeln einschätzen zu müssen.", ac:[
+        "3 Dringlichkeitsstufen sichtbar markiert.",
+        "Automatische Neubewertung bei Zeitüberschreitung.",
+        "Manuelles Override möglich.",
+        "Erklärung der Einstufung auf Klick sichtbar."
+      ], derive:"Leitet sich aus dem Individual-OKR ab: eine konkrete, testbare Anforderung an die Priorisierungsregel."},
+      todos:{type:"todos", items:[
+        "Dringlichkeitskriterien mit Team Kundenservice definieren",
+        "Klassifizierungsregel implementieren und mit 200 historischen Fällen testen",
+        "UI für Warteschlangen-Sortierung anpassen",
+        "Override-Funktion für manuelle Korrektur bauen",
+        "2-wöchigen Testlauf mit 5 Mitarbeiter:innen durchführen",
+        "Fehlklassifizierungsrate auswerten und Regel nachschärfen"
+      ], derive:"Leitet sich aus der User Story ab: die konkreten Arbeitsschritte, mit denen sie diese Woche umgesetzt wird."}
+    }
+  }
+};
+
+var state = {exampleKey:"daten", stepIndex:0, beamerLevel:0};
+try{
+  var saved = JSON.parse(localStorage.getItem("okrKaskadeState") || "null");
+  if (saved) state = saved;
+}catch(e){}
+
+function save(){
+  try{ localStorage.setItem("okrKaskadeState", JSON.stringify(state)); }catch(e){}
+}
+
+function escHtml(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function renderExNav(){
+  var nav = document.getElementById("exNav");
+  nav.innerHTML = "";
+  Object.keys(EXAMPLES).forEach(function(key){
+    var ex = EXAMPLES[key];
+    var btn = document.createElement("button");
+    btn.className = "ex-btn" + (key === state.exampleKey ? " active" : "");
+    btn.innerHTML = '<div class="ex-title">' + escHtml(ex.title) + '</div><div class="ex-desc">' + escHtml(ex.desc) + '</div>';
+    btn.addEventListener("click", function(){
+      state.exampleKey = key;
+      state.stepIndex = 0;
+      save();
+      renderAll();
+    });
+    nav.appendChild(btn);
+  });
+}
+
+function renderRail(){
+  var rail = document.getElementById("rail");
+  rail.innerHTML = "";
+  STAGES.forEach(function(st, i){
+    var node = document.createElement("div");
+    node.className = "rnode" + (i === state.stepIndex ? " active" : (i < state.stepIndex ? " done" : ""));
+    node.innerHTML = '<div class="rdot">' + (i < state.stepIndex ? "✓" : (i+1)) + '</div><div class="rlbl">' + st.label + '</div>';
+    node.addEventListener("click", function(){
+      state.stepIndex = i;
+      save();
+      renderAll();
+    });
+    rail.appendChild(node);
+  });
+}
+
+function renderStage(){
+  var stEl = document.getElementById("stage");
+  var stageDef = STAGES[state.stepIndex];
+  var data = EXAMPLES[state.exampleKey].content[stageDef.key];
+  var html = '<span class="stage-kicker ' + stageDef.kclass + '">' + stageDef.kicker + '</span>';
+
+  if (data.type === "text"){
+    html += '<div class="stage-body">' + escHtml(data.text) + '</div>';
+    if (data.sub) html += '<div class="stage-sub">' + escHtml(data.sub) + '</div>';
+  } else if (data.type === "okr"){
+    html += '<div class="okr-obj">Objective: ' + escHtml(data.objective) + '</div>';
+    html += '<div class="kr-list">' + data.krs.map(function(kr, i){
+      return '<div class="kr-item"><b>KR' + (i+1) + '</b><span>' + escHtml(kr) + '</span></div>';
+    }).join("") + '</div>';
+  } else if (data.type === "story"){
+    html += '<div class="story-box">' + escHtml(data.text) + '</div>';
+    html += '<div class="stage-sub" style="margin-bottom:8px;font-weight:700;color:var(--ink)">Akzeptanzkriterien</div>';
+    html += '<ul class="ac-list">' + data.ac.map(function(a){ return '<li>' + escHtml(a) + '</li>'; }).join("") + '</ul>';
+  } else if (data.type === "todos"){
+    html += '<ul class="todo-list">' + data.items.map(function(t){ return '<li>' + escHtml(t) + '</li>'; }).join("") + '</ul>';
+  }
+
+  if (data.derive){
+    html += '<div class="derive" style="margin-top:16px"><b>So leitet sich diese Station ab:</b> ' + escHtml(data.derive) + '</div>';
+  }
+
+  stEl.innerHTML = html;
+}
+
+function renderNav(){
+  document.getElementById("prevBtn").disabled = state.stepIndex === 0;
+  document.getElementById("nextBtn").disabled = state.stepIndex === STAGES.length - 1;
+}
+
+function renderAll(){
+  renderExNav();
+  renderRail();
+  renderStage();
+  renderNav();
+}
+
+document.getElementById("prevBtn").addEventListener("click", function(){
+  if (state.stepIndex > 0){ state.stepIndex--; save(); renderAll(); }
+});
+document.getElementById("nextBtn").addEventListener("click", function(){
+  if (state.stepIndex < STAGES.length - 1){ state.stepIndex++; save(); renderAll(); }
+});
+document.getElementById("resetBtn").addEventListener("click", function(){
+  state.exampleKey = "daten";
+  state.stepIndex = 0;
+  save();
+  renderAll();
+});
+
+var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+function applyBeamerLevel(){
+  document.documentElement.setAttribute("data-beamer", String(state.beamerLevel));
+  var btn = document.getElementById("beamerToggle");
+  btn.textContent = BEAMER_LABELS[state.beamerLevel];
+  btn.classList.toggle("active", state.beamerLevel > 0);
+}
+document.getElementById("beamerToggle").addEventListener("click", function(){
+  state.beamerLevel = (state.beamerLevel + 1) % BEAMER_LABELS.length;
+  save();
+  applyBeamerLevel();
+});
+
+renderAll();
+applyBeamerLevel();
+
+})();
+</script>
+</body>
+</html>
