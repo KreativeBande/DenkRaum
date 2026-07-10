@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OKR im Denkraum – Artefakte an Ziele anpassen</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4faf8;--panel:#ffffff;--ink:#132420;--muted:#546b64;--faint:#88a099;
+  --line:#d6e8e2;--line2:#a9d4c7;
+  --accent:#0f766e;--accent-soft:#e1f3ef;--accent-strong:#0b544e;
+  --warn:#92400e;--warn-bg:#fef3c7;
+  --coral:#be185d;--coral-bg:#fdf2f8;
+  --blue:#1d4ed8;--blue-bg:#e8eefd;
+  --shadow:0 16px 34px rgba(19,36,32,.08);
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono","SF Mono",Menlo,Consolas,monospace;
+}
+html,body{margin:0;padding:0}
+html[data-beamer="1"]{zoom:1.35}
+html[data-beamer="2"]{zoom:1.75}
+body{
+  font-family:var(--sans);color:var(--ink);background:
+    radial-gradient(circle at top left, #ecfaf5 0%, transparent 24%),
+    radial-gradient(circle at top right, #eaf6ff 0%, transparent 20%),
+    linear-gradient(180deg,#fafffd 0%,#f4faf8 100%);
+  min-height:100vh;line-height:1.55;
+}
+.wrap{max-width:1200px;margin:0 auto;padding:24px}
+
+.hero{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:28px 30px 22px;margin-bottom:20px}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.hero-back{display:inline-block;font-size:14px;font-weight:600;color:var(--accent);text-decoration:none;margin-bottom:10px}
+.hero-back:hover{text-decoration:underline}
+.hero-eye{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:6px}
+.hero h1{margin:0 0 8px 0;font-size:clamp(24px,3.4vw,36px);line-height:1.1}
+.hero p{margin:0;color:var(--muted);font-size:16px;max-width:780px;line-height:1.6}
+.signature{text-align:right;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.4;white-space:nowrap;flex-shrink:0}
+.signature span{display:block;font-weight:500;color:var(--muted);font-size:12px}
+.signature:hover{color:var(--accent)}
+.signature:hover span{color:var(--accent)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.btn{border:1.5px solid var(--line2);background:#fff;color:var(--ink);font-weight:700;font-size:14px;padding:9px 16px;border-radius:20px;cursor:pointer;font-family:var(--sans)}
+.btn:hover{border-color:var(--accent)}
+.btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+.ex-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.ex-btn{background:#fff;border:2px solid var(--line);border-radius:12px;padding:12px 16px;cursor:pointer;font-family:var(--sans);text-align:left;flex:1;min-width:220px}
+.ex-btn:hover{border-color:var(--accent)}
+.ex-btn.active{border-color:var(--accent);background:var(--accent-soft)}
+.ex-btn .ex-title{font-weight:800;font-size:15px;color:var(--ink);margin-bottom:3px}
+.ex-btn .ex-desc{font-size:13px;color:var(--muted)}
+
+.rail{display:flex;align-items:center;gap:0;margin-bottom:20px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 18px;overflow-x:auto}
+.rnode{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;min-width:96px;position:relative;flex:1}
+.rnode:not(:last-child)::after{content:'';position:absolute;right:-1px;top:14px;width:calc(100% - 24px);height:2px;background:var(--line);left:50%;z-index:0}
+.rdot{width:26px;height:26px;border-radius:50%;background:var(--bg);border:2px solid var(--line2);z-index:1;transition:all .2s;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--muted)}
+.rlbl{font-size:12.5px;font-weight:600;color:var(--muted);text-align:center;line-height:1.25}
+.rsub{font-size:10.5px;color:var(--faint);text-align:center;letter-spacing:.05em;text-transform:uppercase}
+.rnode.active .rdot{background:var(--accent);border-color:var(--accent);color:#fff}
+.rnode.active .rlbl{color:var(--accent)}
+.rnode.done .rdot{background:var(--accent-strong);border-color:var(--accent-strong);color:#fff}
+
+.stage{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:28px 30px;margin-bottom:18px}
+.stage-kicker{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:999px;margin-bottom:14px;background:var(--accent-soft);color:var(--accent-strong)}
+
+.okr-obj{font-size:18px;font-weight:800;color:var(--ink);margin-bottom:14px;padding:12px 16px;background:var(--bg);border-radius:12px;border-left:4px solid var(--coral)}
+.kr-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.kr-item{display:flex;gap:10px;align-items:flex-start;font-size:15px;color:var(--ink);background:var(--bg);padding:10px 14px;border-radius:10px}
+.kr-item b{color:var(--coral);flex-shrink:0}
+.situation{font-size:15px;color:var(--muted);line-height:1.65;background:var(--warn-bg);border-left:4px solid var(--warn);border-radius:0 12px 12px 0;padding:14px 18px}
+.situation b{color:var(--warn)}
+
+.question-box{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:16px;padding:14px 18px;background:var(--blue-bg);border-radius:12px;border-left:4px solid var(--blue)}
+.befund-label{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.befund-text{font-size:15.5px;color:var(--ink);line-height:1.65;margin-bottom:18px}
+.empf-box{border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;padding:14px 18px;font-size:15px;color:var(--accent-strong);line-height:1.6}
+.empf-box b{color:var(--accent-strong)}
+
+.summary-list{display:flex;flex-direction:column;gap:10px}
+.summary-item{display:flex;gap:12px;align-items:flex-start;background:var(--bg);border-radius:12px;padding:14px 16px}
+.summary-item .sroom{flex-shrink:0;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:4px 10px;border-radius:999px;white-space:nowrap}
+.summary-item .stext{font-size:15px;color:var(--ink);line-height:1.55}
+
+.stage-nav{display:flex;justify-content:space-between;gap:10px;margin-top:4px}
+
+footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);font-size:13px;text-align:center}
+
+@media(max-width:640px){
+  .wrap{padding:16px}
+  .hero{padding:22px 18px 18px}
+  .hero-top{flex-direction:column}
+  .signature{text-align:left}
+  .stage{padding:20px 18px}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="hero-top">
+      <div>
+        <a class="hero-back" href="../index.html">← Zurück zur Startseite</a>
+        <div class="hero-eye">OKR im Denkraum · Demonstrator</div>
+        <h1>OKRs leben, Artefakte anpassen</h1>
+        <p>Ein OKR wird gesetzt — und verstaubt oft. Dieses Tool nimmt ein bestehendes OKR und führt es durch die 5 Denkräume: Möglichkeit, Analyse, Lösung, Umsetzung, Störung. Jeder Raum stellt seine eigene Leitfrage und zeigt, welches Artefakt (User Story, Kriterium, Ritual) angepasst werden muss, damit das OKR nicht nur auf dem Papier steht.</p>
+      </div>
+      <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
+    </div>
+    <div class="toolbar">
+      <button class="btn" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
+      <button class="btn" id="resetBtn">↺ Zurücksetzen</button>
+    </div>
+  </section>
+
+  <div class="ex-nav" id="exNav"></div>
+
+  <div class="rail" id="rail"></div>
+
+  <div class="stage" id="stage"></div>
+
+  <div class="stage-nav">
+    <button class="btn" id="prevBtn">← Vorheriger Raum</button>
+    <button class="btn" id="nextBtn">Nächster Raum →</button>
+  </div>
+</div>
+
+<footer>Didaktischer Demonstrator · alle Beispiele sind frei konstruiert, keine echten Unternehmensdaten.</footer>
+
+<script>
+(function(){
+
+var STAGES = [
+  {key:"context",  label:"OKR &amp;<br>Ausgangslage", sub:""},
+  {key:"moeglich", label:"Möglichkeits-<br>raum", sub:"Warum"},
+  {key:"analyse",  label:"Analyse-<br>raum", sub:"Warum genau"},
+  {key:"loesung",  label:"Lösungs-<br>raum", sub:"Was"},
+  {key:"umsetzung",label:"Umsetzungs-<br>raum", sub:"Wie"},
+  {key:"stoerung", label:"Stör-<br>raum", sub:"Risiken"},
+  {key:"summary",  label:"Zusammen-<br>fassung", sub:""}
+];
+
+var EXAMPLES = {
+  onboarding: {
+    title:"Onboarding-Zeit verkürzen",
+    desc:"Ein Team-OKR aus dem letzten Quartal — noch lebendig?",
+    objective:"Neue Mitarbeitende sind schneller produktiv.",
+    krs:[
+      "Time-to-first-commit sinkt von 15 auf 5 Tage.",
+      "90% der neuen Mitarbeitenden bewerten das Onboarding mit ≥ 4 von 5.",
+      "Onboarding-Buddy-Programm für 100% der Neueinstellungen aktiv."
+    ],
+    situation:"<b>Ausgangslage:</b> Das OKR wurde vor zwei Quartalen gesetzt. KR1 und KR3 sind formal erreicht, KR2 stagniert seit Monaten bei 3,1 von 5. Seitdem hat niemand mehr aktiv draufgeschaut.",
+    rooms:{
+      moeglich:{question:"Ist „schneller produktiv“ wirklich das Ziel — oder nur ein Mittel für etwas anderes?", befund:"Im Grunde ging es um Bindung: weniger Fluktuation in den ersten 90 Tagen. Das ist im Objective verloren gegangen — „produktiv“ und „gebunden“ sind nicht dasselbe.", empfehlung:"Objective schärfen, bevor weiter an KR2 optimiert wird: von „schneller produktiv“ zu „bleiben und sich zugehörig fühlen“."},
+      analyse:{question:"Was genau sagt der stagnierende KR2-Wert über das reale Problem?", befund:"Die Freitext-Kommentare im Onboarding-Survey zeigen: das technische Setup läuft schnell, aber die soziale Integration ins Team fehlt komplett.", empfehlung:"Freitext-Feedback als eigenes Analyse-Artefakt auswerten und dokumentieren, statt nur den Zahlenwert zu tracken."},
+      loesung:{question:"Welches Artefakt bildet die eigentliche Lösung ab — und ist es noch aktuell?", befund:"Die User Story „Als neue Mitarbeiterin möchte ich einen Buddy haben“ ist umgesetzt. Es fehlt aber jede Story für soziale Integration ins Team.", empfehlung:"Neue User Story ergänzen: „Als neue Mitarbeiterin möchte ich in Woche 1 einen festen Team-Lunch haben, damit ich das Team informell kennenlerne.“"},
+      umsetzung:{question:"Sind Meßkriterien und Akzeptanzkriterien noch passend zum eigentlichen Ziel?", befund:"Das Akzeptanzkriterium „Buddy zugewiesen“ wird erfüllt — aber ob sich der Buddy tatsächlich gemeldet hat, wird nirgends gemessen.", empfehlung:"Akzeptanzkriterium ergänzen: „Buddy hat sich innerhalb von 48h aktiv gemeldet“ — und im Sprint-Board sichtbar machen."},
+      stoerung:{question:"Was gefährdet, dass das OKR am Ende nur auf dem Papier erfüllt ist?", befund:"KR1 und KR3 sind nahe an Vanity-Metrics erreicht (Buddy zugewiesen ≠ Buddy aktiv). Das eigentliche Risiko ist Silodenken zwischen HR und Teamleitung.", empfehlung:"Monatliches Kurz-Review zwischen HR und Teamleads einführen, statt nur quartalsweise auf die Zahl zu schauen."}
+    }
+  },
+  wissen:{
+    title:"Wissenstransfer sichern",
+    desc:"Dokumentiert, aber wirkt es auch?",
+    objective:"Kritisches Wissen ist nicht mehr an einzelne Personen gebunden.",
+    krs:[
+      "80% der Kernprozesse sind dokumentiert.",
+      "Jede:r im Team hat mindestens eine Wissens-Session gehalten.",
+      "Onboarding-Zeit für neue Projekte sinkt um 30%."
+    ],
+    situation:"<b>Ausgangslage:</b> KR1 ist formal erreicht — die Dokumente existieren. KR2 ist erreicht. KR3 hat sich seit der Einführung nicht spürbar verändert.",
+    rooms:{
+      moeglich:{question:"Ist „dokumentieren“ das eigentliche Ziel — oder nur ein Mittel, um Abhängigkeit von Einzelpersonen zu reduzieren?", befund:"Das eigentliche Ziel — Resilienz des Teams — wurde durch die bloße Existenz von Dokumenten ersetzt. Ein Dokument zu haben heißt nicht, unabhängig von einer Person zu sein.", empfehlung:"KR präzisieren: nicht „Dokumente existieren“, sondern „Prozess X kann von zwei verschiedenen Personen ohne Rückfrage ausgeführt werden“."},
+      analyse:{question:"Warum sinkt KR3 trotz erfüllter KR1 und KR2 nicht?", befund:"Die Dokumente sind veraltet oder schwer auffindbar — Quantität ist nicht gleich Qualität oder Nutzbarkeit.", empfehlung:"Stichprobenartige Nutzungsanalyse der Dokumentation als neues Analyse-Artefakt einführen: wird überhaupt draufgeklickt?"},
+      loesung:{question:"Welches Artefakt löst das eigentliche Problem — Auffindbarkeit oder bloße Existenz?", befund:"Es fehlt eine zentrale, durchsuchbare Wissensbasis. Die Dokumente liegen verstreut in Wikis, Ordnern und Chat-Verläufen.", empfehlung:"User Story ergänzen: „Als neues Teammitglied möchte ich alle Prozessdokus an einem Ort durchsuchen können.“"},
+      umsetzung:{question:"Messen die Akzeptanzkriterien echte Nutzung oder nur Existenz?", befund:"Aktuelles Kriterium ist „Dokument vorhanden“ — nicht „Dokument wurde in den letzten drei Monaten genutzt oder aktualisiert“.", empfehlung:"Kriterium umformulieren und ein sichtbares Aktualisierungsdatum in der Wissensbasis einführen."},
+      stoerung:{question:"Was verhindert strukturell, dass das OKR nachhaltig wirkt?", befund:"Wissens-Sessions sind Einmal-Events ohne Wiederholung. Sobald die Person das Team verlässt, ist der Vorteil wieder weg.", empfehlung:"Wiederkehrendes Ritual etablieren, z.B. eine monatliche Lunch-&amp;-Learn-Rotation, statt einer Einmalaktion."}
+    }
+  },
+  feedback:{
+    title:"Kundenfeedback nutzen",
+    desc:"Reagieren ist nicht dasselbe wie nutzen",
+    objective:"Kundenfeedback fließt sichtbar in die Produktentwicklung ein.",
+    krs:[
+      "100% der NPS-Detraktoren erhalten innerhalb 48h eine Rückmeldung.",
+      "Feedback-Board mit Top-10-Themen wird monatlich aktualisiert.",
+      "3 Feature-Entscheidungen sind nachweislich auf Kundenfeedback zurückzuführen."
+    ],
+    situation:"<b>Ausgangslage:</b> KR1 und KR2 laufen automatisiert und werden zuverlässig erfüllt. KR3 steht nach zwei Quartalen bei 0.",
+    rooms:{
+      moeglich:{question:"Ist „auf Feedback reagieren“ dasselbe wie „Feedback nutzen“?", befund:"Rückmeldung geben und das Board pflegen sind reine Prozess-Erfüllung. Das eigentliche Ziel — Einfluss auf Produktentscheidungen — wird nicht erreicht.", empfehlung:"Objective präzisieren: nicht „Feedback fließt ein“, sondern „Feedback verändert die Priorisierung nachweisbar“."},
+      analyse:{question:"Warum landet Feedback im Board, aber nicht in Entscheidungen?", befund:"Das Board wird vom Support gepflegt — aber niemand aus dem Produktteam schaut aktiv rein. Die Verantwortung dafür fehlt.", empfehlung:"Kurze Interviews mit dem Produktteam als Analyse-Artefakt: warum wird das Board nicht genutzt?"},
+      loesung:{question:"Welches Artefakt verbindet Feedback tatsächlich mit Entscheidungen?", befund:"Es fehlt ein regelmäßiger Termin, an dem Board-Themen bewusst gegen die Roadmap gehalten werden.", empfehlung:"Neue Initiative: „Als Product Owner möchte ich monatlich die Top-3-Feedback-Themen gegen die Roadmap prüfen.“"},
+      umsetzung:{question:"Ist KR3 überhaupt messbar, so wie er formuliert ist?", befund:"„Nachweislich zurückzuführen“ ist schwer zu belegen — es fehlt ein Kriterium, wie das dokumentiert wird.", empfehlung:"Akzeptanzkriterium ergänzen: Roadmap-Items bekommen ein Feedback-Tag mit Verlinkung zum Board-Eintrag."},
+      stoerung:{question:"Was verhindert strukturell, dass Feedback Gewicht bekommt?", befund:"Zielkonflikt: Das Produktteam wird an Feature-Velocity gemessen, nicht an Feedback-Nutzung — ein falscher Anreiz.", empfehlung:"Zielkonflikt offen im Team ansprechen und ein eigenes KR für „Feedback-Reviews durchgeführt“ ergänzen, um den Anreiz zu setzen."}
+    }
+  }
+};
+
+var state = {exampleKey:"onboarding", stepIndex:0, beamerLevel:0};
+try{
+  var saved = JSON.parse(localStorage.getItem("okrDenkraumState") || "null");
+  if (saved) state = saved;
+}catch(e){}
+
+function save(){
+  try{ localStorage.setItem("okrDenkraumState", JSON.stringify(state)); }catch(e){}
+}
+
+function escHtml(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function renderExNav(){
+  var nav = document.getElementById("exNav");
+  nav.innerHTML = "";
+  Object.keys(EXAMPLES).forEach(function(key){
+    var ex = EXAMPLES[key];
+    var btn = document.createElement("button");
+    btn.className = "ex-btn" + (key === state.exampleKey ? " active" : "");
+    btn.innerHTML = '<div class="ex-title">' + escHtml(ex.title) + '</div><div class="ex-desc">' + escHtml(ex.desc) + '</div>';
+    btn.addEventListener("click", function(){
+      state.exampleKey = key;
+      state.stepIndex = 0;
+      save();
+      renderAll();
+    });
+    nav.appendChild(btn);
+  });
+}
+
+function renderRail(){
+  var rail = document.getElementById("rail");
+  rail.innerHTML = "";
+  STAGES.forEach(function(st, i){
+    var node = document.createElement("div");
+    node.className = "rnode" + (i === state.stepIndex ? " active" : (i < state.stepIndex ? " done" : ""));
+    var sub = st.sub ? '<div class="rsub">' + st.sub + '</div>' : '';
+    node.innerHTML = '<div class="rdot">' + (i < state.stepIndex ? "✓" : (i+1)) + '</div><div class="rlbl">' + st.label + '</div>' + sub;
+    node.addEventListener("click", function(){
+      state.stepIndex = i;
+      save();
+      renderAll();
+    });
+    rail.appendChild(node);
+  });
+}
+
+function roomTitle(key){
+  var map = {moeglich:"Möglichkeitsraum", analyse:"Analyseraum", loesung:"Lösungsraum", umsetzung:"Umsetzungsraum", stoerung:"Störraum"};
+  return map[key] || key;
+}
+function roomSub(key){
+  var map = {moeglich:"WARUM", analyse:"WARUM GENAU", loesung:"WAS", umsetzung:"WIE", stoerung:"RISIKEN"};
+  return map[key] || "";
+}
+
+function renderStage(){
+  var stEl = document.getElementById("stage");
+  var stageDef = STAGES[state.stepIndex];
+  var ex = EXAMPLES[state.exampleKey];
+  var html = "";
+
+  if (stageDef.key === "context"){
+    html += '<span class="stage-kicker">Ausgangs-OKR</span>';
+    html += '<div class="okr-obj">Objective: ' + escHtml(ex.objective) + '</div>';
+    html += '<div class="kr-list">' + ex.krs.map(function(kr, i){
+      return '<div class="kr-item"><b>KR' + (i+1) + '</b><span>' + escHtml(kr) + '</span></div>';
+    }).join("") + '</div>';
+    html += '<div class="situation">' + ex.situation + '</div>';
+  } else if (stageDef.key === "summary"){
+    html += '<span class="stage-kicker">Zusammenfassung</span>';
+    html += '<div class="okr-obj" style="margin-bottom:18px">So bleibt „' + escHtml(ex.objective) + '“ lebendig</div>';
+    html += '<div class="summary-list">' + ["moeglich","analyse","loesung","umsetzung","stoerung"].map(function(key){
+      return '<div class="summary-item"><span class="sroom">' + roomSub(key) + '</span><span class="stext">' + ex.rooms[key].empfehlung + '</span></div>';
+    }).join("") + '</div>';
+  } else {
+    var room = ex.rooms[stageDef.key];
+    html += '<span class="stage-kicker">' + roomTitle(stageDef.key) + ' · ' + roomSub(stageDef.key) + '</span>';
+    html += '<div class="question-box">' + escHtml(room.question) + '</div>';
+    html += '<div class="befund-label">Befund</div>';
+    html += '<div class="befund-text">' + escHtml(room.befund) + '</div>';
+    html += '<div class="empf-box"><b>Artefakt-Anpassung:</b> ' + room.empfehlung + '</div>';
+  }
+
+  stEl.innerHTML = html;
+}
+
+function renderNav(){
+  document.getElementById("prevBtn").disabled = state.stepIndex === 0;
+  document.getElementById("nextBtn").disabled = state.stepIndex === STAGES.length - 1;
+}
+
+function renderAll(){
+  renderExNav();
+  renderRail();
+  renderStage();
+  renderNav();
+}
+
+document.getElementById("prevBtn").addEventListener("click", function(){
+  if (state.stepIndex > 0){ state.stepIndex--; save(); renderAll(); }
+});
+document.getElementById("nextBtn").addEventListener("click", function(){
+  if (state.stepIndex < STAGES.length - 1){ state.stepIndex++; save(); renderAll(); }
+});
+document.getElementById("resetBtn").addEventListener("click", function(){
+  state.exampleKey = "onboarding";
+  state.stepIndex = 0;
+  save();
+  renderAll();
+});
+
+var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+function applyBeamerLevel(){
+  document.documentElement.setAttribute("data-beamer", String(state.beamerLevel));
+  var btn = document.getElementById("beamerToggle");
+  btn.textContent = BEAMER_LABELS[state.beamerLevel];
+  btn.classList.toggle("active", state.beamerLevel > 0);
+}
+document.getElementById("beamerToggle").addEventListener("click", function(){
+  state.beamerLevel = (state.beamerLevel + 1) % BEAMER_LABELS.length;
+  save();
+  applyBeamerLevel();
+});
+
+renderAll();
+applyBeamerLevel();
+
+})();
+</script>
+</body>
+</html>
