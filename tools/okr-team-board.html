@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OKR-Team-Board – Aufgaben, die aufs Ziel einzahlen</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f6f5fc;--panel:#ffffff;--ink:#231f34;--muted:#645f7a;--faint:#8f89a6;
+  --line:#ddd8ee;--line2:#c3bce0;
+  --accent:#4f46e5;--accent-soft:#e8e6fb;--accent-strong:#3730a3;
+  --good:#0f766e;--good-bg:#e1f3ef;
+  --shadow:0 16px 34px rgba(35,31,52,.08);
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono","SF Mono",Menlo,Consolas,monospace;
+}
+html,body{margin:0;padding:0}
+html[data-beamer="1"]{zoom:1.35}
+html[data-beamer="2"]{zoom:1.75}
+body{
+  font-family:var(--sans);color:var(--ink);background:
+    radial-gradient(circle at top left, #f0eefe 0%, transparent 24%),
+    radial-gradient(circle at top right, #eef4ff 0%, transparent 20%),
+    linear-gradient(180deg,#fbfaff 0%,#f5f4fb 100%);
+  min-height:100vh;line-height:1.55;
+}
+.wrap{max-width:1200px;margin:0 auto;padding:24px}
+
+.hero{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:28px 30px 22px;margin-bottom:20px}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.hero-back{display:inline-block;font-size:14px;font-weight:600;color:var(--accent);text-decoration:none;margin-bottom:10px}
+.hero-back:hover{text-decoration:underline}
+.hero-eye{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:6px}
+.hero h1{margin:0 0 8px 0;font-size:clamp(24px,3.4vw,36px);line-height:1.1}
+.hero p{margin:0;color:var(--muted);font-size:16px;max-width:780px;line-height:1.6}
+.signature{text-align:right;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.4;white-space:nowrap;flex-shrink:0}
+.signature span{display:block;font-weight:500;color:var(--muted);font-size:12px}
+.signature:hover{color:var(--accent)}
+.signature:hover span{color:var(--accent)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.btn{border:1.5px solid var(--line2);background:#fff;color:var(--ink);font-weight:700;font-size:14px;padding:9px 16px;border-radius:20px;cursor:pointer;font-family:var(--sans)}
+.btn:hover{border-color:var(--accent)}
+.btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.obj-card{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px;margin-bottom:20px}
+.obj-eye{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.obj-text{font-size:21px;font-weight:800;color:var(--ink);margin-bottom:16px;line-height:1.35}
+.obj-progress-row{display:flex;align-items:center;gap:14px}
+.progress-track{flex:1;height:16px;background:var(--bg);border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:999px;transition:width .35s ease}
+.progress-pct{font-size:18px;font-weight:800;color:var(--accent-strong);min-width:52px;text-align:right}
+.obj-sub{font-size:13.5px;color:var(--muted);margin-top:8px}
+
+.team-panel{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:22px 26px;margin-bottom:24px}
+.team-title{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.person-card{border-radius:14px;padding:12px 14px;border:1.5px solid var(--line)}
+.person-name{font-weight:800;font-size:14.5px;margin-bottom:2px}
+.person-role{font-size:12px;color:var(--muted);margin-bottom:8px}
+.person-progress-row{display:flex;align-items:center;gap:8px}
+.person-track{flex:1;height:8px;border-radius:999px;background:var(--bg);overflow:hidden}
+.person-fill{height:100%;border-radius:999px;transition:width .35s ease}
+.person-count{font-size:12px;font-weight:700;white-space:nowrap}
+
+.kr-section{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:24px 26px;margin-bottom:18px}
+.kr-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.kr-label{font-size:12.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--good);margin-bottom:6px}
+.kr-text{font-size:16.5px;font-weight:700;color:var(--ink);max-width:640px;line-height:1.4}
+.kr-progress{display:flex;align-items:center;gap:10px;min-width:180px}
+.kr-progress .progress-track{height:10px}
+.kr-progress .progress-fill{background:var(--good)}
+.kr-progress .progress-pct{font-size:14px;color:var(--good);min-width:40px}
+
+.task-columns{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.task-col-head{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.task-list{display:flex;flex-direction:column;gap:8px;min-height:40px}
+.task-card{display:flex;align-items:flex-start;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}
+.task-card:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(35,31,52,.08)}
+.task-check{width:20px;height:20px;border-radius:6px;border:2px solid var(--line2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;margin-top:1px}
+.task-card.done .task-check{background:var(--good);border-color:var(--good)}
+.task-body{flex:1}
+.task-text{font-size:14px;color:var(--ink);line-height:1.4}
+.task-card.done .task-text{color:var(--muted);text-decoration:line-through}
+.task-owner{display:inline-block;margin-top:6px;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:999px}
+
+footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);font-size:13px;text-align:center}
+
+@media(max-width:640px){
+  .wrap{padding:16px}
+  .hero{padding:22px 18px 18px}
+  .hero-top{flex-direction:column}
+  .signature{text-align:left}
+  .task-columns{grid-template-columns:1fr}
+  .kr-head{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="hero-top">
+      <div>
+        <a class="hero-back" href="../index.html">← Zurück zur Startseite</a>
+        <div class="hero-eye">OKR-Team-Board · Demonstrator</div>
+        <h1>Aufgaben, die aufs Ziel einzahlen</h1>
+        <p>Ein Projekt-Objective, drei Key Results, ein Team. Markiere Aufgaben als erledigt — jede Aufgabe zahlt in ihr Key Result ein, jedes Key Result in das Objective. So wird die Leistung des Teams im Projekt direkt sichtbar, nicht erst am Quartalsende.</p>
+      </div>
+      <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
+    </div>
+    <div class="toolbar">
+      <button class="btn" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
+      <button class="btn" id="resetBtn">↺ Demo zurücksetzen</button>
+    </div>
+  </section>
+
+  <div class="obj-card">
+    <div class="obj-eye">Projekt-Objective</div>
+    <div class="obj-text">Das neue Kundenportal ist erfolgreich eingeführt und wird von Kunden aktiv genutzt.</div>
+    <div class="obj-progress-row">
+      <div class="progress-track"><div class="progress-fill" id="objFill"></div></div>
+      <div class="progress-pct" id="objPct">0%</div>
+    </div>
+    <div class="obj-sub" id="objSub"></div>
+  </div>
+
+  <div class="team-panel">
+    <div class="team-title">Team-Performance</div>
+    <div class="team-grid" id="teamGrid"></div>
+  </div>
+
+  <div id="krSections"></div>
+</div>
+
+<footer>Didaktischer Demonstrator · Projekt, Team und Zahlen sind frei konstruiert, keine echten Unternehmensdaten.</footer>
+
+<script>
+(function(){
+
+var PERSONAS = {
+  ela:       {name:"Ela",            role:"Projektleitung",  color:"#4f46e5", soft:"#e8e6fb"},
+  knut:      {name:"Knut",           role:"Entwicklung",     color:"#1d4ed8", soft:"#e0eafd"},
+  sarah:     {name:"Sarah",          role:"Vertrieb",        color:"#0f766e", soft:"#e1f3ef"},
+  petra:     {name:"Petra",          role:"QM",               color:"#92400e", soft:"#fef3c7"},
+  bachmeier: {name:"Herr Bachmeier", role:"Geschäftsführung", color:"#be185d", soft:"#fdf2f8"}
+};
+
+var KRS = [
+  {
+    id:"kr1",
+    text:"80% der Bestandskunden haben sich bis Ende Q3 im neuen Portal registriert.",
+    tasks:[
+      {id:"kr1-1", owner:"sarah", text:"Migrationskampagne an Bestandskunden versenden", initialDone:true},
+      {id:"kr1-2", owner:"sarah", text:"Onboarding-Webinar für Großkunden durchführen", initialDone:false},
+      {id:"kr1-3", owner:"knut",  text:"Self-Service-Registrierung technisch bereitstellen", initialDone:true},
+      {id:"kr1-4", owner:"ela",   text:"Rollout-Zeitplan mit Kundenservice abstimmen", initialDone:true},
+      {id:"kr1-5", owner:"petra", text:"Registrierungsprozess auf Barrierefreiheit prüfen", initialDone:false}
+    ]
+  },
+  {
+    id:"kr2",
+    text:"Alle Kernfunktionen (Rechnungseinsicht, Ticketstatus, Vertragsänderung) sind produktiv und fehlerfrei.",
+    tasks:[
+      {id:"kr2-1", owner:"knut",  text:"Rechnungseinsicht-Modul entwickeln", initialDone:true},
+      {id:"kr2-2", owner:"knut",  text:"Ticketstatus-Anzeige entwickeln", initialDone:false},
+      {id:"kr2-3", owner:"knut",  text:"Vertragsänderung-Workflow entwickeln", initialDone:false},
+      {id:"kr2-4", owner:"petra", text:"Testfälle für alle drei Kernfunktionen durchführen", initialDone:false},
+      {id:"kr2-5", owner:"petra", text:"Lasttest mit 500 gleichzeitigen Nutzer:innen durchführen", initialDone:false}
+    ]
+  },
+  {
+    id:"kr3",
+    text:"Kundenzufriedenheit (CSAT) im Portal liegt bei mindestens 4,2 von 5.",
+    tasks:[
+      {id:"kr3-1", owner:"sarah",     text:"Feedback-Umfrage nach Portal-Nutzung einrichten", initialDone:false},
+      {id:"kr3-2", owner:"petra",     text:"Usability-Test mit 8 Bestandskunden durchführen", initialDone:false},
+      {id:"kr3-3", owner:"knut",      text:"Ladezeit auf unter 2 Sekunden optimieren", initialDone:false},
+      {id:"kr3-4", owner:"ela",       text:"Kundenservice-Team im neuen Portal schulen", initialDone:true},
+      {id:"kr3-5", owner:"bachmeier", text:"Eskalationsprozess für kritisches Feedback freigeben", initialDone:false}
+    ]
+  }
+];
+
+var ALL_TASKS = [];
+KRS.forEach(function(kr){ kr.tasks.forEach(function(t){ t.krId = kr.id; ALL_TASKS.push(t); }); });
+
+function initialDoneIds(){
+  return ALL_TASKS.filter(function(t){ return t.initialDone; }).map(function(t){ return t.id; });
+}
+
+var state = {doneIds: initialDoneIds(), beamerLevel:0};
+try{
+  var saved = JSON.parse(localStorage.getItem("okrTeamBoardState") || "null");
+  if (saved && saved.doneIds) state = saved;
+}catch(e){}
+
+function save(){
+  try{ localStorage.setItem("okrTeamBoardState", JSON.stringify(state)); }catch(e){}
+}
+
+function isDone(taskId){
+  return state.doneIds.indexOf(taskId) !== -1;
+}
+
+function toggleTask(taskId){
+  var i = state.doneIds.indexOf(taskId);
+  if (i === -1) state.doneIds.push(taskId);
+  else state.doneIds.splice(i, 1);
+  save();
+  renderAll();
+}
+
+function escHtml(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function krProgress(kr){
+  var done = kr.tasks.filter(function(t){ return isDone(t.id); }).length;
+  return {done:done, total:kr.tasks.length, pct:Math.round((done / kr.tasks.length) * 100)};
+}
+
+function objProgress(){
+  var done = ALL_TASKS.filter(function(t){ return isDone(t.id); }).length;
+  return {done:done, total:ALL_TASKS.length, pct:Math.round((done / ALL_TASKS.length) * 100)};
+}
+
+function personProgress(key){
+  var tasks = ALL_TASKS.filter(function(t){ return t.owner === key; });
+  var done = tasks.filter(function(t){ return isDone(t.id); }).length;
+  return {done:done, total:tasks.length, pct: tasks.length ? Math.round((done / tasks.length) * 100) : 0};
+}
+
+function renderObjective(){
+  var p = objProgress();
+  document.getElementById("objFill").style.width = p.pct + "%";
+  document.getElementById("objPct").textContent = p.pct + "%";
+  document.getElementById("objSub").textContent = p.done + " von " + p.total + " Aufgaben team-weit erledigt · Fortschritt berechnet sich direkt aus den abgehakten Aufgaben.";
+}
+
+function renderTeam(){
+  var grid = document.getElementById("teamGrid");
+  grid.innerHTML = "";
+  Object.keys(PERSONAS).forEach(function(key){
+    var person = PERSONAS[key];
+    var p = personProgress(key);
+    var card = document.createElement("div");
+    card.className = "person-card";
+    card.style.borderColor = person.soft;
+    card.innerHTML =
+      '<div class="person-name" style="color:' + person.color + '">' + escHtml(person.name) + '</div>' +
+      '<div class="person-role">' + escHtml(person.role) + '</div>' +
+      '<div class="person-progress-row">' +
+        '<div class="person-track"><div class="person-fill" style="width:' + p.pct + '%;background:' + person.color + '"></div></div>' +
+        '<div class="person-count">' + p.done + '/' + p.total + '</div>' +
+      '</div>';
+    grid.appendChild(card);
+  });
+}
+
+function renderTaskCard(task){
+  var person = PERSONAS[task.owner];
+  var done = isDone(task.id);
+  var card = document.createElement("div");
+  card.className = "task-card" + (done ? " done" : "");
+  card.innerHTML =
+    '<div class="task-check">' + (done ? "✓" : "") + '</div>' +
+    '<div class="task-body">' +
+      '<div class="task-text">' + escHtml(task.text) + '</div>' +
+      '<span class="task-owner" style="background:' + person.soft + ';color:' + person.color + '">' + escHtml(person.name) + '</span>' +
+    '</div>';
+  card.addEventListener("click", function(){ toggleTask(task.id); });
+  return card;
+}
+
+function renderKrSections(){
+  var wrap = document.getElementById("krSections");
+  wrap.innerHTML = "";
+  KRS.forEach(function(kr, i){
+    var p = krProgress(kr);
+    var section = document.createElement("div");
+    section.className = "kr-section";
+
+    var head = document.createElement("div");
+    head.className = "kr-head";
+    head.innerHTML =
+      '<div><div class="kr-label">Key Result ' + (i+1) + '</div><div class="kr-text">' + escHtml(kr.text) + '</div></div>' +
+      '<div class="kr-progress"><div class="progress-track"><div class="progress-fill" style="width:' + p.pct + '%"></div></div><div class="progress-pct">' + p.pct + '%</div></div>';
+    section.appendChild(head);
+
+    var cols = document.createElement("div");
+    cols.className = "task-columns";
+
+    var openCol = document.createElement("div");
+    var openHead = document.createElement("div");
+    openHead.className = "task-col-head";
+    openHead.textContent = "Offen";
+    openCol.appendChild(openHead);
+    var openList = document.createElement("div");
+    openList.className = "task-list";
+    kr.tasks.filter(function(t){ return !isDone(t.id); }).forEach(function(t){ openList.appendChild(renderTaskCard(t)); });
+    openCol.appendChild(openList);
+
+    var doneCol = document.createElement("div");
+    var doneHead = document.createElement("div");
+    doneHead.className = "task-col-head";
+    doneHead.textContent = "Erledigt";
+    doneCol.appendChild(doneHead);
+    var doneList = document.createElement("div");
+    doneList.className = "task-list";
+    kr.tasks.filter(function(t){ return isDone(t.id); }).forEach(function(t){ doneList.appendChild(renderTaskCard(t)); });
+    doneCol.appendChild(doneList);
+
+    cols.appendChild(openCol);
+    cols.appendChild(doneCol);
+    section.appendChild(cols);
+
+    wrap.appendChild(section);
+  });
+}
+
+function renderAll(){
+  renderObjective();
+  renderTeam();
+  renderKrSections();
+}
+
+document.getElementById("resetBtn").addEventListener("click", function(){
+  state.doneIds = initialDoneIds();
+  save();
+  renderAll();
+});
+
+var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+function applyBeamerLevel(){
+  document.documentElement.setAttribute("data-beamer", String(state.beamerLevel));
+  var btn = document.getElementById("beamerToggle");
+  btn.textContent = BEAMER_LABELS[state.beamerLevel];
+  btn.classList.toggle("active", state.beamerLevel > 0);
+}
+document.getElementById("beamerToggle").addEventListener("click", function(){
+  state.beamerLevel = (state.beamerLevel + 1) % BEAMER_LABELS.length;
+  save();
+  applyBeamerLevel();
+});
+
+renderAll();
+applyBeamerLevel();
+
+})();
+</script>
+</body>
+</html>
