@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Wie KI durch Projekte denkt</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;background:#f5f5f3;color:#1d252c;font-family:"IBM Plex Sans",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:light;}
+body{min-height:100vh;}
+button,.chip,.tab,.card,.clickable,input[type=range]{touch-action:manipulation;}
+.app{max-width:1180px;margin:0 auto;padding:16px 18px 22px;}
+.top{border:1px solid #d8d8d4;background:#ffffff;padding:14px 16px;margin-bottom:12px;}
+.brand{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+h1{margin:0;color:#1a3a5c;font-size:clamp(24px,3.3vw,40px);line-height:1.04;letter-spacing:-0.03em;}
+.subtitle{margin:6px 0 0;color:#5d6973;font-size:15px;max-width:760px;}
+.restart{border:1px solid #1a3a5c;background:#ffffff;color:#1a3a5c;padding:9px 12px;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap;}
+.restart:hover{background:#eef5fa;}
+.progressRow{margin-top:14px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;}
+.insightTrack{height:8px;border:1px solid #d8d8d4;background:#f5f5f3;overflow:hidden;}
+.insightFill{height:100%;width:0;background:#1a3a5c;transition:width .25s ease;}
+.insightText{font-family:"IBM Plex Mono",monospace;font-size:14px;color:#1a3a5c;font-weight:600;}
+.tabs{display:grid;grid-template-columns:repeat(11,1fr);gap:5px;margin-top:12px;}
+.tab{border:1px solid #d8d8d4;background:#f5f5f3;color:#606b73;font-size:14px;line-height:1.1;padding:8px 5px;cursor:pointer;text-align:center;min-height:38px;}
+.tab.active{background:#1a3a5c;color:#ffffff;border-color:#1a3a5c;font-weight:700;}
+.tab.done{background:#e8f1f7;color:#1a3a5c;border-color:#b8cfdd;font-weight:700;}
+.tab.locked{opacity:.45;cursor:not-allowed;}
+.stage{border:1px solid #d8d8d4;background:#ffffff;min-height:610px;padding:18px;animation:fadeIn .18s ease;}
+@keyframes fadeIn{from{opacity:.35;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+.stepHead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;border-bottom:1px solid #d8d8d4;padding-bottom:12px;margin-bottom:16px;}
+.stepKicker{font-family:"IBM Plex Mono",monospace;color:#c8440a;font-size:13px;font-weight:700;margin-bottom:4px;}
+h2{margin:0;color:#1a3a5c;font-size:clamp(22px,3vw,34px);line-height:1.08;letter-spacing:-0.02em;}
+.lead{margin:7px 0 0;color:#4b5962;font-size:16px;line-height:1.45;max-width:880px;}
+.navBtns{display:flex;gap:8px;align-items:center;justify-content:flex-end;}
+.navBtns button{border:1px solid #1a3a5c;background:#1a3a5c;color:white;padding:8px 12px;font-size:14px;font-weight:700;cursor:pointer;}
+.navBtns button.secondary{background:white;color:#1a3a5c;}
+.navBtns button:disabled{border-color:#d8d8d4;background:#ededeb;color:#8b9297;cursor:not-allowed;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.card{border:1px solid #d8d8d4;background:#ffffff;padding:14px;min-height:98px;}
+.card.soft{background:#f8fafb;}
+.card.dark{background:#1a3a5c;color:white;border-color:#1a3a5c;}
+.card.orange{background:#fff2ea;border-color:#f0b990;}
+.card h3,.card h4{margin:0 0 8px;color:#1a3a5c;line-height:1.15;}
+.card.dark h3,.card.dark h4{color:#ffffff;}
+.card p{margin:0;color:#51606a;line-height:1.45;font-size:15px;}
+.card.dark p{color:#e9f2f7;}
+.card.orange p{color:#7b2b08;}
+.metric{font-family:"IBM Plex Mono",monospace;font-size:25px;font-weight:700;color:#c8440a;display:block;margin-bottom:3px;}
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:8px;}
+.chip{border:1px solid #d8d8d4;background:#ffffff;padding:14px;cursor:pointer;min-height:130px;text-align:left;}
+.chip.active{border-color:#1a3a5c;background:#e8f1f7;}
+.chip h3{font-size:18px;margin:0 0 8px;color:#1a3a5c;}
+.chip p{font-size:14px;color:#5d6973;margin:0;line-height:1.35;}
+.pill{display:inline-flex;align-items:center;justify-content:center;border:1px solid #d8d8d4;background:#f5f5f3;color:#1a3a5c;font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:700;padding:4px 7px;margin-bottom:8px;}
+.panel{border:1px solid #d8d8d4;background:#f8fafb;padding:14px;margin-top:14px;}
+.panelTitle{font-weight:700;color:#1a3a5c;margin-bottom:10px;font-size:18px;}
+.ctxLayer,.stakeItem{cursor:pointer;border:1px solid #d8d8d4;background:#ffffff;padding:13px;min-height:96px;}
+.ctxLayer.active,.stakeItem.active{border-color:#1a3a5c;background:#e8f1f7;}
+.ctxLayer b{color:#1a3a5c;display:block;margin-bottom:5px;}
+.stakeBadge{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:white;font-weight:700;margin-bottom:8px;}
+.effect{margin-top:10px;color:#c8440a;font-weight:700;}
+.promptBox{border:1px solid #d8d8d4;background:#111820;color:#eff6fb;padding:14px;font-family:"IBM Plex Mono",monospace;font-size:14px;line-height:1.55;white-space:pre-wrap;min-height:310px;}
+.seg{padding:1px 4px;margin:1px 0;display:inline;border-radius:2px;}
+.segS{background:#d8e8f4;color:#102b45;}.segT{background:#d9efdd;color:#173d24;}.segA{background:#ecdaf0;color:#4e1f5a;}.segK{background:#ffe1d4;color:#7a2605;}.segE{background:#d9efe8;color:#123d31;}
+.legendRow{display:flex;gap:8px;align-items:center;margin:7px 0;font-size:14px;}.sw{width:18px;height:18px;border:1px solid #d8d8d4;}
+.weight{margin:10px 0;}.weightTop{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:700;color:#1a3a5c;margin-bottom:4px;}.barOuter{height:20px;border:1px solid #d8d8d4;background:#f5f5f3;}.barInner{height:100%;width:0;}
+.beamerBtn{border:1px solid #1a3a5c;background:#ffffff;color:#1a3a5c;padding:9px 12px;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap;margin-left:8px;}
+.beamerBtn.active{background:#1a3a5c;color:#ffffff;}
+.tokens{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:18px;border:1px solid #d8d8d4;background:#f8fafb;min-height:330px;}
+.token{display:inline-flex;align-items:center;justify-content:center;text-align:center;border:1px solid #d8d8d4;background:#e8f1f7;color:#1a3a5c;font-weight:700;line-height:1.1;padding:9px;border-radius:50%;}
+.tempLine{display:grid;grid-template-columns:80px 1fr 56px;gap:10px;align-items:center;margin:12px 0 18px;}.tempLine input{width:100%;}.tempVal{font-family:"IBM Plex Mono",monospace;font-weight:700;color:#c8440a;}
+.answerBad{border:1px solid #c8440a;background:#fff2ea;padding:14px;margin-bottom:14px;}.answerGood{border:1px solid #1a3a5c;background:#f8fafb;padding:14px;min-height:180px;}.cursor{display:inline-block;width:8px;height:18px;background:#1a3a5c;vertical-align:middle;animation:blink .75s step-end infinite;}@keyframes blink{50%{opacity:0;}}
+.smallBtn{border:1px solid #1a3a5c;background:#ffffff;color:#1a3a5c;padding:8px 10px;font-weight:700;cursor:pointer;margin-right:8px;}.smallBtn.primary{background:#1a3a5c;color:#ffffff;}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;}.compare .bad{border:1px solid #c8440a;background:#fff2ea;}.compare .good{border:1px solid #1a3a5c;background:#eef5fa;}.compare h3{margin:0 0 9px;}.compare p{margin:0;color:#3f4d56;line-height:1.45;}
+.memo{display:none;margin-top:14px;border:1px solid #1a3a5c;background:#f8fafb;padding:12px;white-space:pre-wrap;font-family:"IBM Plex Mono",monospace;font-size:14px;line-height:1.45;}.memo.open{display:block;}
+.formula{font-family:"IBM Plex Mono",monospace;border:1px solid #d8d8d4;background:#f5f5f3;padding:12px;color:#1a3a5c;font-weight:700;}
+.back-link{font-size:14px;font-weight:600;color:#1a3a5c;text-decoration:none;display:inline-block;margin-bottom:10px;}
+.back-link:hover{text-decoration:underline;}
+.footerSig{font-size:14px;color:#75818a;text-align:right;margin-top:10px;}
+@media(max-width:900px){.tabs{grid-template-columns:repeat(6,1fr);}.chips,.grid4{grid-template-columns:1fr 1fr;}.grid3{grid-template-columns:1fr;}.grid2,.compare{grid-template-columns:1fr;}.stage{min-height:auto}.brand{display:block}.restart{margin-top:10px}.stepHead{display:block}.navBtns{justify-content:flex-start;margin-top:12px}.progressRow{grid-template-columns:1fr}.chips{gap:8px}.chip{min-height:110px}.app{padding:10px}.stage{padding:13px}.top{padding:12px}}
+
+/* ===== Footer (Systemprompt / Handbuch / Vortrags-Skript) ===== */
+.footer{margin-top:18px;border-top:2px solid #d8d8d4;padding-top:16px;}
+.footer details{border:1px solid #d8d8d4;border-radius:4px;margin-bottom:10px;background:#ffffff;}
+.footer summary{padding:12px 16px;font-weight:700;cursor:pointer;font-size:14.5px;list-style:none;display:flex;align-items:center;gap:8px;color:#1a3a5c;}
+.footer summary::-webkit-details-marker{display:none;}
+.footer summary:before{content:"▸";font-size:14px;color:#75818a;}
+.footer details[open] summary:before{content:"▾";}
+.footer .fbody{padding:0 16px 16px;color:#3f4d56;}
+.sys-box .fbody{font-family:"IBM Plex Mono",monospace;font-size:14px;line-height:1.6;white-space:pre-wrap;}
+.handbuch-box .fbody{font-size:16px;line-height:1.65;}
+.handbuch-box .fbody h4{font-size:14.5px;margin:14px 0 4px;color:#1a3a5c;}
+.skript-box .fbody{font-size:16px;line-height:1.7;}
+.skript-box .regie{font-style:italic;color:#75818a;display:block;margin-top:2px;}
+.skript-box .step{margin-bottom:14px;}
+.footer-sig{font-size:14px;color:#75818a;margin-top:4px;line-height:1.5;}
+@media(min-width:901px){.footer-triple{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}.footer-triple details{margin-bottom:0;}}
+
+/* ===== Beamer-Modus (vierstufig, K18) ===== */
+html.beamer .lead,html.beamer .card p,html.beamer p{font-size:19px;}
+html.beamer h1{font-size:30px;}
+html.beamer h2{font-size:26px;}
+html.beamer .tab{font-size:15px;}
+html.beamer .footer,html.beamer .footerSig{display:none;}
+
+html.beamer-xl .lead,html.beamer-xl .card p,html.beamer-xl p{font-size:22px;}
+html.beamer-xl h1{font-size:34px;}
+html.beamer-xl h2{font-size:30px;}
+html.beamer-xl .tab{font-size:17px;}
+
+html.beamer-xxl .lead,html.beamer-xxl .card p,html.beamer-xxl p{font-size:26px;}
+html.beamer-xxl h1{font-size:38px;}
+html.beamer-xxl h2{font-size:34px;}
+html.beamer-xxl .tab{font-size:19px;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <div class="brand">
+      <div>
+        <h1>Wie KI durch Projekte denkt</h1>
+        <p class="subtitle">Ein interaktives Lerntool für Requirements Engineering, KI-Literacy und souveräne Prompt-Steuerung.</p>
+      </div>
+      <div>
+        <button id="beamerBtn" class="beamerBtn">☀ Beamer</button>
+        <button id="restart" class="restart">Restart</button>
+      </div>
+    </div>
+    <div class="progressRow">
+      <div class="insightTrack"><div id="insightFill" class="insightFill"></div></div>
+      <div id="insightText" class="insightText">Projekt wählen</div>
+    </div>
+    <nav id="tabs" class="tabs" aria-label="Schritte"></nav>
+  </header>
+  <main id="stage" class="stage"></main>
+  <footer class="footer">
+    <div class="footer-triple">
+      <details class="sys-box">
+        <summary>🔧 Systemprompt</summary>
+        <div class="fbody">Rolle: Requirements-Engineering-Trainerin für interaktive HTML-Lerntools zu KI-Literacy und Prompt-Steuerung.
+Aufgabe: Zeigen, dass Prompt-Engineering derselben Denkstruktur folgt wie Requirements Engineering — anhand von vier Projektwelten (ERP, KI-Pilot, Agile Transformation, Blank-Fall) in 11 Schritten von der "jungfräulichen Instanz" bis zur Auflösung.
+Kontext: STAKE-Framework (Stakeholder + Task + Audience + Kriterien + Eingrenzung) als Übersetzung von RE-Denken in Prompt-Steuerung; Master-Prompt v4.3 + Qualitätskriterien-Checkliste v1.6 als Leitplanken.
+Format: Single-File HTML, offline, Tab-Navigation über 11 Schritte, Projektauswahl steuert alle Inhalte, Beamer-Modus 4-stufig, Footer mit Systemprompt/Handbuch/Vortrags-Skript.
+Eingrenzung: Keine erfundenen Normwerte — Rechtsnormen (EU AI Act, DSGVO) mit Status und Datum versehen; kein produktiver KI-Einsatz simuliert, nur didaktische Visualisierung von Kontext, Attention und Temperatur.</div>
+      </details>
+
+      <details class="handbuch-box">
+        <summary>📖 Handbuch</summary>
+        <div class="fbody">
+          <h4>Framework</h4>
+          STAKE (Stakeholder · Task · Audience · Kriterien · Eingrenzung) — strukturell auf Requirements Engineering gespiegelt, damit RE-Wissen direkt auf Prompt-Steuerung übertragbar wird.
+          <h4>5 Dimensionen</h4>
+          <b>Stakeholder:</b> Wer sitzt am Tisch, wessen Interessen fließen in die Antwort ein.<br>
+          <b>Task:</b> Was genau soll die KI tun — analysieren, bewerten, formulieren, entscheiden.<br>
+          <b>Audience:</b> Für wen ist die Antwort bestimmt, das steuert Sprache und Tiefe.<br>
+          <b>Kriterien:</b> Woran erkennt man eine gute Antwort — macht Qualität prüfbar.<br>
+          <b>Eingrenzung:</b> Was gehört bewusst nicht hinein — verhindert Scope Creep und Halluzination.
+          <h4>Zentraler Lernhinweis</h4>
+          Eine KI ist nicht dumm, wenn sie generisch antwortet — sie hat schlicht keine belastbare Steuerungsinformation bekommen. Genau die fünf STAKE-Elemente sind die fehlenden Anforderungen, die ein Requirements Engineer ohnehin gewohnt ist zu erheben. Der Blank-Fall macht das im Tool sichtbar: gleich verteilte Aufmerksamkeit, weil keine Priorität gesetzt wurde.
+          <h4>Nachbau-Tipp</h4>
+          Eigene Projektwelten brauchen: einen klaren Kontext (Domäne, Stakeholder, Constraints, Ziel), fünf ausformulierte STAKE-Sätze, einen schwachen und einen starken Beispiel-Prompt sowie eine bewusste Gewichtung der fünf STAKE-Elemente, die zum Projekttyp passt.
+        </div>
+      </details>
+
+      <details class="skript-box">
+        <summary>🎤 Vortrags-Skript</summary>
+        <div class="fbody" id="skriptBody">
+          <div class="step"><b>1. Opener</b><span class="regie">(vor der Projektauswahl)</span><br>„Wenn eine KI-Antwort enttäuscht, liegt das selten am Modell — sondern daran, dass wir ihr keine Anforderungen mitgegeben haben. Genau das zeigen wir jetzt an vier Projekten."</div>
+          <div class="step"><b>2. Projekt wählen</b><span class="regie">(Klick auf eine Projekt-Kachel, z. B. ERP)</span><br>„Wir starten mit einer SAP-Einführung: 800 User, viele Abhängigkeiten. Ab jetzt füllt dieses Projekt alle folgenden Schritte."</div>
+          <div class="step"><b>3. Jungfräuliche Instanz</b><span class="regie">(Schritt 1 zeigen)</span><br>„Die KI ist nicht leer — sie bringt Weltwissen mit. Was fehlt, ist der Projektkontext. Das ist der Ausgangspunkt jeder Anforderungsklärung."</div>
+          <div class="step"><b>4. Kontextualisierung</b><span class="regie">(Schritt 2, eine Kontextschicht anklicken)</span><br>„Vier Schichten fokussieren den Wissensraum — genau wie bei einem neuen Beratungsmandat: erst die Domäne, dann Stakeholder, Constraints und Ziel."</div>
+          <div class="step"><b>5. STAKE</b><span class="regie">(Schritt 3, ein STAKE-Element anklicken)</span><br>„STAKE übersetzt das in Prompt-Sprache. Fünf Elemente, jedes davon ein Requirements-Engineering-Konzept in neuem Gewand."</div>
+          <div class="step"><b>6. Prompt-Synthese und Gewichtung</b><span class="regie">(Schritt 4 zeigen)</span><br>„Die Gewichtungsbalken zeigen: Nicht jedes Projekt braucht dieselbe Balance. Beim ERP dominieren Stakeholder und Kriterien, beim KI-Piloten die Eingrenzung."</div>
+          <div class="step"><b>7. Attention</b><span class="regie">(Schritt 5 zeigen)</span><br>„Die Bubbles sind eine vereinfachte Analogie für Attention: Worauf achtet das Modell stärker, wenn der Kontext steht?"</div>
+          <div class="step"><b>8. Temperatur</b><span class="regie">(Schritt 6, Slider bewegen)</span><br>„Temperatur verändert nicht den Kontext, sondern die Varianz. Links bleibt die Antwort bei T=0 stabil, rechts wird sie kreativer — aber der Projektkontext bleibt immer erhalten."</div>
+          <div class="step"><b>9. Antwort entsteht</b><span class="regie">(Schritt 7, „Nächsten Satz aufbauen" klicken)</span><br>„Oben die Sofortantwort ohne Steuerung, unten die Antwort, die Satz für Satz aus Kontext und STAKE entsteht."</div>
+          <div class="step"><b>10. Fork und Auflösung</b><span class="regie">(Schritt 8 und 10 zeigen)</span><br>„Und hier der direkte Vergleich: derselbe Wunsch, einmal ohne und einmal mit STAKE. Die STAKE-Formel ist am Ende nichts anderes als eine Anforderungsformel für KI-Systeme."</div>
+          <div class="step"><b>11. Beamer-Modus zeigen</b><span class="regie">(Klick auf „☀ Beamer")</span><br>„Für die letzte Reihe: ein Klick, alles wird größer."</div>
+          <p><b>Allgemeine Regie-Hinweise:</b> Wenn Zeit fehlt, den Blank-Fall am Ende gegen ERP gegenschneiden — der Kontrast zwischen Gleichverteilung und klarer Dominanz ist der stärkste Aha-Moment. Zeitbudget: 10–12 Minuten für einen kompakten Durchlauf durch alle 11 Schritte an einem Projekt.</p>
+        </div>
+      </details>
+    </div>
+    <div class="footer-sig">Referenzierte Normen: EU AI Act (Verordnung (EU) 2024/1689) — in Kraft seit 08/2024, Hochrisiko-Systeme (Anhang III) ab 08/2026 · DSGVO (in Kraft)<br>
+    Zuletzt geprüft: 12.07.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</div>
+  </footer>
+  <div class="footerSig">Michaela Kühn · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></div>
+</div>
+
+<template id="tpl-projects">
+<p id="p-erp" name="ERP-Einführung" desc="SAP S/4HANA, 800 User, viele Abhängigkeiten" hint="Ein ERP-Projekt mit hoher Stakeholder- und Qualitätsdichte."></p>
+<p id="p-ai" name="KI-Pilotprojekt" desc="Behörde, EU AI Act, Governance und Akzeptanz" hint="Ein KI-Pilot mit hoher regulatorischer und kommunikativer Sensibilität."></p>
+<p id="p-agile" name="Agile Transformation" desc="Konzern, 5 Teams, Rollen und Zusammenarbeit" hint="Eine Transformation mit hohem Change- und Zielgruppenanteil."></p>
+<p id="p-blank" name="Hilf mir mit meinem Projekt." desc="Kontextloser Prompt ohne Domäne, Ziel oder Kriterien" hint="Der Blank-Fall zeigt, was passiert, wenn die KI kaum gesteuert wird."></p>
+</template>
+
+<template id="tpl-erp">
+<d hint="Ein ERP-Projekt mit hoher Stakeholder- und Qualitätsdichte." iname="dein ERP-Projekt" ctx1="SAP S/4HANA, Prozessharmonisierung, Datenmigration, 800 User" ctx2="Fachbereiche, IT, Key User, Betriebsrat, Management, externe Implementierung" ctx3="Go-live-Fenster, Altsysteme, Berechtigungen, Schulung, Datenqualität" ctx4="Stabile Einführung mit akzeptierten Kernprozessen und kontrolliertem Risiko" ss="Stakeholder: Fachbereiche, IT, Key User, Management und Betriebsrat müssen unterschiedlich abgeholt werden." st="Task: Erzeuge eine strukturierte Projektanalyse für die ERP-Einführung." sa="Audience: Projektleitung, Lenkungskreis und Requirements Engineers benötigen entscheidungsfähige Inhalte." sk="Kriterien: Verständlich, prüfbar, risikoorientiert, priorisiert und anschlussfähig an Umsetzung." se="Eingrenzung: Fokus auf Kernprozesse, Datenmigration, Schulung und Berechtigungskonzept." attexpl="Die Aufmerksamkeit wandert zu Stakeholdern, Integrationsrisiken und prüfbaren Kriterien." fbad="Hilf mir bei SAP." fbadstat="Zu breit, zu technisch oder zu generisch. Das Modell muss raten." fgood="Analysiere für eine SAP S/4HANA ERP-Einführung mit 800 Usern die wichtigsten Stakeholder, Risiken, Anforderungen und Akzeptanzkriterien für einen belastbaren Projektstart." fgoodstat="Kontext, Aufgabe, Zielgruppe, Kriterien und Eingrenzung steuern die Antwort." abad="Du könntest eine Roadmap machen, Stakeholder einbinden und Risiken prüfen." agood="Für die ERP-Einführung sollten zuerst Fachbereiche, IT, Key User und Betriebsrat als Stakeholder geklärt werden. Danach werden Kernprozesse, Datenmigration, Berechtigungen und Schulung als kritische Anforderungsfelder strukturiert. Die nächsten Schritte sind ein priorisiertes Risiko-Register, prüfbare Akzeptanzkriterien und ein Go-live-orientierter Entscheidungsplan." gprompt="Analysiere die ERP-Einführung von SAP S/4HANA für 800 User. Berücksichtige Stakeholder, Datenmigration, Berechtigungen, Schulung, Kernprozesse und Go-live-Risiken. Erstelle eine kompakte Projektanalyse für Projektleitung und Lenkungskreis mit Risiken, Anforderungen und Akzeptanzkriterien." tnote="Bei ERP dominiert nicht Kreativität, sondern belastbare Struktur." tcold="Die Antwort priorisiert Stakeholder, Datenmigration, Berechtigungen, Schulung und Go-live-Risiken." thot0="Die Antwort bleibt belastbar, ergänzt aber Varianten für Rollout und Kommunikation." thot1="Die Antwort wird breiter und schlägt zusätzlich Change-Formate, Hypercare und Prozessbotschafter vor." thot2="Die Antwort springt stärker in Ideen, Szenarien und mögliche Innovationsoptionen." ws="28" wt="18" wa="14" wk="26" we="14" ri1="🏗️" rt1="Kontext entscheidet" rp1="ERP ist kein Tool-Thema. Ohne Domäne, Altsysteme und Prozesskontext entstehen schöne, aber schwache Antworten." ri2="🎯" rt2="Kriterien führen" rp2="Akzeptanzkriterien, Risiken und Go-live-Fähigkeit machen die KI-Antwort prüfbar." ri3="⚙️" rt3="Stakeholder sind Architektur" rp3="Die Antwort wird erst gut, wenn Fachbereiche, IT, Key User und Governance sichtbar werden." wsubtitle="ERP-Einführung: S + K dominieren" wnote="Hohe Stakeholder-Komplexität und Qualitätskriterien steuern die Antwort stärker als Kreativität."></d>
+<attdata>[{"t":"🏗️ SAP S/4HANA","s":2.4,"c":"#1a3a5c","b":"#d8e8f4"},{"t":"👥 800 User","s":2.2,"c":"#1a3a5c","b":"#d8e8f4"},{"t":"✅ Akzeptanzkriterien","s":2.3,"c":"#c8440a","b":"#ffe1d4"},{"t":"🔐 Berechtigungen","s":1.7,"c":"#1a5c4a","b":"#d9efe8"},{"t":"📦 Datenmigration","s":1.9,"c":"#c8440a","b":"#ffe1d4"},{"t":"📣 Schulung","s":1.4,"c":"#7a3a8a","b":"#ecdaf0"},{"t":"🚦 Go-live","s":1.8,"c":"#2d6a3f","b":"#d9efdd"}]</attdata>
+</template>
+
+<template id="tpl-ai">
+<d hint="Ein KI-Pilot mit hoher regulatorischer und kommunikativer Sensibilität." iname="dein KI-Pilotprojekt" ctx1="Behörde, KI-Unterstützung, Entscheidungsnähe, Verwaltungsprozesse" ctx2="Fachbereich, Datenschutz, IT-Sicherheit, Personalrat, Bürgernähe, Leitung" ctx3="EU AI Act, DSGVO, Nachvollziehbarkeit, Akzeptanz, Datenqualität" ctx4="Sicherer Pilot mit klarer Governance, begrenztem Risiko und realistischer Nutzenprüfung" ss="Stakeholder: Datenschutz, IT-Sicherheit, Fachbereich, Personalrat und Leitung haben unterschiedliche Schutzinteressen." st="Task: Erzeuge eine Governance-orientierte Projektanalyse für einen KI-Pilot in einer Behörde." sa="Audience: Behördenleitung, Projektteam und kritische Prüfer brauchen verständliche und belastbare Argumentation." sk="Kriterien: Nachvollziehbar, rechtskonform, risikoarm, erklärbar und auditierbar." se="Eingrenzung: Kein produktiver Hochrisiko-Einsatz, sondern begrenzter Pilot mit menschlicher Kontrolle." attexpl="Die Aufmerksamkeit wandert zu Eingrenzung, Zielgruppe, Governance und Nachvollziehbarkeit." fbad="Wir wollen KI nutzen." fbadstat="Das klingt modern, aber es steuert weder Risiko noch Zweck." fgood="Bewerte einen begrenzten KI-Pilot in einer Behörde unter EU AI Act, DSGVO, Akzeptanz, menschlicher Kontrolle und Governance. Liefere Entscheidungsgrundlage, Risiken und Mindestanforderungen." fgoodstat="Die Antwort wird auditierbar, weil Zweck, Grenzen und Prüfkriterien gesetzt sind." abad="Man sollte KI testen, Datenschutz beachten und Mitarbeiter einbinden." agood="Für den KI-Pilot sollte zuerst der konkrete Verwaltungsprozess und die Rolle der menschlichen Kontrolle festgelegt werden. Danach sind Datenbasis, Transparenz, Datenschutz, EU-AI-Act-Einordnung und Akzeptanzrisiken zu prüfen. Der Pilot sollte bewusst begrenzt bleiben und mit klaren Abbruchkriterien, Governance-Rollen und messbarem Nutzen gestartet werden." gprompt="Analysiere einen begrenzten KI-Pilot in einer Behörde. Berücksichtige EU AI Act, DSGVO, menschliche Kontrolle, Transparenz, Akzeptanz, Datenqualität und Governance. Erstelle eine Entscheidungsgrundlage für Behördenleitung und Projektteam mit Risiken, Mindestanforderungen und klarer Eingrenzung." tnote="Beim KI-Pilot ist Eingrenzung wichtiger als Begeisterung." tcold="Die Antwort bleibt vorsichtig, governance-orientiert und prüft Risiko, Zweck und Grenzen." thot0="Die Antwort ergänzt Kommunikations- und Akzeptanzbausteine, bleibt aber kontrolliert." thot1="Die Antwort öffnet mehr Optionen für Pilotdesign, Messung und Beteiligung." thot2="Die Antwort wird visionärer und schlägt breitere KI-Anwendungsfelder vor." ws="16" wt="18" wa="24" wk="14" we="28" ri1="🛡️" rt1="Grenzen schützen" rp1="Ein KI-Pilot braucht Eingrenzung. Sonst wird aus Exploration schnell ein Governance-Risiko." ri2="👂" rt2="Audience steuert Sprache" rp2="Behördenleitung, Datenschutz und Fachbereich brauchen unterschiedliche Begründungen." ri3="⚖️" rt3="Compliance ist Anforderung" rp3="EU AI Act und DSGVO sind keine Fußnote, sondern Teil des Anforderungsraums." wsubtitle="KI-Pilot Behörde: E + A dominieren" wnote="Eingrenzung und Zielgruppe verhindern Hype-Antworten und erzeugen prüfbare Steuerung."></d>
+<attdata>[{"t":"🛡️ EU AI Act","s":2.5,"c":"#1a5c4a","b":"#d9efe8"},{"t":"👥 Behördenleitung","s":2.2,"c":"#7a3a8a","b":"#ecdaf0"},{"t":"🔍 Nachvollziehbarkeit","s":2.0,"c":"#c8440a","b":"#ffe1d4"},{"t":"👤 Menschliche Kontrolle","s":2.3,"c":"#1a5c4a","b":"#d9efe8"},{"t":"📄 DSGVO","s":1.9,"c":"#1a5c4a","b":"#d9efe8"},{"t":"🤝 Akzeptanz","s":1.7,"c":"#7a3a8a","b":"#ecdaf0"},{"t":"🧪 Pilotgrenze","s":2.1,"c":"#2d6a3f","b":"#d9efdd"}]</attdata>
+</template>
+
+<template id="tpl-agile">
+<d hint="Eine Transformation mit hohem Change- und Zielgruppenanteil." iname="deine agile Transformation" ctx1="Konzernumfeld, fünf Teams, Produktorientierung, Rollenklärung" ctx2="Management, Product Owner, Scrum Master, Teams, HR, PMO, Betriebsrat" ctx3="Linienorganisation, Zielkonflikte, Reporting, Rollenunklarheit, Abhängigkeiten" ctx4="Wirksamere Zusammenarbeit mit klaren Rollen, besserem Flow und belastbarer Priorisierung" ss="Stakeholder: Management, Teams, PO, Scrum Master, PMO und HR sehen Agilität aus verschiedenen Perspektiven." st="Task: Erzeuge eine Transformationsanalyse mit Rollen, Spannungen, Risiken und Interventionen." sa="Audience: Führungskräfte und Teams brauchen unterschiedliche Sprache, aber ein gemeinsames Zielbild." sk="Kriterien: Praxisnah, anschlussfähig, konfliktbewusst, messbar und nicht dogmatisch." se="Eingrenzung: Fokus auf fünf Teams, Rollenklärung, Priorisierung und Zusammenarbeit statt Methodenreligion." attexpl="Die Aufmerksamkeit wandert zu Zielgruppe, Rollen, Task und Veränderungslogik." fbad="Mach uns agil." fbadstat="Das erzeugt Methodenfloskeln und kaum Projektsteuerung." fgood="Analysiere eine agile Transformation in einem Konzern mit fünf Teams. Berücksichtige Rollenklärung, Führung, Priorisierung, Abhängigkeiten, PMO und Teamakzeptanz. Liefere Risiken, Interventionen und messbare Fortschrittskriterien." fgoodstat="Die Antwort bleibt praktisch, weil Zielgruppe, Aufgabe und Erfolgskriterien klar sind." abad="Man sollte Workshops machen, Scrum einführen und das Mindset verändern." agood="Für die agile Transformation sollte zunächst geklärt werden, welche Entscheidungsrechte Product Owner, Führung und PMO tatsächlich haben. Danach sind Abhängigkeiten zwischen den fünf Teams, Priorisierungsregeln und typische Rollenkonflikte sichtbar zu machen. Sinnvoll ist ein schrittweiser Ansatz mit gemeinsamen Arbeitsvereinbarungen, Flow-Metriken und regelmäßiger Reflexion statt einer reinen Methodeneinführung." gprompt="Analysiere eine agile Transformation in einem Konzern mit fünf Teams. Berücksichtige Management, Product Owner, Scrum Master, PMO, Teams, Rollenklärung, Priorisierung, Abhängigkeiten und Akzeptanz. Erstelle Risiken, Interventionen und messbare Fortschrittskriterien ohne Methoden-Dogmatismus." tnote="Transformation braucht Sprache für Menschen, nicht nur Prozessmodelle." tcold="Die Antwort bleibt strukturiert und fokussiert auf Rollen, Abhängigkeiten und Messbarkeit." thot0="Die Antwort ergänzt moderate Interventionen und Kommunikationsformate." thot1="Die Antwort wird experimenteller und schlägt Teamformate, Communities und Flow-Reviews vor." thot2="Die Antwort wird sehr ideenreich und erzeugt viele mögliche Transformationspfade." ws="14" wt="24" wa="28" wk="20" we="14" ri1="👥" rt1="Zielgruppe entscheidet" rp1="Management und Teams brauchen nicht dieselbe Antwort. Audience steuert Ton, Tiefe und Nutzen." ri2="🧭" rt2="Task verhindert Agilitätsnebel" rp2="Aus 'mach uns agil' wird eine konkrete Transformationsanalyse mit Rollen und Interventionen." ri3="📊" rt3="Kriterien erden die Veränderung" rp3="Ohne messbare Fortschrittskriterien bleibt Transformation Gefühl statt Steuerung." wsubtitle="Agile Transformation: A + T dominieren" wnote="Audience und Task führen die Antwort aus Methodenfloskeln in konkrete Veränderungsarbeit."></d>
+<attdata>[{"t":"👥 Teams","s":2.4,"c":"#7a3a8a","b":"#ecdaf0"},{"t":"🧭 Rollenklärung","s":2.2,"c":"#2d6a3f","b":"#d9efdd"},{"t":"📊 Flow","s":1.8,"c":"#c8440a","b":"#ffe1d4"},{"t":"🏢 Management","s":2.0,"c":"#7a3a8a","b":"#ecdaf0"},{"t":"🔗 Abhängigkeiten","s":1.7,"c":"#2d6a3f","b":"#d9efdd"},{"t":"🎯 Priorisierung","s":1.9,"c":"#c8440a","b":"#ffe1d4"},{"t":"🤝 Akzeptanz","s":1.6,"c":"#1a3a5c","b":"#d8e8f4"}]</attdata>
+</template>
+
+<template id="tpl-blank">
+<d hint="Der Blank-Fall zeigt, was passiert, wenn die KI kaum gesteuert wird." iname="dein unbekanntes Projekt" ctx1="Keine Domäne genannt" ctx2="Keine Stakeholder genannt" ctx3="Keine Constraints genannt" ctx4="Kein Ziel genannt" ss="Stakeholder: unbekannt. Die KI kann nur typische Projektrollen vermuten." st="Task: unklar. Die KI weiß nicht, ob sie planen, analysieren, priorisieren oder texten soll." sa="Audience: unbekannt. Ton und Detailtiefe werden geraten." sk="Kriterien: unbekannt. Die Antwort hat keine klare Qualitätslatte." se="Eingrenzung: unbekannt. Alles kann relevant sein, also wird vieles beliebig." attexpl="Die Aufmerksamkeit verteilt sich gleichmäßig. Das Modell kann nicht wissen, was wichtig ist." fbad="Hilf mir mit meinem Projekt." fbadstat="Der Prompt klingt harmlos, zwingt die KI aber zum Raten." fgood="Beschreibe bitte zuerst Kontext, Stakeholder, Aufgabe, Zielgruppe, Kriterien und Grenzen deines Projekts. Ohne diese Informationen kann ich nur generische Projektberatung geben." fgoodstat="Die beste Antwort ist hier eine Rückfrage, weil Steuerungsinformation fehlt." abad="Erstelle eine Projektplanung, definiere Meilensteine, Stakeholder und Risiken." agood="Ohne Projektkontext kann ich nur allgemeine Schritte vorschlagen: Ziel klären, Stakeholder identifizieren, Risiken sammeln und nächste Schritte planen. Für eine belastbare Antwort fehlen Domäne, Aufgabe, Zielgruppe, Qualitätskriterien und Eingrenzung. Bitte ergänze diese Informationen, damit aus allgemeiner Beratung konkrete Projektsteuerung wird." gprompt="Hilf mir mit meinem Projekt." tnote="Gleiche Balken = keine Steuerung." tcold="Die Antwort bleibt generisch und fragt nach Kontext." thot0="Die Antwort ergänzt allgemeine Projektstruktur, bleibt aber unspezifisch." thot1="Die Antwort bietet verschiedene mögliche Projektarten und Vorgehensmodelle an." thot2="Die Antwort springt stark zwischen Ideen, Methoden und Annahmen." ws="20" wt="20" wa="20" wk="20" we="20" ri1="❓" rt1="Ohne Kontext rät die KI" rp1="Das Modell ist nicht dumm. Es hat nur keine belastbare Steuerungsinformation." ri2="⚪" rt2="Gleichverteilung ist Risiko" rp2="Wenn alles gleich wichtig ist, ist faktisch nichts wichtig." ri3="🧩" rt3="RE liefert die fehlenden Teile" rp3="STAKE macht aus einem Wunsch eine steuerbare Anforderung an die KI." wsubtitle="Blank: keine Dominanz" wnote="Gleiche Balken = keine Steuerung. Das Modell verteilt Aufmerksamkeit, weil du keine Priorität gesetzt hast."></d>
+<attdata>[{"t":"PM?","s":1.2,"c":"#666666","b":"#eeeeee"},{"t":"Tech?","s":1.2,"c":"#666666","b":"#eeeeee"},{"t":"Budget?","s":1.2,"c":"#666666","b":"#eeeeee"},{"t":"Risiko?","s":1.2,"c":"#666666","b":"#eeeeee"},{"t":"Plan?","s":1.2,"c":"#666666","b":"#eeeeee"},{"t":"Team?","s":1.2,"c":"#666666","b":"#eeeeee"},{"t":"Scope?","s":1.2,"c":"#666666","b":"#eeeeee"},{"t":"Ziel?","s":1.2,"c":"#666666","b":"#eeeeee"},{"t":"Kunde?","s":1.2,"c":"#666666","b":"#eeeeee"},{"t":"Tool?","s":1.2,"c":"#666666","b":"#eeeeee"}]</attdata>
+</template>
+
+<template id="tpl-ctx-details">
+<ctx n="1" label="Domäne" analogy="Wie bei einem neuen Beratungsmandat: Erst muss klar sein, in welcher Welt wir uns bewegen. ERP, Behörde oder Transformation erzeugen völlig andere Denkpfade." tech="Das Modell aktiviert semantische Nachbarschaften. Domänenbegriffe erhöhen die Wahrscheinlichkeit passender Konzepte, Risiken, Artefakte und Fachsprache."></ctx>
+<ctx n="2" label="Stakeholder" analogy="Ein Projekt ohne Stakeholder ist wie ein Theaterstück ohne Rollen. Man weiß nicht, für wen etwas wichtig ist." tech="Stakeholder setzen Perspektiven, Konflikte, Interessen und Kommunikationsbedarf. Die Antwort wird zielgerichteter und weniger generisch."></ctx>
+<ctx n="3" label="Constraints" analogy="Constraints sind die Leitplanken. Ohne sie fährt die Antwort auf jeder Straße gleichzeitig." tech="Constraints reduzieren den Lösungsraum. Sie beeinflussen Priorisierung, Risikoannahmen, Compliance, Aufwand und Antworttiefe."></ctx>
+<ctx n="4" label="Ziel" analogy="Ein Ziel macht aus Wissen Richtung. Erst dann kann die KI auswählen, was relevant ist." tech="Das Ziel wirkt wie eine Bewertungsfunktion. Es hilft dem Modell, relevante Token, Argumente und Strukturen gegenüber Nebenthemen zu bevorzugen."></ctx>
+</template>
+
+<template id="tpl-stake-details">
+<sk key="s" label="Stakeholder" analogy="Wer sitzt am Tisch? Ohne diese Information spricht die KI in den leeren Raum." tech="Stakeholderinformationen steuern Perspektiven, Interessen, Konflikte, Rollen und Kommunikationsniveau." effect="→ Wissensraum wird sozial fokussiert"></sk>
+<sk key="t" label="Task" analogy="Was soll die KI tun? Analysieren, formulieren, bewerten oder entscheiden sind unterschiedliche Aufträge." tech="Der Task bestimmt Ausgabehandlung, Struktur und erwartete Artefaktform." effect="→ Antwortmodus wird aktiviert"></sk>
+<sk key="a" label="Audience" analogy="Für wen ist die Antwort? Vorstand, Team und Auditor brauchen nicht denselben Text." tech="Audience steuert Sprache, Tiefe, Ton, Fachlichkeit und Begründungslogik." effect="→ Sprache und Detailtiefe werden kalibriert"></sk>
+<sk key="k" label="Kriterien" analogy="Woran erkennen wir gut? Kriterien machen Qualität prüfbar." tech="Kriterien wirken als Qualitätsfilter für Vollständigkeit, Testbarkeit, Risiko, Compliance und Nutzen." effect="→ Bewertungslinse wird gesetzt"></sk>
+<sk key="e" label="Eingrenzung" analogy="Was gehört nicht hinein? Grenzen verhindern, dass die Antwort ausufert." tech="Eingrenzung reduziert irrelevante Pfade und verhindert Überproduktion, Halluzination und Scope Creep." effect="→ Lösungsraum wird begrenzt"></sk>
+</template>
+
+<script>
+(function(){
+"use strict";
+var step=0;
+var chosen="";
+var visited={};
+var tokenCount=0;
+var temp=0;
+var tabsEl=document.getElementById("tabs");
+var stage=document.getElementById("stage");
+var stepTitles=["0 Projekt","1 Instanz","2 Kontext","3 STAKE","4 Prompt","5 Attention","6 Temperatur","7 Antwort","8 Fork","9 Reflexion","10 Auflösung"];
+var colors={s:"#1a3a5c",t:"#2d6a3f",a:"#7a3a8a",k:"#c8440a",e:"#1a5c4a"};
+var light={s:"#d8e8f4",t:"#d9efdd",a:"#ecdaf0",k:"#ffe1d4",e:"#d9efe8"};
+function q(id){return document.getElementById(id);}
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");}
+function tplData(key){var t=q("tpl-"+key);var d=t.content.querySelector("d");var o={};if(!d){return o;}for(var i=0;i<d.attributes.length;i++){o[d.attributes[i].name]=d.attributes[i].value;}return o;}
+function attData(key){var t=q("tpl-"+key);var a=t.content.querySelector("attdata");if(!a){return [];}try{return JSON.parse(a.textContent);}catch(e){return [];}}
+function projects(){var nodes=q("tpl-projects").content.querySelectorAll("p");var arr=[];for(var i=0;i<nodes.length;i++){arr.push({key:nodes[i].id.replace("p-",""),name:nodes[i].getAttribute("name"),desc:nodes[i].getAttribute("desc"),hint:nodes[i].getAttribute("hint")});}return arr;}
+function data(){return tplData(chosen||"erp");}
+function markVisited(){if(chosen){visited[step]=true;}}
+function renderTabs(){var h="";for(var i=0;i<stepTitles.length;i++){var cls="tab";if(i===step){cls+=" active";}else if(visited[i]){cls+=" done";}if(!chosen&&i>0){cls+=" locked";}h+="<button class='"+cls+"' data-tab='"+i+"'>"+esc(stepTitles[i])+"</button>";}tabsEl.innerHTML=h;var btns=tabsEl.querySelectorAll("button");for(var j=0;j<btns.length;j++){btns[j].onclick=function(){var n=parseInt(this.getAttribute("data-tab"),10);if(!chosen&&n>0){return;}step=n;render();};}}
+function updateProgress(){var count=0;for(var i=1;i<=10;i++){if(visited[i]){count++;}}var pct=chosen?(count*10):0;q("insightFill").style.width=pct+"%";q("insightText").textContent=!chosen?"Projekt wählen":(count>=10?"OK Alle freigeschaltet":(count+" von 10 Erkenntnissen freigeschaltet"));}
+function head(k,t,l){return "<div class='stepHead'><div><div class='stepKicker'>Schritt "+k+"</div><h2>"+t+"</h2><p class='lead'>"+l+"</p></div><div class='navBtns'><button class='secondary' id='backBtn'>Zurück</button><button id='nextBtn'>Weiter</button></div></div>";}
+function wireNav(){var b=q("backBtn"),n=q("nextBtn");if(b){b.disabled=step===0;b.onclick=function(){if(step>0){step--;render();}};}if(n){n.disabled=(!chosen&&step===0)||step===10;n.onclick=function(){if(step<10){step++;render();}};}}
+function render(){markVisited();renderTabs();updateProgress();try{window.scrollTo(0,0);}catch(e){};if(step===0){render0();}if(step===1){render1();}if(step===2){render2();}if(step===3){render3();}if(step===4){render4();}if(step===5){render5();}if(step===6){render6();}if(step===7){render7();}if(step===8){render8();}if(step===9){render9();}if(step===10){render10();}wireNav();}
+function render0(){var ps=projects();var h=head(0,"Projekt wählen","Wähle zuerst den Projektkontext. Erst dann kann das Tool zeigen, wie sich die KI-Antwort verändert.");h+="<div class='grid3'><div class='card dark'><span class='metric'>11</span><p>Schritte vom Ausgangszustand bis zur Auflösung</p></div><div class='card dark'><span class='metric'>4</span><p>Projektwelten mit unterschiedlicher Steuerungslogik</p></div><div class='card dark'><span class='metric'>1</span><p>Erkenntnis: Prompting folgt der Denkstruktur von Requirements Engineering</p></div></div><div class='chips'>";for(var i=0;i<ps.length;i++){var cls="chip"+(chosen===ps[i].key?" active":"");h+="<button class='"+cls+"' data-p='"+ps[i].key+"'><span class='pill'>Projekt</span><h3>"+esc(ps[i].name)+"</h3><p>"+esc(ps[i].desc)+"</p></button>";}h+="</div>";if(chosen){h+="<div class='panel'><div class='panelTitle'>Gewählt: "+esc(data().iname)+"</div><p>"+esc(data().hint)+"</p></div>";}stage.innerHTML=h;var cs=stage.querySelectorAll(".chip");for(var j=0;j<cs.length;j++){cs[j].onclick=function(){chosen=this.getAttribute("data-p");visited={0:true};tokenCount=0;render();};}}
+function render1(){var d=data();stage.innerHTML=head(1,"Jungfräuliche Instanz","Die KI startet nicht leer. Sie bringt ein Weltmodell mit, aber noch keinen belastbaren Projektkontext.")+"<div class='grid2'><div class='card soft'><h3>Was das Modell mitbringt</h3><p>Allgemeines Wissen über Projekte, typische Rollen, Risiken, Methoden, Artefakte und Formulierungen. Es erkennt Muster und kann plausible Strukturen erzeugen.</p></div><div class='card orange'><h3>Was noch fehlt</h3><p>"+esc(d.iname)+": Domäne, Stakeholder, Constraints, Ziel, Qualitätskriterien und Grenzen. Ohne diese Angaben muss das Modell raten.</p></div></div><div class='panel'><div class='panelTitle'>Erster Zustand</div><p>Die KI ist kompetent, aber nicht kontextualisiert. Genau hier beginnt Requirements Engineering für KI-Systeme.</p></div>";}
+function render2(){var d=data();var h=head(2,"Projektkontextualisierung","Vier Kontextschichten fokussieren den Wissensraum. Klicke eine Schicht an.");h+="<div class='grid4'>";for(var i=1;i<=4;i++){h+="<div class='ctxLayer' data-ctx='"+i+"'><b>"+i+" - "+esc(ctxDetail(i).label)+"</b><p>"+esc(d["ctx"+i])+"</p></div>";}h+="</div><div id='ctxPanel' class='panel'><div class='panelTitle'>Wähle eine Kontextschicht</div><p>Du siehst dann links eine Analogie und rechts die technische Wirkung.</p></div>";stage.innerHTML=h;wireCtx();}
+function ctxDetail(n){var nodes=q("tpl-ctx-details").content.querySelectorAll("ctx");for(var i=0;i<nodes.length;i++){if(nodes[i].getAttribute("n")===String(n)){return {label:nodes[i].getAttribute("label"),analogy:nodes[i].getAttribute("analogy"),tech:nodes[i].getAttribute("tech")};}}return {};}
+function wireCtx(){var items=stage.querySelectorAll(".ctxLayer");for(var i=0;i<items.length;i++){items[i].onclick=function(){for(var j=0;j<items.length;j++){items[j].classList.remove("active");}this.classList.add("active");var n=this.getAttribute("data-ctx");var c=ctxDetail(n);var extra=n==="4"?"<div class='card orange' style='margin-top:12px;'><h3>Brücke</h3><p>Diese Lücke schliesst STAKE.</p></div>":"";q("ctxPanel").innerHTML="<div class='panelTitle'>"+esc(n+" - "+c.label)+"</div><div class='grid2'><div class='card'><h3>Analogie</h3><p>"+esc(c.analogy)+"</p></div><div class='card'><h3>Technisches Detail</h3><p>"+esc(c.tech)+"</p></div></div>"+extra;};}}
+function stakeDetail(key){var nodes=q("tpl-stake-details").content.querySelectorAll("sk");for(var i=0;i<nodes.length;i++){if(nodes[i].getAttribute("key")===key){return {label:nodes[i].getAttribute("label"),analogy:nodes[i].getAttribute("analogy"),tech:nodes[i].getAttribute("tech"),effect:nodes[i].getAttribute("effect")};}}return {};}
+function render3(){var d=data();var keys=["s","t","a","k","e"];var labels={s:"S",t:"T",a:"A",k:"K",e:"E"};var h=head(3,"STAKE","STAKE übersetzt Projektdenken in Prompt-Steuerung. Klicke ein Element.");h+="<div class='grid4' style='grid-template-columns:repeat(5,1fr);'>";for(var i=0;i<keys.length;i++){var sd=stakeDetail(keys[i]);h+="<div class='stakeItem' data-sk='"+keys[i]+"'><span class='stakeBadge' style='background:"+colors[keys[i]]+"'>"+labels[keys[i]]+"</span><h3>"+esc(sd.label)+"</h3><p>"+esc(d["s"+keys[i]])+"</p></div>";}h+="</div><div id='stakePanel' class='panel'><div class='panelTitle'>Wähle ein STAKE-Element</div><p>Du siehst, wie dieses Element den Wissensraum fokussiert.</p></div>";stage.innerHTML=h;wireStake();}
+function wireStake(){var items=stage.querySelectorAll(".stakeItem");for(var i=0;i<items.length;i++){items[i].onclick=function(){for(var j=0;j<items.length;j++){items[j].classList.remove("active");}this.classList.add("active");var key=this.getAttribute("data-sk");var s=stakeDetail(key);q("stakePanel").innerHTML="<div class='panelTitle'>"+esc(s.label)+"</div><div class='grid2'><div class='card'><h3>Analogie</h3><p>"+esc(s.analogy)+"</p></div><div class='card'><h3>Technisches Detail</h3><p>"+esc(s.tech)+"</p><div class='effect'>"+esc(s.effect)+"</div></div></div>";};}}
+function render4(){var d=data();var keys=["s","t","a","k","e"];var names={s:"Stakeholder",t:"Task",a:"Audience",k:"Kriterien",e:"Eingrenzung"};var h=head(4,"Prompt-Synthese","Aus Projektkontext und STAKE entsteht ein steuernder Prompt. Die Gewichtung zeigt, was im Projekt besonders stark wirkt.");h+="<div class='grid2'><div><div class='promptBox'><span class='seg segS'>"+esc(d.ss)+"</span>\n<span class='seg segT'>"+esc(d.st)+"</span>\n<span class='seg segA'>"+esc(d.sa)+"</span>\n<span class='seg segK'>"+esc(d.sk)+"</span>\n<span class='seg segE'>"+esc(d.se)+"</span></div></div><div><div class='card'><h3>Farblegende</h3>";for(var i=0;i<keys.length;i++){h+="<div class='legendRow'><span class='sw' style='background:"+light[keys[i]]+"'></span><b>"+keys[i].toUpperCase()+"</b> "+names[keys[i]]+"</div>";}h+="</div><div class='card orange' style='margin-top:12px;'><h3>"+esc(d.wsubtitle)+"</h3><p>"+esc(d.wnote)+"</p></div></div></div><div class='panel'><div class='panelTitle'>Gewichtungsbalken - Summe 100%</div>";for(var j=0;j<keys.length;j++){var val=parseInt(d["w"+keys[j]],10);var col=chosen==="blank"?"#999999":colors[keys[j]];h+="<div class='weight'><div class='weightTop'><span>"+keys[j].toUpperCase()+" - "+names[keys[j]]+"</span><span>"+val+"%</span></div><div class='barOuter'><div class='barInner' style='width:"+val+"%;background:"+col+"'></div></div></div>";}h+="</div>";stage.innerHTML=h;}
+function render5(){var d=data();var arr=attData(chosen);var h=head(5,"Attention-Mechanismus","Die Token-Bubbles zeigen vereinfacht, worauf die Antwort stärker achtet. Größe entspricht Aufmerksamkeitsgewicht.");h+="<div class='tokens'>";for(var i=0;i<arr.length;i++){var size=Math.round(46*arr[i].s);h+="<span class='token' style='width:"+size+"px;height:"+size+"px;background:"+arr[i].b+";color:"+arr[i].c+";font-size:"+Math.max(14,Math.round(7*arr[i].s))+"px'>"+esc(arr[i].t)+"</span>";}h+="</div><div class='panel'><div class='panelTitle'>Wirkung</div><p>"+esc(d.attexpl)+"</p></div>";stage.innerHTML=h;}
+function tempText(d){if(temp<0.5){return d.thot0;}if(temp<1.3){return d.thot1;}return d.thot2;}
+function tempColor(){if(temp<0.5){return "#eef5fa";}if(temp<1.3){return "#fff8e9";}return "#fff2ea";}
+function render6(){var d=data();var h=head(6,"Temperatur","Temperatur verändert nicht den Projektkontext, sondern die Varianz der Antwort. Links bleibt T=0, rechts reagiert der Slider.");h+="<div class='tempLine'><b>T-Wert</b><input id='tempSlider' type='range' min='0' max='2' step='0.1' value='"+temp+"'><span id='tempVal' class='tempVal'>"+temp.toFixed(1)+"</span></div><div class='grid2'><div class='card'><h3>Links - immer T=0</h3><p>"+esc(d.tcold)+"</p></div><div id='hotPanel' class='card' style='background:"+tempColor()+"'><h3>Rechts - sliderabhängig</h3><p id='hotText'>"+esc(tempText(d))+"</p></div></div><div class='panel'><div class='panelTitle'>Hinweis</div><p>"+esc(d.tnote)+"</p></div>";stage.innerHTML=h;var sl=q("tempSlider");sl.oninput=function(){temp=parseFloat(this.value);q("tempVal").textContent=temp.toFixed(1);q("hotText").textContent=tempText(data());q("hotPanel").style.background=tempColor();};}
+function goodParts(){var txt=data().agood;var parts=txt.split(". ");var out=[];for(var i=0;i<parts.length;i++){var s=parts[i];if(s&&s.charAt(s.length-1)!=="."){s+=".";}out.push(s);}return out.slice(0,3);}
+function render7(){var d=data();var parts=goodParts();var shown="";for(var i=0;i<tokenCount;i++){shown+=parts[i]+" ";}var h=head(7,"Antwort entsteht","Oben siehst du die schwache Sofortantwort. Unten entsteht die bessere Antwort Satz für Satz.");h+="<div class='answerBad'><h3>Schlechte Antwort - sofort sichtbar</h3><p>"+esc(d.abad)+"</p></div><div class='answerGood'><h3>Gute Antwort - Token-Builder</h3><p id='goodAns'>"+esc(shown)+"<span class='cursor'></span></p></div><div style='margin-top:12px;'><button id='buildBtn' class='smallBtn primary'>Nächsten Satz aufbauen</button><button id='resetToken' class='smallBtn'>Zurücksetzen</button><span class='pill'>"+tokenCount+" / "+parts.length+"</span></div>";stage.innerHTML=h;q("buildBtn").onclick=function(){if(tokenCount<goodParts().length){tokenCount++;render7();wireNav();}};q("resetToken").onclick=function(){tokenCount=0;render7();wireNav();};}
+function render8(){var d=data();stage.innerHTML=head(8,"Fork","Du hast gerade gesehen, wie die Antwort entsteht. Jetzt siehst du, was ohne Kontext passiert wäre.")+"<div class='compare'><div class='card bad'><h3>Ohne Kontext</h3><p><b>Prompt:</b> "+esc(d.fbad)+"</p><p style='margin-top:10px;'>"+esc(d.fbadstat)+"</p></div><div class='card good'><h3>Mit Kontextualisierung + STAKE</h3><p><b>Prompt:</b> "+esc(d.fgood)+"</p><p style='margin-top:10px;'>"+esc(d.fgoodstat)+"</p></div></div>";}
+function render9(){var d=data();var h=head(9,"Reflexion","Drei Merkpunkte verankern, was du am Projekt gesehen hast. Die Merkkarte ist kopierbar.");h+="<div class='grid3'>";for(var i=1;i<=3;i++){h+="<div class='card'><span class='metric'>"+esc(d["ri"+i])+"</span><h3>"+esc(d["rt"+i])+"</h3><p>"+esc(d["rp"+i])+"</p></div>";}h+="</div><div style='margin-top:14px;'><button id='memoBtn' class='smallBtn primary'>Merkkarte anzeigen und kopieren</button></div><div id='memo' class='memo'></div>";stage.innerHTML=h;q("memoBtn").onclick=function(){var text="Wie KI durch Projekte denkt\n\n1. "+d.rt1+": "+d.rp1+"\n2. "+d.rt2+": "+d.rp2+"\n3. "+d.rt3+": "+d.rp3+"\n\nSTAKE = Stakeholder + Task + Audience + Kriterien + Eingrenzung\n\nPrompt Engineering ist Requirements Engineering für KI-Systeme.";var m=q("memo");m.textContent=text;m.classList.add("open");copyText(text);};}
+function copyText(text){try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text);return;}}catch(e){}try{var ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);}catch(err){}}
+function render10(){var d=data();stage.innerHTML=head(10,"Auflösung","Du hast verstanden, wie KI denkt. Jetzt siehst du, was das für deinen Prompt bedeutet.")+"<div class='compare'><div class='card bad'><h3>Vorher</h3><p>"+esc(d.fbad)+"</p></div><div class='card good'><h3>Nachher</h3><p>"+esc(d.gprompt)+"</p></div></div><div class='panel'><div class='panelTitle'>STAKE-Formel</div><div class='formula'>Stakeholder + Task + Audience + Kriterien + Eingrenzung = steuerbarer Prompt</div></div><div class='card dark'><h3>Souveräne KI-Steuerung verstanden.</h3><p>Das Modell hat sich nicht verändert. Du hast gelernt, es zu steuern.</p><p style='margin-top:10px;'>Wer Requirements Engineering kennt, kann KI souverän steuern - weil Prompting dieselbe Denkstruktur hat. Das ist nicht Technologie. Das ist Methode. Das ist PromptSchule.</p></div>";}
+q("restart").onclick=function(){step=0;chosen="";visited={};tokenCount=0;temp=0;render();};render();
+var BEAMER_LEVELS=[{classes:[],label:"☀ Beamer"},{classes:["beamer"],label:"☀ Beamer XL"},{classes:["beamer","beamer-xl"],label:"☀ Beamer XXL"},{classes:["beamer","beamer-xl","beamer-xxl"],label:"☀ Normal"}];
+var beamerLevel=0;
+q("beamerBtn").addEventListener("click",function(){beamerLevel=(beamerLevel+1)%4;document.documentElement.classList.remove("beamer","beamer-xl","beamer-xxl");BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){document.documentElement.classList.add(c);});this.textContent=BEAMER_LEVELS[beamerLevel].label;this.classList.toggle("active",beamerLevel!==0);});
+})();
+</script>
+</body>
+</html>
