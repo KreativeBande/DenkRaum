@@ -17,6 +17,8 @@
   --blue-soft:#dbeafe;
   --violet:#4f46e5;
   --violet-soft:#e8e6fb;
+  --coral:#be185d;
+  --coral-soft:#fdf2f8;
   --shadow:0 16px 34px rgba(15,23,42,.08);
 }
 *{box-sizing:border-box}
@@ -51,14 +53,27 @@ body{
 .signature:hover{color:var(--accent)}
 .signature:hover span{color:var(--accent)}
 
-.section{margin-bottom:36px}
-.section-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.section{margin-bottom:20px;border:none}
+.section-head{
+  display:flex;align-items:center;gap:12px;padding:8px 0;margin-bottom:16px;
+  cursor:pointer;list-style:none;user-select:none;
+}
+.section-head::-webkit-details-marker{display:none}
+.section-head::marker{content:""}
+.section-head .chevron{
+  font-size:13px;color:var(--muted);transition:transform .18s ease;flex-shrink:0;
+}
+.section:not([open]) .section-head{margin-bottom:0}
+.section:not([open]) .chevron{transform:rotate(-90deg)}
+.section-count{font-size:13px;color:var(--muted);font-weight:600}
+
 .kicker{
   display:inline-block;padding:7px 14px;border-radius:999px;font-weight:700;font-size:13px;
   background:#fef3c7;color:#92400e
 }
 .kicker.blue{background:var(--blue-soft);color:var(--blue)}
 .kicker.violet{background:var(--violet-soft);color:var(--violet)}
+.kicker.coral{background:var(--coral-soft);color:var(--coral)}
 
 .tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
 .tool-card{
@@ -74,12 +89,14 @@ body{
 }
 .tool-card.ki{border-left-color:var(--blue)}
 .tool-card.okr{border-left-color:var(--violet)}
+.tool-card.compliance{border-left-color:var(--coral)}
 .tool-card:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(15,23,42,.10)}
 .tool-card h3{margin:0 0 8px 0;font-size:18px;line-height:1.3;color:var(--ink)}
 .tool-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.55;flex:1}
 .tool-card .cta{margin-top:14px;font-size:14px;font-weight:700;color:var(--accent)}
 .tool-card.ki .cta{color:var(--blue)}
 .tool-card.okr .cta{color:var(--violet)}
+.tool-card.compliance .cta{color:var(--coral)}
 
 footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);font-size:13px;text-align:center}
 
@@ -104,10 +121,11 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
     </div>
   </section>
 
-  <section class="section">
-    <div class="section-head">
+  <details class="section" open>
+    <summary class="section-head">
+      <span class="chevron">▾</span>
       <span class="kicker">Requirements Engineering Tools</span>
-    </div>
+    </summary>
     <div class="tool-grid">
       <a class="tool-card" href="./tools/denkraum_v3_adaptive_engine.html">
         <h3>Adaptive Denkraum Engine</h3>
@@ -135,12 +153,13 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
         <span class="cta">Raum-Modell erklären →</span>
       </a>
     </div>
-  </section>
+  </details>
 
-  <section class="section">
-    <div class="section-head">
+  <details class="section" open>
+    <summary class="section-head">
+      <span class="chevron">▾</span>
       <span class="kicker violet">OKR Tools</span>
-    </div>
+    </summary>
     <div class="tool-grid">
       <a class="tool-card okr" href="./tools/okr-kaskade.html">
         <h3>OKR-Kaskade: Von der Vision zum ToDo</h3>
@@ -158,12 +177,27 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
         <span class="cta">Board bearbeiten →</span>
       </a>
     </div>
-  </section>
+  </details>
 
-  <section class="section">
-    <div class="section-head">
-      <span class="kicker blue">KI Tools</span>
+  <details class="section" open>
+    <summary class="section-head">
+      <span class="chevron">▾</span>
+      <span class="kicker coral">ISO &amp; Compliance Tools</span>
+    </summary>
+    <div class="tool-grid">
+      <a class="tool-card compliance" href="./tools/anforderungsboard-iso.html">
+        <h3>Anforderungs-Board · ISO 25010 &amp; ISO 27001</h3>
+        <p>Klassifiziert 17 Anforderungskarten aus einem Kundenportal-Fall live nach FA, NFR (ISO/IEC 25010:2023), ISMS-Maßnahme (ISO/IEC 27001:2022 Anhang A) oder Normvorgabe — inklusive einer bewussten Falle (Norm vs. risikobasierte Maßnahme) und Live-Dashboard.</p>
+        <span class="cta">Board öffnen →</span>
+      </a>
     </div>
+  </details>
+
+  <details class="section" open>
+    <summary class="section-head">
+      <span class="chevron">▾</span>
+      <span class="kicker blue">KI Tools</span>
+    </summary>
     <div class="tool-grid">
       <a class="tool-card ki" href="./tools/ki-black-box-simulator.html">
         <h3>KI Black-Box-Simulator</h3>
@@ -181,7 +215,7 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
         <span class="cta">Demonstrator öffnen →</span>
       </a>
     </div>
-  </section>
+  </details>
 </div>
 
 <footer>GPM Karlsruhe · AI4RE · Denken in Räumen</footer>

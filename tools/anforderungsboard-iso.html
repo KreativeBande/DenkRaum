@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Anforderungs-Board · ISO 25010 &amp; ISO 27001</title>
+<style>
+:root{
+  --bg:#FFFFFF;
+  --panel:#F7F9FC;
+  --ink:#182230;
+  --ink-dim:#4B5563;
+  --line:#DFE4EA;
+  --line-strong:#C6CDD6;
+
+  --c-fa:#2B5FA8;      --c-fa-bg:#EAF1FB;      --c-fa-tx:#1B3E6D;
+  --c-nfr:#1E7B6B;     --c-nfr-bg:#E7F5F1;     --c-nfr-tx:#145A4E;
+  --c-isms:#6B3FA0;    --c-isms-bg:#F1E9F8;    --c-isms-tx:#4E2D77;
+  --c-norm:#9B2C3E;    --c-norm-bg:#FBE9EC;    --c-norm-tx:#7A1F2E;
+
+  --c-ela:#2B5FA8; --c-knut:#1E7B6B; --c-sarah:#B5650A; --c-petra:#6B3FA0; --c-bach:#9B2C3E;
+
+  --ok:#1E7B4E; --ok-bg:#E7F6EE;
+  --bad:#B23A3A; --bad-bg:#FBEAEA;
+  --info:#2B5FA8; --info-bg:#EAF1FB;
+
+  --core-size:17px;
+  --sec-size:14px;
+  color-scheme: light;
+}
+*{box-sizing:border-box;}
+html,body{
+  margin:0; padding:0; background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  overflow-x:hidden; overflow-y:auto; color-scheme: light;
+  -webkit-text-size-adjust:100%;
+}
+.app{max-width:1400px;margin:0 auto;padding:0 20px 40px;}
+
+/* ===== Header ===== */
+header{
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding:18px 0 14px; border-bottom:2px solid var(--line);
+  flex-wrap:wrap;
+}
+.h-title{display:flex; flex-direction:column; gap:2px;}
+.back-link{font-size:14px; font-weight:600; color:var(--info); text-decoration:none; margin-bottom:2px;}
+.back-link:hover{text-decoration:underline;}
+.h-title h1{margin:0; font-size:22px; font-weight:800; letter-spacing:-0.01em;}
+.h-title .h-sub{font-size:var(--sec-size); color:var(--ink-dim);}
+.h-tools{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+.pill-btn{
+  background:transparent; border:1.5px solid var(--line-strong); color:var(--ink-dim);
+  font-size:14px; font-weight:600; padding:9px 18px; border-radius:999px; cursor:pointer;
+  font-family:inherit;
+}
+.pill-btn:hover{border-color:var(--ink-dim);}
+.beamer-btn.active{background:var(--ink); color:#fff; border-color:var(--ink);}
+.reset-btn{color:var(--bad); border-color:#EFC7C7;}
+.trainer-sig{font-size:14px; color:var(--ink-dim); text-align:right; line-height:1.4;}
+.trainer-sig a{color:var(--ink-dim);}
+
+/* ===== Split screen ===== */
+.split{display:grid; grid-template-columns:40% 60%; gap:22px; margin-top:22px; align-items:start;}
+@media (max-width:900px){ .split{grid-template-columns:1fr;} }
+
+.panel{background:var(--panel); border:1.5px solid var(--line); border-radius:14px; padding:20px;}
+.panel-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:14px; gap:10px; flex-wrap:wrap;}
+.panel-head .p-name{font-size:18px; font-weight:800; margin:0;}
+.panel-head .p-progress{font-size:var(--sec-size); color:var(--ink-dim); font-weight:600;}
+
+/* ===== Board (links) ===== */
+.card-stage{
+  background:#fff; border:1.5px solid var(--line-strong); border-radius:12px;
+  padding:22px; min-height:132px; display:flex; align-items:center;
+}
+.card-stage .nfa-text{font-size:var(--core-size); line-height:1.5; font-weight:600;}
+.card-meta{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;}
+.type-chip{font-size:14px; font-weight:700; padding:3px 10px; border-radius:999px;}
+.chip-fa{background:var(--c-fa-bg); color:var(--c-fa-tx);}
+.chip-nfr{background:var(--c-nfr-bg); color:var(--c-nfr-tx);}
+.chip-isms{background:var(--c-isms-bg); color:var(--c-isms-tx);}
+.chip-norm{background:var(--c-norm-bg); color:var(--c-norm-tx);}
+
+.bucket-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px;}
+.bucket-btn{
+  border:2px solid var(--line-strong); background:#fff; border-radius:10px; padding:14px 10px;
+  font-family:inherit; font-weight:700; font-size:14.5px; cursor:pointer; text-align:center;
+  color:var(--ink); line-height:1.3;
+}
+.bucket-btn small{display:block; font-size:14px; font-weight:600; color:var(--ink-dim); margin-top:3px;}
+.bucket-btn.bk-fa:hover{border-color:var(--c-fa);}
+.bucket-btn.bk-nfr:hover{border-color:var(--c-nfr);}
+.bucket-btn.bk-isms:hover{border-color:var(--c-isms);}
+.bucket-btn.bk-norm:hover{border-color:var(--c-norm);}
+.bucket-btn.correct-flash{animation:flashok .5s ease;}
+.bucket-btn.wrong-flash{animation:flashbad .5s ease;}
+@keyframes flashok{0%{background:var(--ok-bg);} 100%{background:#fff;}}
+@keyframes flashbad{0%{background:var(--bad-bg);} 100%{background:#fff;}}
+.bucket-btn:disabled{cursor:default;}
+.bucket-btn.chosen-correct{background:var(--ok-bg); border-color:var(--ok); color:var(--ok);}
+.bucket-btn.chosen-wrong{background:var(--bad-bg); border-color:var(--bad); color:var(--bad); opacity:.85;}
+.bucket-btn.is-correct-hint{border-color:var(--ok); border-style:dashed; border-width:2.5px;}
+
+.feedback{margin-top:14px; border-radius:10px; padding:14px 16px; font-size:var(--sec-size); display:none;}
+.feedback.show{display:block;}
+.feedback.ok{background:var(--ok-bg); border:1.5px solid #BFE3CD;}
+.feedback.bad{background:var(--bad-bg); border:1.5px solid #F1C4C4;}
+.feedback .fb-head{font-weight:800; margin-bottom:6px; display:flex; align-items:center; gap:6px;}
+.feedback.ok .fb-head{color:var(--ok);}
+.feedback.bad .fb-head{color:var(--bad);}
+.persona-line{display:flex; gap:8px; align-items:flex-start; margin-top:8px;}
+.persona-dot{width:10px; height:10px; border-radius:50%; margin-top:5px; flex:0 0 auto;}
+.persona-text b{font-weight:800;}
+.subtag-row{margin-top:8px; font-size:14px; color:var(--ink-dim); font-family:ui-monospace,Menlo,Consolas,monospace;}
+
+.board-actions{display:flex; justify-content:space-between; align-items:center; margin-top:18px; gap:10px; flex-wrap:wrap;}
+.nav-btns{display:flex; gap:8px;}
+.nav-btn{
+  border:1.5px solid var(--line-strong); background:#fff; border-radius:8px; padding:8px 14px;
+  font-family:inherit; font-weight:700; font-size:14px; cursor:pointer; color:var(--ink);
+}
+.nav-btn.primary{background:var(--ink); color:#fff; border-color:var(--ink);}
+.nav-btn:disabled{opacity:.4; cursor:default;}
+.reveal-btn{color:var(--ink-dim); text-decoration:underline; background:none; border:none; font-size:14px; cursor:pointer; font-family:inherit;}
+
+.dots{display:flex; flex-wrap:wrap; gap:7px; margin-top:16px;}
+.dot{width:15px; height:15px; border-radius:50%; border:1.5px solid var(--line-strong); background:#fff; cursor:pointer; padding:0;}
+.dot.unsorted{background:#fff;}
+.dot.current{border-color:var(--ink); border-width:2.5px;}
+.dot.correct{background:var(--ok); border-color:var(--ok);}
+.dot.wrong{background:var(--bad); border-color:var(--bad);}
+.dot.revealed{background:var(--info); border-color:var(--info);}
+
+/* ===== Dashboard (rechts) ===== */
+.dash-summary{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:18px;}
+.stat{background:#fff; border:1.5px solid var(--line); border-radius:10px; padding:10px 16px; min-width:120px;}
+.stat .num{font-size:22px; font-weight:800; line-height:1.1;}
+.stat .lbl{font-size:14px; color:var(--ink-dim); font-weight:600;}
+
+.dash-block{background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:16px 18px; margin-bottom:16px;}
+.dash-block h3{margin:0 0 4px; font-size:15px; font-weight:800;}
+.dash-block .dash-sub{font-size:14px; color:var(--ink-dim); margin-bottom:12px;}
+.bar-row{display:grid; grid-template-columns:150px 1fr 34px; align-items:center; gap:10px; margin-bottom:9px;}
+.bar-row .bar-label{font-size:14.5px; font-weight:700;}
+.bar-row .bar-label small{display:block; font-weight:500; color:var(--ink-dim); font-size:14px;}
+.bar-track{background:#EEF1F5; border-radius:6px; height:14px; overflow:hidden;}
+.bar-fill{height:100%; border-radius:6px; transition:width .35s ease;}
+.bar-fill.nfr{background:var(--c-nfr);}
+.bar-fill.isms{background:var(--c-isms);}
+.bar-row .bar-count{font-size:14px; font-weight:700; text-align:right; color:var(--ink-dim);}
+.bar-row.empty .bar-label{color:var(--ink-dim); font-weight:600;}
+.na-note{font-size:14px; color:var(--ink-dim); margin-top:6px; padding-left:2px; line-height:1.5;}
+
+.badge-summary{display:flex; gap:16px; flex-wrap:wrap;}
+.bsum-item{display:flex; align-items:center; gap:8px; font-size:14.5px; font-weight:700;}
+.bsum-item .n{font-size:19px; font-weight:800;}
+
+.trap-box{margin-top:12px; padding:10px 12px; border-radius:8px; font-size:14px; border:1.5px dashed var(--line-strong); color:var(--ink-dim);}
+.trap-box.solved{border-color:var(--ok); background:var(--ok-bg); color:var(--ok);}
+.trap-box.missed{border-color:var(--bad); background:var(--bad-bg); color:var(--bad); border-style:solid;}
+
+.plog{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px;}
+.plog li{font-size:14px; color:var(--ink-dim); border-left:3px solid var(--line-strong); padding-left:10px;}
+.plog li b{color:var(--ink);}
+
+/* ===== Footer ===== */
+.footer{margin-top:34px; border-top:2px solid var(--line); padding-top:18px;}
+.footer details{border:1.5px solid var(--line); border-radius:10px; margin-bottom:10px; background:#fff;}
+.footer summary{padding:12px 16px; font-weight:700; cursor:pointer; font-size:14.5px; list-style:none; display:flex; align-items:center; gap:8px;}
+.footer summary::-webkit-details-marker{display:none;}
+.footer summary:before{content:"▸"; font-size:14px; color:var(--ink-dim);}
+.footer details[open] summary:before{content:"▾";}
+.footer .fbody{padding:0 18px 18px;}
+.sys-box .fbody{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:14px; line-height:1.6; white-space:pre-wrap;}
+.handbuch-box .fbody{font-size:16px; line-height:1.65;}
+.handbuch-box .fbody h4{font-size:14.5px; margin:14px 0 4px;}
+.skript-box .fbody{font-size:16px; line-height:1.7;}
+.skript-box .regie{font-style:italic; color:var(--ink-dim); display:block; margin-top:2px;}
+.skript-box .step{margin-bottom:14px;}
+.footer-sig{font-size:14px; color:var(--ink-dim); margin-top:4px;}
+
+@media (min-width:901px){
+  .footer-triple{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;}
+  .footer-triple details{margin-bottom:0;}
+}
+
+/* ===== Beamer-Modus (vierstufig, K18) ===== */
+html.beamer{ --ink-dim:#3D4A5C; }
+html.beamer .card-stage .nfa-text{font-size:22px;}
+html.beamer .panel-head .p-name{font-size:44px;}
+html.beamer .h-title h1{font-size:26px;}
+html.beamer .bucket-btn{font-size:16px;}
+html.beamer .feedback{font-size:15px;}
+html.beamer .type-chip, html.beamer .subtag-row, html.beamer .persona-text{font-size:15px;}
+html.beamer .footer{display:none;}
+
+html.beamer-xl .card-stage .nfa-text{font-size:28px;}
+html.beamer-xl .panel-head .p-name{font-size:54px;}
+html.beamer-xl .h-title h1{font-size:30px;}
+html.beamer-xl .bucket-btn{font-size:18px;}
+html.beamer-xl .feedback{font-size:18px;}
+html.beamer-xl .type-chip, html.beamer-xl .subtag-row, html.beamer-xl .persona-text{font-size:18px;}
+
+html.beamer-xxl .card-stage .nfa-text{font-size:34px;}
+html.beamer-xxl .panel-head .p-name{font-size:64px;}
+html.beamer-xxl .h-title h1{font-size:36px;}
+html.beamer-xxl .bucket-btn{font-size:21px;}
+html.beamer-xxl .feedback{font-size:21px;}
+html.beamer-xxl .type-chip, html.beamer-xxl .subtag-row, html.beamer-xxl .persona-text{font-size:21px;}
+
+html.beamer .trainer-sig, html.beamer-xl .trainer-sig, html.beamer-xxl .trainer-sig{display:none;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div class="h-title">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <h1>Anforderungs-Board · ISO 25010 &amp; ISO 27001</h1>
+    <div class="h-sub">Fall: Self-Service-Kundenportal (Versicherer) — Anforderungsarten deklinieren</div>
+  </div>
+  <div class="h-tools">
+    <span class="trainer-sig">Michaela Kühn · IREB CPRE<br><a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a></span>
+    <button class="pill-btn reset-btn" id="resetBtn">↺ Zurücksetzen</button>
+    <button class="pill-btn beamer-btn" id="beamerBtn">☀ Beamer</button>
+  </div>
+</header>
+
+<div class="split">
+
+  <!-- ===== BOARD ===== -->
+  <section class="panel" id="boardPanel">
+    <div class="panel-head">
+      <h2 class="p-name">Anforderungs-Board</h2>
+      <span class="p-progress" id="progressLabel">Karte 1 / 17</span>
+    </div>
+
+    <div class="card-stage">
+      <div class="nfa-text" id="cardText"></div>
+    </div>
+    <div class="card-meta" id="cardMeta"></div>
+
+    <div class="bucket-grid">
+      <button class="bucket-btn bk-fa" data-type="fa">FA<small>Funktionale Anforderung</small></button>
+      <button class="bucket-btn bk-nfr" data-type="nfr">NFR<small>ISO 25010:2023</small></button>
+      <button class="bucket-btn bk-isms" data-type="isms">ISMS<small>ISO 27001:2022 Anhang A</small></button>
+      <button class="bucket-btn bk-norm" data-type="norm">Normvorgabe ⚖<small>Norm schreibt Mittel vor</small></button>
+    </div>
+
+    <div class="feedback" id="feedback">
+      <div class="fb-head" id="fbHead"></div>
+      <div class="persona-line">
+        <span class="persona-dot" id="fbDot"></span>
+        <div class="persona-text" id="fbText"></div>
+      </div>
+      <div class="subtag-row" id="fbSub"></div>
+    </div>
+
+    <div class="board-actions">
+      <button class="reveal-btn" id="revealBtn">Auflösen</button>
+      <div class="nav-btns">
+        <button class="nav-btn" id="prevBtn">← Zurück</button>
+        <button class="nav-btn primary" id="nextBtn">Weiter →</button>
+      </div>
+    </div>
+
+    <div class="dots" id="dots"></div>
+  </section>
+
+  <!-- ===== DASHBOARD ===== -->
+  <section class="panel" id="dashPanel">
+    <div class="panel-head">
+      <h2 class="p-name">Dashboard</h2>
+    </div>
+
+    <div class="dash-summary">
+      <div class="stat"><div class="num" id="statClassified">0/17</div><div class="lbl">klassifiziert</div></div>
+      <div class="stat"><div class="num" id="statFirstTry">0</div><div class="lbl">richtig beantwortet</div></div>
+      <div class="stat"><div class="num" id="statRevealed">0</div><div class="lbl">aufgelöst</div></div>
+    </div>
+
+    <div class="dash-block">
+      <h3>ISO/IEC 25010:2023 — Produktqualität (9 Hauptmerkmale)</h3>
+      <div class="dash-sub">Nur korrekt bzw. aufgelöst klassifizierte NFR-Karten dieses Falls.</div>
+      <div id="barsISO25010"></div>
+      <div class="na-note" id="na25010"></div>
+    </div>
+
+    <div class="dash-block">
+      <h3>ISO/IEC 27001:2022 — Anhang A (4 Themenfelder)</h3>
+      <div class="dash-sub">Organisatorisch (A.5) · Personenbezogen (A.6) · Physisch (A.7) · Technologisch (A.8)</div>
+      <div id="barsISO27001"></div>
+    </div>
+
+    <div class="dash-block">
+      <h3>⚖ Normvorgabe vs. risikobasierte Auswahl</h3>
+      <div class="badge-summary">
+        <span class="bsum-item"><span class="n" id="normCount">0</span> Normvorgabe erkannt</span>
+        <span class="bsum-item"><span class="n" id="ismsRiskCount">0</span> ISMS risikobasiert erkannt</span>
+      </div>
+      <div class="trap-box" id="trapBox">Falle noch offen: Karte „Zwei-Faktor-Authentifizierung" wirkt wie eine Normvorgabe — ist aber eine risikobasierte ISO-27001-Maßnahme (SoA).</div>
+    </div>
+
+    <div class="dash-block">
+      <h3>Persona-Log</h3>
+      <ul class="plog" id="plog"><li>Noch keine Karte bearbeitet.</li></ul>
+    </div>
+  </section>
+
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-triple">
+    <details class="sys-box">
+      <summary>🔧 Systemprompt</summary>
+      <div class="fbody">Rolle: Requirements-Engineering-Trainerin (IREB CPRE) für interaktive HTML-Trainingstools.
+Aufgabe: Lerntool zu ISO/IEC 25010:2023 und ISO/IEC 27001:2022 — Anforderungsarten deklinieren (FA / NFR nach 25010 / ISMS-Maßnahme nach 27001 / Normvorgabe), als Board mit Kartenklassifikation und Dashboard mit Attributauswertung.
+Kontext: Etablierter Fall „Self-Service-Kundenportal" (Versicherer), 5 feste Personas (Ela/Knut/Sarah/Petra/Bachmeier), Master-Prompt v4.3 + Qualitätskriterien-Checkliste v1.6 als Leitplanken.
+Format: Single-File HTML, offline, Split-Screen 40/60, Beamer-Modus 4-stufig, Footer mit Systemprompt/Handbuch/Vortrags-Skript.
+Eingrenzung: Keine erfundenen Normwerte — jede Norm-/Gesetzesreferenz mit Status und Datum; ISO 27001 bewusst als risikobasiert dargestellt, nicht als Mittel-Vorgabe.</div>
+    </details>
+
+    <details class="handbuch-box">
+      <summary>📖 Handbuch</summary>
+      <div class="fbody">
+        <h4>Framework</h4>
+        RTF-Muster (Rolle · Task · Format), ergänzt um Kontext und Eingrenzung — die klassischen 5 PromptSchule-Dimensionen.
+        <h4>5 Dimensionen</h4>
+        <b>Rolle:</b> RE-Trainerin, Zielgruppe Trainerin selbst als Entwicklerin.<br>
+        <b>Aufgabe:</b> Zwei Normen (25010 Produktqualität, 27001 Managementsystem) an einem Fall unterscheidbar machen.<br>
+        <b>Kontext:</b> Bestehendes Tool-Ökosystem, fester Fall, feste Personas.<br>
+        <b>Format:</b> Board (Klassifikation, eine Karte nach der anderen) + Dashboard (Live-Auswertung).<br>
+        <b>Eingrenzung:</b> 17 Karten, 4 Typen, keine Drag-and-Drop-Mechanik (Touch-Robustheit vor Spielerei). Ein Klassifikationsversuch pro Karte — die Auflösung erscheint sofort danach, richtig oder falsch, statt ein zweites Raten zu verlangen.
+        <h4>Zentraler Lernhinweis</h4>
+        ISO 25010 beschreibt <i>Produkteigenschaften</i> (was die Software leisten muss), ISO 27001 beschreibt ein <i>Managementsystem</i> (wie Sicherheit organisatorisch gesteuert wird) — beide sind keine Konkurrenz, sondern unterschiedliche Ebenen. Und: ISO 27001 schreibt keine konkreten Mittel vor, sondern verlangt eine risikobasierte Auswahl über die Erklärung zur Anwendbarkeit (SoA) — die 2FA-Falle macht diesen Unterschied erlebbar.
+        <h4>Nachbau-Tipp</h4>
+        Eigene Fälle brauchen: 3 FA + je 2–3 Karten pro Typ, mindestens eine bewusste „Falle" (Norm vs. Risiko), plus explizite Aussagen, welche der 9 ISO-25010-Merkmale im Fall absichtlich nicht vorkommen.
+      </div>
+    </details>
+
+    <details class="skript-box">
+      <summary>🎤 Vortrags-Skript</summary>
+      <div class="fbody" id="skriptBody">
+        <div class="step"><b>1. Opener</b><span class="regie">(vor dem ersten Klick)</span><br>„Zwei Normen, die ständig verwechselt werden: ISO 25010 und ISO 27001. Die eine beschreibt ein Produkt, die andere ein Managementsystem. Wir sortieren das jetzt an 17 echten Anforderungen aus einem Kundenportal-Fall."</div>
+        <div class="step"><b>2. Erste Karte — Login</b><span class="regie">(Klick auf „FA")</span><br>„Kundin loggt sich ein — reines Systemverhalten. Funktional. Kein Qualitätsmaß, keine Norm dahinter."</div>
+        <div class="step"><b>3. Eine NFR-Karte — Performance</b><span class="regie">(zur Ladezeit-Karte navigieren, „NFR" klicken)</span><br>„Unter zwei Sekunden bei 5.000 Nutzerinnen — das ist eine Qualitätseigenschaft des Produkts. ISO 25010:2023, Performance Efficiency."</div>
+        <div class="step"><b>4. Eine ISMS-Karte — Schulung</b><span class="regie">(zur Schulungs-Karte navigieren, „ISMS" klicken)</span><br>„Mitarbeiterschulung ist keine Software-Eigenschaft — das kann eine Software gar nicht leisten. Das ist eine organisatorische Maßnahme nach ISO 27001 Anhang A."</div>
+        <div class="step"><b>5. Die Falle — Zwei-Faktor-Authentifizierung</b><span class="regie">(zur 2FA-Karte navigieren, Publikum raten lassen, dann bewusst „Normvorgabe ⚖" klicken — die Auflösung erscheint sofort)</span><br>„Sieht nach Normvorgabe aus, oder? Ist es aber nicht — die sofortige Auflösung zeigt: richtig ist ISMS. 2FA wurde risikobasiert gewählt, nicht weil ein Gesetz es für dieses Portal zwingend vorschreibt. Genau diesen Unterschied müssen Sie als RE-Professional erklären können."</div>
+        <div class="step"><b>6. Eine echte Normvorgabe — Pseudonymisierung</b><span class="regie">(zur DSGVO-Karte navigieren, „Normvorgabe ⚖" klicken)</span><br>„Hier ist es umgekehrt: Die DSGVO nennt das Mittel selbst — Pseudonymisierung, Art. 32 Abs. 1 lit. a. Kein Ermessen."</div>
+        <div class="step"><b>7. Zum Dashboard wechseln</b><span class="regie">(Blick nach rechts)</span><br>„Und hier live die Auswertung: welche der neun 25010-Merkmale sind in diesem Fall abgedeckt — und welche bewusst nicht, weil sie hier fachlich nicht einschlägig sind."</div>
+        <div class="step"><b>8. Beamer-Modus zeigen</b><span class="regie">(Klick auf „☀ Beamer")</span><br>„Für die letzte Reihe: ein Klick, alles wird größer."</div>
+        <div class="step"><b>9. Abschluss</b><br>„Eine Anforderung, vier mögliche Schubladen — und die gefährlichste Verwechslung ist nicht FA gegen NFR, sondern Normvorgabe gegen risikobasierte ISMS-Maßnahme."</div>
+        <p><b>Allgemeine Regie-Hinweise:</b> Nicht mit der Falle (Schritt 5) beginnen — erst FA/NFR/ISMS sauber etablieren, dann die Falle als Höhepunkt setzen. Zeitbudget: 8–10 Minuten für einen kompakten Durchlauf. Nicht zuerst „ISO 25010" sagen — erst den Fall zeigen, dann die Norm benennen.</p>
+      </div>
+    </details>
+  </div>
+  <div class="footer-sig">Referenzierte Normen: ISO/IEC 25010:2023 (in Kraft seit 11/2023) · ISO/IEC 27001:2022 Anhang A (in Kraft) · DSGVO Art. 32 Abs. 1 lit. a i. V. m. Art. 9 (in Kraft) · § 147 Abs. 3 AO / § 14b Abs. 1 UStG (in Kraft seit 01.01.2025)<br>
+  Zuletzt geprüft: 12.07.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</div>
+</footer>
+
+</div>
+
+<script>
+/* ===================== Daten ===================== */
+var ISO25010 = {
+  FS:{label:"Funktionale Eignung", en:"Functional Suitability"},
+  PE:{label:"Performanz-Effizienz", en:"Performance Efficiency"},
+  CO:{label:"Kompatibilität", en:"Compatibility"},
+  IC:{label:"Interaktionsfähigkeit", en:"Interaction Capability"},
+  RE:{label:"Zuverlässigkeit", en:"Reliability"},
+  SE:{label:"Sicherheit (Security)", en:"Security"},
+  MA:{label:"Wartbarkeit", en:"Maintainability"},
+  FL:{label:"Flexibilität", en:"Flexibility"},
+  SA:{label:"Safety (Gefahrenfreiheit)", en:"Safety"}
+};
+var ISO25010_ORDER = ["FS","PE","CO","IC","RE","SE","MA","FL","SA"];
+
+var ANNEXA = {
+  ORG:{label:"Organisatorisch", en:"A.5 · 37 Controls"},
+  PEO:{label:"Personenbezogen", en:"A.6 · 8 Controls"},
+  PHY:{label:"Physisch", en:"A.7 · 14 Controls"},
+  TEC:{label:"Technologisch", en:"A.8 · 34 Controls"}
+};
+var ANNEXA_ORDER = ["ORG","PEO","PHY","TEC"];
+
+var PERSONA = {
+  ela:{name:"Ela", role:"Projektleitung", color:"var(--c-ela)"},
+  knut:{name:"Knut", role:"Entwicklung", color:"var(--c-knut)"},
+  sarah:{name:"Sarah", role:"Vertrieb", color:"var(--c-sarah)"},
+  petra:{name:"Petra", role:"QM", color:"var(--c-petra)"},
+  bach:{name:"Herr Bachmeier", role:"Geschäftsführung", color:"var(--c-bach)"}
+};
+
+var CARDS = [
+  {id:"c1", type:"fa", text:"Kundin meldet sich mit E-Mail-Adresse und Passwort im Kundenportal an.",
+   persona:"ela", explain:"Reines Systemverhalten: Wer darf was tun? Kein Qualitätsmaß, keine Norm — eine klassische funktionale Anforderung nach IREB."},
+  {id:"c2", type:"fa", text:"Kundin lädt ihre aktuelle Rechnung als PDF herunter.",
+   persona:"ela", explain:"Beschreibt eine Systemfunktion (Download), kein Qualitätsmerkmal. Funktional."},
+  {id:"c3", type:"fa", text:"Kundin reicht eine Schadensmeldung online ein und sieht den aktuellen Bearbeitungsstatus.",
+   persona:"sarah", explain:"Aus Vertriebssicht das Kernversprechen ans Kundenerlebnis — technisch bleibt es eine Funktion: Einreichen + Status anzeigen."},
+
+  {id:"c4", type:"nfr", sub:"PE", subLabel:"Time Behaviour",
+   text:"Die Rechnungsübersicht lädt in unter 2 Sekunden, auch bei 5.000 gleichzeitigen Zugriffen.",
+   persona:"knut", explain:"Eine Zeitschwelle unter Last — klassische Performance Efficiency (Time Behaviour) nach ISO/IEC 25010:2023."},
+  {id:"c5", type:"nfr", sub:"IC", subLabel:"Accessibility",
+   text:"Das Portal ist für Screenreader-Nutzerinnen vollständig bedienbar (WCAG 2.2 AA).",
+   persona:"knut", explain:"Zugänglichkeit ist eine Unterausprägung von Interaction Capability (vormals „Usability“) — konkret: Accessibility."},
+  {id:"c6", type:"nfr", sub:"MA", subLabel:"Modularity",
+   text:"Neue Versicherungssparten lassen sich als Kachel ergänzen, ohne den Kern des Portals zu ändern.",
+   persona:"knut", explain:"Neue Sparte ergänzen, ohne den Kern zu ändern — das ist Modularität, eine Unterausprägung von Maintainability."},
+  {id:"c7", type:"nfr", sub:"RE", subLabel:"Recoverability",
+   text:"Bei Ausfall des Rechenzentrums schaltet das Portal innerhalb von 4 Stunden auf ein Ausweichsystem um (RTO 4 h).",
+   persona:"knut", explain:"Eine definierte Wiederherstellungszeit (RTO) ist Reliability — konkret die Unterausprägung Recoverability."},
+  {id:"c8", type:"nfr", sub:"RE", subLabel:"Fault Tolerance",
+   text:"Eine fehlerhafte Eingabe im Schadensformular darf nicht zum Abbruch der gesamten Sitzung führen.",
+   persona:"knut", explain:"Fehlertoleranz bei fehlerhafter Eingabe — ebenfalls Reliability, hier die Unterausprägung Fault Tolerance."},
+  {id:"c9", type:"nfr", sub:"SE", subLabel:"Confidentiality",
+   text:"Kundendaten sind im Portal ausschließlich für Sachbearbeitende mit passender Berechtigung sichtbar.",
+   persona:"knut", explain:"Vertraulichkeit von Kundendaten ist eine Produkteigenschaft — Security nach ISO 25010, Unterausprägung Confidentiality."},
+  {id:"c10", type:"nfr", sub:"SE", subLabel:"Integrity",
+   text:"Änderungen an einer Schadensmeldung sind nachträglich nicht mehr unbemerkt manipulierbar.",
+   persona:"knut", explain:"Nachträgliche Unveränderbarkeit ist Integrity — ebenfalls Security nach ISO 25010, nicht zu verwechseln mit dem Managementsystem nach 27001."},
+
+  {id:"c11", type:"isms", sub:"ORG", control:"Anhang A 5.15 / 5.18",
+   text:"Zugriffsrechte auf das Kundenportal-Backend werden nach dem Prinzip der geringsten Rechte vergeben und regelmäßig überprüft.",
+   persona:"petra", explain:"Rechtevergabe und -überprüfung sind organisatorische ISMS-Maßnahmen, keine Produkteigenschaft — Anhang A 5.15/5.18, Themenfeld Organisatorisch."},
+  {id:"c12", type:"isms", sub:"PEO", control:"Anhang A 6.3",
+   text:"Mitarbeitende des Service-Centers werden jährlich zu Phishing und Social Engineering geschult.",
+   persona:"petra", explain:"Schulung ist keine Software-Eigenschaft, sondern eine personenbezogene ISMS-Maßnahme — Anhang A 6.3."},
+  {id:"c13", type:"isms", sub:"PHY", control:"Anhang A 7.2",
+   text:"Die Serverräume des Rechenzentrums-Dienstleisters sind durch protokollierte Zutrittskontrolle gesichert.",
+   persona:"petra", explain:"Physischer Zutrittsschutz zum Rechenzentrum betrifft die Organisation des Dienstleisters, nicht das Portal selbst — Anhang A 7.2, Themenfeld Physisch."},
+  {id:"c14", type:"isms", sub:"TEC", control:"Anhang A 8.5", trap:true,
+   text:"Die Anmeldung am Kundenportal wird zusätzlich durch Zwei-Faktor-Authentifizierung abgesichert.",
+   persona:"petra", explain:"Vorsicht Falle: 2FA klingt nach Normvorgabe — ist hier aber eine risikobasierte Maßnahme aus der Erklärung zur Anwendbarkeit (SoA), keine gesetzliche Pflicht für dieses Portal. Anhang A 8.5, Themenfeld Technologisch."},
+  {id:"c15", type:"isms", sub:"TEC", control:"Anhang A 8.15",
+   text:"Sicherheitsrelevante Ereignisse im Portal werden protokolliert und 12 Monate revisionssicher aufbewahrt.",
+   persona:"petra", explain:"Protokollierung mit Aufbewahrungsfrist ist eine technologische ISMS-Maßnahme — Anhang A 8.15."},
+
+  {id:"c16", type:"norm", citation:"DSGVO Art. 32 Abs. 1 lit. a i. V. m. Art. 9 · in Kraft",
+   text:"Gesundheitsbezogene Angaben in der Unfall-Schadensmeldung (Art. 9 DSGVO) werden pseudonymisiert gespeichert.",
+   persona:"bach", explain:"Hier schreibt die DSGVO selbst das Mittel vor: Art. 32 Abs. 1 lit. a nennt Pseudonymisierung als Beispielmaßnahme, hier für besondere Datenkategorien nach Art. 9. Kein Ermessensspielraum wie bei ISO 27001 — Normvorgabe."},
+  {id:"c17", type:"norm", citation:"§ 147 Abs. 3 AO / § 14b Abs. 1 UStG · in Kraft seit 01.01.2025",
+   text:"Rechnungsdaten werden vor der Löschung eines Kundenkontos mindestens 8 Jahre aufbewahrt.",
+   persona:"bach", explain:"Die Aufbewahrungsfrist von 8 Jahren steht so im Gesetz (§ 147 Abs. 3 AO, § 14b Abs. 1 UStG, seit dem Vierten Bürokratieentlastungsgesetz zum 01.01.2025 von 10 auf 8 Jahre verkürzt) — kein Design-Ermessen, sondern eine konkrete gesetzliche Vorgabe."}
+];
+
+var TYPE_LABEL = {fa:"FA · Funktionale Anforderung", nfr:"NFR · ISO 25010", isms:"ISMS · ISO 27001", norm:"Normvorgabe ⚖"};
+var TYPE_CHIP = {fa:"chip-fa", nfr:"chip-nfr", isms:"chip-isms", norm:"chip-norm"};
+
+/* ===================== State ===================== */
+var state = {};
+CARDS.forEach(function(c){ state[c.id] = {status:"unsorted"}; });
+var currentIndex = 0;
+
+/* ===================== Render: Karte ===================== */
+function currentCard(){ return CARDS[currentIndex]; }
+
+function renderCard(){
+  var c = currentCard();
+  var s = state[c.id];
+  document.getElementById("progressLabel").textContent = "Karte " + (currentIndex+1) + " / " + CARDS.length;
+  document.getElementById("cardText").textContent = c.text;
+
+  var metaEl = document.getElementById("cardMeta");
+  metaEl.innerHTML = "";
+  if (s.status === "answered" || s.status === "revealed"){
+    var chip = document.createElement("span");
+    chip.className = "type-chip " + TYPE_CHIP[c.type];
+    chip.textContent = TYPE_LABEL[c.type];
+    metaEl.appendChild(chip);
+  }
+
+  var fb = document.getElementById("feedback");
+  if (s.status === "answered" || s.status === "revealed"){
+    showFeedback(c, s);
+  } else {
+    fb.className = "feedback";
+  }
+
+  document.querySelectorAll(".bucket-btn").forEach(function(btn){
+    btn.classList.remove("chosen-correct", "chosen-wrong", "is-correct-hint");
+    btn.disabled = false;
+    var t = btn.getAttribute("data-type");
+    if (s.status === "answered"){
+      btn.disabled = true;
+      if (t === c.type && s.correct){ btn.classList.add("chosen-correct"); }
+      else if (t === c.type && !s.correct){ btn.classList.add("is-correct-hint"); }
+      else if (t === s.chosenType && !s.correct){ btn.classList.add("chosen-wrong"); }
+    } else if (s.status === "revealed"){
+      btn.disabled = true;
+      if (t === c.type){ btn.classList.add("is-correct-hint"); }
+    }
+  });
+  document.getElementById("revealBtn").style.display = (s.status === "unsorted") ? "" : "none";
+
+  document.getElementById("prevBtn").disabled = (currentIndex === 0);
+  document.getElementById("nextBtn").disabled = (currentIndex === CARDS.length - 1);
+  renderDots();
+}
+
+function showFeedback(c, s){
+  var fb = document.getElementById("feedback");
+  var isOk = (s.status === "revealed") ? true : s.correct;
+  fb.className = "feedback show " + (isOk ? "ok" : "bad");
+  if (s.status === "revealed"){
+    document.getElementById("fbHead").textContent = "↷ Aufgelöst: " + TYPE_LABEL[c.type];
+  } else if (s.correct){
+    document.getElementById("fbHead").textContent = "✓ Richtig: " + TYPE_LABEL[c.type];
+  } else {
+    document.getElementById("fbHead").textContent = "✗ Gewählt: " + TYPE_LABEL[s.chosenType] + " — richtig ist: " + TYPE_LABEL[c.type];
+  }
+  var p = PERSONA[c.persona];
+  document.getElementById("fbDot").style.background = p.color;
+  document.getElementById("fbText").innerHTML = "<b>" + p.name + " (" + p.role + "):</b> " + c.explain;
+  var subEl = document.getElementById("fbSub");
+  if (c.type === "nfr"){ subEl.textContent = "ISO/IEC 25010:2023 — " + ISO25010[c.sub].label + " (" + c.subLabel + ")"; }
+  else if (c.type === "isms"){ subEl.textContent = "ISO/IEC 27001:2022 — " + ANNEXA[c.sub].label + " · " + c.control; }
+  else if (c.type === "norm"){ subEl.textContent = c.citation; }
+  else { subEl.textContent = "IREB — funktionale Anforderung"; }
+}
+
+function classify(type){
+  var c = currentCard();
+  var s = state[c.id];
+  if (s.status !== "unsorted") return;
+  s.status = "answered";
+  s.chosenType = type;
+  s.correct = (type === c.type);
+  var btn = document.querySelector('.bucket-btn[data-type="' + type + '"]');
+  btn.classList.add(s.correct ? "correct-flash" : "wrong-flash");
+  setTimeout(function(){ btn.classList.remove("correct-flash", "wrong-flash"); }, 500);
+  logPersona(c);
+  renderCard();
+  renderDashboard();
+}
+
+function reveal(){
+  var c = currentCard();
+  var s = state[c.id];
+  if (s.status !== "unsorted") return;
+  s.status = "revealed";
+  logPersona(c);
+  renderCard();
+  renderDashboard();
+}
+
+function logPersona(c){
+  var plog = document.getElementById("plog");
+  if (plog.children.length === 1 && plog.children[0].textContent.indexOf("Noch keine") === 0){
+    plog.innerHTML = "";
+  }
+  var li = document.createElement("li");
+  var p = PERSONA[c.persona];
+  li.style.borderLeftColor = p.color;
+  li.innerHTML = "<b>" + p.name + ":</b> " + c.explain;
+  plog.insertBefore(li, plog.firstChild);
+  while (plog.children.length > 4){ plog.removeChild(plog.lastChild); }
+}
+
+/* ===================== Dots / Navigation ===================== */
+function renderDots(){
+  var wrap = document.getElementById("dots");
+  wrap.innerHTML = "";
+  CARDS.forEach(function(c, i){
+    var s = state[c.id];
+    var d = document.createElement("button");
+    var dotState = "unsorted";
+    if (s.status === "answered") { dotState = s.correct ? "correct" : "wrong"; }
+    else if (s.status === "revealed") { dotState = "revealed"; }
+    var d_class = "dot " + dotState + (i === currentIndex ? " current" : "");
+    d.className = d_class;
+    d.setAttribute("aria-label", "Karte " + (i+1));
+    d.addEventListener("click", function(){ currentIndex = i; renderCard(); });
+    wrap.appendChild(d);
+  });
+}
+
+function goPrev(){ if (currentIndex > 0){ currentIndex--; renderCard(); } }
+function goNext(){ if (currentIndex < CARDS.length - 1){ currentIndex++; renderCard(); } }
+
+/* ===================== Dashboard ===================== */
+function renderDashboard(){
+  var classifiedCount = 0, correctCount = 0, revealedCount = 0;
+  var char25010 = {}; ISO25010_ORDER.forEach(function(k){ char25010[k] = 0; });
+  var annex27001 = {}; ANNEXA_ORDER.forEach(function(k){ annex27001[k] = 0; });
+  var normCount = 0, ismsRiskCount = 0;
+  var trapCard = CARDS.filter(function(c){ return c.trap; })[0];
+  var trapState = state[trapCard.id];
+
+  CARDS.forEach(function(c){
+    var s = state[c.id];
+    if (s.status === "answered" || s.status === "revealed"){
+      classifiedCount++;
+      if (s.status === "revealed") revealedCount++;
+      if (s.status === "answered" && s.correct) correctCount++;
+      if (c.type === "nfr") char25010[c.sub]++;
+      if (c.type === "isms"){ annex27001[c.sub]++; if (c.trap && s.status === "answered" && s.correct) { ismsRiskCount++; } }
+      if (c.type === "norm") normCount++;
+    }
+  });
+
+  document.getElementById("statClassified").textContent = classifiedCount + "/" + CARDS.length;
+  document.getElementById("statFirstTry").textContent = correctCount;
+  document.getElementById("statRevealed").textContent = revealedCount;
+
+  var maxNfr = Math.max(1, Math.max.apply(null, ISO25010_ORDER.map(function(k){ return char25010[k]; })));
+  var bars1 = "";
+  var covered = [];
+  ISO25010_ORDER.forEach(function(k){
+    var n = char25010[k];
+    if (n > 0) covered.push(k);
+    bars1 += '<div class="bar-row' + (n===0?' empty':'') + '"><div class="bar-label">' + ISO25010[k].label + '<small>' + ISO25010[k].en + '</small></div>' +
+      '<div class="bar-track"><div class="bar-fill nfr" style="width:' + (n===0?0:(n/maxNfr*100)) + '%"></div></div>' +
+      '<div class="bar-count">' + n + '</div></div>';
+  });
+  document.getElementById("barsISO25010").innerHTML = bars1;
+  var uncovered = ISO25010_ORDER.filter(function(k){ return covered.indexOf(k) === -1; });
+  var notes = {
+    FS:"Funktionale Eignung bewertet die Gesamtheit der FA-Karten (Vollständigkeit/Korrektheit) — kein Einzelkarten-Merkmal.",
+    CO:"Kompatibilität: in diesem Case kein Fremdsystem-Interop-Requirement modelliert.",
+    FL:"Flexibilität (Anpassung an neue Umgebungen/Hardware): in diesem reinen Web-Case nicht separat abgebildet.",
+    SA:"Safety (Gefahrenfreiheit): für ein Versicherungs-Kundenportal ohne physisches Gefährdungspotenzial hier nicht einschlägig."
+  };
+  document.getElementById("na25010").innerHTML = uncovered.length ? ("<b>Bewusst nicht abgedeckt:</b><br>" + uncovered.map(function(k){ return "· " + ISO25010[k].label + " — " + (notes[k]||""); }).join("<br>")) : "";
+
+  var maxIsms = Math.max(1, Math.max.apply(null, ANNEXA_ORDER.map(function(k){ return annex27001[k]; })));
+  var bars2 = "";
+  ANNEXA_ORDER.forEach(function(k){
+    var n = annex27001[k];
+    bars2 += '<div class="bar-row' + (n===0?' empty':'') + '"><div class="bar-label">' + ANNEXA[k].label + '<small>' + ANNEXA[k].en + '</small></div>' +
+      '<div class="bar-track"><div class="bar-fill isms" style="width:' + (n===0?0:(n/maxIsms*100)) + '%"></div></div>' +
+      '<div class="bar-count">' + n + '</div></div>';
+  });
+  document.getElementById("barsISO27001").innerHTML = bars2;
+
+  document.getElementById("normCount").textContent = normCount;
+  document.getElementById("ismsRiskCount").textContent = ismsRiskCount;
+  var trapBox = document.getElementById("trapBox");
+  if (trapState.status === "answered" && trapState.correct){
+    trapBox.className = "trap-box solved";
+    trapBox.textContent = "Falle erkannt: 2FA korrekt als risikobasierte ISMS-Maßnahme (nicht als Normvorgabe) eingeordnet.";
+  } else if (trapState.status === "answered" && !trapState.correct){
+    trapBox.className = "trap-box missed";
+    trapBox.textContent = "Falle nicht erkannt — 2FA wurde als Normvorgabe eingeordnet. Richtig ist: risikobasierte ISMS-Maßnahme (Anhang A 8.5, per SoA gewählt, nicht gesetzlich erzwungen).";
+  } else if (trapState.status === "revealed"){
+    trapBox.className = "trap-box";
+    trapBox.textContent = 'Karte aufgelöst, ohne raten zu lassen — richtig ist ISMS (risikobasiert), nicht Normvorgabe.';
+  } else {
+    trapBox.className = "trap-box";
+    trapBox.textContent = 'Falle noch offen: Karte „Zwei-Faktor-Authentifizierung" wirkt wie eine Normvorgabe — ist aber eine risikobasierte ISO-27001-Maßnahme (SoA).';
+  }
+}
+
+/* ===================== Reset ===================== */
+function resetAll(){
+  CARDS.forEach(function(c){ state[c.id] = {status:"unsorted"}; });
+  currentIndex = 0;
+  document.getElementById("plog").innerHTML = "<li>Noch keine Karte bearbeitet.</li>";
+  renderCard();
+  renderDashboard();
+}
+
+/* ===================== Beamer-Modus (K18, kanonisches Muster) ===================== */
+var BEAMER_LEVELS = [
+  { classes: [],                                    label: '☀ Beamer' },
+  { classes: ['beamer'],                            label: '☀ Beamer XL' },
+  { classes: ['beamer', 'beamer-xl'],               label: '☀ Beamer XXL' },
+  { classes: ['beamer', 'beamer-xl', 'beamer-xxl'], label: '☀ Normal' }
+];
+var beamerLevel = 0;
+document.getElementById('beamerBtn').addEventListener('click', function(){
+  beamerLevel = (beamerLevel + 1) % 4;
+  document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+  BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+  this.textContent = BEAMER_LEVELS[beamerLevel].label;
+  this.classList.toggle('active', beamerLevel !== 0);
+});
+
+/* ===================== Events ===================== */
+document.querySelectorAll(".bucket-btn").forEach(function(btn){
+  btn.addEventListener("click", function(){ classify(btn.getAttribute("data-type")); });
+});
+document.getElementById("revealBtn").addEventListener("click", reveal);
+document.getElementById("prevBtn").addEventListener("click", goPrev);
+document.getElementById("nextBtn").addEventListener("click", goNext);
+document.getElementById("resetBtn").addEventListener("click", function(){
+  if (window.confirm("Board wirklich zurücksetzen? Alle Klassifikationen gehen verloren.")){ resetAll(); }
+});
+
+/* ===================== Init ===================== */
+renderCard();
+renderDashboard();
+</script>
+</body>
+</html>
