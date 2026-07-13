@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Priorisierungslabor</title>
+<style>
+  :root{
+    --bg:#1b1410; --panel:#2a2018; --panel2:#352819;
+    --gold:#c9a04e; --gold2:#e8c47a; --cream:#f3ead9;
+    --must:#a4392f; --should:#c97b2c; --could:#5c8a5c; --wont:#5a5249;
+    --line:#4a3826; --fit2:#5c8a5c; --fit1:#c97b2c; --fit0:#5a4a3a;
+    --core-size:16px; --sec-size:14px; --head-size:19px;
+    color-scheme:dark;
+  }
+  html{color-scheme:dark;}
+  html.beamer1{ --core-size:20px; --sec-size:15px; --head-size:24px; }
+  html.beamer2{ --core-size:24px; --sec-size:16px; --head-size:28px; }
+  html.beamer3{ --core-size:28px; --sec-size:18px; --head-size:32px; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:'Segoe UI',Arial,sans-serif; background:var(--bg); color:var(--cream); min-height:100vh; background-image: radial-gradient(circle at 20% 10%, #2a1f15 0%, #1b1410 60%);}
+  header{padding:20px 18px 10px; border-bottom:2px solid var(--line); display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap;}
+  header h1{margin:0 0 4px; font-size:22px; color:var(--gold2);}
+  header p{margin:0; color:#cbb89a; font-size:var(--sec-size); line-height:1.4;}
+  .beamer-btn{background:transparent; border:1.5px solid var(--gold); color:var(--gold2); font-size:var(--sec-size); padding:9px 16px; border-radius:999px; cursor:pointer; white-space:nowrap;}
+  html.beamer1 .beamer-btn, html.beamer2 .beamer-btn, html.beamer3 .beamer-btn{background:var(--gold); color:#241a0f; font-weight:700; border-color:var(--gold);}
+  .header-right{display:flex; flex-direction:column; align-items:flex-end; gap:8px;}
+  .trainer-sig{font-size:var(--sec-size); color:#b59c79; text-align:right;}
+  .trainer-sig a{color:var(--gold2); text-decoration:none;}
+  .trainer-sig a:hover{text-decoration:underline;}
+  html.beamer1 .trainer-sig, html.beamer2 .trainer-sig, html.beamer3 .trainer-sig{display:none;}
+  .back-link{font-size:var(--sec-size); font-weight:600; color:var(--gold2); text-decoration:none; display:inline-block; margin-bottom:8px;}
+  .back-link:hover{text-decoration:underline;}
+  html.beamer1 .back-link, html.beamer2 .back-link, html.beamer3 .back-link{display:none;}
+  nav{display:flex; gap:6px; padding:12px 18px; flex-wrap:wrap; border-bottom:1px solid var(--line); background:#221a13;}
+  nav button{background:var(--panel); color:var(--cream); border:1px solid var(--line); padding:8px 11px; border-radius:6px; cursor:pointer; font-size:var(--sec-size);}
+  nav button.active{background:var(--gold); color:#241a0f; font-weight:600; border-color:var(--gold);}
+  main{padding:20px 18px 60px; max-width:1040px; margin:0 auto;}
+  section{display:none;} section.active{display:block;}
+  h2{color:var(--gold2); border-bottom:1px solid var(--line); padding-bottom:8px; margin-top:0; font-size:var(--head-size);}
+  h3.sub{color:var(--gold2); font-size:15px; margin:22px 0 10px;}
+  .intro{color:#d8c9ae; font-size:var(--sec-size); margin-bottom:16px; line-height:1.5;}
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; margin-bottom:16px;}
+  button.primary{background:var(--gold); color:#241a0f; border:none; padding:10px 18px; border-radius:6px; font-weight:600; cursor:pointer; font-size:14px;}
+  button.secondary{background:transparent; color:var(--gold2); border:1px solid var(--gold); padding:9px 16px; border-radius:6px; cursor:pointer; font-size:var(--sec-size);}
+  /* journey */
+  .case-pick{display:flex; flex-direction:column; gap:12px; margin-bottom:10px;}
+  .case-pick-card{background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:16px; cursor:pointer; display:flex; gap:14px; align-items:center;}
+  .case-pick-card:hover{border-color:var(--gold); background:#40331f;}
+  .case-icon{font-size:30px; flex-shrink:0;}
+  .case-pick-card h3{margin:0 0 3px; color:var(--gold2); font-size:16px;}
+  .case-pick-card p{margin:0; font-size:var(--sec-size); color:#cbb89a; line-height:1.4;}
+  .progress-dots{display:flex; gap:5px; flex-wrap:wrap; margin-bottom:14px;}
+  .pdot{padding:4px 9px; border-radius:12px; font-size:var(--sec-size); background:var(--panel2); border:1px solid var(--line); color:#9a8a72;}
+  .pdot.done{background:var(--fit2); color:#fff; border-color:var(--fit2);}
+  .pdot.cur{background:var(--gold); color:#241a0f; border-color:var(--gold); font-weight:700;}
+  .level-badge{display:inline-block; background:var(--gold); color:#241a0f; font-weight:700; font-size:var(--sec-size); padding:3px 10px; border-radius:12px; margin-bottom:10px;}
+  .artefakt-box{background:#241a0f; border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:6px; padding:12px; font-size:var(--core-size); line-height:1.55; margin-bottom:6px;}
+  .rolle-line{font-size:var(--sec-size); color:#b59c79; margin-bottom:14px;}
+  .method-q{font-size:var(--sec-size); margin-bottom:8px; color:var(--gold2); font-weight:600;}
+  .method-opts{display:flex; flex-wrap:wrap; gap:8px;}
+  .method-opts button{flex:1; min-width:130px; padding:11px 8px; border-radius:6px; border:1px solid var(--line); background:#2a2018; color:var(--cream); cursor:pointer; font-size:var(--sec-size);}
+  .method-opts button:disabled{cursor:default;}
+  .method-opts button.correct{background:var(--fit2); border-color:var(--fit2); color:#fff;}
+  .method-opts button.wrong{background:var(--must); border-color:var(--must); color:#fff;}
+  #hintLine{font-size:var(--sec-size); color:var(--should); margin-top:10px; min-height:16px;}
+  .applied-box{background:#2e3f25; border:1px solid var(--fit2); border-radius:6px; padding:13px; font-size:var(--core-size); line-height:1.55; margin-top:14px; display:none;}
+  .applied-box.shown{display:block;}
+  .applied-box b{color:var(--gold2);}
+  .summary-table{width:100%; border-collapse:collapse; font-size:var(--sec-size); margin-top:10px;}
+  .summary-table th,.summary-table td{border:1px solid var(--line); padding:8px 7px; text-align:left; vertical-align:top;}
+  .summary-table th{background:#241a0f; color:var(--gold2);}
+  .summary-table td.m{color:var(--gold2); font-weight:600; white-space:nowrap;}
+  .big-score{font-size:30px; color:var(--gold2); font-weight:700;}
+  /* matrix-tab */
+  .chain{display:flex; flex-direction:column; gap:4px; margin-bottom:8px;}
+  .chain-item{display:flex; cursor:pointer;}
+  .chain-bar{border-radius:6px; padding:9px 12px; border:1px solid var(--line); background:var(--panel2); flex:1; display:flex; justify-content:space-between; align-items:center; gap:10px; transition:.15s;}
+  .chain-item:hover .chain-bar, .chain-item.active .chain-bar{border-color:var(--gold); background:#40331f;}
+  .chain-name{font-weight:600; font-size:var(--sec-size); color:var(--cream);}
+  .chain-ebene{font-size:var(--sec-size); color:#b59c79; text-align:right;}
+  .chain-arrow{text-align:center; color:#6e5c40; font-size:var(--sec-size);}
+  .indent-0{margin-left:0;} .indent-1{margin-left:18px;} .indent-2{margin-left:36px;}
+  .indent-3{margin-left:54px;} .indent-4{margin-left:72px;}
+  .detail-box{background:#241a0f; border:1px solid var(--gold); border-radius:8px; padding:14px; margin-top:12px; display:none;}
+  .detail-box.shown{display:block;}
+  .detail-box h4{margin:0 0 6px; color:var(--gold2); font-size:15px;}
+  .method-pills{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0;}
+  .pill{padding:4px 10px; border-radius:13px; font-size:var(--sec-size); border:1px solid var(--line);}
+  .pill.core{background:var(--fit2); color:#fff; border-color:var(--fit2);}
+  .pill.cond{background:var(--fit1); color:#fff; border-color:var(--fit1);}
+  .scroll-x{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  table.fit{border-collapse:collapse; font-size:var(--sec-size); min-width:640px;}
+  table.fit th, table.fit td{border:1px solid var(--line); padding:7px 6px; text-align:center;}
+  table.fit th{background:#241a0f; color:var(--gold2); font-weight:600;}
+  table.fit td.rowhead{text-align:left; background:#241a0f; color:var(--cream); font-weight:600; white-space:nowrap; position:sticky; left:0;}
+  table.fit td.cell{cursor:pointer; font-weight:700; color:#fff;}
+  td.f2{background:var(--fit2);} td.f1{background:var(--fit1);} td.f0{background:var(--fit0); color:#9a8a72;}
+  table.fit td.cell.active{outline:3px solid var(--gold2); outline-offset:-3px;}
+  .legend-fit{display:flex; gap:14px; flex-wrap:wrap; font-size:var(--sec-size); margin:10px 0;}
+  .legend-fit span{display:flex; align-items:center; gap:5px;}
+  .swatch{width:14px; height:14px; border-radius:3px; display:inline-block;}
+  #cellDetail{background:#241a0f; border:1px solid var(--line); border-radius:8px; padding:14px; margin-top:12px; font-size:var(--core-size); line-height:1.5; min-height:60px;}
+  #cellDetail b{color:var(--gold2);}
+  .keymsg{background:linear-gradient(90deg,#3a2c1c,#2a2018); border-left:4px solid var(--gold); border-radius:6px; padding:14px 16px; font-size:var(--core-size); line-height:1.55; margin-bottom:18px;}
+  /* shared modules */
+  .req-row{background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:12px; margin-bottom:10px;}
+  .req-row .req-text{font-size:var(--core-size); margin-bottom:3px;}
+  .req-row .req-hint{font-size:var(--sec-size); color:#b59c79; margin-bottom:9px;}
+  .norm-badge{display:inline-block; background:#2e3f25; border:1px solid var(--fit2); color:var(--gold2); font-size:var(--sec-size); padding:2px 8px; border-radius:10px; margin-left:6px;}
+  .cat-btns{display:flex; gap:6px; flex-wrap:wrap;}
+  .cat-btns button{flex:1; min-width:64px; padding:7px 4px; border-radius:5px; border:1px solid var(--line); background:#241a0f; color:var(--cream); cursor:pointer; font-size:var(--sec-size);}
+  .cat-btns button.sel-must{background:var(--must); border-color:var(--must); color:#fff;}
+  .cat-btns button.sel-should{background:var(--should); border-color:var(--should); color:#fff;}
+  .cat-btns button.sel-could{background:var(--could); border-color:var(--could); color:#fff;}
+  .cat-btns button.sel-wont{background:var(--wont); border-color:var(--wont); color:#fff;}
+  #moscowFeedback{margin-top:14px; font-size:var(--core-size); line-height:1.55;}
+  .matrix-wrap{display:flex; gap:22px; flex-wrap:wrap;}
+  #matrix{width:min(440px,86vw); height:min(440px,86vw); background:var(--panel2); border:1px solid var(--line); border-radius:8px; position:relative; flex-shrink:0; touch-action:none; margin:0 0 30px 40px;}
+  .axis-label{position:absolute; color:#cbb89a; font-size:var(--sec-size); pointer-events:none;}
+  .quadrant-label{position:absolute; font-size:var(--sec-size); color:#8a7a5e; font-style:italic; pointer-events:none;}
+  .midline{position:absolute; background:var(--line);}
+  .dot{position:absolute; width:24px; height:24px; border-radius:50%; background:var(--gold); border:2px solid #241a0f; cursor:grab; transform:translate(-50%,-50%); touch-action:none;}
+  .dot-label{position:absolute; font-size:var(--sec-size); color:var(--cream); white-space:nowrap; transform:translate(15px,-8px); pointer-events:none;}
+  .legend-list{flex:1; min-width:240px;}
+  .legend-item{background:var(--panel2); border:1px solid var(--line); border-radius:6px; padding:8px 10px; margin-bottom:8px; font-size:var(--sec-size);}
+  .kano-row{margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--line);}
+  .kano-row .ktext{margin-bottom:7px; font-size:var(--core-size);}
+  .kano-row select{background:#241a0f; color:var(--cream); border:1px solid var(--line); border-radius:5px; padding:8px; font-size:var(--sec-size); width:100%; max-width:280px;}
+  table.calc{width:100%; border-collapse:collapse; font-size:var(--sec-size);}
+  table.calc th, table.calc td{border:1px solid var(--line); padding:6px 7px; text-align:center;}
+  table.calc th{background:#241a0f; color:var(--gold2); font-weight:600;}
+  table.calc td.name{text-align:left; min-width:120px;}
+  table.calc input{width:54px; background:#241a0f; color:var(--cream); border:1px solid var(--line); border-radius:4px; padding:5px 3px; text-align:center; font-size:var(--sec-size);}
+  table.calc td.result{font-weight:700; color:var(--gold2); background:#2f2417;}
+  .rank-badge{display:inline-block; min-width:22px; padding:2px 6px; border-radius:11px; background:var(--gold); color:#241a0f; font-weight:700; font-size:var(--sec-size);}
+  .formula{background:#241a0f; border:1px solid var(--line); border-radius:6px; padding:10px 12px; font-size:var(--core-size); color:#d8c9ae; margin-bottom:14px; line-height:1.5;}
+  .formula code{color:var(--gold2);}
+  .poker-card-row{display:flex; gap:8px; flex-wrap:wrap; margin:12px 0;}
+  .poker-card{width:54px; height:74px; border-radius:8px; background:var(--panel2); border:2px solid var(--line); color:var(--cream); font-size:20px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center;}
+  .poker-card.sel{background:var(--gold); color:#241a0f; border-color:var(--gold);}
+  .poker-feedback{margin-top:10px; padding:10px; border-radius:6px; font-size:var(--sec-size); display:none;}
+  .poker-feedback.shown{display:block; background:#241a0f; border:1px solid var(--line);}
+  .case-card{background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:16px; margin-bottom:14px;}
+  .case-card h3{margin:0 0 6px; color:var(--gold2); font-size:16px;}
+  .voices{display:flex; flex-direction:column; gap:6px; margin:10px 0;}
+  .voice{padding:8px 10px; border-radius:6px; background:#3a2c1c; font-size:var(--core-size); border-left:3px solid var(--gold);}
+  .voice b{color:var(--gold2);}
+  .case-options{display:flex; flex-direction:column; gap:8px; margin-top:10px;}
+  .case-options label{background:#241a0f; border:1px solid var(--line); border-radius:6px; padding:10px 12px; cursor:pointer; font-size:var(--core-size); display:flex; gap:8px; align-items:flex-start;}
+  .case-options label:hover{border-color:var(--gold);}
+  .case-feedback{margin-top:10px; padding:10px; border-radius:6px; font-size:var(--sec-size); display:none;}
+  .case-feedback.correct{background:#2e3f25; border:1px solid var(--could); display:block;}
+  .case-feedback.wrong{background:#402420; border:1px solid var(--must); display:block;}
+  .score-bar{background:#221a13; padding:8px 12px; margin-bottom:12px; font-size:var(--sec-size); color:var(--gold2); border-radius:6px; display:inline-block;}
+  footer{padding:20px 18px 30px; color:#cbb89a; font-size:var(--sec-size); max-width:1040px; margin:0 auto;}
+  html.beamer1 footer, html.beamer2 footer, html.beamer3 footer{display:none;}
+  .footer-box{background:var(--panel); border:1px solid var(--line); border-radius:8px; margin-bottom:10px;}
+  .footer-box summary{padding:12px 14px; cursor:pointer; font-weight:600; color:var(--gold2); font-size:var(--sec-size);}
+  .footer-box .fb-content{padding:0 14px 14px; line-height:1.6;}
+  .footer-box.systemprompt .fb-content{font-family:'Courier New',monospace; font-size:14px; white-space:pre-wrap; color:#d8c9ae;}
+  .footer-box.handbuch .fb-content, .footer-box.skript .fb-content{font-size:16px; color:var(--cream);}
+  .footer-box.skript .fb-content i{color:#b59c79;}
+  .footer-sig{text-align:center; font-size:14px; color:#7c6c52; margin-top:10px;}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <h1>🧭 Priorisierungslabor</h1>
+    <p>Artefakt-Kette &amp; passende Priorisierungsmethoden — spielbar, mit Ela, Knut, Sarah, Petra &amp; Herrn Bachmeier.</p>
+  </div>
+  <div class="header-right">
+    <div class="trainer-sig">Michaela Kühn · IREB CPRE · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener">www.michaela-kuehn.com</a></div>
+    <button class="beamer-btn" id="beamerBtn" onclick="cycleBeamer()">☀ Beamer</button>
+  </div>
+</header>
+<nav>
+  <button class="navbtn active" data-target="journey">🎲 Durchgängige Fälle</button>
+  <button class="navbtn" data-target="map">Artefakt × Methode</button>
+  <button class="navbtn" data-target="moscow">MoSCoW</button>
+  <button class="navbtn" data-target="matrix">Wert-Aufwand</button>
+  <button class="navbtn" data-target="kano">Kano</button>
+  <button class="navbtn" data-target="wsjf">WSJF</button>
+  <button class="navbtn" data-target="rice">RICE</button>
+  <button class="navbtn" data-target="poker">Story Points</button>
+  <button class="navbtn" data-target="conflict">Konflikte</button>
+</nav>
+<main>
+
+<!-- ===== JOURNEY ===== -->
+<section id="journey-section" class="active">
+  <h2>Durchgängige Fälle — der rote Faden</h2>
+  <p class="intro">Eine Anforderung, von der Investitionsentscheidung bis zum Testkriterium. Auf jeder Ebene die Frage: <b>Welche Priorisierungsmethode passt hier?</b> Rate, bekomme sofort Feedback und sieh die Methode in Aktion. Ideal zum gemeinsamen Durchklicken.</p>
+  <div id="journeyHome"></div>
+  <div id="journeyPlay" style="display:none;"></div>
+</section>
+
+<!-- ===== MAP ===== -->
+<section id="map-section">
+  <h2>Artefakt-Kette × Priorisierungsmethode</h2>
+  <div class="keymsg">
+    <b>Kernprinzip:</b> Die Granularität der Priorisierung muss zur Granularität des Artefakts passen.
+    WSJF auf ein Gherkin-Szenario ist so falsch wie MoSCoW auf einen Business Case. Oben (strategisch) zählt Wert &amp; Wirkung, unten (operativ) Reihenfolge &amp; Dringlichkeit.
+    Story Points priorisieren nicht — sie <i>schätzen Aufwand</i> und liefern den Nenner für WSJF, RICE &amp; Wert-Aufwand.
+  </div>
+  <h3 class="sub">1 · Die Kette (oben strategisch → unten operativ)</h3>
+  <p class="intro">Tippe ein Artefakt für die passenden Methoden.</p>
+  <div class="chain" id="chain"></div>
+  <div class="detail-box" id="artDetail"></div>
+  <h3 class="sub">2 · Eignungsmatrix</h3>
+  <p class="intro">Tippe eine Zelle für die Begründung.</p>
+  <div class="legend-fit">
+    <span><span class="swatch" style="background:var(--fit2)"></span>Kernmethode</span>
+    <span><span class="swatch" style="background:var(--fit1)"></span>bedingt geeignet</span>
+    <span><span class="swatch" style="background:var(--fit0)"></span>ungeeignet</span>
+  </div>
+  <div class="scroll-x"><table class="fit" id="fitTable"></table></div>
+  <div id="cellDetail">Tippe eine Zelle, um zu sehen, <i>warum</i> eine Methode auf dieser Ebene passt — oder nicht.</div>
+</section>
+
+<!-- ===== MOSCOW ===== -->
+<section id="moscow">
+  <h2>MoSCoW-Werkstatt <span style="font-size:var(--sec-size);color:#b59c79">· Ebene: User Story / FA</span></h2>
+  <p class="intro">Tippe pro Anforderung die passende Kategorie. <b>Must</b> = ohne geht's nicht · <b>Should</b> = wichtig, Workaround möglich · <b>Could</b> = nice-to-have · <b>Won't</b> = bewusst nicht jetzt.</p>
+  <div class="panel" id="moscowPanel"></div>
+  <div style="display:flex; gap:10px;">
+    <button class="primary" onclick="checkMoscow()">Auswertung prüfen</button>
+    <button class="secondary" onclick="resetMoscow()">Zurücksetzen</button>
+  </div>
+  <div id="moscowFeedback"></div>
+</section>
+<section id="matrix-section">
+  <h2>Wert-Aufwand-Matrix <span style="font-size:var(--sec-size);color:#b59c79">· Ebene: Use Case / User Story</span></h2>
+  <p class="intro">Ziehe die Punkte mit Finger / Maus. X = Aufwand, Y = Geschäftswert. Quadrant &amp; Werte aktualisieren sich live.</p>
+  <div class="panel matrix-wrap">
+    <div id="matrix">
+      <div class="midline" style="left:50%; top:0; bottom:0; width:1px;"></div>
+      <div class="midline" style="top:50%; left:0; right:0; height:1px;"></div>
+      <div class="axis-label" style="bottom:-24px; left:50%; transform:translateX(-50%);">Aufwand →</div>
+      <div class="axis-label" style="top:50%; left:-34px; transform:rotate(-90deg);">Wert →</div>
+      <div class="quadrant-label" style="top:6px; left:6px;">Quick Wins</div>
+      <div class="quadrant-label" style="top:6px; right:6px;">Big Bets</div>
+      <div class="quadrant-label" style="bottom:6px; left:6px;">Fill-Ins</div>
+      <div class="quadrant-label" style="bottom:6px; right:6px;">Money Pits</div>
+    </div>
+    <div class="legend-list" id="legendList"></div>
+  </div>
+  <button class="secondary" onclick="resetMatrix()">Punkte zurücksetzen</button>
+</section>
+<section id="kano-section">
+  <h2>Kano-Check <span style="font-size:var(--sec-size);color:#b59c79">· Ebene: NFA / Use Case</span></h2>
+  <p class="intro">Ordne jeder Anforderung den Kano-Typ zu: <b>Basis</b> (erwartet, fehlt = Ärger) · <b>Leistung</b> (mehr = besser) · <b>Begeisterung</b> (unerwartet, begeistert). Besonders stark bei NFA.</p>
+  <div class="panel" id="kanoPanel"></div>
+  <button class="primary" onclick="checkKano()">Auswertung prüfen</button>
+  <div id="kanoFeedback" style="margin-top:12px; font-size:var(--core-size); line-height:1.55;"></div>
+</section>
+<section id="wsjf-section">
+  <h2>WSJF — Weighted Shortest Job First <span style="font-size:var(--sec-size);color:#b59c79">· Ebene: Epic / Feature</span></h2>
+  <p class="intro">SAFe-Priorisierung: hoher Wert &amp; kleiner Aufwand zuerst. Trage die Werte ein (Fibonacci 1–13) — Ranking rechnet live.</p>
+  <div class="formula"><b>WSJF</b> = Cost of Delay ÷ Job Size<br><code>Cost of Delay = Business Value + Time Criticality + Risk Reduction / Opportunity Enablement</code><br>Höchster WSJF = höchste Priorität.</div>
+  <div class="panel scroll-x">
+    <table class="calc" id="wsjfTable"><thead><tr>
+      <th class="name">Feature</th><th>Business<br>Value</th><th>Time<br>Criticality</th><th>Risk / Opp.<br>Enablement</th><th>CoD</th><th>Job<br>Size</th><th>WSJF</th><th>Rang</th>
+    </tr></thead><tbody></tbody></table>
+  </div>
+  <button class="secondary" onclick="resetWsjf()">Beispielwerte zurücksetzen</button>
+</section>
+<section id="rice-section">
+  <h2>RICE-Scoring <span style="font-size:var(--sec-size);color:#b59c79">· Ebene: Epic / Initiative</span></h2>
+  <p class="intro">Produktpriorisierung nach Reach, Impact, Confidence, Effort. Höherer Score = höhere Priorität.</p>
+  <div class="formula"><b>RICE</b> = (Reach × Impact × Confidence) ÷ Effort<br><code>Reach</code> = Nutzer/Zeitraum · <code>Impact</code> = 0,25 / 0,5 / 1 / 2 / 3 · <code>Confidence</code> = % · <code>Effort</code> = Personenmonate</div>
+  <div class="panel scroll-x">
+    <table class="calc" id="riceTable"><thead><tr>
+      <th class="name">Initiative</th><th>Reach</th><th>Impact</th><th>Confid.<br>(%)</th><th>Effort<br>(PM)</th><th>RICE</th><th>Rang</th>
+    </tr></thead><tbody></tbody></table>
+  </div>
+  <button class="secondary" onclick="resetRice()">Beispielwerte zurücksetzen</button>
+</section>
+<section id="poker-section">
+  <h2>Story-Point-Schätzung <span style="font-size:var(--sec-size);color:#b59c79">· Ebene: User Story (Aufwand, nicht Prio)</span></h2>
+  <p class="intro">Schätze den relativen Aufwand jeder User Story auf der Fibonacci-Skala. Diese Zahl ist der <i>Nenner</i> für WSJF &amp; Wert-Aufwand.</p>
+  <div class="panel" id="pokerPanel"></div>
+  <div class="score-bar">Geschätzt: <span id="pokerDone">0</span> / <span id="pokerTotal">0</span></div>
+</section>
+<section id="conflict-section">
+  <h2>Stakeholder-Konflikte</h2>
+  <p class="intro">Vier Stimmen, vier Prioritäten – triff die fachlich tragfähigste Entscheidung.</p>
+  <div class="score-bar">Score: <span id="caseScore">0</span> / <span id="caseMax">0</span></div>
+  <div id="casesContainer"></div>
+</section>
+</main>
+<footer>
+  <details class="footer-box systemprompt">
+    <summary>🔧 Systemprompt</summary>
+    <div class="fb-content">Rolle
+
+Du bist eine Requirements-Engineering-Trainerin (IREB CPRE), die Priorisierungsmethoden für Workshop-Publikum erfahrbar macht.
+
+Aufgabe
+
+Baue ein einzelnes HTML-Lerntool, das acht Artefaktebenen — Business Case, Epic, Use Case, User Story, Task/To-Do, FA, NFA, Akzeptanzkriterium/Gherkin — mit der jeweils passenden Priorisierungsmethode verknüpft (Business Value/CoD, WSJF, RICE, Wert-Aufwand, Kano, MoSCoW, Story Points, Eisenhower).
+
+Schritte
+
+1. Durchgängige Fälle: entwirf 2-3 vollständige Fallgeschichten (z. B. Kundenportal, PM-Tool-Einführung, KI-Assistent), die jeweils alle acht Ebenen einer einzigen Anforderung durchspielen — pro Stufe eine Methodenfrage mit Multiple-Choice, Begründung und angewendetem Ergebnis.
+2. Referenzkarte: baue eine Artefakt-×-Methode-Eignungsmatrix (Kernmethode / bedingt geeignet / ungeeignet) als Nachschlagewerk, unabhängig von den Fallgeschichten.
+3. Sieben Einzelwerkzeuge: ergänze je ein eigenständiges, interaktives Modul für MoSCoW, Wert-Aufwand-Matrix (Drag&Drop), Kano, WSJF-Rechner, RICE-Rechner, Story-Point-Planning-Poker und Stakeholder-Konfliktfälle.
+4. Personas: verwende durchgängig feste Rollen (Ela/Projektleitung, Knut/Entwicklung, Sarah/Vertrieb, Petra/QM, Herr Bachmeier/Geschäftsführung) als Sprecher der Artefakte und Konfliktfälle.
+5. Normbezüge: wo eine Anforderung tatsächlich auf einer Norm beruht (ISO/IEC 27001:2022 Anhang A, DSGVO), nenne den konkreten Artikel/Control — keine erfundenen Normwerte.
+
+Format
+
+Single-File HTML, offline, Tab-Navigation statt Split-Screen, Klick-Feedback pro Schritt (kein zweites Raten nach Fehlversuch nötig), Zusammenfassungstabelle am Ende jedes durchgängigen Falls, Beamer-Modus mehrstufig, Footer mit Systemprompt/Handbuch/Vortrags-Skript.
+
+Eingrenzung
+
+Zentrales Prinzip, das sich durch alle Module zieht: Die Granularität der Priorisierungsmethode muss zur Granularität des Artefakts passen — WSJF auf ein Gherkin-Szenario ist so falsch wie MoSCoW auf einen Business Case. Story Points priorisieren nicht, sie schätzen Aufwand als Eingabegröße für andere Methoden.
+
+Hinweis: Dieser Systemprompt ist eine anhand des fertigen Tools rekonstruierte Spezifikation, kein wortgetreues Original — er wurde bewusst so formuliert, dass ein interessierter Teilnehmer damit ein vergleichbares Werkzeug nachbauen könnte.</div>
+  </details>
+  <details class="footer-box handbuch">
+    <summary>📖 Handbuch</summary>
+    <div class="fb-content">
+      <b>Framework:</b> RISEN (Role – Instructions – Steps – End goal – Narrowing)<br><br>
+      <b>Rolle:</b> RE-Trainerin (IREB CPRE), die Priorisierungsmethoden für Workshop-Publikum erfahrbar macht.<br>
+      <b>Aufgabe:</b> Acht Artefaktebenen (Business Case bis Gherkin) mit der jeweils passenden Priorisierungsmethode verknüpfen — spielerisch, mit sofortigem Feedback.<br>
+      <b>Kontext:</b> Fünf feste Personas (Ela/Knut/Sarah/Petra/Bachmeier), drei durchgängige Fälle als roter Faden, ergänzt um sieben Referenz-Werkzeuge (MoSCoW, Wert-Aufwand, Kano, WSJF, RICE, Story Points, Konfliktfälle).<br>
+      <b>Format:</b> Tab-Navigation statt Split-Screen, Klick-Feedback pro Schritt, Zusammenfassungstabelle am Ende jedes Falls.<br>
+      <b>Eingrenzung:</b> Granularität der Methode muss zur Granularität des Artefakts passen — dieses Prinzip zieht sich durch alle Module.<br><br>
+      <b>Zentraler Lernhinweis:</b> Story Points priorisieren nicht — sie schätzen Aufwand und sind Eingabegröße für WSJF/RICE/Wert-Aufwand. Dieser Unterschied wird in Trainings häufig verwechselt.<br>
+      <b>Nachbau-Tipp:</b> Neue durchgängige Fälle lassen sich ergänzen, indem man dem <code>journeyCases</code>-Array ein weiteres Objekt mit acht <code>steps</code> hinzufügt — Struktur strikt beibehalten (level/rolle/artefakt/options/correct/why/applied).
+    </div>
+  </details>
+  <details class="footer-box skript">
+    <summary>🎤 Vortrags-Skript</summary>
+    <div class="fb-content">
+      <b>1. Einstieg</b> <i>(Tab „Durchgängige Fälle" offen)</i><br>
+      „Wir nehmen eine einzige Anforderung und verfolgen sie durch acht Ebenen — vom Business Case bis zum Testkriterium. Auf jeder Ebene stellt sich dieselbe Frage: Welche Priorisierungsmethode passt hier eigentlich?"<br><br>
+      <b>2. Fall wählen</b> <i>(auf eine Fallkarte tippen)</i><br>
+      „Nehmen wir das Self-Service-Kundenportal. Herr Bachmeier muss zuerst entscheiden, ob sich die Investition überhaupt lohnt."<br><br>
+      <b>3. Erste Stufe durchspielen</b> <i>(Methode antippen, Feedback abwarten)</i><br>
+      „Business Value oder Cost of Delay — nicht WSJF, nicht MoSCoW. Auf Business-Case-Ebene zählt die Investitionslogik."<br><br>
+      <b>4. Durch alle acht Stufen klicken</b> <i>(Weiter-Button, Publikum raten lassen)</i><br>
+      „Beobachten Sie: Je weiter wir nach unten kommen, desto operativer wird die Methode — von Business Value über WSJF und Kano bis zu Eisenhower auf Task-Ebene."<br><br>
+      <b>5. Zusammenfassung zeigen</b> <i>(nach letzter Stufe)</i><br>
+      „Das ist der rote Faden: eine Anforderung, acht Ebenen, acht passende Methoden."<br><br>
+      <b>6. Übergang zur Referenzkarte</b> <i>(Tab „Artefakt × Methode")</i><br>
+      „Und hier die Landkarte dazu, zum Nachschlagen für Ihre eigenen Projekte."<br><br>
+      <i>Regie-Hinweise: Nicht mit der Eignungsmatrix beginnen — die wirkt ohne die Fallgeschichte abstrakt. Zeitbudget: ca. 12–15 Minuten für einen vollständigen Fall inklusive Publikumsraten. Beamer-Button vor Präsentationsbeginn auf die passende Stufe stellen.</i>
+    </div>
+  </details>
+  <div class="footer-sig">Referenzierte Normen: ISO/IEC 27001:2022 Anhang A.8.5 / A.5.15 (in Kraft) · DSGVO Art. 32, Art. 28 (in Kraft)<br>
+  Zuletzt geprüft: 13.07.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</div>
+</footer>
+<script>
+const methodName={bv:'Business Value / CoD', wsjf:'WSJF', rice:'RICE', wa:'Wert-Aufwand', kano:'Kano', moscow:'MoSCoW', sp:'Story Points', eis:'Eisenhower', none:'Nicht priorisieren — verifizieren'};
+
+/* ============ DURCHGÄNGIGE FÄLLE ============ */
+const journeyCases=[
+ {id:'portal', icon:'🏛️', title:'Self-Service-Kundenportal',
+  subtitle:'Ein Versicherer will Kunden Online-Self-Service bieten und das Service-Center entlasten.',
+  steps:[
+   {level:'Business Case', rolle:'Herr Bachmeier (GF) entscheidet über das Budget.',
+    artefakt:'„Lohnt die Investition in ein Self-Service-Kundenportal? Erwartet: −30 % Anrufe im Service-Center, ROI in 18 Monaten."',
+    options:['bv','wsjf','moscow','eis'], correct:['bv'],
+    why:'Auf Business-Case-Ebene zählt die Investitionslogik. MoSCoW ist zu fein, WSJF kommt erst bei den Epics, Eisenhower ist operativ.',
+    applied:'<b>Angewendet:</b> Cost of Delay ≈ 40.000 €/Monat an Service-Kosten. Business Value &amp; ROI rechtfertigen das Investment → <b>Go.</b>'},
+   {level:'Epic', rolle:'Ela (Projektleitung) reiht die großen Arbeitspakete.',
+    artefakt:'Drei Epics konkurrieren um den ersten Release: <b>Konto &amp; Login</b>, <b>Rechnungseinsicht</b>, <b>Schadensmeldung online</b>.',
+    options:['wsjf','moscow','sp','kano'], correct:['wsjf'],
+    why:'Mehrere Epics nach Wert ÷ Aufwand reihen — das ist SAFe-WSJF-Kernterrain. Story Points wären zu fein, MoSCoW reiht nicht.',
+    applied:'<b>Angewendet:</b> WSJF reiht „Rechnungseinsicht" (hoher CoD, kleiner Job) vor „Schadensmeldung" (großer Job). Login ist Voraussetzung → zuerst.'},
+   {level:'Use Case', rolle:'Sarah (Vertrieb) bewertet einzelne Abläufe.',
+    artefakt:'Use Case <b>„Rechnung online einsehen"</b>: Kunde meldet sich an, wählt Vertrag, öffnet aktuelle Rechnung.',
+    options:['wa','rice','eis','sp'], correct:['wa','kano'],
+    why:'Auf Use-Case-Ebene sind Wert-Aufwand und Kano die Kernmethoden. Hier liefert Wert-Aufwand die schnellste Einordnung (hoher Wert, mittlerer Aufwand → Quick Win/Big Bet).',
+    applied:'<b>Angewendet:</b> Hoher Geschäftswert, mittlerer Aufwand → oberer Bereich der Matrix, klarer Kandidat für den ersten Release.'},
+   {level:'User Story', rolle:'Knut (Entwicklung) plant den Sprint-Scope.',
+    artefakt:'„<b>Als Kunde möchte ich meine letzte Rechnung als PDF herunterladen, damit ich sie ablegen kann.</b>"',
+    options:['moscow','wsjf','rice','kano'], correct:['moscow'],
+    why:'Auf Story-Ebene ist MoSCoW das Standardwerkzeug für Sprint-/Release-Scope. WSJF/RICE sind hier Overkill.',
+    applied:'<b>Angewendet:</b> Kern-Nutzen des ersten Release → <b>Must.</b> Ohne Rechnungs-Download kein echter Self-Service.'},
+   {level:'FA — funktionale Anforderung', rolle:'Petra (QM) dokumentiert prüfbar.',
+    artefakt:'„Das System muss dem angemeldeten Kunden die letzten 24 Monatsrechnungen in einer archivierbaren, druckfähigen Form bereitstellen (Format: PDF)."',
+    options:['moscow','kano','rice','sp'], correct:['moscow'],
+    why:'Einzelne funktionale Anforderungen priorisiert man klassisch per MoSCoW (Lasten-/Pflichtenheft). Formulierung zielorientiert: „archivierbar, druckfähig" ist das Ziel, PDF das Beispielformat — keine unmarkierte Lösungsvorgabe (K10).',
+    applied:'<b>Angewendet:</b> <b>Must</b> für die letzten 12 Monate, <b>Could</b> für ältere Rechnungen — Scope sauber abgeschichtet.'},
+   {level:'NFA — nicht-funktionale Anforderung', rolle:'Petra (QM) prüft Qualitätsziele.',
+    artefakt:'Zwei NFA: <b>(a)</b> Zugriff nur nach starker, zweistufiger Authentifizierung (⚖ ISO/IEC 27001:2022, Anh. A.8.5) · <b>(b)</b> Rechnungs-PDF lädt in &lt; 2 s.',
+    options:['kano','moscow','wsjf','eis'], correct:['kano'],
+    why:'NFA passen exzellent auf Kano: Sicherheit = Basis-Merkmal (fehlt = Showstopper), Performance = Leistungs-Merkmal (schneller = zufriedener).',
+    applied:'<b>Angewendet:</b> Starke Authentifizierung = <b>Basis</b> (nicht verhandelbar, Mittel laut ISO 27001 Anh. A.8.5 vorgegeben), Ladezeit &lt; 2 s = <b>Leistung</b> (Zielwert, optimierbar).'},
+   {level:'Task / To-Do', rolle:'Knut zerlegt die Story technisch.',
+    artefakt:'Tasks: <b>PDF-Renderer evaluieren</b> · <b>Caching einbauen</b> · <b>Lasttest aufsetzen</b>.',
+    options:['eis','moscow','wsjf','rice'], correct:['eis'],
+    why:'Tasks haben keinen eigenen Geschäftswert — Wert-Methoden greifen nicht. Eisenhower (dringend/wichtig) plus Abhängigkeit ordnet operativ.',
+    applied:'<b>Angewendet:</b> „PDF-Renderer" wichtig + dringend → sofort. „Lasttest" wichtig, nicht dringend → terminieren.'},
+   {level:'Akzeptanzkriterium / Gherkin', rolle:'Petra schreibt das Testkriterium.',
+    artefakt:'„Gegeben angemeldeter Kunde · Wenn er Rechnung Mai öffnet · Dann lädt das PDF in &lt; 2 s."',
+    options:['none','moscow','kano','wa'], correct:['none'],
+    why:'Akzeptanzkriterien werden nicht priorisiert — sie sind binär erfüllt oder nicht. Hier wird verifiziert, höchstens die Test-Reihenfolge nach Risiko gewählt.',
+    applied:'<b>Merksatz:</b> Am Blatt der Kette endet die Priorisierung. Was zählt, ist: erfüllt das Inkrement das Kriterium — ja oder nein?'}
+  ]},
+
+ {id:'pmtool', icon:'📊', title:'Einführung einer PM-Software',
+  subtitle:'Das PMO will die Excel-Projektsteuerung durch ein zentrales Tool ablösen.',
+  steps:[
+   {level:'Business Case', rolle:'Herr Bachmeier wägt Lizenzkosten gegen Nutzen ab.',
+    artefakt:'„Lohnt die Ablösung der Excel-Steuerung durch ein zentrales PM-Tool? Erwartet: weniger Doppelarbeit, verlässlichere Statusberichte."',
+    options:['bv','rice','moscow','sp'], correct:['bv'],
+    why:'Die Investitionsfrage entscheidet man über Business Value / Cost of Delay, nicht über Feature-Methoden.',
+    applied:'<b>Angewendet:</b> CoD = fortlaufende Reibungsverluste &amp; Fehlentscheidungen durch veraltete Excel-Stände. Nutzen &gt; Lizenzkosten → Go.'},
+   {level:'Epic', rolle:'Ela reiht die Programm-Bausteine.',
+    artefakt:'Drei Epics: <b>Migration der Altdaten</b>, <b>Status-Dashboard</b>, <b>Ressourcenplanung</b>.',
+    options:['rice','moscow','eis','sp'], correct:['rice','wsjf'],
+    why:'Auf Epic-Ebene sind RICE und WSJF die Kernmethoden. Hier nutzen wir RICE, weil Reichweite (wie viele PMs?) und Impact gut abschätzbar sind.',
+    applied:'<b>Angewendet:</b> RICE setzt „Status-Dashboard" an die Spitze (große Reichweite, hoher Impact, moderater Effort). „Ressourcenplanung" folgt.'},
+   {level:'Use Case', rolle:'Sarah bewertet den Ablauf.',
+    artefakt:'Use Case <b>„Projektstatus auf Knopfdruck als Bericht erzeugen"</b>.',
+    options:['kano','wsjf','sp','eis'], correct:['kano','wa'],
+    why:'Use-Case-Ebene → Kano oder Wert-Aufwand (beide Kernmethoden). Kano zeigt: ein verlässlicher Statusbericht ist ein starkes Leistungsmerkmal.',
+    applied:'<b>Angewendet:</b> Statusbericht = <b>Leistungs-Merkmal</b> — je schneller &amp; aktueller, desto zufriedener das PMO.'},
+   {level:'User Story', rolle:'Knut plant den Sprint.',
+    artefakt:'„<b>Als PMO möchte ich einen Statusbericht als PDF im Corporate Design exportieren.</b>"',
+    options:['moscow','rice','wsjf','kano'], correct:['moscow'],
+    why:'Story-Scope → MoSCoW.',
+    applied:'<b>Angewendet:</b> Export = <b>Should</b> — wichtig, aber zur Not reicht anfangs die Bildschirmansicht (Workaround vorhanden).'},
+   {level:'FA — funktionale Anforderung', rolle:'Petra dokumentiert.',
+    artefakt:'„Das System muss Statusberichte in einem archivierbaren, druckfähigen Format im vorgegebenen Corporate-Design-Layout bereitstellen (Format: PDF)."',
+    options:['moscow','kano','rice','eis'], correct:['moscow'],
+    why:'Einzelne FA → MoSCoW. Zielorientiert formuliert: „archivierbar, druckfähig" ist das Ziel, PDF das Beispielformat (K10).',
+    applied:'<b>Angewendet:</b> PDF-Export = <b>Should</b>, Corporate-Design-Feinschliff = <b>Could.</b>'},
+   {level:'NFA — nicht-funktionale Anforderung', rolle:'Petra prüft Qualität.',
+    artefakt:'Zwei NFA: <b>(a)</b> rollenbasierte Zugriffssteuerung, nur PMO sieht alle Projekte (⚖ ISO/IEC 27001:2022, Anh. A.5.15) · <b>(b)</b> Bericht erzeugt in &lt; 3 s.',
+    options:['kano','moscow','sp','wsjf'], correct:['kano'],
+    why:'NFA → Kano: Zugriffsschutz = Basis, Antwortzeit = Leistung.',
+    applied:'<b>Angewendet:</b> Rollenkonzept = <b>Basis</b> (ohne kein Go-Live, Mittel laut ISO 27001 Anh. A.5.15 vorgegeben), &lt; 3 s = <b>Leistung.</b>'},
+   {level:'Task / To-Do', rolle:'Knut zerlegt.',
+    artefakt:'Tasks: <b>Report-Template bauen</b> · <b>SSO anbinden</b> · <b>Performance-Test</b>.',
+    options:['eis','wa','rice','moscow'], correct:['eis'],
+    why:'Tasks → Eisenhower + Abhängigkeit.',
+    applied:'<b>Angewendet:</b> „SSO anbinden" blockiert anderes → wichtig + dringend, zuerst. „Performance-Test" planen.'},
+   {level:'Akzeptanzkriterium / Gherkin', rolle:'Petra schreibt den Test.',
+    artefakt:'„Gegeben PMO-Nutzer · Wenn Statusbericht exportiert wird · Dann liegt ein PDF im Corporate Design in &lt; 3 s vor."',
+    options:['none','moscow','kano','rice'], correct:['none'],
+    why:'Gherkin wird verifiziert, nicht priorisiert.',
+    applied:'<b>Merksatz:</b> Hier endet der rote Faden — das Kriterium ist die Messlatte, keine Prioritätsfrage mehr.'}
+  ]},
+
+ {id:'kiangebot', icon:'🤖', title:'KI-Assistent für Angebote',
+  subtitle:'Der Vertrieb soll Angebotsentwürfe per KI vorgeschlagen bekommen.',
+  steps:[
+   {level:'Business Case', rolle:'Herr Bachmeier prüft den Business-Nutzen.',
+    artefakt:'„Lohnt ein KI-Assistent, der Angebotsentwürfe vorschlägt? Erwartet: −50 % Erstellungszeit, schnellere Angebote."',
+    options:['bv','wsjf','kano','eis'], correct:['bv'],
+    why:'Investitionsfrage → Business Value / Cost of Delay.',
+    applied:'<b>Angewendet:</b> CoD = entgangene Abschlüsse durch langsame Angebote. Zeitersparnis rechtfertigt das Investment → Go.'},
+   {level:'Epic', rolle:'Ela reiht die großen Bausteine.',
+    artefakt:'Drei Epics: <b>Vorlagen-Bibliothek</b>, <b>KI-Textvorschlag</b>, <b>Freigabe-Workflow</b>.',
+    options:['wsjf','moscow','sp','kano'], correct:['wsjf','rice'],
+    why:'Epic-Reihung → WSJF (oder RICE). Hier WSJF: Wert ÷ Aufwand über die drei Bausteine.',
+    applied:'<b>Angewendet:</b> WSJF setzt „Vorlagen-Bibliothek" nach vorn (kleiner Job, sofort Nutzen, ermöglicht die KI-Vorschläge). „KI-Textvorschlag" folgt.'},
+   {level:'Use Case', rolle:'Sarah bewertet den Ablauf.',
+    artefakt:'Use Case <b>„Angebotsentwurf aus Kunden-Eckdaten generieren"</b>.',
+    options:['wa','rice','eis','sp'], correct:['wa','kano'],
+    why:'Use-Case-Ebene → Wert-Aufwand oder Kano. Wert-Aufwand zeigt schnell: hoher Wert, aber durch KI-Unsicherheit hoher Aufwand.',
+    applied:'<b>Angewendet:</b> Hoher Wert, hoher Aufwand → <b>Big Bet</b>: strategisch wichtig, aber bewusst als Risiko-Investition behandeln (Spike zuerst).'},
+   {level:'User Story', rolle:'Knut plant den Sprint.',
+    artefakt:'„<b>Als Vertriebler möchte ich aus erfassten Eckdaten einen Angebotsentwurf generieren lassen.</b>"',
+    options:['moscow','wsjf','rice','sp'], correct:['moscow'],
+    why:'Story-Scope → MoSCoW.',
+    applied:'<b>Angewendet:</b> Entwurf-Generierung = <b>Must</b> (Kern des Nutzens), KI-Tonalitätsoptionen = <b>Could.</b>'},
+   {level:'FA — funktionale Anforderung', rolle:'Petra dokumentiert.',
+    artefakt:'„Das System muss aus strukturierten Eckdaten einen Angebotsentwurf mit Preis, Leistung und Gültigkeit erzeugen."',
+    options:['moscow','kano','wsjf','sp'], correct:['moscow'],
+    why:'Einzelne FA → MoSCoW.',
+    applied:'<b>Angewendet:</b> Entwurf mit Pflichtfeldern = <b>Must</b>, Mehrsprachigkeit des Entwurfs = <b>Won&#39;t</b> (später).'},
+   {level:'NFA — nicht-funktionale Anforderung', rolle:'Petra prüft — heikel bei KI!',
+    artefakt:'Zwei NFA: <b>(a)</b> keine Kundendaten an externe KI-Modelle ohne Auftragsverarbeitungsvertrag nach Art. 28 DSGVO · <b>(b)</b> Vorschlag in &lt; 5 s.',
+    options:['kano','moscow','rice','eis'], correct:['kano'],
+    why:'NFA → Kano. Bei KI besonders wichtig: Datenschutz ist ein hartes Basis-Merkmal, kein Komfort.',
+    applied:'<b>Angewendet:</b> Art. 28 DSGVO/AVV = <b>Basis</b> (fehlt = Projekt gestoppt), Antwortzeit &lt; 5 s = <b>Leistung.</b>'},
+   {level:'Task / To-Do', rolle:'Knut zerlegt.',
+    artefakt:'Tasks: <b>Prompt-Templates entwerfen</b> · <b>AVV mit Anbieter klären</b> · <b>Halluzinations-Tests</b>.',
+    options:['eis','wa','moscow','rice'], correct:['eis'],
+    why:'Tasks → Eisenhower.',
+    applied:'<b>Angewendet:</b> „AVV klären" wichtig + dringend (blockiert alles) → sofort. „Halluzinations-Tests" wichtig → fest einplanen.'},
+   {level:'Akzeptanzkriterium / Gherkin', rolle:'Petra schreibt den Test.',
+    artefakt:'„Gegeben gültige Eckdaten · Wenn ein Entwurf generiert wird · Dann enthält er Preis, Leistung und Gültigkeitsdatum."',
+    options:['none','moscow','kano','wa'], correct:['none'],
+    why:'Gherkin wird verifiziert, nicht priorisiert.',
+    applied:'<b>Merksatz:</b> Das Kriterium schließt den roten Faden — vom Investment bis zum prüfbaren Ergebnis.'}
+  ]}
+];
+
+let jc=null, jstep=0, jscore=0, jFirstTry=true;
+function renderJourneyHome(){
+  document.getElementById('journeyPlay').style.display='none';
+  const home=document.getElementById('journeyHome'); home.style.display='block';
+  home.innerHTML='<div class="case-pick">'+journeyCases.map(c=>
+    '<div class="case-pick-card" onclick="startCase(\''+c.id+'\')">'+
+    '<div class="case-icon">'+c.icon+'</div><div><h3>'+c.title+'</h3><p>'+c.subtitle+'</p>'+
+    '<p style="margin-top:5px;color:#8a7a5e">8 Stufen · von Business Case bis Gherkin</p></div></div>').join('')+'</div>';
+}
+function startCase(id){
+  jc=journeyCases.find(c=>c.id===id); jstep=0; jscore=0; jFirstTry=true;
+  document.getElementById('journeyHome').style.display='none';
+  document.getElementById('journeyPlay').style.display='block';
+  renderStep();
+}
+function renderStep(){
+  const s=jc.steps[jstep]; jFirstTry=true;
+  const dots=jc.steps.map((st,i)=>{
+    const cls=i<jstep?'done':(i===jstep?'cur':'');
+    const short=st.level.split(' ')[0].replace('—','');
+    return '<span class="pdot '+cls+'">'+(i+1)+' '+short+'</span>';
+  }).join('');
+  const opts=s.options.map(m=>'<button data-m="'+m+'" onclick="pickMethod(\''+m+'\')">'+methodName[m]+'</button>').join('');
+  document.getElementById('journeyPlay').innerHTML=
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'+
+      '<button class="secondary" onclick="renderJourneyHome()">↩ Fälle</button>'+
+      '<span style="font-size:var(--sec-size);color:var(--gold2)">'+jc.icon+' '+jc.title+'</span></div>'+
+    '<div class="progress-dots">'+dots+'</div>'+
+    '<div class="panel">'+
+      '<span class="level-badge">Stufe '+(jstep+1)+' · '+s.level+'</span>'+
+      '<div class="artefakt-box">'+s.artefakt+'</div>'+
+      '<div class="rolle-line">'+s.rolle+'</div>'+
+      '<div class="method-q">Welche Priorisierungsmethode passt auf dieser Ebene?</div>'+
+      '<div class="method-opts" id="methodOpts">'+opts+'</div>'+
+      '<div id="hintLine"></div>'+
+      '<div class="applied-box" id="appliedBox"></div>'+
+      '<div id="weiterWrap" style="margin-top:14px;display:none">'+
+        '<button class="primary" onclick="nextStep()">'+(jstep<jc.steps.length-1?'Weiter ↓':'Roten Faden ansehen ✓')+'</button>'+
+      '</div>'+
+    '</div>';
+}
+function pickMethod(mid){
+  const s=jc.steps[jstep];
+  const btns=document.querySelectorAll('#methodOpts button');
+  const correct=s.correct.includes(mid);
+  if(correct){
+    btns.forEach(b=>{ b.disabled=true; if(s.correct.includes(b.dataset.m)) b.classList.add('correct'); });
+    if(jFirstTry) jscore++;
+    const altNote = s.correct.length>1 ? ' <i>(Auch '+s.correct.map(m=>methodName[m]).join(' bzw. ')+' sind hier Kernmethoden.)</i>' : '';
+    document.getElementById('appliedBox').innerHTML='<div style="margin-bottom:8px">'+s.why+altNote+'</div>'+s.applied;
+    document.getElementById('appliedBox').classList.add('shown');
+    document.getElementById('hintLine').textContent='';
+    document.getElementById('weiterWrap').style.display='block';
+  } else {
+    jFirstTry=false;
+    const b=[...btns].find(x=>x.dataset.m===mid);
+    if(b){ b.classList.add('wrong'); b.disabled=true; }
+    document.getElementById('hintLine').textContent='Nicht ganz — denk an die Granularität dieser Ebene und versuch es nochmal.';
+  }
+}
+function nextStep(){
+  jstep++;
+  if(jstep>=jc.steps.length) renderSummary();
+  else renderStep();
+}
+function renderSummary(){
+  const rows=jc.steps.map(s=>
+    '<tr><td>'+s.level+'</td><td class="m">'+s.correct.map(m=>methodName[m]).join(' / ')+'</td><td>'+s.applied.replace(/<b>Angewendet:<\/b>\s*/,'').replace(/<b>Merksatz:<\/b>\s*/,'💡 ')+'</td></tr>'
+  ).join('');
+  const pct=Math.round(jscore/jc.steps.length*100);
+  let verdict = pct>=88?'Methoden-Profi! 🏆' : pct>=63?'Solide Methodensicherheit 👍' : 'Guter Einstieg — die Matrix-Karte hilft beim Vertiefen.';
+  document.getElementById('journeyPlay').innerHTML=
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'+
+      '<button class="secondary" onclick="renderJourneyHome()">↩ Fälle</button>'+
+      '<span style="font-size:var(--sec-size);color:var(--gold2)">'+jc.icon+' '+jc.title+'</span></div>'+
+    '<div class="panel" style="text-align:center">'+
+      '<div class="big-score">'+jscore+' / '+jc.steps.length+'</div>'+
+      '<div style="color:#cbb89a;font-size:var(--sec-size);margin:4px 0 2px">richtige Methode beim ersten Versuch</div>'+
+      '<div style="color:var(--gold2);font-weight:600">'+verdict+'</div></div>'+
+    '<h3 class="sub">Der rote Faden — eine Anforderung, jede Ebene ihre Methode</h3>'+
+    '<div class="scroll-x"><table class="summary-table"><thead><tr><th>Ebene</th><th>Methode</th><th>Ergebnis</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+    '<div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">'+
+      '<button class="primary" onclick="startCase(\''+jc.id+'\')">Diesen Fall nochmal</button>'+
+      '<button class="secondary" onclick="renderJourneyHome()">Anderen Fall wählen</button></div>';
+}
+renderJourneyHome();
+
+/* ============ ARTEFAKT × METHODE (Referenz) ============ */
+const methoden=[{id:'moscow',name:'MoSCoW'},{id:'wa',name:'Wert-Aufwand'},{id:'kano',name:'Kano'},{id:'wsjf',name:'WSJF'},{id:'rice',name:'RICE'},{id:'sp',name:'Story Points'},{id:'bv',name:'Business Value / CoD'},{id:'eis',name:'Eisenhower'}];
+const artefakte=[
+  {id:'bc',name:'Business Case',ebene:'Strategisch — WARUM investieren?',ind:0},
+  {id:'epic',name:'Epic',ebene:'Portfolio / Programm',ind:1},
+  {id:'uc',name:'Use Case',ebene:'Systemverhalten',ind:2},
+  {id:'us',name:'User Story',ebene:'Wertinkrement — 1 Sprint',ind:3},
+  {id:'task',name:'Task / To-Do',ebene:'Operative Zerlegung',ind:4},
+  {id:'fa',name:'FA',ebene:'Funktionale Anforderung',ind:3,leaf:true},
+  {id:'nfa',name:'NFA',ebene:'Qualität (ISO 25010)',ind:3,leaf:true},
+  {id:'ak',name:'Akzeptanzkrit. / Gherkin',ebene:'Testbarkeit (binär)',ind:4,leaf:true},
+];
+const fit={
+  bc:{moscow:[0,'Zu fein. Ein Business Case wird gegen Alternativen abgewogen (ROI/NPV).'],wa:[1,'Grobe strategische Wert-Aufwand-Sicht möglich.'],kano:[0,'Kano bewertet Produktmerkmale, keine Investitionen.'],wsjf:[1,'Nur der Cost-of-Delay-Gedanke ist nützlich; volles WSJF erst bei Epics.'],rice:[1,'Bedingt — eher für konkrete Initiativen.'],sp:[0,'Auf BC-Ebene nicht schätzbar.'],bv:[2,'Kernmethode: Business Value, ROI/NPV, Cost of Delay.'],eis:[0,'Zu operativ.']},
+  epic:{moscow:[1,'Bedingt — grober Release-Scope, aber keine Reihung mehrerer Epics.'],wa:[1,'Portfolio-Übersicht, gröber als WSJF/RICE.'],kano:[1,'Hilft den Epic-Charakter einzuordnen.'],wsjf:[2,'Kernmethode: SAFe reiht Epics/Features per WSJF.'],rice:[2,'Kernmethode für Produkt-Initiativen.'],sp:[0,'Epics zu groß — höchstens T-Shirt-Größen.'],bv:[2,'Cost of Delay / Business Value = direkter WSJF-Input.'],eis:[0,'Zu operativ.']},
+  uc:{moscow:[1,'Gut zur Release-Auswahl von Use Cases.'],wa:[2,'Kernmethode: Wert vs. Aufwand je Use Case ist greifbar.'],kano:[2,'Kernmethode: Use Cases nach Attraktivität einordnen.'],wsjf:[1,'Bedingt, wenn featuregroß.'],rice:[1,'Bedingt, wenn Reichweite abschätzbar.'],sp:[1,'Grob schätzbar, meist mehrere Stories.'],bv:[1,'Wertbeitrag benennbar, aber gröber.'],eis:[0,'Falsche Granularität.']},
+  us:{moscow:[2,'Kernmethode für Sprint-/Release-Scope.'],wa:[2,'Kernmethode: Wert vs. Aufwand je Story.'],kano:[1,'Bedingt — ordnet Nutzen ein, reiht nicht.'],wsjf:[1,'Bedingt — eher Epic-Ebene.'],rice:[0,'Zu fein — Reichweitendaten fehlen je Story.'],sp:[2,'Kernwerkzeug — schätzt Aufwand (Input für Wert-Aufwand).'],bv:[1,'Business Value Poker je Story üblich.'],eis:[1,'Bedingt für Sprint-interne Reihung.']},
+  task:{moscow:[1,'Bedingt — eher Reihenfolge nach Abhängigkeit.'],wa:[0,'Tasks haben keinen eigenen Geschäftswert.'],kano:[0,'Kano bewertet Nutzermerkmale, keine Tasks.'],wsjf:[0,'Kein Geschäftswert auf Task-Ebene.'],rice:[0,'Reichweite/Impact existieren nicht.'],sp:[1,'Tasks oft in Stunden statt SP.'],bv:[0,'Kein direkter Business Value.'],eis:[2,'Kernmethode: Dringlich/Wichtig + Abhängigkeit.']},
+  fa:{moscow:[2,'Kernmethode: einzelne FA per MoSCoW (Lasten-/Pflichtenheft).'],wa:[1,'Bedingt, wenn Aufwand je FA bekannt.'],kano:[1,'Manche FA tragen Begeisterungscharakter.'],wsjf:[0,'Zu fein.'],rice:[0,'Zu fein.'],sp:[1,'Aufwand grob schätzbar.'],bv:[1,'Wertbeitrag benennbar.'],eis:[0,'Falsche Ebene.']},
+  nfa:{moscow:[1,'Regulatorische NFA landen oft automatisch im Must.'],wa:[1,'Aufwand schwer isoliert.'],kano:[2,'Kernmethode: Security/DSGVO = Basis, Performance = Leistung, smarte Vorschläge = Begeisterung.'],wsjf:[0,'Reiht keine Qualitätsmerkmale.'],rice:[0,'Nicht anwendbar.'],sp:[0,'Querschnitt, kein Inkrement.'],bv:[1,'Indirekter Wert (Risikovermeidung).'],eis:[0,'Falsche Ebene.']},
+  ak:{moscow:[0,'Akzeptanzkriterien sind binär — nicht priorisiert.'],wa:[0,'Kein Geschäftswert je Kriterium.'],kano:[0,'Nicht anwendbar.'],wsjf:[0,'Nicht anwendbar.'],rice:[0,'Nicht anwendbar.'],sp:[0,'Werden nicht geschätzt.'],bv:[0,'Kein eigener Wert.'],eis:[1,'Höchstens risikobasierte Test-Reihenfolge.']},
+};
+const fitLabel={2:'Kern',1:'bedingt',0:'—'};
+function renderChain(){
+  const c=document.getElementById('chain'); let html='';
+  artefakte.forEach((a,i)=>{
+    if(i>0 && !a.leaf) html+='<div class="chain-arrow indent-'+a.ind+'">↓</div>';
+    if(a.leaf && (i===0||!artefakte[i-1].leaf)) html+='<div class="chain-arrow" style="margin-left:54px">↳ Querschnitt / Blattebene</div>';
+    html+='<div class="chain-item indent-'+a.ind+'" data-id="'+a.id+'" onclick="showArt(\''+a.id+'\')"><div class="chain-bar"><span class="chain-name">'+a.name+'</span><span class="chain-ebene">'+a.ebene+'</span></div></div>';
+  });
+  c.innerHTML=html;
+}
+function showArt(id){
+  document.querySelectorAll('.chain-item').forEach(el=>el.classList.toggle('active', el.dataset.id===id));
+  const a=artefakte.find(x=>x.id===id), f=fit[id];
+  const core=methoden.filter(m=>f[m.id][0]===2), cond=methoden.filter(m=>f[m.id][0]===1);
+  let html='<h4>'+a.name+'</h4><div style="font-size:var(--sec-size);color:#b59c79;margin-bottom:8px">'+a.ebene+'</div>';
+  html+='<div style="font-size:var(--sec-size);margin-bottom:4px">Kernmethoden:</div><div class="method-pills">'+(core.length?core.map(m=>'<span class="pill core">'+m.name+'</span>').join(''):'<span style="color:#9a8a72;font-size:var(--sec-size)">— keine —</span>')+'</div>';
+  html+='<div style="font-size:var(--sec-size);margin:8px 0 4px">Bedingt geeignet:</div><div class="method-pills">'+(cond.length?cond.map(m=>'<span class="pill cond">'+m.name+'</span>').join(''):'<span style="color:#9a8a72;font-size:var(--sec-size)">— keine —</span>')+'</div>';
+  if(core[0]) html+='<div style="font-size:var(--sec-size);margin-top:10px;line-height:1.5">'+f[core[0].id][1]+'</div>';
+  const box=document.getElementById('artDetail'); box.innerHTML=html; box.classList.add('shown');
+}
+function renderFitTable(){
+  const t=document.getElementById('fitTable');
+  let head='<thead><tr><th class="rowhead">Artefakt ╲ Methode</th>'+methoden.map(m=>'<th>'+m.name+'</th>').join('')+'</tr></thead>';
+  let body='<tbody>';
+  artefakte.forEach(a=>{ body+='<tr><td class="rowhead">'+a.name+'</td>';
+    methoden.forEach(m=>{ const v=fit[a.id][m.id][0]; body+='<td class="cell f'+v+'" data-a="'+a.id+'" data-m="'+m.id+'" onclick="showCell(\''+a.id+'\',\''+m.id+'\')">'+fitLabel[v]+'</td>'; });
+    body+='</tr>'; });
+  t.innerHTML=head+body+'</tbody>';
+}
+function showCell(aid,mid){
+  document.querySelectorAll('table.fit td.cell').forEach(c=>c.classList.toggle('active', c.dataset.a===aid&&c.dataset.m===mid));
+  const a=artefakte.find(x=>x.id===aid), m=methoden.find(x=>x.id===mid), cell=fit[aid][mid];
+  const tag={2:'Kernmethode',1:'bedingt geeignet',0:'ungeeignet'}[cell[0]];
+  document.getElementById('cellDetail').innerHTML='<b>'+m.name+'</b> auf <b>'+a.name+'</b> — '+tag+'.<br>'+cell[1];
+}
+renderChain(); renderFitTable();
+
+/* ============ MOSCOW ============ */
+const requirements=[
+  {id:'r1',text:'Login mit starker, zweistufiger Authentifizierung',hint:'Norm-Mittel: ISO/IEC 27001:2022, Anh. A.8.5 (Zugriffskontrolle) verlangt angemessene Authentifizierungsstärke.',badge:'⚖ ISO/IEC 27001:2022 A.8.5',cat:'must'},
+  {id:'r2',text:'Dark Mode für die Anwendung',hint:'Komfort, kein Kernprozess betroffen',cat:'could'},
+  {id:'r3',text:'Export der Reports als PDF',hint:'Von mehreren Stakeholdern verlangt, Prozess hängt teils davon ab',cat:'should'},
+  {id:'r4',text:'KI-gestützte Texterkennung in Anhängen',hint:'Vision für später, aktuell nicht im Scope',cat:'wont'},
+  {id:'r5',text:'Rollenbasierte Zugriffssteuerung',hint:'Norm-Mittel: ISO/IEC 27001:2022, Anh. A.5.15 (Zugriffssteuerung) — ohne diese Funktion ist Go-Live nicht freigabefähig.',badge:'⚖ ISO/IEC 27001:2022 A.5.15',cat:'must'},
+  {id:'r6',text:'Mehrsprachige Oberfläche (DE/EN)',hint:'Wichtig für internationale Teams, Übergangslösung möglich',cat:'should'},
+];
+const catLabels={must:'Must',should:'Should',could:'Could',wont:"Won't"};
+let moscowState={};
+function renderMoscow(){
+  document.getElementById('moscowPanel').innerHTML=requirements.map(r=>
+    '<div class="req-row"><div class="req-text">'+r.text+(r.badge?'<span class="norm-badge">'+r.badge+'</span>':'')+'</div><div class="req-hint">'+r.hint+'</div>'+
+    '<div class="cat-btns" data-id="'+r.id+'">'+['must','should','could','wont'].map(c=>'<button onclick="setCat(\''+r.id+'\',\''+c+'\')">'+catLabels[c]+'</button>').join('')+'</div></div>').join('');
+}
+function setCat(id,cat){ moscowState[id]=cat; const row=document.querySelector('.cat-btns[data-id="'+id+'"]'); row.querySelectorAll('button').forEach((b,i)=>{const c=['must','should','could','wont'][i]; b.className=(c===cat)?('sel-'+c):'';}); }
+function checkMoscow(){
+  let correct=0,msgs=[];
+  requirements.forEach(r=>{ const p=moscowState[r.id]; if(p===r.cat) correct++; else if(p) msgs.push('„'+r.text+'" → du: <b>'+catLabels[p]+'</b>, passt eher <b>'+catLabels[r.cat]+'</b>: '+r.hint); else msgs.push('„'+r.text+'" ist noch nicht zugeordnet.'); });
+  document.getElementById('moscowFeedback').innerHTML='<b>'+correct+' / '+requirements.length+' korrekt.</b><br>'+(msgs.length?msgs.join('<br>'):'Alles sauber priorisiert — sehr gut!');
+}
+function resetMoscow(){ moscowState={}; renderMoscow(); document.getElementById('moscowFeedback').innerHTML=''; }
+renderMoscow();
+
+/* ============ MATRIX ============ */
+let matrixItems=[];
+function defaultMatrix(){ return [{id:'m1',label:'PDF-Export',x:25,y:35},{id:'m2',label:'2FA-Login',x:60,y:85},{id:'m3',label:'Dark Mode',x:15,y:15},{id:'m4',label:'KI-Texterkennung',x:85,y:30},{id:'m5',label:'Rollen & Rechte',x:55,y:90}]; }
+function quadName(it){ return it.x<50?(it.y>=50?'Quick Win':'Fill-In'):(it.y>=50?'Big Bet':'Money Pit'); }
+function renderMatrix(){
+  const m=document.getElementById('matrix'); m.querySelectorAll('.dot,.dot-label').forEach(e=>e.remove());
+  const legend=document.getElementById('legendList'); legend.innerHTML='';
+  matrixItems.forEach(it=>{
+    const dot=document.createElement('div'); dot.className='dot'; dot.id='dot-'+it.id; dot.style.left=it.x+'%'; dot.style.top=(100-it.y)+'%'; m.appendChild(dot);
+    const lbl=document.createElement('div'); lbl.className='dot-label'; lbl.id='lbl-'+it.id; lbl.textContent=it.label; lbl.style.left=it.x+'%'; lbl.style.top=(100-it.y)+'%'; m.appendChild(lbl);
+    const li=document.createElement('div'); li.className='legend-item'; li.id='leg-'+it.id; li.innerHTML='<b>'+it.label+'</b> — Wert: '+it.y+'%, Aufwand: '+it.x+'% → <i>'+quadName(it)+'</i>'; legend.appendChild(li);
+    attachDrag(dot,it);
+  });
+}
+function attachDrag(dot,it){
+  dot.addEventListener('pointerdown',e=>{
+    e.preventDefault(); dot.setPointerCapture(e.pointerId); const m=document.getElementById('matrix');
+    function move(ev){ const rect=m.getBoundingClientRect(); let x=((ev.clientX-rect.left)/rect.width)*100; let y=100-((ev.clientY-rect.top)/rect.height)*100; x=Math.max(0,Math.min(100,Math.round(x))); y=Math.max(0,Math.min(100,Math.round(y))); it.x=x; it.y=y; dot.style.left=x+'%'; dot.style.top=(100-y)+'%'; const lbl=document.getElementById('lbl-'+it.id); lbl.style.left=x+'%'; lbl.style.top=(100-y)+'%'; document.getElementById('leg-'+it.id).innerHTML='<b>'+it.label+'</b> — Wert: '+y+'%, Aufwand: '+x+'% → <i>'+quadName(it)+'</i>'; }
+    function up(){ dot.removeEventListener('pointermove',move); dot.removeEventListener('pointerup',up); }
+    dot.addEventListener('pointermove',move); dot.addEventListener('pointerup',up);
+  });
+}
+function resetMatrix(){ matrixItems=defaultMatrix(); renderMatrix(); }
+matrixItems=defaultMatrix(); renderMatrix();
+
+/* ============ KANO ============ */
+const kanoItems=[
+  {id:'k1',text:'Passwort-Reset funktioniert zuverlässig',type:'basis',why:'Wird vorausgesetzt — fehlt es, Ärger; ist es da, fällt es kaum auf.'},
+  {id:'k2',text:'Suchfunktion liefert in unter 1 Sekunde Ergebnisse',type:'leistung',why:'Je schneller, desto zufriedener — linear.'},
+  {id:'k3',text:'KI schlägt proaktiv passende Vorlagen vor',type:'begeisterung',why:'Unerwartet, begeistert — fehlt es, vermisst es niemand.'},
+  {id:'k4',text:'Daten werden DSGVO-konform gespeichert (Art. 32 DSGVO — Sicherheit der Verarbeitung)',type:'basis',why:'Muss-Kriterium, gesetzlich (Art. 32 DSGVO) — bei Verstoß massiver Ärger und Bußgeldrisiko.'},
+  {id:'k5',text:'Anzahl konfigurierbarer Dashboard-Widgets',type:'leistung',why:'Mehr Auswahl = mehr wahrgenommener Wert.'},
+];
+function renderKano(){ document.getElementById('kanoPanel').innerHTML=kanoItems.map(k=>'<div class="kano-row"><div class="ktext">'+k.text+'</div><select id="sel-'+k.id+'"><option value="">– wählen –</option><option value="basis">Basis-Merkmal</option><option value="leistung">Leistungs-Merkmal</option><option value="begeisterung">Begeisterungs-Merkmal</option></select></div>').join(''); }
+function checkKano(){ let correct=0,msgs=[]; kanoItems.forEach(k=>{const v=document.getElementById('sel-'+k.id).value; if(v===k.type) correct++; else msgs.push('„'+k.text+'" ist <b>'+k.type.toUpperCase()+'</b>: '+k.why);}); document.getElementById('kanoFeedback').innerHTML='<b>'+correct+' / '+kanoItems.length+' korrekt.</b><br>'+(msgs.length?msgs.join('<br>'):'Alle Kano-Typen richtig erkannt!'); }
+renderKano();
+
+/* ============ WSJF ============ */
+let wsjfData=[];
+function defaultWsjf(){ return [{id:'w1',name:'2FA-Login',bv:8,tc:13,rr:13,js:5},{id:'w2',name:'PDF-Export',bv:8,tc:5,rr:2,js:3},{id:'w3',name:'Dark Mode',bv:2,tc:1,rr:1,js:3},{id:'w4',name:'Rollen & Rechte',bv:13,tc:8,rr:8,js:8},{id:'w5',name:'KI-Texterkennung',bv:5,tc:2,rr:3,js:13}]; }
+function renderWsjf(){
+  const tbody=document.querySelector('#wsjfTable tbody');
+  const rows=wsjfData.map(d=>{const cod=(+d.bv||0)+(+d.tc||0)+(+d.rr||0); const wsjf=d.js>0?cod/d.js:0; return {...d,cod,wsjf};});
+  const ranked=[...rows].sort((a,b)=>b.wsjf-a.wsjf); const rankMap={}; ranked.forEach((r,i)=>rankMap[r.id]=i+1);
+  tbody.innerHTML=rows.map(r=>'<tr><td class="name">'+r.name+'</td><td><input type="number" value="'+r.bv+'" oninput="updWsjf(\''+r.id+'\',\'bv\',this.value)"></td><td><input type="number" value="'+r.tc+'" oninput="updWsjf(\''+r.id+'\',\'tc\',this.value)"></td><td><input type="number" value="'+r.rr+'" oninput="updWsjf(\''+r.id+'\',\'rr\',this.value)"></td><td>'+r.cod+'</td><td><input type="number" value="'+r.js+'" oninput="updWsjf(\''+r.id+'\',\'js\',this.value)"></td><td class="result">'+r.wsjf.toFixed(2)+'</td><td><span class="rank-badge">'+rankMap[r.id]+'</span></td></tr>').join('');
+}
+function updWsjf(id,f,v){ const d=wsjfData.find(x=>x.id===id); d[f]=parseFloat(v)||0; renderWsjf(); }
+function resetWsjf(){ wsjfData=defaultWsjf(); renderWsjf(); }
+wsjfData=defaultWsjf(); renderWsjf();
+
+/* ============ RICE ============ */
+let riceData=[];
+function defaultRice(){ return [{id:'i1',name:'2FA-Login',reach:5000,impact:2,conf:90,effort:2},{id:'i2',name:'PDF-Export',reach:3000,impact:1,conf:100,effort:1},{id:'i3',name:'Dark Mode',reach:8000,impact:0.5,conf:80,effort:1.5},{id:'i4',name:'Rollen & Rechte',reach:5000,impact:3,conf:90,effort:4},{id:'i5',name:'KI-Texterkennung',reach:2000,impact:2,conf:50,effort:6}]; }
+function renderRice(){
+  const tbody=document.querySelector('#riceTable tbody');
+  const rows=riceData.map(d=>{const score=d.effort>0?(d.reach*d.impact*(d.conf/100))/d.effort:0; return {...d,score};});
+  const ranked=[...rows].sort((a,b)=>b.score-a.score); const rankMap={}; ranked.forEach((r,i)=>rankMap[r.id]=i+1);
+  tbody.innerHTML=rows.map(r=>'<tr><td class="name">'+r.name+'</td><td><input type="number" value="'+r.reach+'" oninput="updRice(\''+r.id+'\',\'reach\',this.value)"></td><td><input type="number" step="0.25" value="'+r.impact+'" oninput="updRice(\''+r.id+'\',\'impact\',this.value)"></td><td><input type="number" value="'+r.conf+'" oninput="updRice(\''+r.id+'\',\'conf\',this.value)"></td><td><input type="number" step="0.5" value="'+r.effort+'" oninput="updRice(\''+r.id+'\',\'effort\',this.value)"></td><td class="result">'+Math.round(r.score)+'</td><td><span class="rank-badge">'+rankMap[r.id]+'</span></td></tr>').join('');
+}
+function updRice(id,f,v){ const d=riceData.find(x=>x.id===id); d[f]=parseFloat(v)||0; renderRice(); }
+function resetRice(){ riceData=defaultRice(); renderRice(); }
+riceData=defaultRice(); renderRice();
+
+/* ============ PLANNING POKER ============ */
+const fib=[1,2,3,5,8,13,21];
+const pstories=[
+  {id:'p1',text:'Als Nutzer möchte ich mein Passwort über einen E-Mail-Link zurücksetzen.',est:3,why:'Standard-Flow, etablierte Bibliotheken, geringe Unsicherheit — kleine bis mittlere Story.'},
+  {id:'p2',text:'Als Admin möchte ich rollenbasierte Zugriffsrechte für 5 Rollen konfigurieren.',est:8,why:'Berechtigungslogik quer durch die App, hoher Testaufwand — große Story.'},
+  {id:'p3',text:'Als Nutzer möchte ich die Oberfläche zwischen DE und EN umschalten.',est:5,why:'i18n-Setup einmalig aufwändig, danach moderat — mittlere Story.'},
+  {id:'p4',text:'Als Nutzer möchte ich den aktuellen Report als PDF exportieren.',est:5,why:'Layout-Mapping tückisch, aber überschaubarer Scope — mittlere Story.'},
+  {id:'p5',text:'Als Nutzer möchte ich eine KI-gestützte Texterkennung in hochgeladenen Anhängen.',est:21,why:'Hohe technische Unsicherheit, Spike nötig — sehr große Story, splitten!'},
+];
+let pokerState={};
+function renderPoker(){ document.getElementById('pokerTotal').textContent=pstories.length; document.getElementById('pokerPanel').innerHTML=pstories.map(s=>'<div class="req-row"><div class="req-text">'+s.text+'</div><div class="poker-card-row" data-id="'+s.id+'">'+fib.map(f=>'<div class="poker-card" onclick="pickPoker(\''+s.id+'\','+f+')">'+f+'</div>').join('')+'</div><div class="poker-feedback" id="pf-'+s.id+'"></div></div>').join(''); }
+function pickPoker(id,val){ const s=pstories.find(x=>x.id===id); const row=document.querySelector('.poker-card-row[data-id="'+id+'"]'); row.querySelectorAll('.poker-card').forEach(c=>c.classList.toggle('sel',parseInt(c.textContent)===val)); const fb=document.getElementById('pf-'+id); let v; if(val===s.est) v='✓ Trifft die Team-Referenz ('+s.est+' Punkte).'; else if(val<s.est) v='↓ Du: '+val+', Referenz: '+s.est+' — eher unterschätzt.'; else v='↑ Du: '+val+', Referenz: '+s.est+' — eher überschätzt.'; fb.className='poker-feedback shown'; fb.innerHTML='<b>'+v+'</b><br>'+s.why; if(!pokerState[id]){ pokerState[id]=true; document.getElementById('pokerDone').textContent=Object.keys(pokerState).length; } }
+renderPoker();
+
+/* ============ CONFLICT ============ */
+const cases=[
+  {id:'c1',title:'Fall 1: Das Dashboard-Dilemma',voices:[{who:'Sarah (Vertrieb)',text:'„Ich brauche dringend die neuen Filterfunktionen – sonst verlieren wir Zeit bei jedem Kundengespräch."'},{who:'Herr Bachmeier (GF)',text:'„Mir ist wichtig, dass wir zum Quartalsende ein stabiles Reporting für den Vorstand haben."'},{who:'Knut (Entwicklung)',text:'„Die Filter sind technisch aufwändig, das Reporting-Modul ist fast fertig."'}],options:[{text:'Beide Anforderungen gleichzeitig umsetzen, um niemanden zu verärgern.',correct:false,fb:'Parallelisierung ohne Kapazitätsprüfung verzögert meist beides.'},{text:'Reporting als Must (nah am Ziel, strategisch sichtbar, Termin fix), Filter als Should in den nächsten Sprint.',correct:true,fb:'Richtig: Stakeholder-Power, fixer Termin und geringer Restaufwand sprechen fürs Reporting. Filter bleiben wertvoll, aber verschiebbar.'},{text:'Entscheidung an Knut delegieren, da er den Aufwand kennt.',correct:false,fb:'Aufwand ist nur eine Dimension — Wert und Dringlichkeit fehlen.'}]},
+  {id:'c2',title:'Fall 2: Der Compliance-Konflikt',voices:[{who:'Petra (QM)',text:'„Die Protokollierung aller Datenzugriffe ist laut Audit-Vorgabe bis Monatsende Pflicht."'},{who:'Ela (Projektleitung)',text:'„Das Team ist mit dem Onboarding-Flow ausgelastet – der bringt die meiste Sichtbarkeit."'},{who:'Knut (Entwicklung)',text:'„Beides parallel sprengt unsere Sprint-Kapazität."'}],options:[{text:'Onboarding-Flow priorisieren, da sichtbarer und mehr Anerkennung.',correct:false,fb:'Sichtbarkeit schlägt keine regulatorische Pflicht mit Frist.'},{text:'Protokollierung als Must (regulatorisch, fixe Frist), Onboarding-Flow reduzieren/strecken.',correct:true,fb:'Richtig: Audit-Pflichten mit Frist sind klassische Must-Kriterien.'},{text:'Beides auf den nächsten Sprint verschieben.',correct:false,fb:'Die Audit-Frist erlaubt kein pauschales Verschieben.'}]},
+  {id:'c3',title:'Fall 3: Die laute Minderheit',voices:[{who:'Power-User (Einzelperson)',text:'„Ich will unbedingt eine Tastenkombination für Funktion X – nutze ich täglich!"'},{who:'Sarah (Vertrieb)',text:'„Für die meisten Nutzer irrelevant, wir haben dringendere Themen."'},{who:'Herr Bachmeier',text:'„Keine Ressourcen für Nischenwünsche, solange Kernprozesse hängen."'}],options:[{text:'Als Could einstufen — kein Hebel für die breite Basis, kein Risiko bei Nichtumsetzung.',correct:true,fb:'Richtig: Einzelmeinung ohne breite Wertschöpfung = klassisches Could.'},{text:'Als Must umsetzen, weil der User sich sonst beschwert.',correct:false,fb:'Lautstärke ist kein Priorisierungskriterium.'},{text:'Ignorieren und nicht ins Backlog aufnehmen.',correct:false,fb:'Komplett verwerfen ist unsauber — bewusst zurückstellen und dokumentieren.'}]},
+];
+let caseScore=0;
+function renderCases(){
+  document.getElementById('caseMax').textContent=cases.length;
+  document.getElementById('casesContainer').innerHTML=cases.map(c=>'<div class="case-card"><h3>'+c.title+'</h3><div class="voices">'+c.voices.map(v=>'<div class="voice"><b>'+v.who+':</b> '+v.text+'</div>').join('')+'</div><div class="case-options" data-case="'+c.id+'">'+c.options.map((o,i)=>'<label><input type="radio" name="'+c.id+'" value="'+i+'"><span>'+o.text+'</span></label>').join('')+'</div><div class="case-feedback" id="fb-'+c.id+'"></div></div>').join('');
+  cases.forEach(c=>{ document.querySelectorAll('input[name="'+c.id+'"]').forEach(inp=>{ inp.addEventListener('change',()=>{ const opt=c.options[parseInt(inp.value)]; const fb=document.getElementById('fb-'+c.id); fb.className='case-feedback '+(opt.correct?'correct':'wrong'); fb.innerHTML=(opt.correct?'✓ ':'✗ ')+opt.fb; if(!inp.dataset.scored){ inp.dataset.scored='1'; if(opt.correct){ caseScore++; document.getElementById('caseScore').textContent=caseScore; } } }); }); });
+}
+renderCases();
+
+/* ============ BEAMER-MODUS (4 Stufen) ============ */
+const beamerStages=['','beamer1','beamer2','beamer3'];
+const beamerLabels=['☀ Beamer','☀ Größer','☀ Am größten','☀ Normal'];
+let beamerIdx=0;
+function cycleBeamer(){
+  if(beamerStages[beamerIdx]) document.documentElement.classList.remove(beamerStages[beamerIdx]);
+  beamerIdx=(beamerIdx+1)%beamerStages.length;
+  if(beamerStages[beamerIdx]) document.documentElement.classList.add(beamerStages[beamerIdx]);
+  document.getElementById('beamerBtn').textContent=beamerLabels[beamerIdx];
+}
+
+/* ============ NAV ============ */
+const sections={journey:'journey-section', map:'map-section', moscow:'moscow', matrix:'matrix-section', kano:'kano-section', wsjf:'wsjf-section', rice:'rice-section', poker:'poker-section', conflict:'conflict-section'};
+document.querySelectorAll('.navbtn').forEach(btn=>{ btn.addEventListener('click',()=>{ document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); Object.values(sections).forEach(id=>document.getElementById(id).classList.remove('active')); document.getElementById(sections[btn.dataset.target]).classList.add('active'); }); });
+</script>
+</body>
+</html>
