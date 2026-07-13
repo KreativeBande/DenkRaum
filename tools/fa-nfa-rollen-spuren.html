@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FA → NFA / Rollen: Die Spuren einer Anforderung | Marmorkuchen & Bürgeramt</title>
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --bg2:#F7F5F0;
+    --ink:#16213F;
+    --ink-dim:#5B6479;
+    --line:#D8D4C8;
+
+    --c-dsgvo:#1E5FC4;
+    --c-nis2:#C8472B;
+    --c-aiact:#7A3FC4;
+    --c-cada:#0E8E73;
+    --c-iso:#A9760A;
+    --c-data:#3F8E1A;
+
+    --c-po:#1E5FC4;
+    --c-dev:#0E8E73;
+    --c-test:#A9760A;
+    --c-user:#C8472B;
+
+    --c-fach:#7A3FC4;
+    --c-it:#0E8E73;
+    --c-sponsor:#C8472B;
+    --c-betrieb:#1E5FC4;
+
+    --font-display: Georgia, 'Iowan Old Style', 'Palatino Linotype', serif;
+    --font-body: -apple-system, 'Inter', 'Segoe UI', system-ui, sans-serif;
+    --font-mono: 'SF Mono', 'Courier New', monospace;
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{
+    margin:0; padding:0; min-height:100%; background:var(--bg); color:var(--ink);
+    font-family:var(--font-body); color-scheme:light;
+  }
+
+  .layout{ display:flex; width:100%; height:100vh; }
+
+  .stage{
+    width:40vw; height:100vh; border-right:2px solid var(--line);
+    display:flex; flex-direction:column;
+    padding:24px 36px 24px;
+    overflow-y:auto;
+  }
+
+  .eyebrow{ font-size:14px; letter-spacing:2px; color:var(--ink-dim); text-transform:uppercase; margin-bottom:4px; }
+  .heading-row{ display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:16px; gap:16px; flex-wrap:wrap; }
+  .heading-row h1{ font-family:var(--font-display); font-size:30px; margin:0; line-height:1.1; }
+
+  .reset-btn{
+    background:transparent; border:1.5px solid var(--line); color:var(--ink-dim);
+    font-family:var(--font-body); font-size:15px; padding:10px 20px; border-radius:999px;
+    cursor:pointer; transition:all .2s ease; white-space:nowrap;
+  }
+  .reset-btn:hover, .reset-btn:focus-visible{ color:var(--ink); border-color:var(--ink-dim); }
+
+  .back-link{ font-size:14px; font-weight:600; color:var(--ink-dim); text-decoration:none; display:inline-block; margin-bottom:10px; }
+  .back-link:hover{ color:var(--ink); text-decoration:underline; }
+  html.beamer .back-link, html.beamer-xl .back-link, html.beamer-xxl .back-link{ display:none; }
+
+  .switch-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; align-items:center; }
+
+  .seg-switch{
+    display:flex; gap:8px; border:1.5px solid var(--line); border-radius:999px;
+    padding:5px; background:#F7F5F0; width:fit-content;
+  }
+  .seg-btn{
+    border:none; background:transparent; cursor:pointer; border-radius:999px;
+    padding:9px 18px; font-family:var(--font-body); font-size:14.5px; font-weight:600; color:var(--ink-dim);
+    transition: background .2s ease, color .2s ease; white-space:nowrap;
+  }
+  .seg-btn.active{ background:#FFFFFF; color:var(--ink); box-shadow:0 2px 8px rgba(22,33,63,0.08); }
+  .seg-btn:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+
+  .seg-switch.mode-switch .seg-btn.active{ background:var(--ink); color:#fff; }
+
+  #roleGroupRow{ display:none; }
+  #roleGroupRow.visible{ display:flex; }
+
+  .fa-banner{
+    background:radial-gradient(circle at 18% 20%, #FFFFFF, #F3F1E9 75%);
+    border:2.5px solid var(--ink); border-radius:18px;
+    padding:20px 26px; margin-bottom:18px;
+    box-shadow:0 6px 24px rgba(22,33,63,0.06);
+  }
+  .fa-banner .fa-label{
+    font-family:var(--font-body); font-weight:700; font-size:14px; letter-spacing:3px; color:var(--ink-dim);
+    text-transform:uppercase; margin-bottom:8px;
+  }
+  .fa-banner .fa-text{
+    font-family:var(--font-display); font-size:20px; line-height:1.4; color:var(--ink); max-width:62ch;
+  }
+
+  .funnel-hint{
+    text-align:center; font-family:var(--font-body); font-size:14px; color:var(--ink-dim);
+    letter-spacing:1px; margin:0 0 14px; display:flex; align-items:center; gap:10px;
+  }
+  .funnel-hint::before, .funnel-hint::after{ content:""; flex:1; height:1px; background:var(--line); }
+
+  .tracks{ display:flex; flex-direction:column; gap:12px; }
+  .track-row{
+    display:flex; align-items:center; gap:18px;
+    width:100%; text-align:left; cursor:pointer;
+    background:#FFFFFF; border:2px solid var(--line); border-left-width:8px; border-radius:14px;
+    padding:16px 22px; font-family:var(--font-body);
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+  }
+  .track-row:hover, .track-row:focus-visible{ transform:translateX(6px); box-shadow:0 6px 20px rgba(22,33,63,0.08); }
+  .track-row:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
+  .track-row.active{ background:#F7F5F0; border-width:2.5px; border-left-width:9px; }
+
+  .tr-meta{ flex:1; min-width:0; }
+  .tr-code{ font-family:var(--font-mono); font-weight:700; font-size:14px; letter-spacing:1.2px; margin-bottom:3px; }
+  .tr-name{ font-family:var(--font-body); font-weight:700; font-size:22px; color:var(--ink); line-height:1.2; }
+  .tr-count{ font-family:var(--font-mono); font-size:14px; color:var(--ink-dim); white-space:nowrap; }
+  .tr-arrow{ font-size:20px; color:var(--ink-dim); transition:transform .18s ease; }
+  .track-row.active .tr-arrow{ transform:translateX(4px); color:var(--ink); }
+
+  .panel{
+    width:60vw; height:100vh;
+    background:#FFFFFF;
+    display:flex; flex-direction:column;
+  }
+  .panel-head{ padding:40px 38px 24px; border-bottom:1.5px solid var(--line); }
+  .panel-head .p-code{ font-family:var(--font-mono); font-weight:700; font-size:15px; letter-spacing:1.8px; margin-bottom:10px; }
+  .panel-head .p-name{ font-family:var(--font-display); font-size:38px; line-height:1.22; color:var(--ink); margin:0; }
+  .panel-head .p-sub{ font-size:16px; color:var(--ink-dim); margin-top:12px; line-height:1.55; }
+
+  .panel-body{ flex:1; overflow-y:auto; padding:28px 38px 50px; }
+
+  .nfa-card{
+    border:1.5px solid var(--line); border-radius:14px; padding:20px 22px; margin-bottom:18px;
+    background:#FCFBF8;
+  }
+  .nfa-card.misunderstanding{ border-style:dashed; background:#FCF7F0; }
+  .nfa-card.norm-prescribed{ border-style:dotted; border-color:#1E5FC4; background:#EEF3FC; }
+  .card-tag-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:13px; }
+  .nfa-tag{ margin-bottom:0; }
+  .norm-badge{
+    display:inline-flex; align-items:center; gap:5px;
+    font-family:var(--font-mono); font-size:14px; letter-spacing:0.5px;
+    padding:4px 11px; border-radius:999px;
+    background:#1E5FC4; color:#fff; font-weight:600;
+  }
+  .warn-badge{
+    display:inline-flex; align-items:center; gap:5px;
+    font-family:var(--font-mono); font-size:14px; letter-spacing:0.5px;
+    padding:4px 11px; border-radius:999px;
+    background:#C8472B; color:#fff; font-weight:600;
+  }
+  .nfa-card .nfa-tag{
+    display:inline-block; font-family:var(--font-mono); font-size:14px; letter-spacing:0.8px;
+    padding:5px 13px; border-radius:999px; margin-bottom:13px; color:#FFFFFF; font-weight:700;
+  }
+  .nfa-card .nfa-text{ font-size:19px; line-height:1.55; color:var(--ink); }
+  .nfa-card .nfa-ref{ margin-top:12px; font-size:14px; color:var(--ink-dim); font-family:var(--font-mono); }
+
+  .persona-line{
+    margin:0 0 26px; padding-bottom:22px; border-bottom:1.5px dashed var(--line);
+    font-family:var(--font-display); font-style:italic; font-size:19px; color:var(--ink-dim); line-height:1.5;
+  }
+  .persona-line .who{ font-style:normal; font-family:var(--font-body); font-weight:700; font-size:17px; color:var(--ink); }
+
+  .overview-grid{ display:flex; flex-direction:column; gap:14px; }
+  .overview-tile{
+    display:flex; align-items:center; gap:16px;
+    border:1.5px solid var(--line); border-left-width:6px; border-radius:12px;
+    padding:16px 20px; background:#FCFBF8; cursor:pointer;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .overview-tile:hover, .overview-tile:focus-visible{ transform:translateX(4px); box-shadow:0 4px 16px rgba(22,33,63,0.08); }
+  .overview-tile:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+  .overview-tile .ot-code{ font-family:var(--font-mono); font-weight:700; font-size:14px; letter-spacing:1px; }
+  .overview-tile .ot-name{ font-family:var(--font-body); font-weight:700; font-size:19px; color:var(--ink); margin-top:2px; }
+  .overview-tile .ot-count{ margin-left:auto; font-family:var(--font-mono); font-size:14px; color:var(--ink-dim); white-space:nowrap; }
+
+  @media (max-width: 900px){
+    .layout{ flex-direction:column; height:auto; min-height:100vh; }
+    .stage, .panel{ width:100%; height:auto; }
+    .stage{ border-right:none; border-bottom:2px solid var(--line); }
+    .fa-banner .fa-text{ font-size:17px; }
+    .tr-name{ font-size:18px; }
+  }
+
+  /* ===== BEAMER-MODUS (vierstufig, K18) ===== */
+  .beamer-btn{
+    background:transparent; border:1.5px solid var(--line); color:var(--ink-dim);
+    font-family:var(--font-body); font-size:15px; padding:10px 20px;
+    border-radius:999px; cursor:pointer; transition:all .2s ease; white-space:nowrap;
+  }
+  html.beamer .beamer-btn, html.beamer-xl .beamer-btn, html.beamer-xxl .beamer-btn{
+    background:var(--ink); color:#fff; border-color:var(--ink);
+  }
+
+  html.beamer, html.beamer-xl, html.beamer-xxl{ --ink-dim:#3D4A5C; }
+
+  html.beamer .eyebrow{ font-size:15px; letter-spacing:2.5px; }
+  html.beamer .heading-row h1{ font-size:44px; }
+  html.beamer .reset-btn, html.beamer .beamer-btn{ font-size:16px; }
+  html.beamer .seg-btn{ font-size:17px; padding:11px 22px; }
+  html.beamer .fa-banner .fa-label{ font-size:15px; }
+  html.beamer .fa-banner .fa-text{ font-size:22px; }
+  html.beamer .funnel-hint{ font-size:15px; }
+  html.beamer .tr-code{ font-size:15px; }
+  html.beamer .tr-name{ font-size:26px; }
+  html.beamer .tr-count{ font-size:15px; }
+  html.beamer .panel-head .p-code{ font-size:17px; }
+  html.beamer .panel-head .p-name{ font-size:44px; }
+  html.beamer .panel-head .p-sub{ font-size:19px; }
+  html.beamer .nfa-tag{ font-size:15px; padding:6px 16px; }
+  html.beamer .norm-badge, html.beamer .warn-badge{ font-size:15px; padding:5px 14px; }
+  html.beamer .nfa-text{ font-size:22px; line-height:1.65; }
+  html.beamer .nfa-ref{ font-size:15px; }
+  html.beamer .persona-line{ font-size:22px; }
+  html.beamer .persona-line .who{ font-size:19px; }
+  html.beamer .overview-tile .ot-code{ font-size:15px; }
+  html.beamer .overview-tile .ot-name{ font-size:22px; }
+  html.beamer .overview-tile .ot-count{ font-size:15px; }
+
+  html.beamer-xl .eyebrow{ font-size:18px; letter-spacing:2.5px; }
+  html.beamer-xl .heading-row h1{ font-size:52px; }
+  html.beamer-xl .reset-btn, html.beamer-xl .beamer-btn{ font-size:18px; }
+  html.beamer-xl .seg-btn{ font-size:19px; padding:12px 24px; }
+  html.beamer-xl .fa-banner .fa-label{ font-size:18px; }
+  html.beamer-xl .fa-banner .fa-text{ font-size:28px; }
+  html.beamer-xl .funnel-hint{ font-size:18px; }
+  html.beamer-xl .tr-code{ font-size:18px; }
+  html.beamer-xl .tr-name{ font-size:32px; }
+  html.beamer-xl .tr-count{ font-size:18px; }
+  html.beamer-xl .panel-head .p-code{ font-size:19px; }
+  html.beamer-xl .panel-head .p-name{ font-size:54px; }
+  html.beamer-xl .panel-head .p-sub{ font-size:22px; }
+  html.beamer-xl .nfa-tag{ font-size:18px; padding:7px 18px; }
+  html.beamer-xl .norm-badge, html.beamer-xl .warn-badge{ font-size:18px; padding:6px 16px; }
+  html.beamer-xl .nfa-text{ font-size:28px; line-height:1.65; }
+  html.beamer-xl .nfa-ref{ font-size:18px; }
+  html.beamer-xl .persona-line{ font-size:28px; }
+  html.beamer-xl .persona-line .who{ font-size:22px; }
+  html.beamer-xl .overview-tile .ot-code{ font-size:18px; }
+  html.beamer-xl .overview-tile .ot-name{ font-size:28px; }
+  html.beamer-xl .overview-tile .ot-count{ font-size:18px; }
+
+  html.beamer-xxl .eyebrow{ font-size:21px; letter-spacing:2.5px; }
+  html.beamer-xxl .heading-row h1{ font-size:60px; }
+  html.beamer-xxl .reset-btn, html.beamer-xxl .beamer-btn{ font-size:21px; }
+  html.beamer-xxl .seg-btn{ font-size:22px; padding:13px 26px; }
+  html.beamer-xxl .fa-banner .fa-label{ font-size:21px; }
+  html.beamer-xxl .fa-banner .fa-text{ font-size:34px; }
+  html.beamer-xxl .funnel-hint{ font-size:21px; }
+  html.beamer-xxl .tr-code{ font-size:21px; }
+  html.beamer-xxl .tr-name{ font-size:38px; }
+  html.beamer-xxl .tr-count{ font-size:21px; }
+  html.beamer-xxl .panel-head .p-code{ font-size:22px; }
+  html.beamer-xxl .panel-head .p-name{ font-size:64px; }
+  html.beamer-xxl .panel-head .p-sub{ font-size:25px; }
+  html.beamer-xxl .nfa-tag{ font-size:21px; padding:8px 20px; }
+  html.beamer-xxl .norm-badge, html.beamer-xxl .warn-badge{ font-size:21px; padding:7px 18px; }
+  html.beamer-xxl .nfa-text{ font-size:34px; line-height:1.65; }
+  html.beamer-xxl .nfa-ref{ font-size:21px; }
+  html.beamer-xxl .persona-line{ font-size:34px; }
+  html.beamer-xxl .persona-line .who{ font-size:25px; }
+  html.beamer-xxl .overview-tile .ot-code{ font-size:21px; }
+  html.beamer-xxl .overview-tile .ot-name{ font-size:34px; }
+  html.beamer-xxl .overview-tile .ot-count{ font-size:21px; }
+
+  html.beamer .footer, html.beamer-xl .footer, html.beamer-xxl .footer{ display:none; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <div class="stage">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <div class="heading-row">
+      <div>
+        <div class="eyebrow" id="eyebrowText">Die Normen-Spuren einer Anforderung</div>
+        <h1 id="mainHeading">FA → NFA</h1>
+      </div>
+      <button class="reset-btn" id="resetBtn">Alle Spuren zurücksetzen</button>
+      <button class="beamer-btn" id="beamerBtn">☀ Beamer</button>
+    </div>
+
+    <div class="switch-row">
+      <div class="seg-switch mode-switch" id="modeSwitch">
+        <button class="seg-btn" data-mode="normen">Normen-Spuren</button>
+        <button class="seg-btn" data-mode="rollen">Rollen-Spuren</button>
+      </div>
+    </div>
+
+    <div class="switch-row" id="roleGroupRow">
+      <div class="seg-switch" id="roleGroupSwitch">
+        <button class="seg-btn" data-rolegroup="team">Team-Rollen</button>
+        <button class="seg-btn" data-rolegroup="org">Organisations-Rollen</button>
+        <button class="seg-btn" data-rolegroup="stake">Entscheidungs-Rollen</button>
+      </div>
+    </div>
+
+    <div class="switch-row">
+      <div class="seg-switch" id="scenarioSwitch">
+        <button class="seg-btn" data-scenario="simple">Einfach: Marmorkuchen</button>
+        <button class="seg-btn" data-scenario="complex">Komplex: Bürgeramt</button>
+      </div>
+    </div>
+
+    <div class="fa-banner">
+      <div class="fa-label">FA</div>
+      <div class="fa-text" id="faText">Bürger:innen buchen online einen Termin im Bürgeramt — unterstützt durch einen KI-Chatbot.</div>
+    </div>
+
+    <div class="funnel-hint" id="funnelHint">zerfällt in sechs Normen-Spuren</div>
+
+    <div class="tracks" id="tracks"></div>
+  </div>
+
+  <div class="panel" id="panel">
+    <div class="panel-head">
+      <div class="p-code" id="pCode"></div>
+      <h2 class="p-name" id="pName">6 Normen-Spuren</h2>
+      <div class="p-sub" id="pSub">Tippen Sie links auf eine Spur — oder direkt hier.</div>
+    </div>
+    <div class="panel-body" id="pBody"></div>
+  </div>
+</div>
+
+<script>
+const DATA_SIMPLE = [
+  {
+    id: "reliability", code: "ISO 25010 — RELIABILITY", name: "Saftigkeit & Konsistenz", color: "#8B5A2B",
+    sub: "Der Kuchen muss bei jedem Backdurchgang dieselbe Qualität liefern — nicht nur beim ersten Versuch.",
+    nfas: [
+      { tag:"Maturity", text:"Der Marmorkuchen bleibt bei Zimmertemperatur mindestens 48 Stunden saftig, bevor er merklich trocken wird.", ref:"ISO 25010 — Reliability / Maturity" },
+      { tag:"Fault Tolerance", text:"Wird der Ofen während des Backens kurz (unter 2 Minuten) geöffnet, fällt der Teig nicht in sich zusammen.", ref:"ISO 25010 — Reliability / Fault Tolerance" },
+      { tag:"Konsistenz", text:"Die Marmorierung aus hellem und dunklem Teig ist in mindestens 9 von 10 Anschnitten gleichmäßig verteilt — nicht an einer Stelle verklumpt.", ref:"ISO 25010 — Reliability / Konsistenz" },
+      { tag:"Reproduzierbarkeit", text:"Drei aufeinanderfolgende Backdurchgänge nach demselben Rezept ergeben eine Höhendifferenz von maximal 0,5 cm zwischen den Kuchen.", ref:"ISO 25010 — Reliability / Reproduzierbarkeit" }
+    ],
+    persona: { who:"Herr Bachmeier, Bäcker:", line:"„Ich will nicht jedes Mal hoffen, dass der Kuchen heute gelingt — das ist kein Rezept, das ist Glücksspiel.“" }
+  },
+  {
+    id: "performance", code: "ISO 25010 — PERFORMANCE", name: "Schnell serviert", color: "#C9941E",
+    sub: "Der Kuchen muss zügig vom Anschnitt zum Teller kommen — besonders beim Ansturm auf dem Sommerfest.",
+    nfas: [
+      { tag:"Time Behaviour", text:"Ein Stück Kuchen liegt ab Bestellung am Buffet binnen 30 Sekunden auf dem Teller (Anschneiden + Servieren).", ref:"ISO 25010 — Performance Efficiency / Time Behaviour" },
+      { tag:"Capacity", text:"Ein Kuchen reicht für mindestens 24 Portionen, ohne dass für das Sommerfest zwei Kuchen gebacken werden müssen.", ref:"ISO 25010 — Performance Efficiency / Capacity" },
+      { tag:"Resource Utilization", text:"Backzeit inklusive Vorheizen überschreitet 70 Minuten nicht, damit Herrn Bachmeiers Ofen am Festtag für andere Backwaren frei wird.", ref:"ISO 25010 — Performance Efficiency / Resource Utilization" },
+      { tag:"Time Behaviour", text:"Der Kuchen ist spätestens 30 Minuten nach dem Backen anschnittfertig abgekühlt — nicht erst nach 2 Stunden.", ref:"ISO 25010 — Performance Efficiency / Time Behaviour" }
+    ],
+    persona: { who:"Sarah, Projektleiterin:", line:"„'Schnell serviert' klingt simpel — bis man merkt, dass 'schnell' für jeden Gast etwas anderes bedeutet.“" }
+  },
+  {
+    id: "lmiv", code: "LMIV (EU) 1169/2011", name: "Allergenkennzeichnung", color: "#C0392B",
+    sub: "Lebensmittelinformationsverordnung — sobald der Kuchen gegen Geld oder Spende abgegeben wird, greift die Pflicht zur Allergeninformation.",
+    nfas: [
+      { tag:"Anhang II", text:"Die 14 Hauptallergene (u. a. Gluten, Ei, Milch, Nüsse) sind über eine gut sichtbare Liste am Kuchenstand einsehbar — eine Kladde oder ein Aushang reicht bei loser Ware.", ref:"LMIV Anhang II (14 Hauptallergene)" },
+      { tag:"Art. 44", text:"Jeder Kuchen ist eindeutig einer Zutatenliste zuordenbar, z. B. per Namensschild „Marmorkuchen – Liste Nr. 3“ — nicht eine Sammelliste ohne Zuordnung.", ref:"LMIV Art. 44 (lose Ware)" },
+      { tag:"Zusatzstoffe", text:"Zusatzstoffe wie Aromen oder Farbstoffe werden zusammen mit der Allergenliste gekennzeichnet, nicht in einem separaten Dokument.", ref:"LMIV — Kennzeichnung von Zusatzstoffen" },
+      { tag:"Mitwirkung", text:"Jedes Vereinsmitglied liefert die Zutatenliste spätestens beim Abgeben des Kuchens am Stand mit — nicht erst auf Nachfrage am Verkaufstag.", ref:"LMIV — Verantwortlichkeit des Inverkehrbringers" }
+    ],
+    persona: { who:"Sarah, Projektleiterin:", line:"„Ich dachte, eine Kladde mit Zutaten reicht — bis ich gelesen habe, dass wirklich alle 14 Allergene gemeint sind, nicht nur Nüsse.“" }
+  },
+  {
+    id: "hygiene852", code: "VO (EG) 852/2004", name: "Lebensmittelhygiene", color: "#8B5A2B",
+    sub: "EU-Hygieneverordnung — auch bei gelegentlicher Abgabe gelten Mindestanforderungen an die Gute Hygienepraxis.",
+    nfas: [
+      { tag:"Handhygiene", text:"In unmittelbarer Nähe des Kuchenstands steht eine Handwaschmöglichkeit mit fließend warmem Wasser, Flüssigseife und Einmalhandtüchern bereit.", ref:"VO (EG) 852/2004 Anhang II — Hygienevorschriften", norm:true },
+      { tag:"Durcherhitzung", text:"Eierhaltiger Rührteig wird vollständig durcherhitzt (Kerntemperatur mind. 70°C für 5 Minuten); auf nicht durcherhitzte Cremefüllungen wird verzichtet.", ref:"VO (EG) 852/2004 — Gute Hygienepraxis (Salmonellenrisiko)" },
+      { tag:"Kühlkette", text:"Sahnetorten und Cremekuchen werden bis zum Verkauf durchgehend unter 7°C gekühlt gelagert — nicht nur bis zum Aufbau des Stands.", ref:"VO (EG) 852/2004 — Temperaturanforderungen" },
+      { tag:"Schutz", text:"Der Kuchen ist bis zum Verkauf mit Haube oder Spuckschutz abgedeckt; das Anschneiden erfolgt ausschließlich mit Kuchenheber, nie mit der Hand.", ref:"VO (EG) 852/2004 — Schutz vor Kontamination", norm:true }
+    ],
+    persona: { who:"Herr Bachmeier, Bäcker:", line:"„Meine Küche zuhause ist keine Bäckerei — aber kalt halten und abdecken kann ich trotzdem.“" }
+  },
+  {
+    id: "unternehmerstatus", code: "LMIV ErwGr. 15", name: "Lebensmittelunternehmer-Status", color: "#4A5878",
+    sub: "Entscheidend ist, ob der Verein als durchgängiger „Lebensmittelunternehmer“ gilt oder nur gelegentlich Lebensmittel abgibt.",
+    nfas: [
+      { tag:"Gelegentlichkeit", text:"Der Kuchenverkauf findet nur einmal jährlich beim Sommerfest statt — damit gilt der Verein nicht als durchgängiger Lebensmittelunternehmer mit baulichen Küchenauflagen.", ref:"LMIV Erwägungsgrund 15" },
+      { tag:"Schwellenwert", text:"Öffnet derselbe Stand an mehr als einem Termin im Jahr, wird die Einstufung als Lebensmittelunternehmer vor dem nächsten Verkauf neu geprüft.", ref:"LMIV Erwägungsgrund 15 — Kontinuität & Organisationsgrad" },
+      { tag:"Dokumentation", text:"Die Entscheidung „gelegentlich vs. regelmäßig“ wird vor dem Fest schriftlich im Organisationsteam festgehalten — als Begründung für einen möglichen Streitfall mit dem Ordnungsamt.", ref:"Eigenleistung — Nachweis bei Prüfung" },
+      { tag:"Vertriebsweg", text:"Die Kuchen werden ausschließlich am Stand abgegeben, nicht zusätzlich über einen Online-Vorbestellservice — sonst greift die strengere Dauerbetrieb-Logik.", ref:"LMIV Erwägungsgrund 15 — Abgrenzung Dauerbetrieb" }
+    ],
+    persona: { who:"Petra, Mentorin:", line:"„Bevor wir streiten, ob das Pflicht ist: Wie oft verkaufen wir im Jahr eigentlich wirklich Kuchen?“" }
+  },
+  {
+    id: "availability", code: "ISO 25010 — AVAILABILITY", name: "Jederzeit nachbestellbar", color: "#3F8E1A",
+    sub: "Der Kuchen muss während des gesamten Sommerfests nachlieferbar sein — nicht nur zur Eröffnung.",
+    nfas: [
+      { tag:"Verfügbarkeit", text:"Ist der erste Kuchen aufgegessen, steht binnen 20 Minuten ein zweiter, fertig vorbereiteter Kuchen bereit.", ref:"ISO 25010 — Reliability / Availability" },
+      { tag:"Vorhaltung", text:"Nachschub muss binnen 20 Minuten nach Ausverkauf am Stand verfügbar sein — wie dieser sichergestellt wird, ist Umsetzungsentscheidung.", ref:"ISO 25010 — Reliability / Availability" },
+      { tag:"Ausfallsicherheit", text:"Fällt das primäre Backmittel aus, muss eine vorab vereinbarte Alternative den Kuchen in unter 15 Minuten fertigstellen können — die konkrete Lösung (Zweitofen, externe Bäckerei) ist Umsetzungssache.", ref:"ISO 25010 — Reliability / Fault Tolerance" },
+      { tag:"Lagerfähigkeit", text:"Nicht verkaufte Kuchenreste sind am Folgetag noch genießbar (maximal 24h Standzeit), damit nichts weggeworfen werden muss.", ref:"ISO 25010 — Reliability / Maturity" }
+    ],
+    persona: { who:"Sarah, Projektleiterin:", line:"„'Jederzeit verfügbar' ohne Zahl heißt: Ich weiß erst nach dem Fest, ob wir's geschafft haben.“" }
+  }
+];
+
+const DATA_COMPLEX = [
+  {
+    id: "dsgvo", code: "DSGVO", name: "Datenschutz", color: "#1E5FC4",
+    sub: "Verordnung (EU) 2016/679 — Schutz der personenbezogenen Daten, die beim Buchen und im Chat anfallen.",
+    nfas: [
+      { tag:"Art. 5 (1c)", text:"Das Buchungsformular fragt höchstens 5 Pflichtfelder ab (Name, Anliegen, Wunschtermin, Kontaktweg, Amt) — Personalausweisnummer wird erst beim Termin vor Ort erfasst, nicht online.", ref:"DSGVO Art. 5 Abs. 1 lit. c" },
+      { tag:"Art. 13", text:"Vor der ersten Chatbot-Eingabe erscheint ein Hinweis mit max. 3 Sätzen: was gespeichert wird, wie lange (90 Tage), und wer Zugriff hat.", ref:"DSGVO Art. 13" },
+      { tag:"Art. 17", text:"Ein Löschantrag zu Buchungs- oder Chatverlauf wird binnen 72 Stunden bearbeitet, die Löschung selbst erfolgt spätestens nach 30 Tagen.", ref:"DSGVO Art. 17" },
+      { tag:"Art. 32", text:"Chat-Freitexteingaben werden so gesichert gespeichert, dass unbefugte Dritte keinen Klartext lesen können; Klartext ist ausschließlich für Sachbearbeitung mit aktiver Fallzuständigkeit sichtbar.", ref:"DSGVO Art. 32" }
+    ],
+    persona: { who:"Knut, Datenschutzbeauftragter:", line:"„90 Tage Aufbewahrung kann ich vertreten — 'solange wie nötig' ohne Zahl nehme ich aus dem Pflichtenheft raus.“" }
+  },
+  {
+    id: "nis2", code: "NIS2", name: "Cyber-Resilienz", color: "#C8472B",
+    sub: "Richtlinie (EU) 2022/2555 — das Bürgeramt-Portal gilt als Teil der kommunalen IT-Infrastruktur.",
+    nfas: [
+      { tag:"Art. 21", text:"Das Buchungsportal ist an Werktagen zwischen 6–22 Uhr zu 99,5 % erreichbar; Wartungsfenster nur außerhalb dieser Zeit, angekündigt 48 Stunden vorher.", ref:"NIS2 Art. 21 Abs. 2" },
+      { tag:"Art. 23", text:"Ein Sicherheitsvorfall mit Zugriff auf Bürgerdaten wird binnen 24 Stunden als Frühwarnung und binnen 72 Stunden mit Erstbewertung an die Meldestelle gemeldet.", ref:"NIS2 Art. 23 (Frühwarnung)" },
+      { tag:"Art. 21 (2j)", text:"Petra meldet sich im Sachbearbeitungs-Backend ausschließlich mit Passwort + zweitem Faktor (App oder Hardware-Token) an — kein Zugang nur mit Passwort.", ref:"NIS2 Art. 21 Abs. 2 lit. j", norm:true },
+      { tag:"Backup", text:"Im Ausfall sind Terminbuchungen binnen 4 Stunden (RTO) wiederhergestellt; der maximale Datenverlust beträgt 24 Stunden (RPO). Zeitpunkt und Methode des Backups sind Implementierungsentscheidung.", ref:"NIS2 — Risikomanagementmaßnahmen" }
+    ],
+    persona: { who:"Herr Bachmeier, IT-Leiter:", line:"„4 Stunden RTO heißt: einmal im Quartal üben wir den Ernstfall — sonst ist die Zahl nur Theater.“" }
+  },
+  {
+    id: "aiact", code: "EU AI ACT", name: "KI-Chatbot", color: "#7A3FC4",
+    sub: "Verordnung (EU) 2024/1689 — der Chatbot gilt als KI-System mit begrenztem Risiko (limited risk).",
+    nfas: [
+      { tag:"Art. 50", text:"Die allererste Chatbot-Nachricht enthält wörtlich den Hinweis „Ich bin ein KI-Assistent, keine Mitarbeiterin des Amtes“ — vor jeder Inhaltsfrage.", ref:"AI Act Art. 50 Abs. 1 (Transparenzpflicht)" },
+      { tag:"Art. 14", text:"Erkennt der Bot Unsicherheit (z. B. bei Widerspruch, Fristverlängerung) oder wird dreimal dieselbe Frage gestellt, bietet er aktiv die Übergabe an Petra an.", ref:"AI Act Art. 14" },
+      { tag:"Art. 12", text:"Jede Chatbot-Antwort wird mit Zeitstempel, genutzter Wissensquelle und Konfidenzwert protokolliert — abrufbar für eine Stichprobenprüfung durch Knut.", ref:"AI Act Art. 12 (Aufzeichnungspflichten)" },
+      { tag:"Risikoklasse", text:"Die Einstufung „begrenztes Risiko” wird dokumentiert und bei jeder neuen Chatbot-Funktion (z. B. automatische Terminbestätigung) erneut geprüft, bevor sie live geht.", ref:"AI Act — Risikoklassifizierung" }
+    ],
+    persona: { who:"Sarah, Bürgerin:", line:"„Dreimal dieselbe Frage und der Bot kapiert's nicht — dann will ich nicht erst noch überreden müssen, einen Menschen zu sprechen.“" }
+  },
+  {
+    id: "cada", code: "CADA / EU CSF", name: "Cloud-Souveränität", color: "#0E8E73",
+    sub: "Cloud and AI Development Act & EU Cloud Sovereignty Framework — Souveränitätsstufe der eingesetzten Cloud-Infrastruktur.",
+    nfas: [
+      { tag:"SOV-3", text:"Termin- und Chatdaten liegen physisch in einem Rechenzentrum mit EU-Standort; Backups dürfen ausschließlich in einem zweiten EU-Standort repliziert werden — nirgends sonst.", ref:"CSF SOV-3 (Daten- & KI-Souveränität)", norm:true },
+      { tag:"SOV-3", text:"Die Verschlüsselungsschlüssel hält die Kommune selbst (Key-Management in eigener Hand); der Cloud-Anbieter kann Chat-Inhalte technisch nicht entschlüsseln.", ref:"CSF SOV-3 — Customer-held keys", norm:true },
+      { tag:"SOV-2", text:"Der Vertrag schließt explizit aus, dass eine Drittstaaten-Behörde (z. B. über den US CLOUD Act) Zugriff verlangen kann — geprüft durch eine jährliche juristische Bewertung der Anbieter-Konzernstruktur.", ref:"CSF SOV-2 (Juristische Souveränität)" },
+      { tag:"Exit", text:"Bei Anbieterwechsel sind alle Buchungs- und Chatdaten binnen 30 Tagen in einem offenen Format (CSV/JSON) exportierbar, inklusive Testexport einmal jährlich.", ref:"CADA — Portabilität / Exit-Klausel" }
+    ],
+    persona: { who:"Ela, Projektleiterin:", line:"„SOV-3 heißt nicht 'gehostet in Frankfurt' — ich will den Namen der Konzernmutter sehen, bevor ich unterschreibe.“" }
+  },
+  {
+    id: "iso", code: "ISO 27001", name: "ISMS-Nachweis", color: "#A9760A",
+    sub: "Informationssicherheits-Managementsystem — Nachweispflicht für den Cloud- und Software-Anbieter.",
+    nfas: [
+      { tag:"A.5", text:"Vor Vertragsschluss legt der Anbieter ein gültiges ISO-27001-Zertifikat vor, dessen Geltungsbereich (Scope) den Betrieb des Bürgerportals ausdrücklich einschließt — nicht nur das Rechenzentrum allgemein.", ref:"ISO 27001 Anhang A.5" },
+      { tag:"A.8", text:"Zugriff auf Bürgerdaten ist auf 3 Rollen begrenzt (Sachbearbeitung, IT-Administration, Datenschutz); jede Rollenänderung wird von Herrn Bachmeier freigegeben.", ref:"ISO 27001 Anhang A.8 (Asset Management)" },
+      { tag:"A.8.15", text:"Audit-Logs zu Datenzugriffen sind so gespeichert, dass nachträgliche Änderungen erkennbar oder technisch ausgeschlossen sind — und mindestens 12 Monate abrufbar binnen 1 Werktag bei Prüfanfrage.", ref:"ISO 27001 Anhang A.8.15 (Logging)" },
+      { tag:"A.8.8", text:"Sicherheitslücken in Buchungsformular, Chatbot-Schnittstelle und Sachbearbeitungs-Backend werden regelmäßig durch unabhängige externe Prüfung identifiziert; kritische Befunde werden binnen 30 Tagen behoben.", ref:"ISO 27001 Anhang A.8.8" }
+    ],
+    persona: { who:"Petra, Sachbearbeiterin:", line:"„3 Rollen reichen mir — Hauptsache, ich sehe im Log auch, wenn jemand ohne Fall reingeschaut hat.“" }
+  },
+  {
+    id: "data", code: "DATA ACT", name: "Wechselfreiheit", color: "#3F8E1A",
+    sub: "Verordnung (EU) 2023/2854 — Vermeidung von Lock-in-Effekten bei Cloud- und Plattformwechsel.",
+    nfas: [
+      { tag:"Art. 23", text:"Ein technischer Wechsel zu einem anderen Cloud-Anbieter ist innerhalb von maximal 30 Tagen abgeschlossen, ohne dass das Bürgerportal länger als 4 Stunden offline ist.", ref:"Data Act Art. 23 (Wechselfrist)" },
+      { tag:"Art. 30", text:"Buchungssystem und Chatbot kommunizieren ausschließlich über offene, dokumentierte und anbieterneutrale Schnittstellen — keine Funktion darf nur über eine proprietäre API erreichbar sein. Die Technologiewahl ist Architekturentscheidung.", ref:"Data Act Art. 30" },
+      { tag:"Art. 29", text:"Während eines Anbieterwechsels laufen alte und neue Umgebung mindestens 2 Wochen parallel; Bürger:innen merken am Buchungsablauf nichts vom Wechsel.", ref:"Data Act Art. 29 (Schrittweiser Wechsel)" },
+      { tag:"Kosten", text:"Wechselentgelte des bisherigen Anbieters sind vertraglich auf die reinen Migrationskosten gedeckelt und werden bis 2027 schrittweise auf null reduziert.", ref:"Data Act — Abbau von Wechselentgelten" }
+    ],
+    persona: { who:"Herr Bachmeier, IT-Leiter:", line:"„4 Stunden Downtime beim Wechsel ist meine Schmerzgrenze — die schreibe ich dem Anbieter heute schon in den Vertrag.“" }
+  }
+];
+
+const ROLES_TEAM_SIMPLE = [
+  {
+    id:"po", code:"ROLLE — PRODUCT OWNER", name:"Ela, Projektleitung", color:"#1E5FC4",
+    sub:"Übersetzt die FA in Prioritäten und Entscheidungen — verantwortet, WAS gebaut wird, nicht WIE.",
+    nfas:[
+      { tag:"Akzeptanzkriterium", text:"Der Kuchen ist bis 14 Uhr (Fest-Eröffnung) fertig und reicht für mindestens 24 Portionen.", ref:"Definition of Done — PO-Sicht" },
+      { tag:"Priorisierung", text:"Allergenkennzeichnung hat Vorrang vor Geschmacksvarianten — ohne sie darf der Stand gar nicht erst öffnen.", ref:"MoSCoW — Must have vs. Could have" },
+      { tag:"Konfliktregel", text:"Bei Zielkonflikt zwischen 'schnell gebacken' und 'lange saftig' entscheidet Ela zugunsten Saftigkeit, da das Fest 4 Stunden dauert.", ref:"Priorisierungsregel — Tradeoff-Entscheidung" },
+      { tag:"Missverständnis", text:"Ela versteht 'gut ankommt' als Verkaufszahl (Stücke verkauft), Sarah als Geschmacksbewertung — ohne Klärung zählt am Ende niemand dasselbe.", ref:"Mehrdeutigkeit — IREB: unklare Erfolgskriterien", warn:true }
+    ],
+    persona:{ who:"Ela, Projektleitung:", line:"„'Gut ankommt' ist für mich erst eine Anforderung, wenn ich weiß, woran ich das nach dem Fest messe.“" }
+  },
+  {
+    id:"dev", code:"ROLLE — ENTWICKLER:IN", name:"Knut, Umsetzung (Backen)", color:"#0E8E73",
+    sub:"Übersetzt die FA in ein konkretes, reproduzierbares Vorgehen — verantwortet das WIE.",
+    nfas:[
+      { tag:"Umsetzungsdetail", text:"Backzeit 45 Minuten bei 175°C Umluft, Teigmenge 1,2 kg — ein reproduzierbares Rezept mit exakten Mengen statt 'nach Gefühl'.", ref:"Technische Spezifikation — Rezeptur" },
+      { tag:"Schnittstelle", text:"Übergabe an Sarah am Verkaufsstand erfolgt mit Standzeit-Hinweis: maximal 4 Stunden ungekühlt haltbar.", ref:"Schnittstellenbeschreibung — Übergabe" },
+      { tag:"Grenzfall", text:"Bei Ofenausfall ist der Backup-Ofen der Nachbarbäckerei vorher abgesprochen, nicht erst am Festtag improvisiert.", ref:"Edge Case — Ausfallszenario" },
+      { tag:"Missverständnis", text:"Knut liest 'gut ankommt' technisch als 'lässt sich gut transportieren' (Stabilität), nicht als Geschmack — eine andere Auslegung als die des PO.", ref:"Mehrdeutigkeit — unterschiedliche Lesart derselben FA", warn:true }
+    ],
+    persona:{ who:"Knut, Bäcker:", line:"„Gib mir eine Zahl, keine Stimmung — '175°C, 45 Minuten' kann ich umsetzen, 'goldbraun und gut' nicht.“" }
+  },
+  {
+    id:"test", code:"ROLLE — TESTER:IN / QM", name:"Petra, Qualitätsprüfung", color:"#A9760A",
+    sub:"Übersetzt die FA in prüfbare Kriterien — verantwortet, OB das Ergebnis stimmt.",
+    nfas:[
+      { tag:"Prüfkriterium", text:"Drei Testesser:innen unterschiedlichen Alters bewerten den Geschmack vor dem Fest mit mindestens 4 von 5 Punkten.", ref:"Abnahmetest — Geschmacksprüfung" },
+      { tag:"Negativtest", text:"Bei Glutenunverträglichkeit eines Gastes muss die Kennzeichnung VOR dem Griff zum Kuchen sichtbar sein, nicht erst auf Nachfrage.", ref:"Negativtest — Fehlerfall Allergie" },
+      { tag:"Abnahme", text:"Die Abnahme erfolgt durch Verkostung am Vortag, nicht erst am Festtag selbst — danach ist keine Korrektur mehr möglich.", ref:"Abnahmezeitpunkt — Korrekturfenster" },
+      { tag:"Missverständnis", text:"Petra prüft objektive Kriterien (Allergene, Frische), während Ela 'gut ankommt' subjektiv als Stimmung interpretiert — beide haben recht, meinen aber Unterschiedliches.", ref:"Mehrdeutigkeit — objektiv vs. subjektiv", warn:true }
+    ],
+    persona:{ who:"Petra, Qualitätsprüfung:", line:"„'Schmeckt gut' ist keine Abnahme. Vier von fünf Punkten bei drei Testessern — das kann ich abhaken.“" }
+  },
+  {
+    id:"user", code:"ROLLE — ENDNUTZER:IN", name:"Sarah, Gast am Stand", color:"#C8472B",
+    sub:"Erlebt die FA als fertiges Ergebnis — ohne Wissen über Rezept, Normen oder Testkriterien dahinter.",
+    nfas:[
+      { tag:"Erwartung", text:"Als Gast will ich in unter 30 Sekunden ein Stück bekommen, ohne dass die Schlange stockt.", ref:"Nutzererwartung — Wartezeit" },
+      { tag:"Vertrauen", text:"Ich will auf den ersten Blick sehen, ob Nüsse drin sind, ohne fragen zu müssen.", ref:"Nutzererwartung — Transparenz" },
+      { tag:"Frustpunkt", text:"Ist der Kuchen aus, will ich wissen, wann Nachschub kommt — nicht einfach vor einem leeren Tisch stehen.", ref:"Nutzererwartung — Kommunikation bei Engpass" },
+      { tag:"Missverständnis", text:"Für Sarah als Gast bedeutet 'gut' frisch UND günstig — das Projektteam denkt zuerst an Geschmack, nicht an den Preis pro Stück.", ref:"Mehrdeutigkeit — Qualität vs. Preis-Leistung", warn:true }
+    ],
+    persona:{ who:"Sarah, Gast:", line:"„Lecker ist mir wichtig — aber für 3 Euro das Stück erwarte ich auch, dass es sich lohnt.“" }
+  }
+];
+
+const ROLES_ORG_SIMPLE = [
+  {
+    id:"fach", code:"ROLLE — FACHBEREICH", name:"Sarah, Vereinsvorstand", color:"#7A3FC4",
+    sub:"Definiert den fachlichen Zweck des Kuchenverkaufs — verantwortet das WARUM aus Vereinssicht.",
+    nfas:[
+      { tag:"Anforderung", text:"Der Kuchenverkauf muss mindestens 150€ Erlös für die Vereinskasse einbringen.", ref:"Fachliche Zielvorgabe — Erlös" },
+      { tag:"Abgrenzung", text:"Zuständigkeit endet beim Verkauf — Auf- und Abbau des Standes ist Aufgabe des Orga-Teams, nicht des Backteams.", ref:"Scope-Abgrenzung — Zuständigkeiten" },
+      { tag:"Reporting", text:"Verkaufszahlen werden bis Montag nach dem Fest für die Vereinsversammlung gemeldet.", ref:"Reporting-Pflicht — Frist" },
+      { tag:"Missverständnis", text:"Der Vorstand sieht den Kuchen als Mittel zum Zweck (Geld), der Bäcker sieht ihn als Handwerk (Qualität) — ein Spannungsfeld, das selten offen ausgesprochen wird.", ref:"Mehrdeutigkeit — Zweck vs. Handwerk", warn:true }
+    ],
+    persona:{ who:"Sarah, Vereinsvorstand:", line:"„150 Euro sind das Ziel — ob der Kuchen dafür perfekt sein muss, ist mir ehrlich gesagt zweitrangig.“" }
+  },
+  {
+    id:"it", code:"ROLLE — IT / TECHNIK", name:"Knut, Logistik & Ausstattung", color:"#0E8E73",
+    sub:"Stellt die technische und logistische Infrastruktur bereit — verantwortet, dass am Stand nichts ausfällt.",
+    nfas:[
+      { tag:"Bereitstellung", text:"Eine Kühlbox mit Akku für 6 Stunden Standzeit wird bereitgestellt, da eine Steckdose am Festplatz nicht garantiert verfügbar ist.", ref:"Infrastrukturanforderung — Kühlung" },
+      { tag:"Wartung", text:"Ersatzteile (Kuchenheber, Tabletts) liegen bereit — kein Improvisieren am Tag selbst.", ref:"Vorhaltung — Ersatzmaterial" },
+      { tag:"Notfallplan", text:"Bei Ofenausfall greift ein dokumentierter Plan B (Nachbarbäckerei mit Telefonnummer), nicht 'man wird schon improvisieren'.", ref:"Notfallplan — Eskalationspfad" },
+      { tag:"Missverständnis", text:"Knut denkt an Technik- und Logistik-Robustheit, der Vorstand denkt 'das betrifft uns nicht, ist doch nur ein Kuchenstand' — die Vorbereitung wird unterschätzt.", ref:"Mehrdeutigkeit — Unterschätzung des Aufwands", warn:true }
+    ],
+    persona:{ who:"Knut, Technik:", line:"„'Ist doch nur ein Kuchenstand' höre ich erst – bis der Akku der Kühlbox um 15 Uhr leer ist.“" }
+  },
+  {
+    id:"sponsor", code:"ROLLE — SPONSOR", name:"Herr Bachmeier, Vereinsvorsitz", color:"#C8472B",
+    sub:"Trägt Budget und Haftung — verantwortet die Freigabe und das Risiko nach außen.",
+    nfas:[
+      { tag:"Budget", text:"Materialkosten (Zutaten, Verpackung) dürfen 30€ nicht überschreiten — Spende, kein Verlustgeschäft.", ref:"Budgetvorgabe — Kostendeckel" },
+      { tag:"Repräsentation", text:"Der Stand muss zur Eröffnungsrede um 14 Uhr bereits aufgebaut und verkaufsbereit sein.", ref:"Termintreue — Repräsentationspflicht" },
+      { tag:"Risiko", text:"Bei Lebensmittelvergiftung haftet der Verein — Hygienevorschriften sind keine Option, sondern Pflicht.", ref:"Haftungsrisiko — Verantwortung nach außen" },
+      { tag:"Missverständnis", text:"Bachmeier denkt in Reputation und Haftung, das Backteam denkt in Geschmack — beide reden über 'Qualität', meinen aber Unterschiedliches.", ref:"Mehrdeutigkeit — unterschiedliche Qualitätsbegriffe", warn:true }
+    ],
+    persona:{ who:"Herr Bachmeier, Vorsitz:", line:"„Geschmack verzeiht man mir — eine Lebensmittelvergiftung beim Sommerfest verzeiht mir keiner.“" }
+  },
+  {
+    id:"betrieb", code:"ROLLE — BETRIEB", name:"Petra, Standbetrieb am Festtag", color:"#1E5FC4",
+    sub:"Verantwortet den laufenden Ablauf während des Festes — das WIE im operativen Alltag.",
+    nfas:[
+      { tag:"Ablauf", text:"Mindestens 2 Personen sind durchgehend von 14 bis 18 Uhr am Stand, keine Lücken in der Besetzung.", ref:"Schichtplan — Mindestbesetzung" },
+      { tag:"Nachschub", text:"Der Reserve-Kuchen ist 20 Minuten vor erwartetem Ausverkauf bereits angeschnitten und verkaufsfertig.", ref:"Operative Vorgabe — Nachschubzeitpunkt" },
+      { tag:"Übergabe", text:"Schichtwechsel erfolgt mit kurzer Übergabe: Kassenstand, Restmenge, offene Fragen.", ref:"Übergabeprotokoll — Schichtwechsel" },
+      { tag:"Missverständnis", text:"Petra denkt operativ (Ablauf am Tag), der Sponsor denkt strategisch (Erlös am Ende) — operative Probleme werden oft erst sichtbar, wenn es zu spät ist.", ref:"Mehrdeutigkeit — operative vs. strategische Sicht", warn:true }
+    ],
+    persona:{ who:"Petra, Standbetrieb:", line:"„Am Ende zählt für den Vorstand die Erlössumme — ich merke um 16 Uhr schon, ob die Schicht überhaupt durchhält.“" }
+  }
+];
+
+const ROLES_TEAM_COMPLEX = [
+  {
+    id:"po", code:"ROLLE — PRODUCT OWNER", name:"Ela, Projektleitung", color:"#1E5FC4",
+    sub:"Übersetzt die FA in Prioritäten und Releaseinhalte — verantwortet, WAS gebaut wird.",
+    nfas:[
+      { tag:"Akzeptanzkriterium", text:"Ein Bürger kann von der Startseite bis zur Bestätigung in maximal 5 Klicks einen Termin buchen.", ref:"Definition of Done — PO-Sicht" },
+      { tag:"Priorisierung", text:"Barrierefreiheit (WCAG-konform) hat im ersten Release Vorrang vor zusätzlichen Chatbot-Features.", ref:"MoSCoW — Must have vs. Could have" },
+      { tag:"Scope-Grenze", text:"Terminverlegung durch den Bürger selbst ist Teil von Release 1, Terminabsage durch das Amt erst Release 2.", ref:"Release-Planung — Scope-Schnitt" },
+      { tag:"Missverständnis", text:"Ela versteht 'unterstützt durch KI-Chatbot' als Komfortfunktion, IT versteht es als Risikofaktor (AI Act) — unterschiedliche Priorität für dieselbe Formulierung.", ref:"Mehrdeutigkeit — Komfort vs. Risiko", warn:true }
+    ],
+    persona:{ who:"Ela, Projektleitung:", line:"„'Unterstützt durch KI' klang für mich nach Zusatznutzen — bis IT mir erklärt hat, was das an Pflichten auslöst.“" }
+  },
+  {
+    id:"dev", code:"ROLLE — ENTWICKLER:IN", name:"Knut, Umsetzung", color:"#0E8E73",
+    sub:"Übersetzt die FA in technische Architektur und Schnittstellen — verantwortet das WIE.",
+    nfas:[
+      { tag:"Schnittstelle", text:"Das Chatbot-Backend liefert einen Konfidenzwert pro Antwort; bei unter 70% wird automatisch an die Sachbearbeitung eskaliert.", ref:"Technische Spezifikation — Eskalationslogik" },
+      { tag:"Technische Grenze", text:"Das Buchungssystem unterstützt maximal 200 gleichzeitige Anfragen, bevor eine Warteschlange greift.", ref:"Kapazitätsgrenze — Systemauslegung" },
+      { tag:"NFA übersetzt", text:"'Datenschutzkonform' heißt für die Umsetzung konkret: Verschlüsselung AES-256, Schlüssel liegt bei der Kommune, nicht beim Cloud-Anbieter.", ref:"Technische Übersetzung — Datenschutzanforderung" },
+      { tag:"Missverständnis", text:"Knut liest die FA technisch (welche API, welche Latenz), Bürger:innen erwarten nur 'es funktioniert einfach' — die technische Tiefe bleibt für den Endnutzer unsichtbar und wird oft unterschätzt.", ref:"Mehrdeutigkeit — Erwartung vs. Implementierungsaufwand", warn:true }
+    ],
+    persona:{ who:"Knut, Entwicklung:", line:"„'Funktioniert einfach' ist für mich kein Akzeptanzkriterium — sag mir die Zahl hinter der Latenz, dann bauen wir's.“" }
+  },
+  {
+    id:"test", code:"ROLLE — TESTER:IN / QM", name:"Petra, Qualitätsprüfung", color:"#A9760A",
+    sub:"Übersetzt die FA in prüfbare Testfälle — verantwortet, OB das System die Anforderung erfüllt.",
+    nfas:[
+      { tag:"Prüfkriterium", text:"Ein Testfall deckt mindestens 5 Fehlerfälle ab: falsches Datum, Doppelbuchung, Verbindungsabbruch, leeres Pflichtfeld, Bot-Eskalation.", ref:"Testfallkatalog — Fehlerfälle" },
+      { tag:"Lasttest", text:"Das System bleibt bei 150 gleichzeitigen Buchungen unter 2 Sekunden Antwortzeit.", ref:"Lasttest — Performance-Schwelle" },
+      { tag:"Abnahme", text:"Abnahme erfolgt nur mit dokumentiertem Eskalationstest: Der Bot übergibt nach 3 Wiederholungen korrekt an einen Menschen.", ref:"Abnahmekriterium — Eskalationspflicht" },
+      { tag:"Missverständnis", text:"Petra prüft messbare Kriterien, der Chatbot-Hersteller verweist auf 'gutes Nutzererlebnis' als Abnahmekriterium — ohne Zahl ist das nicht prüfbar.", ref:"Mehrdeutigkeit — nicht messbares Abnahmekriterium", warn:true }
+    ],
+    persona:{ who:"Petra, Qualitätsprüfung:", line:"„'Gutes Nutzererlebnis' nehme ich erst ab, wenn jemand mir sagt, woran ich das im Test erkenne.“" }
+  },
+  {
+    id:"user", code:"ROLLE — ENDNUTZER:IN", name:"Sarah, Bürgerin", color:"#C8472B",
+    sub:"Erlebt die FA als fertiges Portal — ohne Wissen über NFAs, Normen oder Architektur dahinter.",
+    nfas:[
+      { tag:"Erwartung", text:"Ich will in unter 2 Minuten einen Termin gebucht haben, ohne mich vorher registrieren zu müssen.", ref:"Nutzererwartung — Buchungsdauer" },
+      { tag:"Vertrauen", text:"Ich will sofort erkennen, ob ich mit einem Bot oder einem Menschen schreibe.", ref:"Nutzererwartung — Transparenz" },
+      { tag:"Frustpunkt", text:"Wenn der Bot meine Frage dreimal nicht versteht, will ich ohne Umweg zu einem Menschen kommen.", ref:"Nutzererwartung — Eskalationswunsch" },
+      { tag:"Missverständnis", text:"Sarah erwartet, dass 'KI-Unterstützung' vor allem Zeit spart — das Projektteam denkt zuerst an Risiko und Dokumentationspflicht (AI Act), nicht an die Bürger-Erfahrung.", ref:"Mehrdeutigkeit — Nutzenerwartung vs. Risikofokus", warn:true }
+    ],
+    persona:{ who:"Sarah, Bürgerin:", line:"„Mir ist egal, ob das ein 'KI-System mit begrenztem Risiko' ist — ich will nur meinen Termin.“" }
+  }
+];
+
+const ROLES_ORG_COMPLEX = [
+  {
+    id:"fach", code:"ROLLE — FACHBEREICH", name:"Sarah, Bürgerservice", color:"#7A3FC4",
+    sub:"Definiert den fachlichen Zweck des Portals — verantwortet das WARUM aus Sicht des Amtes.",
+    nfas:[
+      { tag:"Fachliche Anforderung", text:"Mindestens 80% der Standardanliegen (Ummeldung, Ausweis) müssen ohne Sachbearbeiter:in buchbar sein.", ref:"Fachliche Zielvorgabe — Selbstbedienungsquote" },
+      { tag:"Prozessvorgabe", text:"Buchungskategorien folgen der bestehenden Amts-Gliederung — keine neue Kategorisierung nur für das Tool.", ref:"Prozessvorgabe — bestehende Struktur" },
+      { tag:"Akzeptanz", text:"Der Fachbereich nimmt erst ab, wenn 3 Pilot-Wochen ohne kritische Beschwerde liefen.", ref:"Abnahmekriterium — Pilotphase" },
+      { tag:"Missverständnis", text:"Der Fachbereich denkt in Falltypen und Zuständigkeiten, IT denkt in Datenfeldern und Schnittstellen — beide reden über 'Kategorien', meinen aber unterschiedliche Strukturen.", ref:"Mehrdeutigkeit — fachliche vs. technische Kategorisierung", warn:true }
+    ],
+    persona:{ who:"Sarah, Bürgerservice:", line:"„Für mich ist eine 'Kategorie' ein Anliegen am Schalter — für IT ist es offenbar ein Datenfeld in einer Tabelle.“" }
+  },
+  {
+    id:"it", code:"ROLLE — IT-BETRIEB", name:"Knut, Kommunen-IT", color:"#0E8E73",
+    sub:"Stellt die Betriebsinfrastruktur und Sicherheit bereit — verantwortet den stabilen, sicheren Betrieb.",
+    nfas:[
+      { tag:"Betriebsvorgabe", text:"Das System wird in die bestehende Kommunen-IT integriert (Active-Directory-Login für die Sachbearbeitung) — keine Insellösung mit eigenem Login.", ref:"Betriebsvorgabe — Systemintegration" },
+      { tag:"Sicherheitsanforderung", text:"Zwei-Faktor-Authentifizierung für die Sachbearbeitung ist Pflicht, nicht optional.", ref:"Sicherheitsvorgabe — 2FA-Pflicht" },
+      { tag:"Notfallplan", text:"Bei Systemausfall ist die Wiederherstellung binnen 4 Stunden (RTO) zugesichert, maximal 24 Stunden Datenverlust (RPO).", ref:"Notfallplan — RTO/RPO" },
+      { tag:"Missverständnis", text:"IT denkt an Betriebssicherheit (Wer darf rein? Was passiert bei Ausfall?), der Fachbereich denkt an Nutzerfreundlichkeit — 2FA wird dort oft als unnötige Hürde empfunden.", ref:"Mehrdeutigkeit — Sicherheit vs. Komfort", warn:true }
+    ],
+    persona:{ who:"Knut, IT-Betrieb:", line:"„2FA ist für den Fachbereich eine lästige Hürde — für mich ist es der Unterschied zwischen einem Vorfall und keinem.“" }
+  },
+  {
+    id:"sponsor", code:"ROLLE — SPONSOR", name:"Herr Bachmeier, Verwaltungsleitung", color:"#C8472B",
+    sub:"Trägt Budget und politische Verantwortung — verantwortet die Freigabe nach außen.",
+    nfas:[
+      { tag:"Budgetrahmen", text:"Das Projektbudget darf 120.000€ nicht überschreiten, inklusive 3 Jahre Betrieb.", ref:"Budgetvorgabe — Gesamtkostendeckel" },
+      { tag:"Politische Anforderung", text:"Das Tool muss bis zur nächsten Bürgermeisterwahl in 14 Monaten live sein — als Vorzeigeprojekt Digitalisierung.", ref:"Terminvorgabe — politischer Zeitplan" },
+      { tag:"Risikoabwägung", text:"Bei einem DSGVO-Verstoß drohen Bußgeld UND Imageschaden — beides wird im Lenkungsausschuss berichtet, nicht nur die Kosten.", ref:"Risikoberichterstattung — Lenkungsausschuss" },
+      { tag:"Missverständnis", text:"Bachmeier denkt in Budget und politischem Zeitplan, die Entwicklung denkt in technischer Machbarkeit — der Zeitplan wird oft gesetzt, bevor die Technik geprüft ist.", ref:"Mehrdeutigkeit — politischer Zeitplan vs. technische Machbarkeit", warn:true }
+    ],
+    persona:{ who:"Herr Bachmeier, Verwaltungsleitung:", line:"„14 Monate stehen schon in der Pressemitteilung — ob das technisch reicht, frage ich besser vorher, nicht nachher.“" }
+  },
+  {
+    id:"betrieb", code:"ROLLE — BETRIEB", name:"Petra, Sachbearbeitung", color:"#1E5FC4",
+    sub:"Verantwortet den laufenden Betrieb nach Go-Live — das tägliche WIE im Amt.",
+    nfas:[
+      { tag:"Arbeitsablauf", text:"Eskalierte Chatbot-Fälle landen mit Kontext (Verlauf, Anliegen) in meiner Warteschlange — nicht als leere Anfrage ohne Vorgeschichte.", ref:"Prozessanforderung — Eskalations-Kontext" },
+      { tag:"Reaktionszeit", text:"Eskalierte Anfragen werden innerhalb von 1 Werktag bearbeitet, nicht erst nach einer Woche.", ref:"Service-Level — Bearbeitungszeit" },
+      { tag:"Schulungsbedarf", text:"Eine Einweisung von maximal 2 Stunden reicht, um das Backend zu bedienen — keine Woche Schulung.", ref:"Schulungsumfang — Einarbeitungszeit" },
+      { tag:"Missverständnis", text:"Petra denkt an den täglichen Arbeitsaufwand (Wie viele Eskalationen kommen bei mir an?), das Projektteam denkt an die Technik — die Mehrbelastung im Tagesgeschäft wird oft erst nach dem Go-Live sichtbar.", ref:"Mehrdeutigkeit — Projektsicht vs. Betriebsalltag", warn:true }
+    ],
+    persona:{ who:"Petra, Sachbearbeitung:", line:"„Im Projektplan steht 'Eskalation an Sachbearbeitung' — wie viele das am Tag wirklich sind, stand nirgends.“" }
+  }
+];
+
+const ROLES_STAKE_SIMPLE = [
+  {
+    id:"entscheider", code:"ROLLE — ENTSCHEIDER:IN", name:"Sachgebietsleitung Ordnungsamt", color:"#16213F",
+    sub:"Trifft die formale Genehmigungsentscheidung von außen — verantwortet das DARF, nicht das WIE.",
+    nfas:[
+      { tag:"Entscheidungskriterium", text:"Der Verkaufsstand wird genehmigt, wenn die Anzeige nach § 42 LFGB spätestens 14 Tage vor dem Fest eingereicht wurde — nicht später.", ref:"Genehmigungsvoraussetzung — Anzeigepflicht" },
+      { tag:"Entscheidungsspielraum", text:"Bei einmaliger, gemeinnütziger Abgabe entscheidet die Sachgebietsleitung im Ermessen, ob eine Vor-Ort-Kontrolle stattfindet oder nicht.", ref:"Verwaltungsermessen — Einzelfallprüfung" },
+      { tag:"Eskalationsgrenze", text:"Fehlt die Allergenkennzeichnung bei der Anmeldung, wird die Genehmigung nicht erteilt, bevor sie nachgereicht ist — kein 'wird schon gut gehen'.", ref:"Versagungsgrund — fehlende Pflichtangabe" },
+      { tag:"Missverständnis", text:"Der Verein erlebt die Anmeldung als Formalität, die Sachgebietsleitung sieht darin die einzige Stelle, an der Hygiene- und Haftungsfragen vor dem Fest überhaupt geprüft werden.", ref:"Mehrdeutigkeit — Formalität vs. einzige Prüfinstanz", warn:true }
+    ],
+    persona:{ who:"Sachgebietsleitung, Ordnungsamt:", line:"„Eine Anzeige zwei Tage vorher ist für mich keine Formsache mehr — dann kann ich gar nichts mehr prüfen.“" }
+  },
+  {
+    id:"sachbearbeiter", code:"ROLLE — SACHBEARBEITER:IN", name:"Anmeldung & Verwaltung", color:"#4A5878",
+    sub:"Bearbeitet den konkreten Einzelfall — verantwortet die korrekte Durchführung der Anmeldung, nicht die Entscheidung selbst.",
+    nfas:[
+      { tag:"Bearbeitungsschritt", text:"Die Anzeige wird mit Zutatenlisten, Standort und Verkaufszeitraum vollständig ausgefüllt, sonst gilt sie als nicht eingegangen.", ref:"Vollständigkeitsprüfung — Formerfordernis" },
+      { tag:"Fristenkontrolle", text:"Geht die Anzeige weniger als 14 Tage vor dem Fest ein, wird sie mit Hinweis auf die Frist zurückgewiesen, nicht stillschweigend liegen gelassen.", ref:"Fristenprüfung — Rückmeldepflicht" },
+      { tag:"Dokumentation", text:"Jede Anmeldung wird mit Eingangsdatum und Bearbeitungsstand in der Akte vermerkt — nachvollziehbar auch bei Vertretung.", ref:"Aktenführung — Nachvollziehbarkeit" },
+      { tag:"Missverständnis", text:"Der Verein wendet sich an die Sachbearbeitung, wenn er eine Ausnahme von der Frist möchte — die Sachbearbeitung hat dafür aber gar keine Entscheidungsbefugnis, das müsste die Sachgebietsleitung klären.", ref:"Mehrdeutigkeit — fehlende Entscheidungsbefugnis", warn:true }
+    ],
+    persona:{ who:"Sachbearbeitung, Ordnungsamt:", line:"„Eine Ausnahme von der Frist kann ich nicht genehmigen — das müssten Sie mit der Sachgebietsleitung klären, nicht mit mir.“" }
+  },
+  {
+    id:"fachexperte", code:"ROLLE — FACHEXPERT:IN", name:"Lebensmittelhygiene-Beratung (extern)", color:"#A9760A",
+    sub:"Bringt fachliches Spezialwissen ein, das im Verein selbst nicht vorhanden ist — verantwortet die fachliche Richtigkeit, nicht die Umsetzung.",
+    nfas:[
+      { tag:"Fachliche Einschätzung", text:"Eierhaltiger Rührteig gilt als unkritisch, wenn er vollständig durcherhitzt wird (Kerntemperatur mind. 70°C, 5 Minuten) — bei Cremefüllung empfiehlt die Beratung den Verzicht.", ref:"Fachgutachten — Risikoeinschätzung Salmonellen" },
+      { tag:"Empfehlung über Pflicht hinaus", text:"Eine zusätzliche, gut lesbare Tafel mit den 14 Hauptallergenen wird empfohlen, auch wenn die Kladde rechtlich ausreicht — aus Erfahrung mit Beschwerden bei Vereinsfesten.", ref:"Fachempfehlung — über Mindestanforderung hinaus" },
+      { tag:"Grenze der Beratung", text:"Die Beratung deckt Hygiene- und Kennzeichnungsfragen ab, nicht die Haftungsfrage bei einem Schadensfall — dafür wird auf Rechtsberatung verwiesen.", ref:"Abgrenzung — fachlicher vs. rechtlicher Rat" },
+      { tag:"Missverständnis", text:"Der Verein verwechselt eine fachliche Empfehlung ('wir raten zu') mit einer rechtlichen Pflicht ('wir müssen') — beides klingt im Gespräch oft gleich verbindlich.", ref:"Mehrdeutigkeit — Empfehlung vs. Pflicht", warn:true }
+    ],
+    persona:{ who:"Fachberatung Lebensmittelhygiene:", line:"„Ich habe gesagt 'wir empfehlen' — im Protokoll stand danach 'ist Pflicht'. Das ist nicht dasselbe.“" }
+  },
+  {
+    id:"pruefinstanz", code:"ROLLE — EXTERNE PRÜFINSTANZ", name:"Kontrolle vor Ort am Festtag", color:"#C8472B",
+    sub:"Prüft am Tag selbst die Einhaltung — verantwortet die Feststellung, nicht die vorherige Beratung.",
+    nfas:[
+      { tag:"Prüfkriterium", text:"Bei der Vor-Ort-Kontrolle wird stichprobenartig geprüft, ob die Allergenliste am Stand sichtbar UND der jeweiligen Kuchencharge eindeutig zugeordnet ist.", ref:"Vor-Ort-Kontrolle — Stichprobenprüfung" },
+      { tag:"Beanstandungsgrenze", text:"Fehlt die Kühlkette bei Sahnetorten erkennbar, wird der betroffene Posten vom Verkauf ausgeschlossen, nicht nur mündlich beanstandet.", ref:"Sofortmaßnahme — Verkaufsausschluss bei Verstoß" },
+      { tag:"Verhältnismäßigkeit", text:"Kleinere Mängel (z. B. unleserliche Handschrift auf der Kladde) werden mit Frist zur Nachbesserung bis zum nächsten Verkaufstag dokumentiert, nicht sofort sanktioniert.", ref:"Verhältnismäßigkeitsgrundsatz — Nachbesserungsfrist" },
+      { tag:"Missverständnis", text:"Der Verein erwartet, dass die vorherige fachliche Beratung automatisch auch die Vor-Ort-Kontrolle 'absegnet' — beides sind aber unabhängige Prüfschritte mit eigenen Maßstäben.", ref:"Mehrdeutigkeit — Beratung ersetzt keine Kontrolle", warn:true }
+    ],
+    persona:{ who:"Kontrolle, Ordnungsamt vor Ort:", line:"„Dass Sie beraten wurden, glaube ich Ihnen gern — zeigen Sie es mir trotzdem, ich prüfe das, was heute am Stand steht.“" }
+  }
+];
+
+const ROLES_STAKE_COMPLEX = [
+  {
+    id:"entscheider", code:"ROLLE — ENTSCHEIDER:IN", name:"Bürgermeister:in / Verwaltungsspitze", color:"#16213F",
+    sub:"Trifft die übergeordnete Freigabeentscheidung — verantwortet das OB und WANN, nicht das WIE.",
+    nfas:[
+      { tag:"Entscheidungskriterium", text:"Der Go-Live wird freigegeben, wenn der Datenschutz-Abnahmebericht ohne offene kritische Punkte vorliegt — nicht bei 'fast fertig'.", ref:"Freigabekriterium — Abnahmebericht" },
+      { tag:"Entscheidungsspielraum", text:"Bei einem unkritischen, dokumentierten Restrisiko kann die Verwaltungsspitze eine befristete Freigabe mit Nachbesserungsfrist von 30 Tagen erteilen.", ref:"Verwaltungsermessen — befristete Freigabe" },
+      { tag:"Eskalationsgrenze", text:"Wird im Pilotbetrieb eine Datenschutzverletzung bekannt, wird der Echtbetrieb sofort gestoppt, unabhängig vom politischen Zeitplan.", ref:"Stopp-Kriterium — Sicherheitsvorfall" },
+      { tag:"Missverständnis", text:"Das Projektteam erlebt die politische Terminvorgabe als fix, die Verwaltungsspitze versteht sie als Zielmarke, die bei einem Sicherheitsrisiko ausdrücklich verschiebbar ist.", ref:"Mehrdeutigkeit — fixer Termin vs. Zielmarke", warn:true }
+    ],
+    persona:{ who:"Verwaltungsspitze:", line:"„Der Termin in der Pressemitteilung ist mein Ziel, kein Befehl — bei einem Datenschutzproblem schiebe ich ihn lieber, als ihn zu halten.“" }
+  },
+  {
+    id:"sachbearbeiter", code:"ROLLE — SACHBEARBEITER:IN", name:"Bürgeramt, Einzelfallbearbeitung", color:"#4A5878",
+    sub:"Bearbeitet den konkreten Bürgerfall — verantwortet die korrekte Einzelfallentscheidung im Rahmen ihrer Befugnis.",
+    nfas:[
+      { tag:"Bearbeitungsschritt", text:"Ein eskalierter Fall wird innerhalb von 1 Werktag gesichtet und entweder abschließend bearbeitet oder mit Begründung weitergeleitet.", ref:"Bearbeitungsstandard — Sichtungsfrist" },
+      { tag:"Entscheidungsgrenze", text:"Eine Fristverlängerung über 14 Tage hinaus darf die Sachbearbeitung nicht selbst gewähren — das erfordert eine Freigabe der Amtsleitung.", ref:"Befugnisgrenze — Fristverlängerung" },
+      { tag:"Dokumentation", text:"Jede Abweichung vom Standardablauf (z. B. Sonderregelung für einen Bürger) wird mit Begründung im Fall vermerkt, auch bei mündlicher Zusage.", ref:"Aktenführung — Nachvollziehbarkeit bei Ausnahmen" },
+      { tag:"Missverständnis", text:"Bürger:innen erwarten von der Sachbearbeitung dieselbe Entscheidungsfreiheit wie von der Amtsleitung — die Sachbearbeitung hat aber klar begrenzte Befugnisse und muss bei Ausnahmen eskalieren.", ref:"Mehrdeutigkeit — wahrgenommene vs. tatsächliche Entscheidungsbefugnis", warn:true }
+    ],
+    persona:{ who:"Sachbearbeitung, Bürgeramt:", line:"„Eine Fristverlängerung über zwei Wochen kann ich Ihnen nicht einfach zusagen — das geht nur über die Amtsleitung.“" }
+  },
+  {
+    id:"fachexperte", code:"ROLLE — FACHEXPERT:IN", name:"Datenschutz- und KI-Recht (Beratung)", color:"#A9760A",
+    sub:"Bringt rechtlich-fachliches Spezialwissen ein — verantwortet die fachliche Einordnung, nicht die Projektentscheidung.",
+    nfas:[
+      { tag:"Fachliche Einschätzung", text:"Der Chatbot wird als KI-System mit begrenztem Risiko eingestuft, solange er nur informiert und nicht eigenständig über Anträge entscheidet — bei automatischer Entscheidung wäre die Einstufung neu zu prüfen.", ref:"Fachgutachten — AI-Act-Risikoeinstufung" },
+      { tag:"Empfehlung über Pflicht hinaus", text:"Eine jährliche externe Überprüfung der Chatbot-Protokolle wird empfohlen, auch wenn der AI Act nur eine generelle Aufzeichnungspflicht vorschreibt.", ref:"Fachempfehlung — über Mindestanforderung hinaus" },
+      { tag:"Grenze der Beratung", text:"Die Beratung bewertet die rechtliche Einordnung, nicht die technische Umsetzungsqualität — dafür verweist sie an die IT-Sicherheitsprüfung.", ref:"Abgrenzung — rechtliche vs. technische Bewertung" },
+      { tag:"Missverständnis", text:"Das Projektteam verwechselt 'rechtlich vertretbar' mit 'technisch sicher' — eine rechtliche Einschätzung ersetzt keine Sicherheitsprüfung der Systeme.", ref:"Mehrdeutigkeit — rechtliche vs. technische Absicherung", warn:true }
+    ],
+    persona:{ who:"Fachberatung Datenschutz & KI-Recht:", line:"„Ich kann Ihnen sagen, dass die Einstufung rechtlich passt — ob die Verschlüsselung hält, müssen Sie technisch separat prüfen lassen.“" }
+  },
+  {
+    id:"pruefinstanz", code:"ROLLE — EXTERNE PRÜFINSTANZ", name:"Landesdatenschutzbehörde / Audit", color:"#C8472B",
+    sub:"Prüft nach Inbetriebnahme von außen — verantwortet die Feststellung der tatsächlichen Konformität.",
+    nfas:[
+      { tag:"Prüfkriterium", text:"Bei einer Prüfung wird stichprobenartig kontrolliert, ob Löschanträge tatsächlich innerhalb der zugesagten 30 Tage umgesetzt wurden — nicht nur, ob die Frist im Konzept steht.", ref:"Prüfschwerpunkt — gelebte Praxis vs. Dokumentation" },
+      { tag:"Beanstandungsgrenze", text:"Wird festgestellt, dass Chat-Klartext entgegen der Zusage auch ohne aktive Fallzuständigkeit einsehbar ist, wird dies als Verstoß mit Frist zur Abstellung dokumentiert.", ref:"Beanstandung — Zugriffsbeschränkung" },
+      { tag:"Verhältnismäßigkeit", text:"Kleinere Dokumentationslücken werden mit einer Nachbesserungsfrist von 60 Tagen versehen, bevor über ein Bußgeld überhaupt entschieden wird.", ref:"Verhältnismäßigkeitsgrundsatz — Nachbesserung vor Sanktion" },
+      { tag:"Missverständnis", text:"Das Projektteam erwartet, dass eine vorherige Rechtsberatung automatisch vor Beanstandungen schützt — die Prüfinstanz bewertet aber die tatsächliche Umsetzung, nicht die ursprüngliche Absicht.", ref:"Mehrdeutigkeit — Beratung ersetzt keine externe Prüfung", warn:true }
+    ],
+    persona:{ who:"Prüfung, Landesdatenschutzbehörde:", line:"„Dass Sie beraten wurden, lese ich gern im Konzept — geprüft wird trotzdem, was im System tatsächlich passiert.“" }
+  }
+];
+
+const SCENARIOS = {
+  simple: {
+    fa: "Herr Bachmeier backt für das Sommerfest einen Marmorkuchen, der bei allen Gästen gut ankommt.",
+    normHint: "zerfällt in 3 Rechts- und 3 Qualitätsspuren",
+    norms: DATA_SIMPLE,
+    rolesTeam: ROLES_TEAM_SIMPLE,
+    rolesOrg: ROLES_ORG_SIMPLE,
+    rolesStake: ROLES_STAKE_SIMPLE
+  },
+  complex: {
+    fa: "Bürger:innen buchen online einen Termin im Bürgeramt — unterstützt durch einen KI-Chatbot.",
+    normHint: "zerfällt in sechs Normen-Spuren",
+    norms: DATA_COMPLEX,
+    rolesTeam: ROLES_TEAM_COMPLEX,
+    rolesOrg: ROLES_ORG_COMPLEX,
+    rolesStake: ROLES_STAKE_COMPLEX
+  }
+};
+
+let currentMode = "normen";       // "normen" | "rollen"
+let currentRoleGroup = "team";    // "team" | "org"
+let currentScenario = "simple";   // "simple" | "complex"
+
+function currentData(){
+  if(currentMode === "normen") return SCENARIOS[currentScenario].norms;
+  if(currentRoleGroup === "team") return SCENARIOS[currentScenario].rolesTeam;
+  if(currentRoleGroup === "org") return SCENARIOS[currentScenario].rolesOrg;
+  return SCENARIOS[currentScenario].rolesStake;
+}
+
+function currentHint(){
+  if(currentMode === "normen") return SCENARIOS[currentScenario].normHint;
+  if(currentRoleGroup === "team") return "zerfällt in 4 Team-Rollen-Perspektiven";
+  if(currentRoleGroup === "org") return "zerfällt in 4 Organisations-Rollen-Perspektiven";
+  return "zerfällt in 4 Entscheidungs-Rollen-Perspektiven";
+}
+
+function currentTrackUnit(){
+  return currentMode === "normen" ? "NFAs" : "Punkte";
+}
+
+function buildTracks(){
+  const wrap = document.getElementById('tracks');
+  wrap.innerHTML = currentData().map(d => `
+    <button class="track-row" data-id="${d.id}">
+      <div class="tr-meta">
+        <div class="tr-code" style="color:${d.color}">${d.code}</div>
+        <div class="tr-name">${d.name}</div>
+      </div>
+      <div class="tr-count">${d.nfas.length} ${currentTrackUnit()}</div>
+      <div class="tr-arrow">→</div>
+    </button>`).join('');
+  wrap.querySelectorAll('.track-row').forEach(row => {
+    row.addEventListener('click', () => openPanel(row.dataset.id));
+  });
+}
+
+function refreshHeader(){
+  document.getElementById('faText').textContent = SCENARIOS[currentScenario].fa;
+  document.getElementById('funnelHint').textContent = currentHint();
+  if(currentMode === "normen"){
+    document.getElementById('eyebrowText').textContent = "Die Normen-Spuren einer Anforderung";
+    document.getElementById('mainHeading').textContent = "FA → NFA";
+  } else {
+    document.getElementById('eyebrowText').textContent = "Die Rollen-Spuren einer Anforderung";
+    document.getElementById('mainHeading').textContent = "FA → Rollen";
+  }
+}
+
+function switchMode(mode){
+  currentMode = mode;
+  document.querySelectorAll('#modeSwitch .seg-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+  document.getElementById('roleGroupRow').classList.toggle('visible', mode === 'rollen');
+  refreshHeader();
+  buildTracks();
+  closePanel();
+}
+
+function switchRoleGroup(group){
+  currentRoleGroup = group;
+  document.querySelectorAll('#roleGroupSwitch .seg-btn').forEach(b => b.classList.toggle('active', b.dataset.rolegroup === group));
+  refreshHeader();
+  buildTracks();
+  closePanel();
+}
+
+function switchScenario(key){
+  currentScenario = key;
+  document.querySelectorAll('#scenarioSwitch .seg-btn').forEach(b => b.classList.toggle('active', b.dataset.scenario === key));
+  refreshHeader();
+  buildTracks();
+  closePanel();
+}
+
+function openPanel(id){
+  const d = currentData().find(x=>x.id===id);
+  document.getElementById('pCode').textContent = d.code;
+  document.getElementById('pCode').style.color = d.color;
+  document.getElementById('pName').textContent = d.name;
+  document.getElementById('pSub').textContent = d.sub;
+  document.getElementById('pBody').innerHTML =
+    `<div class="persona-line"><span class="who">${d.persona.who}</span><br>${d.persona.line}</div>` +
+    d.nfas.map(n => `
+      <div class="nfa-card${n.warn ? ' misunderstanding' : ''}${n.norm ? ' norm-prescribed' : ''}">
+        <div class="card-tag-row">
+          <span class="nfa-tag" style="background:${d.color}">${n.tag}</span>
+          ${n.norm ? '<span class="norm-badge">⚖ Norm schreibt Mittel vor</span>' : ''}
+          ${n.warn ? '<span class="warn-badge">⚡ Missverständnis</span>' : ''}
+        </div>
+        <div class="nfa-text">${n.text}</div>
+        <div class="nfa-ref">${n.ref}</div>
+      </div>`).join('');
+
+  document.querySelectorAll('.track-row').forEach(row => row.classList.toggle('active', row.dataset.id === id));
+}
+
+function closePanel(){
+  document.getElementById('pCode').textContent = '';
+  document.getElementById('pName').textContent = currentData().length + (currentMode === 'normen' ? ' Normen-/Qualitätsspuren' : ' Rollen-Spuren');
+  document.getElementById('pSub').textContent = 'Tippen Sie links auf eine Spur — oder direkt hier.';
+  document.getElementById('pBody').innerHTML =
+    `<div class="overview-grid">` +
+    currentData().map(d => `
+      <button class="overview-tile" style="border-left-color:${d.color}" data-jump="${d.id}">
+        <div>
+          <div class="ot-code" style="color:${d.color}">${d.code}</div>
+          <div class="ot-name">${d.name}</div>
+        </div>
+        <div class="ot-count">${d.nfas.length} ${currentTrackUnit()}</div>
+      </button>`).join('') +
+    `</div>`;
+  document.querySelectorAll('.overview-tile').forEach(t => t.addEventListener('click', () => openPanel(t.dataset.jump)));
+  document.querySelectorAll('.track-row').forEach(row => row.classList.remove('active'));
+}
+
+document.getElementById('resetBtn').addEventListener('click', closePanel);
+document.querySelectorAll('#modeSwitch .seg-btn').forEach(b => b.addEventListener('click', () => switchMode(b.dataset.mode)));
+document.querySelectorAll('#roleGroupSwitch .seg-btn').forEach(b => b.addEventListener('click', () => switchRoleGroup(b.dataset.rolegroup)));
+document.querySelectorAll('#scenarioSwitch .seg-btn').forEach(b => b.addEventListener('click', () => switchScenario(b.dataset.scenario)));
+
+switchMode('normen');
+switchScenario('simple');
+
+const BEAMER_LEVELS = [
+  { classes: [],                                    label: '☀ Beamer' },
+  { classes: ['beamer'],                            label: '☀ Beamer XL' },
+  { classes: ['beamer', 'beamer-xl'],               label: '☀ Beamer XXL' },
+  { classes: ['beamer', 'beamer-xl', 'beamer-xxl'], label: '☀ Normal' }
+];
+let beamerLevel = 0;
+document.getElementById('beamerBtn').addEventListener('click', function(){
+  beamerLevel = (beamerLevel + 1) % 4;
+  document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+  BEAMER_LEVELS[beamerLevel].classes.forEach(c => document.documentElement.classList.add(c));
+  this.textContent = BEAMER_LEVELS[beamerLevel].label;
+});
+
+</script>
+
+<style>
+  .footer{
+    border-top:2px solid var(--line); background:#F7F5F0;
+    padding:32px 40px 24px; margin-top:0;
+    font-family:var(--font-body);
+  }
+  .footer-boxes{ display:flex; flex-direction:column; gap:12px; margin-bottom:20px; }
+  .footer-box{
+    border:1.5px solid var(--line); border-radius:12px;
+    background:#FFFFFF; overflow:hidden;
+  }
+  .footer-box summary{
+    padding:14px 20px; cursor:pointer; font-weight:700;
+    font-size:16px; list-style:none; display:flex; align-items:center;
+    gap:10px; user-select:none;
+  }
+  .footer-box summary::-webkit-details-marker{ display:none; }
+  .footer-box summary::before{
+    content:"▶"; font-size:14px; color:var(--ink-dim);
+    transition:transform .2s ease;
+  }
+  .footer-box[open] summary::before{ transform:rotate(90deg); }
+  .footer-box .box-body{ padding:20px 24px 24px; border-top:1.5px solid var(--line); }
+
+  .box-systemprompt .box-body{
+    font-family:var(--font-mono); font-size:14px; line-height:1.65;
+    white-space:pre-wrap; color:var(--ink);
+  }
+  .box-handbuch .box-body{
+    font-family:var(--font-body); font-size:16px; line-height:1.7; color:var(--ink);
+  }
+  .box-handbuch .box-body h4{
+    font-size:17px; margin:20px 0 6px; color:var(--ink);
+  }
+  .box-handbuch .box-body h4:first-child{ margin-top:0; }
+  .box-skript .box-body{
+    font-family:var(--font-body); font-size:16px; line-height:1.7; color:var(--ink);
+  }
+  .box-skript .step{
+    border-left:3px solid var(--line); padding:12px 0 12px 18px; margin-bottom:20px;
+  }
+  .box-skript .step-cue{
+    font-style:italic; color:var(--ink-dim); font-size:15px; margin-bottom:6px;
+  }
+  .box-skript .step-text{ font-size:16px; line-height:1.65; }
+  .box-skript .regie-box{
+    background:#F7F5F0; border-radius:10px; padding:16px 20px; margin-top:20px;
+    font-size:15px; color:var(--ink-dim); line-height:1.6;
+  }
+
+  .footer-sig{
+    font-size:14px; color:var(--ink-dim); text-align:center; line-height:1.5;
+  }
+  .footer-sig .audit-status{
+    display:block; margin-top:6px; font-size:14px; color:#5B6479;
+    letter-spacing:0.3px;
+  }
+</style>
+
+<footer class="footer">
+  <div class="footer-boxes">
+
+    <!-- Box 1: Systemprompt -->
+    <details class="footer-box box-systemprompt">
+      <summary>🔧 Systemprompt</summary>
+      <div class="box-body">Baue mir ein einzelnes HTML-Tool für eine Live-Demo am Beamer/iPad (Requirements-Training, Trainerin steuert, Teilnehmende schauen zu).
+
+STRUKTUR
+- Bildschirm fest geteilt: links 40%, rechts 60%
+- Links: Umschalter (Normen-Spuren / Rollen-Spuren), darunter bei Rollen-Modus ein zweiter Umschalter (Team-Rollen / Organisations-Rollen / Entscheidungs-Rollen), darunter ein Szenario-Umschalter (Einfach / Komplex)
+- Links darunter: ein Banner mit der Ausgangs-FA (funktionale Anforderung), darunter gestapelte, anklickbare Spur-Zeilen — eine pro Normspur bzw. Rolle
+- Rechts: Detailbereich, der sich beim Klick aktualisiert (kein Ein-/Ausblenden, immer sichtbar). Im Ruhezustand: anklickbare Übersichts-Kacheln statt Leerfläche
+- Gestapelte Boxen/Zeilen statt Kreis-/Radial-Layouts — kollisionssicher auf jeder Bildschirmgröße
+
+INHALT PRO SPUR (Normen-Modus)
+- Code/Kürzel (z. B. Normname), Name, Kurzbeschreibung
+- 3–6 NFAs, jede mit: Tag/Referenz, konkretem Text MIT MESSBARER ZAHL/SCHWELLE (keine generischen Sätze wie „soll performant sein"), Quellenangabe
+- Badge „⚖ Norm schreibt Mittel vor", wenn die Norm das Mittel selbst vorgibt (keine unmarkierte Lösungsformulierung sonst — K10)
+- Ein Persona-Zitat am Schluss, das die Zahl/den Tradeoff kommentiert
+
+INHALT PRO SPUR (Rollen-Modus)
+- Drei Rollengruppen: Team-Rollen (PO/Entwicklung/Test/Endnutzer:in), Organisations-Rollen (Fachbereich/IT/Sponsor/Betrieb), Entscheidungs-Rollen (Entscheider:in/Sachbearbeiter:in/Fachexpert:in/externe Prüfinstanz) — die dritte Gruppe deckt eine RACI-ähnliche Linse ab (wer entscheidet, wer berät, wer prüft)
+- Jede Rolle: 4 Punkte (Akzeptanzkriterium / Priorisierung / Grenz- bzw. Konfliktfall / Missverständnis)
+- Badge „⚡ Missverständnis" beim vierten Punkt — zeigt, wie dieselbe Formulierung von verschiedenen Rollen unterschiedlich gelesen wird
+
+SZENARIEN (Segmented Control, zwei Stufen)
+- Einfach: niedrigschwellige Alltagsmetapher (hier: Marmorkuchen-Verkauf beim Vereinsfest), aber mit ECHTEN Normen recherchiert (Lebensmittelrecht), nicht nur Qualitätsmerkmalen
+- Komplex: dasselbe Muster mit voller regulatorischer Tiefe (hier: Bürgeramt-Portal mit KI-Chatbot — DSGVO, NIS2, EU AI Act, CADA/EU-CSF, ISO 27001, Data Act)
+- FA-Banner-Text, Spuren und Hinweistext aktualisieren sich beim Wechsel vollständig
+
+PERSONAS (fest, konsistent mit anderen Tools der Sammlung)
+Ela (Projektleitung), Knut (Entwicklung), Sarah (Vertrieb — im Szenario auch Gast/Bürgerin), Petra (QM — im Szenario auch Sachbearbeitung), Herr Bachmeier (Geschäftsführung — im Szenario auch IT-Leiter). Szenariointerne Kontextrollen sind erlaubt, die Kerndefinition bleibt.
+
+DESIGN
+- Weißer Hintergrund, große Schrift (Beamer-tauglich)
+- Serif-Display-Font für FA/Headlines, Sans für Body, Mono für Codes/Referenzen
+- Eine Akzentfarbe pro Spur, konsistent durch das ganze Tool
+- Offline-fähig, eine einzige HTML-Datei, kein Build-Prozess
+- Pointer-Events statt Drag&Drop (iPad-Kompatibilität)
+- Footer (Systemprompt/Handbuch/Vortrags-Skript) muss über normalen Seiten-Scroll erreichbar bleiben, auch wenn die Hauptansicht ein festes 100vh-Layout nutzt
+
+NICHT TUN
+- Keine generischen NFAs („soll sicher sein", „soll schnell sein")
+- Keine erfundenen Artikelnummern ohne Recherche — wenn unsicher: recherchieren oder allgemein referenzieren statt falsch zitieren
+- Keine Mindmap/Radial-Layouts für Beamer-Kontexte
+- Keine unmarkierte Lösungsformulierung bei Anforderungen, die eigentlich ein Problem/Ziel beschreiben sollten
+
+Hinweis: Dieser Prompt ist die rekonstruierte, wiederverwendbare Bauanleitung für dieses Tool — er kann in neuen Konversationen eingesetzt werden, um ähnlich strukturierte Split-Screen-Tools zu bauen.</div>
+    </details>
+
+    <!-- Box 2: Handbuch -->
+    <details class="footer-box box-handbuch">
+      <summary>📖 Handbuch — Konstruktionslogik</summary>
+      <div class="box-body">
+        <h4>Framework: RTF (Role — Task — Format)</h4>
+        <p>Der Prompt folgt dem RTF-Muster: <strong>Rolle</strong> (interaktives Lernwerkzeug für RE-Trainings), <strong>Task</strong> (FA in Perspektiven zerlegen), <strong>Format</strong> (HTML-Panel-Inhalt, keine Prosa). Das macht ihn reproduzierbar und modular erweiterbar.</p>
+
+        <h4>5 Dimensionen</h4>
+        <p><strong>Rolle:</strong> Lernwerkzeug — kein Assistent, kein Erklärer, sondern eine Demo-Maschine, die dasselbe Objekt (die FA) dreht und aus verschiedenen Winkeln zeigt.<br>
+        <strong>Aufgabe:</strong> Zwei Modi mit klar getrennter Logik — Normen-Spuren (regulatorisch/qualitativ) und Rollen-Spuren (perspektivisch). Die Trennung verhindert inhaltliche Vermischung.<br>
+        <strong>Kontext:</strong> Zwei Szenarien (Marmorkuchen/Bürgeramt) als Lernrampe: niedrigschwellig → komplex, ohne Sprung.<br>
+        <strong>Format:</strong> Auslieferung als HTML-Panel-Inhalt, nicht als Fließtext — erzwingt strukturierte, darstellbare Outputs.<br>
+        <strong>Eingrenzung:</strong> Konkrete Messwerte Pflicht, Lösungsformulierungen verboten (K10), Persona-Mapping fix.</p>
+
+        <h4>Zentrale Design-Entscheidung</h4>
+        <p>Die <strong>dritte Rollengruppe „Entscheidungs-Rollen"</strong> (Entscheider:in, Sachbearbeiter:in, Fachexpert:in, Externe Prüfinstanz) ergänzt die Team- und Org-Rollen bewusst um eine RACI-ähnliche Linse: <em>wer darf was entscheiden, wer berät nur, wer prüft hinterher</em>. Das deckt einen blinden Fleck der klassischen Rollen-Einteilung auf.</p>
+
+        <h4>Das eine Prinzip</h4>
+        <p>Dieselbe FA, viele Brillen — nicht weil die Anforderung unklar ist, sondern weil jede Perspektive legitim andere Aspekte sichtbar macht. Das ist der Kernlernpunkt für RE-Trainings: <em>Vollständigkeit entsteht erst durch Perspektivenvielfalt.</em></p>
+
+        <h4>Nachbau-Tipp</h4>
+        <p>Wer ein ähnliches Tool baut: Starte mit genau zwei Szenarien auf derselben Komplexitätsachse (einfach/komplex). Lass die FA konstant — ändere nur den Betrachtungswinkel. So wird der Lerneffekt isoliert und ist nicht mit Szenario-Neugier vermischt.</p>
+      </div>
+    </details>
+
+    <!-- Box 3: Vortrags-Skript -->
+    <details class="footer-box box-skript">
+      <summary>🎤 Vortrags-Skript</summary>
+      <div class="box-body">
+
+        <div class="step">
+          <div class="step-cue">(Bildschirm zeigt: Startansicht, Normen-Spuren aktiv, Marmorkuchen, Übersichtskacheln rechts)</div>
+          <div class="step-text">„Wir nehmen eine einzige Anforderung — ganz simpel: Herr Bachmeier backt einen Marmorkuchen, der bei allen Gästen gut ankommt. Das ist die funktionale Anforderung. Was passiert jetzt, wenn wir fragen: Was muss das System leisten — jenseits des 'gut backen'?"</div>
+        </div>
+
+        <div class="step">
+          <div class="step-cue">(Klick auf erste Spur, z. B. LMIV Allergenkennzeichnung)</div>
+          <div class="step-text">„Sobald wir einen Kuchen gegen Geld oder Spende abgeben, greift europäisches Lebensmittelrecht. Das ist keine Kleinigkeit — hier sehen Sie, was daraus konkret wird: nicht 'irgendwie Allergene ausweisen', sondern 14 Hauptallergene, eindeutige Zuordnung per Namensschild. Sofort messbar, sofort prüfbar."</div>
+        </div>
+
+        <div class="step">
+          <div class="step-cue">(Klick auf eine ISO-25010-Spur, z. B. Performance)</div>
+          <div class="step-text">„Hier wechseln wir von Recht zu Qualität. ISO 25010 gibt uns das Vokabular: Time Behaviour, Capacity, Resource Utilization. Nicht 'schnell serviert' — sondern: 30 Sekunden, 24 Portionen, 70 Minuten Backzeit. Das ist der Unterschied zwischen einer Anforderung und einem Wunsch."</div>
+        </div>
+
+        <div class="step">
+          <div class="step-cue">(Klick auf „Rollen-Spuren", dann „Team-Rollen")</div>
+          <div class="step-text">„Jetzt drehen wir die Linse. Dieselbe FA — aber wir schauen, was PO, Entwicklung, Testen und Endnutzerin daraus machen. Spoiler: alle vier lesen 'gut ankommt' anders. Ela zählt Stücke, Knut optimiert Temperaturen, Petra prüft Allergenkennzeichnung, Sarah will ein frisches Stück für drei Euro."</div>
+        </div>
+
+        <div class="step">
+          <div class="step-cue">(Klick auf eine Missverständnis-Karte, erkennbar am roten ⚡-Badge)</div>
+          <div class="step-text">„Diese gestrichelte Karte zeigt, wo Missverständnisse entstehen — nicht durch bösen Willen, sondern weil beide Seiten recht haben und trotzdem aneinander vorbeigehen. Das ist der eigentliche Arbeitsbereich des Requirements Engineering: Nicht Anforderungen schreiben, sondern Bedeutungen klären."</div>
+        </div>
+
+        <div class="step">
+          <div class="step-cue">(Wechsel auf „Komplex: Bürgeramt", Rollen „Entscheidungs-Rollen")</div>
+          <div class="step-text">„Im Bürgeramt-Szenario kommen drei neue Rollen dazu: Entscheider, Sachbearbeitung und externe Prüfinstanz. Der Punkt hier: dieselbe Anforderung hat jetzt eine DSGVO-, eine KI-Act-, eine Haftungs-Seite — je nachdem, wer fragt. Und wer entscheidet, darf das aus gutem Grund anders gewichten als wer prüft."</div>
+        </div>
+
+        <div class="step">
+          <div class="step-cue">(Klick auf eine ⚖-Badge-Karte, z. B. NIS2 2FA)</div>
+          <div class="step-text">„Der blaue Badge heißt: hier schreibt die Norm selbst das Mittel vor. Das ist eine eigene Kategorie — nicht 'wir haben zu früh in Lösungen gedacht', sondern 'die Regulierung macht diese Entscheidung für uns'. Als RE-Professional müssen Sie den Unterschied kennen und kommunizieren können."</div>
+        </div>
+
+        <div class="step">
+          <div class="step-cue">(Abschluss, „Alle Spuren zurücksetzen")</div>
+          <div class="step-text">„Eine Anforderung. Drei Szenario-Ebenen. Zwei Betrachtungsmodi. Sieben Rollengruppen. Das ist nicht Theorie — das ist die Realität jedes Projekts, das mehr als eine Stakeholder-Gruppe hat. Anforderungen sind nicht das Problem. Fehlende Perspektiven sind das Problem."</div>
+        </div>
+
+        <div class="regie-box">
+          <strong>Allgemeine Regie-Hinweise</strong><br>
+          — Immer mit dem Marmorkuchen starten, nie direkt mit Bürgeramt — der Lacheffekt bei der LMIV-Karte baut Vertrauen auf, bevor die Komplexität steigt.<br>
+          — Nicht zuerst „ISO 25010" oder „DSGVO" sagen — erst den Alltagsbegriff, dann die Norm.<br>
+          — Missverständnis-Karten (⚡ rot) lieber mit einer Gegenfrage einleiten: „Wer hat das schon erlebt?" statt direkt den Inhalt vorzulesen.<br>
+          — ⚖-Badge-Karten können als Entlastung präsentiert werden: „Das hat uns der Gesetzgeber abgenommen."<br>
+          — Zwischen Marmorkuchen und Bürgeramt immer eine kurze Brücke bauen: „Gleiche Logik, andere Regulierungsdichte."<br>
+          — Zeitempfehlung pro Spur: ca. 90 Sekunden. Vollständige Demo ca. 12–15 Minuten.
+        </div>
+      </div>
+    </details>
+
+  </div>
+
+  <div class="footer-sig">
+    FA → NFA / Rollen-Spuren · RE-Trainingstool · Marmorkuchen & Bürgeramt<br>
+    Referenzierte Normen: DSGVO Art. 5/13/17/32 (in Kraft) · NIS2 Art. 21/23 (in Kraft seit 06.12.2025) · EU AI Act Art. 12/14/50 (in Kraft seit 08/2024) · CADA SOV-2/3 (Verordnungsvorschlag, kein geltendes Recht) · ISO/IEC 27001:2022 Anhang A.5/A.8 (in Kraft) · Data Act Art. 23/29/30 (in Kraft) · LMIV (EU) 1169/2011, VO (EG) 852/2004 (in Kraft)
+    <span class="audit-status">Zuletzt geprüft: 13.07.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span><br>
+    Michaela Kühn · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener">www.michaela-kuehn.com</a>
+  </div>
+</footer>
+
+</body>
+</html>
