@@ -20,15 +20,21 @@
   *{box-sizing:border-box;}
   body{margin:0; font-family:'Segoe UI',Arial,sans-serif; background:var(--bg); color:var(--cream); min-height:100vh; background-image: radial-gradient(circle at 20% 10%, #2a1f15 0%, #1b1410 60%);}
   header{padding:20px 18px 10px; border-bottom:2px solid var(--line); display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap;}
+  @media (min-width:901px){ header{padding-top:88px;} }
   header h1{margin:0 0 4px; font-size:22px; color:var(--gold2);}
   header p{margin:0; color:#cbb89a; font-size:var(--sec-size); line-height:1.4;}
   .beamer-btn{background:transparent; border:1.5px solid var(--gold); color:var(--gold2); font-size:var(--sec-size); padding:9px 16px; border-radius:999px; cursor:pointer; white-space:nowrap;}
   html.beamer1 .beamer-btn, html.beamer2 .beamer-btn, html.beamer3 .beamer-btn{background:var(--gold); color:#241a0f; font-weight:700; border-color:var(--gold);}
   .header-right{display:flex; flex-direction:column; align-items:flex-end; gap:8px;}
-  .trainer-sig{font-size:var(--sec-size); color:#b59c79; text-align:right;}
+  .trainer-sig{
+    position:fixed; top:14px; right:28px; z-index:500;
+    font-size:var(--sec-size); color:#b59c79; text-align:right; line-height:1.4;
+    background:rgba(27,20,16,.85); padding:4px 8px; border-radius:8px;
+  }
+  .trainer-sig b{display:block; color:var(--cream);}
   .trainer-sig a{color:var(--gold2); text-decoration:none;}
   .trainer-sig a:hover{text-decoration:underline;}
-  html.beamer1 .trainer-sig, html.beamer2 .trainer-sig, html.beamer3 .trainer-sig{display:none;}
+  @media (max-width:900px){ .trainer-sig{position:static; background:none; padding:0; margin-bottom:6px;} }
   .back-link{font-size:var(--sec-size); font-weight:600; color:var(--gold2); text-decoration:none; display:inline-block; margin-bottom:8px;}
   .back-link:hover{text-decoration:underline;}
   html.beamer1 .back-link, html.beamer2 .back-link, html.beamer3 .back-link{display:none;}
@@ -172,9 +178,9 @@
     <p>Artefakt-Kette &amp; passende Priorisierungsmethoden — spielbar, mit Ela, Knut, Sarah, Petra &amp; Herrn Bachmeier.</p>
   </div>
   <div class="header-right">
-    <div class="trainer-sig">Michaela Kühn · IREB CPRE · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener">www.michaela-kuehn.com</a></div>
     <button class="beamer-btn" id="beamerBtn" onclick="cycleBeamer()">☀ Beamer</button>
   </div>
+  <div class="trainer-sig"><b>Michaela Kühn</b> · IREB CPRE<br><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></div>
 </header>
 <nav>
   <button class="navbtn active" data-target="journey">🎲 Durchgängige Fälle</button>
