@@ -205,6 +205,12 @@ textarea#faInput:focus{outline:2px solid var(--iso25);outline-offset:1px;}
 .beamer-btn{border:1px solid var(--ink);background:#fff;color:var(--ink);padding:9px 16px;font-weight:600;font-size:14px;border-radius:9px;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;}
 .beamer-btn.active{background:var(--ink);color:#fff;}
 .header-tools{display:flex;justify-content:flex-end;margin-bottom:6px;}
+.trainer-sig{position:fixed;top:14px;right:28px;z-index:500;font-size:14px;color:var(--ink-soft);text-align:right;line-height:1.4;background:rgba(251,250,247,.92);padding:4px 8px;border-radius:8px;}
+.trainer-sig b{display:block;color:var(--ink);}
+.trainer-sig a{color:var(--ink-soft);text-decoration:none;}
+.trainer-sig a:hover{text-decoration:underline;}
+@media(max-width:900px){.trainer-sig{position:static;background:none;padding:0;text-align:left;margin-bottom:8px;}}
+@media(min-width:901px){.wrap{padding-top:88px;}}
 
 /* ===== Footer (Systemprompt / Handbuch / Vortrags-Skript) ===== */
 .footer{margin-top:50px;border-top:1px solid var(--line);padding-top:20px;}
@@ -379,68 +385,6 @@ html.beamer-xxl .stueck-fa .text{font-size:26px;}
   </div>
 </template>
 
-<template id="sysprompt-tpl">
-<textarea id="sysPromptRaw">Rolle
-
-Du bist die RE-Waschmaschine, ein Requirements-Engineering-Experte für ISO/IEC 25010 (Produktqualität) und ISO/IEC 27001:2022 Anhang A (Informationssicherheit).
-
-Aufgabe
-
-Du bekommst eine Ladung von 1 bis 5 funktionalen Anforderungen (FAs). Für jede FA:
-
-1. ISO 25010 — prüfe für jedes der folgenden 8 Qualitätsmerkmale in genau dieser Reihenfolge, ob sich daraus eine sinnvolle, prüfbare nicht-funktionale Anforderung ableiten lässt:
-Funktionale Eignung, Leistungseffizienz, Kompatibilität, Benutzbarkeit, Zuverlässigkeit, Sicherheit, Wartbarkeit, Übertragbarkeit.
-Wenn relevant: formuliere eine knappe, testbare NFR (maximal 20 Wörter). Wenn nicht relevant: leerer String.
-Vergib je Merkmal einen Sauberkeitsgrad (0-100): Wie gut ist dieser Aspekt durch die FA und ihren Kontext bereits mitgedacht? Niedrig = weißer Fleck, hoch = bereits klar abgedeckt.
-
-2. ISO 27001:2022 Anhang A — prüfe die 4 Maßnahmen-Themen in genau dieser Reihenfolge:
-Organisatorisch, Personenbezogen, Physisch, Technologisch.
-Gleiche Logik wie oben, aber mit einer konkreten Sicherheitsmaßnahme (maximal 20 Wörter) statt einer NFR.
-
-3. Blinde Flecken — identifiziere bis zu 4 konkrete Aspekte, Risiken oder Anforderungslücken, die weder in der FA noch in den generierten NFRs/Maßnahmen auftauchen, aber in der Praxis häufig übersehen werden. Denke an: Datenschutz/DSGVO, Protokollierung und Audit-Trail, Verfügbarkeitsziele, Abhängigkeiten von Drittanbietern, Barrierefreiheit, EU AI Act (falls KI-Bezug erkennbar — nenne Status und Datum, z. B. "in Kraft seit August 2024, gestaffelte Pflichten bis 2026/2027"), Skalierung, Fehlerbehandlung, Exit- und Migrationsstrategie, Nachvollziehbarkeit von Entscheidungen. Formuliere jeden blinden Fleck als kurzen, konkreten Satz (maximal 18 Wörter).
-
-4. Score — berechne einen Gesamt-Score (0-100) je FA als gewichteten Durchschnitt der Sauberkeitsgrade aller relevanten Merkmale und Maßnahmen.
-
-5. Gewaschene Anforderung — formuliere eine verbesserte Version der FA, die die wichtigsten NFRs und Maßnahmen sinnvoll einbettet (maximal 40 Wörter).
-
-Nach der Ladung: identifiziere bis zu 4 übergreifende blinde Flecken, die als Muster über mehrere FAs hinweg auftreten, und berechne einen Ladung-Gesamt-Score (0-100) als Durchschnitt aller Einzel-Scores.
-
-Ausgabeformat
-
-Antworte AUSSCHLIESSLICH mit JSON in exakt diesem Schema. Kein Markdown, kein Codeblock, kein einleitender oder abschließender Text.
-
-{
-  "ladung": [
-    {
-      "fa": "Originaltext der Anforderung",
-      "iso25010": [
-        {"r": true, "nfr": "Text oder leer", "s": 0},
-        {"r": true, "nfr": "Text oder leer", "s": 0},
-        {"r": true, "nfr": "Text oder leer", "s": 0},
-        {"r": true, "nfr": "Text oder leer", "s": 0},
-        {"r": true, "nfr": "Text oder leer", "s": 0},
-        {"r": true, "nfr": "Text oder leer", "s": 0},
-        {"r": true, "nfr": "Text oder leer", "s": 0},
-        {"r": true, "nfr": "Text oder leer", "s": 0}
-      ],
-      "iso27001": [
-        {"r": true, "mn": "Text oder leer", "s": 0},
-        {"r": true, "mn": "Text oder leer", "s": 0},
-        {"r": true, "mn": "Text oder leer", "s": 0},
-        {"r": true, "mn": "Text oder leer", "s": 0}
-      ],
-      "flecken": ["Text", "Text"],
-      "score": 0,
-      "gewaschen": "Text"
-    }
-  ],
-  "sammelFlecken": ["Text", "Text"],
-  "ladungScore": 0
-}
-
-Die Arrays "iso25010" und "iso27001" müssen exakt 8 bzw. 4 Elemente enthalten, in der oben festgelegten Reihenfolge. Ein Objekt in "ladung" pro Eingabe-FA, in der gleichen Reihenfolge wie die Eingabe.</textarea>
-</template>
-
 <template id="handbuch-tpl">
 <textarea id="handbuchRaw">Framework: RISEN (Role, Instructions, Steps, End Goal, Narrowing)
 
@@ -466,6 +410,7 @@ Der eine Lernhinweis, der hier zählt: Struktur vor Kreativität. Sobald eine KI
 Nachbau-Tipp: Wer selbst so ein Tool bauen will, dreht die Reihenfolge um — erst das Ziel-JSON entwerfen, dann rückwärts den Prompt schreiben, der genau dieses Schema zuverlässig füllt. Nicht umgekehrt.</textarea>
 </template>
 
+<div class="trainer-sig"><b>Michaela Kühn</b><br><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></div>
 <div class="wrap">
 
 <div class="header-tools">
@@ -516,8 +461,32 @@ Nachbau-Tipp: Wer selbst so ein Tool bauen will, dreht die Reihenfolge um — er
     <details class="sys-box">
       <summary id="sysToggle"></summary>
       <div class="fbody">
-        <p class="sysprompt-note">Dieser Systemprompt beschreibt die konzeptionelle Analyselogik, an der sich die Offline-Heuristik dieses Tools orientiert. Er wird nicht live ausgeführt — die Waschmaschine läuft vollständig lokal im Browser, ohne API-Aufruf.</p>
-        <div class="sysprompt-view" id="sysPromptView"></div>
+        <p class="sysprompt-note">Master-Bau-Prompt für dieses Tool — geschrieben, damit eine interessierte Person ein vergleichbares Tool selbst entwickeln könnte:</p>
+        <div class="sysprompt-view">Baue mir ein einzelnes HTML-Tool für eine Live-Demo am Beamer/iPad (Requirements-Training, Trainerin steuert, Teilnehmende schauen zu).
+
+STRUKTUR
+- Eingabefeld für 1–5 funktionale Anforderungen (eine pro Zeile), Beispiel-Chips zum schnellen Einstieg, ein "Waschgang starten"-Button mit kurzer, rein kosmetischer Ladeanimation
+- Ergebnis pro Anforderung: Radar-Chart der 8 ISO-25010-Merkmale links, Liste der 4 ISO-27001-Anhang-A-Themen rechts, darunter Tokenisierungs-Visualisierung, blinde Flecken, eine "gewaschene" (verbesserte) Version der Anforderung
+- Bei mehreren Anforderungen zusätzlich ein Sammel-Panel mit übergreifenden blinden Flecken und einem Ladung-Gesamt-Score
+
+INHALT
+- Offline-Heuristik: prüft den Anforderungstext gegen Stichwortlisten pro Merkmal/Thema, vergibt einen Sauberkeitsgrad 0–100 (Basiswert + abnehmender Grenznutzen je Treffer + Bonus bei Zahl/Modalwort im Satz) statt eines binären Ja/Nein
+- Blinde Flecken (bis zu 4 pro Anforderung): Datenschutz/DSGVO, Audit-Trail, Verfügbarkeitsziel, Drittanbieter-Abhängigkeiten, Barrierefreiheit, EU-AI-Act-Bezug (mit Status/Datum, falls KI-Komponente erkennbar), Skalierung, Fehlerbehandlung, Exit-Strategie
+- Tokenisierung vereinfacht visualisieren (Wörter/Zahlen/Satzzeichen als Chips), Nebel-Wörter (rein qualitative Adjektive ohne Zahl) separat markieren
+
+DESIGN
+- Weißer Hintergrund, große Schrift (Beamer-tauglich)
+- Serif-Display-Font für Überschriften, Sans für Body, Mono für Codes/Tags
+- Offline-fähig, eine einzige HTML-Datei, kein Build-Prozess, Chart-Bibliothek lokal eingebettet statt per CDN
+- Pointer-Events statt Drag&Drop (iPad-Kompatibilität)
+- Footer (Systemprompt/Handbuch/Vortrags-Skript) muss über normalen Seiten-Scroll erreichbar bleiben
+
+NICHT TUN
+- Keinen echten API-Aufruf einbauen, auch nicht optional — ein "Online-Modus", der nur innerhalb einer KI-Artefakt-Vorschau funktioniert, ist für Website-Besucher eine tote Funktion
+- Keine generischen Merkmalstexte ("soll sicher sein") — jeder Ergänzungsvorschlag muss konkret benennen, was fehlt
+- Keine erfundenen Normversionen — ISO/IEC 25010:2023 und ISO/IEC 27001:2022 mit korrektem Stand referenzieren
+
+Hinweis: Dieser Prompt ist die rekonstruierte, wiederverwendbare Bauanleitung für dieses Tool — er kann in neuen Konversationen eingesetzt werden, um ähnlich strukturierte Analyse-Tools zu bauen.</div>
       </div>
     </details>
     <details class="handbuch-box">
@@ -554,7 +523,6 @@ Nachbau-Tipp: Wer selbst so ein Tool bauen will, dreht die Reihenfolge um — er
 (function(){
   var STR = document.getElementById('strings');
   function t(k){ var v = STR.getAttribute('data-'+k); return v === null ? k : v; }
-  var SYS_PROMPT_TEXT = document.getElementById('sysprompt-tpl').content.querySelector('#sysPromptRaw').value;
   var HANDBUCH_TEXT = document.getElementById('handbuch-tpl').content.querySelector('#handbuchRaw').value;
 
   var catKeys = ['cat0','cat1','cat2','cat3','cat4','cat5','cat6','cat7'];
@@ -1101,8 +1069,7 @@ Nachbau-Tipp: Wer selbst so ein Tool bauen will, dreht die Reihenfolge um — er
   }
   document.getElementById('resetBtn').addEventListener('click', resetAll);
 
-  // Wire sysprompt view
-  document.getElementById('sysPromptView').textContent = SYS_PROMPT_TEXT;
+  // Wire handbuch view
   document.getElementById('handbuchView').textContent = HANDBUCH_TEXT;
 
   updateLineCount();

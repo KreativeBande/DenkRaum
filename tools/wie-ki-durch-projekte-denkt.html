@@ -11,6 +11,7 @@ body{min-height:100vh;}
 button,.chip,.tab,.card,.clickable,input[type=range]{touch-action:manipulation;}
 .app{max-width:1180px;margin:0 auto;padding:16px 18px 22px;}
 .top{border:1px solid #d8d8d4;background:#ffffff;padding:14px 16px;margin-bottom:12px;}
+@media(min-width:901px){.app{padding-top:64px;}}
 .brand{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
 h1{margin:0;color:#1a3a5c;font-size:clamp(24px,3.3vw,40px);line-height:1.04;letter-spacing:-0.03em;}
 .subtitle{margin:6px 0 0;color:#5d6973;font-size:15px;max-width:760px;}
@@ -79,6 +80,11 @@ h2{margin:0;color:#1a3a5c;font-size:clamp(22px,3vw,34px);line-height:1.08;letter
 .back-link{font-size:14px;font-weight:600;color:#1a3a5c;text-decoration:none;display:inline-block;margin-bottom:10px;}
 .back-link:hover{text-decoration:underline;}
 .footerSig{font-size:14px;color:#75818a;text-align:right;margin-top:10px;}
+.trainer-sig{position:fixed;top:14px;right:28px;z-index:500;font-size:14px;color:#75818a;text-align:right;line-height:1.4;background:rgba(255,255,255,.92);padding:4px 8px;border-radius:8px;}
+.trainer-sig b{display:block;color:#1a3a5c;}
+.trainer-sig a{color:#75818a;text-decoration:none;}
+.trainer-sig a:hover{text-decoration:underline;}
+@media(max-width:900px){.trainer-sig{position:static;background:none;padding:0;text-align:left;margin-bottom:8px;}}
 @media(max-width:900px){.tabs{grid-template-columns:repeat(6,1fr);}.chips,.grid4{grid-template-columns:1fr 1fr;}.grid3{grid-template-columns:1fr;}.grid2,.compare{grid-template-columns:1fr;}.stage{min-height:auto}.brand{display:block}.restart{margin-top:10px}.stepHead{display:block}.navBtns{justify-content:flex-start;margin-top:12px}.progressRow{grid-template-columns:1fr}.chips{gap:8px}.chip{min-height:110px}.app{padding:10px}.stage{padding:13px}.top{padding:12px}}
 
 /* ===== Footer (Systemprompt / Handbuch / Vortrags-Skript) ===== */
@@ -117,6 +123,7 @@ html.beamer-xxl .tab{font-size:19px;}
 </style>
 </head>
 <body>
+<div class="trainer-sig"><b>Michaela Kühn</b><br><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></div>
 <div class="app">
   <header class="top">
     <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
@@ -141,11 +148,32 @@ html.beamer-xxl .tab{font-size:19px;}
     <div class="footer-triple">
       <details class="sys-box">
         <summary>🔧 Systemprompt</summary>
-        <div class="fbody">Rolle: Requirements-Engineering-Trainerin für interaktive HTML-Lerntools zu KI-Literacy und Prompt-Steuerung.
-Aufgabe: Zeigen, dass Prompt-Engineering derselben Denkstruktur folgt wie Requirements Engineering — anhand von vier Projektwelten (ERP, KI-Pilot, Agile Transformation, Blank-Fall) in 11 Schritten von der "jungfräulichen Instanz" bis zur Auflösung.
-Kontext: STAKE-Framework (Stakeholder + Task + Audience + Kriterien + Eingrenzung) als Übersetzung von RE-Denken in Prompt-Steuerung; Master-Prompt v4.3 + Qualitätskriterien-Checkliste v1.6 als Leitplanken.
-Format: Single-File HTML, offline, Tab-Navigation über 11 Schritte, Projektauswahl steuert alle Inhalte, Beamer-Modus 4-stufig, Footer mit Systemprompt/Handbuch/Vortrags-Skript.
-Eingrenzung: Keine erfundenen Normwerte — Rechtsnormen (EU AI Act, DSGVO) mit Status und Datum versehen; kein produktiver KI-Einsatz simuliert, nur didaktische Visualisierung von Kontext, Attention und Temperatur.</div>
+        <div class="fbody">Baue mir ein einzelnes HTML-Tool für eine Live-Demo am Beamer/iPad (Requirements-Training, Trainerin steuert, Teilnehmende schauen zu).
+
+STRUKTUR
+- Ein durchgängiger Weg in 11 nummerierten Schritten (Tab-Navigation oben, Schritte per Vor/Zurück-Buttons), von der "jungfräulichen KI-Instanz" bis zur Auflösung
+- Schritt 0: Projektauswahl steuert ab hier alle folgenden Schritte vollständig (Titel, Beispiele, Gewichtungen, Attention-Bubbles, Prompt-Text)
+- Jeder Schritt: ein Kernkonzept, eine visuelle Demonstration dazu, kein Text ohne interaktives Element
+
+INHALT
+- Vier Projektwelten als Auswahl: ein datenreiches Standardprojekt (hier: ERP-Einführung), ein Projekt mit regulatorischer Tiefe (hier: KI-Pilotprojekt mit EU-AI-Act-Bezug), ein Projekt mit hohem Kommunikations-/Change-Anteil (hier: Agile Transformation), und ein bewusster "Blank-Fall" ohne Kontext als Kontrastfolie
+- STAKE-Framework (Stakeholder + Task + Audience + Kriterien + Eingrenzung) als Übersetzung von Requirements-Engineering-Denken in Prompt-Steuerung — pro Projektwelt fünf ausformulierte STAKE-Sätze plus eine Gewichtung der fünf Elemente, die zum Projekttyp passt (z. B. Eingrenzung dominiert beim regulatorisch heiklen Projekt)
+- Schwacher vs. starker Beispiel-Prompt pro Projektwelt, plus eine vereinfachte Attention-Visualisierung (Token-Bubbles) und ein Temperatur-Regler, der nur die Varianz zeigt, nicht den Kontext verändert
+- Blank-Fall zeigt Gleichverteilung der Attention als Kontrast zu den anderen drei Welten
+
+DESIGN
+- Weißer Hintergrund, große Schrift (Beamer-tauglich)
+- Serif/Mono-Akzente für Kicker/Codes, Sans für Fließtext
+- Offline-fähig, eine einzige HTML-Datei, kein Build-Prozess
+- Pointer-Events statt Drag&Drop (iPad-Kompatibilität)
+- Footer (Systemprompt/Handbuch/Vortrags-Skript) muss über normalen Seiten-Scroll erreichbar bleiben
+
+NICHT TUN
+- Keine erfundenen Normwerte — jede Rechtsnorm-Nennung (z. B. EU AI Act, DSGVO) mit Status und Datum versehen
+- Keinen produktiven KI-Einsatz simulieren oder einen echten API-Call einbauen — die Attention-/Temperatur-Visualisierung bleibt didaktische Annäherung, kein echtes Modellverhalten
+- Keine Projektwelt ohne den vollständigen 11-Schritte-Durchlauf ausliefern — Kontrast zwischen den Welten ist der Kernlerneffekt
+
+Hinweis: Dieser Prompt ist die rekonstruierte, wiederverwendbare Bauanleitung für dieses Tool — er kann in neuen Konversationen eingesetzt werden, um ähnlich strukturierte Schritt-für-Schritt-Demonstratoren zu bauen.</div>
       </details>
 
       <details class="handbuch-box">
@@ -185,7 +213,7 @@ Eingrenzung: Keine erfundenen Normwerte — Rechtsnormen (EU AI Act, DSGVO) mit 
       </details>
     </div>
     <div class="footer-sig">Referenzierte Normen: EU AI Act (Verordnung (EU) 2024/1689) — in Kraft seit 08/2024, Hochrisiko-Systeme (Anhang III) ab 08/2026 · DSGVO (in Kraft)<br>
-    Zuletzt geprüft: 12.07.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</div>
+    Zuletzt geprüft: 13.07.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</div>
   </footer>
   <div class="footerSig">Michaela Kühn · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></div>
 </div>
