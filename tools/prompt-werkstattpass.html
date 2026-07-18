@@ -338,6 +338,7 @@
   <button id="btn-self" class="active" onclick="setMode('self')">🧑‍🎓 Selbstlern-Modus</button>
   <button id="btn-trainer" onclick="setMode('trainer')">🎤 Trainer-Modus</button>
   <button id="beamerBtn" type="button" aria-pressed="false">☀ Beamer</button>
+  <button onclick="resetProgress()" title="Löscht alle gestempelten Stationen — z. B. beim Start mit einer neuen Gruppe">↺ Werkstattpass zurücksetzen</button>
 </div>
 
 <div class="credo">„Ein Klick, ein Gedanke. Jede Station hat ein Lernziel."</div>
@@ -356,8 +357,8 @@
       <div class="footer-content footer-mono">Baue mir ein einzelnes HTML-Tool für einen Prompt-Engineering-Workshop (Selbstlern- und Trainer-Modus, Beamer-tauglich).
 
 STRUKTUR
-- Ein Werkstattpass: eine horizontale Fortschrittsleiste mit einer "Stempel"-Kachel pro Station, anklickbar, zeigt erledigte Stationen optisch (gestempelt) und die aktuelle Station hervorgehoben
-- 17 nummerierte Stationen plus eine Bonus-Station, gruppiert in vier inhaltliche Blöcke (Grundlagen, Praxisnah anwenden, Anforderungen analysieren & absichern, Sicherheit & Standards), jede Station ein eigenständiges Lernziel; direkt navigierbar über die Pass-Leiste, nicht nur linear
+- Ein Werkstattpass: eine horizontale Fortschrittsleiste mit einer "Stempel"-Kachel pro Station, anklickbar, zeigt erledigte Stationen optisch (gestempelt) und die aktuelle Station hervorgehoben; Fortschritt (gestempelte Stationen + aktuelle Station) wird per localStorage gespeichert und übersteht einen Browser-Neustart — wichtig bei mehrtägigen Formaten, plus ein expliziter "Zurücksetzen"-Button für den Neustart mit einer anderen Gruppe
+- 17 nummerierte Stationen plus eine Bonus-Station, gruppiert in vier inhaltliche Blöcke (Grundlagen, Praxisnah anwenden, Anforderungen analysieren & absichern, Sicherheit & Standards), jede Station ein eigenständiges Lernziel; direkt navigierbar über die Pass-Leiste, nicht nur linear; bei mehrtägigen Trainings eignet sich je ein Block pro Tageshälfte als Gliederung
 - Zwei Modi umschaltbar: Selbstlern-Modus (Eingabefelder aktiv, Teilnehmende füllen selbst aus) und Trainer-Modus (größere Schrift, Eingabefelder ausgeblendet, Live-Reveal-Flow für den Beamer)
 - Jede Framework-Station folgt demselben Aufbau: Neugier-Frage → Praxisproblem mit demselben Referenzfall (Bachmeier) → Tabelle mit den Framework-Feldern (Feldname, Erklärung, Beispielwert) → Übung mit editierbaren Feldern → Musterlösung per Klick aufdeckbar → Eselsbrücke als Merksatz
 - Eine Station (Extrareise) bricht bewusst mit dem Tabellen-Schema und zeigt stattdessen eine anklickbare Schritt-Pipeline (Prompt → Tokenisierung → Suchanfrage → Quellen → Antwort)
@@ -381,7 +382,7 @@ DESIGN
 
 NICHT TUN
 - Keinen echten KI-API-Call einbauen — alle Musterlösungen sind vorformuliert, kein Live-Prompting
-- Keine Fortschritts-Persistenz über die Sitzung hinaus (kein localStorage) — der Werkstattpass ist bewusst nur ein Sitzungs-Fortschrittsanzeiger, kein Nutzerkonto-Ersatz
+- Keine personenbezogene Fortschritts-Verfolgung — localStorage speichert nur den Sitzungsstand des Geräts (gestempelte Stationen, aktuelle Station), kein Nutzerkonto, kein Tracking über Geräte hinweg
 - Keine Framework-Station ohne den vollständigen Bachmeier-Praxisfall ausliefern — der wiederkehrende Referenzfall ist der didaktische Kernmechanismus
 - Kein generisches Blackbox-Beispiel — jedes Framework-Feld braucht einen konkreten, in sich stimmigen Beispielwert
 
@@ -394,7 +395,7 @@ Hinweis: Dieser Prompt ist die rekonstruierte, wiederverwendbare Bauanleitung f�
         <h4>Modi</h4>
         <p>Selbstlern-Modus: Teilnehmende füllen die Felder selbst aus und vergleichen anschließend mit der Musterlösung. Trainer-Modus: größere Schrift, Eingabefelder ausgeblendet, für Live-Reveal am Beamer gedacht.</p>
         <h4>Der Werkstattpass</h4>
-        <p>Jede Station lässt sich per Klick auf die Stempel-Kachel oben abstempeln — eine reine Sitzungs-Fortschrittsanzeige, kein Speichern über einen Reload hinaus. Bei 17 Stationen plus Bonus macht der Pass jederzeit sichtbar: Wo stehe ich, was fehlt noch, wohin als Nächstes — ohne dass jemand den Überblick verliert.</p>
+        <p>Jede Station lässt sich per Klick auf die Stempel-Kachel oben abstempeln. Der Fortschritt wird lokal im Browser gespeichert und übersteht auch einen Browser-Neustart — wichtig für das zweitägige Format, wo Tag 2 dort weitermacht, wo Tag 1 endete. Über den Button „↺ Werkstattpass zurücksetzen" in der Modusleiste lässt sich der Stand jederzeit löschen, z. B. beim Wechsel zu einer neuen Gruppe. Bei 17 Stationen plus Bonus macht der Pass jederzeit sichtbar: Wo stehe ich, was fehlt noch, wohin als Nächstes — ohne dass jemand den Überblick verliert.</p>
         <h4>Rechtlicher Rahmen</h4>
         <p>Diese Schulung ist inhaltlich an Art. 4 KI-VO (EU-Verordnung 2024/1689, anwendbar seit 02.02.2025) ausgerichtet: Betreiber und Anbieter von KI-Systemen müssen ihrem Personal ein angemessenes Maß an KI-Kompetenz vermitteln. Die Stationen 12 und 16 greifen das direkt auf — Websuche-Leitplanken und Compliance-Check von Anforderungen gegen den EU AI Act.</p>
         <h4>Frameworks & Methoden im Überblick</h4>
@@ -449,7 +450,12 @@ Hinweis: Dieser Prompt ist die rekonstruierte, wiederverwendbare Bauanleitung f�
         <div class="step"><b>18. Station 17 — Vorlagen-Prompt</b><span class="regie">(Klick auf Station 17)</span><br>„Für wiederkehrende Dokumente wie Auditberichte lohnt sich eine normkonforme Vorlage. Wichtig: Die KI liefert die Struktur, die echten Feststellungen bleiben immer Menschenarbeit."</div>
         <div class="step"><b>19. Bonus-Station — Klarheits-Sprung</b><span class="regie">(Klick auf Bonus-Station)</span><br>„Zum Schluss ein wichtiger Vorbehalt: Ein perfekt formulierter Prompt rettet keine unscharfe Anforderung. Erst Klarheit, dann Prompt — dafür gibt es ein eigenes Vertiefungs-Tool."</div>
         <div class="step"><b>20. Beamer-Modus zeigen</b><span class="regie">(Klick auf „☀ Beamer")</span><br>„Für die letzte Reihe: ein Klick, alles wird größer — bis zu drei Stufen."</div>
-        <p><b>Allgemeine Regie-Hinweise:</b> Der Werkstattpass oben ist während der ganzen Session anklickbar — bei Zeitdruck gezielt zu den Stationen springen, die für die Zielgruppe am relevantesten sind (z. B. bei sehr technikfernem Publikum RTF, PACT und CO-STAR priorisieren; bei RE-/BA-lastigem Publikum die Stationen 13–17 vertiefen). Zeitbudget: 3–5 Minuten pro Station bei vollständigem Durchlauf, ca. 75–90 Minuten für alle 17 Stationen plus Bonus — für kürzere Formate eignet sich Block 1 (Station 1–9) als eigenständiger Halbtags-Baustein.</p>
+        <p><b>Tagesplan (2-tägiges Format):</b><br>
+        <b>Tag 1, Vormittag — Grundlagen (Station 1–9):</b> Opener, Tokenisierung, Megaprompts, danach die sieben Frameworks APE bis Chain-of-Thought. Pro Framework-Station 15–20 Min. inkl. Gruppenübung und Diskussion, plus Pausen — realistischer Rahmen für einen Vormittag.<br>
+        <b>Tag 1, Nachmittag — Praxisnah anwenden (Station 10–12):</b> Custom GPTs, Textstruktur-Transformation, Extrareise (Websuche eines LLM, inkl. Leitplanken). Tag 1 endet mit einer kurzen Reflexionsrunde: Welcher Megaprompt/Custom GPT lässt sich morgen direkt im eigenen Arbeitsalltag testen?<br>
+        <b>Tag 2, Vormittag — Anforderungen analysieren & absichern (Station 13–14):</b> Wiedereinstieg über den Werkstattpass (Fortschritt von Tag 1 ist noch da), dann User Stories gegen Key Results prüfen und der Vollständigkeits-Check für Anforderungsdokumente — hier lohnen sich echte, mitgebrachte Beispiele der Teilnehmenden statt nur des Bachmeier-Falls.<br>
+        <b>Tag 2, Nachmittag — Anforderungen absichern & Sicherheit/Standards (Station 15–17, Bonus):</b> Change-Request-Bewertung, EU-AI-Act/ISO-Compliance-Check, DIN/ISO-Vorlagen, zum Schluss die Bonus-Station Klarheits-Sprung und ein Ausblick auf das digitale Add-on (KI als Transferbegleiter für den Alltag nach dem Training).<br><br>
+        <b>Weitere Regie-Hinweise:</b> Der Werkstattpass ist während der ganzen Session anklickbar — bei Zeitdruck gezielt zu den Stationen springen, die für die Zielgruppe am relevantesten sind (z. B. bei sehr technikfernem Publikum RTF, PACT und CO-STAR priorisieren; bei RE-/BA-lastigem Publikum die Stationen 13–17 vertiefen). Der Fortschritt bleibt über Nacht erhalten (lokal im Browser gespeichert) — nur bei Rechnerwechsel zwischen Tag 1 und Tag 2 oder bei einer neuen Gruppe vorher über „↺ Werkstattpass zurücksetzen" leeren.</p>
       </div>
     </details>
 
@@ -715,9 +721,33 @@ const levels = [
   }
 ];
 
-let current = 0;
-let done = new Array(levels.length).fill(false);
+function safeGet(key){
+  try{ return localStorage.getItem(key); }catch(e){ return null; }
+}
+function safeSet(key, val){
+  try{ localStorage.setItem(key, val); }catch(e){ /* restriktiver WebView-Kontext, ignorieren */ }
+}
+
+// Fortschritt übersteht einen Browser-Neustart (z. B. über Nacht zwischen Tag 1 und Tag 2 eines mehrtägigen Trainings)
+let done = JSON.parse(safeGet("pwp_done") || "null");
+if(!Array.isArray(done) || done.length !== levels.length){ done = new Array(levels.length).fill(false); }
+let current = parseInt(safeGet("pwp_current"), 10);
+if(!Number.isInteger(current) || current < 0 || current >= levels.length){ current = 0; }
 let mode = "self";
+
+function saveProgress(){
+  safeSet("pwp_done", JSON.stringify(done));
+  safeSet("pwp_current", String(current));
+}
+
+function resetProgress(){
+  if(!confirm("Werkstattpass wirklich zurücksetzen? Alle gestempelten Stationen gehen verloren.")) return;
+  done = new Array(levels.length).fill(false);
+  current = 0;
+  saveProgress();
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
 
 function setMode(m){
   mode = m;
@@ -736,7 +766,7 @@ function renderPass(){
     </div>`).join('');
 }
 
-function goTo(i){ current = i; pipeStep = 0; render(); window.scrollTo({top:0, behavior:'smooth'}); }
+function goTo(i){ current = i; pipeStep = 0; saveProgress(); render(); window.scrollTo({top:0, behavior:'smooth'}); }
 
 function fieldsTable(fields){
   return `<table class="fields">${fields.map(f=>`<tr><th>${f[0]}</th><td><strong>${f[1]}</strong><br><span style="color:var(--ink-soft);font-size:14px;">z. B.: ${f[2]}</span></td></tr>`).join('')}</table>`;
@@ -926,9 +956,9 @@ function render(){
 function reveal(id){
   document.getElementById('loesung'+id).classList.toggle('show');
 }
-function markDone(i){ done[i]=true; renderPass(); }
-function nextLevel(){ if(current<levels.length-1){ current++; pipeStep=0; render(); window.scrollTo({top:0,behavior:'smooth'}); } }
-function prevLevel(){ if(current>0){ current--; pipeStep=0; render(); window.scrollTo({top:0,behavior:'smooth'}); } }
+function markDone(i){ done[i]=true; saveProgress(); renderPass(); }
+function nextLevel(){ if(current<levels.length-1){ current++; pipeStep=0; saveProgress(); render(); window.scrollTo({top:0,behavior:'smooth'}); } }
+function prevLevel(){ if(current>0){ current--; pipeStep=0; saveProgress(); render(); window.scrollTo({top:0,behavior:'smooth'}); } }
 
 render();
 
