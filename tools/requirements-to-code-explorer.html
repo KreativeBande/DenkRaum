@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Requirements-to-Code Explorer</title>
+<style>
+:root{
+  --blue:#1f3a6e; --blue2:#2e6db4; --light:#eef5fb; --line:#c9d7e8;
+  --text:#182433; --muted:#5d6b7a; --white:#fff; --amber:#f4b740; --red:#b3261e;
+  --green:#2d7a4b; --shadow:0 10px 30px rgba(31,58,110,.10);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text);background:#f6f8fb}
+body{overflow:hidden}
+html[data-beamer="1"]{zoom:1.35}
+html[data-beamer="2"]{zoom:1.75}
+.app{height:100vh;display:grid;grid-template-rows:auto 1fr auto}
+header{background:linear-gradient(135deg,var(--blue),#173052);color:#fff;padding:18px 24px;display:flex;justify-content:space-between;gap:24px;align-items:flex-start}
+header h1{margin:0;font-size:clamp(24px,3vw,38px);line-height:1.05}
+header p{margin:7px 0 0;color:#dbe8f6;font-size:clamp(14px,1.6vw,19px)}
+.back-link{display:inline-block;color:#dbe8f6;font-size:13px;font-weight:700;text-decoration:none;margin-bottom:8px}
+.back-link:hover{color:#fff;text-decoration:underline}
+.header-actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
+.badge{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);padding:10px 14px;border-radius:12px;font-weight:700;white-space:nowrap}
+.beamer-btn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);color:#fff;padding:9px 13px;border-radius:12px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap}
+.beamer-btn:hover{background:rgba(255,255,255,.24)}
+.beamer-btn.active{background:var(--amber);color:#151d29;border-color:var(--amber)}
+main{min-height:0;display:grid;grid-template-columns:minmax(300px,36%) 1fr;gap:18px;padding:18px}
+.sidebar,.content{background:var(--white);border:1px solid #dce6f0;border-radius:18px;box-shadow:var(--shadow);min-height:0}
+.sidebar{display:grid;grid-template-rows:auto 1fr;overflow:hidden}
+.side-head{padding:18px;border-bottom:1px solid var(--line)}
+.side-head h2{margin:0 0 6px;font-size:22px}
+.side-head p{margin:0;color:var(--muted);font-size:15px}
+.steps{overflow:auto;padding:12px}
+.step{width:100%;display:grid;grid-template-columns:42px 1fr auto;gap:11px;align-items:center;text-align:left;border:1px solid #d7e2ee;background:#fff;padding:12px;margin-bottom:9px;border-radius:14px;cursor:pointer;transition:.18s}
+.step:hover,.step:focus{transform:translateX(3px);border-color:var(--blue2);outline:none}
+.step.active{background:var(--light);border-color:var(--blue2);box-shadow:inset 5px 0 0 var(--blue2)}
+.num{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#e4edf7;color:var(--blue);font-weight:800}
+.step.active .num{background:var(--blue2);color:#fff}
+.step-title{font-weight:800;font-size:16px;display:block}.step-sub{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.arrow{color:var(--blue2);font-size:20px}
+.content{overflow:auto;padding:24px}
+.panel{display:none}.panel.active{display:block}
+.kicker{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue2);font-weight:800}
+h2.panel-title{font-size:clamp(26px,3vw,40px);margin:7px 0 10px;color:var(--blue)}
+.lead{font-size:clamp(17px,1.7vw,22px);line-height:1.5;color:#33465a;margin:0 0 22px}
+.card{border:1px solid #d6e1ec;border-radius:15px;padding:18px;background:#fff;margin:14px 0}
+.card.blue{background:var(--light);border-color:#b8cee5}.card.warn{background:#fff8e8;border-color:#efd28a}.card.sec{background:#f5f0fb;border-color:#d5c4e8}.card.code{position:relative;color:#eaf2fb;border-color:#0b1220;font-family:Consolas,"Courier New",monospace;background-color:#0b1220;background-image:repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0px, rgba(255,255,255,.035) 1px, transparent 1px, transparent 3px)}
+.card h3{margin:0 0 10px;font-size:20px}.card p{margin:7px 0;line-height:1.5}
+.requirement{font-size:clamp(20px,2.2vw,30px);font-weight:800;color:var(--blue);line-height:1.35}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.question{font-weight:800;color:var(--blue)}
+.tag{display:inline-block;padding:5px 8px;border-radius:8px;background:#e7eff8;color:var(--blue);font-size:12px;font-weight:800;margin-right:6px}
+.metric{font-weight:800;color:var(--green)}
+.norm-list{display:grid;gap:10px}.norm-item{border:1px solid #d8e2ed;border-radius:12px;padding:13px;background:#fff;cursor:pointer}.norm-item summary{font-weight:800;color:var(--blue);cursor:pointer}.norm-item p{margin:8px 0 0}
+.flow{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap}.flow-box{flex:1 1 145px;border:1px solid #cbd9e7;border-radius:12px;padding:13px;background:#fff;min-height:90px}.flow-box strong{color:var(--blue)}
+.flow-arrow{display:grid;place-items:center;color:var(--blue2);font-size:24px;font-weight:800}
+ul.clean{padding-left:20px;margin:8px 0}ul.clean li{margin:7px 0;line-height:1.45}
+.code-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.code-btn{border:1px solid #60758c;background:#263344;color:#fff;padding:9px 13px;border-radius:9px;cursor:pointer;font-weight:700}.code-btn.active{background:#fff;color:#152235}
+pre{margin:0;white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.55;max-height:420px;overflow:auto}
+.code-pane{display:none}.code-pane.active{display:block}
+.trace{width:100%;border-collapse:collapse;font-size:14px}.trace th,.trace td{border-bottom:1px solid #d9e3ed;padding:10px;text-align:left;vertical-align:top}.trace th{background:#eef4fa;color:var(--blue);position:sticky;top:0}.trace tr:hover td{background:#f8fbfe}
+.gherkin{font-family:Consolas,monospace;background:#18212d;color:#f3f7fb;padding:16px;border-radius:12px;line-height:1.6}
+.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.check{border-left:5px solid var(--green);background:#f2f8f4;padding:12px;border-radius:9px}
+footer{padding:10px 18px;background:#fff;border-top:1px solid #d8e2ed;display:flex;justify-content:space-between;align-items:center;gap:15px;font-size:13px;color:var(--muted)}
+.footer-sig{color:inherit;font-weight:700;text-decoration:none}
+.footer-sig:hover{color:var(--blue2);text-decoration:underline}
+.progress{height:8px;background:#e5edf5;border-radius:99px;overflow:hidden;min-width:220px}.progress span{display:block;height:100%;width:11.11%;background:var(--blue2);transition:.2s}
+@media(max-width:900px){body{overflow:auto}.app{height:auto;min-height:100vh}.app main{grid-template-columns:1fr}.sidebar{max-height:42vh}.content{min-height:58vh}header{align-items:flex-start;flex-wrap:wrap}.badge{display:none}.grid2,.grid3,.checks{grid-template-columns:1fr}.flow-arrow{transform:rotate(90deg);flex-basis:100%}footer{position:sticky;bottom:0;flex-wrap:wrap;justify-content:center;text-align:center;row-gap:6px}footer .footer-sig{order:1}footer #status{order:2}footer .progress{order:3;flex:1 1 100%;min-width:0}}
+
+.code-legend{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.legend-item,.req-tag{display:inline-block;padding:4px 8px;border-radius:6px;font-weight:800;font-size:12px}
+.req-fa{background:#dbeafe;color:#123f73}.req-use{background:#fef3c7;color:#6b4b00}
+.req-perf{background:#ffedd5;color:#7c2d12}.req-sec{background:#ede9fe;color:#4c1d95}
+.req-rel{background:#dcfce7;color:#14532d}.req-trace{background:#fce7f3;color:#831843}
+
+.terminal-bar{display:flex;align-items:center;gap:7px;padding-bottom:13px;margin-bottom:13px;border-bottom:1px solid #24354a}
+.terminal-bar .dot{width:11px;height:11px;border-radius:50%;display:inline-block}
+.terminal-bar .dot.red{background:#ff5f57}.terminal-bar .dot.yellow{background:#febc2e}.terminal-bar .dot.green{background:#28c840}
+.terminal-title{margin-left:6px;font-size:12px;color:#7d93ad;letter-spacing:.03em}
+
+.code-line{display:block;padding:2px 8px;margin:2px 0;border-left:5px solid transparent;border-radius:5px;font-size:13.5px}
+.code-line::before{display:inline-block;min-width:38px;margin-right:9px;padding:0 5px;border-radius:4px;font-size:9.5px;font-weight:800;letter-spacing:.03em;text-align:center;vertical-align:1px}
+.line-fa{background:rgba(56,189,248,.16);border-left-color:#7dd3fc}.line-fa::before{content:"FA";background:rgba(56,189,248,.32);color:#e0f6ff}
+.line-use{background:rgba(250,204,21,.14);border-left-color:#fde047}.line-use::before{content:"USE";background:rgba(250,204,21,.30);color:#fffbeb}
+.line-perf{background:rgba(251,146,60,.16);border-left-color:#fdba74}.line-perf::before{content:"PERF";background:rgba(251,146,60,.32);color:#fff3e8}
+.line-sec{background:rgba(167,139,250,.18);border-left-color:#c4b5fd}.line-sec::before{content:"SEC";background:rgba(167,139,250,.34);color:#f4f1ff}
+.line-rel{background:rgba(74,222,128,.16);border-left-color:#86efac}.line-rel::before{content:"REL";background:rgba(74,222,128,.32);color:#eafff1}
+.line-trace{background:rgba(244,114,182,.18);border-left-color:#f9a8d4}.line-trace::before{content:"TRACE";background:rgba(244,114,182,.34);color:#fff0f8}
+
+.mapping-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.mapping-card{border:1px solid #d7e1ec;border-radius:10px;padding:12px;background:#fff}
+.mapping-card p{margin:6px 0 0;font-size:14px}
+@media(max-width:760px){.mapping-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div>
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <h1>Requirements-to-Code Explorer</h1>
+    <p>Von der unscharfen Anforderung über ISO 25010 und ISO 27001 bis zu Code und Test.</p>
+  </div>
+  <div class="header-actions">
+    <div class="badge">Live-Demo · 9 Stufen</div>
+    <button class="beamer-btn" id="beamerToggle" title="Vergrößert die Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
+  </div>
+</header>
+<main>
+<section class="sidebar">
+  <div class="side-head"><h2>Engineering-Reise</h2><p>Eine Stufe anklicken und den Reifegrad der Anforderung sichtbar machen.</p></div>
+  <div class="steps" id="steps">
+    <button class="step active" data-panel="p1"><span class="num">1</span><span><span class="step-title">Ausgangsanforderung</span><span class="step-sub">Wunsch sichtbar machen</span></span><span class="arrow">›</span></button>
+    <button class="step" data-panel="p2"><span class="num">2</span><span><span class="step-title">Stakeholder & Kontext</span><span class="step-sub">Wer, wann, wozu?</span></span><span class="arrow">›</span></button>
+    <button class="step" data-panel="p3"><span class="num">3</span><span><span class="step-title">Funktionale Anforderung</span><span class="step-sub">Was muss das System tun?</span></span><span class="arrow">›</span></button>
+    <button class="step" data-panel="p4"><span class="num">4</span><span><span class="step-title">ISO 25010</span><span class="step-sub">Neun Qualitätsbrillen</span></span><span class="arrow">›</span></button>
+    <button class="step" data-panel="p5"><span class="num">5</span><span><span class="step-title">ISO 27001</span><span class="step-sub">Risiken und Schutzbedarf</span></span><span class="arrow">›</span></button>
+    <button class="step" data-panel="p6"><span class="num">6</span><span><span class="step-title">Gesamtanforderung</span><span class="step-sub">Präzisiert und messbar</span></span><span class="arrow">›</span></button>
+    <button class="step" data-panel="p7"><span class="num">7</span><span><span class="step-title">Akzeptanzkriterien</span><span class="step-sub">Nachweis mit Gherkin</span></span><span class="arrow">›</span></button>
+    <button class="step" data-panel="p8"><span class="num">8</span><span><span class="step-title">Entwicklerübergabe</span><span class="step-sub">Refinement und Entscheidungen</span></span><span class="arrow">›</span></button>
+    <button class="step" data-panel="p9"><span class="num">9</span><span><span class="step-title">Code & Traceability</span><span class="step-sub">HTML, JavaScript, Python</span></span><span class="arrow">›</span></button>
+  </div>
+</section>
+<section class="content" id="content">
+  <article class="panel active" id="p1">
+    <div class="kicker">Stufe 1 · Ausgangspunkt</div><h2 class="panel-title">Ein Wunsch ist noch keine belastbare Anforderung</h2>
+    <p class="lead">Wir starten bewusst mit einem Satz, der verständlich klingt, aber viele Fragen offenlässt.</p>
+    <div class="card warn"><span class="tag">ROH</span><p class="requirement">„Das System soll Dokumente hochladen können."</p></div>
+    <div class="grid2"><div class="card"><h3>Schon erkennbar</h3><ul class="clean"><li>Es gibt ein System.</li><li>Dokumente sollen übertragen werden.</li><li>Eine Upload-Funktion wird erwartet.</li></ul></div><div class="card"><h3>Noch unklar</h3><ul class="clean"><li>Wer lädt was hoch?</li><li>Welche Formate und Größen?</li><li>Wie schnell und wie sicher?</li><li>Was gilt als erfolgreich?</li></ul></div></div>
+  </article>
+  <article class="panel" id="p2">
+    <div class="kicker">Stufe 2 · Nutzung verstehen</div><h2 class="panel-title">Stakeholder und Nutzungskontext</h2>
+    <p class="lead">Bevor wir die Funktion präzisieren, klären wir, wer sie in welcher Situation benötigt.</p>
+    <div class="grid3"><div class="card blue"><h3>Wer?</h3><p>Angemeldete Projektmitarbeitende mit Upload-Berechtigung.</p></div><div class="card blue"><h3>Wozu?</h3><p>Projektdokumente revisionssicher im zugeordneten Projektraum bereitstellen.</p></div><div class="card blue"><h3>Wann?</h3><p>Während der laufenden Projektarbeit über freigegebene Browser.</p></div></div>
+    <div class="card"><h3>Kontextsatz</h3><p class="requirement">„Eine berechtigte Projektmitarbeiterin lädt ein Projektdokument in den zugeordneten Projektraum hoch, damit das Team mit der aktuellen Fassung arbeiten kann."</p></div>
+  </article>
+  <article class="panel" id="p3">
+    <div class="kicker">Stufe 3 · Funktion klären</div><h2 class="panel-title">Funktionale Anforderung</h2>
+    <p class="lead">Die Funktion beschreibt das beobachtbare Systemverhalten – noch ohne technische Lösung vorzugeben.</p>
+    <div class="card blue"><span class="tag">FA-01</span><p class="requirement">Das System muss berechtigten Projektmitarbeitenden ermöglichen, eine Datei auszuwählen, dem aktiven Projekt zuzuordnen, zu prüfen, zu übertragen und nach erfolgreicher Verarbeitung im Projektraum bereitzustellen.</p></div>
+    <div class="flow"><div class="flow-box"><strong>Auswählen</strong><p>Datei aus lokalem Speicher wählen.</p></div><div class="flow-arrow">→</div><div class="flow-box"><strong>Prüfen</strong><p>Format, Größe und Berechtigung validieren.</p></div><div class="flow-arrow">→</div><div class="flow-box"><strong>Übertragen</strong><p>Datei kontrolliert an den Server senden.</p></div><div class="flow-arrow">→</div><div class="flow-box"><strong>Bereitstellen</strong><p>Erfolg bestätigen und Dokument anzeigen.</p></div></div>
+  </article>
+  <article class="panel" id="p4">
+    <div class="kicker">Stufe 4 · Produktqualität</div><h2 class="panel-title">ISO 25010 als Qualitätsbrille</h2>
+    <p class="lead">Die Norm liefert keine fertigen Anforderungen. Sie hilft, systematisch die richtigen Qualitätsfragen zu stellen.</p>
+    <div class="norm-list">
+      <details class="norm-item" open><summary>1. Funktionale Eignung</summary><p><span class="question">Frage:</span> Unterstützt die Funktion den vollständigen fachlichen Ablauf?<br><span class="metric">NFA:</span> PDF-, DOCX- und XLSX-Dateien müssen akzeptiert werden.</p></details>
+      <details class="norm-item"><summary>2. Leistungseffizienz</summary><p><span class="question">Frage:</span> Wie schnell muss der Upload reagieren?<br><span class="metric">NFA:</span> Dateien bis 20 MB müssen unter Referenzbedingungen innerhalb von 5 Sekunden verarbeitet werden.</p></details>
+      <details class="norm-item"><summary>3. Kompatibilität</summary><p><span class="question">Frage:</span> In welchen Umgebungen muss die Funktion nutzbar sein?<br><span class="metric">NFA:</span> Der Upload muss in den freigegebenen Versionen von Chrome, Edge und Safari funktionieren.</p></details>
+      <details class="norm-item"><summary>4. Interaktionsfähigkeit</summary><p><span class="question">Frage:</span> Wie verständlich ist die Bedienung?<br><span class="metric">NFA:</span> Ablehnungsgründe müssen in verständlicher Sprache angezeigt werden.</p></details>
+      <details class="norm-item"><summary>5. Zuverlässigkeit</summary><p><span class="question">Frage:</span> Was passiert bei Abbruch oder Fehlern?<br><span class="metric">NFA:</span> Fehlgeschlagene Uploads dürfen keine unvollständigen Dateien erzeugen.</p></details>
+      <details class="norm-item"><summary>6. Sicherheit</summary><p><span class="question">Frage:</span> Wie werden Zugriff und Daten geschützt?<br><span class="metric">NFA:</span> Nur berechtigte Personen dürfen Dateien in das jeweilige Projekt übertragen.</p></details>
+      <details class="norm-item"><summary>7. Wartbarkeit</summary><p><span class="question">Frage:</span> Wie leicht lassen sich Regeln ändern?<br><span class="metric">NFA:</span> Dateiformate und Größenlimits müssen konfigurierbar sein.</p></details>
+      <details class="norm-item"><summary>8. Flexibilität</summary><p><span class="question">Frage:</span> Wie gut passt sich die Lösung neuen Rahmenbedingungen an?<br><span class="metric">NFA:</span> Weitere Speicherziele müssen über eine Schnittstelle ergänzt werden können.</p></details>
+      <details class="norm-item"><summary>9. Safety</summary><p><span class="question">Frage:</span> Welche schädlichen Auswirkungen müssen verhindert werden?<br><span class="metric">NFA:</span> Eine neue Datei darf eine bestehende Fassung nicht unbeabsichtigt überschreiben.</p></details>
+    </div>
+  </article>
+  <article class="panel" id="p5">
+    <div class="kicker">Stufe 5 · Informationssicherheit</div><h2 class="panel-title">ISO 27001: vom Risiko zur Sicherheitsanforderung</h2>
+    <p class="lead">Die Sicherheitsbetrachtung folgt einer nachvollziehbaren Kette: Informationswert, Bedrohung, Risiko, Maßnahme und Nachweis.</p>
+    <div class="flow"><div class="flow-box"><strong>Informationswert</strong><p>Vertrauliche Projektdokumente.</p></div><div class="flow-arrow">→</div><div class="flow-box"><strong>Bedrohung</strong><p>Unbefugter Zugriff oder manipulierte Datei.</p></div><div class="flow-arrow">→</div><div class="flow-box"><strong>Risiko</strong><p>Offenlegung, Veränderung oder Schadcode.</p></div><div class="flow-arrow">→</div><div class="flow-box"><strong>Maßnahme</strong><p>Autorisierung, Prüfung, Protokollierung.</p></div></div>
+    <div class="grid2"><div class="card sec"><h3>SEC-01 · Autorisierung</h3><p>Das System muss vor jedem Upload prüfen, ob die angemeldete Person für das Zielprojekt berechtigt ist.</p></div><div class="card sec"><h3>SEC-02 · Integrität</h3><p>Das System muss die vollständig übertragene Datei anhand eines Hashwerts überprüfen.</p></div><div class="card sec"><h3>SEC-03 · Schadsoftware</h3><p>Die Datei muss vor der endgültigen Bereitstellung auf Schadsoftware geprüft werden.</p></div><div class="card sec"><h3>SEC-04 · Audit</h3><p>Jeder Upload muss mit Nutzerkennung, Projekt, Zeitstempel und Ergebnis protokolliert werden.</p></div></div>
+  </article>
+  <article class="panel" id="p6">
+    <div class="kicker">Stufe 6 · Konsolidierung</div><h2 class="panel-title">Die präzisierte Gesamtanforderung</h2>
+    <p class="lead">Funktionale, qualitative und sicherheitsbezogene Aussagen bilden nun ein belastbares Requirements-Paket.</p>
+    <div class="card blue"><span class="tag">FA-01</span><p>Das System muss berechtigten Projektmitarbeitenden ermöglichen, PDF-, DOCX- und XLSX-Dateien bis 20 MB einem aktiven Projekt zuzuordnen, zu übertragen und nach erfolgreicher Prüfung im Projektraum bereitzustellen.</p></div>
+    <div class="card"><span class="tag">NFA-PERF-01</span><p>Unter Referenzbedingungen muss die Verarbeitung einer Datei bis 20 MB innerhalb von 5 Sekunden abgeschlossen sein.</p></div>
+    <div class="card"><span class="tag">NFA-USE-01</span><p>Bei Ablehnung muss das System den konkreten Grund und eine mögliche Korrektur verständlich anzeigen.</p></div>
+    <div class="card"><span class="tag">SEC-01</span><p>Vor der Annahme muss das System Projektberechtigung, Dateityp und Dateigröße serverseitig prüfen.</p></div>
+    <div class="card"><span class="tag">REL-01</span><p>Fehlgeschlagene Uploads dürfen keine unvollständigen oder sichtbaren Dateien erzeugen.</p></div>
+  </article>
+  <article class="panel" id="p7">
+    <div class="kicker">Stufe 7 · Prüfbarkeit</div><h2 class="panel-title">Akzeptanzkriterien mit Gherkin</h2>
+    <p class="lead">Jetzt wird sichtbar, woran Fachseite, Test und Entwicklung erkennen, dass die Anforderung erfüllt ist.</p>
+    <div class="gherkin">Szenario: Berechtigte Person lädt eine gültige Datei hoch<br><br>Angenommen die Projektmitarbeiterin ist angemeldet<br>Und sie besitzt Upload-Rechte für Projekt A<br>Und die Datei ist eine PDF-Datei mit 12 MB<br>Wenn sie die Datei Projekt A zuordnet und den Upload startet<br>Dann wird die Datei innerhalb von 5 Sekunden verarbeitet<br>Und im Projektraum bereitgestellt<br>Und der Upload wird mit Nutzerkennung und Zeitstempel protokolliert</div>
+    <div class="gherkin" style="margin-top:12px">Szenario: Datei überschreitet die zulässige Größe<br><br>Angenommen eine Datei ist größer als 20 MB<br>Wenn die Projektmitarbeiterin den Upload startet<br>Dann wird die Datei nicht gespeichert<br>Und das System nennt die Größenbegrenzung<br>Und es entsteht keine unvollständige Datei</div>
+  </article>
+  <article class="panel" id="p8">
+    <div class="kicker">Stufe 8 · Übergabebrücke</div><h2 class="panel-title">Was Entwickler mit der Anforderung tun</h2>
+    <p class="lead">Die Übergabe ist kein „Bitte programmieren". Im Refinement werden fachliche Aussagen in technische Entscheidungen und Arbeitspakete übersetzt.</p>
+    <div class="grid2"><div class="card"><h3>Frontend</h3><ul class="clean"><li>Dateiauswahl und Upload-Schaltfläche</li><li>Clientseitige Vorprüfung</li><li>Fortschritt und verständliche Fehlermeldungen</li></ul></div><div class="card"><h3>Backend</h3><ul class="clean"><li>Authentifizierung und Autorisierung</li><li>Serverseitige Validierung</li><li>Speicherung, Audit und Fehlerbehandlung</li></ul></div><div class="card"><h3>Architektur</h3><ul class="clean"><li>Speicherort und Schnittstellen</li><li>Temporäre Quarantäne</li><li>Virenscanner und Hashprüfung</li></ul></div><div class="card"><h3>Test</h3><ul class="clean"><li>Grenzwert- und Negativtests</li><li>Berechtigungs- und Sicherheitstests</li><li>Abbruch- und Performancetests</li></ul></div></div>
+    <div class="checks"><div class="check"><strong>Entscheidung 1:</strong> Welche Prüfung erfolgt im Browser und welche zwingend auf dem Server?</div><div class="check"><strong>Entscheidung 2:</strong> Wie werden temporäre Dateien vor Veröffentlichung behandelt?</div><div class="check"><strong>Entscheidung 3:</strong> Was gilt bei Namenskonflikten oder vorhandenen Versionen?</div><div class="check"><strong>Entscheidung 4:</strong> Welche Logs benötigen Betrieb und Revision?</div></div>
+  </article>
+  <article class="panel" id="p9">
+    <div class="kicker">Stufe 9 · Umsetzung und Nachweis</div><h2 class="panel-title">Wo wird welche Anforderung technisch umgesetzt?</h2>
+    <p class="lead">Farbe und Kürzel verbinden Anforderung, Erklärung und Code eindeutig miteinander. So wird sichtbar: Eine Eigenschaft kann an mehreren technischen Stellen umgesetzt und abgesichert werden.</p>
+    <div class="code-legend">
+      <span class="legend-item req-fa">FA · Funktion</span><span class="legend-item req-use">USE · Interaktion (ISO 25010)</span>
+      <span class="legend-item req-perf">PERF · Performance (ISO 25010)</span><span class="legend-item req-sec">SEC · Sicherheit (ISO 27001)</span>
+      <span class="legend-item req-rel">REL · Zuverlässigkeit (ISO 25010)</span><span class="legend-item req-trace">TRACE · Nachvollziehbarkeit</span>
+    </div>
+    <div class="card code">
+      <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title" id="terminalTitle">upload.html</span></div>
+      <div class="code-tabs"><button class="code-btn active" data-code="htmlcode">HTML</button><button class="code-btn" data-code="jscode">JavaScript</button><button class="code-btn" data-code="pycode">Python</button></div>
+      <div class="code-pane active" id="htmlcode"><pre><span class="code-line line-use">&lt;label for="file"&gt;Projektdokument auswählen&lt;/label&gt;</span>
+<span class="code-line line-fa">&lt;input id="file" type="file" accept=".pdf,.docx,.xlsx"&gt;</span>
+<span class="code-line line-fa">&lt;button id="upload"&gt;Datei hochladen&lt;/button&gt;</span>
+<span class="code-line line-use">&lt;p id="message" role="status"&gt;&lt;/p&gt;</span></pre></div>
+      <div class="code-pane" id="jscode"><pre><span class="code-line line-perf">const maxBytes = 20 * 1024 * 1024;</span>
+<span class="code-line line-sec">const allowed = ["pdf", "docx", "xlsx"];</span>
+
+<span class="code-line line-fa">function validate(file) {</span>
+<span class="code-line line-sec">  const ext = file.name.split(".").pop().toLowerCase();</span>
+<span class="code-line line-sec">  if (!allowed.includes(ext)) return "Dateiformat nicht zulässig.";</span>
+<span class="code-line line-perf">  if (file.size &gt; maxBytes) return "Datei ist größer als 20 MB.";</span>
+<span class="code-line line-rel">  return "";</span>
+<span class="code-line line-fa">}</span></pre></div>
+      <div class="code-pane" id="pycode"><pre><span class="code-line line-sec">ALLOWED = {"pdf", "docx", "xlsx"}</span>
+<span class="code-line line-perf">MAX_BYTES = 20 * 1024 * 1024</span>
+
+<span class="code-line line-fa">def upload(file, user, project):</span>
+<span class="code-line line-sec">    require_project_permission(user, project)</span>
+<span class="code-line line-sec">    validate_extension(file, ALLOWED)</span>
+<span class="code-line line-perf">    validate_size(file, MAX_BYTES)</span>
+<span class="code-line line-rel">    temp_path = save_to_quarantine(file)</span>
+<span class="code-line line-sec">    scan_for_malware(temp_path)</span>
+<span class="code-line line-rel">    final_path = commit_file(temp_path, project)</span>
+<span class="code-line line-trace">    write_audit_log(user, project, final_path)</span>
+<span class="code-line line-fa">    return {"status": "uploaded"}</span></pre></div>
+    </div>
+    <div class="mapping-grid">
+      <div class="mapping-card"><span class="req-tag req-fa">FA · Datei hochladen</span><p>HTML stellt Auswahl und Aktion bereit. JavaScript prüft vorab; Python nimmt die Datei an und verarbeitet sie.</p></div>
+      <div class="mapping-card"><span class="req-tag req-use">Interaktionsfähigkeit</span><p>Beschriftung, Statusbereich und verständliche Fehlermeldungen machen die Funktion wahrnehmbar und bedienbar.</p></div>
+      <div class="mapping-card"><span class="req-tag req-perf">Performance Efficiency</span><p>Die 20-MB-Grenze wird im Browser und nochmals verbindlich auf dem Server geprüft.</p></div>
+      <div class="mapping-card"><span class="req-tag req-sec">ISO 27001 · Sicherheit</span><p>Berechtigung, zulässige Dateitypen, Quarantäne und Schadsoftwareprüfung schützen Zugriff, Integrität und Verarbeitung.</p></div>
+      <div class="mapping-card"><span class="req-tag req-rel">Reliability</span><p>Die Datei wird zunächst temporär gespeichert und erst nach erfolgreicher Prüfung endgültig übernommen.</p></div>
+      <div class="mapping-card"><span class="req-tag req-trace">Nachvollziehbarkeit</span><p>Das Audit-Log dokumentiert, wer welche Datei welchem Projekt hinzugefügt hat.</p></div>
+    </div>
+    <div class="card" style="margin-top:14px"><h3>Traceability · von der Eigenschaft bis zum Test</h3><div style="overflow:auto"><table class="trace"><thead><tr><th>Eigenschaft</th><th>Technische Umsetzung</th><th>Nachweis</th></tr></thead><tbody>
+    <tr><td><span class="req-tag req-fa">FA-01</span> Datei hochladen</td><td>HTML-Auswahl und Python-Endpunkt</td><td>End-to-End-Test</td></tr>
+    <tr><td><span class="req-tag req-use">NFA-USE-01</span> verständliche Rückmeldung</td><td>Label, Statusbereich, konkrete Meldungen</td><td>Usability- und Accessibility-Test</td></tr>
+    <tr><td><span class="req-tag req-perf">NFA-PERF-01</span> maximal 20 MB</td><td>JavaScript- und Python-Prüfung</td><td>Grenzwerttest</td></tr>
+    <tr><td><span class="req-tag req-sec">SEC-01</span> nur Berechtigte</td><td>require_project_permission()</td><td>Autorisierungstest</td></tr>
+    <tr><td><span class="req-tag req-rel">NFA-REL-01</span> keine unvollständige Datei</td><td>Quarantäne und kontrollierter Commit</td><td>Abbruch- und Fehlertest</td></tr>
+    <tr><td><span class="req-tag req-trace">SEC-LOG-01</span> Upload protokollieren</td><td>write_audit_log()</td><td>Audit-Log-Prüfung</td></tr>
+    </tbody></table></div></div>
+  </article>
+</section>
+</main>
+<footer><a class="footer-sig" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn · www.michaela-kuehn.com</a><div class="progress" aria-label="Fortschritt"><span id="bar"></span></div><span id="status">Stufe 1 von 9</span></footer>
+</div>
+<script>
+(function(){
+  var steps = document.querySelectorAll('.step');
+  var panels = document.querySelectorAll('.panel');
+  var bar = document.getElementById('bar');
+  var status = document.getElementById('status');
+  steps.forEach(function(step, index){
+    step.addEventListener('click', function(){
+      steps.forEach(function(s){s.classList.remove('active');});
+      panels.forEach(function(p){p.classList.remove('active');});
+      step.classList.add('active');
+      document.getElementById(step.getAttribute('data-panel')).classList.add('active');
+      bar.style.width = (((index + 1) / steps.length) * 100) + '%';
+      status.textContent = 'Stufe ' + (index + 1) + ' von ' + steps.length;
+      document.getElementById('content').scrollTop = 0;
+    });
+  });
+
+  var TERMINAL_TITLES = {htmlcode:'upload.html', jscode:'validate.js', pycode:'upload_service.py'};
+  var terminalTitle = document.getElementById('terminalTitle');
+  var codeButtons = document.querySelectorAll('.code-btn');
+  var codePanes = document.querySelectorAll('.code-pane');
+  codeButtons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      codeButtons.forEach(function(b){b.classList.remove('active');});
+      codePanes.forEach(function(p){p.classList.remove('active');});
+      btn.classList.add('active');
+      var target = btn.getAttribute('data-code');
+      document.getElementById(target).classList.add('active');
+      if (terminalTitle) terminalTitle.textContent = TERMINAL_TITLES[target] || '';
+    });
+  });
+
+  function safeSet(key, val){ try{ sessionStorage.setItem(key, val); }catch(e){ /* restriktiver WebView-Kontext, ignorieren */ } }
+  function safeGet(key){ try{ return sessionStorage.getItem(key); }catch(e){ return null; } }
+
+  var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+  function applyBeamerLevel(level){
+    document.documentElement.setAttribute("data-beamer", String(level));
+    var btn = document.getElementById("beamerToggle");
+    btn.textContent = BEAMER_LABELS[level];
+    btn.classList.toggle("active", level > 0);
+  }
+  document.getElementById('beamerToggle').addEventListener('click', function(){
+    var level = (Number(safeGet('r2c_beamer')) || 0) + 1;
+    if (level >= BEAMER_LABELS.length) level = 0;
+    safeSet('r2c_beamer', String(level));
+    applyBeamerLevel(level);
+  });
+  applyBeamerLevel(Number(safeGet('r2c_beamer')) || 0);
+})();
+</script>
+</body>
+</html>
