@@ -50,6 +50,22 @@
   .hero-meta{display:flex;gap:8px;flex-wrap:wrap;}
   .meta-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-size:12.5px;font-weight:700;color:var(--muted)}
 
+  .scenario-bar{
+    background:rgba(255,255,255,.96); border:1px solid var(--line); border-radius:20px;
+    padding:16px 20px; margin-bottom:20px; box-shadow:0 6px 16px rgba(15,23,42,.03);
+  }
+  .scenario-label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px;}
+  .scenario-chips{display:flex;gap:8px;flex-wrap:wrap;}
+  .scenario-chip{
+    border:1.5px solid var(--line);background:var(--bg);color:var(--muted);
+    padding:8px 14px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;
+    transition:all .15s ease;
+  }
+  .scenario-chip:hover{border-color:var(--accent);color:var(--ink);}
+  .scenario-chip.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .scenario-desc{margin:12px 0 0;font-size:13.5px;color:var(--muted);line-height:1.55;}
+  .scenario-desc.empty{font-style:italic;}
+
   .progress-bar{position:sticky;top:0;z-index:5;background:rgba(246,248,252,.92);backdrop-filter:blur(4px);
     border:1px solid var(--line);border-radius:14px;padding:10px 16px;margin-bottom:20px;
     display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
@@ -72,8 +88,16 @@
     flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
     font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;
   }
+  .field-title-wrap{flex:1 1 auto;min-width:0;}
   .field h3{margin:0 0 4px;font-size:15.5px;line-height:1.3;}
   .field .desc{margin:0;font-size:13px;color:var(--muted);line-height:1.5;}
+  .example-btn{
+    flex-shrink:0;border:1.5px solid var(--line);background:var(--bg);color:var(--muted);
+    padding:5px 10px;border-radius:999px;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;
+    transition:all .15s ease;
+  }
+  .example-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+  .example-btn:disabled{opacity:.4;cursor:not-allowed;}
   .field textarea{
     margin-top:10px;width:100%;min-height:120px;resize:vertical;border:1.5px solid var(--line);border-radius:10px;
     padding:10px 12px;font-family:var(--sans);font-size:13.5px;line-height:1.55;color:var(--ink);
@@ -96,15 +120,17 @@
     .toolbar-btns{justify-content:flex-start}
     .grid{grid-template-columns:1fr;}
     .reset-btn{margin-left:0;}
+    .field-head{flex-wrap:wrap;}
   }
 
   @media print{
-    .topbar,.progress-bar{display:none !important;}
+    .topbar,.progress-bar,.scenario-bar{display:none !important;}
     body{background:#fff;}
     .hero{box-shadow:none;border:1px solid #ccc;}
     .field{box-shadow:none;border:1px solid #ccc;break-inside:avoid;}
     .grid{grid-template-columns:repeat(2,1fr);}
     .field textarea{background:#fff;border:1px solid #ccc;}
+    .example-btn{display:none !important;}
   }
 </style>
 </head>
@@ -127,14 +153,21 @@
   <section class="hero">
     <span class="eyebrow">Workshop-Canvas</span>
     <h1>AI Governance Framework</h1>
-    <p class="lead">Zwölf Bausteine, um für ein Unternehmen einen eigenen Governance-Rahmen für den Einsatz von KI-Systemen zu skizzieren — von Geltungsbereich und Rollen über die Risikoklassifikation nach EU AI Act bis zu Monitoring und Schulung. Jedes Feld enthält eine Leitfrage als Ausfüllhilfe; die eigenen Antworten bleiben im Browser gespeichert.</p>
+    <p class="lead">Zwölf Bausteine, um für ein Unternehmen einen eigenen Governance-Rahmen für den Einsatz von KI-Systemen zu skizzieren — von Geltungsbereich und Rollen über die Risikoklassifikation nach EU AI Act bis zu Monitoring und Schulung. Jedes Feld enthält eine Leitfrage als Ausfüllhilfe. Optional unten ein bekanntes Szenario wählen und Feld für Feld ein Beispiel einblenden lassen, um live zu zeigen, an was zu denken ist.</p>
     <div class="hero-meta">
       <span class="meta-pill">📋 12 Bausteine</span>
+      <span class="meta-pill">🎭 4 Szenarien</span>
       <span class="meta-pill">⚖️ EU AI Act</span>
       <span class="meta-pill">🧠 ISO/IEC 42001</span>
       <span class="meta-pill">💾 Automatisch gespeichert</span>
     </div>
   </section>
+
+  <div class="scenario-bar">
+    <span class="scenario-label">Szenario für Beispiele (optional):</span>
+    <div class="scenario-chips" id="scenarioChips"></div>
+    <p class="scenario-desc empty" id="scenarioDesc">Kein Szenario gewählt — die Felder zeigen nur die Leitfragen. Szenario wählen, um pro Feld einzeln ein Beispiel einblenden zu können.</p>
+  </div>
 
   <div class="progress-bar">
     <span class="progress-label" id="progressLabel">0 / 12 Felder ausgefüllt</span>
@@ -188,8 +221,8 @@
       id: "rollen",
       title: "2. Rollen und Verantwortlichkeiten",
       desc: "Wenn andere Rollen nötig sind, bitte ergänzen",
-      placeholder: "",
-      value: "- Projektverantwortliche KI: \n- Datenschutzbeauftragte: \n- IT-/Sicherheitsbeauftragte: \n- Fachverantwortliche: \n- Andere Rollen: "
+      placeholder: "- Projektverantwortliche KI: \n- Datenschutzbeauftragte: \n- IT-/Sicherheitsbeauftragte: \n- Fachverantwortliche: \n- Andere Rollen: ",
+      value: ""
     },
     {
       id: "klassifikation",
@@ -209,8 +242,8 @@
       id: "datenqualitaet",
       title: "5. Anforderungen an Datenqualität",
       desc: "Repräsentativität, Korrektheit, Fairness, Aktualität",
-      placeholder: "",
-      value: "- Repräsentativität: \n- Korrektheit: \n- Fairness: \n- Aktualität: "
+      placeholder: "- Repräsentativität: \n- Korrektheit: \n- Fairness: \n- Aktualität: ",
+      value: ""
     },
     {
       id: "transparenz",
@@ -263,12 +296,96 @@
     }
   ];
 
+  /* ================= SZENARIEN ================= */
+  var SCENARIOS = [
+    {
+      id: "digitale-akte",
+      label: "🗂️ Digitale Akte",
+      desc: "Eine Kommunalverwaltung führt eine digitale Akte ein: eingehende Bürger:innenanliegen werden automatisch klassifiziert, dem passenden Vorgang zugeordnet und nach Dringlichkeit priorisiert.",
+      fields: {
+        ziel: "Gilt für die KI-Komponente der digitalen Akte, die eingehende Bürger:innenanliegen automatisch klassifiziert, dem passenden Vorgang zuordnet und priorisiert. Nicht erfasst: die reine Dokumentenspeicherung/Archivierung ohne KI-Beteiligung.",
+        rollen: "- Projektverantwortliche KI: Leitung Digitalisierung Kommunalverwaltung\n- Datenschutzbeauftragte: DSB der Kommune (Aktenzugriff, Löschfristen)\n- IT-/Sicherheitsbeauftragte: IT-Sicherheit für revisionssichere Ablage\n- Fachverantwortliche: Sachbearbeitung Bürgeramt, Amtsleitung\n- Andere Rollen: Personalrat (Mitbestimmung bei Priorisierungslogik)",
+        klassifikation: "Hochrisiko nach Anhang III Ziff. 5 (Zugang zu wesentlichen öffentlichen Diensten) — die Klassifikation beeinflusst Bearbeitungsreihenfolge und Fristüberwachung von Bürger:innenanliegen, nicht nur die technische Ablage. Reine Volltextsuche ohne Priorisierungswirkung wäre dagegen minimal-risikobehaftet — Grenze sauber dokumentieren.",
+        zulaessigkeit: "Prüfung durch Ethik-/Datenschutzgremium vor Rollout, da automatisierte Priorisierung Bürger:innen unterschiedlich behandeln kann. Klärungsfrage: Führt eine KI-Fehlklassifikation zu Nachteilen bei Fristen oder Zugang zu Leistungen?",
+        datenqualitaet: "- Repräsentativität: Trainingsdaten decken alle Antragsarten und Sprachvarianten der Kommune ab\n- Korrektheit: Historische Aktenzuordnungen stichprobenartig gegengeprüft\n- Fairness: Keine systematische Benachteiligung nach Stadtteil, Sprache oder Antragsart\n- Aktualität: Regelmäßiges Retraining bei neuen Vorgangsarten oder Formularänderungen",
+        transparenz: "Bürger:innen werden im Anschreiben informiert, dass die Zuordnung KI-gestützt erfolgt. Sachbearbeitung sieht zu jeder automatischen Zuordnung eine kurze Begründung (erkannte Schlagworte, Konfidenzwert).",
+        oversight: "Sachbearbeitung prüft jede Zuordnung mit niedrigem Konfidenzwert manuell und kann die Priorisierung jederzeit überschreiben, bevor eine Frist zu laufen beginnt.",
+        sicherheit: "Validierung anhand eines historischen Aktenbestands vor Rollout, Testfälle für schlecht lesbare Scans und fremdsprachige Anträge, manueller Fallback-Prozess bei Systemausfall.",
+        dokumentation: "Systembeschreibung mit Einsatzzweck, verwendeten Trainingsdaten (anonymisierte historische Akten), Klassifikationskategorien und bekannten Grenzen (z. B. handschriftliche Dokumente) gemäß Art. 11 EU AI Act.",
+        monitoring: "Quartalsweise Auswertung der Fehlklassifikationsrate nach Antragsart und Stadtteil; Beschwerdeformular für Bürger:innen bei gefühlt falscher Priorisierung.",
+        schulung: "Pflichtschulung für Sachbearbeitung zu Funktionsweise, Grenzen und Korrekturmöglichkeiten der KI-Klassifikation vor Nutzung (Art. 4 KI-VO).",
+        integration: "Verzahnt mit der Aktenordnung (Aufbewahrungsfristen), dem Datenschutzkonzept der Kommune und dem bestehenden Informationssicherheitsmanagement nach ISO 27001."
+      }
+    },
+    {
+      id: "buergeramt-chatbot",
+      label: "💬 Bürgeramt-Chatbot",
+      desc: "Ein Chatbot auf der Website des Bürgeramts beantwortet Standardfragen zu Terminen, Formularen und Öffnungszeiten.",
+      fields: {
+        ziel: "Gilt für den KI-Chatbot auf der Website des Bürgeramts, der Standardanfragen zu Terminen, Formularen und Öffnungszeiten beantwortet. Nicht erfasst: telefonische oder persönliche Beratung durch Mitarbeitende.",
+        rollen: "- Projektverantwortliche KI: Leitung Bürgerservice/Digitalisierung\n- Datenschutzbeauftragte: DSB für Prüfung der Chatverläufe\n- IT-/Sicherheitsbeauftragte: IT-Sicherheit für Hosting und Schnittstellen\n- Fachverantwortliche: Bürgeramt-Leitung, Frontoffice-Team\n- Andere Rollen: Kommunikationsabteilung (Tonalität, Barrierefreiheit)",
+        klassifikation: "Begrenztes Risiko (Transparenzpflicht nach Art. 50) — als Chatbot muss klar erkennbar sein, dass Bürger:innen mit einer KI interagieren. Kein Hochrisiko, solange der Chatbot keine verbindlichen Entscheidungen trifft, sondern nur informiert und weiterleitet.",
+        zulaessigkeit: "Keine gesonderte Ethikprüfung nötig, solange der Chatbot ausschließlich informiert; sobald er perspektivisch Anträge vorqualifiziert oder priorisiert, wird eine Prüfung wie bei der digitalen Akte erforderlich.",
+        datenqualitaet: "- Repräsentativität: Wissensbasis deckt alle Amtsleistungen und häufige Formulierungen ab\n- Korrektheit: Antworten stichprobenartig gegen aktuelle Amtsblätter/Satzungen geprüft\n- Fairness: Verständliche Sprache auch für Personen mit geringen Deutschkenntnissen\n- Aktualität: Wissensbasis wird bei Satzungs-/Gebührenänderungen sofort aktualisiert",
+        transparenz: "Chatbot kennzeichnet sich beim ersten Kontakt eindeutig als KI, verweist bei Unsicherheit aktiv auf menschliche Ansprechpartner:innen und nennt keine Rechtsauskünfte als verbindliche Entscheidung.",
+        oversight: "Eskalationspfad zu echten Mitarbeitenden bei Beschwerden, komplexen Anliegen oder wenn der Chatbot die Anfrage dreimal nicht klären konnte.",
+        sicherheit: "Testing gegen Falschinformationen (Halluzinationen) bei Rechts- und Gebührenfragen, Rate-Limiting gegen Missbrauch, Notabschaltung bei erkannten Fehlinformationen im großen Stil.",
+        dokumentation: "Systembeschreibung mit Einsatzzweck, genutzter Wissensbasis, Sprachmodell-Anbieter und bekannten Grenzen (z. B. keine Rechtsberatung) gemäß Art. 11 EU AI Act.",
+        monitoring: "Monatliche Stichprobenprüfung der Chatverläufe auf Fehlinformationen; Feedback-Button „War die Antwort hilfreich?“ fließt in Auswertung ein.",
+        schulung: "Kurzschulung für Frontoffice-Team zur Übernahme eskalierter Chats sowie Hinweise für Bürger:innen zur bewussten Nutzung im Footer der Chat-Oberfläche.",
+        integration: "Verzahnt mit dem Kommunikationsleitfaden des Amtes, der Barrierefreiheitsstrategie und dem Datenschutzkonzept für Chatverläufe."
+      }
+    },
+    {
+      id: "bewerbung-screening",
+      label: "📄 Bewerbungs-Screening",
+      desc: "Ein Unternehmen setzt KI ein, um eingehende Bewerbungen vorzusortieren und Eignungs-Scores für die Personalabteilung zu erzeugen.",
+      fields: {
+        ziel: "Gilt für das KI-Tool, das eingehende Bewerbungen vorsortiert und Eignungs-Scores für die Personalabteilung erzeugt. Nicht erfasst: die abschließende Einstellungsentscheidung, die weiterhin von Menschen getroffen wird.",
+        rollen: "- Projektverantwortliche KI: HR-Digitalisierung\n- Datenschutzbeauftragte: DSB für Bewerbungsdaten\n- IT-/Sicherheitsbeauftragte: IT-Sicherheit für Bewerbermanagementsystem\n- Fachverantwortliche: Recruiting-Team, Fachbereichsleitungen\n- Andere Rollen: Betriebsrat (Mitbestimmung bei automatisierter Vorauswahl)",
+        klassifikation: "Hochrisiko nach Anhang III Ziff. 4 (Beschäftigung) — CV-Screening entscheidet über Zugang zu einer Beschäftigungsmöglichkeit und fällt damit klar unter die strengen Hochrisiko-Anforderungen des EU AI Act.",
+        zulaessigkeit: "Verpflichtende Prüfung durch Ethik-/Diversity-Gremium vor Einsatz, insbesondere auf Diskriminierungsrisiken nach Geschlecht, Herkunft, Alter oder Bildungsweg.",
+        datenqualitaet: "- Repräsentativität: Trainingsdaten decken diverse Bewerbergruppen ab, keine Überrepräsentation historischer Einstellungsmuster\n- Korrektheit: Score-Logik nachvollziehbar mit tatsächlichen Anforderungen der Stelle abgeglichen\n- Fairness: Regelmäßige Bias-Tests nach Geschlecht, Herkunft, Alter mit dokumentierten Fehlerraten je Gruppe\n- Aktualität: Modell wird bei neuen Stellenprofilen und Anforderungen nachjustiert",
+        transparenz: "Bewerber:innen werden über den KI-Einsatz im Auswahlprozess informiert; die Personalabteilung erhält zu jedem Score eine nachvollziehbare Begründung (relevante Kriterien, keine Blackbox-Zahl).",
+        oversight: "Kein automatisches Ablehnen allein durch die KI — jede Absage wird von einer Person auf Basis von Score plus Lebenslauf final entschieden; Bewerber:innen können eine manuelle Überprüfung anfordern.",
+        sicherheit: "Validierung vor Rollout mit historischen, anonymisierten Bewerbungen, Testfälle für untypische Lebensläufe (Quereinsteiger:innen, Lücken), Fallback auf rein manuelle Sichtung bei Systemausfall.",
+        dokumentation: "Systembeschreibung mit Einsatzzweck, Score-Logik, Trainingsdatenquellen und bekannten Grenzen (z. B. Schwäche bei unkonventionellen Lebensläufen) gemäß Art. 11 EU AI Act.",
+        monitoring: "Halbjährliches Bias-Audit der Score-Verteilung nach Geschlecht, Herkunft und Alter; Beschwerdekanal für abgelehnte Bewerber:innen mit Anspruch auf Auskunft.",
+        schulung: "Pflichtschulung für Recruiting-Team zu Funktionsweise, Grenzen und Diskriminierungsrisiken der Vorauswahl-KI vor produktivem Einsatz (Art. 4 KI-VO).",
+        integration: "Verzahnt mit dem AGG-Beschwerdeverfahren (Allgemeines Gleichbehandlungsgesetz), dem Datenschutzkonzept für Bewerbungsdaten und der Mitbestimmung durch den Betriebsrat."
+      }
+    },
+    {
+      id: "kreditvergabe",
+      label: "💳 Kreditvergabe",
+      desc: "Eine Bank nutzt ein KI-Modell zur automatisierten Kreditwürdigkeitsprüfung bei Privatkrediten.",
+      fields: {
+        ziel: "Gilt für das KI-Modell zur automatisierten Kreditwürdigkeitsprüfung bei Privatkrediten. Nicht erfasst: Firmenkredite und individuell verhandelte Großkredite, die weiterhin klassisch geprüft werden.",
+        rollen: "- Projektverantwortliche KI: Leitung Kreditrisikomanagement\n- Datenschutzbeauftragte: DSB für Score-relevante Finanz- und Personendaten\n- IT-/Sicherheitsbeauftragte: IT-Sicherheit für Scoring-Infrastruktur\n- Fachverantwortliche: Kreditsachbearbeitung, Risikocontrolling\n- Andere Rollen: Interne Revision, Compliance/BaFin-Ansprechpartner:in",
+        klassifikation: "Hochrisiko nach Anhang III Ziff. 5 (wesentliche private Dienstleistungen — Kreditwürdigkeitsprüfung) — betrifft unmittelbar den Zugang zu Finanzdienstleistungen und unterliegt damit strengen Konformitätspflichten.",
+        zulaessigkeit: "Verpflichtende Prüfung durch Risiko-/Ethikgremium vor Einsatz, insbesondere zur Vermeidung mittelbarer Diskriminierung über Proxy-Merkmale wie Wohnort oder Einkaufsverhalten.",
+        datenqualitaet: "- Repräsentativität: Trainingsdaten decken unterschiedliche Einkommensgruppen und Lebenssituationen ab\n- Korrektheit: Score-Modell regelmäßig gegen tatsächliche Ausfallraten validiert\n- Fairness: Keine mittelbare Diskriminierung über Wohnort, Herkunft oder Geschlecht als Proxy-Merkmale\n- Aktualität: Nachjustierung bei veränderter wirtschaftlicher Lage (z. B. Zinsänderungen, Inflation)",
+        transparenz: "Antragsteller:innen erhalten bei Ablehnung eine nachvollziehbare Begründung der score-relevanten Faktoren (Recht auf Erklärung automatisierter Entscheidungen, Art. 22 DSGVO).",
+        oversight: "Keine vollautomatische Ablehnung ab einer bestimmten Kredithöhe — Kreditsachbearbeitung prüft Grenzfälle und kann den Score-Vorschlag begründet überstimmen.",
+        sicherheit: "Validierung mit historischen, anonymisierten Kreditverläufen, Stresstests bei wirtschaftlichen Krisenszenarien, Notfallprozess auf manuelle Prüfung bei Systemausfall oder erkannter Fehlfunktion.",
+        dokumentation: "Systembeschreibung mit Einsatzzweck, Score-Faktoren, Datenquellen (Schufa, Haushaltsrechnung) und bekannten Grenzen gemäß Art. 11 EU AI Act, Grundlage für die Konformitätsbewertung.",
+        monitoring: "Jährliches externes Audit der Ausfallprognosegüte und Fairness-Kennzahlen; Beschwerdeverfahren für abgelehnte Antragsteller:innen mit Widerspruchsrecht.",
+        schulung: "Pflichtschulung für Kreditsachbearbeitung zu Score-Logik, Grenzen des Modells und Umgang mit Widersprüchen (Art. 4 KI-VO).",
+        integration: "Verzahnt mit dem bestehenden Kreditrisikomanagement, den BaFin-Compliance-Vorgaben und dem Datenschutzkonzept für Bonitätsdaten."
+      }
+    }
+  ];
+  var SCENARIOS_BY_ID = {};
+  SCENARIOS.forEach(function(s){ SCENARIOS_BY_ID[s.id] = s; });
+
   var STORAGE_KEY = "aiGovernanceFields";
+  var SCENARIO_STORAGE_KEY = "aiGovernanceScenario";
   var grid = document.getElementById("fieldGrid");
   var progressFill = document.getElementById("progressFill");
   var progressLabel = document.getElementById("progressLabel");
   var saveStatus = document.getElementById("saveStatus");
   var saveStatusTimer = null;
+  var activeScenarioId = "";
 
   function loadSavedValues(){
     try{
@@ -277,6 +394,10 @@
       FIELDS.forEach(function(field){
         if(typeof saved[field.id] === "string") field.value = saved[field.id];
       });
+    }catch(e){}
+    try{
+      var savedScenario = localStorage.getItem(SCENARIO_STORAGE_KEY) || "";
+      if(SCENARIOS_BY_ID[savedScenario]) activeScenarioId = savedScenario;
     }catch(e){}
   }
 
@@ -291,10 +412,71 @@
     }catch(e){}
   }
 
+  function persistScenario(){
+    try{ localStorage.setItem(SCENARIO_STORAGE_KEY, activeScenarioId); }catch(e){}
+  }
+
   function updateProgress(){
     var filled = FIELDS.filter(function(f){ return f.value.trim().length > 0; }).length;
     progressLabel.textContent = filled + " / " + FIELDS.length + " Felder ausgefüllt";
     progressFill.style.width = Math.round((filled / FIELDS.length) * 100) + "%";
+  }
+
+  function renderScenarioBar(){
+    var chipsWrap = document.getElementById("scenarioChips");
+    var descEl = document.getElementById("scenarioDesc");
+    chipsWrap.innerHTML = "";
+
+    SCENARIOS.forEach(function(scenario){
+      var chip = document.createElement("button");
+      chip.className = "scenario-chip";
+      chip.textContent = scenario.label;
+      chip.classList.toggle("active", activeScenarioId === scenario.id);
+      chip.addEventListener("click", function(){
+        activeScenarioId = (activeScenarioId === scenario.id) ? "" : scenario.id;
+        persistScenario();
+        renderScenarioBar();
+        renderFields();
+      });
+      chipsWrap.appendChild(chip);
+    });
+
+    var deselectChip = document.createElement("button");
+    deselectChip.className = "scenario-chip";
+    deselectChip.textContent = "✕ Kein Szenario";
+    deselectChip.classList.toggle("active", activeScenarioId === "");
+    deselectChip.addEventListener("click", function(){
+      activeScenarioId = "";
+      persistScenario();
+      renderScenarioBar();
+      renderFields();
+    });
+    chipsWrap.appendChild(deselectChip);
+
+    var activeScenario = SCENARIOS_BY_ID[activeScenarioId];
+    if(activeScenario){
+      descEl.textContent = activeScenario.desc + " Bei jedem Feld unten mit „💡 Beispiel“ die passende Beispielantwort für dieses Szenario einblenden.";
+      descEl.classList.remove("empty");
+    }else{
+      descEl.textContent = "Kein Szenario gewählt — die Felder zeigen nur die Leitfragen. Szenario wählen, um pro Feld einzeln ein Beispiel einblenden zu können.";
+      descEl.classList.add("empty");
+    }
+  }
+
+  function insertExample(field, card, textarea){
+    var scenario = SCENARIOS_BY_ID[activeScenarioId];
+    if(!scenario) return;
+    var example = scenario.fields[field.id];
+    if(!example) return;
+    if(field.value.trim().length > 0 && field.value.trim() !== example.trim()){
+      var ok = window.confirm("Vorhandenen Text in diesem Feld durch das Beispiel für „" + scenario.label + "“ ersetzen?");
+      if(!ok) return;
+    }
+    field.value = example;
+    textarea.value = example;
+    card.classList.add("filled");
+    updateProgress();
+    persist();
   }
 
   function renderFields(){
@@ -310,6 +492,7 @@
       num.className = "field-num";
       num.textContent = String(idx + 1);
       var titleWrap = document.createElement("div");
+      titleWrap.className = "field-title-wrap";
       var h3 = document.createElement("h3");
       h3.textContent = field.title.replace(/^\d+\.\s*/, "");
       var desc = document.createElement("p");
@@ -324,6 +507,17 @@
       textarea.placeholder = field.placeholder;
       textarea.value = field.value;
       textarea.setAttribute("aria-label", field.title);
+
+      var exampleBtn = document.createElement("button");
+      exampleBtn.className = "example-btn";
+      exampleBtn.type = "button";
+      exampleBtn.textContent = "💡 Beispiel";
+      var hasScenario = !!SCENARIOS_BY_ID[activeScenarioId];
+      exampleBtn.disabled = !hasScenario;
+      exampleBtn.title = hasScenario ? "Beispielantwort für das gewählte Szenario einfügen" : "Erst oben ein Szenario wählen";
+      exampleBtn.addEventListener("click", function(){ insertExample(field, card, textarea); });
+      head.appendChild(exampleBtn);
+
       textarea.addEventListener("input", function(){
         field.value = textarea.value;
         card.classList.toggle("filled", field.value.trim().length > 0);
@@ -340,19 +534,14 @@
   document.getElementById("resetBtn").addEventListener("click", function(){
     var ok = window.confirm("Wirklich alle 12 Felder zurücksetzen? Das löscht alle bisherigen Eingaben.");
     if(!ok) return;
-    FIELDS.forEach(function(field){
-      field.value = (field.id === "rollen")
-        ? "- Projektverantwortliche KI: \n- Datenschutzbeauftragte: \n- IT-/Sicherheitsbeauftragte: \n- Fachverantwortliche: \n- Andere Rollen: "
-        : (field.id === "datenqualitaet")
-          ? "- Repräsentativität: \n- Korrektheit: \n- Fairness: \n- Aktualität: "
-          : "";
-    });
+    FIELDS.forEach(function(field){ field.value = ""; });
     persist();
     updateProgress();
     renderFields();
   });
 
   loadSavedValues();
+  renderScenarioBar();
   renderFields();
   updateProgress();
 </script>
