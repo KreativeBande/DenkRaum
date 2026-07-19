@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>AI Governance Framework — Michaelas Denkraum</title>
+<style>
+  html[data-beamer="1"]{zoom:1.35}
+  html[data-beamer="2"]{zoom:1.75}
+  :root{
+    --bg:#f6f8fc; --panel:#ffffff; --ink:#1f2937; --muted:#6b7280; --line:#d9e1ea;
+    --accent:#1d4ed8; --accent-soft:#dbeafe;
+    --card:#f7f8f9; --good:#15803d; --good-soft:#e9f7ee; --warn:#92400e; --warn-soft:#fef3c7;
+    --sans: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);color-scheme:light;}
+  body{
+    font-family:var(--sans); font-size:16px; line-height:1.55;
+    background:
+      radial-gradient(circle at top left, #eef4ff 0%, transparent 22%),
+      radial-gradient(circle at top right, #fff7f7 0%, transparent 20%),
+      linear-gradient(180deg,#fbfcff 0%,#f4f6fa 100%);
+  }
+  button{touch-action:manipulation;-webkit-user-select:none;user-select:none;font-family:var(--sans);}
+  .app{max-width:1280px;margin:0 auto;padding:24px 32px 56px;}
+
+  .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px;}
+  .back-link{display:inline-block;font-size:14px;font-weight:600;color:var(--muted);text-decoration:none;margin-bottom:10px;}
+  .back-link:hover{color:var(--accent);}
+  .trainer{display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
+  .signature{font-size:14px;font-weight:700;color:var(--ink);text-align:right;text-decoration:none;}
+  .signature span{display:block;font-weight:500;color:var(--muted);font-size:12px;}
+  .signature:hover{color:var(--accent);}
+  .toolbar-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+  .beamer-btn,.util-btn{background:#fff;border:2px solid var(--line);border-radius:20px;padding:8px 16px;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer;min-height:40px;}
+  .beamer-btn:hover,.util-btn:hover{border-color:var(--accent);}
+  .beamer-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+  .hero{
+    background:rgba(255,255,255,.96); border:1px solid var(--line); border-radius:28px;
+    box-shadow:0 16px 34px rgba(15,23,42,.08); padding:32px 36px 26px; margin:18px 0 28px;
+  }
+  .eyebrow{display:block;font-size:13px;letter-spacing:.14em;font-weight:700;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+  .hero h1{margin:0 0 8px;font-size:clamp(26px,3.6vw,38px);line-height:1.08;
+    background:linear-gradient(100deg,var(--ink) 55%,var(--accent) 120%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero p.lead{margin:0 0 16px;color:var(--muted);font-size:16px;line-height:1.6;max-width:840px;}
+  .hero-meta{display:flex;gap:8px;flex-wrap:wrap;}
+  .meta-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-size:12.5px;font-weight:700;color:var(--muted)}
+
+  .progress-bar{position:sticky;top:0;z-index:5;background:rgba(246,248,252,.92);backdrop-filter:blur(4px);
+    border:1px solid var(--line);border-radius:14px;padding:10px 16px;margin-bottom:20px;
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .progress-track{flex:1 1 200px;height:8px;border-radius:999px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--good));width:0%;transition:width .25s ease;}
+  .progress-label{font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap;}
+  .save-status{font-size:12.5px;color:var(--good);font-weight:700;white-space:nowrap;opacity:0;transition:opacity .3s ease;}
+  .save-status.show{opacity:1;}
+  .reset-btn{margin-left:auto;background:none;border:none;color:var(--muted);font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:underline;padding:4px;}
+  .reset-btn:hover{color:var(--accent);}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .field{
+    background:var(--panel);border:1px solid var(--line);border-radius:18px;
+    padding:18px 20px 16px;box-shadow:0 6px 16px rgba(15,23,42,.03);
+    display:flex;flex-direction:column;
+  }
+  .field-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
+  .field-num{
+    flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+    font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;
+  }
+  .field h3{margin:0 0 4px;font-size:15.5px;line-height:1.3;}
+  .field .desc{margin:0;font-size:13px;color:var(--muted);line-height:1.5;}
+  .field textarea{
+    margin-top:10px;width:100%;min-height:120px;resize:vertical;border:1.5px solid var(--line);border-radius:10px;
+    padding:10px 12px;font-family:var(--sans);font-size:13.5px;line-height:1.55;color:var(--ink);
+    background:var(--card);outline:none;transition:border-color .15s ease,background .15s ease;
+  }
+  .field textarea:focus{border-color:var(--accent);background:#fff;}
+  .field textarea::placeholder{color:#9aa4b2;}
+  .field.filled{border-left:4px solid var(--good);}
+
+  footer{max-width:1280px;margin:32px auto 0;padding:16px 32px 0;color:var(--muted);font-size:13px;text-align:center;border-top:1px solid var(--line);}
+
+  @media(max-width:980px){
+    .grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media(max-width:640px){
+    .app{padding:16px}
+    .hero{padding:24px 20px 20px}
+    .topbar{flex-direction:column}
+    .trainer{align-items:flex-start}
+    .toolbar-btns{justify-content:flex-start}
+    .grid{grid-template-columns:1fr;}
+    .reset-btn{margin-left:0;}
+  }
+
+  @media print{
+    .topbar,.progress-bar{display:none !important;}
+    body{background:#fff;}
+    .hero{box-shadow:none;border:1px solid #ccc;}
+    .field{box-shadow:none;border:1px solid #ccc;break-inside:avoid;}
+    .grid{grid-template-columns:repeat(2,1fr);}
+    .field textarea{background:#fff;border:1px solid #ccc;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div>
+      <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    </div>
+    <div class="trainer">
+      <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
+      <div class="toolbar-btns">
+        <button class="util-btn" id="printBtn" title="Ausgefülltes Framework drucken oder als PDF speichern">🖨️ Drucken</button>
+        <button class="beamer-btn" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <span class="eyebrow">Workshop-Canvas</span>
+    <h1>AI Governance Framework</h1>
+    <p class="lead">Zwölf Bausteine, um für ein Unternehmen einen eigenen Governance-Rahmen für den Einsatz von KI-Systemen zu skizzieren — von Geltungsbereich und Rollen über die Risikoklassifikation nach EU AI Act bis zu Monitoring und Schulung. Jedes Feld enthält eine Leitfrage als Ausfüllhilfe; die eigenen Antworten bleiben im Browser gespeichert.</p>
+    <div class="hero-meta">
+      <span class="meta-pill">📋 12 Bausteine</span>
+      <span class="meta-pill">⚖️ EU AI Act</span>
+      <span class="meta-pill">🧠 ISO/IEC 42001</span>
+      <span class="meta-pill">💾 Automatisch gespeichert</span>
+    </div>
+  </section>
+
+  <div class="progress-bar">
+    <span class="progress-label" id="progressLabel">0 / 12 Felder ausgefüllt</span>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="save-status" id="saveStatus">Gespeichert ✓</span>
+    <button class="reset-btn" id="resetBtn">Alle Felder zurücksetzen</button>
+  </div>
+
+  <div class="grid" id="fieldGrid"></div>
+
+</div>
+
+<footer>Michaela Kühn · Requirements Engineering · Business-Analyse · KI-gestützte Anforderungsarbeit</footer>
+
+<script>
+  /* ================= BEAMER-MODUS ================= */
+  var beamerState = {beamerLevel:0};
+  (function(){
+    try{
+      var saved = JSON.parse(localStorage.getItem("aiGovernanceBeamer") || "null");
+      if(saved && typeof saved.beamerLevel === "number") beamerState.beamerLevel = saved.beamerLevel;
+    }catch(e){}
+  })();
+  function saveBeamerState(){ try{ localStorage.setItem("aiGovernanceBeamer", JSON.stringify(beamerState)); }catch(e){} }
+  var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+  function applyBeamerLevel(){
+    document.documentElement.setAttribute("data-beamer", String(beamerState.beamerLevel));
+    var btn = document.getElementById("beamerToggle");
+    btn.textContent = BEAMER_LABELS[beamerState.beamerLevel];
+    btn.classList.toggle("active", beamerState.beamerLevel > 0);
+  }
+  document.getElementById("beamerToggle").addEventListener("click", function(){
+    beamerState.beamerLevel = (beamerState.beamerLevel + 1) % BEAMER_LABELS.length;
+    saveBeamerState();
+    applyBeamerLevel();
+  });
+  applyBeamerLevel();
+
+  document.getElementById("printBtn").addEventListener("click", function(){ window.print(); });
+
+  /* ================= FRAMEWORK-FELDER ================= */
+  var FIELDS = [
+    {
+      id: "ziel",
+      title: "1. Ziel und Anwendungsbereich",
+      desc: "Definition des Geltungsbereichs für KI-Anwendungen",
+      placeholder: "Für welche KI-Anwendungen gilt dieses Framework? Z. B.: alle KI-gestützten Systeme, die operative Entscheidungen automatisieren oder vorbereiten — ausgenommen rein interne Recherche-Tools ohne Kunden- oder Personenbezug.",
+      value: ""
+    },
+    {
+      id: "rollen",
+      title: "2. Rollen und Verantwortlichkeiten",
+      desc: "Wenn andere Rollen nötig sind, bitte ergänzen",
+      placeholder: "",
+      value: "- Projektverantwortliche KI: \n- Datenschutzbeauftragte: \n- IT-/Sicherheitsbeauftragte: \n- Fachverantwortliche: \n- Andere Rollen: "
+    },
+    {
+      id: "klassifikation",
+      title: "3. Klassifikation von KI-Systemen",
+      desc: "Einordnung nach Risikoklassen gemäß EU AI Act mit Begründung",
+      placeholder: "Risikoklasse je EU AI Act: Verboten (Art. 5) / Hochrisiko (Anhang III) / Begrenztes Risiko (Transparenzpflicht, z. B. Chatbots) / Minimales Risiko. Mit kurzer Begründung, warum das jeweilige System in diese Klasse fällt.",
+      value: ""
+    },
+    {
+      id: "zulaessigkeit",
+      title: "4. Zulässigkeit und ethische Prüfung",
+      desc: "Bewertung durch Ethik- oder Prüfgremium bei …",
+      placeholder: "Ab wann ist ein Ethik- oder Prüfgremium einzuschalten? Z. B. bei Systemen mit Personenbezug, automatisierten Einzelentscheidungen oder Auswirkungen auf Beschäftigung bzw. Zugang zu Leistungen.",
+      value: ""
+    },
+    {
+      id: "datenqualitaet",
+      title: "5. Anforderungen an Datenqualität",
+      desc: "Repräsentativität, Korrektheit, Fairness, Aktualität",
+      placeholder: "",
+      value: "- Repräsentativität: \n- Korrektheit: \n- Fairness: \n- Aktualität: "
+    },
+    {
+      id: "transparenz",
+      title: "6. Transparenz & Erklärbarkeit",
+      desc: "Erklärbare Entscheidungen und Nutzerinformation bei KI-Einsatz",
+      placeholder: "Wie erfährt eine betroffene Person, dass eine KI beteiligt war? Wie wird eine Entscheidung nachvollziehbar begründet (Explainability nach ISO 42001)?",
+      value: ""
+    },
+    {
+      id: "oversight",
+      title: "7. Human Oversight",
+      desc: "Menschliche Überprüfung und Eingriffsmöglichkeit",
+      placeholder: "Wer kann eine KI-Entscheidung stoppen, überstimmen oder korrigieren — und an welcher Stelle im Prozess?",
+      value: ""
+    },
+    {
+      id: "sicherheit",
+      title: "8. Sicherheit und Robustheit",
+      desc: "Validierung, Testing und Notfallmechanismen",
+      placeholder: "Z. B.: Validierung vor Produktivsetzung, Testabdeckung für Grenzfälle, Reaktion auf Fehlverhalten, Notfallmechanismen (Kill Switch, Rollback).",
+      value: ""
+    },
+    {
+      id: "dokumentation",
+      title: "9. Technische Dokumentation",
+      desc: "Systembeschreibung, Zweck, Datenquellen, Risiken",
+      placeholder: "Systembeschreibung, Einsatzzweck, verwendete Datenquellen und bekannte Risiken/Grenzen — analog zur technischen Dokumentationspflicht des EU AI Act (Art. 11).",
+      value: ""
+    },
+    {
+      id: "monitoring",
+      title: "10. Monitoring & Auditierung",
+      desc: "Regelmäßige Überprüfung, Feedback- und Beschwerdemechanismen",
+      placeholder: "Wie oft wird das System überprüft? Welche Feedback- und Beschwerdemechanismen gibt es für Betroffene?",
+      value: ""
+    },
+    {
+      id: "schulung",
+      title: "11. Schulung & Awareness",
+      desc: "Sensibilisierung und Einweisung der Beteiligten",
+      placeholder: "Wer wird wie geschult? Z. B. Pflichtschulung zur KI-Kompetenz (Art. 4 KI-VO) für alle, die mit dem System arbeiten.",
+      value: ""
+    },
+    {
+      id: "integration",
+      title: "12. Integration in bestehende Governance",
+      desc: "Verknüpfung mit IT-Sicherheit, Datenschutz und QM",
+      placeholder: "Wie ist dieses Framework mit bestehenden Prozessen für IT-Sicherheit (ISO 27001), Datenschutz (DSGVO) und Qualitätsmanagement verzahnt?",
+      value: ""
+    }
+  ];
+
+  var STORAGE_KEY = "aiGovernanceFields";
+  var grid = document.getElementById("fieldGrid");
+  var progressFill = document.getElementById("progressFill");
+  var progressLabel = document.getElementById("progressLabel");
+  var saveStatus = document.getElementById("saveStatus");
+  var saveStatusTimer = null;
+
+  function loadSavedValues(){
+    try{
+      var saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      if(!saved) return;
+      FIELDS.forEach(function(field){
+        if(typeof saved[field.id] === "string") field.value = saved[field.id];
+      });
+    }catch(e){}
+  }
+
+  function persist(){
+    try{
+      var toSave = {};
+      FIELDS.forEach(function(field){ toSave[field.id] = field.value; });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+      saveStatus.classList.add("show");
+      clearTimeout(saveStatusTimer);
+      saveStatusTimer = setTimeout(function(){ saveStatus.classList.remove("show"); }, 1400);
+    }catch(e){}
+  }
+
+  function updateProgress(){
+    var filled = FIELDS.filter(function(f){ return f.value.trim().length > 0; }).length;
+    progressLabel.textContent = filled + " / " + FIELDS.length + " Felder ausgefüllt";
+    progressFill.style.width = Math.round((filled / FIELDS.length) * 100) + "%";
+  }
+
+  function renderFields(){
+    grid.innerHTML = "";
+    FIELDS.forEach(function(field, idx){
+      var card = document.createElement("div");
+      card.className = "field";
+      if(field.value.trim().length > 0) card.classList.add("filled");
+
+      var head = document.createElement("div");
+      head.className = "field-head";
+      var num = document.createElement("span");
+      num.className = "field-num";
+      num.textContent = String(idx + 1);
+      var titleWrap = document.createElement("div");
+      var h3 = document.createElement("h3");
+      h3.textContent = field.title.replace(/^\d+\.\s*/, "");
+      var desc = document.createElement("p");
+      desc.className = "desc";
+      desc.textContent = field.desc;
+      titleWrap.appendChild(h3);
+      titleWrap.appendChild(desc);
+      head.appendChild(num);
+      head.appendChild(titleWrap);
+
+      var textarea = document.createElement("textarea");
+      textarea.placeholder = field.placeholder;
+      textarea.value = field.value;
+      textarea.setAttribute("aria-label", field.title);
+      textarea.addEventListener("input", function(){
+        field.value = textarea.value;
+        card.classList.toggle("filled", field.value.trim().length > 0);
+        updateProgress();
+        persist();
+      });
+
+      card.appendChild(head);
+      card.appendChild(textarea);
+      grid.appendChild(card);
+    });
+  }
+
+  document.getElementById("resetBtn").addEventListener("click", function(){
+    var ok = window.confirm("Wirklich alle 12 Felder zurücksetzen? Das löscht alle bisherigen Eingaben.");
+    if(!ok) return;
+    FIELDS.forEach(function(field){
+      field.value = (field.id === "rollen")
+        ? "- Projektverantwortliche KI: \n- Datenschutzbeauftragte: \n- IT-/Sicherheitsbeauftragte: \n- Fachverantwortliche: \n- Andere Rollen: "
+        : (field.id === "datenqualitaet")
+          ? "- Repräsentativität: \n- Korrektheit: \n- Fairness: \n- Aktualität: "
+          : "";
+    });
+    persist();
+    updateProgress();
+    renderFields();
+  });
+
+  loadSavedValues();
+  renderFields();
+  updateProgress();
+</script>
+
+</body>
+</html>
