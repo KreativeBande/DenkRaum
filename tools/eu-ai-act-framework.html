@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
-<title>AI Governance Framework — Michaelas Denkraum</title>
+<title>EU AI Act Framework — Michaelas Denkraum</title>
 <style>
   html[data-beamer="1"]{zoom:1.35}
   html[data-beamer="2"]{zoom:1.75}
@@ -46,7 +46,7 @@
   .hero h1{margin:0 0 8px;font-size:clamp(26px,3.6vw,38px);line-height:1.08;
     background:linear-gradient(100deg,var(--ink) 55%,var(--accent) 120%);
     -webkit-background-clip:text;background-clip:text;color:transparent;}
-  .hero p.lead{margin:0 0 16px;color:var(--muted);font-size:16px;line-height:1.6;max-width:840px;}
+  .hero p.lead{margin:0 0 16px;color:var(--muted);font-size:16px;line-height:1.6;max-width:860px;}
   .hero-meta{display:flex;gap:8px;flex-wrap:wrap;}
   .meta-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-size:12.5px;font-weight:700;color:var(--muted)}
   .crosslink{margin-top:16px;font-size:13.5px;color:var(--muted);}
@@ -155,16 +155,16 @@
 
   <section class="hero">
     <span class="eyebrow">Workshop-Canvas</span>
-    <h1>AI Governance Framework</h1>
-    <p class="lead">Zwölf Bausteine, um für ein Unternehmen einen eigenen Governance-Rahmen für den Einsatz von KI-Systemen zu skizzieren — von Geltungsbereich und Rollen über die Risikoklassifikation nach EU AI Act bis zu Monitoring und Schulung. Jedes Feld enthält eine Leitfrage als Ausfüllhilfe. Optional unten ein bekanntes Szenario wählen und Feld für Feld ein Beispiel einblenden lassen, um live zu zeigen, an was zu denken ist.</p>
+    <h1>EU AI Act Framework</h1>
+    <p class="lead">Zwölf Bausteine, um ein konkretes KI-System einmal vollständig durch die rechtlichen Pflichten des EU AI Act zu führen — von der Rolle in der Wertschöpfungskette über den Verbotene-Praktiken-Check, die Risikoklassifikation und die Hochrisiko-Pflichten (Art. 9–15) bis zu Konformitätsbewertung, GPAI-Pflichten, Zeitplan und Sanktionsrisiko. Jedes Feld enthält eine Leitfrage; optional ein bekanntes Szenario wählen und Feld für Feld ein Beispiel einblenden lassen.</p>
     <div class="hero-meta">
       <span class="meta-pill">📋 12 Bausteine</span>
       <span class="meta-pill">🎭 4 Szenarien</span>
       <span class="meta-pill">⚖️ EU AI Act</span>
-      <span class="meta-pill">🧠 ISO/IEC 42001</span>
+      <span class="meta-pill">🏛️ Konformität &amp; CE</span>
       <span class="meta-pill">💾 Automatisch gespeichert</span>
     </div>
-    <p class="crosslink">Für die konkreten rechtlichen Pflichten des EU AI Act (Risikoklassifikation, Hochrisiko-Anforderungen, Konformitätsbewertung …): <a href="./eu-ai-act-framework.html">EU AI Act Framework →</a></p>
+    <p class="crosslink">Für den organisatorischen Rahmen (Rollen, Human Oversight, Monitoring …) unabhängig vom EU AI Act: <a href="./ai-governance-framework.html">AI Governance Framework →</a></p>
   </section>
 
   <div class="scenario-bar">
@@ -191,11 +191,11 @@
   var beamerState = {beamerLevel:0};
   (function(){
     try{
-      var saved = JSON.parse(localStorage.getItem("aiGovernanceBeamer") || "null");
+      var saved = JSON.parse(localStorage.getItem("euAiActBeamer") || "null");
       if(saved && typeof saved.beamerLevel === "number") beamerState.beamerLevel = saved.beamerLevel;
     }catch(e){}
   })();
-  function saveBeamerState(){ try{ localStorage.setItem("aiGovernanceBeamer", JSON.stringify(beamerState)); }catch(e){} }
+  function saveBeamerState(){ try{ localStorage.setItem("euAiActBeamer", JSON.stringify(beamerState)); }catch(e){} }
   var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
   function applyBeamerLevel(){
     document.documentElement.setAttribute("data-beamer", String(beamerState.beamerLevel));
@@ -215,87 +215,87 @@
   /* ================= FRAMEWORK-FELDER ================= */
   var FIELDS = [
     {
-      id: "ziel",
-      title: "1. Ziel und Anwendungsbereich",
-      desc: "Definition des Geltungsbereichs für KI-Anwendungen",
-      placeholder: "Für welche KI-Anwendungen gilt dieses Framework? Z. B.: alle KI-gestützten Systeme, die operative Entscheidungen automatisieren oder vorbereiten — ausgenommen rein interne Recherche-Tools ohne Kunden- oder Personenbezug.",
+      id: "system",
+      title: "1. KI-System & Rolle in der Wertschöpfungskette",
+      desc: "Systembeschreibung und Einordnung als Anbieter, Betreiber, Einführer oder Händler",
+      placeholder: "Was macht das System, und welche Rolle habt ihr? Anbieter (entwickelt/bringt in Verkehr), Betreiber (setzt im eigenen Namen ein), Einführer oder Händler — die Pflichten unterscheiden sich je Rolle erheblich.",
       value: ""
     },
     {
-      id: "rollen",
-      title: "2. Rollen und Verantwortlichkeiten",
-      desc: "Wenn andere Rollen nötig sind, bitte ergänzen",
-      placeholder: "- Projektverantwortliche KI: \n- Datenschutzbeauftragte: \n- IT-/Sicherheitsbeauftragte: \n- Fachverantwortliche: \n- Andere Rollen: ",
+      id: "verbotene-praktiken",
+      title: "2. Verbotene-Praktiken-Check (Art. 5)",
+      desc: "Prüfung gegen die Liste verbotener KI-Praktiken",
+      placeholder: "Fällt das System unter eine der in Art. 5 verbotenen Praktiken (Social Scoring, biometrische Echtzeit-Massenüberwachung, subliminale Manipulation, Ausnutzung von Schwächen, Predictive Policing, Emotionserkennung am Arbeitsplatz)? Wenn ja: nicht einsetzbar.",
       value: ""
     },
     {
-      id: "klassifikation",
-      title: "3. Klassifikation von KI-Systemen",
-      desc: "Einordnung nach Risikoklassen gemäß EU AI Act mit Begründung",
-      placeholder: "Risikoklasse je EU AI Act: Verboten (Art. 5) / Hochrisiko (Anhang III) / Begrenztes Risiko (Transparenzpflicht, z. B. Chatbots) / Minimales Risiko. Mit kurzer Begründung, warum das jeweilige System in diese Klasse fällt.",
+      id: "risikoklasse",
+      title: "3. Risikoklassifikation",
+      desc: "Einordnung nach dem Risikoklassenmodell mit Begründung",
+      placeholder: "Hochrisiko (Anhang III) / Begrenztes Risiko (Transparenzpflicht) / Minimales Risiko — mit Begründung anhand des Einsatzbereichs (z. B. Beschäftigung, wesentliche Dienste, kritische Infrastruktur).",
       value: ""
     },
     {
-      id: "zulaessigkeit",
-      title: "4. Zulässigkeit und ethische Prüfung",
-      desc: "Bewertung durch Ethik- oder Prüfgremium bei …",
-      placeholder: "Ab wann ist ein Ethik- oder Prüfgremium einzuschalten? Z. B. bei Systemen mit Personenbezug, automatisierten Einzelentscheidungen oder Auswirkungen auf Beschäftigung bzw. Zugang zu Leistungen.",
+      id: "hochrisiko-pflichten",
+      title: "4. Pflichten bei Hochrisiko-KI (Art. 9–15)",
+      desc: "Risikomanagement, Datenqualität, technische Dokumentation, Transparenz, Human Oversight, Genauigkeit/Robustheit/Cybersicherheit",
+      placeholder: "Welche der sieben Pflichten aus Art. 9–15 sind bereits erfüllt, welche offen? Nur relevant, wenn Baustein 3 Hochrisiko ergibt.",
       value: ""
     },
     {
-      id: "datenqualitaet",
-      title: "5. Anforderungen an Datenqualität",
-      desc: "Repräsentativität, Korrektheit, Fairness, Aktualität",
-      placeholder: "- Repräsentativität: \n- Korrektheit: \n- Fairness: \n- Aktualität: ",
+      id: "transparenzpflichten",
+      title: "5. Transparenzpflichten (Art. 50)",
+      desc: "Kennzeichnungspflichten bei begrenztem Risiko",
+      placeholder: "Muss offengelegt werden, dass Nutzer:innen mit einer KI interagieren (Chatbot), dass Inhalte synthetisch erzeugt sind (Deepfake) oder Emotionserkennung/biometrische Kategorisierung eingesetzt wird?",
       value: ""
     },
     {
-      id: "transparenz",
-      title: "6. Transparenz & Erklärbarkeit",
-      desc: "Erklärbare Entscheidungen und Nutzerinformation bei KI-Einsatz",
-      placeholder: "Wie erfährt eine betroffene Person, dass eine KI beteiligt war? Wie wird eine Entscheidung nachvollziehbar begründet (Explainability nach ISO 42001)?",
+      id: "gpai",
+      title: "6. GPAI-Pflichten",
+      desc: "Falls ein Allzweck-KI-Modell genutzt oder integriert wird",
+      placeholder: "Wird ein General-Purpose-AI-Modell (z. B. Claude, GPT, Gemini) genutzt oder integriert? Technische Dokumentation und Urheberrechts-Policy des Anbieters prüfen; bei Hochleistungs-GPAI zusätzlich systemisches Risiko-Assessment und Incident-Reporting.",
       value: ""
     },
     {
-      id: "oversight",
-      title: "7. Human Oversight",
-      desc: "Menschliche Überprüfung und Eingriffsmöglichkeit",
-      placeholder: "Wer kann eine KI-Entscheidung stoppen, überstimmen oder korrigieren — und an welcher Stelle im Prozess?",
+      id: "konformitaet",
+      title: "7. Konformitätsbewertung & CE-Kennzeichnung",
+      desc: "Prüfweg, Registrierung und Kennzeichnung für Hochrisiko-KI",
+      placeholder: "Interne Konformitätsbewertung oder Prüfung durch eine Notified Body? Ist eine CE-Kennzeichnung und Registrierung in der EU-Datenbank für Hochrisiko-KI erforderlich?",
       value: ""
     },
     {
-      id: "sicherheit",
-      title: "8. Sicherheit und Robustheit",
-      desc: "Validierung, Testing und Notfallmechanismen",
-      placeholder: "Z. B.: Validierung vor Produktivsetzung, Testabdeckung für Grenzfälle, Reaktion auf Fehlverhalten, Notfallmechanismen (Kill Switch, Rollback).",
+      id: "governance-meldewege",
+      title: "8. Governance & Meldewege",
+      desc: "Zuständige Behörden, interne Eskalation, Incident-Reporting",
+      placeholder: "Wer ist intern verantwortlich, wer ist die zuständige Marktüberwachungsbehörde, und wie werden schwerwiegende Vorfälle gemeldet?",
       value: ""
     },
     {
-      id: "dokumentation",
-      title: "9. Technische Dokumentation",
-      desc: "Systembeschreibung, Zweck, Datenquellen, Risiken",
-      placeholder: "Systembeschreibung, Einsatzzweck, verwendete Datenquellen und bekannte Risiken/Grenzen — analog zur technischen Dokumentationspflicht des EU AI Act (Art. 11).",
+      id: "zeitplan",
+      title: "9. Zeitplan & Übergangsfristen",
+      desc: "Welche Anwendbarkeits-Fristen für dieses System gelten",
+      placeholder: "Ab wann gelten die relevanten Pflichten für dieses System? Verbote seit 2. Feb. 2025, Hochrisiko-Pflichten ab 2. Aug. 2026, eingebettete Hochrisiko-Systeme (Anhang I) ab 2. Aug. 2027.",
       value: ""
     },
     {
-      id: "monitoring",
-      title: "10. Monitoring & Auditierung",
-      desc: "Regelmäßige Überprüfung, Feedback- und Beschwerdemechanismen",
-      placeholder: "Wie oft wird das System überprüft? Welche Feedback- und Beschwerdemechanismen gibt es für Betroffene?",
+      id: "sanktionsrisiko",
+      title: "10. Sanktionsrisiko",
+      desc: "Mögliche Bußgelder bei Verstoß, abgeleitet aus der Klassifikation",
+      placeholder: "Welches Bußgeldrisiko besteht bei Nichteinhaltung? Bis zu 35 Mio. €/7 % Jahresumsatz bei verbotenen Praktiken, bis zu 15 Mio. €/3 % bei Hochrisiko-Verstößen.",
       value: ""
     },
     {
-      id: "schulung",
-      title: "11. Schulung & Awareness",
-      desc: "Sensibilisierung und Einweisung der Beteiligten",
-      placeholder: "Wer wird wie geschult? Z. B. Pflichtschulung zur KI-Kompetenz (Art. 4 KI-VO) für alle, die mit dem System arbeiten.",
+      id: "iso42001",
+      title: "11. Verknüpfung mit ISO/IEC 42001",
+      desc: "Wie ein KI-Managementsystem die Pflichten strukturell abdeckt",
+      placeholder: "Welche Controls eines ISO-42001-Managementsystems (Risikomanagement, Datenpolitik, Human Oversight, Monitoring) lassen sich als Nachweis für die EU-AI-Act-Konformität nutzen?",
       value: ""
     },
     {
-      id: "integration",
-      title: "12. Integration in bestehende Governance",
-      desc: "Verknüpfung mit IT-Sicherheit, Datenschutz und QM",
-      placeholder: "Wie ist dieses Framework mit bestehenden Prozessen für IT-Sicherheit (ISO 27001), Datenschutz (DSGVO) und Qualitätsmanagement verzahnt?",
+      id: "naechste-schritte",
+      title: "12. Nächste Schritte & offene Punkte",
+      desc: "Was ist bis wann zu klären, wer treibt es voran",
+      placeholder: "Welche Punkte sind noch offen, wer ist verantwortlich, und bis wann muss entschieden sein?",
       value: ""
     }
   ];
@@ -307,18 +307,18 @@
       label: "🗂️ Digitale Akte",
       desc: "Eine Kommunalverwaltung führt eine digitale Akte ein: eingehende Bürger:innenanliegen werden automatisch klassifiziert, dem passenden Vorgang zugeordnet und nach Dringlichkeit priorisiert.",
       fields: {
-        ziel: "Gilt für die KI-Komponente der digitalen Akte, die eingehende Bürger:innenanliegen automatisch klassifiziert, dem passenden Vorgang zuordnet und priorisiert. Nicht erfasst: die reine Dokumentenspeicherung/Archivierung ohne KI-Beteiligung.",
-        rollen: "- Projektverantwortliche KI: Leitung Digitalisierung Kommunalverwaltung\n- Datenschutzbeauftragte: DSB der Kommune (Aktenzugriff, Löschfristen)\n- IT-/Sicherheitsbeauftragte: IT-Sicherheit für revisionssichere Ablage\n- Fachverantwortliche: Sachbearbeitung Bürgeramt, Amtsleitung\n- Andere Rollen: Personalrat (Mitbestimmung bei Priorisierungslogik)",
-        klassifikation: "Hochrisiko nach Anhang III Ziff. 5 (Zugang zu wesentlichen öffentlichen Diensten) — die Klassifikation beeinflusst Bearbeitungsreihenfolge und Fristüberwachung von Bürger:innenanliegen, nicht nur die technische Ablage. Reine Volltextsuche ohne Priorisierungswirkung wäre dagegen minimal-risikobehaftet — Grenze sauber dokumentieren.",
-        zulaessigkeit: "Prüfung durch Ethik-/Datenschutzgremium vor Rollout, da automatisierte Priorisierung Bürger:innen unterschiedlich behandeln kann. Klärungsfrage: Führt eine KI-Fehlklassifikation zu Nachteilen bei Fristen oder Zugang zu Leistungen?",
-        datenqualitaet: "- Repräsentativität: Trainingsdaten decken alle Antragsarten und Sprachvarianten der Kommune ab\n- Korrektheit: Historische Aktenzuordnungen stichprobenartig gegengeprüft\n- Fairness: Keine systematische Benachteiligung nach Stadtteil, Sprache oder Antragsart\n- Aktualität: Regelmäßiges Retraining bei neuen Vorgangsarten oder Formularänderungen",
-        transparenz: "Bürger:innen werden im Anschreiben informiert, dass die Zuordnung KI-gestützt erfolgt. Sachbearbeitung sieht zu jeder automatischen Zuordnung eine kurze Begründung (erkannte Schlagworte, Konfidenzwert).",
-        oversight: "Sachbearbeitung prüft jede Zuordnung mit niedrigem Konfidenzwert manuell und kann die Priorisierung jederzeit überschreiben, bevor eine Frist zu laufen beginnt.",
-        sicherheit: "Validierung anhand eines historischen Aktenbestands vor Rollout, Testfälle für schlecht lesbare Scans und fremdsprachige Anträge, manueller Fallback-Prozess bei Systemausfall.",
-        dokumentation: "Systembeschreibung mit Einsatzzweck, verwendeten Trainingsdaten (anonymisierte historische Akten), Klassifikationskategorien und bekannten Grenzen (z. B. handschriftliche Dokumente) gemäß Art. 11 EU AI Act.",
-        monitoring: "Quartalsweise Auswertung der Fehlklassifikationsrate nach Antragsart und Stadtteil; Beschwerdeformular für Bürger:innen bei gefühlt falscher Priorisierung.",
-        schulung: "Pflichtschulung für Sachbearbeitung zu Funktionsweise, Grenzen und Korrekturmöglichkeiten der KI-Klassifikation vor Nutzung (Art. 4 KI-VO).",
-        integration: "Verzahnt mit der Aktenordnung (Aufbewahrungsfristen), dem Datenschutzkonzept der Kommune und dem bestehenden Informationssicherheitsmanagement nach ISO 27001."
+        system: "KI-Komponente der digitalen Akte einer Kommunalverwaltung, die eingehende Bürger:innenanliegen klassifiziert und priorisiert. Die Kommune ist Betreiberin (Deployer); die Klassifikations-KI wurde von einem externen Softwareanbieter entwickelt (Anbieter/Provider).",
+        "verbotene-praktiken": "Keine der in Art. 5 gelisteten Praktiken einschlägig — das System bewertet keine sozialen Punktzahlen und überwacht nicht biometrisch. Trotzdem dokumentieren, dass dies geprüft wurde.",
+        risikoklasse: "Hochrisiko (Anhang III Ziff. 5, Zugang zu wesentlichen öffentlichen Diensten), da die automatische Priorisierung Bearbeitungsreihenfolge und Fristen für Bürger:innenanliegen beeinflusst.",
+        "hochrisiko-pflichten": "Risikomanagementsystem und Datenqualitätsprüfung beim Softwareanbieter anfordern; technische Dokumentation liegt in Grundzügen vor, muss um Grenzfälle (handschriftliche Dokumente) ergänzt werden; Human-Oversight-Prozess (manuelle Prüfung bei niedrigem Konfidenzwert) ist im Fachkonzept bereits verankert.",
+        transparenzpflichten: "Nicht als eigenständige Pflicht einschlägig, da bereits Hochrisiko-Pflichten greifen — Bürger:innen werden dennoch im Anschreiben über den KI-Einsatz informiert (Best Practice über die Mindestpflicht hinaus).",
+        gpai: "Kein GPAI-Modell im Einsatz — die Klassifikation nutzt ein klassifizierendes ML-Modell ohne generative Komponente. Falls künftig ein LLM zur automatischen Aktenzusammenfassung ergänzt wird, GPAI-Pflichten neu prüfen.",
+        konformitaet: "Interne Konformitätsbewertung durch den Softwareanbieter (kein Pflichtfall für eine Notified Body in dieser Kategorie); CE-Kennzeichnung und Registrierung in der EU-Datenbank durch den Anbieter vor Bereitstellung prüfen und vertraglich einfordern.",
+        "governance-meldewege": "Verantwortlich: Leitung Digitalisierung der Kommune; zuständige Marktüberwachungsbehörde: Landesbehörde für Digitalisierung/Datenschutz; schwerwiegende Vorfälle (z. B. systematische Fehlklassifikation) werden über die Amtsleitung an die Behörde gemeldet.",
+        zeitplan: "Hochrisiko-Pflichten sind ab 2. August 2026 vollständig anwendbar — Rollout-Termin der digitalen Akte darauf abstimmen, ggf. Pilotphase vorher mit reduziertem Funktionsumfang.",
+        sanktionsrisiko: "Bis zu 15 Mio. € oder 3 % des Jahresumsatzes bei Nichterfüllung der Hochrisiko-Anforderungen — bei einer Kommune greift eher die aufsichtsrechtliche Beanstandung als das Bußgeld, das Reputationsrisiko bleibt trotzdem hoch.",
+        iso42001: "Ein ISO-42001-Managementsystem des Softwareanbieters (Risikomanagement, Datenpolitik, Human Oversight) kann als Nachweisgrundlage für die Konformitätsbewertung dienen und sollte vertraglich eingefordert werden.",
+        "naechste-schritte": "Technische Dokumentation beim Anbieter anfordern, Human-Oversight-Prozess mit der Sachbearbeitung testen, Rollout-Termin mit dem 2.-August-2026-Stichtag abgleichen. Verantwortlich: Leitung Digitalisierung, bis Ende des Quartals."
       }
     },
     {
@@ -326,18 +326,18 @@
       label: "💬 Bürgeramt-Chatbot",
       desc: "Ein Chatbot auf der Website des Bürgeramts beantwortet Standardfragen zu Terminen, Formularen und Öffnungszeiten.",
       fields: {
-        ziel: "Gilt für den KI-Chatbot auf der Website des Bürgeramts, der Standardanfragen zu Terminen, Formularen und Öffnungszeiten beantwortet. Nicht erfasst: telefonische oder persönliche Beratung durch Mitarbeitende.",
-        rollen: "- Projektverantwortliche KI: Leitung Bürgerservice/Digitalisierung\n- Datenschutzbeauftragte: DSB für Prüfung der Chatverläufe\n- IT-/Sicherheitsbeauftragte: IT-Sicherheit für Hosting und Schnittstellen\n- Fachverantwortliche: Bürgeramt-Leitung, Frontoffice-Team\n- Andere Rollen: Kommunikationsabteilung (Tonalität, Barrierefreiheit)",
-        klassifikation: "Begrenztes Risiko (Transparenzpflicht nach Art. 50) — als Chatbot muss klar erkennbar sein, dass Bürger:innen mit einer KI interagieren. Kein Hochrisiko, solange der Chatbot keine verbindlichen Entscheidungen trifft, sondern nur informiert und weiterleitet.",
-        zulaessigkeit: "Keine gesonderte Ethikprüfung nötig, solange der Chatbot ausschließlich informiert; sobald er perspektivisch Anträge vorqualifiziert oder priorisiert, wird eine Prüfung wie bei der digitalen Akte erforderlich.",
-        datenqualitaet: "- Repräsentativität: Wissensbasis deckt alle Amtsleistungen und häufige Formulierungen ab\n- Korrektheit: Antworten stichprobenartig gegen aktuelle Amtsblätter/Satzungen geprüft\n- Fairness: Verständliche Sprache auch für Personen mit geringen Deutschkenntnissen\n- Aktualität: Wissensbasis wird bei Satzungs-/Gebührenänderungen sofort aktualisiert",
-        transparenz: "Chatbot kennzeichnet sich beim ersten Kontakt eindeutig als KI, verweist bei Unsicherheit aktiv auf menschliche Ansprechpartner:innen und nennt keine Rechtsauskünfte als verbindliche Entscheidung.",
-        oversight: "Eskalationspfad zu echten Mitarbeitenden bei Beschwerden, komplexen Anliegen oder wenn der Chatbot die Anfrage dreimal nicht klären konnte.",
-        sicherheit: "Testing gegen Falschinformationen (Halluzinationen) bei Rechts- und Gebührenfragen, Rate-Limiting gegen Missbrauch, Notabschaltung bei erkannten Fehlinformationen im großen Stil.",
-        dokumentation: "Systembeschreibung mit Einsatzzweck, genutzter Wissensbasis, Sprachmodell-Anbieter und bekannten Grenzen (z. B. keine Rechtsberatung) gemäß Art. 11 EU AI Act.",
-        monitoring: "Monatliche Stichprobenprüfung der Chatverläufe auf Fehlinformationen; Feedback-Button „War die Antwort hilfreich?“ fließt in Auswertung ein.",
-        schulung: "Kurzschulung für Frontoffice-Team zur Übernahme eskalierter Chats sowie Hinweise für Bürger:innen zur bewussten Nutzung im Footer der Chat-Oberfläche.",
-        integration: "Verzahnt mit dem Kommunikationsleitfaden des Amtes, der Barrierefreiheitsstrategie und dem Datenschutzkonzept für Chatverläufe."
+        system: "KI-Chatbot auf der Website des Bürgeramts für Standardanfragen zu Terminen, Formularen und Öffnungszeiten. Die Kommune ist Betreiberin; das zugrundeliegende Sprachmodell stammt von einem externen GPAI-Anbieter.",
+        "verbotene-praktiken": "Keine verbotene Praxis einschlägig — der Chatbot manipuliert nicht subliminal und trifft keine Social-Scoring-Entscheidungen.",
+        risikoklasse: "Begrenztes Risiko (Transparenzpflicht nach Art. 50) — der Chatbot informiert nur und trifft keine verbindlichen Entscheidungen, daher kein Hochrisiko.",
+        "hochrisiko-pflichten": "Nicht einschlägig, da kein Hochrisiko-System. Trotzdem sinnvoll: Risikobewertung analog dokumentieren, falls der Chatbot künftig Anträge vorqualifiziert.",
+        transparenzpflichten: "Kennzeichnungspflicht nach Art. 50: Der Chatbot muss sich beim ersten Kontakt eindeutig als KI zu erkennen geben — zentrale Pflicht in dieser Risikoklasse.",
+        gpai: "Das eingesetzte Sprachmodell ist ein GPAI-Modell eines externen Anbieters — dessen technische Dokumentation und Urheberrechts-Policy prüfen; bei einem Hochleistungsmodell zusätzlich auf das systemische Risiko-Assessment des Anbieters achten.",
+        konformitaet: "Keine CE-Kennzeichnung/Konformitätsbewertung erforderlich, da kein Hochrisiko-System — Fokus liegt auf der Erfüllung der Transparenzpflicht und der Anbieter-Compliance des GPAI-Modells.",
+        "governance-meldewege": "Verantwortlich: Leitung Bürgerservice/Digitalisierung; Beschwerden zu Fehlinformationen laufen über das Kommunikationsteam; keine gesonderte Meldung an die Marktüberwachungsbehörde nötig, solange kein Hochrisiko vorliegt.",
+        zeitplan: "Transparenzpflichten nach Art. 50 gelten bereits seit Inkrafttreten der Verordnung — kein Übergangsfrist-Vorteil, sollte vor Go-live umgesetzt sein.",
+        sanktionsrisiko: "Geringeres Bußgeldrisiko als bei Hochrisiko-Systemen, aber Verstöße gegen Transparenzpflichten sind ebenfalls sanktionsbewehrt — die Kennzeichnung ist eine einfache, aber verpflichtende Maßnahme.",
+        iso42001: "Ein schlankes ISO-42001-Set (Nutzungsrichtlinie, Monitoring der Antwortqualität) reicht für diese Risikoklasse aus — kein vollständiges Hochrisiko-Managementsystem nötig.",
+        "naechste-schritte": "KI-Kennzeichnung im Chat-Interface einbauen, Urheberrechts-Policy des Sprachmodell-Anbieters prüfen, Beschwerdeprozess für Fehlinformationen festlegen. Verantwortlich: Bürgerservice-Team, vor Go-live."
       }
     },
     {
@@ -345,18 +345,18 @@
       label: "📄 Bewerbungs-Screening",
       desc: "Ein Unternehmen setzt KI ein, um eingehende Bewerbungen vorzusortieren und Eignungs-Scores für die Personalabteilung zu erzeugen.",
       fields: {
-        ziel: "Gilt für das KI-Tool, das eingehende Bewerbungen vorsortiert und Eignungs-Scores für die Personalabteilung erzeugt. Nicht erfasst: die abschließende Einstellungsentscheidung, die weiterhin von Menschen getroffen wird.",
-        rollen: "- Projektverantwortliche KI: HR-Digitalisierung\n- Datenschutzbeauftragte: DSB für Bewerbungsdaten\n- IT-/Sicherheitsbeauftragte: IT-Sicherheit für Bewerbermanagementsystem\n- Fachverantwortliche: Recruiting-Team, Fachbereichsleitungen\n- Andere Rollen: Betriebsrat (Mitbestimmung bei automatisierter Vorauswahl)",
-        klassifikation: "Hochrisiko nach Anhang III Ziff. 4 (Beschäftigung) — CV-Screening entscheidet über Zugang zu einer Beschäftigungsmöglichkeit und fällt damit klar unter die strengen Hochrisiko-Anforderungen des EU AI Act.",
-        zulaessigkeit: "Verpflichtende Prüfung durch Ethik-/Diversity-Gremium vor Einsatz, insbesondere auf Diskriminierungsrisiken nach Geschlecht, Herkunft, Alter oder Bildungsweg.",
-        datenqualitaet: "- Repräsentativität: Trainingsdaten decken diverse Bewerbergruppen ab, keine Überrepräsentation historischer Einstellungsmuster\n- Korrektheit: Score-Logik nachvollziehbar mit tatsächlichen Anforderungen der Stelle abgeglichen\n- Fairness: Regelmäßige Bias-Tests nach Geschlecht, Herkunft, Alter mit dokumentierten Fehlerraten je Gruppe\n- Aktualität: Modell wird bei neuen Stellenprofilen und Anforderungen nachjustiert",
-        transparenz: "Bewerber:innen werden über den KI-Einsatz im Auswahlprozess informiert; die Personalabteilung erhält zu jedem Score eine nachvollziehbare Begründung (relevante Kriterien, keine Blackbox-Zahl).",
-        oversight: "Kein automatisches Ablehnen allein durch die KI — jede Absage wird von einer Person auf Basis von Score plus Lebenslauf final entschieden; Bewerber:innen können eine manuelle Überprüfung anfordern.",
-        sicherheit: "Validierung vor Rollout mit historischen, anonymisierten Bewerbungen, Testfälle für untypische Lebensläufe (Quereinsteiger:innen, Lücken), Fallback auf rein manuelle Sichtung bei Systemausfall.",
-        dokumentation: "Systembeschreibung mit Einsatzzweck, Score-Logik, Trainingsdatenquellen und bekannten Grenzen (z. B. Schwäche bei unkonventionellen Lebensläufen) gemäß Art. 11 EU AI Act.",
-        monitoring: "Halbjährliches Bias-Audit der Score-Verteilung nach Geschlecht, Herkunft und Alter; Beschwerdekanal für abgelehnte Bewerber:innen mit Anspruch auf Auskunft.",
-        schulung: "Pflichtschulung für Recruiting-Team zu Funktionsweise, Grenzen und Diskriminierungsrisiken der Vorauswahl-KI vor produktivem Einsatz (Art. 4 KI-VO).",
-        integration: "Verzahnt mit dem AGG-Beschwerdeverfahren (Allgemeines Gleichbehandlungsgesetz), dem Datenschutzkonzept für Bewerbungsdaten und der Mitbestimmung durch den Betriebsrat."
+        system: "KI-Tool zur Vorsortierung eingehender Bewerbungen und Erzeugung von Eignungs-Scores. Das Unternehmen ist Betreiberin (Deployer), das Scoring-Modell stammt von einem HR-Softwareanbieter (Provider).",
+        "verbotene-praktiken": "Keine verbotene Praxis einschlägig, solange keine Emotionserkennung im Bewerbungsgespräch eingesetzt wird — das wäre gesondert zu prüfen und wäre am Arbeitsplatz nach Art. 5 verboten.",
+        risikoklasse: "Hochrisiko nach Anhang III Ziff. 4 (Beschäftigung) — CV-Screening entscheidet über Zugang zu einer Beschäftigungsmöglichkeit.",
+        "hochrisiko-pflichten": "Bias-Tests (Datenqualität) sind etabliert, technische Dokumentation liegt vor; Human Oversight ist über die finale Personalentscheidung gegeben; Genauigkeits-/Robustheitsnachweise beim Anbieter noch anzufordern.",
+        transparenzpflichten: "Zusätzlich zur Hochrisiko-Pflicht: Bewerber:innen aktiv über den KI-Einsatz im Auswahlprozess informieren (über die Mindestanforderung hinaus empfehlenswert für Akzeptanz).",
+        gpai: "Kein GPAI-Modell im Kernprozess, sofern das Scoring auf einem klassischen ML-Modell basiert. Wird zusätzlich ein LLM zur Anschreiben-Analyse eingesetzt, GPAI-Pflichten des jeweiligen Anbieters separat prüfen.",
+        konformitaet: "Konformitätsbewertung liegt beim HR-Softwareanbieter; das Unternehmen muss als Betreiberin CE-Kennzeichnung und Registrierung vertraglich einfordern und die Nutzung im eigenen Kontext dokumentieren.",
+        "governance-meldewege": "Verantwortlich: HR-Digitalisierung gemeinsam mit Betriebsrat; zuständige Marktüberwachungsbehörde je nach Sitzland; Beschwerden abgelehnter Bewerber:innen laufen über das AGG-Verfahren.",
+        zeitplan: "Hochrisiko-Pflichten ab 2. August 2026 vollständig anwendbar — bestehendes Tool bis dahin auf Konformität prüfen oder Umstellung planen.",
+        sanktionsrisiko: "Bis zu 15 Mio. € oder 3 % des Jahresumsatzes bei Nichterfüllung der Hochrisiko-Anforderungen, zusätzlich Diskriminierungsrisiko nach AGG mit eigenem Bußgeld-/Schadensersatzrisiko.",
+        iso42001: "Bias-Audits und Datenpolitik-Controls aus einem ISO-42001-Managementsystem lassen sich direkt als Nachweis für die Hochrisiko-Anforderungen zu Datenqualität und Fairness nutzen.",
+        "naechste-schritte": "Genauigkeits-/Robustheitsnachweise beim Anbieter anfordern, CE-Kennzeichnung vertraglich absichern, Betriebsrat in die Prüfung einbinden. Verantwortlich: HR-Digitalisierung, vor dem nächsten Bewerbungszyklus."
       }
     },
     {
@@ -364,26 +364,26 @@
       label: "💳 Kreditvergabe",
       desc: "Eine Bank nutzt ein KI-Modell zur automatisierten Kreditwürdigkeitsprüfung bei Privatkrediten.",
       fields: {
-        ziel: "Gilt für das KI-Modell zur automatisierten Kreditwürdigkeitsprüfung bei Privatkrediten. Nicht erfasst: Firmenkredite und individuell verhandelte Großkredite, die weiterhin klassisch geprüft werden.",
-        rollen: "- Projektverantwortliche KI: Leitung Kreditrisikomanagement\n- Datenschutzbeauftragte: DSB für Score-relevante Finanz- und Personendaten\n- IT-/Sicherheitsbeauftragte: IT-Sicherheit für Scoring-Infrastruktur\n- Fachverantwortliche: Kreditsachbearbeitung, Risikocontrolling\n- Andere Rollen: Interne Revision, Compliance/BaFin-Ansprechpartner:in",
-        klassifikation: "Hochrisiko nach Anhang III Ziff. 5 (wesentliche private Dienstleistungen — Kreditwürdigkeitsprüfung) — betrifft unmittelbar den Zugang zu Finanzdienstleistungen und unterliegt damit strengen Konformitätspflichten.",
-        zulaessigkeit: "Verpflichtende Prüfung durch Risiko-/Ethikgremium vor Einsatz, insbesondere zur Vermeidung mittelbarer Diskriminierung über Proxy-Merkmale wie Wohnort oder Einkaufsverhalten.",
-        datenqualitaet: "- Repräsentativität: Trainingsdaten decken unterschiedliche Einkommensgruppen und Lebenssituationen ab\n- Korrektheit: Score-Modell regelmäßig gegen tatsächliche Ausfallraten validiert\n- Fairness: Keine mittelbare Diskriminierung über Wohnort, Herkunft oder Geschlecht als Proxy-Merkmale\n- Aktualität: Nachjustierung bei veränderter wirtschaftlicher Lage (z. B. Zinsänderungen, Inflation)",
-        transparenz: "Antragsteller:innen erhalten bei Ablehnung eine nachvollziehbare Begründung der score-relevanten Faktoren (Recht auf Erklärung automatisierter Entscheidungen, Art. 22 DSGVO).",
-        oversight: "Keine vollautomatische Ablehnung ab einer bestimmten Kredithöhe — Kreditsachbearbeitung prüft Grenzfälle und kann den Score-Vorschlag begründet überstimmen.",
-        sicherheit: "Validierung mit historischen, anonymisierten Kreditverläufen, Stresstests bei wirtschaftlichen Krisenszenarien, Notfallprozess auf manuelle Prüfung bei Systemausfall oder erkannter Fehlfunktion.",
-        dokumentation: "Systembeschreibung mit Einsatzzweck, Score-Faktoren, Datenquellen (Schufa, Haushaltsrechnung) und bekannten Grenzen gemäß Art. 11 EU AI Act, Grundlage für die Konformitätsbewertung.",
-        monitoring: "Jährliches externes Audit der Ausfallprognosegüte und Fairness-Kennzahlen; Beschwerdeverfahren für abgelehnte Antragsteller:innen mit Widerspruchsrecht.",
-        schulung: "Pflichtschulung für Kreditsachbearbeitung zu Score-Logik, Grenzen des Modells und Umgang mit Widersprüchen (Art. 4 KI-VO).",
-        integration: "Verzahnt mit dem bestehenden Kreditrisikomanagement, den BaFin-Compliance-Vorgaben und dem Datenschutzkonzept für Bonitätsdaten."
+        system: "KI-Modell zur automatisierten Kreditwürdigkeitsprüfung bei Privatkrediten. Die Bank ist Anbieterin und Betreiberin zugleich, da das Modell intern entwickelt wurde.",
+        "verbotene-praktiken": "Keine verbotene Praxis einschlägig — das Scoring nutzt keine Social-Scoring-Logik im Sinne des Art. 5 (kein staatliches System, keine zweckfremde Bewertung sozialen Verhaltens).",
+        risikoklasse: "Hochrisiko nach Anhang III Ziff. 5 (wesentliche private Dienstleistungen — Kreditwürdigkeitsprüfung) — betrifft unmittelbar den Zugang zu Finanzdienstleistungen.",
+        "hochrisiko-pflichten": "Risikomanagementsystem und Fairness-Tests gegen Proxy-Diskriminierung sind etabliert; technische Dokumentation liegt vor; Human Oversight über Kreditsachbearbeitung bei Grenzfällen umgesetzt; Cybersicherheits-Audit der Scoring-Infrastruktur steht noch aus.",
+        transparenzpflichten: "Zusätzlich zur Hochrisiko-Pflicht: Antragsteller:innen erhalten bei Ablehnung eine nachvollziehbare Begründung (überschneidet sich mit Art. 22 DSGVO, Recht auf Erklärung automatisierter Entscheidungen).",
+        gpai: "Kein GPAI-Modell im Scoring-Kern im Einsatz — reines Klassifikationsmodell auf strukturierten Finanzdaten. Bei Einsatz eines LLM für die Kundenkommunikation GPAI-Pflichten separat prüfen.",
+        konformitaet: "Als Anbieterin trägt die Bank die volle Konformitätsbewertung selbst, ggf. unter Einbindung einer Notified Body; CE-Kennzeichnung und Registrierung in der EU-Datenbank vor Produktivsetzung erforderlich.",
+        "governance-meldewege": "Verantwortlich: Leitung Kreditrisikomanagement, mit interner Revision und BaFin-Compliance; schwerwiegende Vorfälle (systematische Fehlbewertungen) sind an die zuständige Marktüberwachungsbehörde zu melden.",
+        zeitplan: "Hochrisiko-Pflichten ab 2. August 2026 vollständig anwendbar — als Anbieterin trägt die Bank hier die volle Compliance-Verantwortung und sollte frühzeitig testen.",
+        sanktionsrisiko: "Bis zu 15 Mio. € oder 3 % des Jahresumsatzes bei Nichterfüllung der Hochrisiko-Anforderungen, zusätzlich aufsichtsrechtliches Risiko gegenüber der BaFin.",
+        iso42001: "Ein vollständiges ISO-42001-Managementsystem (Risikomanagement, Datenpolitik, Monitoring, Audit) ist hier besonders wertvoll, da die Bank als Anbieterin die volle Konformitätsverantwortung trägt.",
+        "naechste-schritte": "Cybersicherheits-Audit der Scoring-Infrastruktur abschließen, CE-Kennzeichnung/EU-Registrierung vorbereiten, Konformitätsbewertung mit interner Revision abstimmen. Verantwortlich: Kreditrisikomanagement, vor dem 2.-August-2026-Stichtag."
       }
     }
   ];
   var SCENARIOS_BY_ID = {};
   SCENARIOS.forEach(function(s){ SCENARIOS_BY_ID[s.id] = s; });
 
-  var STORAGE_KEY = "aiGovernanceFields";
-  var SCENARIO_STORAGE_KEY = "aiGovernanceScenario";
+  var STORAGE_KEY = "euAiActFields";
+  var SCENARIO_STORAGE_KEY = "euAiActScenario";
   var grid = document.getElementById("fieldGrid");
   var progressFill = document.getElementById("progressFill");
   var progressLabel = document.getElementById("progressLabel");
