@@ -42,6 +42,7 @@
   .scenario-chip.active{background:var(--accent);border-color:var(--accent);color:#fff;}
 
   .shell{display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:start;}
+  .shell > *{min-width:0;}
   .shell.m12-shell{grid-template-columns:320px 1fr;}
   @media (max-width:900px){.shell{grid-template-columns:1fr;} .shell.m12-shell{grid-template-columns:1fr;}}
 
@@ -169,6 +170,8 @@
   .template-box.show{display:block;}
 
   .compare-table{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:16px;}
+  .table-scroll{overflow-x:auto;margin:14px 0 20px;-webkit-overflow-scrolling:touch;}
+  .table-scroll .compare-table{margin:0;min-width:560px;}
   .compare-table th, .compare-table td{border:1px solid var(--line);padding:10px 14px;text-align:left;}
   .compare-table th{background:var(--card);font-size:14px;text-transform:uppercase;letter-spacing:.04em;}
 
@@ -252,6 +255,7 @@
       <div id="anhangGroup" class="anhang-group collapsed">
         <button data-m="anhang"><span class="mnum">★</span>Strukturbefehle</button>
         <button data-m="megaprompts"><span class="mnum">★</span>Megaprompt-Bibliothek</button>
+        <button data-m="frameworks"><span class="mnum">★</span>Framework-Bibliothek</button>
         <button data-m="checkliste"><span class="mnum">★</span>Checkliste</button>
         <button data-m="glossar"><span class="mnum">★</span>Glossar</button>
         <button data-m="fahrplan"><span class="mnum">★</span>Fahrplan</button>
@@ -579,6 +583,44 @@
         <div class="reveal-box" id="megapromptOut">—</div>
       </section>
 
+      <!-- ANHANG: FRAMEWORK-BIBLIOTHEK -->
+      <section class="mission-panel" id="frameworks">
+        <h2 class="mod-title">Anhang · Framework-Bibliothek: 8 Prompt-Frameworks im Vergleich</h2>
+        <p class="mod-sub">Ein Framework ist kein Qualitätsbeweis, sondern eine Denkstruktur – entscheidend ist, ob diese Struktur zur Aufgabe passt.</p>
+        <div class="auftrag">
+          <span class="tag">Drei Ebenen statt ein Allzweck-Framework</span>
+          <p>STAKE klärt den Auftrag (Für wen, wozu, nach welchen Kriterien?) · RISEN strukturiert den Bearbeitungsweg (Wie gelangt die KI kontrolliert zum Ergebnis?) · REQUIRE sichert die Ergebnisqualität (Ist das Resultat eindeutig, begrenzt und prüfbar?)</p>
+          <p>CO-STAR, CRISPE, RTF, BAB und CLEAR sind keine Konkurrenten dazu, sondern spezialisierte Werkzeuge für Kommunikation, Perspektivwechsel, Transformation, Storytelling oder Coaching.</p>
+        </div>
+        <div class="chip-row" id="frameworkChips">
+          <button class="chip" data-key="risen">RISEN</button>
+          <button class="chip" data-key="require">REQUIRE</button>
+          <button class="chip" data-key="stake">STAKE</button>
+          <button class="chip" data-key="costar">CO-STAR</button>
+          <button class="chip" data-key="crispe">CRISPE</button>
+          <button class="chip" data-key="rtf">RTF</button>
+          <button class="chip" data-key="bab">BAB</button>
+          <button class="chip" data-key="clear">CLEAR</button>
+        </div>
+        <div class="reveal-box" id="frameworkOut">—</div>
+
+        <h2 class="mod-title" style="margin-top:28px;">Kuratierte Zuordnung: Welches Framework für welche Aufgabe?</h2>
+        <div class="table-scroll">
+        <table class="compare-table">
+          <tr><th>Aufgabe</th><th>Besonders geeignet</th><th>Bedingt geeignet</th><th>Weniger geeignet</th></tr>
+          <tr><td>Unklare Anforderung analysieren</td><td>RISEN, REQUIRE</td><td>STAKE</td><td>BAB</td></tr>
+          <tr><td>Business Value erklären</td><td>CO-STAR, BAB</td><td>STAKE</td><td>RTF</td></tr>
+          <tr><td>Stakeholderkonflikte sichtbar machen</td><td>CRISPE</td><td>RISEN</td><td>RTF</td></tr>
+          <tr><td>Artefakte transformieren</td><td>RTF, REQUIRE</td><td>RISEN</td><td>BAB</td></tr>
+          <tr><td>FA/NFA und Akzeptanzkriterien entwickeln</td><td>REQUIRE, RISEN</td><td>RTF</td><td>CO-STAR</td></tr>
+          <tr><td>Managementvorlage erstellen</td><td>CO-STAR, STAKE</td><td>BAB</td><td>CLEAR</td></tr>
+          <tr><td>Lernende durch Rückfragen führen</td><td>CLEAR, RISEN</td><td>CRISPE</td><td>RTF</td></tr>
+          <tr><td>Entscheidung nachvollziehbar dokumentieren</td><td>REQUIRE, RISEN</td><td>STAKE</td><td>BAB</td></tr>
+          <tr><td>Kreativen Möglichkeitsraum öffnen</td><td>BAB, CRISPE</td><td>CO-STAR</td><td>REQUIRE</td></tr>
+        </table>
+        </div>
+      </section>
+
       <!-- ANHANG: CHECKLISTE -->
       <section class="mission-panel" id="checkliste">
         <h2 class="mod-title">Anhang · Checkliste für gutes Prompt Engineering</h2>
@@ -727,7 +769,7 @@
 STRUKTUR
 - Kopfzeile: Zurück-Link zur Startseite, Eyebrow + H1 ("Prompt Engineering Academy" / "12 Missionen"), rechts Signatur-Link (Name + Link) und ein Beamer-Modus-Button (3 Stufen: normal → 1.35x → 1.75x per Klick durchzyklen, Zustand via data-beamer-Attribut auf &lt;html&gt;, per zoom umgesetzt, localStorage-persistiert).
 - Darunter ein Szenario-Umschalter mit 3 Pill-Buttons (austauschbare Unternehmensszenarien), der ALLE Inhalte der Missionen und des Auftrags neu befüllt und den Fortschritt zurücksetzt.
-- Zwei-Spalten-Layout (280px Navigation | 1fr Inhalt, unter 900px gestapelt): links eine Missions-Navigation mit 12 nummerierten Buttons plus einem einklappbaren "Anhang"-Bereich (Akkordeon) mit 7 weiteren Karten (Strukturbefehle, Megaprompt-Bibliothek, Checkliste, Glossar, Fahrplan, Nebelarten &amp; Klarheits-Sprung, Engineering nach Standards).
+- Zwei-Spalten-Layout (280px Navigation | 1fr Inhalt, unter 900px gestapelt): links eine Missions-Navigation mit 12 nummerierten Buttons plus einem einklappbaren "Anhang"-Bereich (Akkordeon) mit 8 weiteren Karten (Strukturbefehle, Megaprompt-Bibliothek, Framework-Bibliothek, Checkliste, Glossar, Fahrplan, Nebelarten &amp; Klarheits-Sprung, Engineering nach Standards).
 - Rechts genau ein aktives Missions-Panel zur Zeit (Klasse "active", Rest display:none).
 - Fortschrittsanzeige oben ("X / 12 Missionen besucht"), zählt nur die 12 Kernmissionen, nicht den Anhang.
 
@@ -799,7 +841,7 @@ NICHT TUN
           <div class="schritt"><strong>Mission 10 · Als Expertenteam arbeiten</strong><span class="regie">(Button "Expertenteam einberufen")</span><br>„Ein Klick, drei Karten gleichzeitig. Business Analyse findet die fehlende Eskalation, IT-Sicherheit die fehlende Protokollierung, Vertrieb die fehlende Offline-Ansicht. Drei Lücken, die keine einzelne Perspektive allein gefunden hätte — deshalb gleichzeitig prüfen, nicht nacheinander."</div>
           <div class="schritt"><strong>Mission 11 · Prompts systematisch prüfen</strong><span class="regie">(Check-Chips der Reihe nach, dann Change-Request-Block)</span><br>„Sieben Prüfdimensionen, eine Story. Vollständigkeit und Klarheit sind meist schnell erfüllt — aber schauen Sie beim Key-Results-Abgleich hin: die Story unterstützt das Ziel nur indirekt, es fehlt die Messgröße. Das ist der Unterschied zwischen 'klingt gut' und 'trägt nachweisbar zum Ziel bei'. Danach: ein Change Request wird nicht sofort umgesetzt, sondern erst nach Aufwand/Nutzen bewertet."</div>
           <div class="schritt"><strong>Mission 12 · Engineering-Challenge</strong><span class="regie">(Chips in dieser Reihenfolge: Kontext, eine Perspektive, ein Qualitätsziel, eine Leitplanke, ein Format — dann beide Antwort-Buttons)</span><br>„Jetzt bauen wir gemeinsam. Jeder Chip erscheint sofort in der Blaupause rechts — das ist der Prompt, den wir gerade konstruieren. Erst 'Antwort ohne Engineering' zeigen: nett, aber beliebig. Dann 'Antwort mit Engineering-Prompt': konkret, begründet, prüfbar. Und da — der Merksatz: gute Prompts entstehen durch Engineering, nicht durch Inspiration. Zum Abschluss noch die Risikoeinstufung und die zwei Dokumentations-Templates für alle, die das im eigenen Unternehmen belegen müssen."</div>
-          <div class="schritt"><strong>Anhang (nach Bedarf)</strong><span class="regie">(Anhang-Pfeil öffnen, je nach Publikumsfrage gezielt anspringen)</span><br>„Der Anhang ist kein Pflichtprogramm, sondern Nachschlagewerk: Strukturbefehle für alle, die schneller mit /epic oder /story arbeiten wollen, die Megaprompt-Bibliothek zum Copy-Paste-Mitnehmen, die 13-Punkte-Checkliste zum Ausdrucken, das Glossar im 'Sendung mit der Maus'-Stil für Einsteiger:innen, der Fahrplan für alle, die den Kurs selbst leiten wollen, sowie Nebelarten/Klarheits-Sprung und Engineering nach Standards für alle, die vertiefen wollen."</div>
+          <div class="schritt"><strong>Anhang (nach Bedarf)</strong><span class="regie">(Anhang-Pfeil öffnen, je nach Publikumsfrage gezielt anspringen)</span><br>„Der Anhang ist kein Pflichtprogramm, sondern Nachschlagewerk: Strukturbefehle für alle, die schneller mit /epic oder /story arbeiten wollen, die Megaprompt-Bibliothek zum Copy-Paste-Mitnehmen, die Framework-Bibliothek für alle, die über RTF/CO-STAR/RISEN aus Mission 8 hinaus vergleichen wollen (inklusive der Zuordnungstabelle, welches Framework zu welcher Aufgabe passt), die 13-Punkte-Checkliste zum Ausdrucken, das Glossar im 'Sendung mit der Maus'-Stil für Einsteiger:innen, der Fahrplan für alle, die den Kurs selbst leiten wollen, sowie Nebelarten/Klarheits-Sprung und Engineering nach Standards für alle, die vertiefen wollen."</div>
           <div class="schritt"><strong>Szenario-Wechsel</strong><span class="regie">(Pill-Button oben, z. B. "Kundenservice-Priorisierung")</span><br>„Und falls ein anderes Szenario näher an Ihrem Alltag liegt: ein Klick, und der komplette Kurs läuft identisch strukturiert noch einmal durch — nur mit Ihrem Kontext statt mit Vertragsmanagement."</div>
           <p class="regie">Allgemeine Regie-Hinweise: Bei Reveal-Buttons kurz die "KI denkt nach …"-Verzögerung stehen lassen, nicht wegklicken — sie unterstreicht bewusst, dass hier simuliert, nicht live an eine KI geschickt wird. Nicht mit den Framework-Abkürzungen (RTF/CO-STAR/RISEN) einsteigen, bevor die Analogie aus Mission 2 sitzt — sonst wirkt Mission 8 wie Auswendiglernen statt wie Anwendung. Beamer-Modus vor Kursbeginn einmal testweise durchklicken (normal → 1.35x → 1.75x), damit die Stufe für den Raum passt, bevor Teilnehmende zuschauen.</p>
         </div>
@@ -1356,6 +1398,25 @@ NICHT TUN
     });
   });
 
+  /* ================= ANHANG: FRAMEWORK-BIBLIOTHEK ================= */
+  const FRAMEWORK_LIBRARY = {
+    risen: "RISEN – Role, Instructions, Steps, End Goal, Narrowing\n\nEinsatz: Anforderungen systematisch analysieren.\n\nPROMPT-BEISPIEL:\nROLE\nDu arbeitest als Senior Requirements Engineer mit Erfahrung in Business Analyse und IEEE 29148.\nINSTRUCTIONS\nAnalysiere die Ausgangsaussage „Wir benötigen eine KI-Lösung zur Analyse von Projektdokumenten“ und entwickle daraus eine belastbare Anforderung.\nSTEPS\n1. Problemhypothese, Lösungsannahme und tatsächlichen Bedarf trennen. 2. Stakeholder identifizieren. 3. Rückfragen formulieren. 4. Funktionale Kernanforderung entwickeln. 5. Qualitätsanforderungen nach ISO 25010 ergänzen. 6. Sicherheitsaspekte nach ISO 27001 prüfen. 7. Akzeptanzkriterien in Gherkin formulieren. 8. Annahmen und Risiken kennzeichnen.\nEND GOAL\nEine nachvollziehbare Grundlage für die fachliche Abstimmung.\nNARROWING\nKeine erfundenen Projektinformationen. Fehlende Angaben als Klärungsbedarf kennzeichnen.\n\nWARUM STARK: Zwingt die KI, nicht sofort eine scheinbar fertige Anforderung zu liefern – die Kombination aus Vorgehen, Zielbild und Begrenzung verhindert, dass offene Punkte unbemerkt aufgefüllt werden.\n\nBESONDERS GEEIGNET FÜR: Unklare Anforderungen analysieren, FA/NFA und Akzeptanzkriterien entwickeln, Entscheidungen nachvollziehbar dokumentieren.\n\nWANN EHER NICHT: Für eine kurze Einzelfrage zu umfangreich. Bei kreativer Ideensammlung verengt die strenge Schrittfolge den Lösungsraum zu früh.",
+    require: "REQUIRE – Role, End Goal, Quality, Users, Inputs, Restrictions, Evaluation\n\nEinsatz: Prüfbare Anforderungen entwickeln.\n\nPROMPT-BEISPIEL:\nROLE\nDu bist Requirements Engineer und Qualitätsanalyst.\nEND GOAL\nEntwickle aus der Ausgangsaussage eine eindeutige, atomare und prüfbare Anforderung.\nQUALITY\nPrüfe auf Eindeutigkeit, Vollständigkeit im gegebenen Kontext, Konsistenz, Umsetzbarkeit, Testbarkeit, Verfolgbarkeit.\nUSERS\nBerücksichtige Fachanwender, Informationssicherheit, Datenschutz, Systembetrieb, Freigabeverantwortliche.\nINPUTS\nAusgangsaussage: „Die KI soll Projektdokumente sicher analysieren und gute Ergebnisse liefern.“\nRESTRICTIONS\nKeine erfundenen Messwerte, Rollen oder Einstufungen. „Klärungsbedarf“ bei fehlenden Informationen. Funktionale Anforderungen, Qualitätsanforderungen, Randbedingungen und Lösungsannahmen trennen.\nEVALUATION\nJede formulierte Anforderung anhand der Qualitätskriterien bewerten und offene Rückfragen benennen.\n\nWARUM STARK: Betrachtet nicht nur den Arbeitsauftrag, sondern auch Nutzer, Qualitätsanforderungen, Grenzen und die abschließende Prüfung – ein eingebauter Qualitätskreislauf.\n\nBESONDERS GEEIGNET FÜR: Arbeit mit ISO 29148/25010, Sicherheitsanforderungen, prüfbare Ergebnisse – bildet die Kernthese „Prompt Engineering ist Requirements Engineering für KI-Systeme“ direkt ab.\n\nWANN EHER NICHT: Für Storytelling, spontane Moderation oder offene Zukunftsbilder zu analytisch. Kann auf Einsteiger:innen zunächst komplex wirken.",
+    stake: "STAKE – Stakeholder, Task, Audience, Kriterien, Eingrenzung\n\nEinsatz: Stakeholdergerechte KI-Aufträge formulieren.\n\nPROMPT-BEISPIEL:\nSTAKEHOLDER\nAuftraggeber ist die Projektleitung. Betroffen sind Fachbereich, Informationssicherheit, Datenschutz, IT-Betrieb, spätere Anwender.\nTASK\nAnalysiere einen Vorschlag zur Einführung einer KI-gestützten Dokumentenanalyse und bereite eine Entscheidungsvorlage vor.\nAUDIENCE\nEntscheidungsgremium mit fachlichem und wirtschaftlichem Hintergrund, ohne vertiefte KI-Kenntnisse.\nKRITERIEN\nDie Vorlage muss Problem, erwarteten Nutzen, Stakeholder, notwendige Fähigkeiten, Risiken, Optionen und offene Fragen unterscheiden. Jede Empfehlung beruht auf einem genannten Kriterium.\nEINGRENZUNG\nKeine erfundenen Wirtschaftlichkeitswerte oder Compliance-Aussagen. Fehlende Angaben als Klärungsbedarf ausweisen.\n\nWARUM STARK: Verhindert, dass ein fachlich richtiges Ergebnis an der eigentlichen Zielgruppe vorbeigeht – verbindet Auftrag, Adressaten und Qualitätsmaßstab.\n\nBESONDERS GEEIGNET FÜR: Trainings, Managementaufträge, Vorbereitung von Entscheidungen – das Bindeglied zwischen Requirements Engineering und Prompt Engineering.\n\nWANN EHER NICHT: Schreibt keine detaillierte Bearbeitungssequenz vor – bei komplexen Analysen können Prüfschritte übersprungen werden. Dann mit RISEN oder REQUIRE kombinieren.",
+    costar: "CO-STAR – Context, Objective, Style, Tone, Audience, Response\n\nEinsatz: Managementkommunikation und Business Value.\n\nPROMPT-BEISPIEL:\nCONTEXT\nEin Unternehmen prüft den Einsatz generativer KI zur Analyse umfangreicher Projekt- und Anforderungsdokumente. Nutzen, Kontrollbedarf und Auswirkungen sind noch nicht ausreichend geklärt.\nOBJECTIVE\nErstelle eine Managementzusammenfassung, die erwarteten Business Value von notwendigen Voraussetzungen und offenen Risiken trennt.\nSTYLE\nKlar, entscheidungsorientiert, ohne technische Detailtiefe.\nTONE\nSachlich, souverän, kritisch-konstruktiv.\nAUDIENCE\nGeschäftsführung, Projektleitung, Governance, Informationssicherheit.\nRESPONSE\n1. Ausgangslage 2. Erwarteter Nutzen 3. Notwendige Voraussetzungen 4. Entscheidungsoptionen 5. Risiken und offene Fragen 6. Empfohlener nächster Schritt. Annahmen kennzeichnen, keine erfundenen Kennzahlen.\n\nWARUM STARK: Sehr wirksam, wenn Inhalt und Kommunikation gleichermaßen wichtig sind – Zielgruppe, Stil und Ton werden nicht dem Zufall überlassen.\n\nBESONDERS GEEIGNET FÜR: Komplexe Fachthemen in verständliche Entscheidungsgrundlagen übersetzen, Business Value erklären, Managementvorlagen.\n\nWANN EHER NICHT: Enthält keine eingebaute Qualitätsprüfung und keine fachliche Analysemethode – kann einen hervorragend formulierten, aber inhaltlich unzureichenden Text erzeugen.",
+    crispe: "CRISPE – Capacity and Role, Insight, Statement, Personality, Experiment\n\nEinsatz: Fachperspektiven und Rollenwechsel.\n\nPROMPT-BEISPIEL:\nCAPACITY AND ROLE\nÜbernimm nacheinander die Perspektive Requirements Engineer, Informationssicherheitsbeauftragte:r, Fachanwender:in, Systemverantwortliche:r.\nINSIGHT\nUntersucht wird: „Das System soll Projektdokumente mit KI auswerten und Ergebnisse für weitere Projektentscheidungen bereitstellen.“\nSTATEMENT\nAus jeder Perspektive: Erwartungen, notwendige Rückfragen, Qualitätsanforderungen, Risiken, mögliche Missverständnisse.\nPERSONALITY\nKritisch, präzise, lösungsneutral. Rückfragen vor Annahmen.\nEXPERIMENT\nPerspektiven in einer Konsensmatrix zusammenführen: Übereinstimmungen, Zielkonflikte, entscheidungsbedürftige Punkte kennzeichnen.\n\nWARUM STARK: Ermöglicht bewusst unterschiedliche fachliche Blickwinkel – blinde Flecken und Zielkonflikte werden früher sichtbar.\n\nBESONDERS GEEIGNET FÜR: Stakeholderkonflikte sichtbar machen, Perspektivwechsel wie in Mission 4/10, kreativen Möglichkeitsraum öffnen.\n\nWANN EHER NICHT: Die erzeugten Rollenperspektiven sind Simulationen – sie ersetzen keine echte Stakeholderbefragung. Ohne diese Grenze kann scheinbare Übereinstimmung entstehen, die im Projekt nicht belegt ist.",
+    rtf: "RTF – Role, Task, Format\n\nEinsatz: Schnelle Transformation eines Artefakts.\n\nPROMPT-BEISPIEL:\nROLE\nDu bist Business Analyst mit Erfahrung in agiler Produktentwicklung.\nTASK\nÜberführe die Anforderung „Berechtigte Projektmitglieder müssen Projektdokumente zur KI-gestützten Analyse bereitstellen und die Ergebnisse nachvollziehen können“ in ein Epic und drei zusammenhängende User Stories. Fachliche Aussage nicht verändern, fehlende Informationen kennzeichnen.\nFORMAT\nEpic mit Ziel und Business Value, drei User Stories, je Story Gherkin-Akzeptanzkriterien, Rückverweis auf die Ausgangsanforderung, offene Fragen.\n\nWARUM STARK: Kompakt, leicht verständlich, hervorragend für klar begrenzte Transformationen (siehe Mission 8, Mission 9).\n\nBESONDERS GEEIGNET FÜR: Artefakte transformieren – einen einzelnen Schritt der Anforderungsdeklination schnell und wirksam bearbeiten.\n\nWANN EHER NICHT: Definiert weder Qualitätsmaßstäbe noch Randbedingungen. Bei unklarer Ausgangsanforderung skaliert die KI lediglich die Unklarheit in mehrere Artefakte – für eine ganze Transformationskette zu dünn.",
+    bab: "BAB – Before, After, Bridge\n\nEinsatz: Problem, Handlung und Nutzen vermitteln.\n\nPROMPT-BEISPIEL:\nBEFORE\nBeschreibe eine Projektsituation, in der Anforderungen als lose Wünsche vorliegen, Stakeholder unterschiedliche Vorstellungen haben und eine KI bereits scheinbar fertige Ergebnisse erzeugt.\nAFTER\nZeige den Zustand, nachdem Problem, Business Need, Stakeholder, Anforderungen, Qualitätsmerkmale und Akzeptanzkriterien nachvollziehbar verbunden wurden.\nBRIDGE\nErkläre die dazwischenliegende Reise: Problemhypothese → Business Case → Anforderung → Epic → Use Case → User Story → FA/NFA → Akzeptanzkriterien → Umsetzung und Prüfung. Ein durchgängiges Beispiel verwenden, keine Kennzahlen erfinden.\n\nWARUM STARK: Macht Veränderung und Nutzen sichtbar – beginnt nicht mit der Methode, sondern mit dem Unterschied, den sie bewirkt.\n\nBESONDERS GEEIGNET FÜR: Trainings, Vorträge, Storytelling – zeigt, warum Requirements Engineering gebraucht wird (vergleiche Mission 1).\n\nWANN EHER NICHT: Kein Analyse- oder Spezifikationsframework. Kann überzeugend erklären, warum etwas sinnvoll ist, aber keine prüfbare Anforderung garantieren.",
+    clear: "CLEAR – Context, Limitations, Examples, Audience, Response\n\nEinsatz: Iteratives Coaching und Reflexion.\n\nPROMPT-BEISPIEL:\nCONTEXT\nPrüfen, ob die Anforderung „Die KI soll relevante Anforderungen aus Projektdokumenten erkennen“ für eine Übergabe an die Entwicklung ausreichend geklärt ist.\nLIMITATIONS\nNicht sofort eine verbesserte Endfassung formulieren. Keine Dokumentarten, Genauigkeitswerte, Nutzerrollen oder technischen Lösungen erfinden.\nEXAMPLES\nUnbestimmte Begriffe, fehlende Auslöser, fehlende Ein-/Ausgaben, fehlende Qualitätsmaßstäbe, unklare Ausnahmen, nicht benannte Freigabeverantwortung.\nAUDIENCE\nAngehende Business Analysts und Requirements Engineers.\nRESPONSE\n1. Unklare Bestandteile markieren. 2. Auswirkung jeder Unklarheit erklären. 3. Gezielte Rückfrage stellen. 4. Auf Antworten warten. 5. Erst danach gemeinsam eine verbesserte Anforderung formulieren.\n\nWARUM STARK: Unterstützt eine geführte, dialogische Bearbeitung – die KI liefert nicht sofort ein Endergebnis, sondern hilft beim Denken und Klären.\n\nBESONDERS GEEIGNET FÜR: Coaching- und Trainingsarbeit – Lernende erleben, welche Fragen aus einer unklaren Anforderung entstehen.\n\nWANN EHER NICHT: Für eine Live-Demonstration mit fertigen Bausteinen kann der erforderliche Dialog den Ablauf unterbrechen. Mehrere Auflösungen des Akronyms sind gebräuchlich – welche Variante gemeint ist, sollte immer genannt werden."
+  };
+  document.querySelectorAll("#frameworkChips .chip").forEach(chip=>{
+    chip.addEventListener("click", ()=>{
+      document.querySelectorAll("#frameworkChips .chip").forEach(c=>c.classList.remove("selected"));
+      chip.classList.add("selected");
+      reveal(document.getElementById("frameworkOut"), FRAMEWORK_LIBRARY[chip.dataset.key]);
+    });
+  });
+
   /* ================= ANHANG: CHECKLISTE ================= */
   function updatePeCounter(){
     const total = document.querySelectorAll("#peChecklist .pe-item").length;
@@ -1502,6 +1563,8 @@ NICHT TUN
     document.getElementById("anhangOut").innerText = "—";
     document.querySelectorAll("#megapromptChips .chip").forEach(c=>c.classList.remove("selected"));
     document.getElementById("megapromptOut").innerText = "—";
+    document.querySelectorAll("#frameworkChips .chip").forEach(c=>c.classList.remove("selected"));
+    document.getElementById("frameworkOut").innerText = "—";
     document.querySelectorAll("#nebelChips .chip").forEach(c=>c.classList.remove("selected"));
     document.getElementById("nebelOut").innerText = "—";
     document.querySelectorAll("#mechanismenChips .chip").forEach(c=>c.classList.remove("selected"));
