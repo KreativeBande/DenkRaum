@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Michaela Kühn — Steckbrief &amp; Framework-Finder</title>
+<style>
+  html[data-beamer="1"]{zoom:1.35}
+  html[data-beamer="2"]{zoom:1.75}
+  :root{
+    --bg:#f6f8fc; --panel:#ffffff; --ink:#1f2937; --muted:#6b7280; --line:#d9e1ea;
+    --accent:#b91c1c; --accent-soft:#fee2e2;
+    --card:#f7f8f9; --good:#15803d; --good-soft:#e9f7ee; --warn:#92400e; --warn-soft:#fef3c7;
+    --mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    --sans: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);color-scheme:light;}
+  body{
+    font-family:var(--sans); font-size:17px; line-height:1.55;
+    background:
+      radial-gradient(circle at top left, #fff7f7 0%, transparent 22%),
+      radial-gradient(circle at top right, #eef4ff 0%, transparent 20%),
+      linear-gradient(180deg,#fbfcff 0%,#f4f6fa 100%);
+  }
+  button{touch-action:manipulation;-webkit-user-select:none;user-select:none;font-family:var(--sans);}
+  .app{max-width:1100px;margin:0 auto;padding:24px 32px 56px;}
+
+  .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px;}
+  .back-link{display:inline-block;font-size:14px;font-weight:600;color:var(--muted);text-decoration:none;margin-bottom:10px;}
+  .back-link:hover{color:var(--accent);}
+  .trainer{display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
+  .signature{font-size:14px;font-weight:700;color:var(--ink);text-align:right;text-decoration:none;}
+  .signature span{display:block;font-weight:500;color:var(--muted);font-size:12px;}
+  .signature:hover{color:var(--accent);}
+  .beamer-btn{background:#fff;border:2px solid var(--line);border-radius:20px;padding:8px 16px;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer;min-height:40px;}
+  .beamer-btn:hover{border-color:var(--accent);}
+  .beamer-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+  .hero{
+    background:rgba(255,255,255,.96); border:1px solid var(--line); border-radius:28px;
+    box-shadow:0 16px 34px rgba(15,23,42,.08); padding:36px 36px 30px; margin:18px 0 28px;
+  }
+  .eyebrow{display:block;font-size:13px;letter-spacing:.14em;font-weight:700;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+  .hero h1{margin:0 0 6px;font-size:clamp(28px,4vw,40px);line-height:1.05;
+    background:linear-gradient(100deg,var(--ink) 55%,var(--accent) 120%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero .tagline{margin:0 0 20px;color:var(--muted);font-size:17px;}
+  .profile-quote{
+    border-left:5px solid var(--accent); background:var(--accent-soft); border-radius:4px;
+    padding:18px 22px; font-size:18px; font-weight:600; line-height:1.55; color:#7f1d1d; margin-bottom:18px;
+  }
+  .hero p.lead{margin:0;font-size:16px;color:var(--ink);line-height:1.65;}
+
+  h2.section-title{font-size:24px;margin:36px 0 6px;}
+  p.section-sub{color:var(--muted);margin:0 0 20px;font-size:15.5px;line-height:1.6;}
+
+  .skill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:8px;}
+  .skill-card{border:1px solid var(--line);border-radius:16px;background:#fff;padding:18px 20px;box-shadow:0 6px 16px rgba(15,23,42,.03);}
+  .skill-card .icon{font-size:22px;margin-bottom:8px;display:block;}
+  .skill-card h3{margin:0 0 6px;font-size:15.5px;line-height:1.3;}
+  .skill-card p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.55;}
+
+  .positioning{
+    margin-top:28px; border:2px solid var(--ink); border-radius:16px; background:var(--card);
+    padding:22px 26px;
+  }
+  .positioning .tag{display:block;font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+  .positioning p{margin:0;font-size:17px;font-weight:600;line-height:1.55;}
+
+  /* ============ Demonstrator ============ */
+  #demonstrator{scroll-margin-top:24px;}
+  .demo-intro{
+    background:var(--card); border:1px solid var(--line); border-left:6px solid var(--accent);
+    border-radius:4px; padding:18px 22px; margin-bottom:22px;
+  }
+  .demo-intro .tag{display:block;font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+  .demo-intro p{margin:0 0 8px;font-size:15.5px;line-height:1.55;}
+  .demo-intro p:last-child{margin-bottom:0;color:var(--muted);}
+
+  .task-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;}
+  .task-chip{
+    background:#fff;border:2px solid var(--line);border-radius:12px;padding:13px 18px;
+    font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;text-align:left;min-height:48px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .task-chip:hover{border-color:var(--accent);background:var(--accent-soft);}
+  .task-chip.selected{border-color:var(--accent);background:var(--accent-soft);font-weight:700;}
+
+  .result-box{display:none;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden;box-shadow:0 10px 24px rgba(15,23,42,.05);}
+  .result-box.show{display:block;}
+  .result-head{background:var(--ink);color:#fff;padding:14px 22px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;}
+  .result-body{padding:20px 22px;}
+  .fit-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
+  .fit-pill{border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:700;}
+  .fit-pill.best{background:var(--good-soft);color:var(--good);}
+  .fit-pill.ok{background:var(--warn-soft);color:var(--warn);}
+  .fit-pill.no{background:var(--card);color:var(--muted);text-decoration:line-through;}
+  .fit-label{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-right:8px;align-self:center;}
+  .result-why{font-size:15.5px;line-height:1.6;margin-bottom:16px;}
+  .skeleton-box{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-family:var(--mono);font-size:13.5px;color:var(--ink);line-height:1.7;}
+  .skeleton-box .fw-name{color:var(--accent);font-weight:700;display:block;margin-bottom:4px;font-family:var(--sans);font-size:13px;text-transform:uppercase;letter-spacing:.04em;}
+
+  .crosslink{margin-top:24px;font-size:14.5px;color:var(--muted);}
+  .crosslink a{color:var(--accent);font-weight:700;text-decoration:none;}
+  .crosslink a:hover{text-decoration:underline;}
+
+  footer{max-width:1100px;margin:32px auto 0;padding:16px 32px 0;color:var(--muted);font-size:13px;text-align:center;border-top:1px solid var(--line);}
+
+  @media(max-width:640px){
+    .app{padding:16px}
+    .hero{padding:24px 20px 20px}
+    .topbar{flex-direction:column}
+    .trainer{align-items:flex-start}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div>
+      <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    </div>
+    <div class="trainer">
+      <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
+      <button class="beamer-btn" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <span class="eyebrow">Steckbrief</span>
+    <h1>Michaela Kühn</h1>
+    <p class="tagline">Requirements Engineering, Business-Analyse und KI-gestützte Anforderungsarbeit — verständlich, visuell, praxisnah.</p>
+    <div class="profile-quote">Michaela Kühn ist Expertin für agiles Requirements Management, Visual Business Analysis und KI-gestützte Anforderungsarbeit. Sie macht aus unklaren Ideen nachvollziehbare Entscheidungen, aus Entscheidungen prüfbare Anforderungen und aus Anforderungen umsetzbare Lösungen. Ihre besondere Stärke ist die verständliche, visuelle und praxisnahe Vermittlung komplexer Zusammenhänge.</div>
+    <p class="lead">Ihre besondere Stärke liegt darin, aus Unklarheit eine belastbare Entscheidungs- und Umsetzungsgrundlage zu entwickeln. Sie verbindet Requirements Engineering, Business-Analyse, Projektarbeit und KI nicht nur methodisch, sondern übersetzt diese Themen in verständliche Modelle, Demonstratoren und Lernformate.</p>
+  </section>
+
+  <h2 class="section-title">Fähigkeiten im Überblick</h2>
+  <p class="section-sub">Zwölf Bausteine, die zusammen die Arbeitsweise beschreiben — von der Anforderungsanalyse bis zur fachlichen Positionierung.</p>
+  <div class="skill-grid">
+    <div class="skill-card"><span class="icon">🎯</span><h3>Requirements Engineering</h3><p>Erkennt unklare Wünsche, fehlende Fragen und widersprüchliche Erwartungen. Daraus entstehen strukturierte, eindeutige und prüfbare Anforderungen.</p></div>
+    <div class="skill-card"><span class="icon">🧭</span><h3>Business-Analyse</h3><p>Verbindet Problem, Stakeholder, Kontext, Business Value und Lösungsbedarf. Fragt nicht nur, was umgesetzt werden soll, sondern warum und welche Entscheidung dadurch ermöglicht wird.</p></div>
+    <div class="skill-card"><span class="icon">🪜</span><h3>Anforderungsdeklination</h3><p>Übersetzt einen unscharfen Wunsch systematisch in zusammenhängende Artefakte: Business Case, Anforderung, Epic, Use Case, User Story, FA/NFA, Akzeptanz- und Abnahmekriterien.</p></div>
+    <div class="skill-card"><span class="icon">📐</span><h3>Qualitäts- und Normenkompetenz</h3><p>Bezieht Qualitätsmodelle, Sicherheitsanforderungen und Governance in die Anforderungsarbeit ein — ISO 25010, ISO 27001, ISO 29148, ISO 42001, EU AI Act.</p></div>
+    <div class="skill-card"><span class="icon">🤖</span><h3>KI-gestütztes Requirements Engineering</h3><p>Behandelt Prompt Engineering als Requirements Engineering für KI-Systeme. Zeigt, wie Kontext, Ziel, Stakeholder, Kriterien und Grenzen die Ergebnisqualität bestimmen.</p></div>
+    <div class="skill-card"><span class="icon">🧩</span><h3>Methodenentwicklung</h3><p>Entwickelt eigene Denk- und Arbeitsmodelle wie STAKE, OCULUS, die Denkräume und die Requirements-Deklinationsreise — Schritt-für-Schritt-Zugänge zu komplexen Sachverhalten.</p></div>
+    <div class="skill-card"><span class="icon">🍰</span><h3>Didaktische Übersetzung</h3><p>Macht abstrakte Fachthemen mit Metaphern, Geschichten und konkreten Beispielen verständlich — vom Marmorkuchen bis zum Datennebel, Prompt-Kompass oder Human-in-the-Loop-Cockpit.</p></div>
+    <div class="skill-card"><span class="icon">🎤</span><h3>Training und Moderation</h3><p>Konzipiert Lernreisen, Übungen, Leitfragen und Live-Demonstrationen, bei denen Teilnehmende Zusammenhänge tatsächlich erleben, statt nur Folien zu konsumieren.</p></div>
+    <div class="skill-card"><span class="icon">🖥️</span><h3>Konzeption interaktiver Demonstratoren</h3><p>Entwirft Werkzeuge, mit denen Anforderungen, Qualitätsmerkmale, Entscheidungen und KI-Denkwege sichtbar und anklickbar werden — mit Gespür für Präsentationslogik und Nutzerführung.</p></div>
+    <div class="skill-card"><span class="icon">🔍</span><h3>Qualitätssicherung und kritisches Denken</h3><p>Akzeptiert keine scheinbar überzeugenden Ergebnisse ohne nachvollziehbare Grundlage. Achtet auf Testbarkeit, Quellen, Normbezug, Konsistenz — keine erfundenen Inhalte als Fakten.</p></div>
+    <div class="skill-card"><span class="icon">📘</span><h3>Entscheidungsarchitektur</h3><p>Macht mit Konzepten wie dem Engineering Decision Book nicht nur Entscheidungen sichtbar, sondern auch deren Kontext, Kriterien, Alternativen und Konsequenzen.</p></div>
+    <div class="skill-card"><span class="icon">📍</span><h3>Fachliche Positionierung</h3><p>Verdichtet komplexes Fachwissen zu einer klaren Botschaft: sichtbar machen, was wirklich gebraucht wird — nicht nur, was technisch möglich ist.</p></div>
+  </div>
+
+  <div class="positioning">
+    <span class="tag">In einem Satz</span>
+    <p>Sie macht sichtbar, was wirklich gebraucht wird — nicht nur, was technisch möglich ist.</p>
+  </div>
+
+  <h2 class="section-title" id="demonstrator">Framework-Finder: Welches Prompt-Framework passt zu deiner Aufgabe?</h2>
+  <p class="section-sub">Ein Framework ist kein Qualitätsbeweis, sondern eine Denkstruktur — entscheidend ist, ob sie zur Aufgabe passt. Wähle unten eine Aufgabe, um eine Empfehlung zu sehen.</p>
+
+  <div class="demo-intro">
+    <span class="tag">Drei Ebenen statt ein Allzweck-Framework</span>
+    <p><strong>STAKE</strong> klärt den Auftrag (Für wen, wozu, nach welchen Kriterien?) · <strong>RISEN</strong> strukturiert den Bearbeitungsweg (Wie gelangt die KI kontrolliert zum Ergebnis?) · <strong>REQUIRE</strong> sichert die Ergebnisqualität (Ist das Resultat eindeutig, begrenzt und prüfbar?)</p>
+    <p>CO-STAR, CRISPE, RTF, BAB und CLEAR sind keine Konkurrenten dazu, sondern spezialisierte Werkzeuge für Kommunikation, Perspektivwechsel, Transformation, Storytelling oder Coaching.</p>
+  </div>
+
+  <div class="task-grid" id="taskGrid">
+    <button class="task-chip" data-key="analyse">Unklare Anforderung analysieren</button>
+    <button class="task-chip" data-key="value">Business Value erklären</button>
+    <button class="task-chip" data-key="conflict">Stakeholderkonflikte sichtbar machen</button>
+    <button class="task-chip" data-key="transform">Artefakte transformieren</button>
+    <button class="task-chip" data-key="fanfa">FA/NFA und Akzeptanzkriterien entwickeln</button>
+    <button class="task-chip" data-key="management">Managementvorlage erstellen</button>
+    <button class="task-chip" data-key="coaching">Lernende durch Rückfragen führen</button>
+    <button class="task-chip" data-key="decision">Entscheidung nachvollziehbar dokumentieren</button>
+    <button class="task-chip" data-key="open">Kreativen Möglichkeitsraum öffnen</button>
+  </div>
+
+  <div class="result-box" id="resultBox">
+    <div class="result-head" id="resultHead">—</div>
+    <div class="result-body">
+      <div class="fit-row" id="fitRow"></div>
+      <p class="result-why" id="resultWhy"></p>
+      <div class="skeleton-box" id="resultSkeleton"></div>
+    </div>
+  </div>
+
+  <p class="crosslink">Ausführliche Prompt-Beispiele, Stärken und Grenzen zu jedem der acht Frameworks: <a href="./prompt-engineering-academy.html">Anhang · Framework-Bibliothek in der Prompt Engineering Academy →</a></p>
+
+</div>
+
+<footer>Michaela Kühn · Requirements Engineering · Business-Analyse · KI-gestützte Anforderungsarbeit</footer>
+
+<script>
+  /* ================= BEAMER-MODUS ================= */
+  var beamerState = {beamerLevel:0};
+  (function(){
+    try{
+      var saved = JSON.parse(localStorage.getItem("steckbriefBeamer") || "null");
+      if(saved && typeof saved.beamerLevel === "number") beamerState.beamerLevel = saved.beamerLevel;
+    }catch(e){}
+  })();
+  function saveBeamerState(){ try{ localStorage.setItem("steckbriefBeamer", JSON.stringify(beamerState)); }catch(e){} }
+  var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+  function applyBeamerLevel(){
+    document.documentElement.setAttribute("data-beamer", String(beamerState.beamerLevel));
+    var btn = document.getElementById("beamerToggle");
+    btn.textContent = BEAMER_LABELS[beamerState.beamerLevel];
+    btn.classList.toggle("active", beamerState.beamerLevel > 0);
+  }
+  document.getElementById("beamerToggle").addEventListener("click", function(){
+    beamerState.beamerLevel = (beamerState.beamerLevel + 1) % BEAMER_LABELS.length;
+    saveBeamerState();
+    applyBeamerLevel();
+  });
+  applyBeamerLevel();
+
+  /* ================= FRAMEWORK-FINDER ================= */
+  var SKELETONS = {
+    RISEN: "ROLE – INSTRUCTIONS – STEPS – END GOAL – NARROWING",
+    REQUIRE: "ROLE – END GOAL – QUALITY – USERS – INPUTS – RESTRICTIONS – EVALUATION",
+    STAKE: "STAKEHOLDER – TASK – AUDIENCE – KRITERIEN – EINGRENZUNG",
+    "CO-STAR": "CONTEXT – OBJECTIVE – STYLE – TONE – AUDIENCE – RESPONSE",
+    CRISPE: "CAPACITY AND ROLE – INSIGHT – STATEMENT – PERSONALITY – EXPERIMENT",
+    RTF: "ROLE – TASK – FORMAT",
+    BAB: "BEFORE – AFTER – BRIDGE",
+    CLEAR: "CONTEXT – LIMITATIONS – EXAMPLES – AUDIENCE – RESPONSE"
+  };
+
+  var TASKS = {
+    analyse: {
+      label: "Unklare Anforderung analysieren",
+      best: ["RISEN", "REQUIRE"], ok: ["STAKE"], no: ["BAB"],
+      why: "Zuerst braucht es eine kontrollierte Schrittfolge (RISEN), damit die KI nicht vorschnell eine scheinbar fertige Anforderung liefert. REQUIRE sichert im Anschluss, dass das Ergebnis wirklich prüfbar ist."
+    },
+    value: {
+      label: "Business Value erklären",
+      best: ["CO-STAR", "BAB"], ok: ["STAKE"], no: ["RTF"],
+      why: "Hier zählt, wie die Botschaft bei einem bestimmten Publikum ankommt (CO-STAR) bzw. warum eine Veränderung überhaupt nötig ist (BAB) — das ist eine Kommunikationsfrage, keine Analysefrage."
+    },
+    conflict: {
+      label: "Stakeholderkonflikte sichtbar machen",
+      best: ["CRISPE"], ok: ["RISEN"], no: ["RTF"],
+      why: "CRISPE lässt die KI bewusst mehrere Rollen nacheinander einnehmen — genau das deckt Zielkonflikte auf, die aus nur einer Perspektive unsichtbar bleiben."
+    },
+    transform: {
+      label: "Artefakte transformieren",
+      best: ["RTF", "REQUIRE"], ok: ["RISEN"], no: ["BAB"],
+      why: "Für eine klar begrenzte Transformation (z. B. Anforderung → Epic → User Stories) reicht das kompakte RTF meist aus. REQUIRE ergänzt die Qualitätsprüfung, wenn das Ergebnis auch prüfbar sein muss."
+    },
+    fanfa: {
+      label: "FA/NFA und Akzeptanzkriterien entwickeln",
+      best: ["REQUIRE", "RISEN"], ok: ["RTF"], no: ["CO-STAR"],
+      why: "Beide Frameworks erzwingen Eindeutigkeit, Testbarkeit und die Trennung von Anforderung und Lösungsannahme — genau das, was FA/NFA und Akzeptanzkriterien brauchen."
+    },
+    management: {
+      label: "Managementvorlage erstellen",
+      best: ["CO-STAR", "STAKE"], ok: ["BAB"], no: ["CLEAR"],
+      why: "Auftrag, Zielgruppe und Qualitätsmaßstab müssen von Anfang an klar sein (STAKE), und die Vorlage muss im Ton zur Zielgruppe passen (CO-STAR)."
+    },
+    coaching: {
+      label: "Lernende durch Rückfragen führen",
+      best: ["CLEAR", "RISEN"], ok: ["CRISPE"], no: ["RTF"],
+      why: "CLEAR verzögert bewusst die fertige Antwort und führt stattdessen durch Rückfragen — ideal fürs Coaching, nicht fürs schnelle Ergebnis."
+    },
+    decision: {
+      label: "Entscheidung nachvollziehbar dokumentieren",
+      best: ["REQUIRE", "RISEN"], ok: ["STAKE"], no: ["BAB"],
+      why: "Beide Frameworks kennzeichnen Annahmen und offene Punkte explizit — Grundvoraussetzung für ein Engineering Decision Book, das später nachvollziehbar bleibt."
+    },
+    open: {
+      label: "Kreativen Möglichkeitsraum öffnen",
+      best: ["BAB", "CRISPE"], ok: ["CO-STAR"], no: ["REQUIRE"],
+      why: "Hier ist zu frühe Prüfstrenge kontraproduktiv — BAB und CRISPE öffnen bewusst Raum für Perspektiven und Zukunftsbilder, bevor irgendetwas geprüft wird."
+    }
+  };
+
+  var fitRow = document.getElementById("fitRow");
+  var resultBox = document.getElementById("resultBox");
+  var resultHead = document.getElementById("resultHead");
+  var resultWhy = document.getElementById("resultWhy");
+  var resultSkeleton = document.getElementById("resultSkeleton");
+
+  function renderPills(container, label, items, cls){
+    var wrap = document.createElement("span");
+    wrap.style.display = "contents";
+    var labelEl = document.createElement("span");
+    labelEl.className = "fit-label";
+    labelEl.textContent = label;
+    container.appendChild(labelEl);
+    items.forEach(function(name){
+      var pill = document.createElement("span");
+      pill.className = "fit-pill " + cls;
+      pill.textContent = name;
+      container.appendChild(pill);
+    });
+  }
+
+  document.querySelectorAll(".task-chip").forEach(function(chip){
+    chip.addEventListener("click", function(){
+      document.querySelectorAll(".task-chip").forEach(function(c){ c.classList.remove("selected"); });
+      chip.classList.add("selected");
+      var task = TASKS[chip.dataset.key];
+
+      resultHead.textContent = task.label;
+      fitRow.innerHTML = "";
+      renderPills(fitRow, "Besonders geeignet", task.best, "best");
+      renderPills(fitRow, "Bedingt geeignet", task.ok, "ok");
+      renderPills(fitRow, "Weniger geeignet", task.no, "no");
+      resultWhy.textContent = task.why;
+      var topFramework = task.best[0];
+      resultSkeleton.innerHTML = '<span class="fw-name">' + topFramework + ' – Prompt-Skelett</span>' + SKELETONS[topFramework];
+      resultBox.classList.add("show");
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -130,6 +130,7 @@ body{
 .kicker.violet{background:var(--violet-soft);color:var(--violet)}
 .kicker.coral{background:var(--coral-soft);color:var(--coral)}
 .kicker.green{background:var(--green-soft);color:var(--green)}
+.kicker.rose{background:var(--accent-soft);color:var(--accent)}
 
 .tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
 .tool-card{
@@ -149,6 +150,7 @@ body{
 .tool-card.okr{border-left-color:var(--violet)}
 .tool-card.compliance{border-left-color:var(--coral)}
 .tool-card.priority{border-left-color:var(--green)}
+.tool-card.about{border-left-color:var(--accent)}
 .tool-card:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(15,23,42,.10)}
 .tool-card h3{margin:0 0 8px 0;font-size:18px;line-height:1.3;color:var(--ink);padding-right:52px}
 .tool-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.55;flex:1}
@@ -189,8 +191,8 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
         <p>Interaktive Werkzeuge rund um Requirements Engineering und den kompetenten Umgang mit KI. Jede App führt spielerisch durch strukturierte Fragen, macht Denkprozesse sichtbar und übersetzt vage Fragestellungen Schritt für Schritt in belastbare Ergebnisse.</p>
         <div class="hero-stats">
           <span class="stat-pill"><strong id="statTotal">0</strong> Tools</span>
-          <span class="stat-pill"><strong>5</strong> Rubriken</span>
-          <span class="stat-pill">🆕 2 neu diese Woche</span>
+          <span class="stat-pill"><strong>6</strong> Rubriken</span>
+          <span class="stat-pill" id="statNew"></span>
         </div>
       </div>
       <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
@@ -205,6 +207,7 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
     </div>
     <div class="filter-chips" id="filterChips">
       <button class="filter-chip active" data-filter="all">Alle</button>
+      <button class="filter-chip" data-filter="about">Über mich</button>
       <button class="filter-chip" data-filter="re">Requirements Engineering</button>
       <button class="filter-chip" data-filter="okr">OKR</button>
       <button class="filter-chip" data-filter="compliance">ISO &amp; Compliance</button>
@@ -219,6 +222,28 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
     <div>Keine Tools gefunden.</div>
     <button id="resetFilters">Filter zurücksetzen</button>
   </div>
+
+  <details class="section" open data-cat="about">
+    <summary class="section-head">
+      <span class="chevron">▾</span>
+      <span class="kicker rose">Über mich</span>
+      <span class="section-count"></span>
+    </summary>
+    <div class="tool-grid">
+      <a class="tool-card about" href="./tools/steckbrief.html">
+        <span class="new-badge">NEU</span>
+        <h3>Steckbrief · Michaela Kühn</h3>
+        <p>Kompetenzprofil und Positionierung: Requirements Engineering, Business-Analyse und KI-gestützte Anforderungsarbeit in zwölf Bausteinen — von der Anforderungsdeklination bis zur Entscheidungsarchitektur.</p>
+        <span class="cta">Steckbrief lesen →</span>
+      </a>
+      <a class="tool-card about" href="./tools/steckbrief.html#demonstrator">
+        <span class="new-badge">NEU</span>
+        <h3>Framework-Finder: Welches Prompt-Framework passt?</h3>
+        <p>Aufgabe auswählen, passendes Prompt-Framework (RISEN, REQUIRE, STAKE, CO-STAR, CRISPE, RTF, BAB, CLEAR) samt Begründung und Prompt-Skelett sehen — die eigene Framework-Auswahl-Methodik interaktiv vorgeführt.</p>
+        <span class="cta">Framework finden →</span>
+      </a>
+    </div>
+  </details>
 
   <details class="section" open data-cat="re">
     <summary class="section-head">
@@ -377,6 +402,10 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
   var activeFilter = "all";
 
   statTotal.textContent = cards.length;
+  var newCount = document.querySelectorAll(".new-badge").length;
+  if(newCount > 0){
+    document.getElementById("statNew").textContent = "🆕 " + newCount + " neu diese Woche";
+  }
 
   function cardText(card){
     if(!card.dataset.text){
