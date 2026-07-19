@@ -185,6 +185,29 @@
 
   .toggle-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:14px 20px;font-size:16px;font-weight:700;cursor:pointer;min-height:52px;margin-bottom:14px;}
   .question-line{font-size:16px;color:var(--ink-soft);margin-bottom:12px;font-style:italic;}
+
+  /* ================= FOOTER: SYSTEMPROMPT / HANDBUCH / VORTRAGS-SKRIPT ================= */
+  .footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);}
+  .footer-sig{font-size:14px;color:var(--ink-soft);margin-bottom:14px;}
+  .footer-sig a{color:var(--ink-soft);font-weight:700;text-decoration:none;}
+  .footer-sig a:hover{color:var(--accent);}
+  .footer-sig .audit-line{display:block;margin-top:4px;color:var(--ink-soft);}
+  .footer-details{display:grid;grid-template-columns:1fr;gap:12px;}
+  @media (min-width:901px){.footer-details{grid-template-columns:1fr 1fr 1fr;}}
+  .footer-box{border:1px solid var(--line);border-radius:6px;background:var(--card);overflow:hidden;}
+  .footer-summary{cursor:pointer;list-style:none;padding:12px 16px;font-size:14px;font-weight:700;color:var(--ink);background:#fff;border-bottom:1px solid transparent;}
+  .footer-box[open] .footer-summary{border-bottom-color:var(--line);}
+  .footer-summary::-webkit-details-marker{display:none;}
+  .footer-content{padding:14px 16px;max-height:420px;overflow-y:auto;}
+  .footer-mono{font-family:var(--mono);font-size:14px;line-height:1.6;white-space:pre-wrap;}
+  .footer-sans{font-family:var(--sans);font-size:16px;line-height:1.6;}
+  .footer-sans .regie{color:var(--ink-soft);font-style:italic;}
+  .footer-sans .schritt{margin:0 0 14px;padding-bottom:14px;border-bottom:1px dashed var(--line);}
+  .footer-sans .schritt:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .footer-sans .schritt strong{display:block;color:var(--accent);margin-bottom:4px;}
+  .footer-table{width:100%;border-collapse:collapse;font-size:14px;}
+  .footer-table th,.footer-table td{border:1px solid var(--line);padding:6px 10px;text-align:left;}
+  html[data-beamer="1"] .footer,html[data-beamer="2"] .footer{display:none;}
 </style>
 </head>
 <body>
@@ -690,6 +713,99 @@
 
     </main>
   </div>
+
+  <footer class="footer">
+    <div class="footer-sig">
+      <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn</a> · www.michaela-kuehn.com — Referenzrahmen: IREB, ISO/IEC 25010:2023, EU AI Act Art. 4, BABOK, PMBOK
+      <span class="audit-line">Zuletzt geprüft: 19.07.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+    </div>
+    <div class="footer-details">
+      <details class="footer-box">
+        <summary class="footer-summary">🔧 Systemprompt</summary>
+        <div class="footer-content footer-mono" id="footerSystemprompt">Baue mir ein einzelnes HTML-Tool für einen 2-Tages-Präsenzkurs zu Prompt Engineering für Requirements Engineers (Trainerin steuert per Beamer/iPad, Teilnehmende schauen zu, teils auch als Selbstlern-Nachschlagewerk).
+
+STRUKTUR
+- Kopfzeile: Zurück-Link zur Startseite, Eyebrow + H1 ("Prompt Engineering Academy" / "12 Missionen"), rechts Signatur-Link (Name + Link) und ein Beamer-Modus-Button (3 Stufen: normal → 1.35x → 1.75x per Klick durchzyklen, Zustand via data-beamer-Attribut auf &lt;html&gt;, per zoom umgesetzt, localStorage-persistiert).
+- Darunter ein Szenario-Umschalter mit 3 Pill-Buttons (austauschbare Unternehmensszenarien), der ALLE Inhalte der Missionen und des Auftrags neu befüllt und den Fortschritt zurücksetzt.
+- Zwei-Spalten-Layout (280px Navigation | 1fr Inhalt, unter 900px gestapelt): links eine Missions-Navigation mit 12 nummerierten Buttons plus einem einklappbaren "Anhang"-Bereich (Akkordeon) mit 7 weiteren Karten (Strukturbefehle, Megaprompt-Bibliothek, Checkliste, Glossar, Fahrplan, Nebelarten &amp; Klarheits-Sprung, Engineering nach Standards).
+- Rechts genau ein aktives Missions-Panel zur Zeit (Klasse "active", Rest display:none).
+- Fortschrittsanzeige oben ("X / 12 Missionen besucht"), zählt nur die 12 Kernmissionen, nicht den Anhang.
+
+INHALT PRO MISSION (jede Mission ist ein eigenständiger, klickbarer Mini-Demonstrator, kein reiner Fließtext)
+1. Warum KI anders arbeitet — Vergleichstabelle klassische Software vs. generative KI, Button zeigt zwei leicht unterschiedliche Antworten auf dieselbe Frage.
+2. Die Anatomie eines Prompts — 5 klickbare Dimensions-Chips (Rolle/Kontext/Aufgabe/Format/Eingrenzung), die den passenden Abschnitt im Beispielprompt farblich hervorheben.
+3. Ziele und Aufgaben formulieren — vage Aufgabe vs. Button "In eine klare Aufgabe verwandeln" zeigt die SMART-transformierte Version.
+4. Perspektiven verstehen — 3 Rollen-Chips (Business Analyst:in / IT-Sicherheit / Vertrieb), jede liefert eine andere Priorität auf dieselbe Frage.
+5. Qualität definieren — 3 ISO-25010-Qualitätsziel-Chips mit je einer konkreten Antwort-Anpassung.
+6. Leitplanken setzen — 4 Leitplanken-Chips (DSGVO, Vorlagen, Annahmen, EU-AI-Act-Risiko).
+7. Kontext aufbauen — Ein Umschalt-Button zeigt Antwort ohne vs. mit Kontext im direkten Vergleich.
+8. Frameworks gezielt einsetzen — 4 Chips (RTF, CO-STAR, RISEN, Megaprompt), je eine ausgefüllte Framework-Instanz für das Szenario.
+9. Projektartefakte entwickeln — Kettentransformation Ausschreibung → Angebot → Pflichtenheft → Custom-GPT-Konfiguration (jeder Schritt schaltet den nächsten Button frei), plus Bonus-Reveal "vollständiges Angebotskonzept".
+10. Als Expertenteam arbeiten — ein Klick befüllt gleichzeitig 3 Experten-Karten (BA/IT-Sicherheit/Vertrieb) mit unterschiedlichen Lücken zum selben Pflichtenheft.
+11. Prompts systematisch prüfen — 7 Check-Chips (Vollständigkeit, Klarheit, Testbarkeit, Business Value, Risiken, Key-Results-Abgleich, IEEE-29148-Konformität) sammeln sich als Verdict-Liste, dazu ein separater Change-Request-Bewertungs-Block.
+12. Engineering-Challenge — freie Blaupausen-Komposition: Chips für Kontext/Perspektive/Qualitätsziel/Leitplanke/Format bauen live eine Prompt-Blaupause (&lt;pre&gt; mit Label-Spans), zwei Buttons zeigen "Antwort ohne Engineering" vs. "Antwort mit Engineering-Prompt" nebeneinander, ein Merksatz erscheint erst wenn beide gesehen wurden. Danach ein EU-AI-Act-Risiko-Einstufungsblock (4 Risikostufen-Chips mit Erklärung) und zwei Template-Generatoren (Revisionsbericht-Gliederung, DIN/ISO-Audit-Checkliste).
+
+DESIGN-VORGABEN
+- Heller Hintergrund durchgehend (#ffffff), color-scheme:light auf html/body, kein Dark-Mode-Override.
+- Akzentfarbe dunkles Teal (#0B5E63) auf Weiß für hohen Kontrast, Warn-Ton Amber, Erfolgs-Ton Grün — alle als CSS-Variablen im :root.
+- Fließtext ≥16px, Sekundärtext (Badges, Referenzen) ≥14px, damit auch aus Beamer-Entfernung lesbar.
+- Chips/Buttons mit min-height:44-52px (Touch-Ziel), pointer-freundlich, kein HTML5-Drag-and-Drop.
+- Antworten werden nie sofort angezeigt, sondern per reveal()-Helper mit kurzer "KI denkt nach …"-Verzögerung eingeblendet — simuliert Latenz, ohne einen echten API-Call zu machen.
+- Beamer-Modus rein additiv über CSS zoom auf &lt;html data-beamer&gt;, keine Inhalte werden dabei ausgetauscht.
+
+PERSONA-/ROLLENBEZUG
+- Keine festen Ela/Knut/Sarah/Petra/Bachmeier-Personas. Stattdessen 3 fachliche Rollen (Business Analyst:in, IT-Sicherheit, Vertrieb), die in jedem der 3 Szenarien mit szenariospezifischen Aussagen wiederkehren (Mission 4, 10, 12).
+- 3 austauschbare Unternehmensszenarien (Vertragsmanagement, Onboarding neuer Mitarbeitender, Kundenservice-Priorisierung) — ein einziges SCENARIOS-Objekt in JS hält alle Texte pro Szenario, eine renderStatics()+resetInteractive()-Funktion befüllt bei jedem Szenariowechsel alle Missionen neu.
+
+NICHT TUN
+- Kein echter Aufruf an eine KI/API — alle "Antworten" sind vorbereitete, im Skript hinterlegte Texte.
+- Keine externen Bibliotheken/CDN-Links, keine externen Fonts — single-file, offlinefähig.
+- Keine generischen Platzhalterwerte in den Szenario-Texten (immer konkrete Zahlen/Rollen/Systeme wie "SAP", "250 Mitarbeitende", "300 Anfragen täglich").
+- Keinen Sliding-Panel-Übergang für die Missions-Wechsel verwenden, der Kerninhalte temporär unsichtbar macht — Panel-Wechsel ist ein direkter Sichtbarkeitswechsel (active-Klasse), kein Slide/Fade mit Zwischenzustand.
+- Keinen Zwang, sich durch alle 12 Missionen in Reihenfolge zu klicken — freie Navigation über die Missions-Leiste.</div>
+      </details>
+
+      <details class="footer-box">
+        <summary class="footer-summary">📖 Handbuch</summary>
+        <div class="footer-content footer-sans" id="footerHandbuch">
+          <p><strong>Framework:</strong> Das Tool selbst folgt dem Modell, das es lehrt — die 5 Dimensionen Rolle/Kontext/Aufgabe/Format/Eingrenzung aus Mission 2 sind zugleich der Bauplan für jede Szenario-Antwort im Datenmodell (<code>SCENARIOS</code>). Mission 8 macht das explizit: RTF für schnelle Aufgaben, CO-STAR wenn die Zielgruppe entscheidend ist, RISEN für mehrstufige Vorhaben — alle drei sind am selben Szenario durchgespielt, damit der Unterschied nicht abstrakt bleibt, sondern am identischen Anwendungsfall sichtbar wird.</p>
+          <p><strong>Design-Entscheidung je Dimension:</strong></p>
+          <table class="footer-table">
+            <tr><th>Dimension</th><th>Umsetzung im Tool</th><th>Warum</th></tr>
+            <tr><td>Rolle</td><td>Chip "Rolle" in Mission 2, 3 Rollen-Chips in Mission 4/10/12</td><td>Rolle ist nie Fließtext, sondern immer ein anklickbares, isoliertes Element — macht sie als eigenständige Stellschraube erfahrbar.</td></tr>
+            <tr><td>Kontext</td><td>An/Aus-Toggle in Mission 7 (ohne/mit Kontext im direkten Vergleich)</td><td>Der Unterschied ist nur als Vorher/Nachher am selben Satz erlebbar — nicht als zwei getrennte Beispiele, die man vergleichen müsste.</td></tr>
+            <tr><td>Aufgabe</td><td>Vage-vs-klar-Transformation in Mission 3, SMART-Kriterien im Begleittext</td><td>Zeigt, dass "klar" kein Stilmerkmal ist, sondern eine Prüfliste (spezifisch, messbar, terminiert, Datenquelle genannt).</td></tr>
+            <tr><td>Format</td><td>Kettentransformation Ausschreibung → Angebot → Pflichtenheft → Custom GPT in Mission 9, Format-Chips in Mission 12</td><td>Format ist nicht nur Layout, sondern verändert, welche Informationen überhaupt gefragt sind — deshalb als mehrstufige Kette statt Einzelbeispiel.</td></tr>
+            <tr><td>Eingrenzung</td><td>Leitplanken-Chips in Mission 6/12 (DSGVO, Vorlagen, Annahmen, EU-AI-Act)</td><td>Leitplanken werden bewusst als eigene Dimension neben "Format" geführt, weil sie nicht das Ergebnis formen, sondern den Suchraum begrenzen.</td></tr>
+          </table>
+          <p><strong>Das eine Prinzip, das hier zählt:</strong> Ein guter Prompt ist kein Geistesblitz, sondern das Ergebnis von fünf einzeln benennbaren, einzeln prüfbaren Entscheidungen. Mission 12 macht genau das messbar: Erst wenn "Antwort ohne Engineering" und "Antwort mit Engineering-Prompt" nebeneinander gesehen wurden, erscheint der Merksatz — der Unterschied soll erlebt, nicht behauptet werden.</p>
+          <p><strong>Nachbau-Tipp:</strong> Wer ein ähnliches Tool für ein anderes Thema bauen will, sollte mit dem Datenmodell anfangen, nicht mit dem Layout: ein einziges Objekt pro austauschbarem Szenario, aus dem alle Panels ihre Texte ziehen (siehe <code>SCENARIOS</code> + <code>S()</code>-Helper hier). Erst wenn das Datenmodell für 2-3 Szenarien vollständig ist, lohnt sich die UI-Arbeit — sonst baut man die Oberfläche für ein Szenario, das später nicht mehr zum zweiten passt.</p>
+        </div>
+      </details>
+
+      <details class="footer-box">
+        <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+        <div class="footer-content footer-sans" id="footerVortragsskript">
+          <div class="schritt"><strong>Einstieg</strong><span class="regie">(vor Mission 1, Szenario auf "Vertragsmanagement" belassen)</span><br>„Wir arbeiten heute zwei Tage lang an einer einzigen Fähigkeit: KI so zu instruieren, dass aus ihr etwas Verlässliches herauskommt statt etwas Plausibles. Das ist dieselbe Fähigkeit, die Sie aus dem Requirements Engineering schon kennen — nur ist der Adressat diesmal kein Entwicklerteam, sondern ein Sprachmodell."</div>
+          <div class="schritt"><strong>Mission 1 · Warum KI anders arbeitet</strong><span class="regie">(Klick auf "Gleiche Frage, zweimal gestellt")</span><br>„Schauen Sie sich die Tabelle an: klassische Software liefert bei gleicher Eingabe immer die gleiche Ausgabe. Jetzt klicke ich den Button — zwei Antworten auf dieselbe Frage, inhaltlich fast deckungsgleich, aber nicht wortgleich. Das ist kein Bug. Das ist, wie ein Sprachmodell arbeitet: es sagt das wahrscheinlichste nächste Wort voraus, nicht das eine richtige."</div>
+          <div class="schritt"><strong>Mission 2 · Die Anatomie eines Prompts</strong><span class="regie">(nacheinander alle 5 Chips anklicken)</span><br>„Jeder gute Prompt zerfällt in fünf Bausteine. Ich klicke sie einzeln an — sehen Sie, wie sich immer nur der passende Abschnitt im Beispiel-Prompt einfärbt? Das ist bewusst so gebaut: diese fünf Dimensionen sind keine Checkliste zum Abhaken, sie sind fünf einzeln entscheidbare Stellschrauben."</div>
+          <div class="schritt"><strong>Mission 3 · Ziele und Aufgaben formulieren</strong><span class="regie">(Klick auf "In eine klare Aufgabe verwandeln")</span><br>„'Kümmere dich um die Verträge' — das ist keine Aufgabe, das ist eine Stimmung. Klick. Jetzt steht da ein Datum, eine Datenquelle, ein Ergebnisformat. Genau das meinen wir mit SMART, nur angewendet auf einen Prompt statt auf ein Projektziel."</div>
+          <div class="schritt"><strong>Mission 4 · Perspektiven verstehen</strong><span class="regie">(alle 3 Rollen-Chips nacheinander)</span><br>„Dieselbe Frage, drei Rollen, drei völlig unterschiedliche erste Prioritäten. Business Analyse will die Übersicht, IT-Sicherheit will das Berechtigungskonzept, Vertrieb will die mobile Ansicht. Wer nur eine Perspektive abfragt, bekommt eine korrekte, aber unvollständige Antwort."</div>
+          <div class="schritt"><strong>Mission 5 · Qualität definieren</strong><span class="regie">(3 ISO-25010-Chips)</span><br>„Ohne benanntes Qualitätsziel entscheidet die KI selbst, was 'gut genug' heißt. Ich nenne 'Sicherheit' — und die Antwort ändert sich sichtbar: plötzlich geht es um Zugriffskontrolle statt um Tonalität."</div>
+          <div class="schritt"><strong>Mission 6 · Leitplanken setzen</strong><span class="regie">(4 Leitplanken-Chips, besonders "EU-AI-Act-Risiko einschätzen" hervorheben)</span><br>„Leitplanken machen eine Antwort nicht nur sicherer, sondern verlässlicher — schauen Sie sich die EU-AI-Act-Einschätzung an: die KI ordnet sich selbst vorläufig ein und weist gleichzeitig darauf hin, dass das keine Rechtsberatung ersetzt. Genau diese Doppelbewegung wollen wir."</div>
+          <div class="schritt"><strong>Mission 7 · Kontext aufbauen</strong><span class="regie">(Button "Kontext hinzufügen" klicken, dann noch einmal für Vergleich zurückklicken)</span><br>„Ohne Kontext: 'Ein KI-Assistent könnte allgemein unterstützen.' Mit Kontext — Klick — plötzlich steht da die Systemlandschaft, die Nutzerzahl, der konkrete Anwendungsfall. Erst dadurch wird aus einer Antwort ein Vorschlag, den man umsetzen könnte."</div>
+          <div class="schritt"><strong>Mission 8 · Frameworks gezielt einsetzen</strong><span class="regie">(RTF, CO-STAR, RISEN nacheinander, dann Megaprompt)</span><br>„Drei Frameworks, ein Szenario. RTF für die schnelle Aufgabe, CO-STAR sobald die Zielgruppe den Ton bestimmt, RISEN für mehrstufige Vorhaben. Der letzte Chip zeigt, wie daraus ein wiederverwendbarer Megaprompt mit Platzhaltern wird — einmal bauen, immer wieder befüllen."</div>
+          <div class="schritt"><strong>Mission 9 · Projektartefakte entwickeln</strong><span class="regie">(Kette Schritt für Schritt durchklicken: Angebot → Pflichtenheft → Custom GPT, danach Bonus-Button)</span><br>„Gleicher Inhalt, drei Formate. Aus der Ausschreibung wird ein Angebot, aus dem Angebot ein Pflichtenheft, aus dem Pflichtenheft — ganz ohne Programmierung — die Instructions für einen Custom GPT. Und zum Schluss der Bonus: so sieht das vollständige Angebotskonzept aus, das tatsächlich verschickt würde, nicht nur der kurze Auszug."</div>
+          <div class="schritt"><strong>Mission 10 · Als Expertenteam arbeiten</strong><span class="regie">(Button "Expertenteam einberufen")</span><br>„Ein Klick, drei Karten gleichzeitig. Business Analyse findet die fehlende Eskalation, IT-Sicherheit die fehlende Protokollierung, Vertrieb die fehlende Offline-Ansicht. Drei Lücken, die keine einzelne Perspektive allein gefunden hätte — deshalb gleichzeitig prüfen, nicht nacheinander."</div>
+          <div class="schritt"><strong>Mission 11 · Prompts systematisch prüfen</strong><span class="regie">(Check-Chips der Reihe nach, dann Change-Request-Block)</span><br>„Sieben Prüfdimensionen, eine Story. Vollständigkeit und Klarheit sind meist schnell erfüllt — aber schauen Sie beim Key-Results-Abgleich hin: die Story unterstützt das Ziel nur indirekt, es fehlt die Messgröße. Das ist der Unterschied zwischen 'klingt gut' und 'trägt nachweisbar zum Ziel bei'. Danach: ein Change Request wird nicht sofort umgesetzt, sondern erst nach Aufwand/Nutzen bewertet."</div>
+          <div class="schritt"><strong>Mission 12 · Engineering-Challenge</strong><span class="regie">(Chips in dieser Reihenfolge: Kontext, eine Perspektive, ein Qualitätsziel, eine Leitplanke, ein Format — dann beide Antwort-Buttons)</span><br>„Jetzt bauen wir gemeinsam. Jeder Chip erscheint sofort in der Blaupause rechts — das ist der Prompt, den wir gerade konstruieren. Erst 'Antwort ohne Engineering' zeigen: nett, aber beliebig. Dann 'Antwort mit Engineering-Prompt': konkret, begründet, prüfbar. Und da — der Merksatz: gute Prompts entstehen durch Engineering, nicht durch Inspiration. Zum Abschluss noch die Risikoeinstufung und die zwei Dokumentations-Templates für alle, die das im eigenen Unternehmen belegen müssen."</div>
+          <div class="schritt"><strong>Anhang (nach Bedarf)</strong><span class="regie">(Anhang-Pfeil öffnen, je nach Publikumsfrage gezielt anspringen)</span><br>„Der Anhang ist kein Pflichtprogramm, sondern Nachschlagewerk: Strukturbefehle für alle, die schneller mit /epic oder /story arbeiten wollen, die Megaprompt-Bibliothek zum Copy-Paste-Mitnehmen, die 13-Punkte-Checkliste zum Ausdrucken, das Glossar im 'Sendung mit der Maus'-Stil für Einsteiger:innen, der Fahrplan für alle, die den Kurs selbst leiten wollen, sowie Nebelarten/Klarheits-Sprung und Engineering nach Standards für alle, die vertiefen wollen."</div>
+          <div class="schritt"><strong>Szenario-Wechsel</strong><span class="regie">(Pill-Button oben, z. B. "Kundenservice-Priorisierung")</span><br>„Und falls ein anderes Szenario näher an Ihrem Alltag liegt: ein Klick, und der komplette Kurs läuft identisch strukturiert noch einmal durch — nur mit Ihrem Kontext statt mit Vertragsmanagement."</div>
+          <p class="regie">Allgemeine Regie-Hinweise: Bei Reveal-Buttons kurz die "KI denkt nach …"-Verzögerung stehen lassen, nicht wegklicken — sie unterstreicht bewusst, dass hier simuliert, nicht live an eine KI geschickt wird. Nicht mit den Framework-Abkürzungen (RTF/CO-STAR/RISEN) einsteigen, bevor die Analogie aus Mission 2 sitzt — sonst wirkt Mission 8 wie Auswendiglernen statt wie Anwendung. Beamer-Modus vor Kursbeginn einmal testweise durchklicken (normal → 1.35x → 1.75x), damit die Stufe für den Raum passt, bevor Teilnehmende zuschauen.</p>
+        </div>
+      </details>
+    </div>
+  </footer>
 </div>
 
 <script>
