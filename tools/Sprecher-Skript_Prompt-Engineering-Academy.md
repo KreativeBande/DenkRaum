@@ -111,9 +111,11 @@ zwei Dokumentations-Templates für alle, die das im eigenen Unternehmen belegen 
 
 „Der Anhang ist kein Pflichtprogramm, sondern Nachschlagewerk: Strukturbefehle für alle, die schneller
 mit /epic oder /story arbeiten wollen, die Megaprompt-Bibliothek zum Copy-Paste-Mitnehmen, die
-13-Punkte-Checkliste zum Ausdrucken, das Glossar im 'Sendung mit der Maus'-Stil für Einsteiger:innen,
-der Fahrplan für alle, die den Kurs selbst leiten wollen, sowie Nebelarten/Klarheits-Sprung und
-Engineering nach Standards für alle, die vertiefen wollen."
+Framework-Bibliothek für alle, die über RTF/CO-STAR/RISEN aus Mission 8 hinaus vergleichen wollen
+(inklusive der Zuordnungstabelle, welches Framework zu welcher Aufgabe passt), die 13-Punkte-Checkliste
+zum Ausdrucken, das Glossar im 'Sendung mit der Maus'-Stil für Einsteiger:innen, der Fahrplan für alle,
+die den Kurs selbst leiten wollen, sowie Nebelarten/Klarheits-Sprung und Engineering nach Standards für
+alle, die vertiefen wollen."
 
 ## Szenario-Wechsel
 *(Pill-Button oben, z. B. "Kundenservice-Priorisierung")*
