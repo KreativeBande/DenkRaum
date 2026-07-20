@@ -23,8 +23,8 @@ Person stammen. Ein Stern von fünf.
 
 ## Stufe 2 — Anna
 
-*(Auf „Anna" klicken, kurz auf die neu hervorgehobenen Prompt-Sätze zeigen, dann Ergebnis
-anzeigen)*
+*(Auf „Anna" klicken, kurz auf die lila hervorgehobenen, neu dazugekommenen Kategorie-Blöcke
+zeigen, dann Ergebnis anzeigen)*
 
 Anna hat jetzt Erfahrung, Branche und Methoden. Der Beitrag wird konkreter — aber immer
 noch austauschbar mit jeder anderen Requirements Engineerin.
