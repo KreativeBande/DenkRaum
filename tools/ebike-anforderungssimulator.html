@@ -187,6 +187,24 @@
   .wert-sum.bad{background:var(--red-soft);color:var(--red)}
   .btn-mini{border:1.5px solid var(--line);background:#fff;padding:7px 12px;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;color:var(--ink)}
 
+  /* ===== Angebotsbewertung ===== */
+  .vendor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+  .vendor-card{border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;background:#fdfefe;position:relative}
+  .vendor-card.winner{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);background:linear-gradient(160deg,#fff 0%,var(--accent-soft) 140%)}
+  .vendor-rank{position:absolute;top:14px;right:16px;font-size:11px;font-weight:800;color:var(--muted);background:var(--bg);padding:3px 9px;border-radius:999px;white-space:nowrap}
+  .vendor-card.winner .vendor-rank{background:var(--accent);color:#fff}
+  .vendor-name{font-size:16px;font-weight:800;margin:0 0 2px;padding-right:70px}
+  .vendor-price{font-size:12.5px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+  .vendor-crit{margin-bottom:10px}
+  .vendor-crit-top{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:3px}
+  .vendor-crit-bar{height:6px;border-radius:4px;background:var(--bg);overflow:hidden;margin-bottom:4px}
+  .vendor-crit-fill{height:100%;border-radius:4px}
+  .vendor-crit-note{font-size:12px;color:var(--muted);line-height:1.5}
+  .vendor-total{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
+  .vendor-total b{font-size:22px;color:var(--ink)}
+  .vendor-award-badge{display:inline-block;margin-top:10px;background:var(--accent);color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px}
+  .vendor-hint{background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:14px 16px;margin-top:16px;font-size:13.5px;line-height:1.6;color:var(--muted)}
+
   .abschluss-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:6px}
   .abschluss-box{border:1.5px solid var(--line);border-radius:14px;padding:16px}
   .abschluss-box h4{margin:0 0 6px;font-size:14px;color:var(--ink)}
@@ -245,6 +263,7 @@
       <span class="tag">⚖ Norm-vorgegebene Mittel</span>
       <span class="tag">Leistungsverzeichnis</span>
       <span class="tag">Wertungsmatrix (UfAB-nah)</span>
+      <span class="tag">Angebotsbewertung</span>
     </div>
   </section>
 
@@ -309,6 +328,7 @@
         <li>Der Schwellenwert-Rechner oben rechnet live mit: jede Auswahl und die Stückzahl verändern den geschätzten Auftragswert.</li>
         <li>Im Reiter „Leistungsverzeichnis” siehst du, welche Bausteine zu einer Lieferposition werden — und welche bewusst keine LV-Position sind, weil sie Verfahrens- oder Prozessanforderungen sind.</li>
         <li>Im Reiter „Wertungsmatrix” stellst du die Zuschlagskriterien-Gewichtung selbst ein und spürst den Ermessensspielraum, der nach § 127 GWB dokumentationspflichtig ist.</li>
+        <li>Im Reiter „Angebotsbewertung” treffen drei fiktive Angebote auf genau diese Gewichtung — und du erlebst, dass dieselben drei Angebote bei anderer Gewichtung einen anderen Gewinner haben können.</li>
       </ul>
       <div class="cta-row"><button class="btn" onclick="goToTab('fuhrpark')">Los geht's → Fuhrpark &amp; Mobilität</button></div>
     </div>
@@ -348,6 +368,16 @@
     </div>
   </div>
 
+  <!-- ===== Panel: Angebotsbewertung ===== -->
+  <div class="panel" data-panel="angebote">
+    <div class="card">
+      <h2>Angebotsbewertung: drei Angebote sind eingegangen</h2>
+      <p class="muted">Dieselbe Gewichtung, die du im Reiter „Wertungsmatrix” eingestellt hast, entscheidet hier live über die Zuschlagsempfehlung. Wechsle zurück, verschiebe einen Regler und komm wieder her — dieselben drei Angebote, aber womöglich ein anderer Gewinner.</p>
+      <div class="vendor-grid" id="vendorGrid"></div>
+      <div class="vendor-hint" id="vendorHint"></div>
+    </div>
+  </div>
+
   <!-- ===== Panel: Abschluss ===== -->
   <div class="panel" data-panel="abschluss">
     <div class="card">
@@ -371,7 +401,7 @@
   <div class="footer-tagline">GPM Karlsruhe · AI4RE · Denken in Räumen — Simulations-Zahlen (Stückpreise, Pauschalen) sind didaktische Beispielwerte, keine realen Marktpreise.</div>
   <div class="footer-sig">
     <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn</a> · www.michaela-kuehn.com — Referenzrahmen: IREB, GWB, VgV, UVgO, EN 15194, Batterieverordnung (EU) 2023/1542
-    <span class="audit-line">Zuletzt geprüft: 20.07.2026 · Status: ✅ Verifiziert (Playwright-Smoke-Test, Desktop &amp; Mobile) · Details siehe PR #45</span>
+    <span class="audit-line">Zuletzt geprüft: 20.07.2026 · Status: ✅ Verifiziert (Playwright-Smoke-Test, Desktop &amp; Mobile) · Details siehe Pull-Request-Historie im Repo</span>
   </div>
   <div class="footer-details">
     <details class="footer-box">
@@ -384,9 +414,12 @@ Eine Kommune beschafft eine E-Bike-Flotte für den Fuhrpark. Fünf Fachbereichs-
 STRUKTUR
 - Kopfzeile: Zurück-Link, H1 + Szenario-Teaser, Signatur-Link, Beamer-Modus-Button (3 Stufen: normal → 1.35x → 1.75x, data-beamer-Attribut auf <html>, per zoom umgesetzt).
 - Sticky Live-Schwellenwert-Rechner über allen Reitern sichtbar: Stückzahl-Regler (10-100), AG-Typ-Auswahl (sonstige öffentliche AG 216.000 € vs. obere/oberste Bundesbehörde 140.000 €), geschätzter Auftragswert, Verfahrens-Badge (UVgO national vs. EU-weit GWB/VgV), Schwellenwert-Balken.
-- Neun Reiter: Auftrag, fünf Fachbereiche (je ein Kartenraster wählbarer Bausteine), Leistungsverzeichnis (automatisch aus Auswahl abgeleitet, Traceability zum Baustein), Wertungsmatrix (editierbare Gewichtungs-Regler, UfAB-nahes Schema), Abschluss (Klarheits-Sprung-Reflexion, Scope-Abgrenzung).
+- Zehn Reiter: Auftrag, fünf Fachbereiche (je ein Kartenraster wählbarer Bausteine), Leistungsverzeichnis (automatisch aus Auswahl abgeleitet, Traceability zum Baustein), Wertungsmatrix (editierbare Gewichtungs-Regler, UfAB-nahes Schema), Angebotsbewertung (Phase 4: drei fiktive Bieter live gegen die Wertungsmatrix-Gewichtung gescort, Zuschlagsempfehlung), Abschluss (Klarheits-Sprung-Reflexion, Scope-Abgrenzung).
 - V1 (Verfahrensregime) ist keine wählbare Karte, sondern eine Sonderkarte, die erklärt, dass sich der Wert erst aus der Summe der übrigen Bausteine ergibt — Dreh- und Angelpunkt der Simulation.
 - Norm-vorgegebene Mittel (F5, A1, A2, V4, N2) sind vorausgewählt und nicht abwählbar (Schloss-Icon statt Checkbox, Hinweistext "nicht abwählbar") — Norm-Mittel sind nicht verhandelbar.
+
+ANGEBOTSBEWERTUNG (Phase 4, aufbauend auf der Wertungsmatrix)
+Drei fest hinterlegte, aber didaktisch kalibrierte Bieter (ValueBike GmbH · günstigster Preis, Minimum bei Technik/Nachhaltigkeit; EcoMobil Systeme · Nachhaltigkeits-Champion; TechRad Solutions · Technik-Champion). Preis-Punkte linear zum günstigsten Angebot (UfAB-Methode), die übrigen drei Kriterien als feste Punktzahlen mit Begründungstext. Gewichtete Gesamtpunktzahl liest live state.wertung aus dem Wertungsmatrix-Reiter — bei Standardgewichtung (50/25/15/10) gewinnt ValueBike, bei Nachhaltigkeits-lastiger Gewichtung EcoMobil, bei Technik-lastiger Gewichtung TechRad. Bieterpreise skalieren proportional zur live berechneten LV-Summe (Preisfaktor je Bieter), damit sie bei jeder Stückzahl/Baustein-Auswahl realistisch bleiben.
 
 KOSTENMODELL (didaktisch, keine realen Marktpreise)
 Grundpreis 2.400 €/Pedelec deckt die norm-verpflichtenden Bausteine ab. Ausgewählte NFA/Constraint-Bausteine addieren Pro-Stück-Aufschläge oder Pauschalen; Fi4 (Mengenrabatt) reduziert die Summe um 3 % ab 20 Einheiten. Stückzahl 10-100 einstellbar, damit die Schwelle in beide Richtungen überschritten werden kann — das ist die stärkste Demo-Wirkung.
@@ -422,8 +455,9 @@ NICHT TUN
           <tr><td>Prozess-/Verfahrensanforderung</td><td>Keine LV-Position, explizit in der Lücken-Box benannt</td><td>Nicht jede Anforderung ist eine Produkteigenschaft — das ist selbst die Lehrsituation, kein Darstellungsfehler.</td></tr>
         </table>
         <p><strong>Das eine Prinzip, das hier zählt:</strong> Keine einzelne Fachbereichs-Anforderung entscheidet über das Vergaberegime. Aber ihre Summe tut es. Requirements Engineering, das bei der einzelnen Anforderung endet, übersieht genau diesen Kipppunkt — deshalb ist der Schwellenwert-Rechner sticky und über allen fünf Fachbereichs-Reitern sichtbar, nicht erst am Ende versteckt.</p>
-        <p><strong>Nachbau-Tipp:</strong> Wer ein ähnliches Simulations-Tool für ein anderes Fachgebiet bauen will, sollte zuerst die Kippgröße festlegen (hier: der Schwellenwert-Übergang UVgO/EU-weit) und erst danach die Bausteine so dimensionieren, dass die Kippgröße bei plausibler Stückzahl in beide Richtungen überschreitbar ist — sonst bleibt die Live-Demo folgenlos.</p>
-        <p><strong>Grenzen des Modells:</strong> Stückpreise und Pauschalen sind didaktische Beispielwerte, keine realen Marktpreise. Der Simulator bildet Phase 3 (RE-Kern bis Leistungsverzeichnis + Wertungsmatrix) ab — Vergabebekanntmachung, Vertragsentwurf, Angebots-Formblätter und Vergabevermerk sind bewusst ausgeklammert (reine Vergaberechts-Formalia ohne RE-Lehrwert).</p>
+        <p><strong>Phase 4 — dieselbe Pointe, eine Ebene weiter:</strong> Die Angebotsbewertung überträgt den Kipppunkt-Gedanken von der Anforderungsseite auf die Zuschlagsseite. Die drei Bieter sind so kalibriert, dass sie bei Standardgewichtung, bei Nachhaltigkeits-Fokus und bei Technik-Fokus je einen anderen Gewinner ergeben — dieselben drei Angebote, drei unterschiedliche Zuschlagsempfehlungen. Das macht § 127 GWB (Gewichtung ist dokumentationspflichtiges Ermessen) konkret erfahrbar statt nur zitierbar.</p>
+        <p><strong>Nachbau-Tipp:</strong> Wer ein ähnliches Simulations-Tool für ein anderes Fachgebiet bauen will, sollte zuerst die Kippgröße festlegen (hier: der Schwellenwert-Übergang UVgO/EU-weit, und in Phase 4 der Wechsel der Zuschlagsempfehlung) und erst danach die Bausteine bzw. Bieterprofile so dimensionieren, dass die Kippgröße bei plausiblen Einstellungen in beide Richtungen überschreitbar ist — sonst bleibt die Live-Demo folgenlos.</p>
+        <p><strong>Grenzen des Modells:</strong> Stückpreise, Pauschalen und die drei Bieterprofile sind didaktische Beispielwerte, keine realen Marktpreise oder echten Angebote — die Bieterdaten sind bewusst fest hinterlegt (nicht editierbar), damit die Gewichtungs-Wirkung sauber isoliert bleibt. Der Simulator bildet Phase 3+4 (RE-Kern bis Leistungsverzeichnis, Wertungsmatrix und Angebotsbewertung) ab — Vergabebekanntmachung, Vertragsentwurf, Angebots-Formblätter und Vergabevermerk sind bewusst ausgeklammert (reine Vergaberechts-Formalia ohne RE-Lehrwert).</p>
       </div>
     </details>
     <details class="footer-box">
@@ -438,8 +472,9 @@ NICHT TUN
         <div class="schritt"><strong>Der Kipp-Moment</strong><span class="regie">(Stückzahl-Regler langsam von 10 auf 100 ziehen, AG-Typ umschalten)</span>Und jetzt der Höhepunkt: Ich ziehe nur die Stückzahl hoch — nichts sonst. Seht ihr, wie der Badge von grün auf rot springt? National wird EU-weit. Das ist der Systemsprung, den keine Einzelanforderung allein ausgelöst hätte.</div>
         <div class="schritt"><strong>Leistungsverzeichnis</strong><span class="regie">(Reiter wechseln, auf die Lücken-Box zeigen)</span>Jede Position ist bis zu ihrem Baustein zurückverfolgbar. Und: nicht jeder Baustein wird eine Position — das steht hier bewusst ausgeschrieben, nicht nur weggelassen.</div>
         <div class="schritt"><strong>Wertungsmatrix</strong><span class="regie">(einen Regler verschieben, Summe beobachten)</span>Die Gewichtung ist Ermessen — § 127 GWB verlangt, dieses Ermessen zu dokumentieren. Wenn die Summe nicht mehr 100 % ergibt, seht ihr sofort, warum das in echt ein Problem wäre.</div>
-        <div class="schritt"><strong>Schluss / Klarheits-Sprung</strong>Requirements Engineering endet nicht bei der einzelnen Anforderung. Es endet bei ihrer Wirkung im System — und genau diesen Sprung habt ihr gerade selbst ausgelöst, nicht nur gehört.</div>
-        <p class="regie">Allgemeine Regie-Hinweise: Den Kipp-Moment nicht vorwegnehmen — Stückzahl erst am Ende der Fachbereichs-Reiter langsam hochziehen, damit der Sprung überrascht. Beamer-Modus vor Beginn einmal testweise durchklicken (Footer blendet sich ab Stufe 1 automatisch aus).</p>
+        <div class="schritt"><strong>Angebotsbewertung — der zweite Kipp-Moment</strong><span class="regie">(Reiter wechseln, Rangliste bei Standardgewichtung zeigen; dann zurück zur Wertungsmatrix, Nachhaltigkeit auf 50 % ziehen, wieder zurück)</span>Drei Angebote sind eingegangen. Bei eurer aktuellen Gewichtung liegt ValueBike vorn — günstig, aber nur Minimum. Jetzt gehe ich zurück und schiebe die Nachhaltigkeit hoch. Seht ihr? Gleiche drei Angebote — neuer Gewinner, EcoMobil. Das ist keine Rechenspielerei, das ist die Macht der Gewichtungsentscheidung, live erlebt statt nur behauptet.</div>
+        <div class="schritt"><strong>Schluss / Klarheits-Sprung</strong>Requirements Engineering endet nicht bei der einzelnen Anforderung. Es endet bei ihrer Wirkung im System — von der Anforderung bis zum Zuschlag — und genau diesen Sprung habt ihr gerade selbst ausgelöst, nicht nur gehört.</div>
+        <p class="regie">Allgemeine Regie-Hinweise: Den Kipp-Moment nicht vorwegnehmen — Stückzahl erst am Ende der Fachbereichs-Reiter langsam hochziehen, damit der Sprung überrascht. Denselben Überraschungseffekt für die Angebotsbewertung aufheben: nicht vorher verraten, dass sich der Gewinner ändert. Beamer-Modus vor Beginn einmal testweise durchklicken (Footer blendet sich ab Stufe 1 automatisch aus).</p>
       </div>
     </details>
   </div>
@@ -493,6 +528,7 @@ NICHT TUN
     {key:"finanzen", label:"Finanzen"},
     {key:"lv", label:"Leistungsverzeichnis"},
     {key:"wertung", label:"Wertungsmatrix"},
+    {key:"angebote", label:"Angebotsbewertung"},
     {key:"abschluss", label:"Abschluss"}
   ];
 
@@ -501,6 +537,21 @@ NICHT TUN
     {key:"technik", label:"Technik/Qualität (Reichweite, Ladezeit über Mindestanforderung)", pct:25, methode:"Punktraster nach Erfüllungsgrad", herkunft:"F1, F2"},
     {key:"nachhaltigkeit", label:"Nachhaltigkeit (CO₂-Fußabdruck, Ersatzteilverfügbarkeit)", pct:15, methode:"Punktraster", herkunft:"N1, N3"},
     {key:"referenzen", label:"Referenzen/Eignung (Flottengröße, Erfahrung)", pct:10, methode:"Erfüllt/nicht erfüllt bzw. Punktraster", herkunft:"V3"}
+  ];
+
+  var VENDORS = [
+    {id:"A", name:"ValueBike GmbH", priceFactor:0.87,
+      technik:60, technikNote:"60 km Reichweite, 4 h Ladezeit — genau die Mindestanforderung, keine Überschreitung.",
+      nachhaltigkeit:55, nachhaltigkeitNote:"CO₂-Klasse C, Ersatzteilzusage exakt 5 Jahre (Minimum).",
+      referenzen:72, referenzenNote:"52 vergleichbare Räder in den letzten 3 Jahren — Mindestkriterium knapp erfüllt."},
+    {id:"B", name:"EcoMobil Systeme", priceFactor:1.06,
+      technik:70, technikNote:"68 km Reichweite, 3,5 h Ladezeit — moderat über Minimum.",
+      nachhaltigkeit:85, nachhaltigkeitNote:"CO₂-Klasse A, Ersatzteilzusage 9 Jahre.",
+      referenzen:82, referenzenNote:"90 vergleichbare Räder, 3 laufende Referenzprojekte."},
+    {id:"C", name:"TechRad Solutions", priceFactor:1.12,
+      technik:90, technikNote:"85 km Reichweite, 2,5 h Ladezeit — deutlich über Minimum.",
+      nachhaltigkeit:62, nachhaltigkeitNote:"CO₂-Klasse B, Ersatzteilzusage 6 Jahre.",
+      referenzen:75, referenzenNote:"60 vergleichbare Räder, 2 Jahre Erfahrung."}
   ];
 
   var GRUNDPREIS = 2400; // € je Pedelec, deckt die norm-verpflichtenden Bausteine (F5, A1, A2, V4) ab
@@ -832,6 +883,7 @@ NICHT TUN
         document.getElementById("pct-" + w.key).textContent = state.wertung[w.key] + " %";
         safeSave();
         renderWertSum();
+        renderVendorAssessment();
       });
     });
     renderWertSum();
@@ -849,7 +901,61 @@ NICHT TUN
     WERTUNG_DEFAULT.forEach(function(w){ state.wertung[w.key] = w.pct; });
     safeSave();
     renderWertung();
+    renderVendorAssessment();
   });
+
+  // ===== Angebotsbewertung =====
+  function scoreVendors(){
+    var calc = computeAuftragswert();
+    var cheapestFactor = Math.min.apply(null, VENDORS.map(function(v){ return v.priceFactor; }));
+    var scored = VENDORS.map(function(v){
+      var price = calc.summe * v.priceFactor;
+      var pricePts = 100 * cheapestFactor / v.priceFactor;
+      var total = pricePts * (state.wertung.preis / 100)
+        + v.technik * (state.wertung.technik / 100)
+        + v.nachhaltigkeit * (state.wertung.nachhaltigkeit / 100)
+        + v.referenzen * (state.wertung.referenzen / 100);
+      return {v:v, price:price, pricePts:pricePts, total:total};
+    });
+    scored.sort(function(a, b){ return b.total - a.total; });
+    return scored;
+  }
+
+  function vendorCritRow(label, pts, color, note){
+    var html = '<div class="vendor-crit">';
+    html += '<div class="vendor-crit-top"><span>' + label + '</span><span>' + Math.round(pts) + ' Pkt.</span></div>';
+    html += '<div class="vendor-crit-bar"><div class="vendor-crit-fill" style="width:' + Math.min(100, pts) + '%;background:var(--' + color + ')"></div></div>';
+    if(note) html += '<div class="vendor-crit-note">' + note + '</div>';
+    html += '</div>';
+    return html;
+  }
+
+  function renderVendorAssessment(){
+    var scored = scoreVendors();
+    var grid = document.getElementById("vendorGrid");
+    grid.innerHTML = "";
+    scored.forEach(function(s, idx){
+      var el = document.createElement("div");
+      el.className = "vendor-card" + (idx === 0 ? " winner" : "");
+      var pctVsSchaetzung = Math.round((s.v.priceFactor - 1) * 100);
+      var html = '<div class="vendor-rank">' + (idx === 0 ? "🏆 1. Platz" : (idx + 1) + ". Platz") + '</div>';
+      html += '<h3 class="vendor-name">' + s.v.name + '</h3>';
+      html += '<div class="vendor-price">Angebotspreis: ' + fmtEUR(s.price) + ' € (' + (pctVsSchaetzung <= 0 ? "−" : "+") + Math.abs(pctVsSchaetzung) + ' % ggü. eigener Kostenschätzung)</div>';
+      html += vendorCritRow("Preis", s.pricePts, "blue");
+      html += vendorCritRow("Technik/Qualität", s.v.technik, "violet", s.v.technikNote);
+      html += vendorCritRow("Nachhaltigkeit", s.v.nachhaltigkeit, "teal", s.v.nachhaltigkeitNote);
+      html += vendorCritRow("Referenzen/Eignung", s.v.referenzen, "amber", s.v.referenzenNote);
+      html += '<div class="vendor-total"><span>Gewichtete Gesamtpunktzahl</span><b>' + s.total.toFixed(1) + '</b></div>';
+      if(idx === 0) html += '<span class="vendor-award-badge">Zuschlagsempfehlung</span>';
+      el.innerHTML = html;
+      grid.appendChild(el);
+    });
+
+    var hint = document.getElementById("vendorHint");
+    hint.innerHTML = 'Aktuelle Gewichtung (Reiter „Wertungsmatrix”): Preis ' + state.wertung.preis + ' % · Technik/Qualität ' +
+      state.wertung.technik + ' % · Nachhaltigkeit ' + state.wertung.nachhaltigkeit + ' % · Referenzen/Eignung ' +
+      state.wertung.referenzen + ' %. Verschiebe dort die Regler und komm zurück — dieselben drei Angebote, aber womöglich eine andere Zuschlagsempfehlung. Das ist der Ermessensspielraum aus § 127 GWB, konkret erlebt statt nur behauptet.';
+  }
 
   // ===== Abschluss =====
   function renderAbschluss(){
@@ -858,11 +964,13 @@ NICHT TUN
     var over = calc.summe >= schwelle;
     var selCount = 0, total = 0;
     FACHBEREICHE.forEach(function(f){ f.bausteine.forEach(function(b){ if(b.special) return; total++; if(state.selected[b.id]) selCount++; }); });
+    var winner = scoreVendors()[0];
     document.getElementById("abschlussStand").textContent =
       selCount + " von " + total + " Bausteinen gewählt, Stückzahl " + state.stueckzahl + ". Geschätzter Auftragswert: " +
       fmtEUR(calc.summe) + " € netto — " + (over ? "über" : "unter") + " der Schwelle von " + fmtEUR(schwelle) +
       " € (" + (state.agtyp === "sonstige" ? "sonstige öffentliche Auftraggeber" : "obere/oberste Bundesbehörden") + "). Verfahren: " +
-      (over ? "EU-weit nach GWB/VgV." : "national nach UVgO.");
+      (over ? "EU-weit nach GWB/VgV." : "national nach UVgO.") + " Zuschlagsempfehlung bei aktueller Gewichtung: " +
+      winner.v.name + " (" + winner.total.toFixed(1) + " Punkte).";
   }
 
   document.getElementById("resetAllBtn").addEventListener("click", function(){
@@ -890,6 +998,7 @@ NICHT TUN
     FACHBEREICHE.forEach(renderFachbereich);
     renderCalc();
     renderLV();
+    renderVendorAssessment();
     renderAbschluss();
   }
 
