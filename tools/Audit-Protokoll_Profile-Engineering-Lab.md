@@ -11,6 +11,20 @@ denselben Anwendungscode in einer echten Browser-Engine statt einer simulierten 
 tatsächliches CSS/Layout (das jsdom nicht rendert). Wo eine Abweichung von der beschriebenen
 Prüfmethode vorliegt, ist das unten explizit vermerkt.
 
+## Änderungshistorie
+
+**19.07.2026, Nachtrag nach Michaelas Feedback:** Live-Prompt-Aufbau von einem
+zusammenhängenden Fließtext mit farblicher Satz-Hervorhebung auf pro-Kategorie beschriftete
+Blöcke umgestellt (macht sichtbar, welches Element aus dem Profil-Baukasten links im Prompt
+gelandet ist). Die Box wird bei jedem Stufenwechsel vollständig neu gerendert statt Inhalte
+anzuhängen, damit der Blick auf die aktuell gewählte Person fokussiert bleibt. Meter und
+Ergebnis-Bereich sind jetzt Teil des rechten Panels statt eigener vollbreiter Abschnitte,
+Abstände im gesamten Tool verkleinert (weniger Scrollen). Hervorhebungsfarbe für neu
+hinzugekommene Kategorien von Grün auf Lila geändert (`--good:#6D28D9`,
+`--good-soft:#EDE9FE`) — bewusste Abweichung von der sonst identischen Farbpalette des
+Referenztools, siehe K11 unten. Alle betroffenen Kriterien unten erneut geprüft; Ergebnisse
+sind bereits die aktualisierten.
+
 ---
 
 ## A. Technische Muss-Kriterien
@@ -21,7 +35,7 @@ Prüfmethode vorliegt, ist das unten explizit vermerkt.
 | K2 | Kein Blocking durch Storage-APIs | ✅ | `safeGet`/`safeSet`-Wrapper (Zeilen ~437–438), beide `localStorage`-Zugriffe in `try/catch`. |
 | K3 | Touch-Tauglichkeit | ✅ | `grep -n "draggable=\|dragstart\|dragover"` → 0 Treffer. Alle Interaktionen sind Klick-Buttons. |
 | K4 | Weißer Hintergrund | ✅ | `color-scheme: light` auf `html,body` gesetzt; `--bg:#ffffff`, kein `prefers-color-scheme`-Override. |
-| K5 | Beamer-Lesbarkeit | ✅ | Vollständiger Scan aller `font-size`-Werte: kleinster Wert 14px (Sekundärtext/Badges), Fließtext 15–18px. Ursprünglich 8 Werte unter 14px gefunden und vor Auslieferung auf 14px angehoben. Kontrast `--ink-soft` (#5B6570) auf Weiß/`--card`: aus dem bereits produktiv genutzten Referenztool `prompt-engineering-academy.html` übernommen (identische Werte), dort nicht gesondert neu geprüft. |
+| K5 | Beamer-Lesbarkeit | ✅ | Vollständiger Scan aller `font-size`-Werte: kleinster Wert 14px (Sekundärtext/Badges), Fließtext 14.5–18px. Ursprünglich 8 Werte unter 14px gefunden und vor Auslieferung auf 14px angehoben. Nach dem Prompt-Box-Redesign erneut per Playwright `getComputedStyle` über alle gerenderten Elemente geprüft (nicht nur statischer CSS-Grep) — kleinster gerenderter Wert weiterhin 14px. Kontrast `--ink-soft` (#5B6570) auf Weiß/`--card`: aus dem bereits produktiv genutzten Referenztool `prompt-engineering-academy.html` übernommen (identische Werte), dort nicht gesondert neu geprüft. |
 | K6 | Kein Sliding-Panel-Layout | ✅ | Profil-Baukasten und Live-Prompt-Aufbau sind als permanentes 2-Spalten-Grid (`.shell`) gleichzeitig sichtbar, keine Slide-Transition zwischen ihnen. |
 | K7 | UTF-8-Encoding sauber | ✅ | `grep -n "\\u00"` → 0 Treffer. Visuelle Stichprobe: Umlaute, „…", – korrekt dargestellt (siehe Screenshots). |
 | K15 | Erreichbarkeit nicht-live-relevanter Inhalte | ✅ | Kein `overflow:hidden` auf `html`/`body`. Playwright-Test: `window.scrollTo(0, document.body.scrollHeight)` → Footer-Bounding-Box vorhanden, Footer erreichbar. |
@@ -41,7 +55,7 @@ Prüfmethode vorliegt, ist das unten explizit vermerkt.
 
 | K | Aussage | Ergebnis | Nachweis |
 |---|---|---|---|
-| K11 | Design-System-Konformität | ✅ | Farbpalette hexgenau aus `prompt-engineering-academy.html` übernommen (`--accent:#0B5E63`, `--ink:#1B1F23`, `--ink-soft:#5B6570`, `--line:#DEE3E6`, `--card:#F7F8F9`) statt einer neuen Palette — bewusste Entscheidung, um die ökosystemweit offene K11-Inkonsistenz nicht zu vergrößern. Gherkin-/Flow-Box-/Accordion-Muster anderer Tools sind hier inhaltlich nicht einschlägig (kein RE-Szenario); die verwendeten `<details>`-Footer-Boxen folgen den kanonischen Footer-Klassennamen. |
+| K11 | Design-System-Konformität | ✅ mit dokumentierter Abweichung | Basispalette weiterhin hexgenau aus `prompt-engineering-academy.html` übernommen (`--accent:#0B5E63`, `--ink:#1B1F23`, `--ink-soft:#5B6570`, `--line:#DEE3E6`, `--card:#F7F8F9`). Auf Michaelas ausdrücklichen Wunsch wurde die Hervorhebungsfarbe für "neu hinzugekommene Kategorie" von Grün (`--good:#2F7A4F`, ökosystemweiter Wert) auf Lila (`--good:#6D28D9`, `--good-soft:#EDE9FE`) geändert — bewusste, gewünschte Einzeltool-Abweichung, in der Systemprompt-Box explizit als solche gekennzeichnet, damit sie bei einem künftigen Cross-Tool-Hex-Abgleich nicht versehentlich als Inkonsistenz-Bug gewertet wird. Gherkin-/Flow-Box-/Accordion-Muster anderer Tools sind hier inhaltlich nicht einschlägig (kein RE-Szenario); die verwendeten `<details>`-Footer-Boxen folgen den kanonischen Footer-Klassennamen. |
 | K12 | Validierungsnachweis vorhanden | ✅ | Dieses Dokument + Playwright-Testlauf (Protokoll unten). |
 | K13 | Vortrags-Skript-Box vorhanden | ✅ | Dritte Footer-Box „🎤 Vortrags-Skript", deckt alle 5 Stufen + Übergang + Schluss mit Klick-Regie und Sprechtext ab, keine Konstruktionslogik (die steht im Handbuch) und kein roher Systemprompt-Text. |
 | K14 | Audit-Status-Zeile aktuell | ✅ | `.footer-sig .audit-line`: „Zuletzt geprüft: 19.07.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll" — Datum identisch zum Datum dieses Protokolls und der letzten inhaltlichen Änderung. |
@@ -100,6 +114,29 @@ headless (`/opt/pw-browsers/chromium`).
 14. Keine Konsolenfehler außer einer harmlosen 404 (Favicon).
 15. Mobile-Screenshot (390px) geprüft: Chips brechen zweispaltig um, Stufen-Buttons stapeln
     sich, Signatur fällt in den normalen Textfluss — kein Layout-Bruch.
+
+### Nachtrag: Prompt-Box-Redesign (19.07.2026)
+
+16. Stufe 1 (Max): genau 1 Prompt-Block, mit Klasse `.new` (alles ist neu bei der ersten
+    Person).
+17. Stufe 2 (Anna): genau 5 Prompt-Blöcke, davon 4 mit `.new` (Kompetenzen, Branchen,
+    Standards, Methoden) — Identität korrekt nicht mehr als „neu" markiert.
+18. Stufe 5 (Michaela): genau 12 Prompt-Blöcke, davon 2 mit `.new` (Ausgabeformat,
+    Qualitätsprüfung) — Labels stimmen mit den Kategorie-Chips links überein.
+19. Rücksprung von Stufe 5 zu Stufe 1: genau 1 Block, keine Reste aus Stufe 5 — Box wird bei
+    jedem Klick vollständig neu aufgebaut statt angehängt (Kern der gewünschten Änderung).
+20. Berechnete Hintergrundfarbe eines `.new`-Blocks: `rgb(237, 233, 254)` = `#EDE9FE`
+    (Lila, wie gewünscht — nicht mehr Grün).
+21. `getComputedStyle().fontSize` über **alle** gerenderten Elemente der Seite (nicht nur
+    CSS-Deklarationen) gesammelt: kleinster Wert weiterhin 14px — keine Regression durch die
+    verkleinerten Abstände.
+22. `document.body.scrollHeight` bei Stufe 1: 1103px (nahe am 1000px-Viewport, kaum Scrollen
+    nötig) — vor dem Redesign lag der Vollbild-Screenshot bei ca. 2137px unabhängig von der
+    Stufe. Bei Stufe 5 (alle 12 Kategorien befüllt) bleibt mit 2070px weiterhin Scrollen
+    nötig — das ist der inhaltlich dichteste Fall (alle 12 Kategorien plus Meter plus
+    Ergebnis) und lässt sich ohne Informationsverlust nicht weiter verdichten.
+23. Meter und Ergebnis-Bereich funktionieren unverändert, jetzt verschachtelt im rechten
+    Panel statt als eigene vollbreite Abschnitte.
 
 ## Bekannte Abweichungen von der Master-Prompt-Vorlage
 
