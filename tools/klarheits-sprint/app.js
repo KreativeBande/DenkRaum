@@ -832,4 +832,25 @@ function init() {
   renderAll();
 }
 
-document.addEventListener("DOMContentLoaded", init);
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", init);
+}
+
+// Export für Node-Tests (tests/klarheits-sprint.test.js). Ohne Effekt im Browser,
+// da dort kein CommonJS-`module` existiert.
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = {
+    escapeRegExp,
+    highlightNebel,
+    analyzeDimensions,
+    scoreText,
+    scoreStatus,
+    topHebel,
+    checkCoverage,
+    scoreToMeters,
+    formatMeters,
+    NEBEL_WORDS,
+    ISO25010,
+    ISO27001
+  };
+}
