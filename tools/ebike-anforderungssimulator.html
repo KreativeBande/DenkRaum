@@ -19,6 +19,7 @@
     --teal:#0f766e; --teal-soft:#ccfbf1;
     --red:#b91c1c; --red-soft:#fee2e2;
     --shadow:0 16px 34px rgba(15,23,42,.08);
+    --mono:"IBM Plex Mono","SF Mono",Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
@@ -191,7 +192,28 @@
   .abschluss-box h4{margin:0 0 6px;font-size:14px;color:var(--ink)}
   .abschluss-box p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.6}
 
-  footer.pagefoot{max-width:1180px;margin:24px auto 0;padding:0 20px;color:var(--muted);font-size:12.5px;text-align:center;line-height:1.6}
+  footer.pagefoot{max-width:1180px;margin:24px auto 0;padding:0 20px 40px}
+  html[data-beamer="1"] footer.pagefoot,html[data-beamer="2"] footer.pagefoot{display:none}
+  .footer-tagline{color:var(--muted);font-size:12.5px;text-align:center;line-height:1.6;margin-bottom:18px}
+  .footer-sig{font-size:14px;color:var(--muted);margin-bottom:14px}
+  .footer-sig a{color:var(--muted);font-weight:700;text-decoration:none}
+  .footer-sig a:hover{color:var(--accent)}
+  .footer-sig .audit-line{display:block;margin-top:4px;color:var(--muted)}
+  .footer-details{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:901px){.footer-details{grid-template-columns:1fr 1fr 1fr}}
+  .footer-box{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:hidden}
+  .footer-summary{cursor:pointer;list-style:none;padding:12px 16px;font-size:14px;font-weight:700;color:var(--ink);background:#fff;border-bottom:1px solid transparent}
+  .footer-box[open] .footer-summary{border-bottom-color:var(--line)}
+  .footer-summary::-webkit-details-marker{display:none}
+  .footer-content{padding:14px 16px;max-height:420px;overflow-y:auto}
+  .footer-mono{font-family:var(--mono);font-size:13px;line-height:1.6;white-space:pre-wrap}
+  .footer-sans{font-family:inherit;font-size:14px;line-height:1.6}
+  .footer-sans .regie{color:var(--muted);font-style:italic}
+  .footer-sans .schritt{margin:0 0 14px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+  .footer-sans .schritt:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .footer-sans .schritt strong{display:block;color:var(--accent);margin-bottom:4px}
+  .footer-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px;margin:10px 0}
+  .footer-table th,.footer-table td{border:1px solid var(--line);padding:6px 10px;text-align:left;word-wrap:break-word;overflow-wrap:break-word}
 
   @media(max-width:640px){
     .wrap{padding:14px}
@@ -345,7 +367,83 @@
   </div>
 </div>
 
-<footer class="pagefoot">GPM Karlsruhe · AI4RE · Denken in Räumen — Simulations-Zahlen (Stückpreise, Pauschalen) sind didaktische Beispielwerte, keine realen Marktpreise.</footer>
+<footer class="pagefoot">
+  <div class="footer-tagline">GPM Karlsruhe · AI4RE · Denken in Räumen — Simulations-Zahlen (Stückpreise, Pauschalen) sind didaktische Beispielwerte, keine realen Marktpreise.</div>
+  <div class="footer-sig">
+    <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn</a> · www.michaela-kuehn.com — Referenzrahmen: IREB, GWB, VgV, UVgO, EN 15194, Batterieverordnung (EU) 2023/1542
+    <span class="audit-line">Zuletzt geprüft: 20.07.2026 · Status: ✅ Verifiziert (Playwright-Smoke-Test, Desktop &amp; Mobile) · Details siehe PR #45</span>
+  </div>
+  <div class="footer-details">
+    <details class="footer-box">
+      <summary class="footer-summary">🔧 Systemprompt</summary>
+      <div class="footer-content footer-mono">Baue mir ein einzelnes HTML-Tool "Anforderungssimulator: E-Bike-Beschaffung" für ein Requirements-Engineering-Training im öffentlichen Sektor (Trainerin steuert per Beamer/iPad, Teilnehmende schauen zu oder arbeiten im Workshop mit).
+
+AUFTRAG
+Eine Kommune beschafft eine E-Bike-Flotte für den Fuhrpark. Fünf Fachbereichs-Personas (Fuhrpark/Mobilität, Arbeitssicherheit, Vergabestelle/Recht, Nachhaltigkeit, Finanzen/Haushalt) bringen je 4-5 konkrete Anforderungs-Bausteine ein, klassifiziert nach IREB (FA/NFA/Constraint), Norm-vorgegebene Mittel mit ⚖ markiert.
+
+STRUKTUR
+- Kopfzeile: Zurück-Link, H1 + Szenario-Teaser, Signatur-Link, Beamer-Modus-Button (3 Stufen: normal → 1.35x → 1.75x, data-beamer-Attribut auf <html>, per zoom umgesetzt).
+- Sticky Live-Schwellenwert-Rechner über allen Reitern sichtbar: Stückzahl-Regler (10-100), AG-Typ-Auswahl (sonstige öffentliche AG 216.000 € vs. obere/oberste Bundesbehörde 140.000 €), geschätzter Auftragswert, Verfahrens-Badge (UVgO national vs. EU-weit GWB/VgV), Schwellenwert-Balken.
+- Neun Reiter: Auftrag, fünf Fachbereiche (je ein Kartenraster wählbarer Bausteine), Leistungsverzeichnis (automatisch aus Auswahl abgeleitet, Traceability zum Baustein), Wertungsmatrix (editierbare Gewichtungs-Regler, UfAB-nahes Schema), Abschluss (Klarheits-Sprung-Reflexion, Scope-Abgrenzung).
+- V1 (Verfahrensregime) ist keine wählbare Karte, sondern eine Sonderkarte, die erklärt, dass sich der Wert erst aus der Summe der übrigen Bausteine ergibt — Dreh- und Angelpunkt der Simulation.
+- Norm-vorgegebene Mittel (F5, A1, A2, V4, N2) sind vorausgewählt und nicht abwählbar (Schloss-Icon statt Checkbox, Hinweistext "nicht abwählbar") — Norm-Mittel sind nicht verhandelbar.
+
+KOSTENMODELL (didaktisch, keine realen Marktpreise)
+Grundpreis 2.400 €/Pedelec deckt die norm-verpflichtenden Bausteine ab. Ausgewählte NFA/Constraint-Bausteine addieren Pro-Stück-Aufschläge oder Pauschalen; Fi4 (Mengenrabatt) reduziert die Summe um 3 % ab 20 Einheiten. Stückzahl 10-100 einstellbar, damit die Schwelle in beide Richtungen überschritten werden kann — das ist die stärkste Demo-Wirkung.
+
+PERSONA-ABWEICHUNG (bewusst, dokumentiert)
+Fünf rollenbasierte Fachbereichs-Personas statt des festen Team-Casts (Ela/Knut/Sarah/Petra/Bachmeier) — öffentliche Beschaffung folgt einem eigenen, formalisierten Rollenmodell, das sich nicht sauber auf den Projektteam-Cast abbilden lässt, ohne die vergaberechtliche Realität zu verzerren.
+
+DESIGN
+- Farbpalette und Header/Footer-Konventionen konsistent zum übrigen Denkraum-Ökosystem (Zurück-Link, Signatur-Link, Beamer-Zoom-Pattern, kanonische Footer-Klassennamen).
+- Badges farbcodiert nach Anforderungstyp (FA/NFA/Constraint/Norm-Mittel/Zuschlagskriterium/Eignungskriterium/Prozessanforderung/Verhandlungsposition).
+- Footer mit drei getrennten <details>-Boxen (Systemprompt/Handbuch/Vortrags-Skript), ab Beamer-Stufe 1 ausgeblendet.
+
+TECHNIK
+- Single-File-HTML, kein Build-Prozess, vollständig offline (kein fetch() auf externe Hosts).
+- Auswahl/Stückzahl/AG-Typ/Wertungsgewichte/Beamer-Stufe in localStorage persistiert (try/catch).
+- UTF-8 direkt, keine Unicode-Escapes in JS-Strings.
+
+NICHT TUN
+- Vergabebekanntmachung, Vertragsentwurf, Angebots-Formblätter, Vergabevermerk NICHT abbilden — reine Vergaberechts-Formalia ohne RE-Lehrwert, würden den didaktischen Fokus "Anforderung → Konsequenz" verwässern.
+- Keine echten Marktpreise vortäuschen — alle Zahlen sind didaktische Beispielwerte, im Footer klar benannt.
+- Norm-vorgegebene Mittel nicht als abwählbare "Ziele" umformulieren — dafür ist die Locked-Karte da.</div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary">📖 Handbuch</summary>
+      <div class="footer-content footer-sans">
+        <p><strong>Framework:</strong> Jeder Baustein durchläuft implizit das Problem-Requirement-Solution-Prinzip: erst das Problem/Ziel (z. B. "Reichweite ≥ 60 km"), erst danach — falls überhaupt nötig — eine Lösungsfestlegung. Norm-vorgegebene Mittel (⚖) sind die explizite Ausnahme: dort ist die Lösung bereits gesetzlich fixiert, eine Umformulierung als "Ziel" wäre fachlich falsch und deshalb im Tool technisch unterbunden (Schloss statt Checkbox).</p>
+        <p><strong>Design-Entscheidung je Bausteintyp:</strong></p>
+        <table class="footer-table">
+          <tr><th>Bausteintyp</th><th>Umsetzung im Tool</th><th>Warum</th></tr>
+          <tr><td>FA/NFA/Constraint</td><td>Frei an-/abwählbare Karte, wirkt live auf den Schwellenwert-Rechner</td><td>Macht erlebbar, dass scheinbar harmlose Einzelanforderungen sich zu einer Systemwirkung summieren.</td></tr>
+          <tr><td>Norm-Mittel (⚖)</td><td>Vorausgewählt, Schloss-Icon, Klick bleibt wirkungslos</td><td>Norm-vorgegebene Mittel sind nicht verhandelbar — ein Interaktionsverbot ist hier die richtige RE-Aussage.</td></tr>
+          <tr><td>Zuschlags-/Eignungskriterium</td><td>Kein Preis, aber Herkunfts-Tag in der Wertungsmatrix</td><td>Zeigt den Unterschied zwischen "muss erfüllt sein" (LV) und "wird bewertet" (Wertung) — eine häufige Verwechslung im Vergaberecht.</td></tr>
+          <tr><td>Prozess-/Verfahrensanforderung</td><td>Keine LV-Position, explizit in der Lücken-Box benannt</td><td>Nicht jede Anforderung ist eine Produkteigenschaft — das ist selbst die Lehrsituation, kein Darstellungsfehler.</td></tr>
+        </table>
+        <p><strong>Das eine Prinzip, das hier zählt:</strong> Keine einzelne Fachbereichs-Anforderung entscheidet über das Vergaberegime. Aber ihre Summe tut es. Requirements Engineering, das bei der einzelnen Anforderung endet, übersieht genau diesen Kipppunkt — deshalb ist der Schwellenwert-Rechner sticky und über allen fünf Fachbereichs-Reitern sichtbar, nicht erst am Ende versteckt.</p>
+        <p><strong>Nachbau-Tipp:</strong> Wer ein ähnliches Simulations-Tool für ein anderes Fachgebiet bauen will, sollte zuerst die Kippgröße festlegen (hier: der Schwellenwert-Übergang UVgO/EU-weit) und erst danach die Bausteine so dimensionieren, dass die Kippgröße bei plausibler Stückzahl in beide Richtungen überschreitbar ist — sonst bleibt die Live-Demo folgenlos.</p>
+        <p><strong>Grenzen des Modells:</strong> Stückpreise und Pauschalen sind didaktische Beispielwerte, keine realen Marktpreise. Der Simulator bildet Phase 3 (RE-Kern bis Leistungsverzeichnis + Wertungsmatrix) ab — Vergabebekanntmachung, Vertragsentwurf, Angebots-Formblätter und Vergabevermerk sind bewusst ausgeklammert (reine Vergaberechts-Formalia ohne RE-Lehrwert).</p>
+      </div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+      <div class="footer-content footer-sans">
+        <div class="schritt"><strong>Opener</strong><span class="regie">(Reiter "Auftrag", Leitgedanke laut vorlesen)</span>Ihr seid Business-Analyst:in bei einer Kommune. Der Fuhrpark wird auf E-Bikes umgestellt. Fünf Fachbereiche haben Anforderungen — und ihr werdet gleich live erleben, wie aus fünf harmlosen Einzelwünschen ein komplett anderes Vergabeverfahren werden kann.</div>
+        <div class="schritt"><strong>Fuhrpark &amp; Mobilität</strong><span class="regie">(Reiter wechseln, F1 an-/abklicken)</span>Reichweite, Ladezeit, Rahmengrößen — alles NFA oder Constraint, alles verhandelbar. Aber schaut auf den Rechner oben: jeder Klick bewegt die Zahl.</div>
+        <div class="schritt"><strong>Arbeitssicherheit</strong><span class="regie">(auf A1/A2 zeigen, Klick-Versuch auf das Schloss)</span>Versucht, StVZO-Beleuchtung abzuwählen. Geht nicht — Schloss-Icon. Das ist Absicht: Norm-vorgegebene Mittel sind keine Verhandlungsmasse.</div>
+        <div class="schritt"><strong>Vergabestelle &amp; Recht</strong><span class="regie">(V1-Sonderkarte zeigen)</span>Hier steht die eigentliche Pointe: V1 hat keine Checkbox. Das Verfahrensregime wird nicht gewählt — es ergibt sich. Aus allem, was ihr in den anderen vier Reitern schon angeklickt habt.</div>
+        <div class="schritt"><strong>Nachhaltigkeit</strong><span class="regie">(N2 zeigen, "in Kraft, stufenweise" betonen)</span>Die Batterieverordnung ist bereits geltendes Recht, wird aber erst stufenweise bis 2027 voll wirksam — deshalb der Zusatz im Badge, nicht nur "Norm-Mittel".</div>
+        <div class="schritt"><strong>Finanzen &amp; Haushalt</strong><span class="regie">(Fi1 aktivieren, Budget eintragen; Fi4 als Kontrast zeigen)</span>Fi1 ist eine Obergrenze, keine Spezifikation — trotzdem tragen wir sie ein und beobachten, ob wir sie sprengen. Fi4 dagegen ist gar kein Muss-Kriterium — bewusst als Gegenbeispiel.</div>
+        <div class="schritt"><strong>Der Kipp-Moment</strong><span class="regie">(Stückzahl-Regler langsam von 10 auf 100 ziehen, AG-Typ umschalten)</span>Und jetzt der Höhepunkt: Ich ziehe nur die Stückzahl hoch — nichts sonst. Seht ihr, wie der Badge von grün auf rot springt? National wird EU-weit. Das ist der Systemsprung, den keine Einzelanforderung allein ausgelöst hätte.</div>
+        <div class="schritt"><strong>Leistungsverzeichnis</strong><span class="regie">(Reiter wechseln, auf die Lücken-Box zeigen)</span>Jede Position ist bis zu ihrem Baustein zurückverfolgbar. Und: nicht jeder Baustein wird eine Position — das steht hier bewusst ausgeschrieben, nicht nur weggelassen.</div>
+        <div class="schritt"><strong>Wertungsmatrix</strong><span class="regie">(einen Regler verschieben, Summe beobachten)</span>Die Gewichtung ist Ermessen — § 127 GWB verlangt, dieses Ermessen zu dokumentieren. Wenn die Summe nicht mehr 100 % ergibt, seht ihr sofort, warum das in echt ein Problem wäre.</div>
+        <div class="schritt"><strong>Schluss / Klarheits-Sprung</strong>Requirements Engineering endet nicht bei der einzelnen Anforderung. Es endet bei ihrer Wirkung im System — und genau diesen Sprung habt ihr gerade selbst ausgelöst, nicht nur gehört.</div>
+        <p class="regie">Allgemeine Regie-Hinweise: Den Kipp-Moment nicht vorwegnehmen — Stückzahl erst am Ende der Fachbereichs-Reiter langsam hochziehen, damit der Sprung überrascht. Beamer-Modus vor Beginn einmal testweise durchklicken (Footer blendet sich ab Stufe 1 automatisch aus).</p>
+      </div>
+    </details>
+  </div>
+</footer>
 
 <script>
 (function(){
