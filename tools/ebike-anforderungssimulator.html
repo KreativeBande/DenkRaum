@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Anforderungssimulator: E-Bike-Beschaffung — Michaelas Denkraum</title>
+<style>
+  html[data-beamer="1"]{zoom:1.35}
+  html[data-beamer="2"]{zoom:1.75}
+  :root{
+    --bg:#f6f8fc; --panel:#ffffff; --ink:#1f2937; --muted:#6b7280; --line:#d9e1ea;
+    --accent:#15803d; --accent-soft:#e9f7ee;
+    --blue:#1d4ed8; --blue-soft:#dbeafe;
+    --violet:#4f46e5; --violet-soft:#e8e6fb;
+    --amber:#92400e; --amber-soft:#fef3c7;
+    --rose:#be185d; --rose-soft:#fdf2f8;
+    --slate:#334155; --slate-soft:#e2e8f0;
+    --teal:#0f766e; --teal-soft:#ccfbf1;
+    --red:#b91c1c; --red-soft:#fee2e2;
+    --shadow:0 16px 34px rgba(15,23,42,.08);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:linear-gradient(180deg,#fbfcff 0%,#f4f6fa 100%);
+    min-height:100vh;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:20px 20px 60px}
+
+  header.topbar{
+    display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;
+    margin-bottom:16px;
+  }
+  .back-link{font-size:13.5px;color:var(--muted);text-decoration:none;font-weight:600}
+  .back-link:hover{color:var(--accent)}
+  .trainer{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .signature{text-align:right;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.4}
+  .signature span{display:block;font-weight:500;color:var(--muted);font-size:12px}
+  .signature:hover{color:var(--accent)}
+  .beamer-btn{
+    border:1.5px solid var(--line);background:#fff;color:var(--ink);
+    padding:9px 14px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;
+  }
+  .beamer-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  .hero{
+    background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:22px;
+    box-shadow:var(--shadow);padding:24px 26px;margin-bottom:16px;
+  }
+  .hero h1{margin:0 0 8px;font-size:clamp(22px,3.4vw,30px);line-height:1.15;color:var(--ink)}
+  .hero p{margin:0;color:var(--muted);font-size:15px;line-height:1.6;max-width:880px}
+  .hero .badge-row{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+  .tag{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700;background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+
+  details.persona-note{
+    background:rgba(255,255,255,.9);border:1px dashed var(--line);border-radius:14px;
+    padding:2px 18px;margin-bottom:16px;font-size:13.5px;color:var(--muted);
+  }
+  details.persona-note summary{cursor:pointer;font-weight:700;color:var(--ink);padding:12px 0;list-style:none}
+  details.persona-note summary::-webkit-details-marker{display:none}
+  details.persona-note summary::before{content:"▸ ";color:var(--muted)}
+  details.persona-note[open] summary::before{content:"▾ "}
+  details.persona-note .body{padding-bottom:14px;line-height:1.6}
+
+  /* ===== Schwellenwert-Rechner (sticky) ===== */
+  .calc-bar{
+    position:sticky;top:8px;z-index:15;
+    background:rgba(255,255,255,.98);border:1px solid var(--line);border-radius:18px;
+    box-shadow:var(--shadow);padding:16px 20px;margin-bottom:18px;
+    backdrop-filter:blur(6px);
+  }
+  .calc-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .calc-title{font-weight:800;font-size:14px;color:var(--ink);display:flex;align-items:center;gap:7px}
+  .calc-title .pin{color:var(--accent)}
+  .calc-controls{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  .stueckzahl-ctrl{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);font-weight:600}
+  .stueckzahl-ctrl input[type="range"]{width:140px}
+  .stueckzahl-ctrl b{color:var(--ink);font-size:14px;min-width:34px;display:inline-block;text-align:right}
+  .agtyp-ctrl{display:flex;gap:10px;font-size:12.5px;color:var(--muted)}
+  .agtyp-ctrl label{display:flex;align-items:center;gap:5px;cursor:pointer;font-weight:600}
+  .calc-result{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+  .calc-value{font-size:clamp(26px,4vw,36px);font-weight:800;color:var(--ink);line-height:1}
+  .calc-value .cur{font-size:16px;color:var(--muted);font-weight:700;margin-left:4px}
+  .calc-badge{padding:8px 16px;border-radius:12px;font-weight:800;font-size:14px;white-space:nowrap}
+  .calc-badge.uvgo{background:var(--accent-soft);color:var(--accent)}
+  .calc-badge.euweit{background:var(--red-soft);color:var(--red)}
+  .threshold-track{position:relative;height:10px;border-radius:6px;background:var(--bg);margin-top:10px;overflow:visible}
+  .threshold-fill{position:absolute;top:0;left:0;height:100%;border-radius:6px;background:var(--accent);transition:width .25s ease, background .25s ease}
+  .threshold-fill.over{background:var(--red)}
+  .threshold-mark{position:absolute;top:-4px;width:2px;height:18px;background:var(--slate)}
+  .threshold-mark .lbl{position:absolute;top:20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--muted);white-space:nowrap;font-weight:700}
+  .calc-hint{font-size:12.5px;color:var(--muted);margin-top:22px;line-height:1.5}
+  .budget-row{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);display:flex;align-items:center;gap:10px;font-size:13px;flex-wrap:wrap}
+  .budget-row input{border:1.5px solid var(--line);border-radius:8px;padding:7px 10px;font-size:13.5px;width:130px}
+  .budget-warn{font-weight:800;color:var(--red)}
+  .budget-ok{font-weight:800;color:var(--accent)}
+
+  /* ===== Tabs ===== */
+  .tabnav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+  .tabbtn{
+    border:1.5px solid var(--line);background:#fff;color:var(--muted);
+    padding:9px 15px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;
+  }
+  .tabbtn .n{display:inline-block;min-width:16px;padding:0 4px;border-radius:8px;background:var(--bg);color:var(--muted);font-size:11px;margin-left:5px}
+  .tabbtn.active{background:var(--ink);border-color:var(--ink);color:#fff}
+  .tabbtn.active .n{background:rgba(255,255,255,.2);color:#fff}
+
+  .panel{display:none}
+  .panel.active{display:block}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:0 6px 18px rgba(15,23,42,.04);padding:22px 24px;margin-bottom:16px}
+  .card h2{margin:0 0 10px;font-size:19px;color:var(--ink)}
+  .card h3{margin:18px 0 8px;font-size:15px;color:var(--ink)}
+  .card p{margin:0 0 10px;line-height:1.6;color:var(--ink);font-size:14.5px}
+  .card p.muted{color:var(--muted)}
+  .card ul{line-height:1.7;font-size:14.5px;padding-left:22px}
+  .cta-row{margin-top:16px}
+  .btn{border:none;background:var(--accent);color:#fff;padding:12px 20px;border-radius:12px;font-weight:800;font-size:14.5px;cursor:pointer}
+  .btn:hover{opacity:.92}
+  .btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+
+  .fach-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+  .baustein{
+    border:1.5px solid var(--line);border-radius:16px;padding:15px 16px 14px;background:#fdfefe;
+    display:flex;flex-direction:column;gap:8px;position:relative;transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .baustein.checked{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .baustein.locked{border-color:var(--amber);background:var(--amber-soft)}
+  .baustein-top{display:flex;align-items:flex-start;gap:10px}
+  .baustein-check{
+    flex-shrink:0;width:22px;height:22px;border-radius:6px;border:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;margin-top:1px;font-size:13px;
+    background:#fff;user-select:none;
+  }
+  .baustein.checked .baustein-check{background:var(--accent);border-color:var(--accent);color:#fff}
+  .baustein.locked .baustein-check{background:var(--amber);border-color:var(--amber);color:#fff;cursor:not-allowed}
+  .baustein-text{font-weight:700;font-size:14.5px;line-height:1.4;color:var(--ink);flex:1}
+  .baustein-id{color:var(--muted);font-weight:800;margin-right:4px}
+  .baustein-badges{display:flex;gap:6px;flex-wrap:wrap;margin-left:32px}
+  .badge{font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;white-space:nowrap}
+  .badge.fa{background:var(--blue-soft);color:var(--blue)}
+  .badge.nfa{background:var(--violet-soft);color:var(--violet)}
+  .badge.constraint{background:var(--slate-soft);color:var(--slate)}
+  .badge.norm{background:var(--amber-soft);color:var(--amber)}
+  .badge.zuschlag{background:var(--accent-soft);color:var(--accent)}
+  .badge.eignung{background:var(--teal-soft);color:var(--teal)}
+  .badge.prozess{background:var(--rose-soft);color:var(--rose)}
+  .badge.verhandlung{background:#fff7ed;color:#c2410c}
+  .badge.kosten{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+  .baustein-erklaerung{margin-left:32px;font-size:13px;color:var(--muted);line-height:1.55}
+  .baustein-lock-note{margin-left:32px;font-size:12px;color:var(--amber);font-weight:700}
+  .budget-input-row{margin-left:32px;display:flex;align-items:center;gap:8px;font-size:13px}
+  .budget-input-row input{border:1.5px solid var(--line);border-radius:8px;padding:6px 9px;width:110px;font-size:13.5px}
+
+  /* ===== V1 Sonderkarte ===== */
+  .v1-card{
+    grid-column:1/-1;background:linear-gradient(120deg,#fff 0%,var(--amber-soft) 130%);
+    border:1.5px solid var(--amber);border-radius:16px;padding:18px 20px;
+  }
+  .v1-card .v1-kicker{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--amber);background:#fff;padding:4px 10px;border-radius:999px;margin-bottom:8px}
+  .v1-card h3{margin:0 0 6px;font-size:16px}
+  .v1-card p{margin:0;font-size:14px;line-height:1.6;color:var(--ink)}
+
+  /* ===== Leistungsverzeichnis ===== */
+  table.lv{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}
+  table.lv th,table.lv td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+  table.lv th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.03em;font-weight:800}
+  table.lv td.num{text-align:right;font-variant-numeric:tabular-nums}
+  table.lv tr.total td{font-weight:800;border-top:2px solid var(--ink);border-bottom:none;font-size:14.5px}
+  .lv-origin{font-size:11px;font-weight:800;color:var(--muted);background:var(--bg);padding:2px 7px;border-radius:6px}
+  .lv-skip-box{background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:14px 16px;margin-top:16px;font-size:13.5px;line-height:1.6;color:var(--muted)}
+  .lv-skip-box b{color:var(--ink)}
+
+  /* ===== Wertungsmatrix ===== */
+  .wert-row{border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+  .wert-row-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .wert-row-top h4{margin:0;font-size:14.5px;color:var(--ink)}
+  .wert-pct{font-weight:800;font-size:18px;color:var(--accent);min-width:52px;text-align:right}
+  .wert-row input[type="range"]{width:100%}
+  .wert-meta{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .wert-sum{margin-top:10px;padding:12px 16px;border-radius:12px;font-weight:800;font-size:14.5px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .wert-sum.ok{background:var(--accent-soft);color:var(--accent)}
+  .wert-sum.bad{background:var(--red-soft);color:var(--red)}
+  .btn-mini{border:1.5px solid var(--line);background:#fff;padding:7px 12px;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;color:var(--ink)}
+
+  .abschluss-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:6px}
+  .abschluss-box{border:1.5px solid var(--line);border-radius:14px;padding:16px}
+  .abschluss-box h4{margin:0 0 6px;font-size:14px;color:var(--ink)}
+  .abschluss-box p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.6}
+
+  footer.pagefoot{max-width:1180px;margin:24px auto 0;padding:0 20px;color:var(--muted);font-size:12.5px;text-align:center;line-height:1.6}
+
+  @media(max-width:640px){
+    .wrap{padding:14px}
+    header.topbar{flex-direction:column}
+    .signature{text-align:left}
+    .calc-bar{position:static}
+    .calc-result{flex-direction:column;align-items:flex-start}
+    .baustein-badges,.baustein-erklaerung,.budget-input-row{margin-left:0}
+    table.lv{display:block;overflow-x:auto;white-space:nowrap}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="topbar">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <div class="trainer">
+      <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
+      <button class="beamer-btn" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>🚲 Anforderungssimulator: E-Bike-Beschaffung (Öffentlicher Dienst)</h1>
+    <p>Eine Kommune beschafft eine E-Bike-Flotte für den Fuhrpark. Fünf Fachbereiche bringen ihre Anforderungen ein — jede Auswahl wirkt sich live auf den geschätzten Auftragswert aus. Der Dreh- und Angelpunkt: Ab welcher Summe kippt das Vergabeverfahren von national (UVgO) zu EU-weit (GWB/VgV)? Das entscheidet sich erst am Ende, aus der Summe aller Einzelanforderungen.</p>
+    <div class="badge-row">
+      <span class="tag">IREB · FA/NFA/Constraint</span>
+      <span class="tag">⚖ Norm-vorgegebene Mittel</span>
+      <span class="tag">Leistungsverzeichnis</span>
+      <span class="tag">Wertungsmatrix (UfAB-nah)</span>
+    </div>
+  </section>
+
+  <details class="persona-note">
+    <summary>Hinweis: Personas in diesem Tool weichen vom festen Cast ab — warum?</summary>
+    <div class="body">
+      Dieser Simulator nutzt fünf rollenbasierte Fachbereichs-Personas (Fuhrpark/Mobilität, Arbeitssicherheit,
+      Vergabestelle/Recht, Nachhaltigkeit, Finanzen/Haushalt) statt des sonst verwendeten festen Team-Casts
+      (Ela, Knut, Sarah, Petra, Herr Bachmeier). Grund: Öffentliche Beschaffung folgt einem eigenen,
+      formalisierten Rollenmodell (Bedarfsträger, Vergabestelle, Haushalt), das sich nicht sauber auf den
+      Projektteam-Cast abbilden lässt, ohne die vergaberechtliche Realität zu verzerren. Die Abweichung ist
+      damit bewusst und fachlich begründet, nicht versehentlich.
+    </div>
+  </details>
+
+  <!-- ===== Schwellenwert-Rechner ===== -->
+  <div class="calc-bar">
+    <div class="calc-top">
+      <div class="calc-title"><span class="pin">📊</span> Live-Schwellenwert-Rechner</div>
+      <div class="calc-controls">
+        <div class="stueckzahl-ctrl">
+          Stückzahl <input type="range" id="stueckzahlRange" min="10" max="100" step="5" value="40"><b id="stueckzahlVal">40</b>
+        </div>
+        <div class="agtyp-ctrl" id="agTypCtrl">
+          <label><input type="radio" name="agtyp" value="sonstige" checked> sonstige öff. AG (216.000 €)</label>
+          <label><input type="radio" name="agtyp" value="bund"> obere/oberste Bundesbehörde (140.000 €)</label>
+        </div>
+      </div>
+    </div>
+    <div class="calc-result">
+      <div>
+        <div class="calc-value" id="calcValue">0<span class="cur">€ netto (geschätzt)</span></div>
+        <div class="threshold-track" id="thresholdTrack">
+          <div class="threshold-fill" id="thresholdFill"></div>
+          <div class="threshold-mark" id="thresholdMark"><span class="lbl" id="thresholdLbl">Schwelle</span></div>
+        </div>
+      </div>
+      <div class="calc-badge" id="calcBadge">UVgO · national</div>
+    </div>
+    <div class="calc-hint">Grundlage Schwellenwerte: Delegierte VO (EU) 2025/2150–2152 v. 22.10.2025, gültig 01.01.2026–31.12.2027 · §106 GWB. V1 (Vergabestelle) ist der Dreh- und Angelpunkt: das Verfahrensregime ergibt sich erst aus der Summe aller gewählten Fachbereichs-Bausteine.</div>
+    <div class="budget-row" id="budgetRow" style="display:none">
+      <span>Fi1 — Budget-Obergrenze der Kommune:</span>
+      <input type="number" id="budgetInput" placeholder="z. B. 130000" min="0" step="1000">
+      <span>€</span>
+      <span id="budgetStatus"></span>
+    </div>
+  </div>
+
+  <div class="tabnav" id="tabNav"></div>
+
+  <!-- ===== Panel: Auftrag ===== -->
+  <div class="panel active" data-panel="auftrag">
+    <div class="card">
+      <h2>Der Auftrag</h2>
+      <p>Du bist Business-Analyst:in bei einer Kommune. Der Fuhrpark soll auf E-Bikes umgestellt werden — für den
+      Außendienst von Ordnungsamt, Grünflächenpflege und Sozialarbeit. Fünf Fachbereiche haben Anforderungen
+      formuliert. Deine Aufgabe: die Bausteine sichten, klassifizieren (FA/NFA/Constraint/Norm-Mittel) und
+      erleben, wie sich ihre Summe auf den Auftragswert — und damit auf das Vergabeverfahren selbst — auswirkt.</p>
+      <h3>So funktioniert der Simulator</h3>
+      <ul>
+        <li>In den fünf Fachbereichs-Reitern Bausteine an- und abwählen. Bausteine mit ⚖ sind gesetzlich vorgeschrieben und lassen sich nicht abwählen — <em>Norm-vorgegebene Mittel sind nicht verhandelbar</em>.</li>
+        <li>Der Schwellenwert-Rechner oben rechnet live mit: jede Auswahl und die Stückzahl verändern den geschätzten Auftragswert.</li>
+        <li>Im Reiter „Leistungsverzeichnis” siehst du, welche Bausteine zu einer Lieferposition werden — und welche bewusst keine LV-Position sind, weil sie Verfahrens- oder Prozessanforderungen sind.</li>
+        <li>Im Reiter „Wertungsmatrix” stellst du die Zuschlagskriterien-Gewichtung selbst ein und spürst den Ermessensspielraum, der nach § 127 GWB dokumentationspflichtig ist.</li>
+      </ul>
+      <div class="cta-row"><button class="btn" onclick="goToTab('fuhrpark')">Los geht's → Fuhrpark &amp; Mobilität</button></div>
+    </div>
+  </div>
+
+  <!-- ===== Panels: Fachbereiche (per JS gerendert) ===== -->
+  <div class="panel" data-panel="fuhrpark"><div class="card"><h2>🚲 Fuhrpark &amp; Mobilität</h2><p class="muted">Anforderungen an Reichweite, Ladezeit, Ergonomie und Akku aus Sicht des Fuhrparkmanagements.</p><div class="fach-grid" id="grid-fuhrpark"></div></div></div>
+  <div class="panel" data-panel="sicherheit"><div class="card"><h2>🦺 Arbeitssicherheit</h2><p class="muted">Gesetzliche Ausstattungspflichten und Ergonomie-Anforderungen zur Vermeidung von Gefährdungen im Diensteinsatz.</p><div class="fach-grid" id="grid-sicherheit"></div></div></div>
+  <div class="panel" data-panel="vergabe"><div class="card"><h2>⚖️ Vergabestelle &amp; Recht</h2><p class="muted">Formale Voraussetzungen der Beschaffung — und der Mechanismus, der Verfahrensart und Auftragswert verbindet.</p><div class="fach-grid" id="grid-vergabe"></div></div></div>
+  <div class="panel" data-panel="nachhaltigkeit"><div class="card"><h2>♻️ Nachhaltigkeit</h2><p class="muted">Anforderungen an Rücknahme, Recycling, Ersatzteilverfügbarkeit und CO₂-Fußabdruck.</p><div class="fach-grid" id="grid-nachhaltigkeit"></div></div></div>
+  <div class="panel" data-panel="finanzen"><div class="card"><h2>💶 Finanzen &amp; Haushalt</h2><p class="muted">Budget, Wirtschaftlichkeit und Zahlungsmodalitäten — nicht jede Anforderung hier ist ein Muss-Kriterium.</p><div class="fach-grid" id="grid-finanzen"></div></div></div>
+
+  <!-- ===== Panel: Leistungsverzeichnis ===== -->
+  <div class="panel" data-panel="lv">
+    <div class="card">
+      <h2>Leistungsverzeichnis</h2>
+      <p class="muted">Automatisch aus den gewählten Bausteinen abgeleitet. Jede Position bleibt bis zu ihrem
+      Anforderungs-Baustein zurückverfolgbar (IREB-Traceability) — das ist die Pointe dieser Phase.</p>
+      <table class="lv">
+        <thead><tr><th>Pos.</th><th>Bezeichnung</th><th>Menge</th><th>Einheit</th><th>Herkunft</th><th class="num">Preis/Einh.</th><th class="num">Gesamt</th></tr></thead>
+        <tbody id="lvBody"></tbody>
+      </table>
+      <div class="lv-skip-box" id="lvSkipBox"></div>
+    </div>
+  </div>
+
+  <!-- ===== Panel: Wertungsmatrix ===== -->
+  <div class="panel" data-panel="wertung">
+    <div class="card">
+      <h2>Wertungsmatrix (Zuschlagskriterien)</h2>
+      <p class="muted">UfAB-nahes Schema. Die Gewichtung selbst ist eine dokumentationspflichtige
+      Ermessensentscheidung der Vergabestelle (§ 127 GWB) — probier ruhig aus, wie sich eine Verschiebung
+      anfühlt, und beobachte, wenn die Summe nicht mehr 100 % ergibt.</p>
+      <div id="wertungList"></div>
+      <div class="wert-sum" id="wertSum"></div>
+      <div class="cta-row"><button class="btn-mini" id="wertReset">Auf 50 / 25 / 15 / 10 % zurücksetzen</button></div>
+    </div>
+  </div>
+
+  <!-- ===== Panel: Abschluss ===== -->
+  <div class="panel" data-panel="abschluss">
+    <div class="card">
+      <h2>Der Klarheits-Sprung: von der Einzelanforderung zur Systemwirkung</h2>
+      <p>Keine der fünf Fachbereichs-Anforderungen war für sich genommen dramatisch. Aber gemeinsam haben sie
+      den geschätzten Auftragswert verschoben — und damit womöglich das komplette Vergabeverfahren gekippt.
+      Genau das erlebbar zu machen, ist der Kern dieses Simulators: Requirements Engineering endet nicht bei
+      der einzelnen Anforderung, sondern bei ihrer Wirkung im System.</p>
+      <div class="abschluss-grid">
+        <div class="abschluss-box"><h4>Aktueller Stand deiner Simulation</h4><p id="abschlussStand"></p></div>
+        <div class="abschluss-box"><h4>Bewusst ausgeklammert</h4><p>Vergabebekanntmachung, Vertragsentwurf, Angebots-Formblätter und Vergabevermerk sind reine Vergaberechts-Formalia ohne RE-Lehrwert — sie würden den didaktischen Fokus „Anforderung → Konsequenz” verwässern und sind hier bewusst nicht Teil des Simulators.</p></div>
+        <div class="abschluss-box"><h4>Nicht jeder Baustein wird Produkt oder Preis</h4><p>A5 (Unfallprozess), V2 (Losaufteilung), V3 (Referenznachweis), Fi1/Fi3 (Budget/Zahlungsmodalität) und N1 (CO₂-Zuschlagskriterium) beeinflussen die Beschaffung — aber nicht als Lieferposition mit Preis. Das ist selbst eine RE-Lehrsituation: FA/NFA vs. Verfahrens-Constraint sauber trennen.</p></div>
+        <div class="abschluss-box"><h4>Normen-Stand prüfen</h4><p>Vor jedem Einsatz erneut prüfen: EN 15194, DIN EN ISO 4210, aktuelle ProdSG-Fassung und Umsetzungsstand der Batterieverordnung (EU) 2023/1542 — Normen und Schwellenwerte ändern sich.</p></div>
+      </div>
+      <div class="cta-row"><button class="btn ghost" id="resetAllBtn">Simulation zurücksetzen</button></div>
+    </div>
+  </div>
+</div>
+
+<footer class="pagefoot">GPM Karlsruhe · AI4RE · Denken in Räumen — Simulations-Zahlen (Stückpreise, Pauschalen) sind didaktische Beispielwerte, keine realen Marktpreise.</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var FACHBEREICHE = [
+    {key:"fuhrpark", bausteine:[
+      {id:"F1", text:"Reichweite ≥ 60 km bei 10 kg Zuladung", typ:"nfa", typLabel:"NFA · Effizienz (ISO 25010)", erklaerung:"Ziel, nicht Lösung — sagt nichts über Akkugröße.", proStueck:300},
+      {id:"F2", text:"Vollladung ≤ 4 h an 230V-Standardsteckdose", typ:"nfa", typLabel:"NFA · Effizienz", erklaerung:"Zeigt Grenze zwischen Ziel und Technik.", proStueck:150},
+      {id:"F3", text:"Verfügbarkeit in ≥ 3 Rahmengrößen (S/M/L), Körpergröße 155–195 cm", typ:"constraint", typLabel:"Constraint", erklaerung:"Ergonomie-Anforderung, kein konkretes Bauteil vorgeschrieben.", proStueck:50, rahmengroessen:true},
+      {id:"F4", text:"Akku-Garantie ≥ 2 Jahre oder 500 Ladezyklen", typ:"nfa", typLabel:"NFA · Zuverlässigkeit", erklaerung:"Messkriterium macht sie testbar (IREB).", lvPos:"05", lvLabel:"Akku, Garantie ≥ 2 Jahre / 500 Zyklen", lvHinweis:"im Angebotspreis der Pos. 01 enthalten — hier nur zur Traceability ausgewiesen"},
+      {id:"F5", text:"Tretunterstützung endet bei 25 km/h", typ:"norm", typLabel:"⚖ Norm-Mittel", erklaerung:"Pedelec-Klassifikation StVZO §63a / EN 15194:2017 — nicht verhandelbar, daher ⚖-Badge, keine Umformulierung als „Ziel”.", locked:true}
+    ]},
+    {key:"sicherheit", bausteine:[
+      {id:"A1", text:"Vollständige StVZO-Beleuchtungsausstattung", typ:"norm", typLabel:"⚖ Norm-Mittel", erklaerung:"Gesetzlich vorgeschrieben, nicht optimierbar.", locked:true},
+      {id:"A2", text:"Bremsprüfwerte nach DIN EN ISO 4210-2", typ:"norm", typLabel:"⚖ Norm-Mittel", erklaerung:"Sicherheitsnorm, Prüfpflicht vor Zuschlag.", locked:true},
+      {id:"A3", text:"Sichtbarkeit bei Dämmerungseinsatz (Reflektoren, Kleidungserkennung)", typ:"nfa", typLabel:"NFA · Sicherheit", erklaerung:"Zielorientiert formuliert, Lösung offen.", proStueck:40},
+      {id:"A4", text:"Verstellbare Sattel-/Lenkerposition zur Haltungsschadenvermeidung", typ:"nfa", typLabel:"NFA · Ergonomie", erklaerung:"Bezug: ArbSchG §5 Gefährdungsbeurteilung.", proStueck:60},
+      {id:"A5", text:"Unfalldokumentationsprozess bei Diensteinsatz", typ:"prozess", typLabel:"Prozessanforderung", erklaerung:"Zeigt: nicht jede Anforderung ist Produkteigenschaft.", noLv:true}
+    ]},
+    {key:"vergabe", bausteine:[
+      {id:"V1", text:"Verfahrensregime nach geschätztem Auftragswert", typ:"norm", typLabel:"⚖ Norm-Mittel · Kernstück", erklaerung:"Ab 216.000 € netto (sonstige öff. AG) bzw. 140.000 € (obere/oberste Bundesbehörden) EU-weit nach GWB/VgV; darunter UVgO. Grundlage: Delegierte VO (EU) 2025/2150–2152 v. 22.10.2025, gültig 01.01.2026–31.12.2027. Ergibt sich erst aus der Summe der übrigen Bausteine — siehe Schwellenwert-Rechner oben.", special:true, noLv:true},
+      {id:"V2", text:"Prüfung Fach-/Teillose (Mittelstandsförderung)", typ:"constraint", typLabel:"Constraint", erklaerung:"§ 97 Abs. 4 GWB.", noLv:true},
+      {id:"V3", text:"Referenznachweis: vergleichbare Flotte ≥ 50 Räder, letzte 3 Jahre", typ:"eignung", typLabel:"Eignungskriterium", erklaerung:"Zeigt Unterschied Eignung vs. Zuschlag.", noLv:true, wertung:"referenzen"},
+      {id:"V4", text:"CE-Konformitätsnachweis nach ProdSG", typ:"norm", typLabel:"⚖ Norm-Mittel", erklaerung:"Formale Zulässigkeitsvoraussetzung.", locked:true}
+    ]},
+    {key:"nachhaltigkeit", bausteine:[
+      {id:"N1", text:"CO₂-Fußabdruck Produktion als Zuschlagskriterium (z. B. 10 % Gewichtung)", typ:"zuschlag", typLabel:"Zuschlagskriterium", erklaerung:"Vergabefremdes Kriterium zulässig nach § 97 Abs. 3 GWB.", noLv:true, wertung:"nachhaltigkeit"},
+      {id:"N2", text:"Rücknahme-/Recyclingnachweis Akku", typ:"norm", typLabel:"⚖ Norm-Mittel · in Kraft, stufenweise", erklaerung:"Batterieverordnung (EU) 2023/1542, in Kraft seit 18.02.2024, Pflichten stufenweise bis 2027.", pauschale:1500, locked:true, lvPos:"08", lvLabel:"Rücknahme/Recycling Altakkus (Nachweis nach Batterie-VO)"},
+      {id:"N3", text:"Ersatzteilverfügbarkeit ≥ 5 Jahre ab Kaufdatum", typ:"nfa", typLabel:"NFA · Wartbarkeit (ISO 25010)", erklaerung:"Nachhaltigkeit als Qualitätsmerkmal, nicht nur Zuschlagskriterium.", pauschale:3000, lvPos:"06", lvLabel:"Ersatzteilpaket, Verfügbarkeitszusage ≥ 5 Jahre", wertung:"nachhaltigkeit"},
+      {id:"N4", text:"Rücknahme/Vermeidung Einwegverpackung", typ:"nfa", typLabel:"NFA", erklaerung:"Ergänzt Lieferkette.", proStueck:15}
+    ]},
+    {key:"finanzen", bausteine:[
+      {id:"Fi1", text:"Gesamtbudget als Obergrenze, nicht als Spezifikation", typ:"constraint", typLabel:"Constraint", erklaerung:"Zeigt Problem-Solution-Falle: Budget ist kein technisches Merkmal.", noLv:true, budgetInput:true},
+      {id:"Fi2", text:"TCO-Vergleich Kauf vs. Leasing über 4 Jahre inkl. Wartung/Akkutausch", typ:"nfa", typLabel:"NFA · Wirtschaftlichkeit", erklaerung:"Wirtschaftlichkeitsgebot § 97 Abs. 5 GWB.", pauschale:12000, lvPos:"07", lvLabel:"Wartungsvertrag, Laufzeit 4 Jahre"},
+      {id:"Fi3", text:"Ratenzahlung bei Tranchenlieferung", typ:"constraint", typLabel:"Constraint", erklaerung:"Zahlungsmodalität, keine Produktanforderung.", noLv:true},
+      {id:"Fi4", text:"Skonto-/Mengenrabatt ab 20 Einheiten", typ:"verhandlung", typLabel:"Verhandlungsposition", erklaerung:"Kein Muss-Kriterium — bewusst als Kontrastbeispiel nutzbar. Wirkt nur ab 20 Einheiten.", rabatt:0.03, minStueck:20, noLv:true}
+    ]}
+  ];
+
+  var TABS = [
+    {key:"auftrag", label:"Auftrag"},
+    {key:"fuhrpark", label:"Fuhrpark"},
+    {key:"sicherheit", label:"Arbeitssicherheit"},
+    {key:"vergabe", label:"Vergabe & Recht"},
+    {key:"nachhaltigkeit", label:"Nachhaltigkeit"},
+    {key:"finanzen", label:"Finanzen"},
+    {key:"lv", label:"Leistungsverzeichnis"},
+    {key:"wertung", label:"Wertungsmatrix"},
+    {key:"abschluss", label:"Abschluss"}
+  ];
+
+  var WERTUNG_DEFAULT = [
+    {key:"preis", label:"Preis (Gesamt-LV-Summe)", pct:50, methode:"Günstigstes Angebot = 100 Punkte, linear", herkunft:"LV-Summe"},
+    {key:"technik", label:"Technik/Qualität (Reichweite, Ladezeit über Mindestanforderung)", pct:25, methode:"Punktraster nach Erfüllungsgrad", herkunft:"F1, F2"},
+    {key:"nachhaltigkeit", label:"Nachhaltigkeit (CO₂-Fußabdruck, Ersatzteilverfügbarkeit)", pct:15, methode:"Punktraster", herkunft:"N1, N3"},
+    {key:"referenzen", label:"Referenzen/Eignung (Flottengröße, Erfahrung)", pct:10, methode:"Erfüllt/nicht erfüllt bzw. Punktraster", herkunft:"V3"}
+  ];
+
+  var GRUNDPREIS = 2400; // € je Pedelec, deckt die norm-verpflichtenden Bausteine (F5, A1, A2, V4) ab
+
+  var STORAGE_KEY = "ebikeSimulatorStateV1";
+
+  function safeLoad(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){ return null; }
+  }
+  function safeSave(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  var state = {
+    selected:{},
+    stueckzahl:40,
+    agtyp:"sonstige",
+    budget:null,
+    wertung:{},
+    activeTab:"auftrag",
+    beamerLevel:0
+  };
+
+  // init selections: locked bausteine always on, others default on (so the calculator has something to show)
+  FACHBEREICHE.forEach(function(f){
+    f.bausteine.forEach(function(b){
+      if(b.special) return;
+      state.selected[b.id] = true;
+    });
+  });
+  WERTUNG_DEFAULT.forEach(function(w){ state.wertung[w.key] = w.pct; });
+
+  var loaded = safeLoad();
+  if(loaded){
+    if(loaded.selected) for(var k in loaded.selected){ if(state.selected.hasOwnProperty(k)) state.selected[k] = loaded.selected[k]; }
+    if(loaded.stueckzahl) state.stueckzahl = loaded.stueckzahl;
+    if(loaded.agtyp) state.agtyp = loaded.agtyp;
+    if(loaded.budget !== undefined) state.budget = loaded.budget;
+    if(loaded.wertung) for(var wk in loaded.wertung){ if(state.wertung.hasOwnProperty(wk)) state.wertung[wk] = loaded.wertung[wk]; }
+    if(loaded.beamerLevel) state.beamerLevel = loaded.beamerLevel;
+  }
+  // locked bausteine can never be off
+  FACHBEREICHE.forEach(function(f){
+    f.bausteine.forEach(function(b){
+      if(b.locked) state.selected[b.id] = true;
+    });
+  });
+
+  function findBaustein(id){
+    for(var i=0;i<FACHBEREICHE.length;i++){
+      for(var j=0;j<FACHBEREICHE[i].bausteine.length;j++){
+        if(FACHBEREICHE[i].bausteine[j].id === id) return FACHBEREICHE[i].bausteine[j];
+      }
+    }
+    return null;
+  }
+
+  function fmtEUR(n){
+    return Math.round(n).toLocaleString("de-DE");
+  }
+
+  // ===== Rendering: Tabs =====
+  var tabNav = document.getElementById("tabNav");
+  TABS.forEach(function(t){
+    var btn = document.createElement("button");
+    btn.className = "tabbtn";
+    btn.dataset.tab = t.key;
+    btn.textContent = t.label;
+    btn.addEventListener("click", function(){ goToTab(t.key); });
+    tabNav.appendChild(btn);
+  });
+
+  function goToTab(key){
+    state.activeTab = key;
+    document.querySelectorAll(".tabbtn").forEach(function(b){ b.classList.toggle("active", b.dataset.tab === key); });
+    document.querySelectorAll(".panel").forEach(function(p){ p.classList.toggle("active", p.dataset.panel === key); });
+    window.scrollTo({top:0, behavior:"smooth"});
+    safeSave();
+  }
+  window.goToTab = goToTab;
+
+  // ===== Rendering: Fachbereichs-Karten =====
+  function badgeClass(typ){
+    return {fa:"fa", nfa:"nfa", constraint:"constraint", norm:"norm", zuschlag:"zuschlag", eignung:"eignung", prozess:"prozess", verhandlung:"verhandlung"}[typ] || "constraint";
+  }
+
+  function kostenLabel(b){
+    if(b.special) return "";
+    if(b.pauschale) return "Pauschale " + fmtEUR(b.pauschale) + " €";
+    if(b.proStueck) return "+" + fmtEUR(b.proStueck) + " €/Stück";
+    if(b.rabatt) return "−" + Math.round(b.rabatt*100) + " % (ab " + b.minStueck + " Stk.)";
+    return "kein Kostenfaktor";
+  }
+
+  function renderFachbereich(f){
+    var grid = document.getElementById("grid-" + f.key);
+    grid.innerHTML = "";
+    f.bausteine.forEach(function(b){
+      var el = document.createElement("div");
+      if(b.special){
+        el.className = "v1-card";
+        el.innerHTML =
+          '<span class="v1-kicker">⚖ ' + b.id + ' · Kernstück der Simulation</span>' +
+          '<h3>' + b.text + '</h3>' +
+          '<p>' + b.erklaerung + '</p>';
+        grid.appendChild(el);
+        return;
+      }
+      var checked = !!state.selected[b.id];
+      el.className = "baustein" + (checked ? " checked" : "") + (b.locked ? " locked" : "");
+      el.dataset.id = b.id;
+
+      var html = '<div class="baustein-top">';
+      html += '<div class="baustein-check" data-id="' + b.id + '">' + (b.locked ? "🔒" : (checked ? "✓" : "")) + '</div>';
+      html += '<div class="baustein-text"><span class="baustein-id">' + b.id + '</span>' + b.text + '</div>';
+      html += '</div>';
+      html += '<div class="baustein-badges">';
+      html += '<span class="badge ' + badgeClass(b.typ) + '">' + b.typLabel + '</span>';
+      html += '<span class="badge kosten">' + kostenLabel(b) + '</span>';
+      html += '</div>';
+      html += '<div class="baustein-erklaerung">' + b.erklaerung + '</div>';
+      if(b.locked){
+        html += '<div class="baustein-lock-note">Norm-vorgegebenes Mittel — nicht abwählbar.</div>';
+      }
+      if(b.budgetInput){
+        html += '<div class="budget-input-row" id="budgetInlineRow" style="' + (checked ? "" : "display:none") + '">' +
+          '<span>Obergrenze:</span><input type="number" id="budgetInputInline" min="0" step="1000" value="' + (state.budget !== null ? state.budget : "") + '" placeholder="z. B. 130000"><span>€</span></div>';
+      }
+      el.innerHTML = html;
+      grid.appendChild(el);
+
+      if(!b.locked){
+        el.addEventListener("click", function(ev){
+          if(ev.target && ev.target.id === "budgetInputInline") return;
+          toggleBaustein(b.id);
+        });
+      }
+    });
+
+    // wire budget inline input if present
+    var bi = grid.querySelector("#budgetInputInline");
+    if(bi){
+      bi.addEventListener("input", function(){
+        state.budget = bi.value === "" ? null : Number(bi.value);
+        syncBudgetUI();
+        safeSave();
+      });
+      bi.addEventListener("click", function(ev){ ev.stopPropagation(); });
+    }
+  }
+
+  function toggleBaustein(id){
+    var b = findBaustein(id);
+    if(!b || b.locked) return;
+    state.selected[id] = !state.selected[id];
+    safeSave();
+    renderAll();
+  }
+
+  // ===== Schwellenwert-Rechner =====
+  var THRESHOLDS = {sonstige:216000, bund:140000};
+
+  function computeAuftragswert(){
+    var proStueckAufschlag = 0;
+    var pauschalen = 0;
+    FACHBEREICHE.forEach(function(f){
+      f.bausteine.forEach(function(b){
+        if(b.special || b.locked) return;
+        if(!state.selected[b.id]) return;
+        if(b.proStueck) proStueckAufschlag += b.proStueck;
+        if(b.pauschale) pauschalen += b.pauschale;
+      });
+    });
+    // norm-mandatory pauschalen (e.g. N2 Recycling) always count, independent of the checkbox lock state
+    FACHBEREICHE.forEach(function(f){
+      f.bausteine.forEach(function(b){
+        if(b.locked && b.pauschale) pauschalen += b.pauschale;
+      });
+    });
+    var preisProStueck = GRUNDPREIS + proStueckAufschlag;
+    var summe = preisProStueck * state.stueckzahl + pauschalen;
+
+    var fi4 = findBaustein("Fi4");
+    if(state.selected["Fi4"] && state.stueckzahl >= fi4.minStueck){
+      summe = summe * (1 - fi4.rabatt);
+    }
+    return {summe:summe, preisProStueck:preisProStueck, pauschalen:pauschalen};
+  }
+
+  function renderCalc(){
+    var calc = computeAuftragswert();
+    document.getElementById("calcValue").innerHTML = fmtEUR(calc.summe) + '<span class="cur">€ netto (geschätzt)</span>';
+    var schwelle = THRESHOLDS[state.agtyp];
+    var pct = Math.min(100, (calc.summe / schwelle) * 100);
+    var over = calc.summe >= schwelle;
+    var fill = document.getElementById("thresholdFill");
+    fill.style.width = pct + "%";
+    fill.classList.toggle("over", over);
+    var mark = document.getElementById("thresholdMark");
+    mark.style.left = "100%";
+    document.getElementById("thresholdLbl").textContent = "Schwelle " + fmtEUR(schwelle) + " €";
+    var badge = document.getElementById("calcBadge");
+    if(over){
+      badge.textContent = "EU-weit · GWB/VgV";
+      badge.className = "calc-badge euweit";
+    }else{
+      badge.textContent = "UVgO · national";
+      badge.className = "calc-badge uvgo";
+    }
+    document.getElementById("stueckzahlVal").textContent = state.stueckzahl;
+    syncBudgetUI(calc.summe);
+  }
+
+  function syncBudgetUI(summe){
+    var row = document.getElementById("budgetRow");
+    var show = !!state.selected["Fi1"];
+    row.style.display = show ? "flex" : "none";
+    var inlineRow = document.getElementById("budgetInlineRow");
+    if(inlineRow) inlineRow.style.display = show ? "flex" : "none";
+    if(!show) return;
+    document.getElementById("budgetInput").value = state.budget !== null ? state.budget : "";
+    var status = document.getElementById("budgetStatus");
+    if(state.budget === null || state.budget === ""){
+      status.textContent = "";
+      return;
+    }
+    if(summe === undefined) summe = computeAuftragswert().summe;
+    if(summe > state.budget){
+      status.innerHTML = '<span class="budget-warn">⚠ ' + fmtEUR(summe - state.budget) + ' € über Budget</span>';
+    }else{
+      status.innerHTML = '<span class="budget-ok">✓ innerhalb des Budgets</span>';
+    }
+  }
+
+  document.getElementById("stueckzahlRange").addEventListener("input", function(ev){
+    state.stueckzahl = Number(ev.target.value);
+    safeSave();
+    renderAll();
+  });
+  document.querySelectorAll('input[name="agtyp"]').forEach(function(r){
+    r.addEventListener("change", function(ev){
+      state.agtyp = ev.target.value;
+      safeSave();
+      renderCalc();
+    });
+  });
+  document.getElementById("budgetInput").addEventListener("input", function(ev){
+    state.budget = ev.target.value === "" ? null : Number(ev.target.value);
+    safeSave();
+    syncBudgetUI();
+    var inline = document.getElementById("budgetInputInline");
+    if(inline) inline.value = state.budget !== null ? state.budget : "";
+  });
+
+  // ===== Leistungsverzeichnis =====
+  function renderLV(){
+    var body = document.getElementById("lvBody");
+    body.innerHTML = "";
+    var rows = [];
+    var f3 = findBaustein("F3");
+    var f3on = state.selected["F3"];
+    var calc = computeAuftragswert();
+
+    if(f3on){
+      var s10 = Math.round(state.stueckzahl * 0.25);
+      var m20 = Math.round(state.stueckzahl * 0.5);
+      var l10 = state.stueckzahl - s10 - m20;
+      rows.push({pos:"01", bez:"E-Bike, Pedelec-Klasse (Unterstützung bis 25 km/h)", menge:state.stueckzahl, einheit:"Stück", herkunft:"F5 ⚖", preis:calc.preisProStueck, gesamt:calc.preisProStueck*state.stueckzahl});
+      rows.push({pos:"02", bez:"— davon Rahmengröße S", menge:s10, einheit:"Stück", herkunft:"F3", preis:0, gesamt:0, note:"Aufteilung von Pos. 01, kein Zusatzpreis"});
+      rows.push({pos:"03", bez:"— davon Rahmengröße M", menge:m20, einheit:"Stück", herkunft:"F3", preis:0, gesamt:0, note:"Aufteilung von Pos. 01, kein Zusatzpreis"});
+      rows.push({pos:"04", bez:"— davon Rahmengröße L", menge:l10, einheit:"Stück", herkunft:"F3", preis:0, gesamt:0, note:"Aufteilung von Pos. 01, kein Zusatzpreis"});
+    }else{
+      rows.push({pos:"01", bez:"E-Bike, Pedelec-Klasse (Unterstützung bis 25 km/h)", menge:state.stueckzahl, einheit:"Stück", herkunft:"F5 ⚖", preis:calc.preisProStueck, gesamt:calc.preisProStueck*state.stueckzahl});
+    }
+    if(state.selected["F4"]){
+      rows.push({pos:"05", bez:"Akku, Garantie ≥ 2 Jahre / 500 Zyklen", menge:state.stueckzahl, einheit:"Stück", herkunft:"F4", preis:0, gesamt:0, note:"im Angebotspreis der Pos. 01 enthalten"});
+    }
+    if(state.selected["N3"]){
+      var n3 = findBaustein("N3");
+      rows.push({pos:"06", bez:"Ersatzteilpaket, Verfügbarkeitszusage ≥ 5 Jahre", menge:1, einheit:"Pauschale", herkunft:"N3", preis:n3.pauschale, gesamt:n3.pauschale});
+    }
+    if(state.selected["Fi2"]){
+      var fi2 = findBaustein("Fi2");
+      rows.push({pos:"07", bez:"Wartungsvertrag, Laufzeit 4 Jahre", menge:1, einheit:"Pauschale", herkunft:"Fi2", preis:fi2.pauschale, gesamt:fi2.pauschale});
+    }
+    var n2 = findBaustein("N2");
+    rows.push({pos:"08", bez:"Rücknahme/Recycling Altakkus (Nachweis nach Batterie-VO)", menge:1, einheit:"Pauschale", herkunft:"N2 ⚖", preis:n2.pauschale, gesamt:n2.pauschale});
+
+    rows.forEach(function(r){
+      var tr = document.createElement("tr");
+      tr.innerHTML =
+        '<td>' + r.pos + '</td>' +
+        '<td>' + r.bez + (r.note ? '<div class="wert-meta">' + r.note + '</div>' : '') + '</td>' +
+        '<td>' + r.menge + '</td>' +
+        '<td>' + r.einheit + '</td>' +
+        '<td><span class="lv-origin">' + r.herkunft + '</span></td>' +
+        '<td class="num">' + (r.preis ? fmtEUR(r.preis) + " €" : "—") + '</td>' +
+        '<td class="num">' + (r.gesamt ? fmtEUR(r.gesamt) + " €" : "—") + '</td>';
+      body.appendChild(tr);
+    });
+
+    var fi4on = state.selected["Fi4"] && state.stueckzahl >= findBaustein("Fi4").minStueck;
+    var trTotal = document.createElement("tr");
+    trTotal.className = "total";
+    trTotal.innerHTML = '<td colspan="6">Gesamtsumme LV' + (fi4on ? " (inkl. Fi4-Mengenrabatt −3 %)" : "") + '</td><td class="num">' + fmtEUR(calc.summe) + ' €</td>';
+    body.appendChild(trTotal);
+
+    var skip = document.getElementById("lvSkipBox");
+    skip.innerHTML = '<b>Nicht jeder Baustein wird eine LV-Position:</b> A5 (Unfallprozess), V1–V4 (Verfahrens-/Eignungskriterien), N1 (Zuschlagskriterium), Fi1/Fi3/Fi4 (Budget, Zahlungsmodalität, Verhandlungsposition) sind Prozess-, Verfahrens- oder Bewertungsanforderungen — keine Lieferpositionen. Das ist selbst die Lehrsituation dieser Phase: FA/NFA vs. Vergabeverfahrens-Constraint sauber trennen.';
+  }
+
+  // ===== Wertungsmatrix =====
+  function renderWertung(){
+    var list = document.getElementById("wertungList");
+    list.innerHTML = "";
+    WERTUNG_DEFAULT.forEach(function(w){
+      var row = document.createElement("div");
+      row.className = "wert-row";
+      row.innerHTML =
+        '<div class="wert-row-top"><h4>' + w.label + '</h4><div class="wert-pct" id="pct-' + w.key + '">' + state.wertung[w.key] + ' %</div></div>' +
+        '<input type="range" min="0" max="100" step="5" value="' + state.wertung[w.key] + '" id="slider-' + w.key + '">' +
+        '<div class="wert-meta">Bewertungsmethode: ' + w.methode + ' · Herkunft: ' + w.herkunft + '</div>';
+      list.appendChild(row);
+      document.getElementById("slider-" + w.key).addEventListener("input", function(ev){
+        state.wertung[w.key] = Number(ev.target.value);
+        document.getElementById("pct-" + w.key).textContent = state.wertung[w.key] + " %";
+        safeSave();
+        renderWertSum();
+      });
+    });
+    renderWertSum();
+  }
+
+  function renderWertSum(){
+    var sum = 0;
+    WERTUNG_DEFAULT.forEach(function(w){ sum += state.wertung[w.key]; });
+    var el = document.getElementById("wertSum");
+    el.className = "wert-sum " + (sum === 100 ? "ok" : "bad");
+    el.innerHTML = "<span>Summe der Gewichtung</span><span>" + sum + " %" + (sum === 100 ? " ✓" : " — muss 100 % ergeben (§ 127 GWB dokumentationspflichtig)") + "</span>";
+  }
+
+  document.getElementById("wertReset").addEventListener("click", function(){
+    WERTUNG_DEFAULT.forEach(function(w){ state.wertung[w.key] = w.pct; });
+    safeSave();
+    renderWertung();
+  });
+
+  // ===== Abschluss =====
+  function renderAbschluss(){
+    var calc = computeAuftragswert();
+    var schwelle = THRESHOLDS[state.agtyp];
+    var over = calc.summe >= schwelle;
+    var selCount = 0, total = 0;
+    FACHBEREICHE.forEach(function(f){ f.bausteine.forEach(function(b){ if(b.special) return; total++; if(state.selected[b.id]) selCount++; }); });
+    document.getElementById("abschlussStand").textContent =
+      selCount + " von " + total + " Bausteinen gewählt, Stückzahl " + state.stueckzahl + ". Geschätzter Auftragswert: " +
+      fmtEUR(calc.summe) + " € netto — " + (over ? "über" : "unter") + " der Schwelle von " + fmtEUR(schwelle) +
+      " € (" + (state.agtyp === "sonstige" ? "sonstige öffentliche Auftraggeber" : "obere/oberste Bundesbehörden") + "). Verfahren: " +
+      (over ? "EU-weit nach GWB/VgV." : "national nach UVgO.");
+  }
+
+  document.getElementById("resetAllBtn").addEventListener("click", function(){
+    if(!confirm("Simulation wirklich zurücksetzen? Alle Auswahlen gehen verloren.")) return;
+    try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+    location.reload();
+  });
+
+  // ===== Beamer-Modus =====
+  var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+  function applyBeamerLevel(level){
+    document.documentElement.setAttribute("data-beamer", String(level));
+    var btn = document.getElementById("beamerToggle");
+    btn.textContent = BEAMER_LABELS[level];
+    btn.classList.toggle("active", level > 0);
+  }
+  document.getElementById("beamerToggle").addEventListener("click", function(){
+    state.beamerLevel = (state.beamerLevel + 1) % BEAMER_LABELS.length;
+    safeSave();
+    applyBeamerLevel(state.beamerLevel);
+  });
+
+  // ===== Master render =====
+  function renderAll(){
+    FACHBEREICHE.forEach(renderFachbereich);
+    renderCalc();
+    renderLV();
+    renderAbschluss();
+  }
+
+  document.getElementById("stueckzahlRange").value = state.stueckzahl;
+  document.querySelectorAll('input[name="agtyp"]').forEach(function(r){ r.checked = (r.value === state.agtyp); });
+
+  applyBeamerLevel(state.beamerLevel);
+  goToTab(state.activeTab);
+  renderAll();
+  renderWertung();
+})();
+</script>
+
+</body>
+</html>
