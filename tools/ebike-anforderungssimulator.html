@@ -578,11 +578,13 @@ NICHT TUN
     beamerLevel:0
   };
 
-  // init selections: locked bausteine always on, others default on (so the calculator has something to show)
+  // init selections: nur norm-vorgegebene Mittel starten aktiv (gesetzlicher Standard) — alle
+  // übrigen Bausteine starten abgewählt, damit die Demo beim reinen Minimum beginnt und der
+  // Preis live steigt, wenn Bausteine dazugewählt werden.
   FACHBEREICHE.forEach(function(f){
     f.bausteine.forEach(function(b){
       if(b.special) return;
-      state.selected[b.id] = true;
+      state.selected[b.id] = !!b.locked;
     });
   });
   WERTUNG_DEFAULT.forEach(function(w){ state.wertung[w.key] = w.pct; });
