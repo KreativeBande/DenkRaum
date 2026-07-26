@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="color-scheme" content="light">
+<title>Knowledge Zoom Navigator · Requirements Engineering &amp; Business Analyse</title>
+<style>
+:root{
+  --navy:#1c2b4a;
+  --navy-2:#111a30;
+  --red:#c0392b;
+  --red-2:#e74c3c;
+  --red-bg:#fdecea;
+  --yellow-bg:#fdf3d9;
+  --yellow-border:#eec26b;
+  --border:#e2e6ec;
+  --gray:#5b6472;
+  --gray-light:#8a92a0;
+  --bg:#ffffff;
+  --panel:#f7f8fa;
+}
+*{box-sizing:border-box;}
+html{color-scheme:light;}
+html[data-beamer="1"]{zoom:1.35}
+html[data-beamer="2"]{zoom:1.75}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--navy-2);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:18px;
+  line-height:1.5;
+  -webkit-tap-highlight-color:transparent;
+}
+button{font-family:inherit;cursor:pointer;}
+.app{display:flex;flex-direction:column;min-height:100vh;}
+
+/* ---------- HEADER ---------- */
+header.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 28px;border-bottom:1px solid var(--border);gap:20px;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:14px;}
+.brand-logo{
+  width:52px;height:52px;border-radius:12px;background:var(--navy);
+  color:#fff;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;letter-spacing:0.5px;
+  flex:none;
+}
+.back-link{display:inline-block;color:var(--gray-light);font-size:13px;font-weight:700;text-decoration:none;margin-bottom:6px;}
+.back-link:hover{color:var(--navy);text-decoration:underline;}
+.brand-text h1{margin:0;font-size:22px;color:var(--navy);font-weight:800;}
+.brand-text .sub{margin:2px 0 0;font-size:14px;color:var(--gray-light);}
+.mode-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.pill{
+  border:1.5px solid var(--border);background:#fff;color:var(--navy-2);
+  padding:11px 18px;border-radius:999px;font-size:15px;font-weight:600;min-height:44px;
+  display:inline-flex;align-items:center;gap:6px;transition:all .15s ease;
+}
+.pill.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+.pill.ghost-blue{border-color:#c7d3f0;color:#3454b4;background:#fff;}
+.pill:hover{filter:brightness(0.97);}
+.pill:active{transform:scale(0.97);}
+
+/* ---------- BREADCRUMB ---------- */
+.breadcrumb{
+  padding:14px 28px;font-size:15px;color:var(--gray);border-bottom:1px solid var(--border);
+  display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+}
+.breadcrumb b.current{color:var(--navy-2);font-weight:700;}
+.breadcrumb span.sep{color:var(--gray-light);}
+.breadcrumb .root{color:var(--red);font-weight:700;}
+
+/* ---------- MAIN LAYOUT ---------- */
+.main-layout{display:flex;flex:1;gap:0;align-items:flex-start;}
+
+/* ---- level sidebar ---- */
+.level-sidebar{
+  width:230px;flex:none;padding:24px 16px;border-right:1px solid var(--border);
+  display:flex;flex-direction:column;gap:6px;
+}
+.level-item{
+  display:flex;align-items:center;gap:12px;padding:12px 12px;border-radius:12px;
+  border:1.5px solid transparent;background:none;text-align:left;width:100%;min-height:44px;
+}
+.level-item .ic{
+  width:38px;height:38px;border-radius:9px;background:var(--panel);display:flex;align-items:center;justify-content:center;font-size:18px;flex:none;
+}
+.level-item .lbl{font-size:16px;font-weight:700;color:var(--navy-2);}
+.level-item .lbl small{display:block;font-size:13px;font-weight:500;color:var(--gray-light);}
+.level-item.active{background:#eef2ff;border-color:#c7d3f0;}
+.level-item.active .ic{background:var(--navy);color:#fff;}
+.level-item.reachable{opacity:1;}
+.level-item.locked{opacity:0.4;}
+.progress-wrap{margin-top:14px;padding:0 12px;}
+.progress-track{height:8px;border-radius:6px;background:var(--panel);overflow:hidden;}
+.progress-fill{height:100%;background:var(--red);border-radius:6px;transition:width .25s ease;}
+.progress-caption{display:flex;justify-content:space-between;font-size:13px;color:var(--gray-light);margin-top:8px;}
+
+/* ---- content panel ---- */
+.content-panel{flex:1;padding:28px 32px;min-width:0;}
+.eyebrow{color:var(--red);font-weight:800;font-size:13px;letter-spacing:0.06em;text-transform:uppercase;}
+.headline{font-size:26px;font-weight:800;color:var(--navy);margin:6px 0 10px;}
+.instruction{color:var(--gray);font-size:16px;margin:0 0 18px;}
+.target-chip{
+  display:inline-flex;align-items:center;gap:8px;background:var(--red-bg);border:1.5px solid #f3c7c1;
+  color:var(--red);font-weight:700;font-size:15px;padding:10px 16px;border-radius:999px;margin-bottom:20px;
+}
+.cards-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.cards-grid.cols-2{grid-template-columns:repeat(2,1fr);}
+@media (max-width:1000px){.cards-grid{grid-template-columns:repeat(2,1fr);}}
+.card{
+  border:1.5px solid var(--border);border-radius:14px;background:#fff;padding:18px 16px;text-align:left;
+  min-height:130px;display:flex;flex-direction:column;gap:8px;position:relative;transition:all .15s ease;
+}
+.card:hover{border-color:#c7d3f0;background:#fafbff;}
+.card:active{transform:scale(0.98);}
+.card.pinned{border-color:var(--red);background:var(--red-bg);}
+.card .top-row{display:flex;align-items:flex-start;justify-content:space-between;}
+.card .emoji{font-size:26px;}
+.card .pin{color:var(--red);font-size:18px;}
+.card h3{margin:0;font-size:17px;color:var(--navy-2);font-weight:800;}
+.card p{margin:0;font-size:14px;color:var(--gray-light);line-height:1.4;}
+.card .hint{font-size:13px;color:var(--red);font-weight:700;margin-top:auto;}
+
+.nav-buttons{display:flex;justify-content:space-between;margin-top:26px;gap:12px;flex-wrap:wrap;}
+.btn{
+  border-radius:12px;padding:13px 22px;font-size:15px;font-weight:700;min-height:44px;border:1.5px solid var(--border);
+  background:#fff;color:var(--navy-2);
+}
+.btn:disabled{opacity:0.4;}
+.btn.primary{background:var(--navy);border-color:var(--navy);color:#fff;}
+.btn.primary:hover{background:var(--navy-2);}
+
+/* ---- Haus / Zettel detail ---- */
+.zettel-detail{border:1.5px solid var(--border);border-radius:16px;padding:26px;background:#fff;}
+.zettel-id-badge{
+  display:inline-block;background:var(--red);color:#fff;font-size:13px;font-weight:800;
+  padding:6px 12px;border-radius:8px;letter-spacing:0.04em;
+}
+.zettel-detail h2{margin:14px 0 12px;font-size:24px;color:var(--navy);}
+.zettel-detail .standard-tag{
+  display:inline-block;font-size:13px;font-weight:700;color:#3454b4;background:#eef2ff;
+  padding:5px 10px;border-radius:7px;margin-bottom:16px;
+}
+.zettel-detail .leitfrage-box{
+  background:var(--yellow-bg);border:1.5px solid var(--yellow-border);border-radius:12px;padding:14px 16px;margin:14px 0;
+}
+.zettel-detail .leitfrage-box .lbl{font-size:12px;font-weight:800;color:#916b1c;letter-spacing:0.05em;text-transform:uppercase;}
+.zettel-detail .leitfrage-box p{margin:6px 0 0;font-size:16px;font-weight:700;color:var(--navy-2);}
+.zettel-detail .content-text{font-size:17px;line-height:1.6;color:var(--navy-2);margin:16px 0;}
+.zettel-detail .vertiefung{
+  border-left:4px solid #c7d3f0;padding:4px 0 4px 14px;margin:16px 0;font-size:15px;color:var(--gray);
+}
+.zettel-detail .vertiefung b{color:var(--navy-2);}
+.trainer-note{
+  margin-top:16px;background:#eef7ee;border:1.5px solid #bfe3bf;border-radius:12px;padding:14px 16px;font-size:15px;color:#2c5b2c;
+}
+.trainer-note .lbl{font-weight:800;font-size:12px;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:4px;display:block;}
+
+/* ---- zettel side panel ---- */
+.zettel-panel{width:300px;flex:none;padding:24px 20px;display:flex;flex-direction:column;gap:16px;}
+.side-card{border:1.5px solid var(--border);border-radius:14px;padding:16px;background:#fff;}
+.side-card.target{border-color:var(--red);}
+.side-card .badge{
+  display:inline-block;background:var(--red);color:#fff;font-size:12px;font-weight:800;padding:5px 10px;border-radius:7px;margin-bottom:10px;
+}
+.side-card h4{margin:0 0 8px;font-size:17px;color:var(--navy-2);font-weight:800;}
+.side-card p{margin:0;font-size:14px;color:var(--gray);line-height:1.45;}
+.leitfrage-mini{background:var(--yellow-bg);border:1.5px solid var(--yellow-border);border-radius:10px;padding:12px 14px;}
+.leitfrage-mini .lbl{font-size:11px;font-weight:800;color:#916b1c;letter-spacing:0.05em;text-transform:uppercase;}
+.leitfrage-mini p{margin:5px 0 0;font-size:15px;font-weight:700;color:var(--navy-2);}
+.speech-row{display:flex;align-items:flex-end;gap:10px;}
+.speech-bubble{
+  border:1.5px solid var(--navy);border-radius:14px;padding:12px 14px;font-size:14px;color:var(--navy-2);flex:1;position:relative;
+}
+.avatar{width:60px;height:74px;flex:none;}
+.reroll-btn{
+  width:100%;border:1.5px solid var(--border);background:#fff;border-radius:10px;padding:10px 12px;font-size:14px;font-weight:700;color:var(--navy-2);min-height:44px;
+}
+.reroll-btn:hover{background:var(--panel);}
+.trainer-mini{
+  background:#eef7ee;border:1.5px solid #bfe3bf;border-radius:10px;padding:10px 12px;font-size:13px;color:#2c5b2c;
+}
+.trainer-mini .lbl{font-weight:800;font-size:11px;letter-spacing:0.04em;text-transform:uppercase;display:block;margin-bottom:3px;}
+
+/* ---- wissensnetz ---- */
+.wissensnetz-wrap{display:flex;flex-direction:column;align-items:center;}
+.wissensnetz-svg{width:100%;max-width:760px;height:auto;}
+.net-node{cursor:pointer;}
+.net-node circle{transition:all .15s ease;}
+.net-node:hover circle{filter:brightness(0.95);}
+.net-node text{font-family:inherit;pointer-events:none;}
+
+/* ---------- FOOTER ---------- */
+footer{
+  border-top:1px solid var(--border);padding:16px 28px;display:flex;justify-content:space-between;
+  align-items:center;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--gray-light);
+}
+.footer-links{display:flex;gap:18px;flex-wrap:wrap;}
+.footer-links button{background:none;border:none;color:#3454b4;font-size:13px;font-weight:700;padding:6px 2px;min-height:32px;}
+.footer-links button:hover{text-decoration:underline;}
+.footer-right{font-weight:700;color:var(--gray);text-align:right;}
+.footer-right a{display:block;font-weight:500;color:var(--gray-light);text-decoration:none;}
+.footer-right a:hover{color:var(--red);text-decoration:underline;}
+
+/* ---------- MODAL ---------- */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(17,26,48,0.55);display:flex;align-items:center;justify-content:center;
+  padding:20px;z-index:50;
+}
+.modal-overlay.hidden{display:none;}
+.modal-box{
+  background:#fff;border-radius:16px;max-width:620px;width:100%;max-height:85vh;overflow-y:auto;padding:28px;
+}
+.modal-box h3{margin:0 0 14px;font-size:20px;color:var(--navy);}
+.modal-box .close-btn{
+  float:right;border:1.5px solid var(--border);background:#fff;border-radius:9px;padding:6px 12px;font-size:14px;font-weight:700;min-height:36px;
+}
+.modal-box p, .modal-box li{font-size:15px;color:var(--navy-2);line-height:1.55;}
+.modal-box ul{padding-left:20px;}
+.modal-box .status{font-size:13px;color:var(--gray-light);}
+
+@media (max-width:900px){
+  .main-layout{flex-direction:column;}
+  .level-sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border);flex-direction:row;overflow-x:auto;}
+  .level-item{flex:none;min-width:150px;}
+  .progress-wrap{display:none;}
+  .zettel-panel{width:100%;}
+  .cards-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">MKU</div>
+      <div class="brand-text">
+        <a class="back-link" href="../../index.html">← Zurück zur Startseite</a>
+        <h1>Knowledge Zoom Navigator</h1>
+        <p class="sub" id="levelPathSub">Welt → Kontinent → Land → Stadt → Haus</p>
+      </div>
+    </div>
+    <div class="mode-row">
+      <button class="pill" id="btnTeilnehmer" onclick="setMode('teilnehmer')">Teilnehmer</button>
+      <button class="pill" id="btnTrainer" onclick="setMode('trainer')">Trainer</button>
+      <button class="pill" id="btnWissensnetz" onclick="setMode('wissensnetz')">Wissensnetz</button>
+      <button class="pill ghost-blue" onclick="openNeuerZettel()">+ Neuer Zettel</button>
+      <button class="pill" onclick="startOver()">Start</button>
+      <button class="pill" id="beamerToggle">🔍 Beamer-Modus</button>
+    </div>
+  </header>
+
+  <div class="breadcrumb" id="breadcrumb"></div>
+
+  <div class="main-layout">
+    <aside class="level-sidebar" id="levelSidebar"></aside>
+    <main class="content-panel" id="contentPanel"></main>
+    <aside class="zettel-panel" id="zettelPanel"></aside>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <button onclick="openDoc('systemprompt')">Systemprompt</button>
+      <button onclick="openDoc('handbuch')">Handbuch</button>
+      <button onclick="openDoc('vortrag')">Vortrags-Skript</button>
+      <button onclick="openDoc('normen')">Normen-Register</button>
+    </div>
+    <div class="footer-right">MKU Knowledge Zoom Navigator · V1 — RE &amp; BA
+      <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn · www.michaela-kuehn.com</a>
+    </div>
+  </footer>
+</div>
+
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal-box" id="modalBox"></div>
+</div>
+
+<script>
+/* ============================================================
+   DATA — Requirements Engineering & Business Analyse
+   ============================================================ */
+const DATA = [
+{id:"01",icon:"🧠",title:"Grundlagen",subtitle:"Begriffe, Rollen, Denkmodelle",lands:[
+  {id:"01",icon:"⚙️",title:"IREB-Prozess",subtitle:"Von der Idee zur Anforderung",cities:[
+    {id:"01",icon:"🔁",title:"Die fünf Prozessschritte",subtitle:"Ermitteln bis Verwalten",houses:[
+      {zid:"0101",icon:"🔁",title:"Der RE-Prozess nach IREB",
+       leitfrage:"Wie kommt eine Idee zur geprüften Anforderung?",
+       content:"IREB beschreibt fünf Schritte: Ermitteln, Analysieren, Dokumentieren, Validieren, Verwalten. Jeder Schritt hat eigene Techniken und Qualitätskriterien – ein Schritt zu überspringen, produziert später teure Nebel.",
+       standard:"IREB CPRE",
+       vertiefung:"Sarah aus dem Vertrieb bringt einen Kundenwunsch mit – roher Bedarf, Zone 1 im Denkraum. Erst nach Analysieren und Dokumentieren wird daraus eine testbare Anforderung, die Petra in der QM abnehmen kann.",
+       trainerNote:"Gute Gelegenheit für die Marmorkuchen-Metapher: Der Prozess bäckt aus rohen Zutaten (Bedarf) einen fertigen Kuchen (Anforderung) – Struktur zuerst, dann Präzision."}
+    ]},
+    {id:"02",icon:"🗺️",title:"Systemgrenze & Kontext",subtitle:"Was gehört dazu?",houses:[
+      {zid:"0102",icon:"🗺️",title:"Was liegt innerhalb, was außerhalb?",
+       leitfrage:"Wo endet unser System – und wo beginnt der Kontext?",
+       content:"Die Systemgrenze trennt, was das Projektteam bauen darf, von dem, was als gegeben gilt. Alles außerhalb – andere Systeme, Gesetze, Nutzerverhalten – ist Kontext und muss nur beschrieben, nicht spezifiziert werden.",
+       standard:"IREB CPRE",
+       vertiefung:"Knut aus der Entwicklung fragt oft zuerst: „Bauen wir das oder nutzen wir das nur?“ – genau diese Frage markiert die Systemgrenze.",
+       trainerNote:"Übung: Teilnehmer zeichnen die Systemgrenze für ein bekanntes internes Tool und diskutieren Grenzfälle."}
+    ]}
+  ]},
+  {id:"02",icon:"👥",title:"Rollen & Stakeholder",subtitle:"Wer bringt welche Sicht ein?",cities:[
+    {id:"01",icon:"🙋",title:"Der Stakeholder-Begriff",subtitle:"Mehr als der Auftraggeber",houses:[
+      {zid:"0103",icon:"🙋",title:"Wer zählt als Stakeholder?",
+       leitfrage:"Wer hat Einfluss auf – oder Interesse an – unserem System?",
+       content:"Stakeholder sind nicht nur Auftraggeber. Jede Person oder Gruppe mit Einfluss auf oder Interesse an einem System zählt – auch der Betriebsrat, externe Auditoren oder das Support-Team.",
+       standard:"IREB CPRE",
+       vertiefung:"Herr Bachmeier als CEO ist Stakeholder – genau wie Petra aus der QM, die das System später abnimmt.",
+       trainerNote:"Häufiger Fehler: Die Stakeholder-Liste wird zu früh geschlossen. Immer nachfragen: „Wer wurde vergessen?“"}
+    ]},
+    {id:"02",icon:"🎭",title:"Typische Rollen im Projekt",subtitle:"Perspektiven im Team",houses:[
+      {zid:"0104",icon:"🎭",title:"Wer macht was in der Anforderungsarbeit?",
+       leitfrage:"Welche Rolle bringt welche Perspektive ein?",
+       content:"Ela als Projektleitung sorgt für den Rahmen, Knut aus der Entwicklung für die technische Machbarkeit, Sarah aus dem Vertrieb für den Kundenblick, Petra aus der QM für Prüfbarkeit.",
+       standard:"BABOK v3",
+       vertiefung:"In der Praxis übernimmt oft eine Person mehrere Rollen gleichzeitig – wichtig ist, dass die Perspektive bewusst gewechselt wird.",
+       trainerNote:"Rollenspiel: Teilnehmer schlüpfen für eine Anforderung nacheinander in alle vier Rollen."}
+    ]}
+  ]}
+]},
+{id:"02",icon:"🎤",title:"Ermittlung",subtitle:"Techniken, Stakeholder, Workshops",lands:[
+  {id:"01",icon:"🛠️",title:"Techniken",subtitle:"Wie kommen wir an den Bedarf?",cities:[
+    {id:"01",icon:"💬",title:"Interviews & Workshops",subtitle:"Fragetechnik zählt",houses:[
+      {zid:"0201",icon:"💬",title:"Fragen, die wirklich etwas ans Licht bringen",
+       leitfrage:"Wie kommen wir an den wahren Bedarf – nicht nur an die erste Antwort?",
+       content:"Strukturierte Interviews und Workshops sind die Standardtechniken der Ermittlung. Entscheidend ist die Fragetechnik: offene Fragen für Exploration, geschlossene für Bestätigung.",
+       standard:"IREB CPRE",
+       vertiefung:"Wenn Sarah sagt „Der Kunde will ein Dashboard“, fragt eine gute RE-Person nach: „Welche Entscheidung soll das Dashboard ermöglichen?“",
+       trainerNote:"5-Why-Technik als Übung anbieten: Von der Wunschformulierung zum eigentlichen Bedarf."}
+    ]},
+    {id:"02",icon:"👁️",title:"Beobachtung & Prototyping",subtitle:"Sehen statt nur hören",houses:[
+      {zid:"0202",icon:"👁️",title:"Sehen, was Nutzer nicht sagen",
+       leitfrage:"Was verrät das tatsächliche Verhalten, das Interviews nicht zeigen?",
+       content:"Beobachtung deckt Abweichungen zwischen gesagtem und gelebtem Prozess auf. Prototyping macht abstrakte Anforderungen greifbar und provoziert präzisere Rückmeldungen.",
+       standard:"BABOK v3",
+       vertiefung:"Knut baut oft einen Klick-Dummy, bevor die erste Zeile Code geschrieben wird – das spart teure Fehlinterpretationen.",
+       trainerNote:"Diskussion: Wann lohnt sich ein Prototyp trotz Zeitdruck?"}
+    ]}
+  ]},
+  {id:"02",icon:"🌀",title:"Denkraum-Modell",subtitle:"Sammeln, Strukturieren, Spezifizieren",cities:[
+    {id:"01",icon:"🌋",title:"Die drei Zonen",subtitle:"Vom Rohbedarf zur Präzision",houses:[
+      {zid:"0203",icon:"🌋",title:"Sammeln, Strukturieren, Spezifizieren",
+       leitfrage:"In welcher Zone des Denkraums befindet sich eine Anforderung gerade?",
+       content:"Das Denkraum-Modell unterscheidet drei Zonen: Sammeln (Ideen ohne Bewertung), Strukturieren (Muster erkennen) und Spezifizieren (Präzision und Testbarkeit). Der Klarheits-Sprung ist der Moment, in dem eine Anforderung von nebulös zu präzise kippt.",
+       standard:"Denkraum-Modell (M. Kühn)",
+       vertiefung:"Eine Idee von Herrn Bachmeier startet fast immer in Zone 1 – roh und wertvoll, aber noch nicht umsetzbar.",
+       trainerNote:"Live am Flipchart: Eine reale Teilnehmer-Anforderung durch alle drei Zonen führen."}
+    ]},
+    {id:"02",icon:"🌫️",title:"Nebel-Typen",subtitle:"Vier Arten von Unschärfe",houses:[
+      {zid:"0204",icon:"🌫️",title:"Vier Arten von Unschärfe",
+       leitfrage:"Welche Art von Nebel blockiert diese Anforderung?",
+       content:"Vier Nebel-Typen trüben Anforderungen: Absicht (Warum überhaupt?), Stakeholder (Für wen?), Lösung (Wie konkret?), Qualität (Wie gut?). Jeder Nebel-Typ braucht eine eigene Klärungsfrage.",
+       standard:"Denkraum-Modell (M. Kühn)",
+       vertiefung:"„Das System soll schnell sein“ ist Qualitäts-Nebel – ohne Messkriterium bleibt es unbrauchbar.",
+       trainerNote:"Kartenspiel: Teilnehmer ordnen reale Anforderungsformulierungen den vier Nebel-Typen zu."}
+    ]}
+  ]}
+]},
+{id:"03",icon:"🧩",title:"Analyse & Modellierung",subtitle:"Use Cases, User Stories, Prozesse",lands:[
+  {id:"01",icon:"📝",title:"User Stories",subtitle:"Agile Anforderungsformate",cities:[
+    {id:"01",icon:"✅",title:"INVEST-Kriterien",subtitle:"Sechs Prüfkriterien",houses:[
+      {zid:"0301",icon:"✅",title:"Was eine gute User Story ausmacht",
+       leitfrage:"Erfüllt diese Story alle sechs INVEST-Kriterien?",
+       content:"INVEST steht für Independent, Negotiable, Valuable, Estimable, Small, Testable. Eine Story, die eines dieser Kriterien verfehlt, blockiert später die Sprint-Planung.",
+       standard:"Scrum / Agile",
+       vertiefung:"Knut lehnt Stories ohne Akzeptanzkriterien konsequent ab – „Estimable“ scheitert sonst regelmäßig.",
+       trainerNote:"Kleine Gruppenübung: Eine schlecht formulierte Story nach INVEST verbessern."}
+    ]},
+    {id:"02",icon:"🍰",title:"Vom Epic zur Story",subtitle:"Sinnvoll schneiden",houses:[
+      {zid:"0302",icon:"🍰",title:"Große Bedarfe in umsetzbare Scheiben schneiden",
+       leitfrage:"Wie zerlegen wir ein Epic, ohne den Zusammenhang zu verlieren?",
+       content:"Ein Epic beschreibt einen großen Nutzerwert, der über mehrere Sprints reicht. Das Herunterbrechen in Stories folgt sinnvollen Schnittachsen: Workflow-Schritte, Datenvarianten oder Nutzerrollen – nicht technischen Schichten.",
+       standard:"Scrum / Agile",
+       vertiefung:"Ela achtet beim Schneiden darauf, dass jede Story für sich einen erlebbaren Wert liefert – nicht nur „halb fertigen“ Code.",
+       trainerNote:"Story-Mapping als Visualisierungstechnik einführen."}
+    ]}
+  ]},
+  {id:"02",icon:"🎬",title:"Use Cases",subtitle:"Textuelle Modellierung",cities:[
+    {id:"01",icon:"🏗️",title:"Aufbau eines Use Case",subtitle:"Bausteine im Überblick",houses:[
+      {zid:"0303",icon:"🏗️",title:"Die Bausteine eines textuellen Use Case",
+       leitfrage:"Welche Elemente braucht ein vollständiger Use Case?",
+       content:"Ein Use Case beschreibt Akteur, Ziel, Vorbedingung, Hauptszenario, Alternativ- und Ausnahmeszenarien. Erst mit allen Elementen ist er testbar und vollständig im Sinne von IEEE 29148.",
+       standard:"ISO/IEC/IEEE 29148:2018",
+       vertiefung:"Petra prüft bei jeder Abnahme zuerst die Ausnahmeszenarien – dort verstecken sich die meisten Lücken.",
+       trainerNote:"Vorlage austeilen und live einen Use Case aus einem Teilnehmerbeispiel entwickeln."}
+    ]},
+    {id:"02",icon:"🎭",title:"Aktoren & Szenarien",subtitle:"Primär, sekundär, alternativ",houses:[
+      {zid:"0304",icon:"🎭",title:"Wer handelt, und was kann alles passieren?",
+       leitfrage:"Haben wir alle relevanten Akteure und Abweichungen erfasst?",
+       content:"Primäre Akteure lösen den Use Case aus, sekundäre Akteure werden während des Ablaufs beteiligt (z. B. externe Systeme). Jedes Alternativszenario braucht eine klare Rückkehr zum Hauptpfad oder einen definierten Abbruch.",
+       standard:"ISO/IEC/IEEE 29148:2018",
+       vertiefung:"Bei einem Zahlungsprozess ist die Bank ein sekundärer Akteur – wird sie vergessen, fehlt später die Fehlerbehandlung für Timeouts.",
+       trainerNote:"Diskussion: Was passiert, wenn ein sekundärer Akteur nicht antwortet?"}
+    ]}
+  ]}
+]},
+{id:"04",icon:"📄",title:"Dokumentation",subtitle:"SRS, Lasten-/Pflichtenheft, BRD",lands:[
+  {id:"01",icon:"📚",title:"Klassische Artefakte",subtitle:"Problem- vs. Lösungssicht",cities:[
+    {id:"01",icon:"⚖️",title:"Lastenheft vs. Pflichtenheft",subtitle:"Wer schreibt für wen?",houses:[
+      {zid:"0401",icon:"⚖️",title:"Wer schreibt was – und für wen?",
+       leitfrage:"Beschreiben wir das Problem oder schon die Lösung?",
+       content:"Das Lastenheft kommt vom Auftraggeber und beschreibt Bedarf und Ziele – die Problemsicht. Das Pflichtenheft antwortet vom Auftragnehmer mit der geplanten Umsetzung – die Lösungssicht. Wer beides vermischt, verliert Verhandlungsspielraum.",
+       standard:"ISO/IEC/IEEE 29148:2018",
+       vertiefung:"Herr Bachmeier unterschreibt das Lastenheft – Knuts Team liefert das Pflichtenheft als Antwort darauf.",
+       trainerNote:"Häufige Verwechslung ansprechen: Viele Teams schreiben ein „Lastenheft“, das eigentlich schon Lösungen enthält."}
+    ]},
+    {id:"02",icon:"💼",title:"Business Requirements Document",subtitle:"Strategie vor Lösung",houses:[
+      {zid:"0402",icon:"💼",title:"Die Brücke zwischen Strategie und Lösung",
+       leitfrage:"Warum brauchen wir dieses Projekt überhaupt – geschäftlich betrachtet?",
+       content:"Ein BRD dokumentiert Geschäftsziele, Erfolgskriterien und den Business Case, bevor Lösungsdetails entstehen. Es ist das erste Artefakt in BABOKs Strategy-Analysis-Wissensgebiet.",
+       standard:"BABOK v3",
+       vertiefung:"Sarah nutzt das BRD, um dem Kunden den Nutzen zu erklären – nicht die technische Lösung.",
+       trainerNote:"BRD gegen Lastenheft abgrenzen: unterschiedliche Abstraktionsebene, nicht nur eine andere Vorlage."}
+    ]}
+  ]},
+  {id:"02",icon:"🧾",title:"Formale Spezifikation",subtitle:"Prüfbar und eindeutig",cities:[
+    {id:"01",icon:"📐",title:"SRS nach IEEE 29148",subtitle:"Vier Qualitätsmerkmale",houses:[
+      {zid:"0403",icon:"📐",title:"Formale Anforderungsdokumentation",
+       leitfrage:"Ist unsere Spezifikation vollständig, konsistent und prüfbar?",
+       content:"ISO/IEC/IEEE 29148:2018 definiert Qualitätsmerkmale für eine SRS: vollständig, konsistent, durchführbar (feasible) und verifizierbar. Eine SRS ohne diese vier Eigenschaften erzeugt Streit in der Abnahme.",
+       standard:"ISO/IEC/IEEE 29148:2018",
+       vertiefung:"Petra lehnt eine SRS ab, wenn auch nur ein Kriterium fehlt – meist scheitert es an „verifizierbar“.",
+       trainerNote:"Checkliste austeilen und eine reale SRS-Passage gemeinsam bewerten."}
+    ]},
+    {id:"02",icon:"🥒",title:"Akzeptanzkriterien & Gherkin",subtitle:"Given / When / Then",houses:[
+      {zid:"0404",icon:"🥒",title:"Testbarkeit von Anfang an einbauen",
+       leitfrage:"Woran erkennen wir zweifelsfrei, dass die Anforderung erfüllt ist?",
+       content:"Gherkin-Syntax (Given/When/Then) macht Akzeptanzkriterien maschinenlesbar und für alle Rollen verständlich. Sie sind die Brücke zwischen Anforderung und automatisiertem Test.",
+       standard:"BDD / Scrum",
+       vertiefung:"Knut verwandelt jedes Gherkin-Kriterium direkt in einen automatisierten Test – ohne Umformulierung.",
+       trainerNote:"Übung: Eine vage Anforderung gemeinsam in Given/When/Then übersetzen."}
+    ]}
+  ]}
+]},
+{id:"05",icon:"🛡️",title:"Qualität & NFR",subtitle:"ISO 25010, Testbarkeit, IREB-Kriterien",lands:[
+  {id:"01",icon:"🔍",title:"IREB-Qualitätskriterien",subtitle:"Fünf Prüfkriterien",cities:[
+    {id:"01",icon:"🎯",title:"Atomar, testbar, eindeutig",subtitle:"Die häufigsten Stolpersteine",houses:[
+      {zid:"0501",icon:"🎯",title:"Die drei häufigsten Stolpersteine",
+       leitfrage:"Steckt in dieser Anforderung heimlich mehr als eine Aussage?",
+       content:"Atomar heißt: eine Anforderung, eine Aussage – kein „und“ zwischen zwei Pflichten. Testbar heißt: ein Messkriterium existiert. Eindeutig heißt: nur eine Lesart ist möglich.",
+       standard:"IREB CPRE",
+       vertiefung:"„Das System muss schnell und sicher sein“ verstößt gegen Atomar UND Testbar – zwei Anforderungen, kein Messwert.",
+       trainerNote:"Fehlerfindungsspiel: Zehn Anforderungssätze, Teilnehmer markieren die Verstöße."}
+    ]},
+    {id:"02",icon:"🔗",title:"Konsistent & verfolgbar",subtitle:"Widerspruchsfrei & nachvollziehbar",houses:[
+      {zid:"0502",icon:"🔗",title:"Widerspruchsfrei und nachvollziehbar",
+       leitfrage:"Passt diese Anforderung zu allen anderen – und wissen wir, woher sie kommt?",
+       content:"Konsistent bedeutet: kein Widerspruch zu anderen Anforderungen im selben Dokument. Verfolgbar bedeutet: Herkunft und Auswirkung sind jederzeit rekonstruierbar.",
+       standard:"IREB CPRE",
+       vertiefung:"Ela pflegt für jede Anforderung ein Herkunfts-Tag – Kundenmail, Workshop-Datum oder Ticketnummer.",
+       trainerNote:"Traceability-Übung mit Kontinent 7 (Verwaltung & Traceability) verknüpfen."}
+    ]}
+  ]},
+  {id:"02",icon:"📊",title:"ISO/IEC 25010",subtitle:"Qualität systematisch denken",cities:[
+    {id:"01",icon:"9️⃣",title:"Die neun Qualitätsmerkmale",subtitle:"Edition 2, 2023",houses:[
+      {zid:"0503",icon:"9️⃣",title:"Nicht-funktionale Qualität systematisch denken",
+       leitfrage:"Welches der neun Merkmale betrifft unsere Anforderung?",
+       content:"ISO/IEC 25010:2023 (Edition 2) strukturiert Softwarequalität in neun Hauptmerkmale, u. a. Funktionale Eignung, Zuverlässigkeit, Sicherheit, Wartbarkeit und Übertragbarkeit. Jedes NFR sollte einem Merkmal zugeordnet werden können.",
+       standard:"ISO/IEC 25010:2023",
+       vertiefung:"„Das System muss sicher sein“ wird erst brauchbar, wenn Petra es dem Merkmal Sicherheit zuordnet und ein Messkriterium ergänzt.",
+       trainerNote:"Vor dem Training aktuellen Stand von ISO 25010 prüfen – Normen ändern sich."}
+    ]},
+    {id:"02",icon:"🎂",title:"Marmorkuchen-Prinzip",subtitle:"Funktional & NFR untrennbar",houses:[
+      {zid:"0504",icon:"🎂",title:"Funktional und nicht-funktional sind nicht trennbar",
+       leitfrage:"Kann man einen Marmorkuchen backen, ohne zu wissen, wie viel Mehl man braucht?",
+       content:"Die Marmorkuchen-Metapher zeigt: Helle und dunkle Teigmasse (funktional und nicht-funktional) sind im fertigen Kuchen untrennbar verschlungen. Eine Anforderung ohne Qualitätsattribute ist wie ein Kuchen ohne Backzeit – theoretisch beschrieben, praktisch nicht umsetzbar.",
+       standard:"Marmorkuchen-Metapher (M. Kühn)",
+       vertiefung:"Als Opener eignet sich die Frage bei Herrn Bachmeier besonders gut – sie macht abstrakte NFRs sofort greifbar.",
+       trainerNote:"Als Trainings-Opener für RE-BA- oder AI-Literacy-Sessions einsetzen."}
+    ]}
+  ]}
+]},
+{id:"06",icon:"🎯",title:"Priorisierung",subtitle:"MoSCoW, Kano, Business Value",lands:[
+  {id:"01",icon:"📶",title:"Priorisierungsmethoden",subtitle:"Reihenfolge schaffen",cities:[
+    {id:"01",icon:"🏗️",title:"MoSCoW",subtitle:"Must, Should, Could, Won't",houses:[
+      {zid:"0601",icon:"🏗️",title:"Must, Should, Could, Won't",
+       leitfrage:"Ist das wirklich ein Muss – oder nur ein lautes Wollen?",
+       content:"MoSCoW ordnet Anforderungen in Must have, Should have, Could have und Won't have. Der größte Nutzen entsteht, wenn „Must“ hart limitiert wird – sonst verwässert die Methode zur reinen Wunschliste.",
+       standard:"DSDM / Agile",
+       vertiefung:"Sarah nennt fast jede Kundenanforderung „Must have“ – Ela hält mit einer harten Kapazitätsgrenze gegen.",
+       trainerNote:"Übung mit Punktebudget: Teilnehmer dürfen nur drei „Must haves“ vergeben."}
+    ]},
+    {id:"02",icon:"😊",title:"Kano-Modell",subtitle:"Begeisterung, Erwartung, Basis",houses:[
+      {zid:"0602",icon:"😊",title:"Begeisterung, Erwartung, Basis",
+       leitfrage:"Löst diese Anforderung Zufriedenheit oder nur das Fehlen von Ärger aus?",
+       content:"Das Kano-Modell unterscheidet Basis-, Leistungs- und Begeisterungsmerkmale. Basismerkmale fallen erst negativ auf, wenn sie fehlen – Begeisterungsmerkmale differenzieren am Markt.",
+       standard:"BABOK v3",
+       vertiefung:"Ein funktionierendes Login ist Basis – ein cleverer, passwortloser Login kann Begeisterung auslösen.",
+       trainerNote:"Kano-Sortierübung mit realen Produktfeatures der Teilnehmer."}
+    ]}
+  ]},
+  {id:"02",icon:"📈",title:"Bewertung",subtitle:"Wert gegen Aufwand",cities:[
+    {id:"01",icon:"⚖️",title:"Business Value & Aufwand",subtitle:"Quick Wins erkennen",houses:[
+      {zid:"0603",icon:"⚖️",title:"Wert gegen Aufwand abwägen",
+       leitfrage:"Lohnt sich der Aufwand für den erzeugten Wert?",
+       content:"Eine einfache Matrix aus geschätztem Business Value und Umsetzungsaufwand macht Priorisierung transparent. „Quick Wins“ liegen oben links: hoher Wert, geringer Aufwand.",
+       standard:"BABOK v3",
+       vertiefung:"Knut schätzt den Aufwand, Sarah den Marktwert – erst gemeinsam ergibt sich eine belastbare Priorität.",
+       trainerNote:"Vier-Felder-Matrix an die Wand: Teilnehmer sortieren eigene Anforderungen ein."}
+    ]},
+    {id:"02",icon:"🔎",title:"Lösungsbewertung",subtitle:"Solution Evaluation",houses:[
+      {zid:"0604",icon:"🔎",title:"Hat die Lösung den erwarteten Nutzen gebracht?",
+       leitfrage:"Woran messen wir, ob sich die Investition gelohnt hat?",
+       content:"Solution Evaluation (BABOK) prüft nach der Einführung, ob die Lösung den geplanten Business Value tatsächlich liefert – nicht nur, ob sie technisch funktioniert.",
+       standard:"BABOK v3",
+       vertiefung:"Herr Bachmeier fragt drei Monate nach Go-Live gezielt nach den ursprünglichen Erfolgskriterien aus dem BRD.",
+       trainerNote:"Verbindung zu Kontinent 4 (BRD) explizit herstellen – Kreis schließen."}
+    ]}
+  ]}
+]},
+{id:"07",icon:"🔄",title:"Verwaltung",subtitle:"Change, Versionierung, Traceability",lands:[
+  {id:"01",icon:"🔧",title:"Change Management",subtitle:"Änderungen kontrolliert",cities:[
+    {id:"01",icon:"📝",title:"Änderungsanträge",subtitle:"Formaler Prozess",houses:[
+      {zid:"0701",icon:"📝",title:"Änderungen kontrolliert statt heimlich",
+       leitfrage:"Wer entscheidet, ob eine Änderung ins laufende Projekt darf?",
+       content:"Ein formaler Änderungsantrag erfasst Ursache, Auswirkung und Aufwand einer Änderung, bevor sie umgesetzt wird. Ohne diesen Prozess wächst der Scope unkontrolliert.",
+       standard:"IREB CPRE",
+       vertiefung:"Ela lässt jede Änderung – egal wie klein – durch das gleiche Formular laufen, sonst verliert das Team die Übersicht.",
+       trainerNote:"Diskussion: Ab welcher Größe braucht eine Änderung wirklich einen formalen Antrag?"}
+    ]},
+    {id:"02",icon:"🕓",title:"Versionierung",subtitle:"Nachvollziehbarer Stand",houses:[
+      {zid:"0702",icon:"🕓",title:"Welche Anforderung galt zu welchem Zeitpunkt?",
+       leitfrage:"Können wir jederzeit sagen, welche Version verbindlich war?",
+       content:"Versionierung macht den Anforderungsstand zu jedem Zeitpunkt rekonstruierbar. Das ist besonders bei regulierten Projekten mit Audit-Pflicht unverzichtbar.",
+       standard:"IREB CPRE",
+       vertiefung:"Petra verweist bei Audits direkt auf die versionierte Anforderung, nicht auf die aktuelle „gefühlte“ Wahrheit.",
+       trainerNote:"Kurzbeispiel aus einem echten Change-Log zeigen (anonymisiert)."}
+    ]}
+  ]},
+  {id:"02",icon:"🧵",title:"Traceability",subtitle:"Verfolgbarkeit sichern",cities:[
+    {id:"01",icon:"↩️",title:"Rückverfolgbarkeit",subtitle:"Vorwärts & rückwärts",houses:[
+      {zid:"0703",icon:"↩️",title:"Von der Idee bis zum Test – und zurück",
+       leitfrage:"Können wir jede Anforderung bis zu ihrem Ursprung UND ihrer Umsetzung verfolgen?",
+       content:"Rückwärts-Traceability zeigt die Herkunft einer Anforderung, Vorwärts-Traceability ihre Umsetzung in Design, Code und Test. Beide Richtungen zusammen ergeben vollständige Verfolgbarkeit.",
+       standard:"IREB CPRE",
+       vertiefung:"Ohne Vorwärts-Traceability findet Knut bei einem Bug nicht heraus, welche ursprüngliche Anforderung betroffen ist.",
+       trainerNote:"Traceability-Matrix als praktisches Werkzeug direkt anschließen."}
+    ]},
+    {id:"02",icon:"📋",title:"Traceability-Matrix",subtitle:"Praktisches Werkzeug",houses:[
+      {zid:"0704",icon:"📋",title:"Anforderungen und Artefakte sichtbar verknüpfen",
+       leitfrage:"Wie machen wir Verfolgbarkeit im Alltag praktisch nutzbar?",
+       content:"Eine Traceability-Matrix verknüpft Anforderungs-IDs mit Design-, Code- und Testartefakten in einer Tabelle. Sie ist aufwändig zu pflegen, zahlt sich aber bei jedem Change-Impact-Assessment aus.",
+       standard:"ISO/IEC/IEEE 29148:2018",
+       vertiefung:"Petra nutzt die Matrix, um bei jeder Änderung sofort zu sehen, welche Tests neu laufen müssen.",
+       trainerNote:"Kleine Matrix-Vorlage gemeinsam für ein Teilnehmerbeispiel befüllen."}
+    ]}
+  ]}
+]},
+{id:"08",icon:"🚀",title:"Standards",subtitle:"IREB, BABOK, IEEE, ISO im Überblick",lands:[
+  {id:"01",icon:"🎓",title:"Zertifizierungen",subtitle:"IREB, IIBA",cities:[
+    {id:"01",icon:"🏅",title:"IREB CPRE",subtitle:"Foundation & Advanced",houses:[
+      {zid:"0801",icon:"🏅",title:"Der RE-Standard für Prozess und Qualität",
+       leitfrage:"Welche Stufe der IREB-Zertifizierung passt zu meiner Rolle?",
+       content:"IREB CPRE bietet ein Foundation Level sowie Advanced-Level-Module (RE@Agile, Elicitation, Modeling, Quality). Foundation ist die gemeinsame Basis für alle folgenden Vertiefungen.",
+       standard:"IREB CPRE",
+       vertiefung:"Ela hat Foundation und Elicitation – für ihre Rolle als Projektleitung reicht das meist aus.",
+       trainerNote:"Aktuellen Stand der Prüfungsinhalte vor jedem Training prüfen."}
+    ]},
+    {id:"02",icon:"🏅",title:"BABOK / CBAP / ECBA",subtitle:"IIBA-Zertifizierungspfad",houses:[
+      {zid:"0802",icon:"🏅",title:"Der Business-Analyse-Standard von IIBA",
+       leitfrage:"Welche BABOK-Wissensgebiete decke ich in meiner Arbeit bereits ab?",
+       content:"BABOK v3 gliedert sich in sechs Wissensgebiete von Planning bis Solution Evaluation. Zertifizierungen wie ECBA (Einstieg), CCBA (Mitte) und CBAP (Senior) bauen auf diesen Wissensgebieten auf.",
+       standard:"BABOK v3",
+       vertiefung:"Sarah nutzt vor allem Strategy Analysis und Elicitation – die für den Vertriebskontext relevantesten Gebiete.",
+       trainerNote:"BABOK gegen IREB abgrenzen: Prozessfokus (IREB) vs. Geschäftsfokus (BABOK)."}
+    ]}
+  ]},
+  {id:"02",icon:"📜",title:"Normen",subtitle:"IEEE, ISO",cities:[
+    {id:"01",icon:"📐",title:"IEEE 29148",subtitle:"Formale Dokumente",houses:[
+      {zid:"0803",icon:"📐",title:"Die Norm für formale Anforderungsdokumente",
+       leitfrage:"Welche Dokumenttypen deckt IEEE 29148 konkret ab?",
+       content:"ISO/IEC/IEEE 29148:2018 definiert Inhalte und Qualitätskriterien für StRS, SyRS und SRS – von der Stakeholder- bis zur Systemebene.",
+       standard:"ISO/IEC/IEEE 29148:2018",
+       vertiefung:"Petra prüft SRS-Dokumente konsequent gegen die Qualitätskriterien dieser Norm, bevor sie sie freigibt.",
+       trainerNote:"Norm-Ausschnitt (Qualitätskriterien-Tabelle) als Handout mitgeben."}
+    ]},
+    {id:"02",icon:"📊",title:"ISO/IEC 25010 Edition 2",subtitle:"Aktueller Qualitätsstandard",houses:[
+      {zid:"0804",icon:"📊",title:"Der aktuelle Qualitätsstandard für Software",
+       leitfrage:"Was hat sich in Edition 2 gegenüber der Vorgängerversion verändert?",
+       content:"ISO/IEC 25010:2023 ist die zweite Edition des Qualitätsmodells und schärft die neun Hauptmerkmale für moderne, oft KI-gestützte Systeme. Vor jedem Einsatz in Kundenmaterial lohnt sich eine kurze Status-Prüfung, da sich Normen weiterentwickeln.",
+       standard:"ISO/IEC 25010:2023",
+       vertiefung:"In Governance-Trainings verweist Michaela bewusst auf „Edition 2“, um Verwechslungen mit der älteren 25010:2011 zu vermeiden.",
+       trainerNote:"Diese Stadt ist die Brücke zu Kontinent 5 (Qualität & NFR) – als Rückverweis nutzen."}
+    ]}
+  ]}
+]}
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const LEVEL_META = [
+  {key:"welt",label:"Welt",verb:"Orientieren",icon:"🌍"},
+  {key:"kontinent",label:"Kontinent",verb:"Einordnen",icon:"🗺️"},
+  {key:"land",label:"Land",verb:"Entdecken",icon:"📍"},
+  {key:"stadt",label:"Stadt",verb:"Verstehen",icon:"🏙️"},
+  {key:"haus",label:"Haus",verb:"Anwenden",icon:"🏠"}
+];
+const HEADLINES = [
+  "Wo liegt unser Wissenspunkt?",
+  "Was gehört in diesen Kontinent?",
+  "Welches Land wollen wir entdecken?",
+  "Welche Stadt schauen wir uns an?",
+  "Was steht auf diesem Wissenszettel?"
+];
+
+let state = {
+  mode:"teilnehmer",
+  level:1,           // 1..5
+  path:{c:null,l:null,s:null,h:null},
+  target:null        // {c,l,s,h} indices toward the pinned zettel
+};
+
+function flatHouses(){
+  const out=[];
+  DATA.forEach((c,ci)=>c.lands.forEach((l,li)=>l.cities.forEach((s,si)=>s.houses.forEach((h,hi)=>{
+    out.push({c:ci,l:li,s:si,h:hi,zettel:h});
+  }))));
+  return out;
+}
+const ALL_HOUSES = flatHouses();
+
+function pickNewTarget(){
+  const idx = Math.floor(Math.random()*ALL_HOUSES.length);
+  state.target = ALL_HOUSES[idx];
+}
+pickNewTarget();
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function setMode(m){
+  state.mode = m;
+  render();
+}
+
+function startOver(){
+  state.level=1;
+  state.path={c:null,l:null,s:null,h:null};
+  pickNewTarget();
+  render();
+}
+
+function jumpToLevel(n){
+  const reached = maxReachedLevel();
+  if(n>reached) return;
+  state.level = n;
+  render();
+}
+function maxReachedLevel(){
+  if(state.path.h!==null) return 5;
+  if(state.path.s!==null) return 4;
+  if(state.path.l!==null) return 3;
+  if(state.path.c!==null) return 2;
+  return 1;
+}
+
+function selectContinent(ci){ state.path={c:ci,l:null,s:null,h:null}; state.level=2; render(); }
+function selectLand(li){ state.path.l=li; state.path.s=null; state.path.h=null; state.level=3; render(); }
+function selectCity(si){ state.path.s=si; state.path.h=null; state.level=4; render(); }
+function selectHouse(hi){ state.path.h=hi; state.level=5; render(); }
+
+function goBack(){
+  if(state.level>1){
+    state.level -= 1;
+    render();
+  }
+}
+function zoomForward(){
+  const lvl = state.level;
+  if(lvl===1){ /* handled by card click */ }
+}
+
+function currentContinent(){ return state.path.c!==null ? DATA[state.path.c] : null; }
+function currentLand(){ const c=currentContinent(); return c && state.path.l!==null ? c.lands[state.path.l] : null; }
+function currentCity(){ const l=currentLand(); return l && state.path.s!==null ? l.cities[state.path.s] : null; }
+function currentHouse(){ const s=currentCity(); return s && state.path.h!==null ? s.houses[state.path.h] : null; }
+
+function render(){
+  renderHeaderSub();
+  renderBreadcrumb();
+  renderSidebar();
+  if(state.mode==="wissensnetz"){
+    renderWissensnetz();
+    renderZettelPanelMinimal();
+  } else {
+    renderContent();
+    renderZettelPanel();
+  }
+  document.getElementById("btnTeilnehmer").classList.toggle("active", state.mode==="teilnehmer");
+  document.getElementById("btnTrainer").classList.toggle("active", state.mode==="trainer");
+  document.getElementById("btnWissensnetz").classList.toggle("active", state.mode==="wissensnetz");
+}
+
+function renderHeaderSub(){
+  document.getElementById("levelPathSub").textContent = "Welt → Kontinent → Land → Stadt → Haus";
+}
+
+function renderBreadcrumb(){
+  const parts = [{label:"Welt", isRoot:true}];
+  const c=currentContinent(), l=currentLand(), s=currentCity(), h=currentHouse();
+  if(c) parts.push({label:c.title});
+  if(l) parts.push({label:l.title});
+  if(s) parts.push({label:s.title});
+  if(h) parts.push({label:"Wissenszettel"});
+  const html = parts.map((p,i)=>{
+    const isLast = i===parts.length-1;
+    const cls = p.isRoot ? "root" : (isLast ? "current" : "");
+    const tag = isLast ? "b" : "span";
+    return `<${tag} class="${cls}">${p.label}</${tag}>` + (isLast?"":`<span class="sep">›</span>`);
+  }).join("");
+  document.getElementById("breadcrumb").innerHTML = html;
+}
+
+function renderSidebar(){
+  const reached = maxReachedLevel();
+  const html = LEVEL_META.map((m,i)=>{
+    const lvl = i+1;
+    const active = state.level===lvl;
+    const locked = lvl>reached;
+    return `<button class="level-item ${active?"active":""} ${locked?"locked":"reachable"}" ${locked?"disabled":""} onclick="jumpToLevel(${lvl})">
+      <span class="ic">${m.icon}</span>
+      <span class="lbl">${m.label}<small>${m.verb}</small></span>
+    </button>`;
+  }).join("") + `
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" style="width:${state.level*20}%"></div></div>
+      <div class="progress-caption"><span>Ebene ${state.level} von 5</span><span>${LEVEL_META[state.level-1].verb}</span></div>
+    </div>`;
+  document.getElementById("levelSidebar").innerHTML = html;
+}
+
+function pinnedIndexForLevel(){
+  // returns which index at current level leads toward state.target
+  const t = state.target;
+  if(state.level===1) return t.c;
+  if(state.level===2 && state.path.c===t.c) return t.l;
+  if(state.level===3 && state.path.c===t.c && state.path.l===t.l) return t.s;
+  if(state.level===4 && state.path.c===t.c && state.path.l===t.l && state.path.s===t.s) return t.h;
+  return null;
+}
+
+function renderContent(){
+  const panel = document.getElementById("contentPanel");
+  const lvl = state.level;
+
+  if(lvl===5){
+    const h = currentHouse();
+    panel.innerHTML = renderZettelDetail(h);
+    return;
+  }
+
+  let items, onclickFn;
+  if(lvl===1){ items = DATA.map((c,i)=>({icon:c.icon,title:c.title,subtitle:c.subtitle,idx:i})); onclickFn="selectContinent"; }
+  else if(lvl===2){ const c=currentContinent(); items=c.lands.map((l,i)=>({icon:l.icon,title:l.title,subtitle:l.subtitle,idx:i})); onclickFn="selectLand"; }
+  else if(lvl===3){ const l=currentLand(); items=l.cities.map((s,i)=>({icon:s.icon,title:s.title,subtitle:s.subtitle,idx:i})); onclickFn="selectCity"; }
+  else { const s=currentCity(); items=s.houses.map((h,i)=>({icon:h.icon,title:h.title,subtitle:h.leitfrage,idx:i})); onclickFn="selectHouse"; }
+
+  const pinnedIdx = pinnedIndexForLevel();
+  const meta = LEVEL_META[lvl-1];
+  const gridClass = items.length<=2 ? "cols-2" : "";
+
+  const targetChip = `<div class="target-chip">📍 Ziel-Zettel ${state.target.zettel.zid} · ${state.target.zettel.title}</div>`;
+
+  const cardsHtml = items.map(it=>{
+    const isPinned = it.idx===pinnedIdx;
+    return `<button class="card ${isPinned?"pinned":""}" onclick="${onclickFn}(${it.idx})">
+      <div class="top-row"><span class="emoji">${it.icon}</span>${isPinned?'<span class="pin">📍</span>':""}</div>
+      <h3>${it.title}</h3>
+      <p>${it.subtitle}</p>
+      ${isPinned?`<div class="hint">Hier liegt Zettel ${state.target.zettel.zid}. Klicken zum Zoomen.</div>`:""}
+    </button>`;
+  }).join("");
+
+  panel.innerHTML = `
+    <div class="eyebrow">Ebene ${lvl} · ${meta.label.toUpperCase()}</div>
+    <div class="headline">${HEADLINES[lvl-1]}</div>
+    <p class="instruction">Klicke auf den roten Marker, um tiefer in denselben Wissenspunkt zu zoomen — oder erkunde frei weiter.</p>
+    ${targetChip}
+    <div class="cards-grid ${gridClass}">${cardsHtml}</div>
+    <div class="nav-buttons">
+      <button class="btn" onclick="goBack()" ${lvl===1?"disabled":""}>← Zurück</button>
+      <button class="btn primary" onclick="jumpToLevel(${Math.min(lvl+1,5)})" disabled style="visibility:hidden;"></button>
+    </div>
+  `;
+}
+
+function renderZettelDetail(h){
+  const trainerBlock = state.mode==="trainer" ? `
+    <div class="trainer-note"><span class="lbl">Trainer-Hinweis</span>${h.trainerNote}</div>` : "";
+  return `
+    <div class="eyebrow">Ebene 5 · HAUS</div>
+    <div class="headline">${HEADLINES[4]}</div>
+    <div class="zettel-detail">
+      <span class="zettel-id-badge">Zettel ${h.zid}</span>
+      <h2>${h.icon} ${h.title}</h2>
+      <span class="standard-tag">${h.standard}</span>
+      <div class="leitfrage-box"><div class="lbl">Leitfrage</div><p>${h.leitfrage}</p></div>
+      <div class="content-text">${h.content}</div>
+      <div class="vertiefung"><b>Vertiefung:</b> ${h.vertiefung}</div>
+      ${trainerBlock}
+    </div>
+    <div class="nav-buttons">
+      <button class="btn" onclick="goBack()">← Zurück</button>
+      <button class="btn primary" onclick="startOver()">🎲 Neues Ziel &amp; zurück zur Welt</button>
+    </div>
+  `;
+}
+
+function renderZettelPanel(){
+  const panel = document.getElementById("zettelPanel");
+  const t = state.target.zettel;
+  const verbNow = LEVEL_META[state.level-1].verb;
+  const trainerMini = state.mode==="trainer" ? `
+    <div class="trainer-mini"><span class="lbl">Trainer-Impuls</span>${t.trainerNote}</div>` : "";
+  panel.innerHTML = `
+    <div class="side-card target">
+      <span class="badge">Zettel ${t.zid}</span>
+      <h4>${t.title}</h4>
+      <p>Der rote Marker zeigt den Weg zum Zettel.</p>
+    </div>
+    <div class="leitfrage-mini">
+      <div class="lbl">Leitfrage</div>
+      <p>${t.leitfrage}</p>
+    </div>
+    <div class="speech-row">
+      ${avatarSvg()}
+      <div class="speech-bubble">Auf Ebene ${state.level} ${verbNow.toLowerCase()} wir uns.</div>
+    </div>
+    ${trainerMini}
+    <button class="reroll-btn" onclick="startOver()">🎲 Neues Ziel setzen</button>
+  `;
+}
+
+function renderZettelPanelMinimal(){
+  const panel = document.getElementById("zettelPanel");
+  panel.innerHTML = `
+    <div class="side-card">
+      <h4>🕸️ Wissensnetz</h4>
+      <p>Alle acht Kontinente im Überblick. Klicke auf einen Knoten, um direkt hinein zu zoomen. Die vier Standard-Satelliten zeigen, wo die wichtigsten Normen andocken.</p>
+    </div>
+  `;
+}
+
+function avatarSvg(){
+  return `<svg class="avatar" viewBox="0 0 60 74" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="30" cy="66" rx="18" ry="7" fill="#eef2f7"/>
+    <rect x="16" y="34" width="28" height="30" rx="10" fill="#c0392b"/>
+    <circle cx="30" cy="20" r="14" fill="#f2c9a0"/>
+    <path d="M16 18 Q18 4 30 4 Q42 4 44 18 Q34 12 30 14 Q26 12 16 18Z" fill="#8a92a0"/>
+    <circle cx="25" cy="20" r="1.6" fill="#1c2b4a"/>
+    <circle cx="35" cy="20" r="1.6" fill="#1c2b4a"/>
+    <path d="M25 26 Q30 29 35 26" stroke="#1c2b4a" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
+
+/* ============================================================
+   WISSENSNETZ
+   ============================================================ */
+const STANDARD_SATELLITES = [
+  {label:"IREB CPRE", nearContinent:0},
+  {label:"BABOK v3", nearContinent:5},
+  {label:"ISO/IEC 25010:2023", nearContinent:4},
+  {label:"IEEE 29148:2018", nearContinent:3}
+];
+
+function renderWissensnetz(){
+  const panel = document.getElementById("contentPanel");
+  const cx=380, cy=300, r=210;
+  const n = DATA.length;
+  let nodes="", lines="", satellites="";
+  DATA.forEach((c,i)=>{
+    const angle = (i/n)*2*Math.PI - Math.PI/2;
+    const x = cx + r*Math.cos(angle);
+    const y = cy + r*Math.sin(angle);
+    lines += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e2e6ec" stroke-width="2"/>`;
+    nodes += `<g class="net-node" onclick="selectContinent(${i})" transform="translate(${x},${y})">
+      <circle r="42" fill="${i===state.path.c?'#c0392b':'#1c2b4a'}"/>
+      <text x="0" y="-4" text-anchor="middle" font-size="20" fill="#fff">${c.icon}</text>
+      <text x="0" y="15" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${c.title}</text>
+    </g>`;
+  });
+  STANDARD_SATELLITES.forEach((sat,i)=>{
+    const target = DATA[sat.nearContinent];
+    const angle = (sat.nearContinent/n)*2*Math.PI - Math.PI/2;
+    const bx = cx + (r+95)*Math.cos(angle);
+    const by = cy + (r+95)*Math.sin(angle);
+    const tx = cx + r*Math.cos(angle);
+    const ty = cy + r*Math.sin(angle);
+    lines += `<line x1="${tx}" y1="${ty}" x2="${bx}" y2="${by}" stroke="#c7d3f0" stroke-width="1.5" stroke-dasharray="4 4"/>`;
+    satellites += `<g transform="translate(${bx},${by})">
+      <circle r="26" fill="#eef2ff" stroke="#c7d3f0" stroke-width="1.5"/>
+      <text x="0" y="4" text-anchor="middle" font-size="9.5" font-weight="700" fill="#3454b4">${sat.label}</text>
+    </g>`;
+  });
+  panel.innerHTML = `
+    <div class="eyebrow">Wissensnetz</div>
+    <div class="headline">Wie hängen unsere acht Kontinente zusammen?</div>
+    <p class="instruction">Klicke auf einen Kontinent, um direkt in seine Länder zu zoomen. Gestrichelte Linien zeigen, welche Norm wo andockt.</p>
+    <div class="wissensnetz-wrap">
+      <svg class="wissensnetz-svg" viewBox="0 0 760 610" xmlns="http://www.w3.org/2000/svg">
+        ${lines}
+        <g><circle cx="${cx}" cy="${cy}" r="52" fill="#fff" stroke="#1c2b4a" stroke-width="2.5"/>
+        <text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="13" font-weight="800" fill="#1c2b4a">RE &amp; BA</text>
+        <text x="${cx}" y="${cy+14}" text-anchor="middle" font-size="11" fill="#5b6472">Wissensraum</text></g>
+        ${nodes}
+        ${satellites}
+      </svg>
+    </div>
+  `;
+}
+
+/* ============================================================
+   MODALS
+   ============================================================ */
+function openNeuerZettel(){
+  showModal("Neuer Zettel", `
+    <p>Neue Wissenszettel werden nicht direkt im Navigator angelegt, sondern zentral im <b>RE-BA-Space</b> (Notion, mk@mkuehn.net) redaktionell gepflegt und anschließend in dieses Tool übernommen.</p>
+    <p class="status">So bleibt der Navigator konsistent mit dem K1–K16-Qualitätskatalog und dem Souveränitäts-Ticket-Format.</p>
+  `);
+}
+function openDoc(key){
+  const docs = {
+    systemprompt: {
+      title:"Systemprompt · Leitplanken & Rollen-Logik",
+      body:`
+        <p>Dieses Tool ist eine statische, offline-fähige HTML-Anwendung ohne KI-Anbindung. „Systemprompt“ bezeichnet hier die didaktische Leitplanke, nach der Inhalte kuratiert werden:</p>
+        <ul>
+          <li>Jeder Wissenszettel folgt Struktur: Leitfrage → Kerninhalt → Standard-Referenz → Vertiefung mit Persona.</li>
+          <li>Personen konsequent aus dem festen Figuren-Set: Ela, Knut, Sarah, Petra, Herr Bachmeier.</li>
+          <li>Kein Zettel ohne konkreten Standard-Bezug (IREB, BABOK, IEEE 29148, ISO 25010, Denkraum- oder Marmorkuchen-Modell).</li>
+          <li>Trainer-Modus ergänzt didaktische Hinweise, ohne die Teilnehmer-Ansicht zu verändern.</li>
+        </ul>`
+    },
+    handbuch: {
+      title:"Handbuch · Kurzanleitung",
+      body:`
+        <p><b>Für wen:</b> Teilnehmende und Trainer:innen in RE-/BA-Trainings, offline auf iPad oder Beamer nutzbar.</p>
+        <ul>
+          <li><b>Teilnehmer:</b> Frei durch Welt → Kontinent → Land → Stadt → Haus zoomen. Der rote Marker zeigt den Weg zum aktuellen Ziel-Zettel.</li>
+          <li><b>Trainer:</b> Gleiche Navigation, zusätzlich didaktische Trainer-Hinweise sichtbar.</li>
+          <li><b>Wissensnetz:</b> Überblick über alle acht Kontinente und ihre Standard-Andockpunkte.</li>
+          <li><b>🎲 Neues Ziel setzen:</b> Wählt zufällig einen neuen Ziel-Zettel — ideal als Wegfindungs-Übung zur Gedächtnisverankerung, ähnlich einem Lernpfad mit festen Orten.</li>
+        </ul>`
+    },
+    vortrag: {
+      title:"Vortrags-Skript · Kurzfassung",
+      body:`
+        <p><em>Einstieg (2 Min):</em> „Wissen ohne Ort ist schwer zu merken. Wir bauen uns deshalb eine Landkarte: Welt, Kontinent, Land, Stadt, Haus — jeder Begriff bekommt einen festen Platz.“</p>
+        <p><em>Durchführung (15–20 Min):</em> Ziel-Zettel zeigen, gemeinsam den Weg über die Marker suchen, an jedem Haus kurz die Leitfrage diskutieren.</p>
+        <p><em>Abschluss (5 Min):</em> Trainer-Modus einschalten, die didaktischen Hinweise als Reflexion nutzen, neues Ziel für Wiederholung setzen.</p>`
+    },
+    normen: {
+      title:"Normen-Register",
+      body:`
+        <ul>
+          <li><b>IREB CPRE</b> — RE-Prozess, Artefakttypen, Qualitätskriterien. Status: aktiv.</li>
+          <li><b>BABOK v3 (IIBA)</b> — Business Analysis Body of Knowledge. Status: aktiv.</li>
+          <li><b>ISO/IEC/IEEE 29148:2018</b> — Formale Anforderungsdokumentation (StRS/SyRS/SRS). Status: aktiv.</li>
+          <li><b>ISO/IEC 25010:2023</b> — Qualitätsmodell, Edition 2, neun Hauptmerkmale. Status: aktiv — vor jedem Einsatz Aktualität prüfen.</li>
+          <li><b>Denkraum-/Klarheits-Sprung-Modell</b> (M. Kühn) — internes didaktisches Framework.</li>
+          <li><b>Marmorkuchen-Metapher</b> (M. Kühn) — internes didaktisches Framework.</li>
+        </ul>
+        <p class="status">Normen entwickeln sich weiter — Stand jeweils vor Trainingseinsatz verifizieren.</p>`
+    }
+  };
+  const d = docs[key];
+  showModal(d.title, d.body);
+}
+function showModal(title, bodyHtml){
+  document.getElementById("modalBox").innerHTML = `<button class="close-btn" onclick="closeModal()">Schließen</button><h3>${title}</h3>${bodyHtml}`;
+  document.getElementById("modalOverlay").classList.remove("hidden");
+}
+function closeModal(){
+  document.getElementById("modalOverlay").classList.add("hidden");
+}
+
+/* ============================================================
+   BEAMER-MODUS
+   ============================================================ */
+function safeGet(key){ try{ return sessionStorage.getItem(key); }catch(e){ return null; } }
+function safeSet(key, val){ try{ sessionStorage.setItem(key, val); }catch(e){ /* restriktiver Kontext, ignorieren */ } }
+
+var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+function applyBeamerLevel(level){
+  document.documentElement.setAttribute("data-beamer", String(level));
+  var btn = document.getElementById("beamerToggle");
+  btn.textContent = BEAMER_LABELS[level];
+  btn.classList.toggle("active", level > 0);
+}
+document.getElementById("beamerToggle").addEventListener("click", function(){
+  var level = (Number(safeGet("kzn_reba_beamer")) || 0) + 1;
+  if(level >= BEAMER_LABELS.length) level = 0;
+  safeSet("kzn_reba_beamer", String(level));
+  applyBeamerLevel(level);
+});
+applyBeamerLevel(Number(safeGet("kzn_reba_beamer")) || 0);
+
+/* ============================================================
+   INIT
+   ============================================================ */
+render();
+</script>
+</body>
+</html>

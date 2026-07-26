@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="color-scheme" content="light">
+<title>Zettelkasten · Requirements Engineering &amp; Business Analyse</title>
+<style>
+:root{
+  --ink:#1f2430; --gray:#6b7280; --gray-light:#9aa1ac; --border:#e5e7eb; --bg:#ffffff; --panel:#f8f9fb;
+  --konzept-bg:#f3e8ff; --konzept-fg:#7c3aed; --konzept-bd:#d8b4fe;
+  --technik-bg:#dcfce7; --technik-fg:#15803d; --technik-bd:#86efac;
+  --prozess-bg:#ffedd5; --prozess-fg:#c2410c; --prozess-bd:#fdba74;
+  --risiko-bg:#fee2e2; --risiko-fg:#b91c1c; --risiko-bd:#fca5a5;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+html{color-scheme:light;}
+html[data-beamer="1"]{zoom:1.35}
+html[data-beamer="2"]{zoom:1.75}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:18px;line-height:1.5;-webkit-tap-highlight-color:transparent;}
+button,input,select,textarea{font-family:inherit;font-size:16px;}
+button{cursor:pointer;}
+.app{display:flex;flex-direction:column;height:100vh;}
+
+/* HEADER */
+header.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);gap:16px;flex-wrap:wrap;flex:none;}
+.brand{display:flex;align-items:center;gap:14px;}
+.brand-logo{width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,#a78bfa,#7c3aed);flex:none;display:flex;align-items:center;justify-content:center;}
+.brand-logo svg{width:24px;height:24px;}
+.back-link{display:block;color:var(--gray-light);font-size:13px;font-weight:700;text-decoration:none;margin-bottom:4px;}
+.back-link:hover{color:#7c3aed;text-decoration:underline;}
+.brand h1{margin:0;font-size:21px;font-weight:800;color:var(--ink);}
+.brand .sub{margin:1px 0 0;font-size:14px;color:var(--gray-light);}
+.toolbar{display:flex;gap:6px;align-items:center;position:relative;flex-wrap:wrap;justify-content:flex-end;}
+.toolbar-group{display:flex;gap:6px;align-items:center;}
+.toolbar-divider{width:1.5px;height:28px;background:var(--border);margin:0 4px;}
+.tbtn{width:44px;height:44px;border-radius:10px;border:1.5px solid var(--border);background:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;}
+.tbtn:hover{background:var(--panel);}
+.tbtn.active{background:#ede9fe;border-color:#c4b5fd;}
+.beamer-btn{height:44px;padding:0 14px;border-radius:10px;border:1.5px solid var(--border);background:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;white-space:nowrap;}
+.beamer-btn:hover{background:var(--panel);}
+.beamer-btn.active{background:#ede9fe;border-color:#c4b5fd;}
+.search-box{display:none;align-items:center;gap:8px;border:1.5px solid var(--border);border-radius:10px;padding:0 12px;height:44px;}
+.search-box.open{display:flex;}
+.search-box input{border:none;outline:none;font-size:16px;width:180px;}
+.more-menu{position:absolute;top:52px;right:0;background:#fff;border:1.5px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:220px;padding:6px;z-index:30;}
+.more-menu.hidden{display:none;}
+.more-menu button{width:100%;text-align:left;background:none;border:none;padding:11px 12px;font-size:15px;border-radius:8px;min-height:44px;}
+.more-menu button:hover{background:var(--panel);}
+
+/* LAYOUT */
+.main-layout{display:flex;flex:1;min-height:0;}
+.col-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 2px 12px;margin-bottom:10px;border-bottom:1.5px solid var(--border);}
+.col-header .col-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--ink);text-transform:uppercase;letter-spacing:0.05em;}
+.col-header .col-count{font-size:12px;font-weight:700;color:var(--gray-light);background:var(--panel);padding:3px 9px;border-radius:999px;}
+.col-header .reset-link{font-size:12.5px;font-weight:700;color:#7c3aed;background:none;border:none;min-height:28px;}
+.col-header .reset-link:hover{text-decoration:underline;}
+.col-files{width:250px;flex:none;background:var(--panel);border-right:1px solid var(--border);padding:18px 16px;overflow-y:auto;}
+.col-files h2{font-size:11.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--gray-light);margin:18px 8px 8px;font-weight:800;}
+.folder{margin-bottom:4px;}
+.folder-count{margin-left:auto;font-size:12px;color:var(--gray-light);font-weight:700;}
+.folder-head{display:flex;align-items:center;gap:6px;width:100%;background:#fff;border:1px solid var(--border);padding:5px 6px;border-radius:9px;min-height:40px;}
+.folder-head:hover{border-color:#c4b5fd;}
+.chev-btn{background:none;border:none;flex:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;}
+.chev-btn:hover{background:var(--panel);}
+.chev{font-size:11px;color:var(--gray-light);transition:transform .15s;display:inline-block;}
+.chev.collapsed{transform:rotate(-90deg);}
+.folder-title-btn{flex:1;text-align:left;background:none;border:none;font-size:14.5px;font-weight:700;color:var(--ink);padding:6px 4px;border-radius:6px;min-height:32px;}
+.folder-title-btn:hover{color:#7c3aed;}
+.folder-title-btn.active-folder{color:#7c3aed;background:#ede9fe;}
+.folder-items{padding-left:14px;margin-top:4px;}
+.folder-items.collapsed{display:none;}
+.file-item{display:block;width:100%;text-align:left;background:none;border:none;padding:7px 8px;border-radius:7px;font-size:14px;color:var(--gray);min-height:36px;}
+.file-item:hover{background:#fff;color:var(--ink);}
+.file-item.active-file{background:#ede9fe;color:#7c3aed;font-weight:700;}
+.tags-section{margin-top:20px;padding-top:14px;border-top:1.5px solid var(--border);}
+.tags-section h2{margin-top:0;}
+.tag-pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:7px 12px;border-radius:999px;margin:4px 6px 4px 0;border:1.5px solid transparent;min-height:32px;}
+.tag-pill.selected{outline:2px solid var(--ink);outline-offset:1px;}
+.tag-Konzept{background:var(--konzept-bg);color:var(--konzept-fg);}
+.tag-Technik{background:var(--technik-bg);color:var(--technik-fg);}
+.tag-Prozess{background:var(--prozess-bg);color:var(--prozess-fg);}
+.tag-Risiko{background:var(--risiko-bg);color:var(--risiko-fg);}
+
+.col-graph{width:38%;flex:none;background:var(--panel);border-right:1px solid var(--border);padding:18px 16px;display:flex;flex-direction:column;min-width:320px;overflow-y:auto;}
+.legend{display:flex;flex-wrap:wrap;gap:6px 10px;margin-bottom:10px;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--gray);}
+.legend-dot{width:9px;height:9px;border-radius:50%;flex:none;}
+.graph-svg-wrap{border:1px solid var(--border);border-radius:14px;background:#fff;flex:1;min-height:320px;overflow:hidden;}
+.graph-svg-wrap svg{width:100%;height:100%;display:block;}
+.graph-node circle{stroke:#fff;stroke-width:2;cursor:pointer;}
+.graph-node text{pointer-events:none;font-size:11px;font-weight:700;}
+.graph-node.dim{opacity:0.25;}
+.graph-edge{stroke:#c7cbd4;stroke-width:1.4;}
+.graph-edge.dim{opacity:0.15;}
+.links-panel{margin-top:12px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;}
+.links-panel h3{font-size:13px;font-weight:800;color:var(--gray);margin:0 0 8px;}
+.link-row{display:flex;align-items:center;gap:8px;font-size:14px;padding:7px 0;flex-wrap:wrap;border-top:1px solid var(--border);}
+.link-row:first-of-type{border-top:none;}
+.chip{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1.5px solid var(--border);border-radius:7px;padding:3px 9px;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;}
+.chip:hover{background:var(--panel);}
+.verb{color:var(--gray-light);font-size:13.5px;font-style:italic;}
+
+.col-cards{flex:1;padding:18px 22px;overflow-y:auto;min-width:0;}
+.filter-bar{display:none;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;background:var(--panel);padding:10px 12px;border-radius:12px;}
+.filter-bar.open{display:flex;}
+.filter-bar .filter-label{font-size:12.5px;font-weight:800;color:var(--gray-light);text-transform:uppercase;letter-spacing:0.04em;margin-right:4px;}
+.filter-bar button{border-radius:999px;border:1.5px solid var(--border);padding:6px 12px;font-size:13px;font-weight:700;background:#fff;min-height:32px;}
+.filter-bar button.on{outline:2px solid var(--ink);}
+.active-filters{display:none;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.active-filters.show{display:flex;}
+.active-filters .af-label{font-size:13px;font-weight:700;color:var(--gray);}
+.active-filters .af-chip{display:inline-flex;align-items:center;gap:6px;background:#ede9fe;color:#7c3aed;border-radius:999px;padding:5px 12px;font-size:13px;font-weight:700;}
+.active-filters .af-chip button{background:none;border:none;color:#7c3aed;font-weight:900;font-size:14px;padding:0;min-height:auto;}
+.active-filters .af-clear{font-size:13px;font-weight:700;color:var(--gray-light);background:none;border:none;text-decoration:underline;min-height:32px;}
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start;}
+@media (max-width:1300px){.cards-grid{grid-template-columns:repeat(2,1fr);}}
+.zcard{border-radius:14px;border:2px solid var(--border);padding:16px;background:#fff;display:flex;flex-direction:column;gap:9px;position:relative;min-height:190px;}
+.zcard.tag-Konzept{border-color:var(--konzept-bd);}
+.zcard.tag-Technik{border-color:var(--technik-bd);}
+.zcard.tag-Prozess{border-color:var(--prozess-bd);}
+.zcard.tag-Risiko{border-color:var(--risiko-bd);}
+.zcard.highlighted{box-shadow:0 0 0 3px #c4b5fd;}
+.zcard .head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+.zcard .idtitle{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+.zcard .zid{font-size:12.5px;font-weight:800;color:var(--gray-light);background:var(--panel);padding:2px 7px;border-radius:6px;}
+.zcard h3{font-size:16.5px;font-weight:800;margin:0;color:var(--ink);}
+.zcard .tagbadge{font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:999px;flex:none;}
+.zcard p.body{font-size:14.5px;color:#3a3f4a;margin:0;line-height:1.5;flex:1;}
+.zcard .links-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:9px;border-top:1px solid var(--border);}
+.zcard .links-label{font-size:11.5px;color:var(--gray-light);font-weight:800;width:100%;text-transform:uppercase;letter-spacing:0.03em;}
+.zcard .del-custom{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--gray-light);font-size:16px;display:none;}
+.zcard.custom .del-custom{display:block;}
+.zcard.custom .del-custom:hover{color:var(--risiko-fg);}
+.zcard .custom-flag{font-size:11px;color:#7c3aed;font-weight:800;}
+
+footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--gray-light);flex:none;}
+.footer-links{display:flex;gap:16px;flex-wrap:wrap;}
+.footer-links button{background:none;border:none;color:#7c3aed;font-size:13px;font-weight:700;padding:6px 2px;min-height:32px;}
+.footer-links button:hover{text-decoration:underline;}
+.footer-right{font-weight:700;color:var(--gray);text-align:right;}
+.footer-right a{display:block;font-weight:500;color:var(--gray-light);text-decoration:none;}
+.footer-right a:hover{color:#7c3aed;text-decoration:underline;}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(31,36,48,0.55);display:flex;align-items:center;justify-content:center;padding:18px;z-index:60;}
+.modal-overlay.hidden{display:none;}
+.modal-box{background:#fff;border-radius:16px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;padding:26px;}
+.modal-box h3{margin:0 0 16px;font-size:20px;color:var(--ink);}
+.modal-box .close-btn{float:right;border:1.5px solid var(--border);background:#fff;border-radius:9px;padding:6px 12px;font-size:14px;font-weight:700;min-height:36px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:13px;font-weight:700;color:var(--gray);margin-bottom:6px;}
+.field input,.field select,.field textarea{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;font-size:16px;min-height:44px;}
+.field textarea{min-height:80px;resize:vertical;}
+.link-builder-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+.link-builder-row select{flex:2;}
+.link-builder-row input{flex:2;}
+.link-builder-row button{flex:none;border-radius:9px;border:1.5px solid var(--border);background:var(--panel);padding:0 14px;font-weight:800;min-height:44px;}
+.added-link-list{margin:6px 0 14px;}
+.added-link-item{display:flex;align-items:center;gap:8px;font-size:14px;padding:6px 0;}
+.added-link-item button{background:none;border:none;color:var(--risiko-fg);font-weight:800;font-size:14px;}
+.btn-primary{background:#7c3aed;color:#fff;border:none;border-radius:10px;padding:12px 20px;font-weight:800;font-size:15px;min-height:44px;}
+.btn-secondary{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px 20px;font-weight:700;font-size:15px;min-height:44px;}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:10px;}
+.hint-text{font-size:13px;color:var(--gray-light);margin:-4px 0 12px;}
+
+@media (max-width:1000px){
+  .app{height:auto;min-height:100vh;}
+  .main-layout{flex-direction:column;min-height:0;}
+  .col-graph{order:-1;position:sticky;top:0;z-index:10;width:100%;max-height:62vh;box-shadow:0 6px 14px rgba(0,0,0,0.06);}
+  .graph-svg-wrap{min-height:220px;}
+  .col-files,.col-cards{width:100%;border-right:none;border-bottom:1px solid var(--border);overflow-y:visible;height:auto;}
+  .cards-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:640px){
+  .col-graph{max-height:56vh;}
+  .cards-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z" fill="#fff"/></svg></div>
+      <div>
+        <a class="back-link" href="../../index.html">← Zurück zur Startseite</a>
+        <h1>Zettelkasten – Requirements Engineering &amp; Business Analyse</h1>
+        <p class="sub">Fortsetzung des Knowledge Zoom Navigators · offline &amp; erweiterbar</p>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="search-box" id="searchBox">
+        <span>🔍</span><input type="text" id="searchInput" placeholder="Suchen…" oninput="onSearch(this.value)">
+      </div>
+      <div class="toolbar-group">
+        <button class="tbtn" title="Neuer Zettel" onclick="openNewZettelModal()">✏️</button>
+        <button class="tbtn" title="Neue Verknüpfung" onclick="openNewLinkModal()">🔗</button>
+      </div>
+      <div class="toolbar-divider"></div>
+      <div class="toolbar-group">
+        <button class="tbtn" id="tagFilterBtn" title="Tags filtern" onclick="toggleTagFilterBar()">🏷️</button>
+        <button class="tbtn" id="searchBtn" title="Suchen" onclick="toggleSearch()">🔍</button>
+        <button class="beamer-btn" id="beamerToggle">🔍 Beamer-Modus</button>
+      </div>
+      <div class="toolbar-divider"></div>
+      <button class="tbtn" title="Mehr" onclick="toggleMoreMenu()">⋯</button>
+      <div class="more-menu hidden" id="moreMenu">
+        <button onclick="exportJSON()">⬇️ JSON exportieren</button>
+        <button onclick="document.getElementById('importFile').click()">⬆️ JSON importieren</button>
+        <button onclick="resetCustomData()">🗑️ Eigene Zettel zurücksetzen</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this.files[0])">
+      </div>
+    </div>
+  </header>
+
+  <div class="main-layout">
+    <aside class="col-files" id="colFiles"></aside>
+
+    <section class="col-graph">
+      <div class="col-header">
+        <span class="col-title">🕸️ Graph-Ansicht</span>
+        <button class="reset-link" onclick="focusedId=null; render();">Fokus lösen</button>
+      </div>
+      <div class="legend" id="graphLegend"></div>
+      <div class="graph-svg-wrap"><svg id="graphSvg" viewBox="0 0 480 420"></svg></div>
+      <div class="links-panel" id="linksPanel"></div>
+    </section>
+
+    <section class="col-cards">
+      <div class="col-header">
+        <span class="col-title">🗒️ Zettel</span>
+        <span class="col-count" id="cardsCount"></span>
+      </div>
+      <div class="filter-bar" id="filterBar">
+        <span class="filter-label">Nach Tag filtern</span>
+        <button data-tag="Konzept" class="tag-Konzept" onclick="toggleTagFilterValue('Konzept')">#Konzept</button>
+        <button data-tag="Technik" class="tag-Technik" onclick="toggleTagFilterValue('Technik')">#Technik</button>
+        <button data-tag="Prozess" class="tag-Prozess" onclick="toggleTagFilterValue('Prozess')">#Prozess</button>
+        <button data-tag="Risiko" class="tag-Risiko" onclick="toggleTagFilterValue('Risiko')">#Risiko</button>
+      </div>
+      <div class="active-filters" id="activeFilters"></div>
+      <div class="cards-grid" id="cardsGrid"></div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <button onclick="openDoc('systemprompt')">Systemprompt</button>
+      <button onclick="openDoc('handbuch')">Handbuch</button>
+      <button onclick="openDoc('vortrag')">Vortrags-Skript</button>
+      <button onclick="openDoc('normen')">Normen-Register</button>
+    </div>
+    <div class="footer-right">Zettelkasten RE &amp; BA · V1
+      <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn · www.michaela-kuehn.com</a>
+    </div>
+  </footer>
+</div>
+
+<div class="modal-overlay hidden" id="modalOverlay"><div class="modal-box" id="modalBox"></div></div>
+
+<script>
+/* ============================================================
+   BASIS-DATEN
+   ============================================================ */
+const FOLDERS = [
+  {key:"00", title:"00 – Index"},
+  {key:"01", title:"01 – Grundlagen"},
+  {key:"02", title:"02 – Ermittlung"},
+  {key:"03", title:"03 – Analyse & Modellierung"},
+  {key:"04", title:"04 – Dokumentation"},
+  {key:"05", title:"05 – Qualität & NFR"},
+  {key:"06", title:"06 – Priorisierung & Bewertung"},
+  {key:"07", title:"07 – Verwaltung & Traceability"},
+  {key:"08", title:"08 – Standards & Zertifizierung"}
+];
+const FOLDER_COLOR = {
+  "00":{bg:"#f1f5f9",fg:"#475569"}, "01":{bg:"#ede9fe",fg:"#7c3aed"}, "02":{bg:"#dbeafe",fg:"#2563eb"},
+  "03":{bg:"#dcfce7",fg:"#16a34a"}, "04":{bg:"#fef3c7",fg:"#b45309"}, "05":{bg:"#fce7f3",fg:"#be185d"},
+  "06":{bg:"#ccfbf1",fg:"#0f766e"}, "07":{bg:"#ffedd5",fg:"#c2410c"}, "08":{bg:"#e2e8f0",fg:"#334155"}
+};
+
+const BASE_ZETTEL = [
+{id:"0000",folder:"00",tag:"Konzept",title:"MOC RE & BA",content:"Master-Übersicht: Einstieg in die acht Wissensbereiche von Requirements Engineering und Business Analyse."},
+{id:"0101",folder:"01",tag:"Prozess",title:"Der RE-Prozess nach IREB",content:"Fünf Schritte: Ermitteln, Analysieren, Dokumentieren, Validieren, Verwalten. Einen Schritt zu überspringen, produziert später teure Nebel."},
+{id:"0102",folder:"01",tag:"Konzept",title:"Systemgrenze & Kontext",content:"Die Systemgrenze trennt, was das Team baut, von dem, was als gegeben gilt. Alles außerhalb ist Kontext, nur zu beschreiben."},
+{id:"0103",folder:"01",tag:"Konzept",title:"Der Stakeholder-Begriff",content:"Jede Person oder Gruppe mit Einfluss auf oder Interesse an einem System zählt als Stakeholder – auch Betriebsrat oder Support-Team."},
+{id:"0104",folder:"01",tag:"Konzept",title:"Typische Rollen im Projekt",content:"Ela (Projektleitung), Knut (Entwicklung), Sarah (Vertrieb), Petra (QM) bringen je eine eigene Perspektive auf dieselbe Anforderung ein."},
+{id:"0201",folder:"02",tag:"Technik",title:"Interviews & Workshops",content:"Offene Fragen für Exploration, geschlossene für Bestätigung. Entscheidend ist, nach dem eigentlichen Bedarf zu fragen, nicht nur der ersten Antwort."},
+{id:"0202",folder:"02",tag:"Technik",title:"Beobachtung & Prototyping",content:"Beobachtung deckt Abweichungen zwischen gesagtem und gelebtem Prozess auf. Prototyping macht Anforderungen greifbar."},
+{id:"0203",folder:"02",tag:"Konzept",title:"Denkraum – Die drei Zonen",content:"Sammeln (ohne Bewertung), Strukturieren (Muster erkennen), Spezifizieren (Präzision). Der Klarheits-Sprung kippt eine Anforderung von nebulös zu präzise."},
+{id:"0204",folder:"02",tag:"Risiko",title:"Die vier Nebel-Typen",content:"Absicht-, Stakeholder-, Lösungs- und Qualitäts-Nebel trüben Anforderungen und führen unbemerkt zu Fehlinterpretation."},
+{id:"0301",folder:"03",tag:"Technik",title:"INVEST-Kriterien",content:"Independent, Negotiable, Valuable, Estimable, Small, Testable. Eine Story, die ein Kriterium verfehlt, blockiert die Sprint-Planung."},
+{id:"0302",folder:"03",tag:"Prozess",title:"Vom Epic zur Story",content:"Epics werden entlang sinnvoller Achsen geschnitten – Workflow-Schritte oder Nutzerrollen, nicht technische Schichten."},
+{id:"0303",folder:"03",tag:"Technik",title:"Aufbau eines Use Case",content:"Akteur, Ziel, Vorbedingung, Hauptszenario, Alternativ- und Ausnahmeszenarien – erst mit allen Elementen ist er testbar."},
+{id:"0304",folder:"03",tag:"Konzept",title:"Aktoren & Szenarien",content:"Primäre Akteure lösen aus, sekundäre werden beteiligt. Vergessene sekundäre Akteure erzeugen später fehlende Fehlerbehandlung."},
+{id:"0401",folder:"04",tag:"Konzept",title:"Lastenheft vs. Pflichtenheft",content:"Lastenheft = Problemsicht des Auftraggebers. Pflichtenheft = Lösungssicht des Auftragnehmers. Vermischen kostet Verhandlungsspielraum."},
+{id:"0402",folder:"04",tag:"Technik",title:"Business Requirements Document",content:"Dokumentiert Geschäftsziele, Erfolgskriterien und Business Case, bevor Lösungsdetails entstehen."},
+{id:"0403",folder:"04",tag:"Technik",title:"SRS nach IEEE 29148",content:"Qualitätsmerkmale: vollständig, konsistent, durchführbar, verifizierbar. Fehlt eines, gibt es Streit in der Abnahme."},
+{id:"0404",folder:"04",tag:"Technik",title:"Akzeptanzkriterien & Gherkin",content:"Given/When/Then macht Kriterien maschinenlesbar – die Brücke zwischen Anforderung und automatisiertem Test."},
+{id:"0501",folder:"05",tag:"Risiko",title:"Atomar, testbar, eindeutig",content:"Drei häufige Stolpersteine: mehr als eine Aussage pro Anforderung, kein Messkriterium, mehrere mögliche Lesarten."},
+{id:"0502",folder:"05",tag:"Konzept",title:"Konsistent & verfolgbar",content:"Konsistent: kein Widerspruch zu anderen Anforderungen. Verfolgbar: Herkunft und Auswirkung jederzeit rekonstruierbar."},
+{id:"0503",folder:"05",tag:"Konzept",title:"ISO/IEC 25010 – neun Merkmale",content:"Edition 2 (2023) strukturiert Softwarequalität in neun Hauptmerkmale, u. a. Zuverlässigkeit, Sicherheit, Wartbarkeit."},
+{id:"0504",folder:"05",tag:"Konzept",title:"Marmorkuchen-Prinzip",content:"Funktional und nicht-funktional sind wie hell und dunkel im Marmorkuchen untrennbar verschlungen – nicht getrennt denkbar."},
+{id:"0601",folder:"06",tag:"Technik",title:"MoSCoW",content:"Must, Should, Could, Won't have. Der Nutzen entsteht, wenn „Must“ hart limitiert wird."},
+{id:"0602",folder:"06",tag:"Technik",title:"Kano-Modell",content:"Basis-, Leistungs- und Begeisterungsmerkmale. Basismerkmale fallen erst negativ auf, wenn sie fehlen."},
+{id:"0603",folder:"06",tag:"Prozess",title:"Business Value & Aufwand",content:"Matrix aus Wert und Aufwand macht Priorisierung transparent. Quick Wins: hoher Wert, geringer Aufwand."},
+{id:"0604",folder:"06",tag:"Prozess",title:"Lösungsbewertung",content:"Solution Evaluation prüft nach der Einführung, ob die Lösung den geplanten Business Value tatsächlich liefert."},
+{id:"0701",folder:"07",tag:"Prozess",title:"Änderungsanträge",content:"Formaler Antrag erfasst Ursache, Auswirkung, Aufwand einer Änderung – sonst wächst der Scope unkontrolliert."},
+{id:"0702",folder:"07",tag:"Prozess",title:"Versionierung",content:"Macht den Anforderungsstand zu jedem Zeitpunkt rekonstruierbar – unverzichtbar bei Audit-Pflicht."},
+{id:"0703",folder:"07",tag:"Konzept",title:"Rückverfolgbarkeit",content:"Rückwärts zeigt Herkunft, vorwärts zeigt Umsetzung in Design, Code, Test. Beide Richtungen zusammen ergeben Traceability."},
+{id:"0704",folder:"07",tag:"Technik",title:"Traceability-Matrix",content:"Verknüpft Anforderungs-IDs mit Design-, Code- und Testartefakten – aufwändig, zahlt sich bei jedem Change aus."},
+{id:"0801",folder:"08",tag:"Konzept",title:"IREB CPRE",content:"Foundation Level plus Advanced-Module (RE@Agile, Elicitation, Modeling, Quality)."},
+{id:"0802",folder:"08",tag:"Konzept",title:"BABOK / CBAP / ECBA",content:"Sechs Wissensgebiete von Planning bis Solution Evaluation; ECBA, CCBA, CBAP als Zertifizierungsstufen."},
+{id:"0803",folder:"08",tag:"Konzept",title:"IEEE 29148",content:"ISO/IEC/IEEE 29148:2018 definiert Inhalte für StRS, SyRS und SRS – von Stakeholder- bis Systemebene."},
+{id:"0804",folder:"08",tag:"Konzept",title:"ISO/IEC 25010 Edition 2",content:"Zweite Edition des Qualitätsmodells, geschärft für moderne, oft KI-gestützte Systeme. Stand vor Einsatz stets prüfen."}
+];
+
+const BASE_RELATIONS = [
+  {a:"0000",b:"0101",verb:"eröffnet mit"},{a:"0000",b:"0201",verb:"führt zu"},{a:"0000",b:"0301",verb:"führt zu"},
+  {a:"0000",b:"0401",verb:"führt zu"},{a:"0000",b:"0501",verb:"führt zu"},{a:"0000",b:"0601",verb:"führt zu"},
+  {a:"0000",b:"0701",verb:"führt zu"},{a:"0000",b:"0801",verb:"führt zu"},
+  {a:"0101",b:"0102",verb:"grenzt ab mit"},{a:"0101",b:"0103",verb:"beginnt mit"},{a:"0101",b:"0104",verb:"verteilt auf"},
+  {a:"0103",b:"0104",verb:"konkretisiert sich in"},{a:"0101",b:"0501",verb:"prüft Qualität via"},{a:"0101",b:"0701",verb:"verwaltet über"},
+  {a:"0201",b:"0203",verb:"landet in"},{a:"0202",b:"0203",verb:"landet in"},{a:"0203",b:"0204",verb:"erkennt"},
+  {a:"0204",b:"0501",verb:"verursacht Verstoß gegen"},{a:"0201",b:"0103",verb:"befragt"},
+  {a:"0301",b:"0501",verb:"prüft mit"},{a:"0301",b:"0302",verb:"skaliert zu"},{a:"0303",b:"0304",verb:"besteht aus"},
+  {a:"0303",b:"0403",verb:"formalisiert sich als"},{a:"0304",b:"0403",verb:"erfüllt Kriterium aus"},
+  {a:"0401",b:"0402",verb:"unterscheidet sich von"},{a:"0402",b:"0604",verb:"wird bewertet in"},
+  {a:"0403",b:"0501",verb:"erfüllt"},{a:"0403",b:"0704",verb:"verknüpft sich mit"},{a:"0404",b:"0301",verb:"testet"},
+  {a:"0501",b:"0502",verb:"ergänzt sich mit"},{a:"0502",b:"0703",verb:"baut auf"},
+  {a:"0503",b:"0504",verb:"erklärt"},{a:"0504",b:"0301",verb:"verbindet NFR mit"},{a:"0503",b:"0804",verb:"basiert auf"},
+  {a:"0601",b:"0602",verb:"ergänzt"},{a:"0601",b:"0603",verb:"mündet in"},{a:"0602",b:"0603",verb:"fließt ein in"},
+  {a:"0603",b:"0604",verb:"wird überprüft durch"},{a:"0604",b:"0402",verb:"schließt Kreis mit"},
+  {a:"0701",b:"0702",verb:"erzeugt neue"},{a:"0701",b:"0703",verb:"beeinflusst"},{a:"0703",b:"0704",verb:"wird abgebildet in"},
+  {a:"0704",b:"0502",verb:"operationalisiert"},
+  {a:"0801",b:"0802",verb:"ergänzt sich mit"},{a:"0801",b:"0101",verb:"zertifiziert"},{a:"0802",b:"0402",verb:"zertifiziert Wissen zu"},
+  {a:"0803",b:"0403",verb:"definiert Norm für"},{a:"0804",b:"0503",verb:"definiert Norm für"},{a:"0804",b:"0504",verb:"veranschaulicht sich in"}
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const LS_KEY = "zettelkasten_reba_userdata_v1";
+var customZettel = [];
+var customRelations = [];
+let collapsedFolders = new Set();
+let activeFolderFilter = null;
+let tagFilter = new Set();
+let searchTerm = "";
+let focusedId = null;
+let positions = null;
+
+function loadCustom(){
+  try{
+    const raw = window.localStorage.getItem(LS_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      customZettel = parsed.customZettel || [];
+      customRelations = parsed.customRelations || [];
+    }
+  }catch(e){ console.warn("localStorage nicht verfügbar", e); }
+}
+function saveCustom(){
+  try{
+    window.localStorage.setItem(LS_KEY, JSON.stringify({customZettel, customRelations}));
+  }catch(e){ console.warn("Konnte nicht speichern", e); }
+}
+function allZettel(){ return BASE_ZETTEL.concat(customZettel); }
+function allRelations(){ return BASE_RELATIONS.concat(customRelations); }
+function findZettel(id){ return allZettel().find(z=>z.id===id); }
+function isCustom(id){ return customZettel.some(z=>z.id===id); }
+
+function linksFor(id){
+  return allRelations().filter(r=>r.a===id||r.b===id).map(r=>{
+    const otherId = r.a===id? r.b : r.a;
+    const dir = r.a===id ? "out" : "in";
+    return {otherId, verb:r.verb, dir};
+  });
+}
+
+/* ============================================================
+   RENDER: SIDEBAR
+   ============================================================ */
+function renderSidebar(){
+  const el = document.getElementById("colFiles");
+  const total = allZettel().length;
+  let html = `<div class="col-header">
+      <span class="col-title">🗂️ Dateien</span>
+      <span class="col-count">${total}</span>
+    </div>`;
+  FOLDERS.forEach(f=>{
+    const items = allZettel().filter(z=>z.folder===f.key);
+    const collapsed = collapsedFolders.has(f.key);
+    html += `<div class="folder">
+      <div class="folder-head">
+        <button class="chev-btn" onclick="toggleFolder('${f.key}')" title="Ein-/ausklappen"><span class="chev ${collapsed?"collapsed":""}">▾</span></button>
+        <button class="folder-title-btn ${activeFolderFilter===f.key?"active-folder":""}" onclick="setFolderFilter('${f.key}')" title="Nach diesem Ordner filtern">${f.title}</button>
+        <span class="folder-count">${items.length}</span>
+      </div>
+      <div class="folder-items ${collapsed?"collapsed":""}">
+        ${items.map(z=>`<button class="file-item ${focusedId===z.id?"active-file":""}" onclick="focusZettel('${z.id}')">${z.id} – ${z.title}</button>`).join("")}
+      </div>
+    </div>`;
+  });
+  html += `<div class="tags-section"><h2>Tags</h2>
+    <span class="tag-pill tag-Konzept ${tagFilter.has('Konzept')?'selected':''}" onclick="toggleTagFilterValue('Konzept')">#Konzept</span>
+    <span class="tag-pill tag-Technik ${tagFilter.has('Technik')?'selected':''}" onclick="toggleTagFilterValue('Technik')">#Technik</span>
+    <span class="tag-pill tag-Prozess ${tagFilter.has('Prozess')?'selected':''}" onclick="toggleTagFilterValue('Prozess')">#Prozess</span>
+    <span class="tag-pill tag-Risiko ${tagFilter.has('Risiko')?'selected':''}" onclick="toggleTagFilterValue('Risiko')">#Risiko</span>
+  </div>`;
+  el.innerHTML = html;
+}
+function toggleFolder(key){
+  if(collapsedFolders.has(key)) collapsedFolders.delete(key); else collapsedFolders.add(key);
+  renderSidebar();
+}
+function setFolderFilter(key){
+  activeFolderFilter = (activeFolderFilter===key) ? null : key;
+  if(activeFolderFilter) collapsedFolders.delete(key);
+  render();
+}
+function focusZettel(id){
+  focusedId = id;
+  activeFolderFilter = null;
+  render();
+  const cardEl = document.getElementById("card-"+id);
+  if(cardEl && typeof cardEl.scrollIntoView === "function") cardEl.scrollIntoView({behavior:"smooth", block:"center"});
+}
+
+/* ============================================================
+   FORCE-LAYOUT GRAPH (einfache Relaxation, kein externes Framework)
+   ============================================================ */
+function computeLayout(){
+  const nodes = allZettel();
+  const edges = allRelations();
+  const W=480,H=420;
+  if(!positions) positions = {};
+  nodes.forEach((n,i)=>{
+    if(!positions[n.id]){
+      const angle = (i/nodes.length)*2*Math.PI;
+      positions[n.id] = {x:W/2 + Math.cos(angle)*140, y:H/2 + Math.sin(angle)*140, vx:0, vy:0};
+    }
+  });
+  for(let iter=0; iter<220; iter++){
+    nodes.forEach(n=>{ positions[n.id].fx=0; positions[n.id].fy=0; });
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const a=positions[nodes[i].id], b=positions[nodes[j].id];
+        let dx=a.x-b.x, dy=a.y-b.y;
+        let dist = Math.sqrt(dx*dx+dy*dy)||0.01;
+        const force = 900/(dist*dist);
+        dx/=dist; dy/=dist;
+        a.fx+=dx*force; a.fy+=dy*force;
+        b.fx-=dx*force; b.fy-=dy*force;
+      }
+    }
+    edges.forEach(e=>{
+      const a=positions[e.a], b=positions[e.b];
+      if(!a||!b) return;
+      let dx=b.x-a.x, dy=b.y-a.y;
+      let dist=Math.sqrt(dx*dx+dy*dy)||0.01;
+      const target=90;
+      const force=(dist-target)*0.02;
+      dx/=dist; dy/=dist;
+      a.fx+=dx*force; a.fy+=dy*force;
+      b.fx-=dx*force; b.fy-=dy*force;
+    });
+    nodes.forEach(n=>{
+      const p=positions[n.id];
+      const cx=W/2, cy=H/2;
+      p.fx += (cx-p.x)*0.002; p.fy += (cy-p.y)*0.002;
+      p.vx = (p.vx+p.fx)*0.75; p.vy=(p.vy+p.fy)*0.75;
+      p.x += p.vx; p.y += p.vy;
+      p.x = Math.max(24, Math.min(W-24,p.x));
+      p.y = Math.max(24, Math.min(H-24,p.y));
+    });
+  }
+}
+
+function renderLegend(){
+  const el = document.getElementById("graphLegend");
+  el.innerHTML = FOLDERS.map(f=>{
+    const col = FOLDER_COLOR[f.key];
+    return `<span class="legend-item"><span class="legend-dot" style="background:${col.fg}"></span>${f.title.replace(/^\d\d – /,"")}</span>`;
+  }).join("");
+}
+
+function renderGraph(){
+  computeLayout();
+  const nodes = allZettel();
+  const edges = allRelations();
+  const visible = visibleIdSet();
+  let edgeSvg="", nodeSvg="";
+  edges.forEach(e=>{
+    const a=positions[e.a], b=positions[e.b];
+    if(!a||!b) return;
+    const dim = (focusedId && e.a!==focusedId && e.b!==focusedId) || (!setHas(visible,e.a)&&!setHas(visible,e.b));
+    edgeSvg += `<line class="graph-edge ${dim?'dim':''}" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"></line>`;
+  });
+  nodes.forEach(n=>{
+    const p=positions[n.id];
+    if(!p) return;
+    const col = FOLDER_COLOR[n.folder] || FOLDER_COLOR["00"];
+    const isFocused = focusedId===n.id;
+    const dim = !setHas(visible,n.id) && !isFocused;
+    nodeSvg += `<g class="graph-node ${dim?'dim':''}" onclick="focusZettel('${n.id}')">
+      <circle cx="${p.x}" cy="${p.y}" r="${isFocused?26:20}" fill="${col.bg}" ${isFocused?'stroke="'+col.fg+'" stroke-width="3"':''}></circle>
+      <text x="${p.x}" y="${p.y+3}" text-anchor="middle" fill="${col.fg}">${n.id}</text>
+    </g>`;
+  });
+  document.getElementById("graphSvg").innerHTML = edgeSvg + nodeSvg;
+
+  renderLinksPanel();
+}
+function setHas(s,id){ return s.has(id); }
+
+function visibleIdSet(){
+  const set = new Set();
+  allZettel().forEach(z=>{
+    if(activeFolderFilter && z.folder!==activeFolderFilter) return;
+    if(tagFilter.size>0 && !tagFilter.has(z.tag)) return;
+    if(searchTerm && !(z.title.toLowerCase().includes(searchTerm)||z.content.toLowerCase().includes(searchTerm)||z.id.includes(searchTerm))) return;
+    set.add(z.id);
+  });
+  return set;
+}
+
+function renderLinksPanel(){
+  const panel = document.getElementById("linksPanel");
+  if(!focusedId){
+    panel.innerHTML = `<h3>Tipp</h3><p style="font-size:14px;color:var(--gray);">Klicke auf einen Knoten im Graph oder einen Zettel links, um seine Verknüpfungen zu sehen.</p>`;
+    return;
+  }
+  const z = findZettel(focusedId);
+  const links = linksFor(focusedId);
+  panel.innerHTML = `<h3>Verknüpfungen von „${z.title}“ (${z.id})</h3>` +
+    links.map(l=>{
+      const target = findZettel(l.otherId);
+      if(!target) return "";
+      const verb = l.dir==="out" ? l.verb : l.verb;
+      const from = l.dir==="out" ? z : target;
+      const to = l.dir==="out" ? target : z;
+      return `<div class="link-row">
+        <span class="chip" onclick="focusZettel('${from.id}')">${from.id} ${from.title}</span>
+        <span class="verb">${verb}</span>
+        <span class="chip" onclick="focusZettel('${to.id}')">${to.id} ${to.title}</span>
+      </div>`;
+    }).join("") || `<p style="font-size:14px;color:var(--gray);">Noch keine Verknüpfungen.</p>`;
+}
+
+/* ============================================================
+   RENDER: CARDS
+   ============================================================ */
+function renderActiveFilters(){
+  const el = document.getElementById("activeFilters");
+  const chips = [];
+  tagFilter.forEach(t=>chips.push(`<span class="af-chip">#${t}<button onclick="toggleTagFilterValue('${t}')">✕</button></span>`));
+  if(searchTerm) chips.push(`<span class="af-chip">🔍 „${searchTerm}“<button onclick="document.getElementById('searchInput').value='';onSearch('');">✕</button></span>`);
+  if(activeFolderFilter){
+    const f = FOLDERS.find(x=>x.key===activeFolderFilter);
+    chips.push(`<span class="af-chip">${f?f.title:activeFolderFilter}<button onclick="activeFolderFilter=null;render();">✕</button></span>`);
+  }
+  if(chips.length===0){ el.classList.remove("show"); el.innerHTML=""; return; }
+  el.classList.add("show");
+  el.innerHTML = `<span class="af-label">Aktive Filter:</span>${chips.join("")}<button class="af-clear" onclick="clearAllFilters()">alle zurücksetzen</button>`;
+}
+function clearAllFilters(){
+  tagFilter.clear(); searchTerm=""; activeFolderFilter=null;
+  const si=document.getElementById("searchInput"); if(si) si.value="";
+  render();
+}
+
+function renderCards(){
+  const visible = visibleIdSet();
+  const list = allZettel().filter(z=>visible.has(z.id));
+  document.getElementById("cardsCount").textContent = list.length + " / " + allZettel().length;
+  renderActiveFilters();
+  const grid = document.getElementById("cardsGrid");
+  grid.innerHTML = list.map(z=>{
+    const links = linksFor(z.id);
+    const linksHtml = links.map(l=>{
+      const t = findZettel(l.otherId);
+      return t ? `<span class="chip" onclick="focusZettel('${t.id}')">${t.id}</span>` : "";
+    }).join("");
+    return `<div class="zcard tag-${z.tag} ${isCustom(z.id)?'custom':''} ${focusedId===z.id?'highlighted':''}" id="card-${z.id}">
+      ${isCustom(z.id)?`<button class="del-custom" title="Zettel löschen" onclick="deleteCustomZettel('${z.id}')">✕</button>`:""}
+      <div class="head">
+        <div class="idtitle"><span class="zid">${z.id}</span><h3>${z.title}</h3></div>
+        <span class="tagbadge tag-${z.tag}">#${z.tag}</span>
+      </div>
+      ${isCustom(z.id)?'<span class="custom-flag">eigener Zettel</span>':''}
+      <p class="body">${z.content}</p>
+      ${linksHtml ? `<div class="links-row"><span class="links-label">Links:</span>${linksHtml}</div>` : ""}
+    </div>`;
+  }).join("");
+}
+
+/* ============================================================
+   FILTER / SUCHE / TAGS
+   ============================================================ */
+function toggleTagFilterBar(){
+  document.getElementById("filterBar").classList.toggle("open");
+  document.getElementById("tagFilterBtn").classList.toggle("active");
+}
+function toggleTagFilterValue(tag){
+  if(tagFilter.has(tag)) tagFilter.delete(tag); else tagFilter.add(tag);
+  document.querySelectorAll(`.filter-bar button[data-tag="${tag}"]`).forEach(b=>b.classList.toggle("on", tagFilter.has(tag)));
+  render();
+}
+function clearTagFilter(){ tagFilter.clear(); render(); }
+function toggleSearch(){
+  const box = document.getElementById("searchBox");
+  box.classList.toggle("open");
+  if(box.classList.contains("open")) document.getElementById("searchInput").focus();
+}
+function onSearch(val){
+  searchTerm = val.trim().toLowerCase();
+  render();
+}
+function toggleMoreMenu(){
+  document.getElementById("moreMenu").classList.toggle("hidden");
+}
+document.addEventListener("click", function(e){
+  const menu = document.getElementById("moreMenu");
+  if(!menu.contains(e.target) && e.target.getAttribute("title")!=="Mehr"){
+    menu.classList.add("hidden");
+  }
+});
+
+/* ============================================================
+   NEUER ZETTEL / NEUE VERKNÜPFUNG
+   ============================================================ */
+function nextIdForFolder(folder){
+  const nums = allZettel().filter(z=>z.folder===folder).map(z=>parseInt(z.id.slice(2)));
+  const next = nums.length ? Math.max(...nums)+1 : 1;
+  return folder + String(next).padStart(2,"0");
+}
+
+let pendingLinks = [];
+
+function openNewZettelModal(){
+  pendingLinks = [];
+  const folderOptions = FOLDERS.filter(f=>f.key!=="00").map(f=>`<option value="${f.key}">${f.title}</option>`).join("");
+  const zettelOptions = allZettel().map(z=>`<option value="${z.id}">${z.id} – ${z.title}</option>`).join("");
+  showModal("Neuer Zettel", `
+    <div class="field"><label>Ordner</label>
+      <select id="nzFolder" onchange="document.getElementById('nzId').value=nextIdForFolder(this.value)">${folderOptions}</select>
+    </div>
+    <div class="field"><label>ID</label><input id="nzId" value="${nextIdForFolder('01')}"></div>
+    <div class="field"><label>Titel</label><input id="nzTitle" placeholder="z. B. Priorisierung mit WSJF"></div>
+    <div class="field"><label>Tag</label>
+      <select id="nzTag"><option value="Konzept">#Konzept</option><option value="Technik">#Technik</option><option value="Prozess">#Prozess</option><option value="Risiko">#Risiko</option></select>
+    </div>
+    <div class="field"><label>Inhalt</label><textarea id="nzContent" placeholder="Kurzer, konkreter Wissensinhalt…"></textarea></div>
+    <div class="field"><label>Verknüpfungen</label>
+      <div class="link-builder-row">
+        <select id="nzLinkTarget">${zettelOptions}</select>
+        <input id="nzLinkVerb" placeholder="Verb, z. B. 'baut auf'">
+        <button onclick="addPendingLink()">+</button>
+      </div>
+      <div class="added-link-list" id="nzLinkList"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">Abbrechen</button>
+      <button class="btn-primary" onclick="submitNewZettel()">Zettel anlegen</button>
+    </div>
+  `);
+}
+function addPendingLink(){
+  const target = document.getElementById("nzLinkTarget").value;
+  const verb = document.getElementById("nzLinkVerb").value.trim() || "verknüpft mit";
+  pendingLinks.push({target, verb});
+  renderPendingLinks();
+  document.getElementById("nzLinkVerb").value="";
+}
+function renderPendingLinks(){
+  const el = document.getElementById("nzLinkList");
+  if(!el) return;
+  el.innerHTML = pendingLinks.map((l,i)=>{
+    const t = findZettel(l.target);
+    return `<div class="added-link-item"><span>${l.verb} → ${t?t.id+' '+t.title:l.target}</span><button onclick="removePendingLink(${i})">✕</button></div>`;
+  }).join("");
+}
+function removePendingLink(i){ pendingLinks.splice(i,1); renderPendingLinks(); }
+
+function submitNewZettel(){
+  const folder = document.getElementById("nzFolder").value;
+  const id = document.getElementById("nzId").value.trim();
+  const title = document.getElementById("nzTitle").value.trim();
+  const tag = document.getElementById("nzTag").value;
+  const content = document.getElementById("nzContent").value.trim();
+  if(!id || !title || !content){ alert("Bitte ID, Titel und Inhalt ausfüllen."); return; }
+  if(findZettel(id)){ alert("Diese ID existiert bereits."); return; }
+  customZettel.push({id, folder, tag, title, content});
+  pendingLinks.forEach(l=>{ customRelations.push({a:id, b:l.target, verb:l.verb}); });
+  saveCustom();
+  closeModal();
+  focusedId = id;
+  render();
+}
+
+function openNewLinkModal(){
+  const zettelOptions = allZettel().map(z=>`<option value="${z.id}">${z.id} – ${z.title}</option>`).join("");
+  showModal("Neue Verknüpfung", `
+    <div class="field"><label>Von</label><select id="nlFrom">${zettelOptions}</select></div>
+    <div class="field"><label>Verb</label><input id="nlVerb" placeholder="z. B. 'baut auf', 'widerspricht'"></div>
+    <div class="field"><label>Nach</label><select id="nlTo">${zettelOptions}</select></div>
+    <p class="hint-text">Verknüpfungen erscheinen im Graph, in der Karten-Ansicht und im Verknüpfungs-Panel.</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">Abbrechen</button>
+      <button class="btn-primary" onclick="submitNewLink()">Verknüpfung anlegen</button>
+    </div>
+  `);
+}
+function submitNewLink(){
+  const a = document.getElementById("nlFrom").value;
+  const b = document.getElementById("nlTo").value;
+  const verb = document.getElementById("nlVerb").value.trim() || "verknüpft mit";
+  if(a===b){ alert("Bitte zwei unterschiedliche Zettel wählen."); return; }
+  customRelations.push({a,b,verb});
+  saveCustom();
+  closeModal();
+  focusedId = a;
+  render();
+}
+function deleteCustomZettel(id){
+  if(!confirm("Diesen eigenen Zettel wirklich löschen?")) return;
+  customZettel = customZettel.filter(z=>z.id!==id);
+  customRelations = customRelations.filter(r=>r.a!==id && r.b!==id);
+  if(focusedId===id) focusedId=null;
+  saveCustom();
+  render();
+}
+
+/* ============================================================
+   EXPORT / IMPORT / RESET
+   ============================================================ */
+function exportJSON(){
+  const data = {customZettel, customRelations, exportedAt: new Date().toISOString()};
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "zettelkasten-reba-eigene-zettel.json";
+  a.click();
+  URL.revokeObjectURL(url);
+  toggleMoreMenu();
+}
+function importJSON(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const data = JSON.parse(e.target.result);
+      customZettel = data.customZettel || [];
+      customRelations = data.customRelations || [];
+      saveCustom();
+      render();
+    }catch(err){ alert("Diese Datei konnte nicht gelesen werden."); }
+  };
+  reader.readAsText(file);
+  toggleMoreMenu();
+}
+function resetCustomData(){
+  if(!confirm("Alle eigenen Zettel und Verknüpfungen wirklich löschen?")) return;
+  customZettel = []; customRelations = [];
+  saveCustom();
+  render();
+  toggleMoreMenu();
+}
+
+/* ============================================================
+   MODAL-HELPER
+   ============================================================ */
+function showModal(title, bodyHtml){
+  document.getElementById("modalBox").innerHTML = `<button class="close-btn" onclick="closeModal()">Schließen</button><h3>${title}</h3>${bodyHtml}`;
+  document.getElementById("modalOverlay").classList.remove("hidden");
+  renderPendingLinks();
+}
+function closeModal(){ document.getElementById("modalOverlay").classList.add("hidden"); }
+
+function openDoc(key){
+  const docs = {
+    systemprompt: {title:"Systemprompt · Leitplanken", body:`
+      <p>Statisches, offline-fähiges HTML-Tool ohne KI-Anbindung. Redaktionelle Leitplanken für jeden Zettel:</p>
+      <ul><li>Ein Zettel = eine klar abgegrenzte Aussage mit Standard-Bezug.</li>
+      <li>Tags konsequent aus dem festen Set: #Konzept, #Technik, #Prozess, #Risiko.</li>
+      <li>Verknüpfungen tragen ein Verb, das die inhaltliche Beziehung präzise benennt.</li>
+      <li>Eigene Zettel werden farblich als „eigener Zettel“ markiert und bleiben von der Basis-Wissensbasis unterscheidbar.</li></ul>`},
+    handbuch: {title:"Handbuch · Kurzanleitung", body:`
+      <ul><li><b>Dateien (links):</b> Ordner nach Wissensbereich, klicken öffnet den Zettel.</li>
+      <li><b>Graph-Ansicht:</b> Klick auf einen Knoten zeigt seine Verknüpfungen darunter.</li>
+      <li><b>Karten:</b> Klick auf einen Link-Chip springt zum verknüpften Zettel.</li>
+      <li><b>✏️ Neuer Zettel:</b> Legt einen eigenen Zettel inkl. Verknüpfungen an, dauerhaft im Browser gespeichert.</li>
+      <li><b>🔗 Neue Verknüpfung:</b> Verbindet zwei bestehende Zettel mit einem benannten Verb.</li>
+      <li><b>🏷️ / 🔍:</b> Tag-Filter bzw. Volltextsuche über Titel und Inhalt.</li>
+      <li><b>⋯ Mehr:</b> Eigene Zettel als JSON exportieren, importieren oder zurücksetzen — wichtig als Backup, da die Daten nur lokal im Browser liegen.</li></ul>`},
+    vortrag: {title:"Vortrags-Skript · Kurzfassung", body:`
+      <p><em>Einstieg:</em> „Ein Zettelkasten verknüpft Wissen statt es nur zu stapeln — jede Karte bekommt Nachbarn, keine Sackgassen.“</p>
+      <p><em>Durchführung:</em> Von der MOC (0000) aus in einen Bereich zoomen, im Graph die Nachbarschaft eines Knotens zeigen, dann selbst einen Zettel mit Verknüpfung anlegen lassen.</p>
+      <p><em>Abschluss:</em> Teilnehmer verknüpfen eigene Trainingsnotizen mit der Basis-Wissensbasis — sichtbar im Graph als neue Kante.</p>`},
+    normen: {title:"Normen-Register", body:`
+      <ul><li><b>IREB CPRE</b> — RE-Prozess, Qualitätskriterien. Status: aktiv.</li>
+      <li><b>BABOK v3 (IIBA)</b> — Business Analysis Body of Knowledge. Status: aktiv.</li>
+      <li><b>ISO/IEC/IEEE 29148:2018</b> — Formale Anforderungsdokumentation. Status: aktiv.</li>
+      <li><b>ISO/IEC 25010:2023</b> — Qualitätsmodell, Edition 2. Status: aktiv — vor Einsatz Aktualität prüfen.</li>
+      <li><b>Denkraum-/Klarheits-Sprung-Modell &amp; Marmorkuchen-Metapher</b> (M. Kühn) — interne didaktische Frameworks.</li></ul>
+      <p class="hint-text">Normen entwickeln sich weiter — Stand jeweils vor Trainingseinsatz verifizieren.</p>`}
+  };
+  const d = docs[key];
+  showModal(d.title, d.body);
+}
+
+/* ============================================================
+   BEAMER-MODUS
+   ============================================================ */
+function safeGetLS(key){ try{ return window.localStorage.getItem(key); }catch(e){ return null; } }
+function safeSetLS(key, val){ try{ window.localStorage.setItem(key, val); }catch(e){ console.warn("localStorage nicht verfügbar", e); } }
+
+var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+function applyBeamerLevel(level){
+  document.documentElement.setAttribute("data-beamer", String(level));
+  var btn = document.getElementById("beamerToggle");
+  btn.textContent = BEAMER_LABELS[level];
+  btn.classList.toggle("active", level > 0);
+}
+document.getElementById("beamerToggle").addEventListener("click", function(){
+  var level = (Number(safeGetLS("zettelkasten_reba_beamer")) || 0) + 1;
+  if(level >= BEAMER_LABELS.length) level = 0;
+  safeSetLS("zettelkasten_reba_beamer", String(level));
+  applyBeamerLevel(level);
+});
+applyBeamerLevel(Number(safeGetLS("zettelkasten_reba_beamer")) || 0);
+
+/* ============================================================
+   MAIN RENDER + INIT
+   ============================================================ */
+function render(){
+  renderSidebar();
+  renderLegend();
+  renderGraph();
+  renderCards();
+}
+loadCustom();
+render();
+</script>
+</body>
+</html>
