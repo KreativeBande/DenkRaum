@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="color-scheme" content="light">
+<title>Zettelkasten · Prompt Engineering ist Requirements Engineering für KI-Systeme</title>
+<style>
+:root{
+  --ink:#1f2430; --gray:#6b7280; --gray-light:#9aa1ac; --border:#e5e7eb; --bg:#ffffff; --panel:#f8f9fb;
+  --re-bg:#dbeafe; --re-fg:#2563eb; --re-bd:#93c5fd;
+  --prompt-bg:#dcfce7; --prompt-fg:#15803d; --prompt-bd:#86efac;
+  --qual-bg:#fef3c7; --qual-fg:#b45309; --qual-bd:#fcd34d;
+  --ki-bg:#cffafe; --ki-fg:#0e7490; --ki-bd:#67e8f9;
+  --gov-bg:#e0e7ff; --gov-fg:#4338ca; --gov-bd:#a5b4fc;
+  --bruecke-bg:#ffedd5; --bruecke-fg:#c2410c; --bruecke-bd:#fdba74;
+  --risiko-bg:#fee2e2; --risiko-fg:#b91c1c; --risiko-bd:#fca5a5;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+html{color-scheme:light;}
+html[data-beamer="1"]{zoom:1.35}
+html[data-beamer="2"]{zoom:1.75}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:18px;line-height:1.5;-webkit-tap-highlight-color:transparent;}
+button,input,select,textarea{font-family:inherit;font-size:16px;}
+button{cursor:pointer;}
+.app{display:flex;flex-direction:column;height:100vh;}
+
+/* HEADER */
+header.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);gap:16px;flex-wrap:wrap;flex:none;}
+.brand{display:flex;align-items:center;gap:14px;min-width:0;}
+.brand-logo{width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,#a78bfa,#7c3aed);flex:none;display:flex;align-items:center;justify-content:center;}
+.brand-logo svg{width:24px;height:24px;}
+.back-link{display:block;color:var(--gray-light);font-size:13px;font-weight:700;text-decoration:none;margin-bottom:4px;}
+.back-link:hover{color:#7c3aed;text-decoration:underline;}
+.brand h1{margin:0;font-size:19px;font-weight:800;color:var(--ink);}
+.brand .sub{margin:1px 0 0;font-size:14px;color:var(--gray-light);}
+.toolbar{display:flex;gap:6px;align-items:center;position:relative;flex-wrap:wrap;justify-content:flex-end;}
+.toolbar-group{display:flex;gap:6px;align-items:center;}
+.toolbar-divider{width:1.5px;height:28px;background:var(--border);margin:0 4px;}
+.tbtn{width:44px;height:44px;border-radius:10px;border:1.5px solid var(--border);background:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;}
+.tbtn:hover{background:var(--panel);}
+.tbtn.active{background:#ede9fe;border-color:#c4b5fd;}
+.beamer-btn{height:44px;padding:0 14px;border-radius:10px;border:1.5px solid var(--border);background:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;white-space:nowrap;}
+.beamer-btn:hover{background:var(--panel);}
+.beamer-btn.active{background:#ede9fe;border-color:#c4b5fd;}
+.search-box{display:none;align-items:center;gap:8px;border:1.5px solid var(--border);border-radius:10px;padding:0 12px;height:44px;}
+.search-box.open{display:flex;}
+.search-box input{border:none;outline:none;font-size:16px;width:180px;}
+.more-menu{position:absolute;top:52px;right:0;background:#fff;border:1.5px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:220px;padding:6px;z-index:30;}
+.more-menu.hidden{display:none;}
+.more-menu button{width:100%;text-align:left;background:none;border:none;padding:11px 12px;font-size:15px;border-radius:8px;min-height:44px;}
+.more-menu button:hover{background:var(--panel);}
+
+/* LAYOUT */
+.main-layout{display:flex;flex:1;min-height:0;}
+.col-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 2px 12px;margin-bottom:10px;border-bottom:1.5px solid var(--border);}
+.col-header .col-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--ink);text-transform:uppercase;letter-spacing:0.05em;}
+.col-header .col-count{font-size:12px;font-weight:700;color:var(--gray-light);background:var(--panel);padding:3px 9px;border-radius:999px;}
+.col-header .reset-link{font-size:12.5px;font-weight:700;color:#7c3aed;background:none;border:none;min-height:28px;}
+.col-header .reset-link:hover{text-decoration:underline;}
+.col-files{width:230px;flex:none;background:var(--panel);border-right:1px solid var(--border);padding:18px 16px;overflow-y:auto;}
+.col-files h2{font-size:11.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--gray-light);margin:18px 8px 8px;font-weight:800;}
+.folder{margin-bottom:4px;}
+.folder-count{margin-left:auto;font-size:12px;color:var(--gray-light);font-weight:700;}
+.folder-head{display:flex;align-items:center;gap:6px;width:100%;background:#fff;border:1px solid var(--border);padding:5px 6px;border-radius:9px;min-height:40px;}
+.folder-head:hover{border-color:#c4b5fd;}
+.chev-btn{background:none;border:none;flex:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;}
+.chev-btn:hover{background:var(--panel);}
+.chev{font-size:11px;color:var(--gray-light);transition:transform .15s;display:inline-block;}
+.chev.collapsed{transform:rotate(-90deg);}
+.folder-title-btn{flex:1;text-align:left;background:none;border:none;font-size:13.5px;font-weight:700;color:var(--ink);padding:6px 4px;border-radius:6px;min-height:32px;}
+.folder-title-btn:hover{color:#7c3aed;}
+.folder-title-btn.active-folder{color:#7c3aed;background:#ede9fe;}
+.folder-items{padding-left:14px;margin-top:4px;}
+.folder-items.collapsed{display:none;}
+.file-item{display:block;width:100%;text-align:left;background:none;border:none;padding:7px 8px;border-radius:7px;font-size:13.5px;color:var(--gray);min-height:36px;}
+.file-item:hover{background:#fff;color:var(--ink);}
+.file-item.active-file{background:#ede9fe;color:#7c3aed;font-weight:700;}
+.tags-section{margin-top:20px;padding-top:14px;border-top:1.5px solid var(--border);}
+.tags-section h2{margin-top:0;}
+.tag-pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:6px 11px;border-radius:999px;margin:4px 5px 4px 0;border:1.5px solid transparent;min-height:32px;}
+.tag-pill.selected{outline:2px solid var(--ink);outline-offset:1px;}
+.tag-RE{background:var(--re-bg);color:var(--re-fg);}
+.tag-Prompt{background:var(--prompt-bg);color:var(--prompt-fg);}
+.tag-Qualitaet{background:var(--qual-bg);color:var(--qual-fg);}
+.tag-KI{background:var(--ki-bg);color:var(--ki-fg);}
+.tag-Governance{background:var(--gov-bg);color:var(--gov-fg);}
+.tag-Bruecke{background:var(--bruecke-bg);color:var(--bruecke-fg);}
+.tag-Risiko{background:var(--risiko-bg);color:var(--risiko-fg);}
+
+.col-graph{flex:1;min-width:400px;background:var(--panel);border-right:1px solid var(--border);padding:18px 16px;display:flex;flex-direction:column;overflow-y:auto;}
+.links-panel{margin-top:14px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;}
+.links-panel h3{font-size:13px;font-weight:800;color:var(--gray);margin:0 0 8px;}
+.link-row{display:flex;align-items:center;gap:8px;font-size:14px;padding:7px 0;flex-wrap:wrap;border-top:1px solid var(--border);}
+.link-row:first-of-type{border-top:none;}
+.chip{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1.5px solid var(--border);border-radius:7px;padding:3px 9px;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;}
+.chip:hover{background:var(--panel);}
+.verb{color:var(--gray-light);font-size:13.5px;font-style:italic;}
+
+/* CONCEPT MAP */
+.concept-map{display:flex;flex-direction:column;gap:12px;}
+.cm-moc{background:linear-gradient(135deg,#ede9fe,#f5f3ff);border:1.5px solid #ddd6fe;border-radius:16px;padding:14px 18px;text-align:center;cursor:pointer;}
+.cm-moc:hover{border-color:#c4b5fd;}
+.cm-moc .cm-id{font-size:11px;font-weight:800;color:#7c3aed;letter-spacing:.05em;text-transform:uppercase;}
+.cm-moc h3{margin:4px 0 6px;font-size:17px;color:#4c1d95;}
+.cm-moc p{margin:0;font-size:13px;color:#6d28d9;}
+.cm-columns{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:12px;align-items:start;}
+.cm-col-head{font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;text-align:center;padding:8px;border-radius:10px;margin-bottom:8px;}
+.cm-col-head.re{background:var(--re-bg);color:var(--re-fg);}
+.cm-col-head.prompt{background:var(--prompt-bg);color:var(--prompt-fg);}
+.cm-node{border:1.5px solid var(--border);border-radius:12px;padding:9px 11px;background:#fff;margin-bottom:8px;cursor:pointer;transition:all .15s ease;}
+.cm-node:hover{border-color:#c7d3f0;background:#fafbff;}
+.cm-node .cm-id{font-size:10px;font-weight:800;color:var(--gray-light);}
+.cm-node h4{margin:2px 0 3px;font-size:13px;font-weight:800;color:var(--ink);}
+.cm-node p{margin:0;font-size:11.5px;color:var(--gray);line-height:1.35;}
+.cm-node.re{border-left:4px solid var(--re-fg);}
+.cm-node.prompt{border-left:4px solid var(--prompt-fg);}
+.cm-node.risiko{border-left:4px solid var(--risiko-fg);background:var(--risiko-bg);}
+.cm-node.bruecke{border-left:4px solid var(--bruecke-fg);}
+.cm-node.dim{opacity:.35;}
+.cm-node.focused{box-shadow:0 0 0 3px #c4b5fd;}
+.cm-arrow{text-align:center;font-size:11px;color:var(--gray-light);font-weight:700;margin:0;}
+.cm-merge{background:#ede9fe;border:2px solid #c4b5fd;border-radius:14px;padding:14px;text-align:center;cursor:pointer;}
+.cm-merge:hover{border-color:#a78bfa;}
+.cm-merge .cm-id{font-size:11px;font-weight:800;color:#7c3aed;}
+.cm-merge h4{margin:4px 0 6px;font-size:14.5px;color:#4c1d95;}
+.cm-merge p{margin:0;font-size:12px;color:#5b21b6;line-height:1.4;}
+.cm-bridge{border:2px dashed var(--bruecke-bd);background:var(--bruecke-bg);border-radius:14px;padding:12px 14px;}
+.cm-bridge-title{font-size:11px;font-weight:800;color:var(--bruecke-fg);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;text-align:center;}
+.cm-bridge-list{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
+.cm-chip{background:#fff;border:1.5px solid var(--bruecke-bd);border-radius:8px;padding:4px 9px;font-size:11px;font-weight:700;color:var(--bruecke-fg);cursor:pointer;min-height:30px;display:inline-flex;align-items:center;}
+.cm-chip.dim{opacity:.35;}
+.cm-chip.focused{outline:2px solid #7c3aed;}
+.cm-risk-row{display:flex;gap:8px;flex-wrap:wrap;}
+.cm-risk-row .cm-node{flex:1 1 100px;margin-bottom:0;text-align:center;}
+.cm-result{background:#ede9fe;border:1.5px solid #c4b5fd;border-radius:14px;padding:12px 14px;text-align:center;}
+.cm-result h4{margin:0 0 4px;font-size:13px;color:#4c1d95;}
+.cm-result p{margin:0;font-size:12px;color:#5b21b6;}
+.cm-merksatz{background:#f5f3ff;border:1.5px solid #ddd6fe;border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;}
+.cm-merksatz .bulb{font-size:19px;}
+.cm-merksatz p{margin:0;font-size:12.5px;color:#4c1d95;font-weight:600;line-height:1.5;}
+.cm-legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:11.5px;font-weight:700;color:var(--gray);padding:6px 2px 2px;}
+.cm-legend-item{display:flex;align-items:center;gap:5px;}
+.cm-legend-dot{width:16px;height:3px;border-radius:2px;flex:none;}
+
+.col-cards{width:380px;flex:none;padding:18px 22px;overflow-y:auto;min-width:0;}
+.filter-bar{display:none;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;background:var(--panel);padding:10px 12px;border-radius:12px;}
+.filter-bar.open{display:flex;}
+.filter-bar .filter-label{font-size:12.5px;font-weight:800;color:var(--gray-light);text-transform:uppercase;letter-spacing:0.04em;margin-right:4px;width:100%;}
+.filter-bar button{border-radius:999px;border:1.5px solid var(--border);padding:6px 12px;font-size:12.5px;font-weight:700;background:#fff;min-height:32px;}
+.filter-bar button.on{outline:2px solid var(--ink);}
+.active-filters{display:none;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.active-filters.show{display:flex;}
+.active-filters .af-label{font-size:13px;font-weight:700;color:var(--gray);}
+.active-filters .af-chip{display:inline-flex;align-items:center;gap:6px;background:#ede9fe;color:#7c3aed;border-radius:999px;padding:5px 12px;font-size:13px;font-weight:700;}
+.active-filters .af-chip button{background:none;border:none;color:#7c3aed;font-weight:900;font-size:14px;padding:0;min-height:auto;}
+.active-filters .af-clear{font-size:13px;font-weight:700;color:var(--gray-light);background:none;border:none;text-decoration:underline;min-height:32px;}
+.cards-grid{display:grid;grid-template-columns:1fr;gap:14px;align-items:start;}
+.zcard{border-radius:14px;border:2px solid var(--border);padding:14px;background:#fff;display:flex;flex-direction:column;gap:8px;position:relative;}
+.zcard.tag-RE{border-color:var(--re-bd);}
+.zcard.tag-Prompt{border-color:var(--prompt-bd);}
+.zcard.tag-Qualitaet{border-color:var(--qual-bd);}
+.zcard.tag-KI{border-color:var(--ki-bd);}
+.zcard.tag-Governance{border-color:var(--gov-bd);}
+.zcard.tag-Bruecke{border-color:var(--bruecke-bd);}
+.zcard.tag-Risiko{border-color:var(--risiko-bd);}
+.zcard.highlighted{box-shadow:0 0 0 3px #c4b5fd;}
+.zcard .head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+.zcard .idtitle{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+.zcard .zid{font-size:12px;font-weight:800;color:var(--gray-light);background:var(--panel);padding:2px 7px;border-radius:6px;}
+.zcard h3{font-size:15.5px;font-weight:800;margin:0;color:var(--ink);}
+.zcard .tagbadge{font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;flex:none;}
+.zcard .frage{font-size:12.5px;font-weight:700;color:#916b1c;font-style:italic;margin:0;}
+.zcard p.body{font-size:14px;color:#3a3f4a;margin:0;line-height:1.5;flex:1;}
+.zcard .links-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:9px;border-top:1px solid var(--border);}
+.zcard .links-label{font-size:11px;color:var(--gray-light);font-weight:800;width:100%;text-transform:uppercase;letter-spacing:0.03em;}
+.zcard .del-custom{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--gray-light);font-size:16px;display:none;}
+.zcard.custom .del-custom{display:block;}
+.zcard.custom .del-custom:hover{color:var(--risiko-fg);}
+.zcard .custom-flag{font-size:11px;color:#7c3aed;font-weight:800;}
+
+footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--gray-light);flex:none;}
+.footer-links{display:flex;gap:16px;flex-wrap:wrap;}
+.footer-links button{background:none;border:none;color:#7c3aed;font-size:13px;font-weight:700;padding:6px 2px;min-height:32px;}
+.footer-links button:hover{text-decoration:underline;}
+.footer-right{font-weight:700;color:var(--gray);text-align:right;}
+.footer-right a{display:block;font-weight:500;color:var(--gray-light);text-decoration:none;}
+.footer-right a:hover{color:#7c3aed;text-decoration:underline;}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(31,36,48,0.55);display:flex;align-items:center;justify-content:center;padding:18px;z-index:60;}
+.modal-overlay.hidden{display:none;}
+.modal-box{background:#fff;border-radius:16px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;padding:26px;}
+.modal-box h3{margin:0 0 16px;font-size:20px;color:var(--ink);}
+.modal-box .close-btn{float:right;border:1.5px solid var(--border);background:#fff;border-radius:9px;padding:6px 12px;font-size:14px;font-weight:700;min-height:36px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:13px;font-weight:700;color:var(--gray);margin-bottom:6px;}
+.field input,.field select,.field textarea{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;font-size:16px;min-height:44px;}
+.field textarea{min-height:80px;resize:vertical;}
+.link-builder-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+.link-builder-row select{flex:2;}
+.link-builder-row input{flex:2;}
+.link-builder-row button{flex:none;border-radius:9px;border:1.5px solid var(--border);background:var(--panel);padding:0 14px;font-weight:800;min-height:44px;}
+.added-link-list{margin:6px 0 14px;}
+.added-link-item{display:flex;align-items:center;gap:8px;font-size:14px;padding:6px 0;}
+.added-link-item button{background:none;border:none;color:var(--risiko-fg);font-weight:800;font-size:14px;}
+.btn-primary{background:#7c3aed;color:#fff;border:none;border-radius:10px;padding:12px 20px;font-weight:800;font-size:15px;min-height:44px;}
+.btn-secondary{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px 20px;font-weight:700;font-size:15px;min-height:44px;}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:10px;}
+.hint-text{font-size:13px;color:var(--gray-light);margin:-4px 0 12px;}
+
+@media (max-width:1000px){
+  .app{height:auto;min-height:100vh;}
+  .main-layout{flex-direction:column;min-height:0;}
+  .col-files,.col-graph,.col-cards{width:100%;border-right:none;border-bottom:1px solid var(--border);overflow-y:visible;height:auto;min-width:0;}
+  .cm-columns{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z" fill="#fff"/></svg></div>
+      <div>
+        <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+        <h1>Zettelkasten – Prompt Engineering ist Requirements Engineering für KI-Systeme</h1>
+        <p class="sub">Zwei Disziplinen, eine Denkweise · offline &amp; erweiterbar</p>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="search-box" id="searchBox">
+        <span>🔍</span><input type="text" id="searchInput" placeholder="Suchen…" oninput="onSearch(this.value)">
+      </div>
+      <div class="toolbar-group">
+        <button class="tbtn" title="Neuer Zettel" onclick="openNewZettelModal()">✏️</button>
+        <button class="tbtn" title="Neue Verknüpfung" onclick="openNewLinkModal()">🔗</button>
+      </div>
+      <div class="toolbar-divider"></div>
+      <div class="toolbar-group">
+        <button class="tbtn" id="tagFilterBtn" title="Tags filtern" onclick="toggleTagFilterBar()">🏷️</button>
+        <button class="tbtn" id="searchBtn" title="Suchen" onclick="toggleSearch()">🔍</button>
+        <button class="beamer-btn" id="beamerToggle">🔍 Beamer-Modus</button>
+      </div>
+      <div class="toolbar-divider"></div>
+      <button class="tbtn" title="Mehr" onclick="toggleMoreMenu()">⋯</button>
+      <div class="more-menu hidden" id="moreMenu">
+        <button onclick="exportJSON()">⬇️ JSON exportieren</button>
+        <button onclick="document.getElementById('importFile').click()">⬆️ JSON importieren</button>
+        <button onclick="resetCustomData()">🗑️ Eigene Zettel zurücksetzen</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this.files[0])">
+      </div>
+    </div>
+  </header>
+
+  <div class="main-layout">
+    <aside class="col-files" id="colFiles"></aside>
+
+    <section class="col-graph">
+      <div class="col-header">
+        <span class="col-title">🧭 Konzept-Karte</span>
+        <button class="reset-link" onclick="focusedId=null; render();">Fokus lösen</button>
+      </div>
+      <div class="concept-map" id="conceptMap"></div>
+      <div class="links-panel" id="linksPanel"></div>
+    </section>
+
+    <section class="col-cards">
+      <div class="col-header">
+        <span class="col-title">🗒️ Zettel (Auswahl)</span>
+        <span class="col-count" id="cardsCount"></span>
+      </div>
+      <div class="filter-bar" id="filterBar">
+        <span class="filter-label">Nach Tag filtern</span>
+        <button data-tag="RE" class="tag-RE" onclick="toggleTagFilterValue('RE')">#RE</button>
+        <button data-tag="Prompt" class="tag-Prompt" onclick="toggleTagFilterValue('Prompt')">#Prompt</button>
+        <button data-tag="Qualitaet" class="tag-Qualitaet" onclick="toggleTagFilterValue('Qualitaet')">#Qualität</button>
+        <button data-tag="KI" class="tag-KI" onclick="toggleTagFilterValue('KI')">#KI</button>
+        <button data-tag="Governance" class="tag-Governance" onclick="toggleTagFilterValue('Governance')">#Governance</button>
+        <button data-tag="Bruecke" class="tag-Bruecke" onclick="toggleTagFilterValue('Bruecke')">#Brücke</button>
+        <button data-tag="Risiko" class="tag-Risiko" onclick="toggleTagFilterValue('Risiko')">#Risiko</button>
+      </div>
+      <div class="active-filters" id="activeFilters"></div>
+      <div class="cards-grid" id="cardsGrid"></div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <button onclick="openDoc('systemprompt')">Systemprompt</button>
+      <button onclick="openDoc('handbuch')">Handbuch</button>
+      <button onclick="openDoc('vortrag')">Vortrags-Skript</button>
+      <button onclick="openDoc('normen')">Normen-Register</button>
+    </div>
+    <div class="footer-right">Zettelkasten PE &amp; RE für KI · V1
+      <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn · www.michaela-kuehn.com</a>
+    </div>
+  </footer>
+</div>
+
+<div class="modal-overlay hidden" id="modalOverlay"><div class="modal-box" id="modalBox"></div></div>
+
+<script>
+/* ============================================================
+   BASIS-DATEN
+   ============================================================ */
+const FOLDERS = [
+  {key:"00", title:"00 – MOC & Überblick"},
+  {key:"01", title:"01 – Gemeinsamkeiten"},
+  {key:"02", title:"02 – Requirements Engineering"},
+  {key:"03", title:"03 – Prompt Engineering"},
+  {key:"04", title:"04 – Verbindungen & Brücken"},
+  {key:"05", title:"05 – Governance & Verantwortung"}
+];
+const TAG_LABELS = {RE:"RE", Prompt:"Prompt", Qualitaet:"Qualität", KI:"KI", Governance:"Governance", Bruecke:"Brücke", Risiko:"Risiko"};
+const TAGS = ["RE","Prompt","Qualitaet","KI","Governance","Bruecke","Risiko"];
+
+const BASE_ZETTEL = [
+{id:"0000",folder:"00",tag:"Bruecke",title:"MOC: Prompt Engineering ist Requirements Engineering für KI-Systeme",
+  frage:"Wie hängen Anforderungsarbeit und Prompt-Arbeit zusammen?",
+  content:"Zwei Disziplinen – ein Mindset – ein Ziel: Klarheit für gute Entscheidungen und Ergebnisse. Wer Anforderungen formulieren kann, kann prompten – und umgekehrt."},
+
+{id:"0101",folder:"01",tag:"Bruecke",title:"Zielklarheit",frage:"Wissen wir, welches Ergebnis wirklich gebraucht wird?",
+  content:"Zielklarheit bedeutet: Bevor formuliert wird, steht fest, welches Ergebnis gebraucht wird. Fehlt sie, entstehen beliebig interpretierbare Anforderungen und beliebig beantwortbare Prompts."},
+{id:"0102",folder:"01",tag:"Bruecke",title:"Kontext",frage:"Welcher Kontext fehlt noch?",
+  content:"Guter Kontext ist die Basis für verständliche Anforderungen und präzise Prompts."},
+{id:"0103",folder:"01",tag:"Bruecke",title:"Stakeholder / Zielgruppe",frage:"Für wen entsteht das Ergebnis?",
+  content:"Wer liest die Anforderung, wer nutzt die KI-Antwort? Ohne eine klare Zielgruppe bleibt unklar, welche Sprache, welches Detailniveau und welche Erwartungen gelten."},
+{id:"0104",folder:"01",tag:"Qualitaet",title:"Qualitätskriterien",frage:"Woran erkennen wir gute Qualität?",
+  content:"Qualitätskriterien machen messbar, wann ein Ergebnis gut genug ist – bei Anforderungen nach ISO 25010, bei Prompt-Antworten oft informell, aber genauso entscheidend."},
+{id:"0105",folder:"01",tag:"Bruecke",title:"Randbedingungen",frage:"Was ist nicht verhandelbar?",
+  content:"Randbedingungen legen fest, was nicht verhandelbar ist – rechtliche Vorgaben, technische Grenzen, Budget oder Zeit. Sie gelten für Systeme genauso wie für KI-Antworten."},
+{id:"0106",folder:"01",tag:"Bruecke",title:"Testbarkeit",frage:"Können wir das Ergebnis prüfen?",
+  content:"Nur was testbar ist, ist lieferbar – für Systeme und für KI-Antworten."},
+{id:"0107",folder:"01",tag:"Bruecke",title:"Nachvollziehbarkeit",frage:"Können wir die Herkunft rekonstruieren?",
+  content:"Nachvollziehbarkeit heißt: Herkunft und Begründung einer Anforderung oder einer KI-Antwort lassen sich im Nachhinein rekonstruieren – wichtig für Audits wie für Vertrauen."},
+
+{id:"0201",folder:"02",tag:"RE",title:"Anforderung",frage:"Welches Bedürfnis steht dahinter?",
+  content:"Eine Anforderung beschreibt ein Bedürfnis oder Problem, das von einem System gelöst werden soll."},
+{id:"0202",folder:"02",tag:"RE",title:"Stakeholder",frage:"Wer ist betroffen und hat Anforderungen?",
+  content:"Jede Person oder Gruppe mit Einfluss auf oder Interesse an einer Anforderung zählt als Stakeholder – vom Fachbereich bis zur Rechtsabteilung."},
+{id:"0203",folder:"02",tag:"RE",title:"Kontext",frage:"In welchem Umfeld entsteht die Anforderung?",
+  content:"Der Kontext einer Anforderung umfasst Systemgrenze, Umfeld und Rahmenbedingungen, in denen sie entsteht und gilt."},
+{id:"0204",folder:"02",tag:"RE",title:"FA / NFA",frage:"Was muss das System können und leisten?",
+  content:"Funktionale Anforderungen (FA) beschreiben, was ein System tun soll; nicht-funktionale Anforderungen (NFA) beschreiben, wie gut es das tun soll."},
+{id:"0205",folder:"02",tag:"RE",title:"Qualitätsanforderungen (ISO 25010)",frage:"Welche Qualitätseigenschaften sind wichtig?",
+  content:"Qualitätseigenschaften nach ISO 25010 sichern den Nutzen und die Akzeptanz."},
+{id:"0206",folder:"02",tag:"RE",title:"Randbedingungen",frage:"Welche Grenzen und Vorgaben gibt es?",
+  content:"Technische, rechtliche und organisatorische Randbedingungen grenzen den Lösungsraum einer Anforderung ein, bevor die erste Zeile Code entsteht."},
+{id:"0207",folder:"02",tag:"RE",title:"Akzeptanzkriterium",frage:"Woran erkennen wir, dass es erfüllt ist?",
+  content:"Prüfbare Bedingungen, unter denen eine Anforderung als erfüllt gilt. Häufig in Form von Gherkin."},
+{id:"0208",folder:"02",tag:"RE",title:"Risiken & Annahmen",frage:"Was könnte schiefgehen? Welche Annahmen treffen wir?",
+  content:"Jede Anforderung trägt unausgesprochene Annahmen in sich. Werden sie nicht offengelegt, werden sie zum Risiko, sobald sie nicht zutreffen."},
+{id:"0209",folder:"02",tag:"RE",title:"Rückverfolgbarkeit",frage:"Können wir Herkunft und Wirkung nachvollziehen?",
+  content:"Rückverfolgbarkeit verbindet eine Anforderung mit ihrer Herkunft und ihrer Umsetzung – von der Idee bis zum Test."},
+
+{id:"0301",folder:"03",tag:"Prompt",title:"Prompt",frage:"Welche Antwort soll ausgelöst werden?",
+  content:"Ein Prompt ist eine Anweisung an die KI, die eine bestimmte Antwort oder Aktion auslösen soll."},
+{id:"0302",folder:"03",tag:"Prompt",title:"Rolle",frage:"In welcher Rolle soll die KI antworten?",
+  content:"Die Rollenzuweisung sagt der KI, aus welcher Perspektive sie antworten soll – vergleichbar mit der Definition einer Nutzerrolle in der Anforderungsanalyse."},
+{id:"0303",folder:"03",tag:"Prompt",title:"Aufgabe / Ziel",frage:"Was soll die KI konkret erledigen?",
+  content:"Die Aufgabe beschreibt, was die KI konkret erledigen soll – das Pendant zur funktionalen Anforderung im Prompt."},
+{id:"0304",folder:"03",tag:"KI",title:"Kontextfenster",frage:"Welche Informationen braucht die KI?",
+  content:"Das Kontextfenster begrenzt, wie viel Information die KI gleichzeitig verarbeiten kann. Zu wenig Kontext im Fenster wirkt wie eine unvollständige Anforderung."},
+{id:"0305",folder:"03",tag:"Prompt",title:"Kriterien",frage:"Welche Qualität soll die Antwort erfüllen?",
+  content:"Kriterien beschreiben die gewünschte Qualität der Antwort (z. B. Genauigkeit, Vollständigkeit, Stil)."},
+{id:"0306",folder:"03",tag:"Prompt",title:"Eingrenzung",frage:"Was soll die KI nicht tun oder beachten?",
+  content:"Eingrenzung legt fest, was die KI nicht tun oder nicht beachten soll – das Pendant zu Ausschlusskriterien einer Anforderung."},
+{id:"0307",folder:"03",tag:"Prompt",title:"Ausgabeformat",frage:"In welcher Struktur / Form soll die Antwort erfolgen?",
+  content:"Das Ausgabeformat bestimmt Struktur und Form der Antwort – von Fließtext bis JSON. Ohne Vorgabe entscheidet die KI selbst, oft inkonsistent."},
+{id:"0308",folder:"03",tag:"Prompt",title:"Prüfauftrag",frage:"Woran soll die Antwort gemessen werden?",
+  content:"Gibt vor, wie die Antwort bewertet werden soll (Kriterien, Checks, Selbstprüfung der KI)."},
+
+{id:"0401",folder:"04",tag:"Bruecke",title:"Deklinationskette",frage:"Bleibt der Weg von der Idee bis zum ToDo nachvollziehbar?",
+  content:"Wunsch → BC → Epic → Use Case → Story → Akzeptanzkriterium → ToDo. Die durchgängige Kette sorgt für Klarheit, Priorisierung und Nachvollziehbarkeit."},
+{id:"0402",folder:"04",tag:"Bruecke",title:"Iteration & Validierung",frage:"Ist das Ergebnis schon gut genug – oder braucht es eine weitere Runde?",
+  content:"Weder eine Anforderung noch ein Prompt ist beim ersten Versuch fertig. Beide werden iterativ geprüft, verworfen oder verfeinert, bis das Ergebnis trägt."},
+{id:"0403",folder:"04",tag:"Risiko",title:"Missverständnisse",frage:"Wo könnte die Botschaft anders ankommen als gemeint?",
+  content:"Unklare Ziele, unvollständiger Kontext und implizites Wissen erzeugen Missverständnisse – bei Menschen wie bei der KI."},
+{id:"0404",folder:"04",tag:"Risiko",title:"Halluzinationen",frage:"Woher könnte eine falsche oder erfundene Antwort kommen?",
+  content:"Entstehen durch fehlenden Kontext, unklare Kriterien oder fehlende Eingrenzung."},
+
+{id:"0501",folder:"05",tag:"Governance",title:"ISO 27001",frage:"Wie schützen wir sensible Daten in Anforderungen und Prompts?",
+  content:"ISO/IEC 27001 regelt Informationssicherheits-Managementsysteme – relevant, sobald Prompts oder Anforderungen sensible Daten enthalten."},
+{id:"0502",folder:"05",tag:"Governance",title:"ISO 42001",frage:"Wie steuern wir KI-Systeme verantwortungsvoll im Unternehmen?",
+  content:"ISO/IEC 42001 ist der erste internationale Standard für KI-Managementsysteme und verlangt einen verantwortungsvollen, nachvollziehbaren Umgang mit KI im Unternehmen."},
+{id:"0503",folder:"05",tag:"Governance",title:"EU AI Act",frage:"In welche Risikoklasse fällt unser KI-System?",
+  content:"Reguliert den verantwortungsvollen Einsatz von KI-Systemen in Europa. Klassifizierung, Transparenz, Risiken."},
+{id:"0504",folder:"05",tag:"Governance",title:"Datenschutz",frage:"Enthält Prompt oder Anforderung personenbezogene Daten?",
+  content:"Prompts und Anforderungen, die personenbezogene Daten enthalten, unterliegen der DSGVO – unabhängig davon, ob ein Mensch oder eine KI sie verarbeitet."},
+{id:"0505",folder:"05",tag:"Governance",title:"Nachvollziehbarkeit",frage:"Können wir die Entscheidung der KI im Nachhinein erklären?",
+  content:"Governance verlangt, dass Entscheidungen von und über KI-Systeme im Nachhinein erklärbar sind – die gleiche Anforderung wie an gute Requirements-Dokumentation."}
+];
+
+const BASE_RELATIONS = [
+  {a:"0000",b:"0201",verb:"verbindet mit"},{a:"0000",b:"0301",verb:"verbindet mit"},{a:"0000",b:"0101",verb:"gründet in"},
+  {a:"0000",b:"0401",verb:"wird konkret in"},{a:"0000",b:"0503",verb:"wird verantwortet über"},
+  {a:"0101",b:"0102",verb:"braucht"},{a:"0101",b:"0201",verb:"prägt"},{a:"0101",b:"0301",verb:"prägt"},
+  {a:"0102",b:"0103",verb:"ergänzt sich mit"},{a:"0102",b:"0203",verb:"wird konkret in"},{a:"0102",b:"0304",verb:"wird konkret in"},
+  {a:"0102",b:"0403",verb:"wird gefährdet durch"},
+  {a:"0103",b:"0202",verb:"entspricht"},{a:"0103",b:"0302",verb:"entspricht"},{a:"0103",b:"0403",verb:"schützt vor"},
+  {a:"0104",b:"0205",verb:"konkretisiert sich in"},{a:"0104",b:"0305",verb:"konkretisiert sich in"},
+  {a:"0105",b:"0206",verb:"konkretisiert sich in"},{a:"0105",b:"0306",verb:"konkretisiert sich in"},
+  {a:"0106",b:"0207",verb:"konkretisiert sich in"},{a:"0106",b:"0308",verb:"konkretisiert sich in"},{a:"0106",b:"0402",verb:"sichert"},
+  {a:"0107",b:"0209",verb:"konkretisiert sich in"},{a:"0107",b:"0505",verb:"konkretisiert sich in"},
+  {a:"0201",b:"0202",verb:"wird geprägt von"},{a:"0201",b:"0203",verb:"entsteht in"},{a:"0201",b:"0204",verb:"gliedert sich in"},
+  {a:"0201",b:"0207",verb:"wird geprüft durch"},{a:"0201",b:"0208",verb:"birgt"},{a:"0201",b:"0209",verb:"verlangt"},
+  {a:"0202",b:"0203",verb:"prägt"},
+  {a:"0204",b:"0206",verb:"wird begrenzt durch"},{a:"0206",b:"0208",verb:"begrenzt"},{a:"0208",b:"0209",verb:"erfordert"},
+  {a:"0205",b:"0204",verb:"konkretisiert"},{a:"0205",b:"0501",verb:"überschneidet sich mit"},
+  {a:"0301",b:"0302",verb:"bekommt"},{a:"0301",b:"0303",verb:"definiert"},{a:"0301",b:"0304",verb:"nutzt"},
+  {a:"0301",b:"0307",verb:"endet in"},{a:"0301",b:"0308",verb:"wird geprüft durch"},
+  {a:"0302",b:"0303",verb:"prägt"},{a:"0303",b:"0305",verb:"wird bewertet nach"},{a:"0303",b:"0306",verb:"wird begrenzt durch"},
+  {a:"0305",b:"0308",verb:"wird geprüft durch"},{a:"0305",b:"0402",verb:"erfordert"},{a:"0306",b:"0307",verb:"beeinflusst"},
+  {a:"0304",b:"0404",verb:"erzeugt Risiko"},{a:"0308",b:"0402",verb:"nutzt"},
+  {a:"0401",b:"0201",verb:"beginnt bei"},{a:"0401",b:"0207",verb:"endet vorläufig bei"},{a:"0401",b:"0402",verb:"wird begleitet von"},
+  {a:"0207",b:"0204",verb:"prüft"},{a:"0207",b:"0209",verb:"ermöglicht"},
+  {a:"0403",b:"0404",verb:"verstärkt"},{a:"0404",b:"0306",verb:"wird verhindert durch"},
+  {a:"0501",b:"0502",verb:"ergänzt sich mit"},{a:"0501",b:"0503",verb:"überschneidet sich mit"},{a:"0502",b:"0503",verb:"konkretisiert sich in"},
+  {a:"0502",b:"0404",verb:"adressiert"},{a:"0503",b:"0504",verb:"schützt zusätzlich über"},{a:"0504",b:"0203",verb:"betrifft"},
+  {a:"0505",b:"0209",verb:"spiegelt"}
+];
+
+const CM_RE_IDS = ["0202","0203","0204","0205","0206","0207","0208"];
+const CM_PROMPT_IDS = ["0302","0303","0304","0305","0306","0307","0308"];
+const CM_BRIDGE_IDS = ["0101","0102","0104","0106","0107","0403","0402"];
+const CM_RISK_IDS = ["0403","0404","0401"];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const LS_KEY = "zettelkasten_pe_re_userdata_v1";
+var customZettel = [];
+var customRelations = [];
+let collapsedFolders = new Set();
+let activeFolderFilter = null;
+let tagFilter = new Set();
+let searchTerm = "";
+let focusedId = null;
+
+function loadCustom(){
+  try{
+    const raw = window.localStorage.getItem(LS_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      customZettel = parsed.customZettel || [];
+      customRelations = parsed.customRelations || [];
+    }
+  }catch(e){ console.warn("localStorage nicht verfügbar", e); }
+}
+function saveCustom(){
+  try{
+    window.localStorage.setItem(LS_KEY, JSON.stringify({customZettel, customRelations}));
+  }catch(e){ console.warn("Konnte nicht speichern", e); }
+}
+function allZettel(){ return BASE_ZETTEL.concat(customZettel); }
+function allRelations(){ return BASE_RELATIONS.concat(customRelations); }
+function findZettel(id){ return allZettel().find(z=>z.id===id); }
+function isCustom(id){ return customZettel.some(z=>z.id===id); }
+
+function linksFor(id){
+  return allRelations().filter(r=>r.a===id||r.b===id).map(r=>{
+    const otherId = r.a===id? r.b : r.a;
+    const dir = r.a===id ? "out" : "in";
+    return {otherId, verb:r.verb, dir};
+  });
+}
+
+/* ============================================================
+   RENDER: SIDEBAR
+   ============================================================ */
+function renderSidebar(){
+  const el = document.getElementById("colFiles");
+  const total = allZettel().length;
+  let html = `<div class="col-header">
+      <span class="col-title">🗂️ Dateien</span>
+      <span class="col-count">${total}</span>
+    </div>`;
+  FOLDERS.forEach(f=>{
+    const items = allZettel().filter(z=>z.folder===f.key);
+    const collapsed = collapsedFolders.has(f.key);
+    html += `<div class="folder">
+      <div class="folder-head">
+        <button class="chev-btn" onclick="toggleFolder('${f.key}')" title="Ein-/ausklappen"><span class="chev ${collapsed?"collapsed":""}">▾</span></button>
+        <button class="folder-title-btn ${activeFolderFilter===f.key?"active-folder":""}" onclick="setFolderFilter('${f.key}')" title="Nach diesem Ordner filtern">${f.title}</button>
+        <span class="folder-count">${items.length}</span>
+      </div>
+      <div class="folder-items ${collapsed?"collapsed":""}">
+        ${items.map(z=>`<button class="file-item ${focusedId===z.id?"active-file":""}" onclick="focusZettel('${z.id}')">${z.id} – ${z.title}</button>`).join("")}
+      </div>
+    </div>`;
+  });
+  html += `<div class="tags-section"><h2>Tags</h2>
+    ${TAGS.map(t=>`<span class="tag-pill tag-${t} ${tagFilter.has(t)?'selected':''}" onclick="toggleTagFilterValue('${t}')">#${TAG_LABELS[t]}</span>`).join("")}
+  </div>`;
+  el.innerHTML = html;
+}
+function toggleFolder(key){
+  if(collapsedFolders.has(key)) collapsedFolders.delete(key); else collapsedFolders.add(key);
+  renderSidebar();
+}
+function setFolderFilter(key){
+  activeFolderFilter = (activeFolderFilter===key) ? null : key;
+  if(activeFolderFilter) collapsedFolders.delete(key);
+  render();
+}
+function focusZettel(id){
+  focusedId = id;
+  activeFolderFilter = null;
+  render();
+  const cardEl = document.getElementById("card-"+id);
+  if(cardEl && typeof cardEl.scrollIntoView === "function") cardEl.scrollIntoView({behavior:"smooth", block:"center"});
+}
+
+/* ============================================================
+   CONCEPT MAP (fester Konzept-Grundriss statt Force-Layout)
+   ============================================================ */
+function visibleIdSet(){
+  const set = new Set();
+  allZettel().forEach(z=>{
+    if(activeFolderFilter && z.folder!==activeFolderFilter) return;
+    if(tagFilter.size>0 && !tagFilter.has(z.tag)) return;
+    if(searchTerm && !(z.title.toLowerCase().includes(searchTerm)||z.content.toLowerCase().includes(searchTerm)||z.id.includes(searchTerm))) return;
+    set.add(z.id);
+  });
+  return set;
+}
+
+function cmNodeHtml(id, extraClass){
+  const z = findZettel(id);
+  if(!z) return "";
+  const visible = visibleIdSet();
+  const dim = !visible.has(id) && focusedId!==id;
+  const focused = focusedId===id;
+  return `<div class="cm-node ${extraClass} ${dim?'dim':''} ${focused?'focused':''}" onclick="focusZettel('${id}')">
+    <div class="cm-id">${id}</div><h4>${z.title}</h4><p>${z.frage}</p>
+  </div>`;
+}
+function cmChipHtml(id){
+  const z = findZettel(id);
+  if(!z) return "";
+  const visible = visibleIdSet();
+  const dim = !visible.has(id) && focusedId!==id;
+  const focused = focusedId===id;
+  return `<span class="cm-chip ${dim?'dim':''} ${focused?'focused':''}" onclick="focusZettel('${id}')">${id} ${z.title}</span>`;
+}
+
+function renderConceptMap(){
+  const el = document.getElementById("conceptMap");
+  const moc = findZettel("0000");
+  el.innerHTML = `
+    <div class="cm-moc" onclick="focusZettel('0000')">
+      <div class="cm-id">0000 · MOC</div>
+      <h3>${moc.title}</h3>
+      <p>${moc.content}</p>
+    </div>
+    <div class="cm-columns">
+      <div class="cm-col-re">
+        <div class="cm-col-head re">Requirements Engineering</div>
+        ${CM_RE_IDS.map(id=>cmNodeHtml(id,'re')).join("")}
+      </div>
+      <div class="cm-col-center">
+        <div class="cm-arrow">wird formuliert als ↓ &nbsp;·&nbsp; ↑ Rahmen &amp; Verbindung &nbsp;·&nbsp; ↓ wird übersetzt in</div>
+        <div class="cm-merge" onclick="focusZettel('0201')">
+          <div class="cm-id">0201 / 0301</div>
+          <h4>Anforderung ≈ Prompt</h4>
+          <p>Eine Anforderung beschreibt, WAS gebraucht wird. Ein Prompt beschreibt, WAS die KI liefern soll – und unter welchen Bedingungen.</p>
+        </div>
+        <div class="cm-arrow">↓</div>
+        <div class="cm-bridge">
+          <div class="cm-bridge-title">Gemeinsame Prinzipien (Brücke)</div>
+          <div class="cm-bridge-list">${CM_BRIDGE_IDS.map(cmChipHtml).join("")}</div>
+        </div>
+        <div class="cm-arrow">gefährdet durch ↓</div>
+        <div class="cm-risk-row">
+          ${cmNodeHtml("0403","risiko")}${cmNodeHtml("0404","risiko")}${cmNodeHtml("0401","bruecke")}
+        </div>
+        <div class="cm-arrow">führt zu ↓</div>
+        <div class="cm-result">
+          <h4>Ergebnis</h4>
+          <p>Bessere Antworten der KI bedeuten bessere Entscheidungen und erfolgreiche Projekte.</p>
+        </div>
+        <div class="cm-merksatz"><span class="bulb">💡</span><p>Wer Anforderungen schreiben kann, kann prompten. Wer prompten kann, versteht Anforderungen besser.</p></div>
+      </div>
+      <div class="cm-col-prompt">
+        <div class="cm-col-head prompt">Prompt Engineering</div>
+        ${CM_PROMPT_IDS.map(id=>cmNodeHtml(id,'prompt')).join("")}
+      </div>
+    </div>
+    <div class="cm-legend">
+      <span class="cm-legend-item"><span class="cm-legend-dot" style="background:var(--re-fg)"></span>RE-Aspekte</span>
+      <span class="cm-legend-item"><span class="cm-legend-dot" style="background:var(--prompt-fg)"></span>Prompt-Aspekte</span>
+      <span class="cm-legend-item"><span class="cm-legend-dot" style="background:var(--bruecke-fg)"></span>Gemeinsame Prinzipien (Brücke)</span>
+      <span class="cm-legend-item"><span class="cm-legend-dot" style="background:var(--risiko-fg)"></span>Risiken / Stolperfallen</span>
+      <span class="cm-legend-item"><span class="cm-legend-dot" style="background:#7c3aed"></span>Ziel / Resultat</span>
+    </div>
+  `;
+  renderLinksPanel();
+}
+
+function renderLinksPanel(){
+  const panel = document.getElementById("linksPanel");
+  if(!focusedId){
+    panel.innerHTML = `<h3>Tipp</h3><p style="font-size:14px;color:var(--gray);">Klicke auf eine Karte in der Konzept-Karte oder einen Zettel links, um seine Verknüpfungen zu sehen.</p>`;
+    return;
+  }
+  const z = findZettel(focusedId);
+  const links = linksFor(focusedId);
+  panel.innerHTML = `<h3>Verknüpfungen von „${z.title}“ (${z.id})</h3>` +
+    links.map(l=>{
+      const target = findZettel(l.otherId);
+      if(!target) return "";
+      const verb = l.verb;
+      const from = l.dir==="out" ? z : target;
+      const to = l.dir==="out" ? target : z;
+      return `<div class="link-row">
+        <span class="chip" onclick="focusZettel('${from.id}')">${from.id} ${from.title}</span>
+        <span class="verb">${verb}</span>
+        <span class="chip" onclick="focusZettel('${to.id}')">${to.id} ${to.title}</span>
+      </div>`;
+    }).join("") || `<p style="font-size:14px;color:var(--gray);">Noch keine Verknüpfungen.</p>`;
+}
+
+/* ============================================================
+   RENDER: CARDS
+   ============================================================ */
+function renderActiveFilters(){
+  const el = document.getElementById("activeFilters");
+  const chips = [];
+  tagFilter.forEach(t=>chips.push(`<span class="af-chip">#${TAG_LABELS[t]}<button onclick="toggleTagFilterValue('${t}')">✕</button></span>`));
+  if(searchTerm) chips.push(`<span class="af-chip">🔍 „${searchTerm}“<button onclick="document.getElementById('searchInput').value='';onSearch('');">✕</button></span>`);
+  if(activeFolderFilter){
+    const f = FOLDERS.find(x=>x.key===activeFolderFilter);
+    chips.push(`<span class="af-chip">${f?f.title:activeFolderFilter}<button onclick="activeFolderFilter=null;render();">✕</button></span>`);
+  }
+  if(chips.length===0){ el.classList.remove("show"); el.innerHTML=""; return; }
+  el.classList.add("show");
+  el.innerHTML = `<span class="af-label">Aktive Filter:</span>${chips.join("")}<button class="af-clear" onclick="clearAllFilters()">alle zurücksetzen</button>`;
+}
+function clearAllFilters(){
+  tagFilter.clear(); searchTerm=""; activeFolderFilter=null;
+  const si=document.getElementById("searchInput"); if(si) si.value="";
+  render();
+}
+
+function renderCards(){
+  const visible = visibleIdSet();
+  const list = allZettel().filter(z=>visible.has(z.id));
+  document.getElementById("cardsCount").textContent = list.length + " / " + allZettel().length;
+  renderActiveFilters();
+  const grid = document.getElementById("cardsGrid");
+  grid.innerHTML = list.map(z=>{
+    const links = linksFor(z.id);
+    const linksHtml = links.map(l=>{
+      const t = findZettel(l.otherId);
+      return t ? `<span class="chip" onclick="focusZettel('${t.id}')">${t.id}</span>` : "";
+    }).join("");
+    return `<div class="zcard tag-${z.tag} ${isCustom(z.id)?'custom':''} ${focusedId===z.id?'highlighted':''}" id="card-${z.id}">
+      ${isCustom(z.id)?`<button class="del-custom" title="Zettel löschen" onclick="deleteCustomZettel('${z.id}')">✕</button>`:""}
+      <div class="head">
+        <div class="idtitle"><span class="zid">${z.id}</span><h3>${z.title}</h3></div>
+        <span class="tagbadge tag-${z.tag}">#${TAG_LABELS[z.tag]||z.tag}</span>
+      </div>
+      ${isCustom(z.id)?'<span class="custom-flag">eigener Zettel</span>':''}
+      ${z.frage?`<p class="frage">${z.frage}</p>`:""}
+      <p class="body">${z.content}</p>
+      ${linksHtml ? `<div class="links-row"><span class="links-label">Links:</span>${linksHtml}</div>` : ""}
+    </div>`;
+  }).join("");
+}
+
+/* ============================================================
+   FILTER / SUCHE / TAGS
+   ============================================================ */
+function toggleTagFilterBar(){
+  document.getElementById("filterBar").classList.toggle("open");
+  document.getElementById("tagFilterBtn").classList.toggle("active");
+}
+function toggleTagFilterValue(tag){
+  if(tagFilter.has(tag)) tagFilter.delete(tag); else tagFilter.add(tag);
+  document.querySelectorAll(`.filter-bar button[data-tag="${tag}"]`).forEach(b=>b.classList.toggle("on", tagFilter.has(tag)));
+  render();
+}
+function clearTagFilter(){ tagFilter.clear(); render(); }
+function toggleSearch(){
+  const box = document.getElementById("searchBox");
+  box.classList.toggle("open");
+  if(box.classList.contains("open")) document.getElementById("searchInput").focus();
+}
+function onSearch(val){
+  searchTerm = val.trim().toLowerCase();
+  render();
+}
+function toggleMoreMenu(){
+  document.getElementById("moreMenu").classList.toggle("hidden");
+}
+document.addEventListener("click", function(e){
+  const menu = document.getElementById("moreMenu");
+  if(!menu.contains(e.target) && e.target.getAttribute("title")!=="Mehr"){
+    menu.classList.add("hidden");
+  }
+});
+
+/* ============================================================
+   NEUER ZETTEL / NEUE VERKNÜPFUNG
+   ============================================================ */
+function nextIdForFolder(folder){
+  const nums = allZettel().filter(z=>z.folder===folder).map(z=>parseInt(z.id.slice(2)));
+  const next = nums.length ? Math.max(...nums)+1 : 1;
+  return folder + String(next).padStart(2,"0");
+}
+
+let pendingLinks = [];
+
+function openNewZettelModal(){
+  pendingLinks = [];
+  const folderOptions = FOLDERS.filter(f=>f.key!=="00").map(f=>`<option value="${f.key}">${f.title}</option>`).join("");
+  const zettelOptions = allZettel().map(z=>`<option value="${z.id}">${z.id} – ${z.title}</option>`).join("");
+  const tagOptions = TAGS.map(t=>`<option value="${t}">#${TAG_LABELS[t]}</option>`).join("");
+  showModal("Neuer Zettel", `
+    <div class="field"><label>Ordner</label>
+      <select id="nzFolder" onchange="document.getElementById('nzId').value=nextIdForFolder(this.value)">${folderOptions}</select>
+    </div>
+    <div class="field"><label>ID</label><input id="nzId" value="${nextIdForFolder('01')}"></div>
+    <div class="field"><label>Titel</label><input id="nzTitle" placeholder="z. B. Few-Shot-Beispiele"></div>
+    <div class="field"><label>Tag</label>
+      <select id="nzTag">${tagOptions}</select>
+    </div>
+    <div class="field"><label>Leitfrage (optional)</label><input id="nzFrage" placeholder="z. B. Welche Frage steckt dahinter?"></div>
+    <div class="field"><label>Inhalt</label><textarea id="nzContent" placeholder="Kurzer, konkreter Wissensinhalt…"></textarea></div>
+    <div class="field"><label>Verknüpfungen</label>
+      <div class="link-builder-row">
+        <select id="nzLinkTarget">${zettelOptions}</select>
+        <input id="nzLinkVerb" placeholder="Verb, z. B. 'baut auf'">
+        <button onclick="addPendingLink()">+</button>
+      </div>
+      <div class="added-link-list" id="nzLinkList"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">Abbrechen</button>
+      <button class="btn-primary" onclick="submitNewZettel()">Zettel anlegen</button>
+    </div>
+  `);
+}
+function addPendingLink(){
+  const target = document.getElementById("nzLinkTarget").value;
+  const verb = document.getElementById("nzLinkVerb").value.trim() || "verknüpft mit";
+  pendingLinks.push({target, verb});
+  renderPendingLinks();
+  document.getElementById("nzLinkVerb").value="";
+}
+function renderPendingLinks(){
+  const el = document.getElementById("nzLinkList");
+  if(!el) return;
+  el.innerHTML = pendingLinks.map((l,i)=>{
+    const t = findZettel(l.target);
+    return `<div class="added-link-item"><span>${l.verb} → ${t?t.id+' '+t.title:l.target}</span><button onclick="removePendingLink(${i})">✕</button></div>`;
+  }).join("");
+}
+function removePendingLink(i){ pendingLinks.splice(i,1); renderPendingLinks(); }
+
+function submitNewZettel(){
+  const folder = document.getElementById("nzFolder").value;
+  const id = document.getElementById("nzId").value.trim();
+  const title = document.getElementById("nzTitle").value.trim();
+  const tag = document.getElementById("nzTag").value;
+  const frage = document.getElementById("nzFrage").value.trim();
+  const content = document.getElementById("nzContent").value.trim();
+  if(!id || !title || !content){ alert("Bitte ID, Titel und Inhalt ausfüllen."); return; }
+  if(findZettel(id)){ alert("Diese ID existiert bereits."); return; }
+  customZettel.push({id, folder, tag, title, frage, content});
+  pendingLinks.forEach(l=>{ customRelations.push({a:id, b:l.target, verb:l.verb}); });
+  saveCustom();
+  closeModal();
+  focusedId = id;
+  render();
+}
+
+function openNewLinkModal(){
+  const zettelOptions = allZettel().map(z=>`<option value="${z.id}">${z.id} – ${z.title}</option>`).join("");
+  showModal("Neue Verknüpfung", `
+    <div class="field"><label>Von</label><select id="nlFrom">${zettelOptions}</select></div>
+    <div class="field"><label>Verb</label><input id="nlVerb" placeholder="z. B. 'baut auf', 'widerspricht'"></div>
+    <div class="field"><label>Nach</label><select id="nlTo">${zettelOptions}</select></div>
+    <p class="hint-text">Verknüpfungen erscheinen im Verknüpfungs-Panel und in der Karten-Ansicht. Die feste Konzept-Karte selbst bleibt kuratiert und ändert sich nicht durch neue Zettel.</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">Abbrechen</button>
+      <button class="btn-primary" onclick="submitNewLink()">Verknüpfung anlegen</button>
+    </div>
+  `);
+}
+function submitNewLink(){
+  const a = document.getElementById("nlFrom").value;
+  const b = document.getElementById("nlTo").value;
+  const verb = document.getElementById("nlVerb").value.trim() || "verknüpft mit";
+  if(a===b){ alert("Bitte zwei unterschiedliche Zettel wählen."); return; }
+  customRelations.push({a,b,verb});
+  saveCustom();
+  closeModal();
+  focusedId = a;
+  render();
+}
+function deleteCustomZettel(id){
+  if(!confirm("Diesen eigenen Zettel wirklich löschen?")) return;
+  customZettel = customZettel.filter(z=>z.id!==id);
+  customRelations = customRelations.filter(r=>r.a!==id && r.b!==id);
+  if(focusedId===id) focusedId=null;
+  saveCustom();
+  render();
+}
+
+/* ============================================================
+   EXPORT / IMPORT / RESET
+   ============================================================ */
+function exportJSON(){
+  const data = {customZettel, customRelations, exportedAt: new Date().toISOString()};
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "zettelkasten-pe-re-eigene-zettel.json";
+  a.click();
+  URL.revokeObjectURL(url);
+  toggleMoreMenu();
+}
+function importJSON(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const data = JSON.parse(e.target.result);
+      customZettel = data.customZettel || [];
+      customRelations = data.customRelations || [];
+      saveCustom();
+      render();
+    }catch(err){ alert("Diese Datei konnte nicht gelesen werden."); }
+  };
+  reader.readAsText(file);
+  toggleMoreMenu();
+}
+function resetCustomData(){
+  if(!confirm("Alle eigenen Zettel und Verknüpfungen wirklich löschen?")) return;
+  customZettel = []; customRelations = [];
+  saveCustom();
+  render();
+  toggleMoreMenu();
+}
+
+/* ============================================================
+   MODAL-HELPER
+   ============================================================ */
+function showModal(title, bodyHtml){
+  document.getElementById("modalBox").innerHTML = `<button class="close-btn" onclick="closeModal()">Schließen</button><h3>${title}</h3>${bodyHtml}`;
+  document.getElementById("modalOverlay").classList.remove("hidden");
+  renderPendingLinks();
+}
+function closeModal(){ document.getElementById("modalOverlay").classList.add("hidden"); }
+
+function openDoc(key){
+  const docs = {
+    systemprompt: {title:"Systemprompt · Leitplanken", body:`
+      <p>Statisches, offline-fähiges HTML-Tool ohne KI-Anbindung. Redaktionelle Leitplanken für jeden Zettel:</p>
+      <ul><li>Ein Zettel = eine klar abgegrenzte Aussage, konsequent aus der Perspektive „Requirements Engineering ↔ Prompt Engineering“.</li>
+      <li>Tags aus dem festen Set: #RE, #Prompt, #Qualität, #KI, #Governance, #Brücke, #Risiko.</li>
+      <li>Verknüpfungen tragen ein Verb, das die inhaltliche Beziehung präzise benennt.</li>
+      <li>Die Konzept-Karte in der Mitte ist bewusst kuratiert (kein automatisches Force-Layout) und bleibt stabil, während eigene Zettel nur in Dateiliste, Karten und Verknüpfungs-Panel erscheinen.</li></ul>`},
+    handbuch: {title:"Handbuch · Kurzanleitung", body:`
+      <ul><li><b>Dateien (links):</b> Ordner nach Wissensbereich, klicken öffnet den Zettel.</li>
+      <li><b>Konzept-Karte (Mitte):</b> Zeigt, wie Requirements Engineering und Prompt Engineering über gemeinsame Prinzipien verbunden sind – und welche Risiken beide Seiten gefährden. Klick auf eine Karte springt zu den Verknüpfungen.</li>
+      <li><b>Karten (rechts):</b> Klick auf einen Link-Chip springt zum verknüpften Zettel.</li>
+      <li><b>✏️ Neuer Zettel:</b> Legt einen eigenen Zettel inkl. Verknüpfungen an, dauerhaft im Browser gespeichert.</li>
+      <li><b>🔗 Neue Verknüpfung:</b> Verbindet zwei bestehende Zettel mit einem benannten Verb.</li>
+      <li><b>🏷️ / 🔍:</b> Tag-Filter bzw. Volltextsuche über Titel und Inhalt.</li>
+      <li><b>⋯ Mehr:</b> Eigene Zettel als JSON exportieren, importieren oder zurücksetzen — wichtig als Backup, da die Daten nur lokal im Browser liegen.</li></ul>`},
+    vortrag: {title:"Vortrags-Skript · Kurzfassung", body:`
+      <p><em>Einstieg:</em> „Ein guter Prompt ist ein kleines Requirements-Dokument. Wer Anforderungen schreiben kann, kann prompten.“</p>
+      <p><em>Durchführung:</em> Von der MOC (0000) aus die Konzept-Karte zeigen: links Requirements Engineering, rechts Prompt Engineering, in der Mitte die Brücke aus gemeinsamen Prinzipien. Dann die Risiken zeigen – Missverständnisse und Halluzinationen entstehen auf beiden Seiten aus denselben Ursachen.</p>
+      <p><em>Abschluss:</em> Teilnehmer formulieren eine eigene Anforderung, übersetzen sie in einen Prompt und prüfen beide gegen dieselben Kriterien (Kontext, Testbarkeit, Eingrenzung).</p>`},
+    normen: {title:"Normen-Register", body:`
+      <ul><li><b>IREB CPRE</b> — RE-Prozess, Qualitätskriterien. Status: aktiv.</li>
+      <li><b>BABOK v3 (IIBA)</b> — Business Analysis Body of Knowledge. Status: aktiv.</li>
+      <li><b>ISO/IEC/IEEE 29148:2018</b> — Formale Anforderungsdokumentation. Status: aktiv.</li>
+      <li><b>ISO/IEC 25010:2023</b> — Qualitätsmodell, Edition 2. Status: aktiv — vor Einsatz Aktualität prüfen.</li>
+      <li><b>ISO/IEC 42001:2023</b> — KI-Managementsystem-Norm. Status: aktiv.</li>
+      <li><b>ISO/IEC 27001:2022</b> — Informationssicherheits-Managementsystem. Status: aktiv.</li>
+      <li><b>EU AI Act (VO (EU) 2024/1689)</b> — Risikobasierte KI-Regulierung in der EU. Status: aktiv, stufenweise Anwendung.</li>
+      <li><b>DSGVO</b> — Datenschutz-Grundverordnung, relevant bei personenbezogenen Daten in Prompts oder Anforderungen. Status: aktiv.</li></ul>
+      <p class="hint-text">Normen entwickeln sich weiter — Stand jeweils vor Trainingseinsatz verifizieren.</p>`}
+  };
+  const d = docs[key];
+  showModal(d.title, d.body);
+}
+
+/* ============================================================
+   BEAMER-MODUS
+   ============================================================ */
+function safeGetLS(key){ try{ return window.localStorage.getItem(key); }catch(e){ return null; } }
+function safeSetLS(key, val){ try{ window.localStorage.setItem(key, val); }catch(e){ console.warn("localStorage nicht verfügbar", e); } }
+
+var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+function applyBeamerLevel(level){
+  document.documentElement.setAttribute("data-beamer", String(level));
+  var btn = document.getElementById("beamerToggle");
+  btn.textContent = BEAMER_LABELS[level];
+  btn.classList.toggle("active", level > 0);
+}
+document.getElementById("beamerToggle").addEventListener("click", function(){
+  var level = (Number(safeGetLS("zettelkasten_pe_re_beamer")) || 0) + 1;
+  if(level >= BEAMER_LABELS.length) level = 0;
+  safeSetLS("zettelkasten_pe_re_beamer", String(level));
+  applyBeamerLevel(level);
+});
+applyBeamerLevel(Number(safeGetLS("zettelkasten_pe_re_beamer")) || 0);
+
+/* ============================================================
+   MAIN RENDER + INIT
+   ============================================================ */
+function render(){
+  renderSidebar();
+  renderConceptMap();
+  renderCards();
+}
+loadCustom();
+render();
+</script>
+</body>
+</html>
