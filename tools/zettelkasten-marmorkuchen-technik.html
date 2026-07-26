@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="color-scheme" content="light">
+<title>Zettelkasten · Marmorkuchen — die Zettelkasten-Technik erklärt</title>
+<style>
+:root{
+  --ink:#1f2430; --gray:#6b7280; --gray-light:#9aa1ac; --border:#e5e7eb; --bg:#ffffff; --panel:#f8f9fb;
+  --technik-bg:#dbeafe; --technik-fg:#2563eb; --technik-bd:#93c5fd;
+  --verknuepfung-bg:#ede9fe; --verknuepfung-fg:#7c3aed; --verknuepfung-bd:#c4b5fd;
+  --rolle-bg:#fef3c7; --rolle-fg:#b45309; --rolle-bd:#fcd34d;
+  --beispiel-bg:#dcfce7; --beispiel-fg:#15803d; --beispiel-bd:#86efac;
+  --qualitaet-bg:#fce7f3; --qualitaet-fg:#be185d; --qualitaet-bd:#f9a8d4;
+  --praxis-bg:#ccfbf1; --praxis-fg:#0f766e; --praxis-bd:#5eead4;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+html{color-scheme:light;}
+html[data-beamer="1"]{zoom:1.35}
+html[data-beamer="2"]{zoom:1.75}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:18px;line-height:1.5;-webkit-tap-highlight-color:transparent;}
+button,input,select,textarea{font-family:inherit;font-size:16px;}
+button{cursor:pointer;}
+.app{display:flex;flex-direction:column;height:100vh;}
+
+/* HEADER */
+header.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);gap:16px;flex-wrap:wrap;flex:none;}
+.brand{display:flex;align-items:center;gap:14px;}
+.brand-logo{width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,#a78bfa,#7c3aed);flex:none;display:flex;align-items:center;justify-content:center;}
+.brand-logo svg{width:24px;height:24px;}
+.back-link{display:block;color:var(--gray-light);font-size:13px;font-weight:700;text-decoration:none;margin-bottom:4px;}
+.back-link:hover{color:#7c3aed;text-decoration:underline;}
+.brand h1{margin:0;font-size:19px;font-weight:800;color:var(--ink);}
+.brand .sub{margin:1px 0 0;font-size:14px;color:var(--gray-light);}
+.toolbar{display:flex;gap:6px;align-items:center;position:relative;flex-wrap:wrap;justify-content:flex-end;}
+.toolbar-group{display:flex;gap:6px;align-items:center;}
+.toolbar-divider{width:1.5px;height:28px;background:var(--border);margin:0 4px;}
+.tbtn{width:44px;height:44px;border-radius:10px;border:1.5px solid var(--border);background:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;}
+.tbtn:hover{background:var(--panel);}
+.tbtn.active{background:#ede9fe;border-color:#c4b5fd;}
+.beamer-btn{height:44px;padding:0 14px;border-radius:10px;border:1.5px solid var(--border);background:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;white-space:nowrap;}
+.beamer-btn:hover{background:var(--panel);}
+.beamer-btn.active{background:#ede9fe;border-color:#c4b5fd;}
+.search-box{display:none;align-items:center;gap:8px;border:1.5px solid var(--border);border-radius:10px;padding:0 12px;height:44px;}
+.search-box.open{display:flex;}
+.search-box input{border:none;outline:none;font-size:16px;width:180px;}
+.more-menu{position:absolute;top:52px;right:0;background:#fff;border:1.5px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:220px;padding:6px;z-index:30;}
+.more-menu.hidden{display:none;}
+.more-menu button{width:100%;text-align:left;background:none;border:none;padding:11px 12px;font-size:15px;border-radius:8px;min-height:44px;}
+.more-menu button:hover{background:var(--panel);}
+
+/* LAYOUT */
+.main-layout{display:flex;flex:1;min-height:0;}
+.col-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 2px 12px;margin-bottom:10px;border-bottom:1.5px solid var(--border);}
+.col-header .col-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--ink);text-transform:uppercase;letter-spacing:0.05em;}
+.col-header .col-count{font-size:12px;font-weight:700;color:var(--gray-light);background:var(--panel);padding:3px 9px;border-radius:999px;}
+.col-header .reset-link{font-size:12.5px;font-weight:700;color:#7c3aed;background:none;border:none;min-height:28px;}
+.col-header .reset-link:hover{text-decoration:underline;}
+.col-files{width:250px;flex:none;background:var(--panel);border-right:1px solid var(--border);padding:18px 16px;overflow-y:auto;}
+.col-files h2{font-size:11.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--gray-light);margin:18px 8px 8px;font-weight:800;}
+.folder{margin-bottom:4px;}
+.folder-count{margin-left:auto;font-size:12px;color:var(--gray-light);font-weight:700;}
+.folder-head{display:flex;align-items:center;gap:6px;width:100%;background:#fff;border:1px solid var(--border);padding:5px 6px;border-radius:9px;min-height:40px;}
+.folder-head:hover{border-color:#c4b5fd;}
+.chev-btn{background:none;border:none;flex:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;}
+.chev-btn:hover{background:var(--panel);}
+.chev{font-size:11px;color:var(--gray-light);transition:transform .15s;display:inline-block;}
+.chev.collapsed{transform:rotate(-90deg);}
+.folder-title-btn{flex:1;text-align:left;background:none;border:none;font-size:14px;font-weight:700;color:var(--ink);padding:6px 4px;border-radius:6px;min-height:32px;}
+.folder-title-btn:hover{color:#7c3aed;}
+.folder-title-btn.active-folder{color:#7c3aed;background:#ede9fe;}
+.folder-items{padding-left:14px;margin-top:4px;}
+.folder-items.collapsed{display:none;}
+.file-item{display:block;width:100%;text-align:left;background:none;border:none;padding:7px 8px;border-radius:7px;font-size:14px;color:var(--gray);min-height:36px;}
+.file-item:hover{background:#fff;color:var(--ink);}
+.file-item.active-file{background:#ede9fe;color:#7c3aed;font-weight:700;}
+.tags-section{margin-top:20px;padding-top:14px;border-top:1.5px solid var(--border);}
+.tags-section h2{margin-top:0;}
+.tag-pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:6px 11px;border-radius:999px;margin:4px 5px 4px 0;border:1.5px solid transparent;min-height:32px;}
+.tag-pill.selected{outline:2px solid var(--ink);outline-offset:1px;}
+.tag-Technik{background:var(--technik-bg);color:var(--technik-fg);}
+.tag-Verknuepfung{background:var(--verknuepfung-bg);color:var(--verknuepfung-fg);}
+.tag-Rolle{background:var(--rolle-bg);color:var(--rolle-fg);}
+.tag-Beispiel{background:var(--beispiel-bg);color:var(--beispiel-fg);}
+.tag-Qualitaet{background:var(--qualitaet-bg);color:var(--qualitaet-fg);}
+.tag-Praxis{background:var(--praxis-bg);color:var(--praxis-fg);}
+
+.col-graph{width:38%;flex:none;background:var(--panel);border-right:1px solid var(--border);padding:18px 16px;display:flex;flex-direction:column;min-width:320px;overflow-y:auto;}
+.legend{display:flex;flex-wrap:wrap;gap:6px 10px;margin-bottom:10px;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--gray);}
+.legend-dot{width:9px;height:9px;border-radius:50%;flex:none;}
+.graph-svg-wrap{border:1px solid var(--border);border-radius:14px;background:#fff;flex:1;min-height:320px;overflow:hidden;}
+.graph-svg-wrap svg{width:100%;height:100%;display:block;}
+.graph-node circle{stroke:#fff;stroke-width:2;cursor:pointer;}
+.graph-node text{pointer-events:none;font-size:11px;font-weight:700;}
+.graph-node.dim{opacity:0.25;}
+.graph-edge{stroke:#c7cbd4;stroke-width:1.4;}
+.graph-edge.dim{opacity:0.15;}
+.links-panel{margin-top:12px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;}
+.links-panel h3{font-size:13px;font-weight:800;color:var(--gray);margin:0 0 8px;}
+.link-row{display:flex;align-items:center;gap:8px;font-size:14px;padding:7px 0;flex-wrap:wrap;border-top:1px solid var(--border);}
+.link-row:first-of-type{border-top:none;}
+.chip{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1.5px solid var(--border);border-radius:7px;padding:3px 9px;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;}
+.chip:hover{background:var(--panel);}
+.verb{color:var(--gray-light);font-size:13.5px;font-style:italic;}
+
+.col-cards{flex:1;padding:18px 22px;overflow-y:auto;min-width:0;}
+.filter-bar{display:none;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;background:var(--panel);padding:10px 12px;border-radius:12px;}
+.filter-bar.open{display:flex;}
+.filter-bar .filter-label{font-size:12.5px;font-weight:800;color:var(--gray-light);text-transform:uppercase;letter-spacing:0.04em;margin-right:4px;width:100%;}
+.filter-bar button{border-radius:999px;border:1.5px solid var(--border);padding:6px 12px;font-size:12.5px;font-weight:700;background:#fff;min-height:32px;}
+.filter-bar button.on{outline:2px solid var(--ink);}
+.active-filters{display:none;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.active-filters.show{display:flex;}
+.active-filters .af-label{font-size:13px;font-weight:700;color:var(--gray);}
+.active-filters .af-chip{display:inline-flex;align-items:center;gap:6px;background:#ede9fe;color:#7c3aed;border-radius:999px;padding:5px 12px;font-size:13px;font-weight:700;}
+.active-filters .af-chip button{background:none;border:none;color:#7c3aed;font-weight:900;font-size:14px;padding:0;min-height:auto;}
+.active-filters .af-clear{font-size:13px;font-weight:700;color:var(--gray-light);background:none;border:none;text-decoration:underline;min-height:32px;}
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start;}
+@media (max-width:1300px){.cards-grid{grid-template-columns:repeat(2,1fr);}}
+.zcard{border-radius:14px;border:2px solid var(--border);padding:16px;background:#fff;display:flex;flex-direction:column;gap:9px;position:relative;min-height:190px;}
+.zcard.tag-Technik{border-color:var(--technik-bd);}
+.zcard.tag-Verknuepfung{border-color:var(--verknuepfung-bd);}
+.zcard.tag-Rolle{border-color:var(--rolle-bd);}
+.zcard.tag-Beispiel{border-color:var(--beispiel-bd);}
+.zcard.tag-Qualitaet{border-color:var(--qualitaet-bd);}
+.zcard.tag-Praxis{border-color:var(--praxis-bd);}
+.zcard.highlighted{box-shadow:0 0 0 3px #c4b5fd;}
+.zcard .head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+.zcard .idtitle{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+.zcard .zid{font-size:12.5px;font-weight:800;color:var(--gray-light);background:var(--panel);padding:2px 7px;border-radius:6px;}
+.zcard h3{font-size:16.5px;font-weight:800;margin:0;color:var(--ink);}
+.zcard .tagbadge{font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:999px;flex:none;}
+.zcard .frage{font-size:12.5px;font-weight:700;color:#916b1c;font-style:italic;margin:0;}
+.zcard p.body{font-size:14.5px;color:#3a3f4a;margin:0;line-height:1.5;flex:1;}
+.zcard .links-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:9px;border-top:1px solid var(--border);}
+.zcard .links-label{font-size:11.5px;color:var(--gray-light);font-weight:800;width:100%;text-transform:uppercase;letter-spacing:0.03em;}
+.zcard .del-custom{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--gray-light);font-size:16px;display:none;}
+.zcard.custom .del-custom{display:block;}
+.zcard.custom .del-custom:hover{color:var(--qualitaet-fg);}
+.zcard .custom-flag{font-size:11px;color:#7c3aed;font-weight:800;}
+
+footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--gray-light);flex:none;}
+.footer-links{display:flex;gap:16px;flex-wrap:wrap;}
+.footer-links button{background:none;border:none;color:#7c3aed;font-size:13px;font-weight:700;padding:6px 2px;min-height:32px;}
+.footer-links button:hover{text-decoration:underline;}
+.footer-right{font-weight:700;color:var(--gray);text-align:right;}
+.footer-right a{display:block;font-weight:500;color:var(--gray-light);text-decoration:none;}
+.footer-right a:hover{color:#7c3aed;text-decoration:underline;}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(31,36,48,0.55);display:flex;align-items:center;justify-content:center;padding:18px;z-index:60;}
+.modal-overlay.hidden{display:none;}
+.modal-box{background:#fff;border-radius:16px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;padding:26px;}
+.modal-box h3{margin:0 0 16px;font-size:20px;color:var(--ink);}
+.modal-box .close-btn{float:right;border:1.5px solid var(--border);background:#fff;border-radius:9px;padding:6px 12px;font-size:14px;font-weight:700;min-height:36px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:13px;font-weight:700;color:var(--gray);margin-bottom:6px;}
+.field input,.field select,.field textarea{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;font-size:16px;min-height:44px;}
+.field textarea{min-height:80px;resize:vertical;}
+.link-builder-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+.link-builder-row select{flex:2;}
+.link-builder-row input{flex:2;}
+.link-builder-row button{flex:none;border-radius:9px;border:1.5px solid var(--border);background:var(--panel);padding:0 14px;font-weight:800;min-height:44px;}
+.added-link-list{margin:6px 0 14px;}
+.added-link-item{display:flex;align-items:center;gap:8px;font-size:14px;padding:6px 0;}
+.added-link-item button{background:none;border:none;color:var(--qualitaet-fg);font-weight:800;font-size:14px;}
+.btn-primary{background:#7c3aed;color:#fff;border:none;border-radius:10px;padding:12px 20px;font-weight:800;font-size:15px;min-height:44px;}
+.btn-secondary{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px 20px;font-weight:700;font-size:15px;min-height:44px;}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:10px;}
+.hint-text{font-size:13px;color:var(--gray-light);margin:-4px 0 12px;}
+
+@media (max-width:1000px){
+  .app{height:auto;min-height:100vh;}
+  .main-layout{flex-direction:column;min-height:0;}
+  .col-files,.col-graph,.col-cards{width:100%;border-right:none;border-bottom:1px solid var(--border);overflow-y:visible;height:auto;min-width:0;}
+  .cards-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:640px){
+  .cards-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z" fill="#fff"/></svg></div>
+      <div>
+        <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+        <h1>Zettelkasten – Marmorkuchen: die Zettelkasten-Technik erklärt</h1>
+        <p class="sub">Zwei Schichten, untrennbar verwoben: die Technik des Vernetzens und ihr Beispielinhalt · offline &amp; erweiterbar</p>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="search-box" id="searchBox">
+        <span>🔍</span><input type="text" id="searchInput" placeholder="Suchen…" oninput="onSearch(this.value)">
+      </div>
+      <div class="toolbar-group">
+        <button class="tbtn" title="Neuer Zettel" onclick="openNewZettelModal()">✏️</button>
+        <button class="tbtn" title="Neue Verknüpfung" onclick="openNewLinkModal()">🔗</button>
+      </div>
+      <div class="toolbar-divider"></div>
+      <div class="toolbar-group">
+        <button class="tbtn" id="tagFilterBtn" title="Tags filtern" onclick="toggleTagFilterBar()">🏷️</button>
+        <button class="tbtn" id="searchBtn" title="Suchen" onclick="toggleSearch()">🔍</button>
+        <button class="beamer-btn" id="beamerToggle">🔍 Beamer-Modus</button>
+      </div>
+      <div class="toolbar-divider"></div>
+      <button class="tbtn" title="Mehr" onclick="toggleMoreMenu()">⋯</button>
+      <div class="more-menu hidden" id="moreMenu">
+        <button onclick="exportJSON()">⬇️ JSON exportieren</button>
+        <button onclick="document.getElementById('importFile').click()">⬆️ JSON importieren</button>
+        <button onclick="resetCustomData()">🗑️ Eigene Zettel zurücksetzen</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this.files[0])">
+      </div>
+    </div>
+  </header>
+
+  <div class="main-layout">
+    <aside class="col-files" id="colFiles"></aside>
+
+    <section class="col-graph">
+      <div class="col-header">
+        <span class="col-title">🕸️ Graph-Ansicht</span>
+        <button class="reset-link" onclick="focusedId=null; render();">Fokus lösen</button>
+      </div>
+      <div class="legend" id="graphLegend"></div>
+      <div class="graph-svg-wrap"><svg id="graphSvg" viewBox="0 0 480 420"></svg></div>
+      <div class="links-panel" id="linksPanel"></div>
+    </section>
+
+    <section class="col-cards">
+      <div class="col-header">
+        <span class="col-title">🗒️ Zettel</span>
+        <span class="col-count" id="cardsCount"></span>
+      </div>
+      <div class="filter-bar" id="filterBar">
+        <span class="filter-label">Nach Tag filtern</span>
+        <button data-tag="Technik" class="tag-Technik" onclick="toggleTagFilterValue('Technik')">#Technik</button>
+        <button data-tag="Verknuepfung" class="tag-Verknuepfung" onclick="toggleTagFilterValue('Verknuepfung')">#Verknüpfung</button>
+        <button data-tag="Rolle" class="tag-Rolle" onclick="toggleTagFilterValue('Rolle')">#Rolle</button>
+        <button data-tag="Beispiel" class="tag-Beispiel" onclick="toggleTagFilterValue('Beispiel')">#Beispiel</button>
+        <button data-tag="Qualitaet" class="tag-Qualitaet" onclick="toggleTagFilterValue('Qualitaet')">#Qualität</button>
+        <button data-tag="Praxis" class="tag-Praxis" onclick="toggleTagFilterValue('Praxis')">#Praxis</button>
+      </div>
+      <div class="active-filters" id="activeFilters"></div>
+      <div class="cards-grid" id="cardsGrid"></div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <button onclick="openDoc('systemprompt')">Systemprompt</button>
+      <button onclick="openDoc('handbuch')">Handbuch</button>
+      <button onclick="openDoc('vortrag')">Vortrags-Skript</button>
+      <button onclick="openDoc('normen')">Normen-Register</button>
+    </div>
+    <div class="footer-right">Zettelkasten Marmorkuchen · V1
+      <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn · www.michaela-kuehn.com</a>
+    </div>
+  </footer>
+</div>
+
+<div class="modal-overlay hidden" id="modalOverlay"><div class="modal-box" id="modalBox"></div></div>
+
+<script>
+/* ============================================================
+   BASIS-DATEN
+   ============================================================ */
+const FOLDERS = [
+  {key:"00", title:"00 – MOC & Einstieg"},
+  {key:"01", title:"01 – Grundprinzipien"},
+  {key:"02", title:"02 – Verknüpfungstechnik"},
+  {key:"03", title:"03 – Notiztypen"},
+  {key:"04", title:"04 – Marmorkuchen-Beispielkasten"},
+  {key:"05", title:"05 – Praxis & Grenzen"}
+];
+const FOLDER_COLOR = {
+  "00":{bg:"#f1f5f9",fg:"#475569"}, "01":{bg:"#dbeafe",fg:"#2563eb"}, "02":{bg:"#ede9fe",fg:"#7c3aed"},
+  "03":{bg:"#e0e7ff",fg:"#4338ca"}, "04":{bg:"#dcfce7",fg:"#15803d"}, "05":{bg:"#ccfbf1",fg:"#0f766e"}
+};
+const TAG_LABELS = {Technik:"Technik", Verknuepfung:"Verknüpfung", Rolle:"Rolle", Beispiel:"Beispiel", Qualitaet:"Qualität", Praxis:"Praxis"};
+const TAGS = ["Technik","Verknuepfung","Rolle","Beispiel","Qualitaet","Praxis"];
+
+const BASE_ZETTEL = [
+{id:"0000",folder:"00",tag:"Technik",title:"MOC: Was ist ein Zettelkasten?",
+  frage:"Wie entsteht Wissen, wenn man einzelne Gedanken vernetzt statt sie zu sammeln?",
+  content:"Ein Zettelkasten ist keine Sammlung, sondern ein Netz aus atomaren, verknüpften Notizen. Sein Wert entsteht nicht durch die Anzahl der Zettel, sondern durch die Verbindungen zwischen ihnen — wie beim Marmorkuchen entsteht das Ganze erst, wenn zwei Schichten untrennbar ineinandergreifen: die Technik des Vernetzens und der Inhalt, der vernetzt wird."},
+
+{id:"0101",folder:"01",tag:"Technik",title:"Atomare Notiz",frage:"Passt der Gedanke wirklich auf einen einzigen Zettel?",
+  content:"Eine atomare Notiz enthält genau einen Gedanken — nicht mehr. Wer zwei Ideen auf einen Zettel schreibt, kann sie später nicht getrennt verknüpfen."},
+{id:"0102",folder:"01",tag:"Technik",title:"Eindeutige ID",frage:"Findet dieser Zettel seinen Platz auch in zehn Jahren wieder?",
+  content:"Jeder Zettel bekommt eine feste, unveränderliche Kennung. Nicht die Ablage nach Thema zählt, sondern die eindeutige Adresse, auf die andere Zettel verweisen können."},
+{id:"0103",folder:"01",tag:"Technik",title:"In eigenen Worten schreiben",frage:"Könnte ich das auch erklären, ohne die Quelle vor mir zu haben?",
+  content:"Wer einen Gedanken in eigenen Worten formuliert, hat ihn verstanden — Kopieren reicht nicht. Genau dieser Schritt macht aus einer Quelle einen eigenständig verknüpfbaren Zettel."},
+{id:"0104",folder:"01",tag:"Technik",title:"Bottom-up statt Gliederung",frage:"Wer entscheidet die Struktur — ich vorab, oder die Notizen im Nachhinein?",
+  content:"Ein Zettelkasten bekommt keine Gliederung von oben verordnet. Die Struktur entsteht von unten, aus den Verknüpfungen zwischen einzelnen Notizen — ähnlich wie sich die Marmorierung erst beim Rühren zeigt, nicht vorher am Rezept."},
+{id:"0105",folder:"01",tag:"Technik",title:"Fluchtpunkt Kontext",frage:"Verstehe ich diesen Zettel auch in einem Jahr noch, ohne mich zu erinnern, warum ich ihn geschrieben habe?",
+  content:"Eine gute Notiz erklärt sich selbst — Autor, Datum und Herkunft reichen nicht. Fehlt der Kontext, wird der Zettel später zur Karteileiche."},
+
+{id:"0201",folder:"02",tag:"Verknuepfung",title:"Verknüpfung mit Verb",frage:"Was genau verbindet diese beiden Zettel — nicht nur dass, sondern wie?",
+  content:"Eine reine Verlinkung sagt nur: diese beiden Zettel gehören zusammen. Ein benanntes Verb sagt, wie — „widerspricht“, „konkretisiert“, „baut auf“ — und macht die Beziehung selbst zum Wissen."},
+{id:"0202",folder:"02",tag:"Verknuepfung",title:"Struktur-Zettel",frage:"Welcher Zettel führt Besucher durch ein Themenfeld?",
+  content:"Ein Struktur-Zettel ordnet andere Zettel zu einem Pfad, ohne selbst neuen Inhalt zu liefern. Er ist die Landkarte, nicht das Territorium."},
+{id:"0203",folder:"02",tag:"Verknuepfung",title:"Serendipität",frage:"Was fällt mir auf, wenn ich zwei fernliegende Zettel nebeneinanderlege?",
+  content:"Weil Zettel über Verknüpfungen statt Ordner erreichbar sind, entstehen Zufallsfunde: zwei Notizen aus völlig verschiedenen Themen berühren sich plötzlich. Diese unerwarteten Nachbarschaften sind oft die wertvollsten."},
+{id:"0204",folder:"02",tag:"Verknuepfung",title:"Rückverweise",frage:"Von wo aus wird dieser Zettel eigentlich erreicht?",
+  content:"Ein guter Zettelkasten zeigt nicht nur, worauf ein Zettel verweist, sondern auch, wer auf ihn verweist. Rückverweise machen sichtbar, wie zentral eine Notiz im Netz bereits geworden ist."},
+{id:"0205",folder:"02",tag:"Verknuepfung",title:"Netz statt Baum",frage:"Gehört dieser Zettel in genau eine Kategorie — oder in mehrere?",
+  content:"Ordner und Baumstrukturen zwingen jede Notiz in genau einen Platz. Ein Zettelkasten erlaubt Mehrfachbezüge — ein Zettel über Backzeit gehört gleichzeitig zu Qualität, zu Rezept und zu Sarahs Lernweg."},
+
+{id:"0301",folder:"03",tag:"Technik",title:"Flüchtige Notiz",frage:"Ist das schon ein fertiger Gedanke — oder nur eine Gedächtnisstütze?",
+  content:"Eine flüchtige Notiz hält einen Einfall fest, bevor er verloren geht. Sie wird verworfen oder in eine permanente Notiz überführt — sie bleibt nie so im System liegen."},
+{id:"0302",folder:"03",tag:"Technik",title:"Literaturnotiz",frage:"Was sagt diese Quelle — in meinen eigenen Worten?",
+  content:"Eine Literaturnotiz fasst zusammen, was ein Text, ein Gespräch oder eine Beobachtung aussagt. Sie gehört zur Quelle, noch nicht zum eigenen Denken."},
+{id:"0303",folder:"03",tag:"Technik",title:"Permanente Notiz",frage:"Steht dieser Gedanke für sich, unabhängig davon, woher er kam?",
+  content:"Die permanente Notiz ist der eigentliche Baustein des Zettelkastens: eigenständig, verknüpfbar, für sich verständlich. Aus ihr entsteht das Netz."},
+{id:"0304",folder:"03",tag:"Technik",title:"Übersichtszettel (MOC)",frage:"Wo fange ich an, wenn ich dieses Themenfeld zum ersten Mal betrete?",
+  content:"Ein Übersichtszettel (Map of Content) bündelt die wichtigsten Einstiegspunkte eines Themenfelds. Er entsteht erst, wenn genug Zettel zu einem Thema vorliegen — nicht vorher."},
+{id:"0305",folder:"03",tag:"Technik",title:"Schlagwort / Tag",frage:"Über welches Schlagwort finde ich diesen Zettel wieder, ganz ohne Verknüpfung zu kennen?",
+  content:"Tags erschließen einen Zettelkasten quer zu den Verknüpfungen — ein zweiter, unabhängiger Zugang. Sie ersetzen keine Verknüpfung, sie ergänzen sie."},
+
+{id:"0401",folder:"04",tag:"Rolle",title:"Sarah sammelt Anforderungen",frage:"Reicht „Kuchen bestellen können“ schon als Anforderung?",
+  content:"Sarahs erste Notiz zur MarmorkuchenApp lautet nur: „Kunden sollen Kuchen bestellen können.“ Als flüchtige Notiz ist das in Ordnung — als permanente Notiz fehlt ihr noch jede Präzision."},
+{id:"0402",folder:"04",tag:"Rolle",title:"Herr Bachmeier will nur einen guten Kuchen",frage:"Was genau meint „gut“, bevor jemand nachfragt?",
+  content:"Herr Bachmeiers Ausgangswunsch ist unstrukturiert und emotional: „Ich will einfach einen guten Kuchen verkaufen.“ Erst die Zerlegung in einzelne, atomare Zettel macht daraus prüfbare Anforderungen."},
+{id:"0403",folder:"04",tag:"Beispiel",title:"Zutaten-Zettel",frage:"Ist eine Zutatenliste schon eine vollständige Anforderung?",
+  content:"200 g Mehl, 150 g Butter, 3 Eier — eine saubere atomare Notiz zum funktionalen Teil des Rezepts. Für sich allein sagt sie nichts über Qualität oder Kontext."},
+{id:"0404",folder:"04",tag:"Beispiel",title:"Backzeit-Zettel",frage:"Gehört „55 Minuten bei 175 °C“ zum Rezept oder zur Qualität?",
+  content:"Die Backzeit ist eine eigene atomare Notiz — und zugleich die Brücke zwischen Rezept (funktional) und Ergebnis (nicht-funktional: Saftigkeit, Konsistenz)."},
+{id:"0405",folder:"04",tag:"Qualitaet",title:"Der dunkle Teig ist die Qualität",frage:"Was passiert, wenn im Rezept nur die Zutaten stehen, aber nicht die Backzeit?",
+  content:"Saftigkeit, Sicherheit des Rezepts, Verfügbarkeit zum Nachbestellen — das ist der dunkle Teig des Marmorkuchens: die nicht-funktionalen Anforderungen. Ohne ihn ist „ein Kuchen“ nur ein Wunsch, keine Anforderung."},
+{id:"0406",folder:"04",tag:"Rolle",title:"Ela will einfach bauen",frage:"Was übersieht man, wenn man direkt mit der Umsetzung beginnt?",
+  content:"Ela sieht die Zutaten-Zettel und will sofort loslegen: „Das können wir doch einfach so backen.“ Ihr fehlt der Blick auf die noch unverknüpften Qualitäts-Zettel — Geschwindigkeit ersetzt keine Vollständigkeit."},
+{id:"0407",folder:"04",tag:"Rolle",title:"Knut denkt in Sprints",frage:"Gehört diese Notiz in den Backlog oder in den Zettelkasten?",
+  content:"Knut will jede Notiz sofort in ein Ticket überführen. Ein Zettelkasten und ein Backlog erfüllen unterschiedliche Zwecke: der eine baut Verständnis auf, der andere plant Arbeit."},
+{id:"0408",folder:"04",tag:"Rolle",title:"Petras Frage: „Was genau meinen Sie mit gut?“",frage:"Welche einzelne Frage bringt eine ganze Notizsammlung zum Sprechen?",
+  content:"Petra stellt keine neue Anforderung — sie verknüpft zwei bestehende Zettel (Bachmeiers Wunsch und die Qualitäts-Notizen) mit einer einzigen Frage. Genau das ist der Klarheits-Sprung: aus Verknüpfung entsteht Erkenntnis, die vorher in keinem einzelnen Zettel steckte."},
+
+{id:"0501",folder:"05",tag:"Praxis",title:"Emergenz",frage:"Wo genau entsteht das Wissen — im einzelnen Zettel oder zwischen den Zetteln?",
+  content:"Der Wert eines Zettelkastens liegt nicht in einem einzelnen Zettel, sondern in den Mustern, die erst durch viele Verknüpfungen sichtbar werden. Das System weiß irgendwann mehr, als jeder einzelne Zettel für sich sagt."},
+{id:"0502",folder:"05",tag:"Praxis",title:"Wann sich ein Zettelkasten lohnt",frage:"Sammle ich Wissen für einen Moment — oder für Jahre?",
+  content:"Ein Zettelkasten lohnt sich, wenn Wissen über lange Zeit wächst und immer wieder gebraucht wird. Für ein einmaliges Projekt reicht oft eine einfache Liste."},
+{id:"0503",folder:"05",tag:"Praxis",title:"Digital oder analog",frage:"Was zählt wirklich — das Werkzeug oder die Verknüpfungsdisziplin?",
+  content:"Ob Karteikarten im Holzkasten oder eine App wie diese hier — das Prinzip bleibt gleich: atomare Notizen, feste IDs, benannte Verknüpfungen. Das Werkzeug ist austauschbar, die Disziplin nicht."},
+{id:"0504",folder:"05",tag:"Praxis",title:"Der häufigste Anfängerfehler",frage:"Sammle ich Zettel — oder verknüpfe ich sie?",
+  content:"Viele beginnen mit vielen Zetteln und wenigen Verknüpfungen — ein Haufen statt eines Netzes. Der Zettelkasten beginnt erst zu wirken, wenn jede neue Notiz aktiv mit bestehenden verbunden wird."}
+];
+
+const BASE_RELATIONS = [
+  {a:"0000",b:"0101",verb:"beginnt mit"},{a:"0000",b:"0201",verb:"lebt von"},{a:"0000",b:"0301",verb:"unterscheidet"},
+  {a:"0000",b:"0401",verb:"zeigt sich in"},{a:"0000",b:"0501",verb:"mündet in"},
+  {a:"0101",b:"0102",verb:"braucht"},{a:"0101",b:"0104",verb:"ermöglicht"},{a:"0101",b:"0105",verb:"erfordert"},
+  {a:"0102",b:"0204",verb:"macht möglich"},{a:"0103",b:"0302",verb:"unterscheidet sich von"},
+  {a:"0104",b:"0202",verb:"erzeugt"},{a:"0104",b:"0501",verb:"führt zu"},{a:"0105",b:"0303",verb:"prüft"},
+  {a:"0201",b:"0202",verb:"baut auf"},{a:"0201",b:"0203",verb:"ermöglicht"},{a:"0201",b:"0204",verb:"ergänzt sich mit"},
+  {a:"0202",b:"0304",verb:"wird zu"},{a:"0203",b:"0205",verb:"zeigt"},{a:"0204",b:"0205",verb:"stützt"},
+  {a:"0205",b:"0305",verb:"ergänzt sich mit"},{a:"0201",b:"0408",verb:"zeigt sich in"},
+  {a:"0301",b:"0302",verb:"wird zu"},{a:"0302",b:"0303",verb:"wird zu"},{a:"0303",b:"0201",verb:"braucht"},
+  {a:"0303",b:"0304",verb:"sammelt sich in"},{a:"0304",b:"0305",verb:"ergänzt sich mit"},
+  {a:"0301",b:"0401",verb:"zeigt sich in"},{a:"0302",b:"0402",verb:"zeigt sich in"},{a:"0303",b:"0403",verb:"zeigt sich in"},
+  {a:"0401",b:"0402",verb:"übersetzt"},{a:"0401",b:"0403",verb:"zerlegt sich in"},{a:"0402",b:"0405",verb:"verlangt"},
+  {a:"0403",b:"0404",verb:"ergänzt sich mit"},{a:"0404",b:"0405",verb:"gehört zu"},{a:"0405",b:"0406",verb:"wird übersehen von"},
+  {a:"0406",b:"0407",verb:"widerspricht"},{a:"0407",b:"0408",verb:"wird befragt von"},{a:"0408",b:"0405",verb:"verknüpft"},
+  {a:"0408",b:"0402",verb:"beantwortet"},{a:"0401",b:"0408",verb:"wird geklärt durch"},
+  {a:"0501",b:"0504",verb:"warnt vor"},{a:"0501",b:"0203",verb:"entsteht durch"},{a:"0502",b:"0501",verb:"rechtfertigt"},
+  {a:"0503",b:"0102",verb:"konkretisiert"},{a:"0504",b:"0201",verb:"fehlt ohne"},{a:"0501",b:"0408",verb:"zeigt sich in"}
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const LS_KEY = "zettelkasten_marmorkuchen_userdata_v1";
+var customZettel = [];
+var customRelations = [];
+let collapsedFolders = new Set();
+let activeFolderFilter = null;
+let tagFilter = new Set();
+let searchTerm = "";
+let focusedId = null;
+let positions = null;
+
+function loadCustom(){
+  try{
+    const raw = window.localStorage.getItem(LS_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      customZettel = parsed.customZettel || [];
+      customRelations = parsed.customRelations || [];
+    }
+  }catch(e){ console.warn("localStorage nicht verfügbar", e); }
+}
+function saveCustom(){
+  try{
+    window.localStorage.setItem(LS_KEY, JSON.stringify({customZettel, customRelations}));
+  }catch(e){ console.warn("Konnte nicht speichern", e); }
+}
+function allZettel(){ return BASE_ZETTEL.concat(customZettel); }
+function allRelations(){ return BASE_RELATIONS.concat(customRelations); }
+function findZettel(id){ return allZettel().find(z=>z.id===id); }
+function isCustom(id){ return customZettel.some(z=>z.id===id); }
+
+function linksFor(id){
+  return allRelations().filter(r=>r.a===id||r.b===id).map(r=>{
+    const otherId = r.a===id? r.b : r.a;
+    const dir = r.a===id ? "out" : "in";
+    return {otherId, verb:r.verb, dir};
+  });
+}
+
+/* ============================================================
+   RENDER: SIDEBAR
+   ============================================================ */
+function renderSidebar(){
+  const el = document.getElementById("colFiles");
+  const total = allZettel().length;
+  let html = `<div class="col-header">
+      <span class="col-title">🗂️ Dateien</span>
+      <span class="col-count">${total}</span>
+    </div>`;
+  FOLDERS.forEach(f=>{
+    const items = allZettel().filter(z=>z.folder===f.key);
+    const collapsed = collapsedFolders.has(f.key);
+    html += `<div class="folder">
+      <div class="folder-head">
+        <button class="chev-btn" onclick="toggleFolder('${f.key}')" title="Ein-/ausklappen"><span class="chev ${collapsed?"collapsed":""}">▾</span></button>
+        <button class="folder-title-btn ${activeFolderFilter===f.key?"active-folder":""}" onclick="setFolderFilter('${f.key}')" title="Nach diesem Ordner filtern">${f.title}</button>
+        <span class="folder-count">${items.length}</span>
+      </div>
+      <div class="folder-items ${collapsed?"collapsed":""}">
+        ${items.map(z=>`<button class="file-item ${focusedId===z.id?"active-file":""}" onclick="focusZettel('${z.id}')">${z.id} – ${z.title}</button>`).join("")}
+      </div>
+    </div>`;
+  });
+  html += `<div class="tags-section"><h2>Tags</h2>
+    ${TAGS.map(t=>`<span class="tag-pill tag-${t} ${tagFilter.has(t)?'selected':''}" onclick="toggleTagFilterValue('${t}')">#${TAG_LABELS[t]}</span>`).join("")}
+  </div>`;
+  el.innerHTML = html;
+}
+function toggleFolder(key){
+  if(collapsedFolders.has(key)) collapsedFolders.delete(key); else collapsedFolders.add(key);
+  renderSidebar();
+}
+function setFolderFilter(key){
+  activeFolderFilter = (activeFolderFilter===key) ? null : key;
+  if(activeFolderFilter) collapsedFolders.delete(key);
+  render();
+}
+function focusZettel(id){
+  focusedId = id;
+  activeFolderFilter = null;
+  render();
+  const cardEl = document.getElementById("card-"+id);
+  if(cardEl && typeof cardEl.scrollIntoView === "function") cardEl.scrollIntoView({behavior:"smooth", block:"center"});
+}
+
+/* ============================================================
+   FORCE-LAYOUT GRAPH (einfache Relaxation, kein externes Framework)
+   ============================================================ */
+function computeLayout(){
+  const nodes = allZettel();
+  const edges = allRelations();
+  const W=480,H=420;
+  if(!positions) positions = {};
+  nodes.forEach((n,i)=>{
+    if(!positions[n.id]){
+      const angle = (i/nodes.length)*2*Math.PI;
+      positions[n.id] = {x:W/2 + Math.cos(angle)*140, y:H/2 + Math.sin(angle)*140, vx:0, vy:0};
+    }
+  });
+  for(let iter=0; iter<220; iter++){
+    nodes.forEach(n=>{ positions[n.id].fx=0; positions[n.id].fy=0; });
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const a=positions[nodes[i].id], b=positions[nodes[j].id];
+        let dx=a.x-b.x, dy=a.y-b.y;
+        let dist = Math.sqrt(dx*dx+dy*dy)||0.01;
+        const force = 900/(dist*dist);
+        dx/=dist; dy/=dist;
+        a.fx+=dx*force; a.fy+=dy*force;
+        b.fx-=dx*force; b.fy-=dy*force;
+      }
+    }
+    edges.forEach(e=>{
+      const a=positions[e.a], b=positions[e.b];
+      if(!a||!b) return;
+      let dx=b.x-a.x, dy=b.y-a.y;
+      let dist=Math.sqrt(dx*dx+dy*dy)||0.01;
+      const target=90;
+      const force=(dist-target)*0.02;
+      dx/=dist; dy/=dist;
+      a.fx+=dx*force; a.fy+=dy*force;
+      b.fx-=dx*force; b.fy-=dy*force;
+    });
+    nodes.forEach(n=>{
+      const p=positions[n.id];
+      const cx=W/2, cy=H/2;
+      p.fx += (cx-p.x)*0.002; p.fy += (cy-p.y)*0.002;
+      p.vx = (p.vx+p.fx)*0.75; p.vy=(p.vy+p.fy)*0.75;
+      p.x += p.vx; p.y += p.vy;
+      p.x = Math.max(24, Math.min(W-24,p.x));
+      p.y = Math.max(24, Math.min(H-24,p.y));
+    });
+  }
+}
+
+function renderLegend(){
+  const el = document.getElementById("graphLegend");
+  el.innerHTML = FOLDERS.map(f=>{
+    const col = FOLDER_COLOR[f.key];
+    return `<span class="legend-item"><span class="legend-dot" style="background:${col.fg}"></span>${f.title.replace(/^\d\d – /,"")}</span>`;
+  }).join("");
+}
+
+function renderGraph(){
+  computeLayout();
+  const nodes = allZettel();
+  const edges = allRelations();
+  const visible = visibleIdSet();
+  let edgeSvg="", nodeSvg="";
+  edges.forEach(e=>{
+    const a=positions[e.a], b=positions[e.b];
+    if(!a||!b) return;
+    const dim = (focusedId && e.a!==focusedId && e.b!==focusedId) || (!setHas(visible,e.a)&&!setHas(visible,e.b));
+    edgeSvg += `<line class="graph-edge ${dim?'dim':''}" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"></line>`;
+  });
+  nodes.forEach(n=>{
+    const p=positions[n.id];
+    if(!p) return;
+    const col = FOLDER_COLOR[n.folder] || FOLDER_COLOR["00"];
+    const isFocused = focusedId===n.id;
+    const dim = !setHas(visible,n.id) && !isFocused;
+    nodeSvg += `<g class="graph-node ${dim?'dim':''}" onclick="focusZettel('${n.id}')">
+      <circle cx="${p.x}" cy="${p.y}" r="${isFocused?26:20}" fill="${col.bg}" ${isFocused?'stroke="'+col.fg+'" stroke-width="3"':''}></circle>
+      <text x="${p.x}" y="${p.y+3}" text-anchor="middle" fill="${col.fg}">${n.id}</text>
+    </g>`;
+  });
+  document.getElementById("graphSvg").innerHTML = edgeSvg + nodeSvg;
+
+  renderLinksPanel();
+}
+function setHas(s,id){ return s.has(id); }
+
+function visibleIdSet(){
+  const set = new Set();
+  allZettel().forEach(z=>{
+    if(activeFolderFilter && z.folder!==activeFolderFilter) return;
+    if(tagFilter.size>0 && !tagFilter.has(z.tag)) return;
+    if(searchTerm && !(z.title.toLowerCase().includes(searchTerm)||z.content.toLowerCase().includes(searchTerm)||z.id.includes(searchTerm))) return;
+    set.add(z.id);
+  });
+  return set;
+}
+
+function renderLinksPanel(){
+  const panel = document.getElementById("linksPanel");
+  if(!focusedId){
+    panel.innerHTML = `<h3>Tipp</h3><p style="font-size:14px;color:var(--gray);">Klicke auf einen Knoten im Graph oder einen Zettel links, um seine Verknüpfungen zu sehen.</p>`;
+    return;
+  }
+  const z = findZettel(focusedId);
+  const links = linksFor(focusedId);
+  panel.innerHTML = `<h3>Verknüpfungen von „${z.title}“ (${z.id})</h3>` +
+    links.map(l=>{
+      const target = findZettel(l.otherId);
+      if(!target) return "";
+      const verb = l.verb;
+      const from = l.dir==="out" ? z : target;
+      const to = l.dir==="out" ? target : z;
+      return `<div class="link-row">
+        <span class="chip" onclick="focusZettel('${from.id}')">${from.id} ${from.title}</span>
+        <span class="verb">${verb}</span>
+        <span class="chip" onclick="focusZettel('${to.id}')">${to.id} ${to.title}</span>
+      </div>`;
+    }).join("") || `<p style="font-size:14px;color:var(--gray);">Noch keine Verknüpfungen.</p>`;
+}
+
+/* ============================================================
+   RENDER: CARDS
+   ============================================================ */
+function renderActiveFilters(){
+  const el = document.getElementById("activeFilters");
+  const chips = [];
+  tagFilter.forEach(t=>chips.push(`<span class="af-chip">#${TAG_LABELS[t]}<button onclick="toggleTagFilterValue('${t}')">✕</button></span>`));
+  if(searchTerm) chips.push(`<span class="af-chip">🔍 „${searchTerm}“<button onclick="document.getElementById('searchInput').value='';onSearch('');">✕</button></span>`);
+  if(activeFolderFilter){
+    const f = FOLDERS.find(x=>x.key===activeFolderFilter);
+    chips.push(`<span class="af-chip">${f?f.title:activeFolderFilter}<button onclick="activeFolderFilter=null;render();">✕</button></span>`);
+  }
+  if(chips.length===0){ el.classList.remove("show"); el.innerHTML=""; return; }
+  el.classList.add("show");
+  el.innerHTML = `<span class="af-label">Aktive Filter:</span>${chips.join("")}<button class="af-clear" onclick="clearAllFilters()">alle zurücksetzen</button>`;
+}
+function clearAllFilters(){
+  tagFilter.clear(); searchTerm=""; activeFolderFilter=null;
+  const si=document.getElementById("searchInput"); if(si) si.value="";
+  render();
+}
+
+function renderCards(){
+  const visible = visibleIdSet();
+  const list = allZettel().filter(z=>visible.has(z.id));
+  document.getElementById("cardsCount").textContent = list.length + " / " + allZettel().length;
+  renderActiveFilters();
+  const grid = document.getElementById("cardsGrid");
+  grid.innerHTML = list.map(z=>{
+    const links = linksFor(z.id);
+    const linksHtml = links.map(l=>{
+      const t = findZettel(l.otherId);
+      return t ? `<span class="chip" onclick="focusZettel('${t.id}')">${t.id}</span>` : "";
+    }).join("");
+    return `<div class="zcard tag-${z.tag} ${isCustom(z.id)?'custom':''} ${focusedId===z.id?'highlighted':''}" id="card-${z.id}">
+      ${isCustom(z.id)?`<button class="del-custom" title="Zettel löschen" onclick="deleteCustomZettel('${z.id}')">✕</button>`:""}
+      <div class="head">
+        <div class="idtitle"><span class="zid">${z.id}</span><h3>${z.title}</h3></div>
+        <span class="tagbadge tag-${z.tag}">#${TAG_LABELS[z.tag]||z.tag}</span>
+      </div>
+      ${isCustom(z.id)?'<span class="custom-flag">eigener Zettel</span>':''}
+      ${z.frage?`<p class="frage">${z.frage}</p>`:""}
+      <p class="body">${z.content}</p>
+      ${linksHtml ? `<div class="links-row"><span class="links-label">Links:</span>${linksHtml}</div>` : ""}
+    </div>`;
+  }).join("");
+}
+
+/* ============================================================
+   FILTER / SUCHE / TAGS
+   ============================================================ */
+function toggleTagFilterBar(){
+  document.getElementById("filterBar").classList.toggle("open");
+  document.getElementById("tagFilterBtn").classList.toggle("active");
+}
+function toggleTagFilterValue(tag){
+  if(tagFilter.has(tag)) tagFilter.delete(tag); else tagFilter.add(tag);
+  document.querySelectorAll(`.filter-bar button[data-tag="${tag}"]`).forEach(b=>b.classList.toggle("on", tagFilter.has(tag)));
+  render();
+}
+function clearTagFilter(){ tagFilter.clear(); render(); }
+function toggleSearch(){
+  const box = document.getElementById("searchBox");
+  box.classList.toggle("open");
+  if(box.classList.contains("open")) document.getElementById("searchInput").focus();
+}
+function onSearch(val){
+  searchTerm = val.trim().toLowerCase();
+  render();
+}
+function toggleMoreMenu(){
+  document.getElementById("moreMenu").classList.toggle("hidden");
+}
+document.addEventListener("click", function(e){
+  const menu = document.getElementById("moreMenu");
+  if(!menu.contains(e.target) && e.target.getAttribute("title")!=="Mehr"){
+    menu.classList.add("hidden");
+  }
+});
+
+/* ============================================================
+   NEUER ZETTEL / NEUE VERKNÜPFUNG
+   ============================================================ */
+function nextIdForFolder(folder){
+  const nums = allZettel().filter(z=>z.folder===folder).map(z=>parseInt(z.id.slice(2)));
+  const next = nums.length ? Math.max(...nums)+1 : 1;
+  return folder + String(next).padStart(2,"0");
+}
+
+let pendingLinks = [];
+
+function openNewZettelModal(){
+  pendingLinks = [];
+  const folderOptions = FOLDERS.filter(f=>f.key!=="00").map(f=>`<option value="${f.key}">${f.title}</option>`).join("");
+  const zettelOptions = allZettel().map(z=>`<option value="${z.id}">${z.id} – ${z.title}</option>`).join("");
+  const tagOptions = TAGS.map(t=>`<option value="${t}">#${TAG_LABELS[t]}</option>`).join("");
+  showModal("Neuer Zettel", `
+    <div class="field"><label>Ordner</label>
+      <select id="nzFolder" onchange="document.getElementById('nzId').value=nextIdForFolder(this.value)">${folderOptions}</select>
+    </div>
+    <div class="field"><label>ID</label><input id="nzId" value="${nextIdForFolder('01')}"></div>
+    <div class="field"><label>Titel</label><input id="nzTitle" placeholder="z. B. Folgezettel"></div>
+    <div class="field"><label>Tag</label>
+      <select id="nzTag">${tagOptions}</select>
+    </div>
+    <div class="field"><label>Leitfrage (optional)</label><input id="nzFrage" placeholder="z. B. Welche Frage steckt dahinter?"></div>
+    <div class="field"><label>Inhalt</label><textarea id="nzContent" placeholder="Kurzer, konkreter Wissensinhalt…"></textarea></div>
+    <div class="field"><label>Verknüpfungen</label>
+      <div class="link-builder-row">
+        <select id="nzLinkTarget">${zettelOptions}</select>
+        <input id="nzLinkVerb" placeholder="Verb, z. B. 'baut auf'">
+        <button onclick="addPendingLink()">+</button>
+      </div>
+      <div class="added-link-list" id="nzLinkList"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">Abbrechen</button>
+      <button class="btn-primary" onclick="submitNewZettel()">Zettel anlegen</button>
+    </div>
+  `);
+}
+function addPendingLink(){
+  const target = document.getElementById("nzLinkTarget").value;
+  const verb = document.getElementById("nzLinkVerb").value.trim() || "verknüpft mit";
+  pendingLinks.push({target, verb});
+  renderPendingLinks();
+  document.getElementById("nzLinkVerb").value="";
+}
+function renderPendingLinks(){
+  const el = document.getElementById("nzLinkList");
+  if(!el) return;
+  el.innerHTML = pendingLinks.map((l,i)=>{
+    const t = findZettel(l.target);
+    return `<div class="added-link-item"><span>${l.verb} → ${t?t.id+' '+t.title:l.target}</span><button onclick="removePendingLink(${i})">✕</button></div>`;
+  }).join("");
+}
+function removePendingLink(i){ pendingLinks.splice(i,1); renderPendingLinks(); }
+
+function submitNewZettel(){
+  const folder = document.getElementById("nzFolder").value;
+  const id = document.getElementById("nzId").value.trim();
+  const title = document.getElementById("nzTitle").value.trim();
+  const tag = document.getElementById("nzTag").value;
+  const frage = document.getElementById("nzFrage").value.trim();
+  const content = document.getElementById("nzContent").value.trim();
+  if(!id || !title || !content){ alert("Bitte ID, Titel und Inhalt ausfüllen."); return; }
+  if(findZettel(id)){ alert("Diese ID existiert bereits."); return; }
+  customZettel.push({id, folder, tag, title, frage, content});
+  pendingLinks.forEach(l=>{ customRelations.push({a:id, b:l.target, verb:l.verb}); });
+  saveCustom();
+  closeModal();
+  focusedId = id;
+  render();
+}
+
+function openNewLinkModal(){
+  const zettelOptions = allZettel().map(z=>`<option value="${z.id}">${z.id} – ${z.title}</option>`).join("");
+  showModal("Neue Verknüpfung", `
+    <div class="field"><label>Von</label><select id="nlFrom">${zettelOptions}</select></div>
+    <div class="field"><label>Verb</label><input id="nlVerb" placeholder="z. B. 'baut auf', 'widerspricht'"></div>
+    <div class="field"><label>Nach</label><select id="nlTo">${zettelOptions}</select></div>
+    <p class="hint-text">Verknüpfungen erscheinen im Graph, in der Karten-Ansicht und im Verknüpfungs-Panel.</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">Abbrechen</button>
+      <button class="btn-primary" onclick="submitNewLink()">Verknüpfung anlegen</button>
+    </div>
+  `);
+}
+function submitNewLink(){
+  const a = document.getElementById("nlFrom").value;
+  const b = document.getElementById("nlTo").value;
+  const verb = document.getElementById("nlVerb").value.trim() || "verknüpft mit";
+  if(a===b){ alert("Bitte zwei unterschiedliche Zettel wählen."); return; }
+  customRelations.push({a,b,verb});
+  saveCustom();
+  closeModal();
+  focusedId = a;
+  render();
+}
+function deleteCustomZettel(id){
+  if(!confirm("Diesen eigenen Zettel wirklich löschen?")) return;
+  customZettel = customZettel.filter(z=>z.id!==id);
+  customRelations = customRelations.filter(r=>r.a!==id && r.b!==id);
+  if(focusedId===id) focusedId=null;
+  saveCustom();
+  render();
+}
+
+/* ============================================================
+   EXPORT / IMPORT / RESET
+   ============================================================ */
+function exportJSON(){
+  const data = {customZettel, customRelations, exportedAt: new Date().toISOString()};
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "zettelkasten-marmorkuchen-eigene-zettel.json";
+  a.click();
+  URL.revokeObjectURL(url);
+  toggleMoreMenu();
+}
+function importJSON(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const data = JSON.parse(e.target.result);
+      customZettel = data.customZettel || [];
+      customRelations = data.customRelations || [];
+      saveCustom();
+      render();
+    }catch(err){ alert("Diese Datei konnte nicht gelesen werden."); }
+  };
+  reader.readAsText(file);
+  toggleMoreMenu();
+}
+function resetCustomData(){
+  if(!confirm("Alle eigenen Zettel und Verknüpfungen wirklich löschen?")) return;
+  customZettel = []; customRelations = [];
+  saveCustom();
+  render();
+  toggleMoreMenu();
+}
+
+/* ============================================================
+   MODAL-HELPER
+   ============================================================ */
+function showModal(title, bodyHtml){
+  document.getElementById("modalBox").innerHTML = `<button class="close-btn" onclick="closeModal()">Schließen</button><h3>${title}</h3>${bodyHtml}`;
+  document.getElementById("modalOverlay").classList.remove("hidden");
+  renderPendingLinks();
+}
+function closeModal(){ document.getElementById("modalOverlay").classList.add("hidden"); }
+
+function openDoc(key){
+  const docs = {
+    systemprompt: {title:"Systemprompt · Leitplanken", body:`
+      <p>Statisches, offline-fähiges HTML-Tool ohne KI-Anbindung. Redaktionelle Leitplanken für jeden Zettel:</p>
+      <ul><li>Ein Zettel = ein Gedanke — entweder ein Zettelkasten-Technik-Konzept oder eine konkrete Marmorkuchen-Beispielnotiz.</li>
+      <li>Tags konsequent aus dem festen Set: #Technik, #Verknüpfung, #Rolle, #Beispiel, #Qualität, #Praxis.</li>
+      <li>Jede Technik-Notiz ist so verknüpft, dass sie sich mindestens einmal im Marmorkuchen-Beispielkasten konkret zeigt — Theorie ohne Beispiel bleibt abstrakt, Beispiel ohne Theorie bleibt Anekdote.</li>
+      <li>Figuren (Sarah, Herr Bachmeier, Ela, Knut, Petra) verhalten sich konsistent zu Michaelas Marmorkuchen-Universum.</li></ul>`},
+    handbuch: {title:"Handbuch · Kurzanleitung", body:`
+      <ul><li><b>Dateien (links):</b> Ordner nach Wissensbereich, klicken öffnet den Zettel.</li>
+      <li><b>Graph-Ansicht:</b> Der Graph ordnet sich selbst — beobachtet, wie aus vielen Einzelverknüpfungen ein Netz entsteht, kein Baum. Klick auf einen Knoten zeigt seine Verknüpfungen darunter.</li>
+      <li><b>Karten:</b> Jede Karte zeigt eine Leitfrage und den Kerninhalt. Klick auf einen Link-Chip springt zum verknüpften Zettel.</li>
+      <li><b>✏️ Neuer Zettel:</b> Legt einen eigenen Zettel inkl. Verknüpfungen an, dauerhaft im Browser gespeichert — guter Weg, Teilnehmer selbst einen Zettel schreiben und verknüpfen zu lassen.</li>
+      <li><b>🔗 Neue Verknüpfung:</b> Verbindet zwei bestehende Zettel mit einem benannten Verb.</li>
+      <li><b>🏷️ / 🔍:</b> Tag-Filter bzw. Volltextsuche über Titel und Inhalt.</li>
+      <li><b>⋯ Mehr:</b> Eigene Zettel als JSON exportieren, importieren oder zurücksetzen — wichtig als Backup, da die Daten nur lokal im Browser liegen.</li></ul>`},
+    vortrag: {title:"Vortrags-Skript · Kurzfassung", body:`
+      <p><em>Einstieg:</em> „Kann man einen Marmorkuchen backen, ohne zu wissen, wie viel Mehl man braucht? Genauso wenig kann ein Zettelkasten wachsen, wenn seine Zettel nicht miteinander verwoben sind.“</p>
+      <p><em>Durchführung:</em> Von der MOC (0000) aus zuerst die Grundprinzipien zeigen (01), dann die Verknüpfungstechnik (02), dann die Notiztypen (03) — und an jeder Stelle sofort ins Marmorkuchen-Beispiel (04) springen: Sarahs erste Notiz, Herrn Bachmeiers Wunsch, die Zutaten- und Backzeit-Zettel, bis zu Petras Frage, die alles verknüpft.</p>
+      <p><em>Abschluss:</em> Im Graph beobachten, wie sich die Karten selbst zu einem Netz ordnen — das ist Emergenz (05), live sichtbar. Teilnehmer legen einen eigenen Zettel an und verknüpfen ihn mit mindestens zwei bestehenden.</p>`},
+    normen: {title:"Normen-Register", body:`
+      <ul><li><b>Zettelkasten-Methode (N. Luhmann)</b> — methodisches Grundprinzip: atomare, verknüpfte, eindeutig adressierte Notizen. Keine externe Norm, aber die namensgebende Referenz dieser Technik.</li>
+      <li><b>IREB CPRE</b> — funktionale/nicht-funktionale Anforderungen im Marmorkuchen-Beispiel. Status: aktiv.</li>
+      <li><b>ISO/IEC 25010:2023</b> — Qualitätsmodell hinter dem „dunklen Teig“ (Zettel 0405). Status: aktiv — vor Einsatz Aktualität prüfen.</li>
+      <li><b>Marmorkuchen-Metapher (M. Kühn)</b> — internes didaktisches Framework, Grundlage des Beispielkastens.</li></ul>
+      <p class="hint-text">Normen entwickeln sich weiter — Stand jeweils vor Trainingseinsatz verifizieren.</p>`}
+  };
+  const d = docs[key];
+  showModal(d.title, d.body);
+}
+
+/* ============================================================
+   BEAMER-MODUS
+   ============================================================ */
+function safeGetLS(key){ try{ return window.localStorage.getItem(key); }catch(e){ return null; } }
+function safeSetLS(key, val){ try{ window.localStorage.setItem(key, val); }catch(e){ console.warn("localStorage nicht verfügbar", e); } }
+
+var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+function applyBeamerLevel(level){
+  document.documentElement.setAttribute("data-beamer", String(level));
+  var btn = document.getElementById("beamerToggle");
+  btn.textContent = BEAMER_LABELS[level];
+  btn.classList.toggle("active", level > 0);
+}
+document.getElementById("beamerToggle").addEventListener("click", function(){
+  var level = (Number(safeGetLS("zettelkasten_marmorkuchen_beamer")) || 0) + 1;
+  if(level >= BEAMER_LABELS.length) level = 0;
+  safeSetLS("zettelkasten_marmorkuchen_beamer", String(level));
+  applyBeamerLevel(level);
+});
+applyBeamerLevel(Number(safeGetLS("zettelkasten_marmorkuchen_beamer")) || 0);
+
+/* ============================================================
+   MAIN RENDER + INIT
+   ============================================================ */
+function render(){
+  renderSidebar();
+  renderLegend();
+  renderGraph();
+  renderCards();
+}
+loadCustom();
+render();
+</script>
+</body>
+</html>
