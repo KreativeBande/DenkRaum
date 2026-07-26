@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="color-scheme" content="light">
+<title>Vom Tool-Chaos zum MCP-Handshake — Denkraum-Reise</title>
+<style>
+  :root{
+    color-scheme: light;
+    --paper:#FFFFFF;
+    --ink:#142433;
+    --ink-soft:#3E5266;
+    --blue-deep:#1E4E79;
+    --blue-mid:#3B7DB8;
+    --grid-line:#D8E6F2;
+    --amber:#D97F1E;
+    --amber-soft:#FBEBD6;
+    --chaos:#B3453D;
+    --chaos-soft:#F6E2E0;
+    --panel:#F4F8FC;
+    --radius:14px;
+  }
+
+  html[data-beamer="1"]{zoom:1.35}
+  html[data-beamer="2"]{zoom:1.75}
+
+  *{box-sizing:border-box;}
+
+  html,body{background:var(--paper);color:var(--ink);margin:0;padding:0;}
+
+  body{
+    font-family:-apple-system, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size:18px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size:40px 40px;
+    background-position:-1px -1px;
+  }
+
+  .mono{font-family:"SF Mono","Menlo","Consolas",monospace;}
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(255,255,255,0.94);
+    backdrop-filter:blur(6px);
+    border-bottom:2px solid var(--blue-deep);
+    padding:14px 20px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    flex-wrap:wrap;
+  }
+  .brandmark{
+    display:flex; align-items:center; gap:10px;
+    font-size:14px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--blue-deep); font-weight:700;
+  }
+  .brandmark .plug{width:22px;height:22px;display:inline-block;}
+  .header-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .back-link{font-size:13px;font-weight:700;color:var(--blue-mid);text-decoration:none;white-space:nowrap;}
+  .back-link:hover{color:var(--blue-deep);text-decoration:underline;}
+  .beamer-btn{
+    appearance:none;border:1.5px solid var(--blue-deep);background:var(--paper);color:var(--blue-deep);
+    font-size:13px;font-weight:700;padding:0 14px;height:44px;border-radius:999px;cursor:pointer;
+    white-space:nowrap;display:inline-flex;align-items:center;
+  }
+  .beamer-btn:hover{background:var(--panel);}
+  .beamer-btn.active{background:var(--amber-soft);border-color:var(--amber);color:#8A5410;}
+  .authorname{font-size:14px;color:var(--ink-soft);text-align:right;white-space:nowrap;}
+
+  /* ---------- Hero ---------- */
+  .hero{max-width:960px;margin:0 auto;padding:48px 24px 28px;}
+  .eyebrow{
+    display:inline-block;font-size:14px;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--blue-mid);font-weight:700;margin-bottom:14px;
+  }
+  h1{font-size:clamp(30px, 4.6vw, 44px);line-height:1.14;margin:0 0 16px;letter-spacing:-0.01em;}
+  .hero p.lead{font-size:19px;color:var(--ink-soft);max-width:660px;margin:0;}
+
+  /* ---------- Tabs ---------- */
+  .tabbar{
+    position:sticky;
+    top:64px;
+    z-index:40;
+    max-width:960px;
+    margin:0 auto;
+    padding:0 24px;
+    background:var(--paper);
+    display:flex;
+    gap:8px;
+    border-bottom:1px solid var(--grid-line);
+    overflow-x:auto;
+  }
+  .tab{
+    appearance:none;
+    background:transparent;
+    border:none;
+    border-bottom:4px solid transparent;
+    padding:16px 14px;
+    min-height:52px;
+    font-size:16px;
+    font-weight:700;
+    color:var(--ink-soft);
+    cursor:pointer;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .tab .zn{
+    font-size:13px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--blue-mid);
+    font-weight:700;
+  }
+  .tab[aria-selected="true"]{
+    color:var(--ink);
+    border-bottom-color:var(--blue-deep);
+  }
+  .tab:hover, .tab:focus-visible{color:var(--blue-deep);outline:none;}
+  .tab:focus-visible{outline:3px solid var(--amber);outline-offset:-2px;}
+
+  /* ---------- Panels ---------- */
+  .panel{
+    max-width:960px;
+    margin:0 auto;
+    padding:40px 24px 64px;
+    display:none;
+  }
+  .panel.active{display:block;}
+
+  .zone-tag{
+    display:flex;align-items:baseline;gap:10px;font-size:14px;
+    letter-spacing:0.1em;text-transform:uppercase;color:var(--blue-deep);
+    font-weight:700;margin-bottom:10px;
+  }
+  .zone-tag .symbol{font-size:20px;}
+  h2{font-size:clamp(24px, 3.2vw, 32px);margin:0 0 14px;}
+  h3.sub{font-size:19px;margin:36px 0 8px;color:var(--ink);}
+  .panel p{color:var(--ink-soft);max-width:680px;}
+  .panel p.tight{margin-top:4px;}
+
+  .consequence-list{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(200px,1fr));
+    gap:14px;
+    margin-top:20px;
+  }
+  .consequence-list .item{
+    background:var(--chaos-soft);
+    border-left:4px solid var(--chaos);
+    border-radius:0 10px 10px 0;
+    padding:14px 16px;
+  }
+  .consequence-list .item .label{
+    font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;
+    color:var(--chaos);display:block;margin-bottom:4px;
+  }
+  .consequence-list .item p{font-size:15px;color:var(--ink);margin:0;max-width:none;}
+
+  /* ---------- Zone 1: Chaos grid ---------- */
+  .chaos-wrap{background:var(--panel);border-radius:var(--radius);border:1px solid var(--grid-line);padding:28px;margin-top:24px;}
+  .chaos-btn{
+    appearance:none;border:2px solid var(--chaos);background:var(--paper);color:var(--chaos);
+    font-size:16px;font-weight:700;padding:12px 20px;border-radius:999px;min-height:48px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:8px;transition:background .2s ease, color .2s ease;
+  }
+  .chaos-btn:hover, .chaos-btn:focus-visible{background:var(--chaos);color:#fff;outline:3px solid var(--amber);outline-offset:2px;}
+  .chaos-stage{position:relative;margin-top:24px;height:260px;}
+  .chaos-col{position:absolute;top:0;display:flex;flex-direction:column;justify-content:space-between;height:100%;}
+  .chaos-col.tools{left:6%;} .chaos-col.models{right:6%;}
+  .node{
+    width:64px;height:44px;border-radius:8px;background:var(--paper);border:2px solid var(--blue-deep);
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--blue-deep);
+  }
+  svg.wires{position:absolute;inset:0;width:100%;height:100%;}
+  svg.wires line{stroke:var(--chaos);stroke-width:1.4;opacity:0;transition:opacity .5s ease;}
+  .chaos-stage.revealed svg.wires line{opacity:0.55;}
+  .chaos-count{margin-top:18px;font-size:14px;color:var(--chaos);font-weight:700;min-height:20px;}
+
+  /* ---------- Zone 2: architecture + cards ---------- */
+  .arch-row{
+    display:flex;align-items:center;justify-content:center;gap:14px;
+    margin:28px 0;flex-wrap:wrap;background:var(--panel);border:1px solid var(--grid-line);
+    border-radius:var(--radius);padding:28px 20px;
+  }
+  .arch-box{
+    min-width:130px;text-align:center;border:2px solid var(--blue-deep);border-radius:10px;
+    padding:14px 12px;background:var(--paper);
+  }
+  .arch-box .t{font-weight:700;font-size:16px;color:var(--blue-deep);}
+  .arch-box .d{font-size:13px;color:var(--ink-soft);margin-top:4px;}
+  .arch-arrow{font-size:22px;color:var(--blue-mid);}
+
+  /* ---------- Zone 2: Mehr-Server-Diagramm ---------- */
+  .arch-diagram{
+    display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap;
+    background:var(--panel);border:1px solid var(--grid-line);border-radius:var(--radius);
+    padding:28px 20px;margin:28px 0 14px;
+  }
+  .arch-host{
+    min-width:120px;text-align:center;border:2px solid var(--blue-deep);border-radius:10px;
+    padding:18px 14px;background:var(--paper);align-self:center;
+  }
+  .arch-host .t{font-weight:700;font-size:16px;color:var(--blue-deep);}
+  .arch-host .d{font-size:13px;color:var(--ink-soft);margin-top:4px;}
+  .arch-rows{display:flex;flex-direction:column;gap:14px;flex:1;min-width:260px;}
+  .arch-row-item{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    opacity:0;transform:translateX(-8px);
+    animation:archRowIn .4s ease forwards;
+  }
+  @keyframes archRowIn{to{opacity:1;transform:translateX(0);}}
+  .arch-row-item .arch-box{min-width:100px;padding:10px 10px;}
+  .arch-row-item .arch-box .t{font-size:14px;}
+  .arch-row-item .arch-box .d{font-size:12px;}
+  .arch-row-item .arch-arrow{font-size:18px;}
+  .arch-add-btn{
+    appearance:none;border:2px dashed var(--blue-mid);background:var(--paper);color:var(--blue-deep);
+    font-size:15px;font-weight:700;padding:10px 18px;border-radius:999px;min-height:44px;cursor:pointer;
+    align-self:flex-start;
+  }
+  .arch-add-btn:hover:not(:disabled), .arch-add-btn:focus-visible:not(:disabled){
+    background:var(--blue-deep);color:#fff;outline:3px solid var(--amber);outline-offset:2px;
+  }
+  .arch-add-btn:disabled{border-color:var(--grid-line);color:var(--ink-soft);cursor:default;}
+  .isolation-note{
+    display:none;margin-top:16px;background:var(--amber-soft);border-left:4px solid var(--amber);
+    border-radius:0 10px 10px 0;padding:14px 18px;font-size:15px;color:#7A4A0F;
+  }
+  .isolation-note.show{display:block;}
+
+  .role-table{width:100%;border-collapse:collapse;margin:18px 0 8px;font-size:15px;}
+  .role-table th, .role-table td{
+    text-align:left;padding:12px 14px;border-bottom:1px solid var(--grid-line);vertical-align:top;
+  }
+  .role-table th{
+    font-size:13px;text-transform:uppercase;letter-spacing:0.06em;color:var(--blue-deep);
+    border-bottom:2px solid var(--blue-deep);
+  }
+  .role-table td.role-name{font-weight:700;color:var(--ink);white-space:nowrap;}
+  .role-table td{color:var(--ink-soft);}
+
+  .bausteine{display:grid;grid-template-columns:repeat(auto-fit, minmax(230px,1fr));gap:16px;margin-top:20px;}
+  .card{
+    text-align:left;background:var(--paper);border:2px solid var(--blue-mid);border-radius:var(--radius);
+    padding:20px;cursor:pointer;min-height:44px;font:inherit;color:inherit;
+    transition:box-shadow .2s ease, border-color .2s ease;
+  }
+  .card:hover, .card:focus-visible{border-color:var(--blue-deep);box-shadow:0 6px 18px rgba(30,78,121,0.14);outline:none;}
+  .card .k-eyebrow{font-size:14px;text-transform:uppercase;letter-spacing:0.08em;color:var(--blue-mid);font-weight:700;margin-bottom:6px;display:block;}
+  .card h4{margin:0 0 8px;font-size:20px;color:var(--ink);}
+  .card .desc{color:var(--ink-soft);font-size:16px;margin:0 0 10px;}
+  .card .example{display:none;background:var(--panel);border-radius:8px;padding:12px 14px;font-size:15px;color:var(--blue-deep);border-left:3px solid var(--blue-mid);}
+  .card.open .example{display:block;}
+  .card .toggle-hint{font-size:14px;color:var(--blue-mid);font-weight:700;}
+
+  /* ---------- Zone 3: step-through handshake ---------- */
+  .steps-nav{display:flex;gap:8px;margin-top:24px;flex-wrap:wrap;}
+  .step-dot{
+    appearance:none;border:2px solid var(--grid-line);background:var(--paper);color:var(--ink-soft);
+    font-size:14px;font-weight:700;padding:10px 16px;border-radius:999px;min-height:44px;cursor:pointer;
+  }
+  .step-dot[aria-current="true"]{border-color:var(--blue-deep);color:var(--blue-deep);background:var(--panel);}
+  .step-dot.done{border-color:var(--amber);color:#8A5410;}
+
+  .handshake{margin-top:20px;background:var(--panel);border:1px solid var(--grid-line);border-radius:var(--radius);padding:28px;}
+  .plug-row{display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:20px;flex-wrap:wrap;}
+  .plug-box{
+    width:130px;height:80px;border:2px solid var(--blue-deep);border-radius:10px;
+    display:flex;align-items:center;justify-content:center;text-align:center;font-size:14px;font-weight:700;
+    color:var(--blue-deep);background:var(--paper);transition:all .3s ease;
+  }
+  .connector-line{width:60px;height:4px;background:var(--grid-line);position:relative;border-radius:2px;overflow:hidden;}
+  .connector-line .fill{position:absolute;inset:0;width:0%;background:var(--amber);transition:width .6s ease;}
+  .handshake .plug-box.lit{border-color:var(--amber);background:var(--amber-soft);color:#8A5410;}
+
+  .step-panel{display:none;}
+  .step-panel.active{display:block;}
+  .step-panel h4{margin:0 0 8px;font-size:18px;}
+  .step-panel p{font-size:16px;color:var(--ink-soft);max-width:640px;}
+  .step-panel .msg{
+    background:var(--ink);color:#EAF2FA;border-radius:10px;padding:16px 18px;
+    font-size:15px;line-height:1.6;overflow-x:auto;margin-top:12px;
+  }
+  .step-panel .msg .comment{color:#8CB4D6;}
+
+  .step-controls{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
+  .step-btn{
+    appearance:none;border:none;background:var(--blue-deep);color:#fff;font-size:16px;font-weight:700;
+    padding:12px 22px;border-radius:999px;min-height:48px;cursor:pointer;
+  }
+  .step-btn.secondary{background:var(--paper);color:var(--blue-deep);border:2px solid var(--blue-deep);}
+  .step-btn:disabled{background:var(--grid-line);color:var(--ink-soft);cursor:default;border-color:var(--grid-line);}
+  .step-btn:hover:not(:disabled), .step-btn:focus-visible:not(:disabled){outline:3px solid var(--amber);outline-offset:2px;}
+
+  .klarheit-badge{
+    display:none;margin-top:22px;background:var(--amber-soft);border:2px solid var(--amber);
+    border-radius:999px;padding:10px 22px;color:#8A5410;font-weight:700;font-size:16px;text-align:center;
+  }
+  .klarheit-badge.show{display:block;}
+
+  /* ---------- Reflexion ---------- */
+  .reflexion-box{
+    margin-top:36px;background:var(--panel);border-left:4px solid var(--blue-deep);
+    border-radius:0 var(--radius) var(--radius) 0;padding:22px 26px;
+  }
+  .reflexion-box p{color:var(--ink);font-size:18px;font-style:italic;margin:0;max-width:none;}
+
+  /* ---------- Footer ---------- */
+  footer{background:var(--ink);color:#CBD9E4;padding:36px 24px 28px;}
+  .footer-inner{max-width:960px;margin:0 auto;}
+  .footer-top{
+    display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;
+    margin-bottom:20px;border-bottom:1px solid #2A3E52;padding-bottom:16px;
+  }
+  .footer-top .toolname{font-size:16px;font-weight:700;color:#EAF2FA;}
+  .footer-top .authorname{color:#8CB4D6;text-decoration:none;}
+  .footer-top .authorname:hover{color:#EAF2FA;text-decoration:underline;}
+  footer details{border-bottom:1px solid #2A3E52;padding:14px 0;}
+  footer summary{
+    cursor:pointer;font-size:16px;font-weight:700;color:#EAF2FA;list-style:none;
+    display:flex;justify-content:space-between;align-items:center;min-height:44px;
+  }
+  footer summary::-webkit-details-marker{display:none;}
+  footer summary::after{content:"+";font-size:20px;color:var(--amber);}
+  footer details[open] summary::after{content:"–";}
+  footer .detail-body{font-size:15px;line-height:1.6;color:#B8CADA;padding-top:10px;max-width:700px;}
+  footer .detail-body p{margin:0 0 10px;}
+  footer .detail-body ul{margin:0;padding-left:20px;}
+  footer .detail-body li{margin-bottom:6px;}
+
+  @media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important;}}
+
+  @media (max-width: 560px){
+    .chaos-stage{height:220px;}
+    .node{width:52px;font-size:11px;}
+  }
+</style>
+</head>
+<body>
+
+<header id="siteHeader">
+  <div class="brandmark">
+    <svg class="plug" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M9 2v4M15 2v4M6 6h12v4a6 6 0 0 1-12 0V6z"/>
+      <path d="M12 16v6"/>
+    </svg>
+    Denkraum-Reise
+  </div>
+  <div class="header-right">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <button class="beamer-btn" id="beamerToggle" type="button">🔍 Beamer-Modus</button>
+    <div class="authorname">Michaela Kühn</div>
+  </div>
+</header>
+
+<div class="hero">
+  <span class="eyebrow">MCP im Denkraum-Modell</span>
+  <h1>Vom Tool-Chaos zum MCP-Handshake</h1>
+  <p class="lead">Drei Zonen, drei Tabs: vom unstrukturierten Werkzeug-Wirrwarr über das strukturierende Server-Schema bis zum präzisen, Schritt-für-Schritt nachvollziehbaren Handshake.</p>
+</div>
+
+<div class="tabbar" id="tabbar" role="tablist" aria-label="Denkraum-Zonen">
+  <button class="tab" role="tab" id="tabbtn-1" aria-controls="panel-1" aria-selected="true" data-target="panel-1">
+    <span class="zn">Zone 1</span> Sammeln
+  </button>
+  <button class="tab" role="tab" id="tabbtn-2" aria-controls="panel-2" aria-selected="false" data-target="panel-2">
+    <span class="zn">Zone 2</span> Strukturieren
+  </button>
+  <button class="tab" role="tab" id="tabbtn-3" aria-controls="panel-3" aria-selected="false" data-target="panel-3">
+    <span class="zn">Zone 3</span> Spezifizieren
+  </button>
+</div>
+
+<!-- PANEL 1: Sammeln -->
+<section class="panel active" id="panel-1" role="tabpanel" aria-labelledby="tabbtn-1">
+  <div class="zone-tag"><span class="symbol">🌋</span> Zone 1 — Sammeln</div>
+  <h2>Das N×M-Problem</h2>
+  <p>Vor einem gemeinsamen Standard musste jede KI-Anwendung für jedes Werkzeug eine eigene, maßgeschneiderte Verbindung bauen. Kein Muster, keine Struktur — nur Einzelfälle, die sich nicht wiederverwenden lassen.</p>
+
+  <div class="chaos-wrap">
+    <button class="chaos-btn" id="chaosBtn" type="button" aria-expanded="false">Verbindungen sichtbar machen</button>
+    <div class="chaos-stage" id="chaosStage">
+      <svg class="wires" id="wires" aria-hidden="true"></svg>
+      <div class="chaos-col tools">
+        <div class="node">Notion</div>
+        <div class="node">Drive</div>
+        <div class="node">Figma</div>
+        <div class="node">Gmail</div>
+      </div>
+      <div class="chaos-col models">
+        <div class="node">Claude</div>
+        <div class="node">Modell B</div>
+        <div class="node">Modell C</div>
+        <div class="node">Modell D</div>
+      </div>
+    </div>
+    <div class="chaos-count" id="chaosCount"></div>
+  </div>
+
+  <h3 class="sub">Was das in der Praxis kostet</h3>
+  <p class="tight">Jede Einzelverbindung ist nicht nur Mehraufwand beim Bau — sie bleibt auch danach ein eigenes Risiko.</p>
+  <div class="consequence-list">
+    <div class="item">
+      <span class="label">Wartung</span>
+      <p>16 Einzelverbindungen bedeuten 16 Stellen, an denen sich APIs ändern und Code bricht.</p>
+    </div>
+    <div class="item">
+      <span class="label">Sicherheit</span>
+      <p>Jeder Adapter bringt eigene Auth-Logik mit — ein Flickenteppich statt eines geprüften Standards.</p>
+    </div>
+    <div class="item">
+      <span class="label">Bindung</span>
+      <p>Wechselt man die KI-Anwendung, ist die komplette Integrationsarbeit oft wertlos.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 2: Strukturieren -->
+<section class="panel" id="panel-2" role="tabpanel" aria-labelledby="tabbtn-2">
+  <div class="zone-tag"><span class="symbol">🗺️</span> Zone 2 — Strukturieren</div>
+  <h2>Der MCP-Server als Übersetzer</h2>
+  <p>MCP führt drei feste Rollen ein. Der <strong>Host</strong> ist die Anwendung, in der du arbeitest (z. B. Claude). Er startet für jeden Dienst einen eigenen <strong>Client</strong>, der jeweils genau eine Verbindung zu einem <strong>Server</strong> hält — und dieser Server übersetzt die Fähigkeiten eines Diensts in ein einheitliches Schema.</p>
+
+  <table class="role-table">
+    <thead>
+      <tr><th>Rolle</th><th>Aufgabe</th><th>Beispiel</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="role-name">Host</td><td>Die Anwendung, in der du arbeitest — verwaltet alle Client-Verbindungen und führt Ergebnisse zusammen.</td><td>Claude-App, Claude Code</td></tr>
+      <tr><td class="role-name">Client</td><td>Hält genau eine 1:1-Verbindung zu einem Server — kennt nur diesen einen.</td><td>ein Client pro Dienst</td></tr>
+      <tr><td class="role-name">Server</td><td>Übersetzt die Fähigkeiten eines Diensts in Resources, Tools und Prompts.</td><td>Notion-Server, Figma-Server</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Ein Host, mehrere Server — aber strikt getrennt</h3>
+  <p class="tight">Jeder neue Dienst bekommt einen eigenen Client. Tippe, um Server nacheinander zu verbinden, und beobachte, wie der Host wächst — ohne dass sich die Server je begegnen.</p>
+
+  <div class="arch-diagram">
+    <div class="arch-host"><div class="t">Host</div><div class="d">Claude-App</div></div>
+    <div class="arch-rows" id="archRows"></div>
+  </div>
+  <button class="arch-add-btn" id="archAddBtn" type="button">+ Server verbinden</button>
+  <div class="isolation-note" id="isolationNote">
+    Wichtig: Jeder Client kennt nur seinen eigenen Server. Der Notion-Client sieht keine Figma-Daten und umgekehrt — der Host sieht nur, was jeder Client ihm zurückmeldet. Diese Isolation ist ein zentrales Sicherheitsprinzip von MCP.
+  </div>
+
+  <p class="tight">Die gemeinsame Sprache unter jeder dieser Verbindungen ist immer dieselbe: <span class="mono">JSON-RPC 2.0</span> — ein schlankes Nachrichtenformat, egal ob lokal über <span class="mono">stdio</span> (Server läuft auf demselben Rechner) oder entfernt über <span class="mono">Streamable HTTP</span> (Server liegt im Netz, wie bei den meisten deiner Notion- oder Figma-Verbindungen).</p>
+
+  <h3 class="sub">Die drei Bausteine, die jeder Server anbietet</h3>
+  <p class="tight">Aus beliebigen Einzelfällen wird ein wiederkehrendes Schema. Tippen zum Aufklappen.</p>
+
+  <div class="bausteine">
+    <button class="card" type="button" data-card>
+      <span class="k-eyebrow">Baustein 1</span>
+      <h4>Resources</h4>
+      <p class="desc">Daten lesen, ohne sie zu verändern.</p>
+      <span class="toggle-hint">Beispiel ansehen →</span>
+      <div class="example">In deinem Notion-Workspace: eine Datenbank-Ansicht oder eine einzelne Seite, die Claude einliest, bevor er antwortet.</div>
+    </button>
+
+    <button class="card" type="button" data-card>
+      <span class="k-eyebrow">Baustein 2</span>
+      <h4>Tools</h4>
+      <p class="desc">Aktionen ausführen, die etwas verändern.</p>
+      <span class="toggle-hint">Beispiel ansehen →</span>
+      <div class="example">Eine neue Notion-Seite anlegen, einen Kalendertermin erstellen oder eine Datei in Google Drive ablegen.</div>
+    </button>
+
+    <button class="card" type="button" data-card>
+      <span class="k-eyebrow">Baustein 3</span>
+      <h4>Prompts</h4>
+      <p class="desc">Vordefinierte Vorlagen mit Parametern.</p>
+      <span class="toggle-hint">Beispiel ansehen →</span>
+      <div class="example">Eine Vorlage „Sprecher-Skript erstellen“, die Titel und Zielgruppe als Parameter entgegennimmt.</div>
+    </button>
+  </div>
+</section>
+
+<!-- PANEL 3: Spezifizieren -->
+<section class="panel" id="panel-3" role="tabpanel" aria-labelledby="tabbtn-3">
+  <div class="zone-tag"><span class="symbol">🎯</span> Zone 3 — Spezifizieren</div>
+  <h2>Der Handshake — Schritt für Schritt</h2>
+  <p>Vier Schritte, die aus einer vagen Absicht eine präzise, aufrufbare Fähigkeit machen. Mit „Weiter“ durchklicken.</p>
+
+  <div class="steps-nav" id="stepsNav">
+    <button class="step-dot" data-step="1" aria-current="true" type="button">1 · Initialize</button>
+    <button class="step-dot" data-step="2" type="button">2 · Bestätigung</button>
+    <button class="step-dot" data-step="3" type="button">3 · Discovery</button>
+    <button class="step-dot" data-step="4" type="button">4 · Aufruf</button>
+  </div>
+
+  <div class="handshake">
+    <div class="plug-row">
+      <div class="plug-box" id="plugClient">Claude<br>(Client)</div>
+      <div class="connector-line"><div class="fill" id="fillLine"></div></div>
+      <div class="plug-box" id="plugServer">Notion-<br>Server</div>
+    </div>
+
+    <div class="step-panel active" data-panel="1">
+      <h4>1 · Initialize — wer bist du, was kannst du?</h4>
+      <p>Der Client stellt sich vor und nennt die Protokoll-Version. Noch ist nichts vereinbart — nur die Anfrage steht.</p>
+      <div class="msg mono"><span class="comment">// Client → Server</span><br>
+        method: "initialize"<br>
+        protocolVersion: "2025-06-18"<br>
+        clientInfo: { name: "Claude", version: "…" }
+      </div>
+    </div>
+
+    <div class="step-panel" data-panel="2">
+      <h4>2 · Bestätigung — der Server meldet seine Fähigkeiten</h4>
+      <p>Der Server antwortet mit genau den Fähigkeiten, die er unterstützt. Beide Seiten kennen jetzt die gemeinsame Basis — mehr nicht, weniger nicht.</p>
+      <div class="msg mono"><span class="comment">// Server → Client</span><br>
+        capabilities: { tools: {}, resources: {}, prompts: {} }<br>
+        serverInfo: { name: "Notion-Server", version: "…" }<br><br>
+        <span class="comment">// Client → Server (Bestätigung)</span><br>
+        notification: "initialized"
+      </div>
+    </div>
+
+    <div class="step-panel" data-panel="3">
+      <h4>3 · Discovery — was genau bietest du an?</h4>
+      <p>Erst jetzt fragt der Client konkret nach: Welche Tools gibt es, mit welchen Parametern? Aus „irgendwas mit Notion“ wird eine Liste benannter Fähigkeiten.</p>
+      <div class="msg mono"><span class="comment">// Client → Server</span><br>
+        method: "tools/list"<br><br>
+        <span class="comment">// Server → Client</span><br>
+        tool: create_page(parent_id, title, content)<br>
+        tool: query_database(database_id, filter)
+      </div>
+    </div>
+
+    <div class="step-panel" data-panel="4">
+      <h4>4 · Aufruf — die Fähigkeit wird genutzt</h4>
+      <p>Der Client ruft ein konkretes Tool mit konkreten Parametern auf. Das ist der Klarheits-Sprung: aus einer vagen Absicht ist eine präzise, testbare Aktion geworden.</p>
+      <div class="msg mono"><span class="comment">// Client → Server</span><br>
+        method: "tools/call"<br>
+        name: "create_page"<br>
+        arguments: { title: "Moderationsleitfaden", … }
+      </div>
+      <div class="klarheit-badge" id="klarheitBadge">✦ Klarheits-Sprung: aus „irgendwie verbinden“ wird eine präzise, aufrufbare Fähigkeit</div>
+    </div>
+
+    <div class="step-controls">
+      <button class="step-btn secondary" id="prevBtn" type="button" disabled>← Zurück</button>
+      <button class="step-btn" id="nextBtn" type="button">Weiter →</button>
+    </div>
+  </div>
+
+  <div class="reflexion-box">
+    <p>„Wo in deinem eigenen Werkzeug-Stack ist der Klarheits-Sprung schon passiert — und wo arbeitest du noch mit Zone-1-Chaos?“</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <span class="toolname">Vom Tool-Chaos zum MCP-Handshake</span>
+      <a class="authorname" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn</a>
+    </div>
+
+    <details>
+      <summary>Systemprompt</summary>
+      <div class="detail-body">
+        <p>Rolle: Du bist Trainer:in für AI-Literacy und begleitest Teilnehmende dabei, das Model Context Protocol (MCP) über das Denkraum-Modell zu verstehen — von der unstrukturierten Zone 1 (Sammeln) über die musterbildende Zone 2 (Strukturieren) bis zur präzisen Zone 3 (Spezifizieren).</p>
+        <p>Ziel: Teilnehmende sollen sowohl das N×M-Problem als auch den vierstufigen Handshake (Initialize, Bestätigung, Discovery, Aufruf) in eigenen Worten erklären können.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Handbuch</summary>
+      <div class="detail-body">
+        <ul>
+          <li>Einsatzdauer: ca. 15–20 Minuten als Opener oder Zwischenmodul, ein Tab pro Zone.</li>
+          <li>Zone 1: Button „Verbindungen sichtbar machen“ tippen, dann die drei Konsequenz-Karten besprechen.</li>
+          <li>Zone 2: Rollen-Tabelle kurz erklären, dann per „+ Server verbinden“ alle drei Server nacheinander hinzufügen lassen — die Isolations-Hinweisbox erscheint automatisch ab dem zweiten Server. Danach alle drei Bausteine-Karten aufklappen lassen.</li>
+          <li>Zone 3: Die vier Schritte mit „Weiter“ gemeinsam durchklicken — der Klarheits-Sprung-Badge erscheint erst nach Schritt 4.</li>
+          <li>Abschluss: Reflexionsfrage im Plenum oder in Kleingruppen besprechen.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>Vortrags-Skript</summary>
+      <div class="detail-body">
+        <p>„Bevor es einen gemeinsamen Standard gab, musste jede KI-Anwendung jedes Werkzeug einzeln kennenlernen. Das nennt man das N×M-Problem — reine Zone 1: Sammeln, ohne Struktur. Und das kostet nicht nur beim Bauen, sondern bei jeder Wartung neu.</p>
+        <p>MCP führt drei feste Rollen ein: Host, Client, Server — verbunden über eine gemeinsame Sprache, JSON-RPC. Für jeden Dienst gibt es einen eigenen Client mit genau einer 1:1-Verbindung. Das ist mehr als Ordnung — es ist ein Sicherheitsprinzip: Ein Notion-Client sieht niemals Figma-Daten, weil er den Figma-Server gar nicht kennt. Jeder Server bietet außerdem drei wiederkehrende Bausteine: Resources zum Lesen, Tools zum Handeln, Prompts als Vorlagen. Das ist Zone 2 — Strukturieren.</p>
+        <p>Der eigentliche Klarheits-Sprung passiert im Handshake, Schritt für Schritt: Erst stellt sich der Client vor, dann bestätigt der Server seine Fähigkeiten, dann fragt der Client konkret nach dem Angebot — und erst dann wird eine Fähigkeit tatsächlich aufgerufen. Aus vagem Zugriffswunsch wird eine präzise, testbare Aktion — Zone 3.“</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Normen-Register</summary>
+      <div class="detail-body">
+        <ul>
+          <li>Model Context Protocol (MCP) — offener Standard, veröffentlicht von Anthropic im November 2024, mittlerweile an die Agentic AI Foundation der Linux Foundation übergeben.</li>
+          <li>Transportebene: JSON-RPC 2.0, Verbindungstypen stdio (lokal) und Streamable HTTP (entfernt).</li>
+          <li>Bezug zum Denkraum-Modell: eigenes, IREB-orientiertes Coaching-Framework von Michaela Kühn (keine externe Norm).</li>
+          <li>Hinweis: Protokollversion und Spezifikationsstand vor jedem Einsatz gegen die aktuelle Quelle prüfen, da MCP sich aktiv weiterentwickelt.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // ---- Sticky-Offset (Tabbar folgt der tatsächlichen Header-Höhe) ----
+  var siteHeader = document.getElementById('siteHeader');
+  var tabbar = document.getElementById('tabbar');
+  function syncStickyOffsets(){
+    tabbar.style.top = siteHeader.offsetHeight + 'px';
+  }
+  syncStickyOffsets();
+  window.addEventListener('resize', syncStickyOffsets);
+
+  // ---- Tabs ----
+  var tabs = document.querySelectorAll('.tab');
+  var panels = document.querySelectorAll('.panel');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      tabs.forEach(function(t){ t.setAttribute('aria-selected','false'); });
+      panels.forEach(function(p){ p.classList.remove('active'); });
+      tab.setAttribute('aria-selected','true');
+      document.getElementById(tab.dataset.target).classList.add('active');
+    });
+  });
+
+  // ---- Zone 1: Chaos-Verbindungen ----
+  var chaosBtn = document.getElementById('chaosBtn');
+  var chaosStage = document.getElementById('chaosStage');
+  var wiresSvg = document.getElementById('wires');
+  var chaosCount = document.getElementById('chaosCount');
+  var revealed = false;
+
+  function buildWires(){
+    wiresSvg.innerHTML = '';
+    var toolNodes = document.querySelectorAll('.chaos-col.tools .node');
+    var modelNodes = document.querySelectorAll('.chaos-col.models .node');
+    var stageRect = chaosStage.getBoundingClientRect();
+    var ns = 'http://www.w3.org/2000/svg';
+    toolNodes.forEach(function(tNode){
+      var tRect = tNode.getBoundingClientRect();
+      var x1 = tRect.right - stageRect.left;
+      var y1 = tRect.top - stageRect.top + tRect.height/2;
+      modelNodes.forEach(function(mNode){
+        var mRect = mNode.getBoundingClientRect();
+        var x2 = mRect.left - stageRect.left;
+        var y2 = mRect.top - stageRect.top + mRect.height/2;
+        var line = document.createElementNS(ns, 'line');
+        line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+        wiresSvg.appendChild(line);
+      });
+    });
+  }
+
+  chaosBtn.addEventListener('click', function(){
+    revealed = !revealed;
+    if(revealed){
+      buildWires();
+      chaosStage.classList.add('revealed');
+      chaosCount.textContent = '16 Einzel-Integrationen für nur 4 Werkzeuge × 4 KI-Anwendungen — jede neue Kombination bedeutet neuen Code.';
+      chaosBtn.setAttribute('aria-expanded','true');
+      chaosBtn.textContent = 'Verbindungen ausblenden';
+    } else {
+      chaosStage.classList.remove('revealed');
+      chaosCount.textContent = '';
+      chaosBtn.setAttribute('aria-expanded','false');
+      chaosBtn.textContent = 'Verbindungen sichtbar machen';
+    }
+  });
+  window.addEventListener('resize', function(){ if(revealed){ buildWires(); } });
+
+  // ---- Zone 2: Mehr-Server-Diagramm ----
+  var archRows = document.getElementById('archRows');
+  var archAddBtn = document.getElementById('archAddBtn');
+  var isolationNote = document.getElementById('isolationNote');
+  var serverPool = [
+    { name: 'Notion-Server', ex: 'Notion' },
+    { name: 'Figma-Server', ex: 'Figma' },
+    { name: 'Gmail-Server', ex: 'Gmail' }
+  ];
+  var addedCount = 0;
+
+  archAddBtn.addEventListener('click', function(){
+    if(addedCount >= serverPool.length) return;
+    var srv = serverPool[addedCount];
+    var row = document.createElement('div');
+    row.className = 'arch-row-item';
+    row.innerHTML =
+      '<div class="arch-box"><div class="t">Client ' + (addedCount+1) + '</div><div class="d">1:1</div></div>' +
+      '<div class="arch-arrow">↔</div>' +
+      '<div class="arch-box"><div class="t">' + srv.name + '</div><div class="d">' + srv.ex + '</div></div>';
+    archRows.appendChild(row);
+    addedCount++;
+
+    if(addedCount >= 2){
+      isolationNote.classList.add('show');
+    }
+    if(addedCount >= serverPool.length){
+      archAddBtn.disabled = true;
+      archAddBtn.textContent = 'Alle Server verbunden';
+    }
+  });
+
+  // ---- Zone 2: Karten ----
+  document.querySelectorAll('[data-card]').forEach(function(card){
+    card.addEventListener('click', function(){
+      var isOpen = card.classList.contains('open');
+      card.classList.toggle('open');
+      card.querySelector('.toggle-hint').textContent = isOpen ? 'Beispiel ansehen →' : 'Beispiel ausblenden ←';
+    });
+  });
+
+  // ---- Zone 3: Step-Handshake ----
+  var currentStep = 1;
+  var totalSteps = 4;
+  var stepDots = document.querySelectorAll('.step-dot');
+  var stepPanels = document.querySelectorAll('.step-panel');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var plugClient = document.getElementById('plugClient');
+  var plugServer = document.getElementById('plugServer');
+  var fillLine = document.getElementById('fillLine');
+  var klarheitBadge = document.getElementById('klarheitBadge');
+
+  function renderStep(){
+    stepDots.forEach(function(dot){
+      var n = parseInt(dot.dataset.step,10);
+      dot.setAttribute('aria-current', n === currentStep ? 'true' : 'false');
+      dot.classList.toggle('done', n < currentStep);
+    });
+    stepPanels.forEach(function(p){
+      p.classList.toggle('active', parseInt(p.dataset.panel,10) === currentStep);
+    });
+    prevBtn.disabled = currentStep === 1;
+    nextBtn.textContent = currentStep === totalSteps ? 'Fertig ✓' : 'Weiter →';
+    nextBtn.disabled = currentStep === totalSteps;
+
+    if(currentStep >= 2){
+      fillLine.style.width = '100%';
+    } else {
+      fillLine.style.width = '0%';
+    }
+    if(currentStep >= 3){
+      plugClient.classList.add('lit');
+      plugServer.classList.add('lit');
+    } else {
+      plugClient.classList.remove('lit');
+      plugServer.classList.remove('lit');
+    }
+    if(currentStep === totalSteps){
+      klarheitBadge.classList.add('show');
+    } else {
+      klarheitBadge.classList.remove('show');
+    }
+  }
+
+  stepDots.forEach(function(dot){
+    dot.addEventListener('click', function(){
+      currentStep = parseInt(dot.dataset.step,10);
+      renderStep();
+    });
+  });
+  prevBtn.addEventListener('click', function(){
+    if(currentStep > 1){ currentStep--; renderStep(); }
+  });
+  nextBtn.addEventListener('click', function(){
+    if(currentStep < totalSteps){ currentStep++; renderStep(); }
+  });
+
+  renderStep();
+
+  // ---- Beamer-Modus ----
+  function safeGet(key){ try{ return sessionStorage.getItem(key); }catch(e){ return null; } }
+  function safeSet(key, val){ try{ sessionStorage.setItem(key, val); }catch(e){ /* restriktiver Kontext, ignorieren */ } }
+
+  var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+  function applyBeamerLevel(level){
+    document.documentElement.setAttribute("data-beamer", String(level));
+    var btn = document.getElementById("beamerToggle");
+    btn.textContent = BEAMER_LABELS[level];
+    btn.classList.toggle("active", level > 0);
+    syncStickyOffsets();
+  }
+  document.getElementById('beamerToggle').addEventListener('click', function(){
+    var level = (Number(safeGet('mcp_handshake_beamer')) || 0) + 1;
+    if(level >= BEAMER_LABELS.length) level = 0;
+    safeSet('mcp_handshake_beamer', String(level));
+    applyBeamerLevel(level);
+  });
+  applyBeamerLevel(Number(safeGet('mcp_handshake_beamer')) || 0);
+})();
+</script>
+
+</body>
+</html>
