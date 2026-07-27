@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="color-scheme" content="light">
+<title>Vom Rateversuch zur belegten Antwort — RAG im Denkraum-Modell</title>
+<style>
+  :root{
+    color-scheme: light;
+    --paper:#FFFFFF;
+    --ink:#142433;
+    --ink-soft:#3E5266;
+    --blue-deep:#1E4E79;
+    --blue-mid:#3B7DB8;
+    --grid-line:#D8E6F2;
+    --amber:#D97F1E;
+    --amber-soft:#FBEBD6;
+    --chaos:#B3453D;
+    --chaos-soft:#F6E2E0;
+    --panel:#F4F8FC;
+    --cluster-b:#7A5C9E;
+    --cluster-c:#3F8C6E;
+    --radius:14px;
+  }
+
+  html[data-beamer="1"]{zoom:1.35}
+  html[data-beamer="2"]{zoom:1.75}
+
+  *{box-sizing:border-box;}
+  html,body{background:var(--paper);color:var(--ink);margin:0;padding:0;}
+  body{
+    font-family:-apple-system, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size:40px 40px;background-position:-1px -1px;
+  }
+  .mono{font-family:"SF Mono","Menlo","Consolas",monospace;}
+
+  header{
+    position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.94);backdrop-filter:blur(6px);
+    border-bottom:2px solid var(--blue-deep);padding:14px 20px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+  .brandmark{display:flex;align-items:center;gap:10px;font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue-deep);font-weight:700;}
+  .brandmark .icon{width:22px;height:22px;display:inline-block;}
+  .header-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .back-link{font-size:13px;font-weight:700;color:var(--blue-mid);text-decoration:none;white-space:nowrap;}
+  .back-link:hover{color:var(--blue-deep);text-decoration:underline;}
+  .beamer-btn{
+    appearance:none;border:1.5px solid var(--blue-deep);background:var(--paper);color:var(--blue-deep);
+    font-size:13px;font-weight:700;padding:0 14px;height:44px;border-radius:999px;cursor:pointer;
+    white-space:nowrap;display:inline-flex;align-items:center;
+  }
+  .beamer-btn:hover{background:var(--panel);}
+  .beamer-btn.active{background:var(--amber-soft);border-color:var(--amber);color:#8A5410;}
+  .authorname{font-size:14px;color:var(--ink-soft);text-align:right;white-space:nowrap;}
+
+  .hero{max-width:960px;margin:0 auto;padding:48px 24px 28px;}
+  .eyebrow{display:inline-block;font-size:14px;letter-spacing:0.14em;text-transform:uppercase;color:var(--blue-mid);font-weight:700;margin-bottom:14px;}
+  h1{font-size:clamp(28px, 4.4vw, 42px);line-height:1.14;margin:0 0 16px;letter-spacing:-0.01em;}
+  .hero p.lead{font-size:19px;color:var(--ink-soft);max-width:660px;margin:0;}
+
+  .tabbar{
+    position:sticky;top:64px;z-index:40;max-width:960px;margin:0 auto;padding:0 24px;
+    background:var(--paper);display:flex;gap:8px;border-bottom:1px solid var(--grid-line);overflow-x:auto;
+  }
+  .tab{
+    appearance:none;background:transparent;border:none;border-bottom:4px solid transparent;
+    padding:16px 14px;min-height:52px;font-size:16px;font-weight:700;color:var(--ink-soft);
+    cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:8px;
+  }
+  .tab .zn{font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue-mid);font-weight:700;}
+  .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--blue-deep);}
+  .tab:hover, .tab:focus-visible{color:var(--blue-deep);outline:none;}
+  .tab:focus-visible{outline:3px solid var(--amber);outline-offset:-2px;}
+
+  .panel{max-width:960px;margin:0 auto;padding:40px 24px 64px;display:none;}
+  .panel.active{display:block;}
+
+  .zone-tag{display:flex;align-items:baseline;gap:10px;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue-deep);font-weight:700;margin-bottom:10px;}
+  .zone-tag .symbol{font-size:20px;}
+  h2{font-size:clamp(24px, 3.2vw, 32px);margin:0 0 14px;}
+  h3.sub{font-size:19px;margin:36px 0 8px;color:var(--ink);}
+  .panel p{color:var(--ink-soft);max-width:680px;}
+  .panel p.tight{margin-top:4px;}
+
+  .consequence-list{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px,1fr));gap:14px;margin-top:20px;}
+  .consequence-list .item{background:var(--chaos-soft);border-left:4px solid var(--chaos);border-radius:0 10px 10px 0;padding:14px 16px;}
+  .consequence-list .item .label{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--chaos);display:block;margin-bottom:4px;}
+  .consequence-list .item p{font-size:15px;color:var(--ink);margin:0;max-width:none;}
+
+  /* ---------- Zone 1: Chat-Demo ---------- */
+  .chat-wrap{background:var(--panel);border-radius:var(--radius);border:1px solid var(--grid-line);padding:28px;margin-top:24px;}
+  .ask-btn{
+    appearance:none;border:2px solid var(--chaos);background:var(--paper);color:var(--chaos);
+    font-size:16px;font-weight:700;padding:12px 20px;border-radius:999px;min-height:48px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:8px;transition:background .2s ease, color .2s ease;
+  }
+  .ask-btn:hover, .ask-btn:focus-visible{background:var(--chaos);color:#fff;outline:3px solid var(--amber);outline-offset:2px;}
+  .chat-bubble-q{
+    margin-top:22px;background:var(--paper);border:1px solid var(--grid-line);border-radius:12px 12px 12px 2px;
+    padding:14px 18px;max-width:480px;font-size:16px;color:var(--ink);
+  }
+  .chat-bubble-a{
+    display:none;margin-top:12px;margin-left:auto;background:var(--chaos-soft);border:1px solid var(--chaos);
+    border-radius:12px 12px 2px 12px;padding:14px 18px;max-width:520px;font-size:16px;color:var(--ink);
+  }
+  .chat-bubble-a.show{display:block;}
+  .chat-tag{
+    display:inline-block;margin-top:10px;font-size:13px;font-weight:700;color:var(--chaos);
+    background:var(--paper);border:1px solid var(--chaos);border-radius:999px;padding:4px 12px;
+  }
+
+  /* ---------- Zone 2: Pipeline-Tabelle + Vektorraum ---------- */
+  .role-table{width:100%;border-collapse:collapse;margin:18px 0 8px;font-size:15px;}
+  .role-table th, .role-table td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--grid-line);vertical-align:top;}
+  .role-table th{font-size:13px;text-transform:uppercase;letter-spacing:0.06em;color:var(--blue-deep);border-bottom:2px solid var(--blue-deep);}
+  .role-table td.role-name{font-weight:700;color:var(--ink);white-space:nowrap;}
+  .role-table td{color:var(--ink-soft);}
+
+  .vector-wrap{background:var(--panel);border:1px solid var(--grid-line);border-radius:var(--radius);padding:24px;margin-top:24px;}
+  .vector-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;font-size:14px;color:var(--ink-soft);}
+  .vector-legend .sw{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle;}
+  .vector-svg{width:100%;height:auto;background:var(--paper);border-radius:10px;border:1px solid var(--grid-line);}
+  .vpoint{transition:opacity .4s ease, fill .4s ease;}
+  .vpoint.dim{opacity:0.3;}
+  .vpoint.hit{fill:var(--amber);}
+  .vline{stroke:var(--amber);stroke-width:1.6;opacity:0;transition:opacity .5s ease;}
+  .vline.show{opacity:0.8;}
+  .qpoint{opacity:0;transition:opacity .4s ease;}
+  .qpoint.show{opacity:1;}
+  .vector-btn{
+    appearance:none;border:none;background:var(--blue-deep);color:#fff;font-size:16px;font-weight:700;
+    padding:12px 22px;border-radius:999px;min-height:48px;cursor:pointer;margin-top:16px;
+  }
+  .vector-btn:hover, .vector-btn:focus-visible{background:var(--blue-mid);outline:3px solid var(--amber);outline-offset:2px;}
+  .vector-caption{display:none;margin-top:14px;font-size:15px;color:#8A5410;background:var(--amber-soft);border-left:4px solid var(--amber);border-radius:0 10px 10px 0;padding:12px 16px;}
+  .vector-caption.show{display:block;}
+
+  .bausteine{display:grid;grid-template-columns:repeat(auto-fit, minmax(230px,1fr));gap:16px;margin-top:20px;}
+  .card{
+    text-align:left;background:var(--paper);border:2px solid var(--blue-mid);border-radius:var(--radius);
+    padding:20px;cursor:pointer;min-height:44px;font:inherit;color:inherit;transition:box-shadow .2s ease, border-color .2s ease;
+  }
+  .card:hover, .card:focus-visible{border-color:var(--blue-deep);box-shadow:0 6px 18px rgba(30,78,121,0.14);outline:none;}
+  .card .k-eyebrow{font-size:14px;text-transform:uppercase;letter-spacing:0.08em;color:var(--blue-mid);font-weight:700;margin-bottom:6px;display:block;}
+  .card h4{margin:0 0 8px;font-size:20px;color:var(--ink);}
+  .card .desc{color:var(--ink-soft);font-size:16px;margin:0 0 10px;}
+  .card .example{display:none;background:var(--panel);border-radius:8px;padding:12px 14px;font-size:15px;color:var(--blue-deep);border-left:3px solid var(--blue-mid);}
+  .card.open .example{display:block;}
+  .card .toggle-hint{font-size:14px;color:var(--blue-mid);font-weight:700;}
+
+  /* ---------- Zone 3: Step-through ---------- */
+  .steps-nav{display:flex;gap:8px;margin-top:24px;flex-wrap:wrap;}
+  .step-dot{
+    appearance:none;border:2px solid var(--grid-line);background:var(--paper);color:var(--ink-soft);
+    font-size:14px;font-weight:700;padding:10px 16px;border-radius:999px;min-height:44px;cursor:pointer;
+  }
+  .step-dot[aria-current="true"]{border-color:var(--blue-deep);color:var(--blue-deep);background:var(--panel);}
+  .step-dot.done{border-color:var(--amber);color:#8A5410;}
+
+  .flow{margin-top:20px;background:var(--panel);border:1px solid var(--grid-line);border-radius:var(--radius);padding:28px;}
+  .flow-row{display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:20px;flex-wrap:wrap;}
+  .flow-box{
+    width:140px;height:80px;border:2px solid var(--blue-deep);border-radius:10px;
+    display:flex;align-items:center;justify-content:center;text-align:center;font-size:14px;font-weight:700;
+    color:var(--blue-deep);background:var(--paper);transition:all .3s ease;
+  }
+  .flow-line{width:60px;height:4px;background:var(--grid-line);position:relative;border-radius:2px;overflow:hidden;}
+  .flow-line .fill{position:absolute;inset:0;width:0%;background:var(--amber);transition:width .6s ease;}
+  .flow-box.lit{border-color:var(--amber);background:var(--amber-soft);color:#8A5410;}
+
+  .step-panel{display:none;}
+  .step-panel.active{display:block;}
+  .step-panel h4{margin:0 0 8px;font-size:18px;}
+  .step-panel p{font-size:16px;color:var(--ink-soft);max-width:640px;}
+  .step-panel .msg{background:var(--ink);color:#EAF2FA;border-radius:10px;padding:16px 18px;font-size:15px;line-height:1.6;overflow-x:auto;margin-top:12px;}
+  .step-panel .msg .comment{color:#8CB4D6;}
+
+  .step-controls{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
+  .step-btn{appearance:none;border:none;background:var(--blue-deep);color:#fff;font-size:16px;font-weight:700;padding:12px 22px;border-radius:999px;min-height:48px;cursor:pointer;}
+  .step-btn.secondary{background:var(--paper);color:var(--blue-deep);border:2px solid var(--blue-deep);}
+  .step-btn:disabled{background:var(--grid-line);color:var(--ink-soft);cursor:default;border-color:var(--grid-line);}
+  .step-btn:hover:not(:disabled), .step-btn:focus-visible:not(:disabled){outline:3px solid var(--amber);outline-offset:2px;}
+
+  .klarheit-badge{display:none;margin-top:22px;background:var(--amber-soft);border:2px solid var(--amber);border-radius:999px;padding:10px 22px;color:#8A5410;font-weight:700;font-size:16px;text-align:center;}
+  .klarheit-badge.show{display:block;}
+
+  .reflexion-box{margin-top:36px;background:var(--panel);border-left:4px solid var(--blue-deep);border-radius:0 var(--radius) var(--radius) 0;padding:22px 26px;}
+  .reflexion-box p{color:var(--ink);font-size:18px;font-style:italic;margin:0;max-width:none;}
+
+  footer{background:var(--ink);color:#CBD9E4;padding:36px 24px 28px;}
+  .footer-inner{max-width:960px;margin:0 auto;}
+  .footer-top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:20px;border-bottom:1px solid #2A3E52;padding-bottom:16px;}
+  .footer-top .toolname{font-size:16px;font-weight:700;color:#EAF2FA;}
+  .footer-top .authorname{color:#8CB4D6;text-decoration:none;}
+  .footer-top .authorname:hover{color:#EAF2FA;}
+  footer details{border-bottom:1px solid #2A3E52;padding:14px 0;}
+  footer summary{cursor:pointer;font-size:16px;font-weight:700;color:#EAF2FA;list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:44px;}
+  footer summary::-webkit-details-marker{display:none;}
+  footer summary::after{content:"+";font-size:20px;color:var(--amber);}
+  footer details[open] summary::after{content:"–";}
+  footer .detail-body{font-size:15px;line-height:1.6;color:#B8CADA;padding-top:10px;max-width:700px;}
+  footer .detail-body p{margin:0 0 10px;}
+  footer .detail-body ul{margin:0;padding-left:20px;}
+  footer .detail-body li{margin-bottom:6px;}
+
+  @media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important;}}
+  @media (max-width: 560px){.flow-box{width:110px;font-size:12px;}}
+</style>
+</head>
+<body>
+
+<header id="siteHeader">
+  <div class="brandmark">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
+    </svg>
+    Denkraum-Reise
+  </div>
+  <div class="header-right">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <button class="beamer-btn" id="beamerToggle" type="button">🔍 Beamer-Modus</button>
+    <div class="authorname">Michaela Kühn</div>
+  </div>
+</header>
+
+<div class="hero">
+  <span class="eyebrow">RAG im Denkraum-Modell</span>
+  <h1>Vom Rateversuch zur belegten Antwort</h1>
+  <p class="lead">Drei Zonen, drei Tabs: von der stillen Wissenslücke eines Sprachmodells über den Retriever als Bibliothekar bis zum vollständigen RAG-Zyklus mit Quellenangabe.</p>
+</div>
+
+<div class="tabbar" id="tabbar" role="tablist" aria-label="Denkraum-Zonen">
+  <button class="tab" role="tab" id="tabbtn-1" aria-controls="panel-1" aria-selected="true" data-target="panel-1">
+    <span class="zn">Zone 1</span> Sammeln
+  </button>
+  <button class="tab" role="tab" id="tabbtn-2" aria-controls="panel-2" aria-selected="false" data-target="panel-2">
+    <span class="zn">Zone 2</span> Strukturieren
+  </button>
+  <button class="tab" role="tab" id="tabbtn-3" aria-controls="panel-3" aria-selected="false" data-target="panel-3">
+    <span class="zn">Zone 3</span> Spezifizieren
+  </button>
+</div>
+
+<!-- PANEL 1: Sammeln -->
+<section class="panel active" id="panel-1" role="tabpanel" aria-labelledby="tabbtn-1">
+  <div class="zone-tag"><span class="symbol">🌋</span> Zone 1 — Sammeln</div>
+  <h2>Die Wissenslücke</h2>
+  <p>Ein Sprachmodell kennt nur, was zum Trainings-Stichtag in seinen Gewichten gelandet ist. Interne Dokumente, aktuelle Regelungen oder unternehmensspezifisches Wissen fehlen komplett — trotzdem antwortet das Modell oft, als wüsste es Bescheid.</p>
+
+  <div class="chat-wrap">
+    <button class="ask-btn" id="askBtn" type="button" aria-expanded="false">Frage ohne RAG stellen</button>
+    <div class="chat-bubble-q">„Wie viele Urlaubstage hat ein Trainee bei uns im dritten Jahr?"</div>
+    <div class="chat-bubble-a" id="chatAnswer">
+      „In der Regel haben Trainees Anspruch auf etwa 24 bis 26 Urlaubstage pro Jahr, je nach Unternehmen."
+      <br><span class="chat-tag">✗ Nicht belegt — plausibel geraten, keine Quelle</span>
+    </div>
+  </div>
+
+  <h3 class="sub">Was diese Lücke kostet</h3>
+  <p class="tight">Das Modell klingt dabei genauso selbstsicher wie bei einer belegten Antwort — der Unterschied ist von außen nicht erkennbar.</p>
+  <div class="consequence-list">
+    <div class="item"><span class="label">Vertrauen</span><p>Eine überzeugend klingende, falsche Antwort untergräbt das Vertrauen in alle künftigen Antworten.</p></div>
+    <div class="item"><span class="label">Entscheidung</span><p>Wird die Antwort ungeprüft übernommen, basiert eine reale Entscheidung auf einer Erfindung.</p></div>
+    <div class="item"><span class="label">Haftung</span><p>Ohne Quellenangabe lässt sich im Nachhinein nicht klären, worauf sich das Modell eigentlich gestützt hat.</p></div>
+  </div>
+</section>
+
+<!-- PANEL 2: Strukturieren -->
+<section class="panel" id="panel-2" role="tabpanel" aria-labelledby="tabbtn-2">
+  <div class="zone-tag"><span class="symbol">🗺️</span> Zone 2 — Strukturieren</div>
+  <h2>Der Retriever als Bibliothekar</h2>
+  <p>RAG verbindet zwei Gedächtnisse: das <strong>parametrische</strong> Wissen im Modell selbst und ein <strong>externes</strong> Wissen in Form durchsuchbarer Dokumente. Bevor das Modell antwortet, schickt ein Retriever die Frage zuerst durch die eigene Wissensbasis.</p>
+
+  <table class="role-table">
+    <thead><tr><th>Baustein</th><th>Aufgabe</th><th>Beispiel</th></tr></thead>
+    <tbody>
+      <tr><td class="role-name">Indexierung</td><td>Dokumente werden in Abschnitte zerlegt und als Vektoren (Embeddings) abgelegt.</td><td>Mitarbeiterhandbuch → 40 Abschnitte</td></tr>
+      <tr><td class="role-name">Retrieval</td><td>Die Frage wird ebenfalls in einen Vektor umgewandelt; die ähnlichsten Abschnitte werden gefunden.</td><td>Top-3 Abschnitte zu „Urlaub"</td></tr>
+      <tr><td class="role-name">Generation</td><td>Das Sprachmodell formuliert die Antwort — gestützt auf die gefundenen Abschnitte.</td><td>Antwort mit Zitat aus 4.2</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Nähe im Vektorraum, nicht im Text</h3>
+  <p class="tight">Embeddings ordnen Inhalte nach Bedeutung an, nicht nach Wortlaut. Tippe, um zu sehen, welche Abschnitte als „nah" zur Frage gelten.</p>
+
+  <div class="vector-wrap">
+    <div class="vector-legend">
+      <span><span class="sw" style="background:var(--blue-deep)"></span>Urlaub &amp; Abwesenheit</span>
+      <span><span class="sw" style="background:var(--cluster-b)"></span>Gehalt &amp; Vergütung</span>
+      <span><span class="sw" style="background:var(--cluster-c)"></span>Kündigung &amp; Fristen</span>
+    </div>
+    <svg class="vector-svg" viewBox="0 0 400 220" id="vectorSvg">
+      <line class="vline" id="vl1" x1="90" y1="80" x2="70" y2="60"></line>
+      <line class="vline" id="vl2" x1="90" y1="80" x2="100" y2="90"></line>
+      <line class="vline" id="vl3" x1="90" y1="80" x2="60" y2="110"></line>
+
+      <circle class="vpoint" data-cluster="a" cx="70" cy="60" r="9" fill="var(--blue-deep)"></circle>
+      <circle class="vpoint" data-cluster="a" cx="100" cy="90" r="9" fill="var(--blue-deep)"></circle>
+      <circle class="vpoint" data-cluster="a" cx="60" cy="110" r="9" fill="var(--blue-deep)"></circle>
+
+      <circle class="vpoint" data-cluster="b" cx="250" cy="50" r="9" fill="var(--cluster-b)"></circle>
+      <circle class="vpoint" data-cluster="b" cx="280" cy="80" r="9" fill="var(--cluster-b)"></circle>
+      <circle class="vpoint" data-cluster="b" cx="300" cy="110" r="9" fill="var(--cluster-b)"></circle>
+
+      <circle class="vpoint" data-cluster="c" cx="180" cy="175" r="9" fill="var(--cluster-c)"></circle>
+      <circle class="vpoint" data-cluster="c" cx="150" cy="195" r="9" fill="var(--cluster-c)"></circle>
+      <circle class="vpoint" data-cluster="c" cx="210" cy="195" r="9" fill="var(--cluster-c)"></circle>
+
+      <g class="qpoint" id="qpoint">
+        <circle cx="90" cy="80" r="10" fill="none" stroke="var(--ink)" stroke-width="2.5"></circle>
+        <text x="90" y="65" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">Frage</text>
+      </g>
+    </svg>
+    <button class="vector-btn" id="vectorBtn" type="button">Frage einordnen</button>
+    <div class="vector-caption" id="vectorCaption">Die drei nächsten Nachbarn liegen alle im Themenfeld „Urlaub" — genau diese drei Abschnitte gehen als Kontext in den Prompt.</div>
+  </div>
+
+  <h3 class="sub">Die drei Bausteine im Detail</h3>
+  <p class="tight">Tippen zum Aufklappen.</p>
+  <div class="bausteine">
+    <button class="card" type="button" data-card>
+      <span class="k-eyebrow">Baustein 1</span>
+      <h4>Chunking</h4>
+      <p class="desc">Dokumente in sinnvolle, nicht zu große Abschnitte zerlegen.</p>
+      <span class="toggle-hint">Beispiel ansehen →</span>
+      <div class="example">Ein 40-seitiges Handbuch wird in ca. 200-Wort-Abschnitte geteilt, jeder mit Quellenangabe (Seite, Abschnitt).</div>
+    </button>
+    <button class="card" type="button" data-card>
+      <span class="k-eyebrow">Baustein 2</span>
+      <h4>Embedding</h4>
+      <p class="desc">Jeder Abschnitt wird in einen Bedeutungs-Vektor umgewandelt.</p>
+      <span class="toggle-hint">Beispiel ansehen →</span>
+      <div class="example">„Urlaubsanspruch im dritten Jahr" landet im Vektorraum nah bei „Resturlaub verfällt zum Jahresende" — obwohl kein Wort übereinstimmt.</div>
+    </button>
+    <button class="card" type="button" data-card>
+      <span class="k-eyebrow">Baustein 3</span>
+      <h4>Similarity Search</h4>
+      <p class="desc">Die Top-K ähnlichsten Abschnitte zur Frage werden ermittelt.</p>
+      <span class="toggle-hint">Beispiel ansehen →</span>
+      <div class="example">Meist Kosinus-Ähnlichkeit zwischen Frage-Vektor und allen Abschnitts-Vektoren, sortiert nach Nähe.</div>
+    </button>
+  </div>
+</section>
+
+<!-- PANEL 3: Spezifizieren -->
+<section class="panel" id="panel-3" role="tabpanel" aria-labelledby="tabbtn-3">
+  <div class="zone-tag"><span class="symbol">🎯</span> Zone 3 — Spezifizieren</div>
+  <h2>Der RAG-Zyklus — Schritt für Schritt</h2>
+  <p>Fünf Schritte, die aus einer offenen Frage eine belegte, quellengestützte Antwort machen. Mit „Weiter" durchklicken.</p>
+
+  <div class="steps-nav" id="stepsNav">
+    <button class="step-dot" data-step="1" aria-current="true" type="button">1 · Frage</button>
+    <button class="step-dot" data-step="2" type="button">2 · Embedding</button>
+    <button class="step-dot" data-step="3" type="button">3 · Retrieval</button>
+    <button class="step-dot" data-step="4" type="button">4 · Injektion</button>
+    <button class="step-dot" data-step="5" type="button">5 · Generierung</button>
+  </div>
+
+  <div class="flow">
+    <div class="flow-row">
+      <div class="flow-box" id="flowFrage">Frage</div>
+      <div class="flow-line"><div class="fill" id="fillLine1"></div></div>
+      <div class="flow-box" id="flowWissen">Wissens-<br>basis</div>
+      <div class="flow-line"><div class="fill" id="fillLine2"></div></div>
+      <div class="flow-box" id="flowLLM">LLM</div>
+    </div>
+
+    <div class="step-panel active" data-panel="1">
+      <h4>1 · Frage stellen</h4>
+      <p>Der Nutzer stellt eine ganz normale Frage — noch ohne dass irgendetwas nachgeschlagen wurde.</p>
+      <div class="msg mono"><span class="comment">// Nutzer</span><br>„Wie viele Urlaubstage hat ein Trainee im dritten Jahr?"</div>
+    </div>
+
+    <div class="step-panel" data-panel="2">
+      <h4>2 · Embedding erzeugen</h4>
+      <p>Die Frage wird in einen Zahlen-Vektor übersetzt — ihre Position im Bedeutungsraum.</p>
+      <div class="msg mono"><span class="comment">// Frage → Vektor</span><br>embed("Wie viele Urlaubstage…") = [0.12, -0.44, 0.81, …]</div>
+    </div>
+
+    <div class="step-panel" data-panel="3">
+      <h4>3 · Retrieval</h4>
+      <p>Der Vektor der Frage wird mit allen gespeicherten Abschnitts-Vektoren verglichen. Die drei ähnlichsten gewinnen.</p>
+      <div class="msg mono"><span class="comment">// Top-3 Treffer</span><br>
+        1. Mitarbeiterhandbuch, Abschnitt 4.2 „Urlaubsstaffel nach Betriebsjahr"<br>
+        2. Mitarbeiterhandbuch, Abschnitt 4.3 „Resturlaub"<br>
+        3. Betriebsvereinbarung, Anlage 2 „Sonderurlaub"
+      </div>
+    </div>
+
+    <div class="step-panel" data-panel="4">
+      <h4>4 · Kontext-Injektion</h4>
+      <p>Die gefundenen Abschnitte werden zusammen mit der ursprünglichen Frage in einen erweiterten Prompt eingebettet.</p>
+      <div class="msg mono"><span class="comment">// Erweiterter Prompt an das LLM</span><br>
+        Kontext: [Abschnitt 4.2, 4.3, Anlage 2]<br>
+        Frage: „Wie viele Urlaubstage hat ein Trainee im dritten Jahr?"<br>
+        Anweisung: Antworte nur auf Basis des Kontexts, mit Quellenangabe.
+      </div>
+    </div>
+
+    <div class="step-panel" data-panel="5">
+      <h4>5 · Generierung mit Quellenangabe</h4>
+      <p>Erst jetzt antwortet das Modell — gestützt auf die gefundenen Abschnitte, nicht auf Vermutung.</p>
+      <div class="msg mono"><span class="comment">// Antwort</span><br>„Laut Abschnitt 4.2 des Mitarbeiterhandbuchs stehen Trainees im dritten Jahr 27 Urlaubstage zu."</div>
+      <div class="klarheit-badge" id="klarheitBadge">✦ Klarheits-Sprung: aus Rateversuch wird eine belegte, quellengestützte Antwort</div>
+    </div>
+
+    <div class="step-controls">
+      <button class="step-btn secondary" id="prevBtn" type="button" disabled>← Zurück</button>
+      <button class="step-btn" id="nextBtn" type="button">Weiter →</button>
+    </div>
+  </div>
+
+  <div class="reflexion-box">
+    <p>„Wo in deinen eigenen Trainingsmaterialien nutzt du bereits Retrieval — und wo verlässt du dich noch auf das reine Sprachmodell-Gedächtnis?"</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <span class="toolname">Vom Rateversuch zur belegten Antwort — RAG im Denkraum-Modell, Pilotversion</span>
+      <a class="authorname" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn</a>
+    </div>
+
+    <details>
+      <summary>Systemprompt</summary>
+      <div class="detail-body">
+        <p>Rolle: Du bist Trainer:in für AI-Literacy und begleitest Teilnehmende dabei, Retrieval-Augmented Generation (RAG) über das Denkraum-Modell zu verstehen — von der unsichtbaren Wissenslücke eines reinen Sprachmodells (Zone 1: Sammeln) über die Retriever-Pipeline (Zone 2: Strukturieren) bis zum vollständigen, quellengestützten Antwortzyklus (Zone 3: Spezifizieren).</p>
+        <p>Ziel: Teilnehmende sollen den Unterschied zwischen einer geratenen und einer belegten Antwort erklären und den fünfstufigen RAG-Zyklus in eigenen Worten nachvollziehen können.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Handbuch</summary>
+      <div class="detail-body">
+        <ul>
+          <li>Einsatzdauer: ca. 15–20 Minuten als Opener oder Zwischenmodul, ein Tab pro Zone.</li>
+          <li>Zone 1: Button „Frage ohne RAG stellen" tippen, dann die drei Konsequenz-Karten besprechen.</li>
+          <li>Zone 2: Pipeline-Tabelle kurz erklären, dann „Frage einordnen" im Vektorraum-Diagramm tippen lassen — zeigt, wie Nähe im Bedeutungsraum funktioniert. Danach die drei Bausteine-Karten aufklappen lassen.</li>
+          <li>Zone 3: Die fünf Schritte mit „Weiter" gemeinsam durchklicken — der Klarheits-Sprung-Badge erscheint erst nach Schritt 5.</li>
+          <li>Abschluss: Reflexionsfrage im Plenum oder in Kleingruppen besprechen.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>Vortrags-Skript</summary>
+      <div class="detail-body">
+        <p>„Ein Sprachmodell weiß nur, was zum Trainings-Stichtag in seinen Gewichten gelandet ist. Fragt man es nach internem oder aktuellem Wissen, füllt es die Lücke oft mit einer plausibel klingenden, aber unbelegten Antwort — reine Zone 1: Sammeln, ohne Beleg.</p>
+        <p>RAG bringt Struktur hinein: Dokumente werden in Abschnitte zerlegt, als Vektoren abgelegt und über Ähnlichkeit im Bedeutungsraum gefunden — nicht über Wortgleichheit. Das ist Zone 2: Strukturieren.</p>
+        <p>Der eigentliche Klarheits-Sprung passiert im fünfstufigen Zyklus: Frage, Embedding, Retrieval, Kontext-Injektion, Generierung. Erst danach antwortet das Modell — mit Quellenangabe statt Vermutung. Das ist Zone 3: Spezifizieren."</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Normen-Register</summary>
+      <div class="detail-body">
+        <ul>
+          <li>Retrieval-Augmented Generation (RAG) — Begriff geprägt von Patrick Lewis et al., Facebook AI Research (heute Meta AI), NeurIPS 2020, Paper „Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks".</li>
+          <li>Keine formale ISO- oder IEEE-Norm; RAG ist eine etablierte ML-Architektur, keine zertifizierte Spezifikation.</li>
+          <li>Bezug zum Denkraum-Modell: eigenes, IREB-orientiertes Coaching-Framework von Michaela Kühn (keine externe Norm).</li>
+          <li>Hinweis: Aktuelle Implementierungsdetails (Vektor-Datenbanken, Embedding-Modelle) vor jedem Einsatz gegen die aktuelle Quelle prüfen, da sich das Ökosystem aktiv weiterentwickelt.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Tabs
+  var tabs = document.querySelectorAll('.tab');
+  var panels = document.querySelectorAll('.panel');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      tabs.forEach(function(t){ t.setAttribute('aria-selected','false'); });
+      panels.forEach(function(p){ p.classList.remove('active'); });
+      tab.setAttribute('aria-selected','true');
+      document.getElementById(tab.dataset.target).classList.add('active');
+    });
+  });
+
+  // Zone 1: Chat-Demo
+  var askBtn = document.getElementById('askBtn');
+  var chatAnswer = document.getElementById('chatAnswer');
+  var asked = false;
+  askBtn.addEventListener('click', function(){
+    asked = !asked;
+    chatAnswer.classList.toggle('show', asked);
+    askBtn.setAttribute('aria-expanded', asked ? 'true' : 'false');
+    askBtn.textContent = asked ? 'Antwort ausblenden' : 'Frage ohne RAG stellen';
+  });
+
+  // Zone 2: Vektorraum
+  var vectorBtn = document.getElementById('vectorBtn');
+  var vectorCaption = document.getElementById('vectorCaption');
+  var qpoint = document.getElementById('qpoint');
+  var vlines = [document.getElementById('vl1'), document.getElementById('vl2'), document.getElementById('vl3')];
+  var vpointsA = document.querySelectorAll('.vpoint[data-cluster="a"]');
+  var vpointsOther = document.querySelectorAll('.vpoint[data-cluster="b"], .vpoint[data-cluster="c"]');
+  var vShown = false;
+
+  vectorBtn.addEventListener('click', function(){
+    vShown = !vShown;
+    qpoint.classList.toggle('show', vShown);
+    vlines.forEach(function(l){ l.classList.toggle('show', vShown); });
+    vpointsA.forEach(function(p){ p.classList.toggle('hit', vShown); });
+    vpointsOther.forEach(function(p){ p.classList.toggle('dim', vShown); });
+    vectorCaption.classList.toggle('show', vShown);
+    vectorBtn.textContent = vShown ? 'Zurücksetzen' : 'Frage einordnen';
+  });
+
+  // Zone 2: Karten
+  document.querySelectorAll('[data-card]').forEach(function(card){
+    card.addEventListener('click', function(){
+      var isOpen = card.classList.contains('open');
+      card.classList.toggle('open');
+      card.querySelector('.toggle-hint').textContent = isOpen ? 'Beispiel ansehen →' : 'Beispiel ausblenden ←';
+    });
+  });
+
+  // Zone 3: Step-Flow
+  var currentStep = 1;
+  var totalSteps = 5;
+  var stepDots = document.querySelectorAll('.step-dot');
+  var stepPanels = document.querySelectorAll('.step-panel');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var flowFrage = document.getElementById('flowFrage');
+  var flowWissen = document.getElementById('flowWissen');
+  var flowLLM = document.getElementById('flowLLM');
+  var fillLine1 = document.getElementById('fillLine1');
+  var fillLine2 = document.getElementById('fillLine2');
+  var klarheitBadge = document.getElementById('klarheitBadge');
+
+  function renderStep(){
+    stepDots.forEach(function(dot){
+      var n = parseInt(dot.dataset.step,10);
+      dot.setAttribute('aria-current', n === currentStep ? 'true' : 'false');
+      dot.classList.toggle('done', n < currentStep);
+    });
+    stepPanels.forEach(function(p){
+      p.classList.toggle('active', parseInt(p.dataset.panel,10) === currentStep);
+    });
+    prevBtn.disabled = currentStep === 1;
+    nextBtn.textContent = currentStep === totalSteps ? 'Fertig ✓' : 'Weiter →';
+    nextBtn.disabled = currentStep === totalSteps;
+
+    fillLine1.style.width = currentStep >= 3 ? '100%' : '0%';
+    fillLine2.style.width = currentStep >= 5 ? '100%' : '0%';
+
+    flowFrage.classList.toggle('lit', currentStep >= 1);
+    flowWissen.classList.toggle('lit', currentStep >= 3);
+    flowLLM.classList.toggle('lit', currentStep >= 5);
+
+    klarheitBadge.classList.toggle('show', currentStep === totalSteps);
+  }
+
+  stepDots.forEach(function(dot){
+    dot.addEventListener('click', function(){
+      currentStep = parseInt(dot.dataset.step,10);
+      renderStep();
+    });
+  });
+  prevBtn.addEventListener('click', function(){ if(currentStep > 1){ currentStep--; renderStep(); } });
+  nextBtn.addEventListener('click', function(){ if(currentStep < totalSteps){ currentStep++; renderStep(); } });
+
+  renderStep();
+
+  // ---- Sticky-Offsets (Tabbar folgt der tatsächlichen Header-Höhe) ----
+  var siteHeader = document.getElementById('siteHeader');
+  var tabbar = document.getElementById('tabbar');
+  function syncStickyOffsets(){
+    tabbar.style.top = siteHeader.offsetHeight + 'px';
+  }
+  syncStickyOffsets();
+  window.addEventListener('resize', syncStickyOffsets);
+
+  // ---- Beamer-Modus ----
+  function safeGet(key){ try{ return sessionStorage.getItem(key); }catch(e){ return null; } }
+  function safeSet(key, val){ try{ sessionStorage.setItem(key, val); }catch(e){ /* restriktiver Kontext, ignorieren */ } }
+
+  var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+  function applyBeamerLevel(level){
+    document.documentElement.setAttribute("data-beamer", String(level));
+    var btn = document.getElementById("beamerToggle");
+    btn.textContent = BEAMER_LABELS[level];
+    btn.classList.toggle("active", level > 0);
+    syncStickyOffsets();
+  }
+  document.getElementById('beamerToggle').addEventListener('click', function(){
+    var level = (Number(safeGet('rag_denkraum_beamer')) || 0) + 1;
+    if(level >= BEAMER_LABELS.length) level = 0;
+    safeSet('rag_denkraum_beamer', String(level));
+    applyBeamerLevel(level);
+  });
+  applyBeamerLevel(Number(safeGet('rag_denkraum_beamer')) || 0);
+})();
+</script>
+
+</body>
+</html>
