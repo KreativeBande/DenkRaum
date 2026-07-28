@@ -89,12 +89,18 @@ body{
   border:1px solid var(--line);border-radius:5px;padding:2px 6px;background:#fff;pointer-events:none}
 .filter-chips{display:flex;gap:8px;flex-wrap:wrap}
 .filter-chip{
+  position:relative;
   border:1.5px solid var(--line);background:var(--bg);color:var(--muted);
-  padding:8px 14px;border-radius:999px;font-size:13.5px;font-weight:700;cursor:pointer;
+  padding:8px 30px 8px 14px;border-radius:999px;font-size:13.5px;font-weight:700;cursor:pointer;
   transition:all .15s ease; white-space:nowrap;
+}
+.filter-chip::after{
+  content:"▾"; position:absolute; right:12px; top:50%; font-size:11px;
+  transform:translateY(-50%) rotate(-90deg); transition:transform .15s ease;
 }
 .filter-chip:hover{border-color:var(--accent);color:var(--ink)}
 .filter-chip.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.filter-chip.active::after{transform:translateY(-50%) rotate(0deg);}
 .result-count{font-size:13px;color:var(--muted);font-weight:600;margin-left:auto;white-space:nowrap}
 
 .empty-state{
@@ -151,6 +157,7 @@ body{
 .tool-card.priority{border-left-color:var(--green)}
 .tool-card.about{border-left-color:var(--accent)}
 .tool-card.didaktik{border-left-color:var(--teal)}
+.tool-card.spiele{border-left-color:var(--green)}
 .tool-card:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(15,23,42,.10)}
 .tool-card h3{margin:0 0 8px 0;font-size:18px;line-height:1.3;color:var(--ink);padding-right:52px}
 .tool-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.55;flex:1}
@@ -160,6 +167,7 @@ body{
 .tool-card.compliance .cta{color:var(--coral)}
 .tool-card.priority .cta{color:var(--green)}
 .tool-card.didaktik .cta{color:var(--teal)}
+.tool-card.spiele .cta{color:var(--green)}
 .new-badge{
   position:absolute;top:16px;right:16px;background:var(--accent);color:#fff;
   font-size:10.5px;font-weight:800;letter-spacing:.04em;padding:3px 8px;border-radius:999px;
@@ -192,7 +200,7 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
         <p>Interaktive Werkzeuge rund um Requirements Engineering und den kompetenten Umgang mit KI. Jede App führt spielerisch durch strukturierte Fragen, macht Denkprozesse sichtbar und übersetzt vage Fragestellungen Schritt für Schritt in belastbare Ergebnisse.</p>
         <div class="hero-stats">
           <span class="stat-pill"><strong id="statTotal">0</strong> Tools</span>
-          <span class="stat-pill"><strong>5</strong> Rubriken</span>
+          <span class="stat-pill"><strong>6</strong> Rubriken</span>
           <span class="stat-pill" id="statNew"></span>
         </div>
       </div>
@@ -206,12 +214,13 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
       <input type="text" id="searchInput" placeholder="Tool suchen … (z. B. „ISO“, „Priorisierung“, „Beamer“)" autocomplete="off">
       <span class="kbd-hint" id="kbdHint">/</span>
     </div>
-    <div class="filter-chips" id="filterChips" role="tablist" aria-label="Themen">
-      <button type="button" class="filter-chip active" data-filter="about" role="tab">Über mich</button>
-      <button type="button" class="filter-chip" data-filter="re-ba" role="tab">Requirements &amp; Business-Analyse</button>
-      <button type="button" class="filter-chip" data-filter="agile-pm" role="tab">Agiles Arbeiten &amp; PM</button>
-      <button type="button" class="filter-chip" data-filter="ki" role="tab">KI</button>
-      <button type="button" class="filter-chip" data-filter="didaktik" role="tab">Didaktik</button>
+    <div class="filter-chips" id="filterChips" aria-label="Themen">
+      <button type="button" class="filter-chip active" data-filter="about" aria-expanded="true" aria-controls="section-about">Über mich</button>
+      <button type="button" class="filter-chip" data-filter="re-ba" aria-expanded="false" aria-controls="section-re-ba">Requirements &amp; Business-Analyse</button>
+      <button type="button" class="filter-chip" data-filter="agile-pm" aria-expanded="false" aria-controls="section-agile-pm">Agiles Arbeiten &amp; PM</button>
+      <button type="button" class="filter-chip" data-filter="ki" aria-expanded="false" aria-controls="section-ki">KI</button>
+      <button type="button" class="filter-chip" data-filter="didaktik" aria-expanded="false" aria-controls="section-didaktik">Didaktik</button>
+      <button type="button" class="filter-chip" data-filter="spiele" aria-expanded="false" aria-controls="section-spiele">Spiele</button>
     </div>
     <span class="result-count" id="resultCount"></span>
   </div>
@@ -222,7 +231,7 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
     <button id="resetFilters">Suche zurücksetzen</button>
   </div>
 
-  <section class="section" data-cat="about" role="tabpanel">
+  <section class="section" data-cat="about" id="section-about">
     <div class="section-head">
       <span class="kicker rose">Über mich</span>
       <span class="section-count"></span>
@@ -243,7 +252,7 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
     </div>
   </section>
 
-  <section class="section hidden-by-filter" data-cat="re-ba" role="tabpanel">
+  <section class="section hidden-by-filter" data-cat="re-ba" id="section-re-ba">
     <div class="section-head">
       <span class="kicker">Requirements &amp; Business-Analyse</span>
       <span class="section-count"></span>
@@ -336,7 +345,7 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
     -->
   </section>
 
-  <section class="section hidden-by-filter" data-cat="agile-pm" role="tabpanel">
+  <section class="section hidden-by-filter" data-cat="agile-pm" id="section-agile-pm">
     <div class="section-head">
       <span class="kicker violet">Agiles Arbeiten &amp; Projektmanagement</span>
       <span class="section-count"></span>
@@ -369,7 +378,7 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
     -->
   </section>
 
-  <section class="section hidden-by-filter" data-cat="ki" role="tabpanel">
+  <section class="section hidden-by-filter" data-cat="ki" id="section-ki">
     <div class="section-head">
       <span class="kicker blue">KI Tools</span>
       <span class="section-count"></span>
@@ -462,7 +471,7 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
     </div>
   </section>
 
-  <section class="section hidden-by-filter" data-cat="didaktik" role="tabpanel">
+  <section class="section hidden-by-filter" data-cat="didaktik" id="section-didaktik">
     <div class="section-head">
       <span class="kicker teal">Didaktik Tools</span>
       <span class="section-count"></span>
@@ -473,6 +482,21 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
         <h3>Zettelkasten · Marmorkuchen erklärt die Zettelkasten-Technik</h3>
         <p>Erklärt die Zettelkasten-Technik selbst — atomare Notiz, Verknüpfung mit Verb, Notiztypen, Emergenz — anhand eines durchgehenden Marmorkuchen-Beispiels mit Sarah, Herrn Bachmeier, Ela, Knut und Petra. Im Graph beobachtbar: aus vielen Einzelverknüpfungen entsteht ein Netz, kein Baum.</p>
         <span class="cta">Zettelkasten öffnen →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section hidden-by-filter" data-cat="spiele" id="section-spiele">
+    <div class="section-head">
+      <span class="kicker green">Spiele</span>
+      <span class="section-count"></span>
+    </div>
+    <div class="tool-grid">
+      <a class="tool-card spiele" href="./tools/escape-room-ki-prompting.html">
+        <span class="new-badge">NEU</span>
+        <h3>Escape Room: KI-Prompting</h3>
+        <p>Sieben Türen, ein Systemprompt: von der Rolle über Kontext, Aufgabe, Format und Kriterien bis zur Risikoklassifikation nach dem Prompt-Governance-Canvas — spielerisch zur freigabereifen Systemprompt-Vorlage für die Hochschule Nordlicht.</p>
+        <span class="cta">Escape Room starten →</span>
       </a>
     </div>
   </section>
@@ -489,7 +513,8 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
   var resultCount = document.getElementById("resultCount");
   var emptyState = document.getElementById("emptyState");
   var statTotal = document.getElementById("statTotal");
-  var activeTab = chips.length ? chips[0].dataset.filter : null;
+  var openRubriken = {};
+  chips.forEach(function(c){ openRubriken[c.dataset.filter] = c.classList.contains("active"); });
 
   statTotal.textContent = cards.length;
   var newCount = document.querySelectorAll(".new-badge").length;
@@ -506,48 +531,51 @@ footer{max-width:1200px;margin:0 auto;padding:8px 24px 40px;color:var(--muted);f
 
   function applyFilters(){
     var query = searchInput.value.trim().toLowerCase();
-    var visibleInTab = 0;
-    var tabTotal = 0;
+    var visibleTotal = 0;
+    var allTotal = 0;
 
     sections.forEach(function(section){
-      var isActiveTab = section.dataset.cat === activeTab;
-      section.classList.toggle("hidden-by-filter", !isActiveTab);
-      if(!isActiveTab) return;
-
+      var cat = section.dataset.cat;
       var sectionCards = section.querySelectorAll(".tool-card");
-      tabTotal = sectionCards.length;
+      allTotal += sectionCards.length;
+
+      var visibleInSection = 0;
       sectionCards.forEach(function(card){
         var show = !query || cardText(card).indexOf(query) !== -1;
         card.classList.toggle("hidden-by-filter", !show);
-        if(show) visibleInTab++;
+        if(show) visibleInSection++;
       });
+      visibleTotal += visibleInSection;
+
+      var isOpen = query ? visibleInSection > 0 : !!openRubriken[cat];
+      section.classList.toggle("hidden-by-filter", !isOpen);
+
+      var chip = chips.filter(function(c){ return c.dataset.filter === cat; })[0];
+      if(chip){
+        chip.classList.toggle("active", isOpen);
+        chip.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      }
 
       var countEl = section.querySelector(".section-count");
       if(countEl){
         countEl.textContent = query
-          ? visibleInTab + " Treffer"
+          ? visibleInSection + " Treffer"
           : sectionCards.length + (sectionCards.length === 1 ? " Tool" : " Tools");
       }
     });
 
-    emptyState.classList.toggle("show", visibleInTab === 0);
-    resultCount.textContent = query ? visibleInTab + " von " + tabTotal + " Tools" : "";
+    emptyState.classList.toggle("show", query ? visibleTotal === 0 : false);
+    resultCount.textContent = query ? visibleTotal + " von " + allTotal + " Tools" : "";
   }
 
-  function setActiveTab(filter){
-    activeTab = filter;
-    chips.forEach(function(c){
-      var isActive = c.dataset.filter === filter;
-      c.classList.toggle("active", isActive);
-      c.setAttribute("aria-selected", isActive ? "true" : "false");
-    });
+  function toggleRubrik(filter){
+    openRubriken[filter] = !openRubriken[filter];
     applyFilters();
   }
 
   chips.forEach(function(chip){
-    chip.setAttribute("aria-selected", chip.dataset.filter === activeTab ? "true" : "false");
     chip.addEventListener("click", function(){
-      setActiveTab(chip.dataset.filter);
+      toggleRubrik(chip.dataset.filter);
     });
   });
 

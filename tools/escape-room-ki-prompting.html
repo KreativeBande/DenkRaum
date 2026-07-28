@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Escape Room: KI-Prompting — Systemprompt freigeben</title>
+<style>
+  :root{
+    color-scheme: light;
+    --ink:#1B2A4A;
+    --blue:#2E5EAA;
+    --blue-soft:#E7EEF9;
+    --amber:#C97A2B;
+    --amber-soft:#FBEEDD;
+    --green:#2F7A52;
+    --green-soft:#E4F3EA;
+    --red:#B23A3A;
+    --red-soft:#F8E7E7;
+    --purple:#8B5FBF;
+    --purple-soft:#F0E9F8;
+    --paper:#FFFFFF;
+    --grid:#D7E0EE;
+    --ink-60:#57657F;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    background:var(--paper); color:var(--ink); margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:18px; line-height:1.5; -webkit-tap-highlight-color:transparent;
+  }
+  html[data-beamer="1"]{zoom:1.35}
+  html[data-beamer="2"]{zoom:1.75}
+  .mono{font-family:"SF Mono","Consolas","Courier New",monospace; letter-spacing:.02em;}
+  .blueprint-bg{
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px; background-position:-1px -1px;
+  }
+
+  header{
+    padding:20px 24px 16px; border-bottom:2px solid var(--ink);
+    display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  header .title-block{max-width:660px;}
+  .back-link{display:inline-block; margin-bottom:10px; font-size:14px; font-weight:700; color:var(--blue); text-decoration:none;}
+  .back-link:hover{text-decoration:underline;}
+  .eyebrow{font-size:14px; text-transform:uppercase; letter-spacing:.12em; color:var(--blue); font-weight:700; margin:0 0 4px;}
+  h1{margin:0; font-size:clamp(24px,3.6vw,32px); line-height:1.15; font-weight:800;}
+  .subtitle{margin:8px 0 0; font-size:16px; color:var(--ink-60); max-width:62ch;}
+  .header-actions{display:flex; flex-direction:column; align-items:flex-end; gap:8px;}
+  .signature{font-size:14px; text-align:right; color:var(--ink-60); white-space:nowrap; text-decoration:none;}
+  .signature:hover{color:var(--blue);}
+  .signature strong{display:block; color:var(--ink); font-size:15px;}
+
+  main{max-width:1180px; margin:0 auto; padding:24px;}
+
+  .hud{
+    display:flex; gap:14px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    margin-bottom:18px; padding:12px 16px; background:var(--blue-soft); border:1px solid var(--grid); border-radius:10px;
+  }
+  .hud-stats{display:flex; gap:22px; flex-wrap:wrap;}
+  .stat{display:flex; flex-direction:column;}
+  .stat .num{font-size:20px; font-weight:800; font-family:"SF Mono","Consolas","Courier New",monospace;}
+  .stat .lbl{font-size:13px; color:var(--ink-60);}
+
+  .progress-track{display:flex; gap:6px; flex-wrap:wrap;}
+  .progress-dot{
+    width:30px; height:30px; border-radius:50%; border:2px solid var(--ink); background:var(--paper);
+    display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:var(--ink);
+  }
+  .progress-dot.solved{background:var(--green); border-color:var(--green); color:#fff;}
+  .progress-dot.current{background:var(--amber); border-color:var(--amber); color:#fff;}
+
+  .layout{display:grid; grid-template-columns: 210px 1fr; gap:22px; align-items:start;}
+  @media (max-width:800px){ .layout{grid-template-columns:1fr;} .sidebar{order:2;} }
+
+  .sidebar{border:1px solid var(--grid); border-radius:12px; padding:14px;}
+  .sidebar h3{margin:0 0 10px; font-size:14px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-60);}
+  .door-nav{display:flex; flex-direction:column; gap:6px;}
+  .door-nav-item{
+    display:flex; align-items:center; gap:8px; font-size:14px; padding:8px 10px; border-radius:7px;
+    border:1px solid transparent; color:var(--ink-60);
+  }
+  .door-nav-item .idx{
+    width:22px; height:22px; border-radius:50%; border:2px solid var(--grid); flex:none;
+    display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800;
+  }
+  .door-nav-item.solved{color:var(--ink);}
+  .door-nav-item.solved .idx{background:var(--green); border-color:var(--green); color:#fff;}
+  .door-nav-item.current{background:var(--amber-soft); border-color:var(--amber); color:var(--ink); font-weight:700;}
+  .door-nav-item.current .idx{background:var(--amber); border-color:var(--amber); color:#fff;}
+  .door-nav-item.locked .idx{color:var(--ink-60);}
+
+  .stage{border:1px solid var(--grid); border-radius:14px; padding:22px;}
+  .stage-eyebrow{font-size:13px; text-transform:uppercase; letter-spacing:.1em; color:var(--blue); font-weight:800; margin:0 0 4px;}
+  .stage h2{margin:0 0 10px; font-size:24px;}
+  .scenario{
+    background:var(--blue-soft); border-left:4px solid var(--blue); border-radius:0 8px 8px 0;
+    padding:12px 16px; font-size:16px; margin-bottom:20px;
+  }
+  .part{margin-bottom:22px;}
+  .part-prompt{font-weight:700; font-size:16px; margin-bottom:10px;}
+
+  /* checklist */
+  .chip-grid{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    border:2px solid var(--ink); border-radius:20px; padding:9px 16px; font-size:15px;
+    cursor:pointer; min-height:44px; display:flex; align-items:center; background:var(--paper); user-select:none;
+  }
+  .chip.on{background:var(--ink); color:#fff;}
+
+  /* classify (generic, n categories) */
+  .classify-item{
+    border:1px solid var(--grid); border-radius:9px; padding:10px 14px; margin-bottom:8px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
+  .classify-item .txt{font-size:15px; flex:1; min-width:200px;}
+  .classify-btns{display:flex; gap:6px; flex-wrap:wrap;}
+  .classify-btn{
+    border:2px solid var(--grid); border-radius:7px; padding:7px 12px; font-size:13px; font-weight:700;
+    background:var(--paper); cursor:pointer; min-height:38px; color:var(--ink);
+  }
+
+  /* mc */
+  .mc-option{
+    border:2px solid var(--grid); border-radius:9px; padding:12px 14px; margin-bottom:8px;
+    cursor:pointer; font-size:15px; display:flex; gap:10px; align-items:flex-start;
+  }
+  .mc-option .letter{
+    width:26px; height:26px; border-radius:50%; border:2px solid var(--ink); flex:none;
+    display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800;
+  }
+  .mc-option.chosen{border-color:var(--blue); background:var(--blue-soft);}
+  .mc-explain{font-size:14px; color:var(--ink-60); margin-top:6px; padding-left:36px; display:none;}
+  .mc-option.reveal .mc-explain{display:block;}
+  .mc-option.reveal.correct{border-color:var(--green); background:var(--green-soft);}
+  .mc-option.reveal.incorrect.chosen{border-color:var(--red); background:var(--red-soft);}
+
+  /* reorder */
+  .reorder-list{display:flex; flex-direction:column; gap:8px;}
+  .reorder-item{
+    border:2px solid var(--grid); border-radius:9px; padding:10px 12px; display:flex; align-items:center; gap:10px;
+    font-size:15px; background:var(--paper);
+  }
+  .reorder-item .pos{
+    width:26px; height:26px; border-radius:50%; background:var(--blue); color:#fff; font-size:13px; font-weight:800;
+    display:flex; align-items:center; justify-content:center; flex:none;
+  }
+  .reorder-item .txt{flex:1;}
+  .reorder-btns{display:flex; gap:4px;}
+  .reorder-btns button{min-height:38px; min-width:38px; padding:0; font-size:16px;}
+
+  /* tripleselect */
+  .triple-grid{display:grid; grid-template-columns:1fr; gap:12px;}
+  @media(min-width:640px){ .triple-grid{grid-template-columns:1fr 1fr 1fr;} }
+  .triple-group label{display:block; font-size:13px; font-weight:700; color:var(--blue); margin-bottom:5px;}
+  select{
+    font-family:inherit; font-size:15px; min-height:44px; padding:8px 10px; border-radius:8px;
+    border:2px solid var(--ink); background:var(--paper); color:var(--ink); width:100%;
+  }
+
+  .feedback{border-radius:9px; padding:12px 14px; font-size:15px; margin-top:14px;}
+  .feedback.ok{background:var(--green-soft); border:1px solid var(--green);}
+  .feedback.fail{background:var(--red-soft); border:1px solid var(--red);}
+  .feedback ul{margin:6px 0 0; padding-left:20px;}
+
+  button{
+    font-family:inherit; font-size:16px; font-weight:700; cursor:pointer; border-radius:8px;
+    min-height:44px; padding:10px 18px; border:2px solid var(--ink); background:var(--paper); color:var(--ink);
+  }
+  button.primary{background:var(--ink); color:#fff;}
+  button.primary:hover{background:var(--blue);}
+  button.secondary{border-color:var(--grid); color:var(--ink-60);}
+  button.secondary.active{background:var(--amber-soft); border-color:var(--amber); color:var(--amber);}
+  button:disabled{opacity:.4; cursor:not-allowed;}
+  .stage-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;}
+
+  .hint-box{background:var(--amber-soft); border:1px solid var(--amber); border-radius:8px; padding:10px 14px; font-size:15px; margin-top:12px;}
+
+  .door-open{text-align:center; padding:26px 10px;}
+  .door-open .emoji{font-size:44px;}
+  .door-open h3{margin:8px 0 4px; color:var(--green);}
+
+  .final{text-align:center; padding:30px 10px;}
+  .final .emoji{font-size:56px;}
+  .final h2{font-size:30px; margin:10px 0 4px;}
+  .final .score-num{font-size:48px; font-weight:800; font-family:"SF Mono","Consolas","Courier New",monospace; color:var(--green);}
+  .recap-list{text-align:left; max-width:640px; margin:20px auto 0; font-size:15px;}
+  .recap-list .row{border-bottom:1px solid var(--grid); padding:10px 0;}
+  .recap-list .row .k{font-weight:800; color:var(--blue); font-size:13px; text-transform:uppercase; letter-spacing:.05em; display:block; margin-bottom:2px;}
+
+  footer{max-width:1180px; margin:32px auto 0; padding:20px 24px 40px; border-top:2px solid var(--ink);}
+  .footer-head{display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .panels{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+  details{border:1px solid var(--grid); border-radius:8px; background:var(--paper);}
+  details summary{cursor:pointer; font-weight:700; font-size:15px; padding:12px 14px; min-height:44px; display:flex; align-items:center; list-style:none;}
+  details summary::-webkit-details-marker{display:none;}
+  details summary::before{content:"▸ "; color:var(--blue);}
+  details[open] summary::before{content:"▾ "; color:var(--blue);}
+  details .panel-body{padding:0 14px 14px; font-size:14px; color:var(--ink-60);}
+  details .panel-body ul{margin:6px 0; padding-left:18px;}
+</style>
+</head>
+<body class="blueprint-bg">
+
+<header>
+  <div class="title-block">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <p class="eyebrow mono">Prompt-Governance-Canvas · Spielversion</p>
+    <h1>Escape Room: KI-Prompting</h1>
+    <p class="subtitle">Sieben Türen, ein Systemprompt. Die Hochschule Nordlicht will einen KI-Assistenten fürs RE-Team freigeben — von der Rolle bis zur Risikoklasse.</p>
+  </div>
+  <div class="header-actions">
+    <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">
+      <strong>Michaela Kühn</strong>
+      PromptSchule · Requirements Engineering
+    </a>
+    <button class="secondary" id="beamerToggle" type="button" title="Vergrößert die gesamte Darstellung für Präsentationen — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
+  </div>
+</header>
+
+<main>
+
+  <div class="hud">
+    <div class="hud-stats">
+      <div class="stat"><span class="num mono" id="statTime">00:00</span><span class="lbl">Zeit</span></div>
+      <div class="stat"><span class="num mono" id="statDoors">0/7</span><span class="lbl">Türen offen</span></div>
+      <div class="stat"><span class="num mono" id="statScore">100</span><span class="lbl">Punkte</span></div>
+    </div>
+    <div class="progress-track" id="progressTrack"></div>
+  </div>
+
+  <div class="layout">
+    <nav class="sidebar">
+      <h3>Etappen</h3>
+      <div class="door-nav" id="doorNav"></div>
+    </nav>
+    <div class="stage" id="stage"></div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-head">
+    <div class="signature"><strong>Michaela Kühn</strong> — Escape Room KI-Prompting · Pilot v1.0</div>
+  </div>
+  <div class="panels">
+    <details>
+      <summary>Systemprompt</summary>
+      <div class="panel-body">
+        <p>Dieses Tool ist ein reines Frontend-Spiel ohne KI-Anbindung — alle Aufgaben werden lokal deterministisch geprüft. Der „Systemprompt“, um den es inhaltlich geht, ist Gegenstand des Spiels selbst, nicht seine Laufzeit-Infrastruktur.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Handbuch</summary>
+      <div class="panel-body">
+        <ul>
+          <li>Türen öffnen sich nur der Reihe nach — spätere Etappen bleiben gesperrt, bis die vorherige gelöst ist.</li>
+          <li>Jede Etappe hat einen „Hinweis“-Button (kostet 10 Punkte) und einen „Prüfen“-Button.</li>
+          <li>Gelöste Etappen lassen sich in der Seitenleiste erneut zur Ansicht öffnen (nur Lesen).</li>
+          <li>Punktestand startet bei 100, sinkt durch Hinweise und Fehlversuche.</li>
+          <li>Offline, single-file, läuft lokal im Browser, auch auf iPad/Safari.</li>
+        </ul>
+      </div>
+    </details>
+    <details>
+      <summary>Vortrags-Skript</summary>
+      <div class="panel-body">
+        <p><strong>Moderationsblock, ca. 60–90 Min. (Gruppen à 3–4 Personen):</strong></p>
+        <ul>
+          <li>Einstieg (5 Min): Anschluss an den RE-Escape-Room herstellen — „Die Hochschule Nordlicht will jetzt einen KI-Assistenten fürs RE-Team. Gleiche Denkweise, neues Zielsystem.“</li>
+          <li>Spielphase (35–50 Min): Gruppen arbeiten parallel.</li>
+          <li>Tür 6 (Risikoklassen) im Plenum vertiefen — hier passieren die meisten Diskussionen.</li>
+          <li>Debrief (15–20 Min): Bezug zum Prompt-Governance-Canvas herstellen — R0–R3, Persona-Zuweisung, Kontroll-Artefakte.</li>
+          <li>Transfer: „Welche Risikoklasse hätte euer eigener KI-Anwendungsfall — und warum?“</li>
+        </ul>
+      </div>
+    </details>
+    <details>
+      <summary>Normen-Register</summary>
+      <div class="panel-body">
+        <ul>
+          <li>Prompt-Governance-Canvas (Michaela Kühn) — vierschichtiges Framework: Prompt-Decision-Records, R0–R3-Risikoklassifikation, rollenbasierte Zuweisung, Kontroll-Artefakte.</li>
+          <li>EU AI Act — Risikobasierte Klassifikation als konzeptuelle Grundlage für R0–R3 (Status: in Kraft, gestaffelte Anwendbarkeit).</li>
+          <li>IREB CPRE — Qualitätskriterien für Anforderungen, hier auf Prompt-Bausteine übertragen.</li>
+          <li>Prompt-Deklinator / Prompt-Builder — Baustein-Reihenfolge Rolle → Kontext → Aufgabe → Format → Kriterien.</li>
+          <li>Kernthese: „Prompt Engineering ist Requirements Engineering für KI-Systeme.“</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  // ================= DATENMODELL =================
+  const CAT_COLORS = { blue:"#2E5EAA", amber:"#C97A2B", green:"#2F7A52", red:"#B23A3A", purple:"#8B5FBF" };
+
+  const DOORS = [
+    {
+      key:"rolle", title:"Rolle definieren",
+      scenario:"Bevor irgendetwas formuliert wird: Wer soll die KI im Systemprompt sein? Wähle die Rollenformulierung, die dem geplanten Einsatzzweck am besten entspricht.",
+      hint:"Eine gute Rollenformulierung ist so spezifisch wie die Aufgabe selbst — nicht generischer, aber auch nicht übergriffiger.",
+      parts:[
+        { type:"mc", id:"r1",
+          prompt:"Der Assistent soll dem RE-Team bei der Qualitätsprüfung von Anforderungen helfen. Beste Rollenformulierung?",
+          options:[
+            {id:"o1", text:"Du bist ein hilfreicher Assistent.", correct:false, explain:"Zu generisch — sagt nichts über Fachgebiet oder Aufgabe."},
+            {id:"o2", text:"Du bist Requirements Engineer:in.", correct:false, explain:"Schon besser, aber noch ohne Bezug zur konkreten Aufgabe und zum Standard."},
+            {id:"o3", text:"Du bist erfahrene:r Requirements Engineer:in nach IREB-Standard mit Schwerpunkt Qualitätsprüfung von Anforderungsdokumenten.", correct:true, explain:"Präzise, aufgabenbezogen, mit fachlichem Referenzrahmen (IREB)."},
+            {id:"o4", text:"Du bist ein KI-System, das alles kann.", correct:false, explain:"Übergriffig und unrealistisch — genau das Gegenteil von Scope-Klarheit."}
+          ]
+        }
+      ]
+    },
+    {
+      key:"kontext", title:"Kontext erfassen",
+      scenario:"Ela möchte den Assistenten briefen und schreibt fünf Kontext-Sätze auf. Markiere, welche wirklich genug Kontext liefern — und welche noch im Nebel stecken.",
+      hint:"Ausreichender Kontext beantwortet: welches Projekt, welche Datenlage, welche Besonderheiten?",
+      parts:[
+        { type:"classify", id:"k1",
+          prompt:"Ausreichend oder Nebel?",
+          categories:[ {key:"ausreichend", label:"Ausreichend", color:CAT_COLORS.green}, {key:"nebel", label:"Nebel", color:CAT_COLORS.amber} ],
+          items:[
+            {id:"a", text:"Es geht um Anforderungen.", category:"nebel"},
+            {id:"b", text:"Kontext: Cloud-Migrationsprojekt einer Hochschule, das Anforderungen von IT, Prüfungsamt und Datenschutz vereinen muss.", category:"ausreichend"},
+            {id:"c", text:"Der Assistent arbeitet mit Dokumenten.", category:"nebel"},
+            {id:"d", text:"Kontext: Die Anforderungen liegen als unstrukturierte Word-Dokumente vor, teils Deutsch, teils Englisch, Stand 2023–2026.", category:"ausreichend"},
+            {id:"e", text:"Es ist wichtig.", category:"nebel"}
+          ]
+        }
+      ]
+    },
+    {
+      key:"aufgabe", title:"Aufgabe präzisieren",
+      scenario:"Jetzt zur Aufgabe: Was genau soll der Assistent tun — und was ausdrücklich nicht? Ein guter Systemprompt braucht beides.",
+      hint:"Testbare Aufgaben verweisen auf ein konkretes Kriterium. Gute Abgrenzungen verhindern automatisierte Entscheidungen ohne Mensch.",
+      parts:[
+        { type:"mc", id:"a1",
+          prompt:"Welche Aufgabenformulierung ist korrekt?",
+          options:[
+            {id:"o1", text:"Hilf bei Anforderungen.", correct:false, explain:"Vage — kein Kriterium, keine erwartete Ausgabe."},
+            {id:"o2", text:"Prüfe die folgende Anforderung nach den IREB-Qualitätskriterien (atomar, testbar, eindeutig, konsistent, verfolgbar) und gib für jedes Kriterium eine Einschätzung ab.", correct:true, explain:"Konkret, kriterienbasiert, mit klar definierter Ausgabe."},
+            {id:"o3", text:"Mach die Anforderung besser.", correct:false, explain:"„Besser“ ist kein Kriterium."},
+            {id:"o4", text:"Schreib alle Anforderungen neu.", correct:false, explain:"Zu weitreichend — verändert Inhalte ungefragt, statt zu prüfen."}
+          ]
+        },
+        { type:"mc", id:"a2",
+          prompt:"Welche Abgrenzung (was der Assistent NICHT tun soll) ist sinnvoll?",
+          options:[
+            {id:"o1", text:"Der Assistent darf alles vorschlagen, was ihm einfällt.", correct:false, explain:"Keine Abgrenzung — offenes Risiko."},
+            {id:"o2", text:"Der Assistent trifft keine automatische Freigabe- oder Ablehnungsentscheidung — jede Bewertung geht an eine menschliche Prüfung.", correct:true, explain:"Klare Governance-Grenze, passend zur späteren Risikoklassifikation."},
+            {id:"o3", text:"Der Assistent soll niemals antworten.", correct:false, explain:"Widerspricht dem eigentlichen Zweck."},
+            {id:"o4", text:"Der Assistent darf auch andere Abteilungen beraten, wenn er Zeit hat.", correct:false, explain:"Scope-Creep — Zuständigkeit weitet sich unkontrolliert aus."}
+          ]
+        }
+      ]
+    },
+    {
+      key:"format", title:"Format festlegen",
+      scenario:"Ein guter Systemprompt hat eine sinnvolle innere Struktur. Bring die Bausteine in die richtige Reihenfolge — genau wie im Prompt-Deklinator.",
+      hint:"Erst klären, WER antwortet, dann WORUM es geht, dann WAS zu tun ist, dann WIE die Antwort aussieht, zuletzt WORAN man Qualität erkennt.",
+      parts:[
+        { type:"reorder", id:"f1",
+          prompt:"Bausteine in die richtige Reihenfolge bringen:",
+          items:[
+            {id:"b1", text:"Rolle — wer soll antworten?"},
+            {id:"b2", text:"Kontext — welche Situation, welche Stakeholder?"},
+            {id:"b3", text:"Aufgabe — was soll konkret getan werden?"},
+            {id:"b4", text:"Format — wie soll die Antwort aussehen?"},
+            {id:"b5", text:"Kriterien — woran erkennt man eine gute Antwort?"}
+          ],
+          correctOrder:["b1","b2","b3","b4","b5"]
+        }
+      ]
+    },
+    {
+      key:"zielgruppe", title:"Kriterien setzen",
+      scenario:"Die Rektorin braucht ein kurzes Update zum Projektstatus fürs nächste Steering-Committee. Welche Kombination aus Format, Umfang und Zielgruppe passt?",
+      hint:"Führungsebene will Ergebnis, nicht Rohdaten — und garantiert keine 1000 Wörter.",
+      parts:[
+        { type:"tripleselect", id:"z1",
+          prompt:"Format · Umfang · Zielgruppe",
+          groups:[
+            { label:"Format", options:["Fließtext","Stichpunkte","Ausführliche Tabelle mit Rohdaten"] },
+            { label:"Umfang", options:["max. 100 Wörter","mind. 1000 Wörter","unbegrenzt"] },
+            { label:"Zielgruppe / Ton", options:["Für Führungsebene, ergebnisorientiert","Für Entwickler:innen, technisch tief","Für Studierende, umgangssprachlich"] }
+          ],
+          correctCombo:[1,0,0]
+        }
+      ]
+    },
+    {
+      key:"risiken", title:"Risiken einschätzen",
+      scenario:"Bevor der Assistent live geht, braucht jede geplante Nutzung eine Risikoklasse nach dem Prompt-Governance-Canvas: R0 (kein Risiko) bis R3 (hohes Risiko). Ordne zu.",
+      hint:"R0 = rein informativ ohne Wirkung. R1 = Vorschlag, Mensch entscheidet. R2 = fließt in eine Entscheidung ein. R3 = wirkt automatisiert oder betrifft ungeschützte personenbezogene Daten.",
+      parts:[
+        { type:"classify", id:"risk1",
+          prompt:"Risikoklasse zuordnen:",
+          categories:[
+            {key:"r0", label:"R0", color:CAT_COLORS.green},
+            {key:"r1", label:"R1", color:CAT_COLORS.blue},
+            {key:"r2", label:"R2", color:CAT_COLORS.amber},
+            {key:"r3", label:"R3", color:CAT_COLORS.red}
+          ],
+          items:[
+            {id:"i1", text:"Rechtschreibkorrektur im Anforderungsdokument.", category:"r0"},
+            {id:"i2", text:"Formulierungsvorschläge für eine Anforderung — ein Mensch entscheidet final.", category:"r1"},
+            {id:"i3", text:"Zusammenfassung eines 20-seitigen Lastenhefts in Stichpunkten, Original bleibt maßgeblich.", category:"r1"},
+            {id:"i4", text:"Automatische Vollständigkeitsprüfung, Ergebnis fließt in die Review-Priorisierung ein.", category:"r2"},
+            {id:"i5", text:"Automatische Ablehnung von Anforderungen ohne menschliche Gegenprüfung.", category:"r3"},
+            {id:"i6", text:"Verarbeitung personenbezogener Studierendendaten ohne Anonymisierung.", category:"r3"}
+          ]
+        }
+      ]
+    },
+    {
+      key:"abnahme", title:"Systemprompt freigeben",
+      scenario:"Letzte Etappe: Vier Systemprompt-Entwürfe liegen vor. Welcher ist wirklich freigabereif?",
+      hint:"Vollständig strukturiert ist nicht automatisch governance-konform — schau genau auf die Abgrenzung.",
+      parts:[
+        { type:"mc", id:"ab1",
+          prompt:"Welcher Entwurf ist freigabereif?",
+          options:[
+            {id:"o1", text:"Rolle + Aufgabe, ohne Kontext, ohne Format, ohne Kriterien.", correct:false, explain:"Zu dünn — mehrere Bausteine fehlen komplett."},
+            {id:"o2", text:"Rolle + Kontext + Aufgabe + Format + Kriterien + klare Abgrenzung (keine automatische Freigabe-/Ablehnungsentscheidung).", correct:true, explain:"Vollständig UND governance-konform — genau das, was die letzten sechs Türen aufgebaut haben."},
+            {id:"o3", text:"Rolle + Aufgabe + Format, aber keine Kriterien und keine Abgrenzung.", correct:false, explain:"Unvollständig — Qualitätsmaßstab fehlt."},
+            {id:"o4", text:"Alle Bausteine vollständig, aber der Assistent darf Anforderungen automatisiert ablehnen, ohne dass jemand gegenprüft.", correct:false, explain:"Strukturell vollständig, aber ein klarer Governance-Verstoß — genau das R3-Risiko aus Tür 6."}
+          ]
+        }
+      ]
+    }
+  ];
+
+  // ================= BEAMER-MODUS =================
+  const BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+  const beamerToggle = document.getElementById("beamerToggle");
+  function loadBeamerLevel(){
+    try{
+      const data = JSON.parse(localStorage.getItem("denkraumEscapeRoomKiPrompting") || "null");
+      return (data && data.beamerLevel) || 0;
+    }catch(e){ return 0; }
+  }
+  function saveBeamerLevel(level){
+    try{ localStorage.setItem("denkraumEscapeRoomKiPrompting", JSON.stringify({ beamerLevel: level })); }catch(e){}
+  }
+  function applyBeamerLevel(level){
+    document.documentElement.setAttribute("data-beamer", String(level));
+    beamerToggle.textContent = BEAMER_LABELS[level];
+    beamerToggle.classList.toggle("active", level > 0);
+  }
+  applyBeamerLevel(loadBeamerLevel());
+  beamerToggle.addEventListener("click", ()=>{
+    const level = (loadBeamerLevel() + 1) % BEAMER_LABELS.length;
+    saveBeamerLevel(level);
+    applyBeamerLevel(level);
+  });
+
+  // ================= STATE =================
+  let current = 0;
+  let solved = DOORS.map(()=>false);
+  let partState = DOORS.map(buildPartState);
+  let hintsUsedTotal = 0;
+  let wrongAttemptsTotal = 0;
+  let startTime = Date.now();
+  let timerId = null;
+  let viewingIndex = null;
+
+  function buildPartState(door){
+    return door.parts.map(p=>{
+      if(p.type === "checklist") return { selected:new Set() };
+      if(p.type === "classify") return { assigned:{} };
+      if(p.type === "mc") return { chosen:null, revealed:false };
+      if(p.type === "reorder") return { order: shuffle(p.items.map(i=>i.id)) };
+      if(p.type === "tripleselect") return { selection:[null,null,null] };
+      return {};
+    });
+  }
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  // ================= DOM refs =================
+  const statTime = document.getElementById("statTime");
+  const statDoors = document.getElementById("statDoors");
+  const statScore = document.getElementById("statScore");
+  const progressTrack = document.getElementById("progressTrack");
+  const doorNav = document.getElementById("doorNav");
+  const stage = document.getElementById("stage");
+
+  function formatTime(s){
+    const m = Math.floor(s/60).toString().padStart(2,"0");
+    const sec = (s%60).toString().padStart(2,"0");
+    return m+":"+sec;
+  }
+  function startTimer(){
+    stopTimer();
+    timerId = setInterval(()=>{
+      const s = Math.floor((Date.now()-startTime)/1000);
+      statTime.textContent = formatTime(s);
+    },1000);
+  }
+  function stopTimer(){ if(timerId){ clearInterval(timerId); timerId = null; } }
+
+  function currentScore(){
+    return Math.max(0, 100 - hintsUsedTotal*10 - wrongAttemptsTotal*5);
+  }
+
+  function updateHud(){
+    const solvedCount = solved.filter(Boolean).length;
+    statDoors.textContent = solvedCount+"/7";
+    statScore.textContent = currentScore();
+
+    progressTrack.innerHTML = "";
+    DOORS.forEach((d,i)=>{
+      const dot = document.createElement("div");
+      dot.className = "progress-dot" + (solved[i] ? " solved" : (i===current ? " current" : ""));
+      dot.textContent = solved[i] ? "✓" : (i+1);
+      progressTrack.appendChild(dot);
+    });
+
+    doorNav.innerHTML = "";
+    DOORS.forEach((d,i)=>{
+      const item = document.createElement("div");
+      let cls = "door-nav-item";
+      if(solved[i]) cls += " solved";
+      else if(i===current) cls += " current";
+      else cls += " locked";
+      item.className = cls;
+      item.innerHTML = '<span class="idx">'+(solved[i]?"✓":(i+1))+'</span><span>'+d.title+'</span>';
+      if(solved[i]){
+        item.style.cursor = "pointer";
+        item.addEventListener("click", ()=>{ viewingIndex = i; renderStage(); });
+      }
+      doorNav.appendChild(item);
+    });
+  }
+
+  // ================= RENDER STAGE =================
+  function renderStage(){
+    if(solved.every(Boolean)){
+      renderFinal();
+      return;
+    }
+    const idx = viewingIndex !== null ? viewingIndex : current;
+    const door = DOORS[idx];
+    const readOnly = viewingIndex !== null;
+    const ps = partState[idx];
+
+    let html = "";
+    html += '<p class="stage-eyebrow">Tür '+(idx+1)+' von 7'+(readOnly?' · Ansicht (gelöst)':'')+'</p>';
+    html += '<h2>'+escapeHtml(door.title)+'</h2>';
+    html += '<div class="scenario">'+escapeHtml(door.scenario)+'</div>';
+
+    door.parts.forEach((part, pi)=>{
+      html += renderPart(part, ps[pi], pi);
+    });
+
+    if(!readOnly){
+      html += '<div id="feedbackArea"></div>';
+      html += '<div class="hint-box" id="hintBox" style="display:none;"></div>';
+      html += '<div class="stage-actions">';
+      html += '<button class="secondary" id="hintBtn" type="button">Hinweis (−10)</button>';
+      html += '<button class="primary" id="checkBtn" type="button">Prüfen</button>';
+      html += '</div>';
+    } else {
+      html += '<div class="stage-actions"><button class="secondary" id="backBtn" type="button">Zurück zur aktuellen Tür</button></div>';
+    }
+
+    stage.innerHTML = html;
+
+    if(readOnly){
+      document.getElementById("backBtn").addEventListener("click", ()=>{ viewingIndex = null; renderStage(); });
+      return;
+    }
+
+    wirePartEvents(door, ps);
+
+    document.getElementById("hintBtn").addEventListener("click", ()=>{
+      hintsUsedTotal++;
+      const box = document.getElementById("hintBox");
+      box.style.display = "block";
+      box.textContent = "💡 " + door.hint;
+      document.getElementById("hintBtn").disabled = true;
+      updateHud();
+    });
+
+    document.getElementById("checkBtn").addEventListener("click", ()=> checkDoor(idx));
+
+    updateHud();
+  }
+
+  function renderPart(part, ps, partIdx){
+    let html = '<div class="part">';
+    html += '<div class="part-prompt">'+escapeHtml(part.prompt)+'</div>';
+
+    if(part.type === "checklist"){
+      html += '<div class="chip-grid">';
+      part.options.forEach(o=>{
+        const on = ps.selected.has(o.id);
+        html += '<div class="chip'+(on?' on':'')+'" data-part="'+partIdx+'" data-opt="'+o.id+'">'+escapeHtml(o.text)+'</div>';
+      });
+      html += '</div>';
+    }
+
+    else if(part.type === "classify"){
+      part.items.forEach(item=>{
+        const cur = ps.assigned[item.id];
+        html += '<div class="classify-item"><span class="txt">'+escapeHtml(item.text)+'</span><div class="classify-btns">';
+        part.categories.forEach(cat=>{
+          const active = cur === cat.key;
+          const style = active ? 'background:'+cat.color+';border-color:'+cat.color+';color:#fff;' : '';
+          html += '<button type="button" class="classify-btn" style="'+style+'" data-part="'+partIdx+'" data-item="'+item.id+'" data-cat="'+cat.key+'">'+escapeHtml(cat.label)+'</button>';
+        });
+        html += '</div></div>';
+      });
+    }
+
+    else if(part.type === "mc"){
+      const letters = ["A","B","C","D","E"];
+      part.options.forEach((o,oi)=>{
+        const chosen = ps.chosen === o.id;
+        let cls = "mc-option" + (chosen?" chosen":"");
+        if(ps.revealed){
+          cls += " reveal";
+          if(o.correct) cls += " correct";
+          else if(chosen) cls += " incorrect";
+        }
+        html += '<div class="'+cls+'" data-part="'+partIdx+'" data-opt="'+o.id+'">'+
+          '<span class="letter">'+letters[oi]+'</span>'+
+          '<div><div>'+escapeHtml(o.text)+'</div>'+
+          (ps.revealed ? '<div class="mc-explain">'+escapeHtml(o.explain)+'</div>' : '')+
+          '</div></div>';
+      });
+    }
+
+    else if(part.type === "reorder"){
+      html += '<div class="reorder-list">';
+      ps.order.forEach((id, pos)=>{
+        const item = part.items.find(i=>i.id===id);
+        html += '<div class="reorder-item">'+
+          '<span class="pos">'+(pos+1)+'</span>'+
+          '<span class="txt">'+escapeHtml(item.text)+'</span>'+
+          '<div class="reorder-btns">'+
+          '<button type="button" data-part="'+partIdx+'" data-move="up" data-id="'+id+'" '+(pos===0?"disabled":"")+'>▲</button>'+
+          '<button type="button" data-part="'+partIdx+'" data-move="down" data-id="'+id+'" '+(pos===ps.order.length-1?"disabled":"")+'>▼</button>'+
+          '</div></div>';
+      });
+      html += '</div>';
+    }
+
+    else if(part.type === "tripleselect"){
+      html += '<div class="triple-grid">';
+      part.groups.forEach((g, gi)=>{
+        html += '<div class="triple-group"><label>'+escapeHtml(g.label)+'</label>';
+        html += '<select data-part="'+partIdx+'" data-group="'+gi+'">';
+        html += '<option value="">— wählen —</option>';
+        g.options.forEach((opt, oi)=>{
+          const sel = ps.selection[gi] === oi ? "selected" : "";
+          html += '<option value="'+oi+'" '+sel+'>'+escapeHtml(opt)+'</option>';
+        });
+        html += '</select></div>';
+      });
+      html += '</div>';
+    }
+
+    html += '</div>';
+    return html;
+  }
+
+  function wirePartEvents(door, ps){
+    stage.querySelectorAll(".chip").forEach(el=>{
+      el.addEventListener("click", ()=>{
+        const pi = +el.dataset.part, opt = el.dataset.opt;
+        const set = ps[pi].selected;
+        if(set.has(opt)) set.delete(opt); else set.add(opt);
+        renderStage();
+      });
+    });
+
+    stage.querySelectorAll(".classify-btn").forEach(el=>{
+      el.addEventListener("click", ()=>{
+        const pi = +el.dataset.part, item = el.dataset.item, cat = el.dataset.cat;
+        ps[pi].assigned[item] = (ps[pi].assigned[item] === cat) ? null : cat;
+        renderStage();
+      });
+    });
+
+    stage.querySelectorAll(".mc-option").forEach(el=>{
+      el.addEventListener("click", ()=>{
+        const pi = +el.dataset.part, opt = el.dataset.opt;
+        if(ps[pi].revealed) return;
+        ps[pi].chosen = opt;
+        renderStage();
+      });
+    });
+
+    stage.querySelectorAll("[data-move]").forEach(el=>{
+      el.addEventListener("click", ()=>{
+        const pi = +el.dataset.part, id = el.dataset.id, dir = el.dataset.move;
+        const order = ps[pi].order;
+        const i = order.indexOf(id);
+        const swapWith = dir === "up" ? i-1 : i+1;
+        if(swapWith < 0 || swapWith >= order.length) return;
+        [order[i], order[swapWith]] = [order[swapWith], order[i]];
+        renderStage();
+      });
+    });
+
+    stage.querySelectorAll("select[data-part]").forEach(el=>{
+      el.addEventListener("change", ()=>{
+        const pi = +el.dataset.part, gi = +el.dataset.group;
+        ps[pi].selection[gi] = el.value === "" ? null : +el.value;
+      });
+    });
+  }
+
+  // ================= VALIDATION =================
+  function checkDoor(idx){
+    const door = DOORS[idx];
+    const ps = partState[idx];
+    let allOk = true;
+    const messages = [];
+
+    door.parts.forEach((part, pi)=>{
+      const res = validatePart(part, ps[pi]);
+      if(!res.ok) allOk = false;
+      messages.push(res.message);
+      if(part.type === "mc") ps[pi].revealed = true;
+    });
+
+    const feedbackArea = document.getElementById("feedbackArea");
+    if(allOk){
+      feedbackArea.innerHTML = '<div class="feedback ok"><strong>✓ Gelöst.</strong> '+messages.join(" ")+'</div>'+
+        '<div class="door-open"><div class="emoji">🚪✨</div><h3>Tür '+(idx+1)+' öffnet sich.</h3>'+
+        '<button class="primary" id="nextDoorBtn" type="button">Weiter</button></div>';
+      solved[idx] = true;
+      document.getElementById("checkBtn").disabled = true;
+      document.getElementById("hintBtn").disabled = true;
+      document.getElementById("nextDoorBtn").addEventListener("click", ()=>{
+        current = DOORS.findIndex((d,i)=>!solved[i]);
+        if(current === -1) current = DOORS.length;
+        viewingIndex = null;
+        renderStage();
+      });
+      renderPartsReadState(idx);
+    } else {
+      wrongAttemptsTotal++;
+      feedbackArea.innerHTML = '<div class="feedback fail"><strong>Noch nicht ganz.</strong><ul>'+
+        messages.map(m=>'<li>'+m+'</li>').join("")+'</ul></div>';
+      renderPartsReadState(idx);
+    }
+    updateHud();
+  }
+
+  function renderPartsReadState(idx){
+    const door = DOORS[idx];
+    const ps = partState[idx];
+    const partsWrap = stage.querySelectorAll(".part");
+    door.parts.forEach((part, pi)=>{
+      if(partsWrap[pi]){
+        const newHtml = renderPart(part, ps[pi], pi);
+        const tmp = document.createElement("div");
+        tmp.innerHTML = newHtml;
+        partsWrap[pi].replaceWith(tmp.firstChild);
+      }
+    });
+    wirePartEvents(door, ps);
+  }
+
+  function validatePart(part, ps){
+    if(part.type === "checklist"){
+      const correctSet = new Set(part.options.filter(o=>o.correct).map(o=>o.id));
+      const selected = ps.selected;
+      const missing = [...correctSet].filter(id=>!selected.has(id));
+      const extra = [...selected].filter(id=>!correctSet.has(id));
+      if(missing.length===0 && extra.length===0) return { ok:true, message:"Alle relevanten Einträge korrekt ausgewählt." };
+      let msg = "Auswahl stimmt noch nicht: ";
+      if(missing.length) msg += missing.length+" relevante:r Eintrag/Einträge fehlt/fehlen. ";
+      if(extra.length) msg += extra.length+" ausgewählte:r Eintrag/Einträge gehört/gehören nicht dazu.";
+      return { ok:false, message:msg };
+    }
+
+    if(part.type === "classify"){
+      const wrong = part.items.filter(i=> ps.assigned[i.id] !== i.category);
+      if(wrong.length===0) return { ok:true, message:"Alle Einordnungen korrekt." };
+      return { ok:false, message: wrong.length+" Einordnung(en) noch nicht korrekt." };
+    }
+
+    if(part.type === "mc"){
+      const chosenOpt = part.options.find(o=>o.id===ps.chosen);
+      if(chosenOpt && chosenOpt.correct) return { ok:true, message:"Richtige Formulierung erkannt." };
+      return { ok:false, message: ps.chosen ? "Diese Option erfüllt die Kriterien noch nicht — Begründung steht jetzt bei den Optionen." : "Bitte eine Option auswählen." };
+    }
+
+    if(part.type === "reorder"){
+      const match = JSON.stringify(ps.order) === JSON.stringify(part.correctOrder);
+      if(match) return { ok:true, message:"Reihenfolge korrekt." };
+      return { ok:false, message:"Reihenfolge stimmt noch nicht ganz." };
+    }
+
+    if(part.type === "tripleselect"){
+      const match = ps.selection.every((v,i)=> v === part.correctCombo[i]);
+      if(match) return { ok:true, message:"Kombination passt zusammen." };
+      return { ok:false, message: ps.selection.some(v=>v===null) ? "Bitte alle Felder auswählen." : "Diese Kombination passt fachlich noch nicht." };
+    }
+
+    return { ok:false, message:"Unbekannter Aufgabentyp." };
+  }
+
+  // ================= FINAL SCREEN =================
+  function renderFinal(){
+    stopTimer();
+    const totalSeconds = Math.floor((Date.now()-startTime)/1000);
+    const score = currentScore();
+
+    const recapRows = [
+      { k:"Rolle", v:"„Erfahrene:r Requirements Engineer:in nach IREB-Standard, Schwerpunkt Qualitätsprüfung.“" },
+      { k:"Kontext", v:"Cloud-Migrationsprojekt, unstrukturierte zweisprachige Dokumente, mehrere Stakeholder-Gruppen." },
+      { k:"Aufgabe & Abgrenzung", v:"IREB-Qualitätsprüfung je Kriterium · keine automatisierte Freigabe-/Ablehnungsentscheidung." },
+      { k:"Struktur", v:"Rolle → Kontext → Aufgabe → Format → Kriterien — korrekt sequenziert." },
+      { k:"Format", v:"Stichpunkte, max. 100 Wörter, für Führungsebene." },
+      { k:"Risikoklassen", v:"6 Anwendungsfälle korrekt von R0 bis R3 eingeordnet." },
+      { k:"Freigabe", v:"Vollständiger, governance-konformer Systemprompt-Entwurf ausgewählt." }
+    ];
+
+    stage.innerHTML =
+      '<div class="final">'+
+      '<div class="emoji">🤖✅</div>'+
+      '<h2>Systemprompt freigegeben</h2>'+
+      '<p style="color:var(--ink-60); max-width:52ch; margin:0 auto;">Alle sieben Türen offen. Der KI-Assistent der Hochschule Nordlicht ist startklar — governance-konform von der Rolle bis zur Risikoklasse.</p>'+
+      '<div class="score-num">'+score+' / 100</div>'+
+      '<p style="color:var(--ink-60); font-size:15px;">Zeit: '+formatTime(totalSeconds)+' · Hinweise genutzt: '+hintsUsedTotal+' · Fehlversuche: '+wrongAttemptsTotal+'</p>'+
+      '<div class="recap-list">'+
+      recapRows.map(r=>'<div class="row"><span class="k">'+r.k+'</span>'+r.v+'</div>').join("")+
+      '</div>'+
+      '<div class="stage-actions" style="justify-content:center; margin-top:20px;">'+
+      '<button class="primary" id="restartBtn" type="button">Neue Runde starten</button>'+
+      '</div>'+
+      '</div>';
+
+    document.getElementById("restartBtn").addEventListener("click", init);
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement("div");
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function init(){
+    current = 0;
+    solved = DOORS.map(()=>false);
+    partState = DOORS.map(buildPartState);
+    hintsUsedTotal = 0;
+    wrongAttemptsTotal = 0;
+    startTime = Date.now();
+    viewingIndex = null;
+    statTime.textContent = "00:00";
+    startTimer();
+    renderStage();
+  }
+
+  init();
+})();
+</script>
+
+</body>
+</html>
