@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Stakeholder Memory — Nebel lüften, Bedürfnis finden</title>
+<style>
+  :root{
+    color-scheme: light;
+    --ink:#1B2A4A;
+    --blue:#2E5EAA;
+    --blue-soft:#E7EEF9;
+    --amber:#C97A2B;
+    --amber-soft:#FBEEDD;
+    --green:#2F7A52;
+    --green-soft:#E4F3EA;
+    --paper:#FFFFFF;
+    --grid:#D7E0EE;
+    --ink-60:#57657F;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    background:var(--paper); color:var(--ink); margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:18px; line-height:1.5; -webkit-tap-highlight-color:transparent;
+  }
+  html[data-beamer="1"]{zoom:1.35}
+  html[data-beamer="2"]{zoom:1.75}
+  .mono{font-family:"SF Mono","Consolas","Courier New",monospace; letter-spacing:.02em;}
+  .blueprint-bg{
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px; background-position:-1px -1px;
+  }
+
+  header{
+    padding:20px 24px 16px; border-bottom:2px solid var(--ink);
+    display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  header .title-block{max-width:640px;}
+  .back-link{display:inline-block; margin-bottom:10px; font-size:14px; font-weight:700; color:var(--blue); text-decoration:none;}
+  .back-link:hover{text-decoration:underline;}
+  .eyebrow{font-size:14px; text-transform:uppercase; letter-spacing:.12em; color:var(--blue); font-weight:700; margin:0 0 4px;}
+  h1{margin:0; font-size:clamp(26px,4vw,36px); line-height:1.15; font-weight:800;}
+  .subtitle{margin:8px 0 0; font-size:16px; color:var(--ink-60); max-width:56ch;}
+  .header-actions{display:flex; flex-direction:column; align-items:flex-end; gap:8px;}
+  .signature{font-size:14px; text-align:right; color:var(--ink-60); white-space:nowrap; text-decoration:none;}
+  .signature:hover{color:var(--blue);}
+  .signature strong{display:block; color:var(--ink); font-size:15px;}
+
+  main{max-width:1080px; margin:0 auto; padding:24px;}
+
+  .hud{
+    display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    margin-bottom:20px; padding:14px 16px; background:var(--blue-soft); border:1px solid var(--grid); border-radius:10px;
+  }
+  .hud-stats{display:flex; gap:22px; flex-wrap:wrap;}
+  .stat{display:flex; flex-direction:column;}
+  .stat .num{font-size:22px; font-weight:800; font-family:"SF Mono","Consolas","Courier New",monospace;}
+  .stat .lbl{font-size:14px; color:var(--ink-60);}
+  .hud-actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+
+  button{
+    font-family:inherit; font-size:16px; font-weight:700; cursor:pointer; border-radius:8px;
+    min-height:44px; padding:10px 18px; border:2px solid var(--ink); background:var(--paper); color:var(--ink);
+    transition:transform .08s ease, background .15s ease;
+  }
+  button:hover{background:var(--blue-soft);}
+  button:active{transform:scale(.97);}
+  button.primary{background:var(--ink); color:#fff;}
+  button.primary:hover{background:var(--blue);}
+  button.secondary{border-color:var(--grid); color:var(--ink-60);}
+  button.secondary.active{background:var(--amber-soft); border-color:var(--amber); color:var(--amber);}
+
+  select{
+    font-family:inherit; font-size:16px; min-height:44px; padding:6px 10px; border-radius:8px;
+    border:2px solid var(--ink); background:var(--paper); color:var(--ink);
+  }
+
+  .board{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; perspective:1000px;}
+  @media (max-width:640px){ .board{grid-template-columns:repeat(3,1fr);} }
+  .card{position:relative; aspect-ratio:3/4; min-height:120px;}
+  .card-inner{position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .45s cubic-bezier(.2,.7,.3,1);}
+  .card.flipped .card-inner, .card.matched .card-inner{transform:rotateY(180deg);}
+  .face{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:10px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    padding:8px; border:2px solid var(--ink);
+  }
+  .face-back{
+    background:var(--paper) repeating-linear-gradient(45deg, var(--blue-soft) 0 8px, var(--paper) 8px 16px);
+    color:var(--blue); font-size:28px; cursor:pointer;
+  }
+  .face-back::after{content:"◈"; font-size:26px;}
+  .face-front{transform:rotateY(180deg); background:var(--paper); gap:6px; overflow:hidden;}
+  .card.matched .face-front{background:var(--green-soft); border-color:var(--green);}
+  .face-front .icon{font-size:30px;}
+  .face-front .name{font-weight:800; font-size:16px; line-height:1.2;}
+  .face-front .role{font-size:13px; color:var(--ink-60);}
+  .face-front .zitat{font-size:13px; font-style:italic; line-height:1.25;}
+  .card.disabled .face-back{cursor:default;}
+
+  .overlay{position:fixed; inset:0; background:rgba(27,42,74,.55); display:none; align-items:center; justify-content:center; padding:20px; z-index:50;}
+  .overlay.show{display:flex;}
+  .overlay-card{background:var(--paper); border:2px solid var(--ink); border-radius:14px; max-width:480px; width:100%; padding:22px; max-height:86vh; overflow-y:auto;}
+  .overlay-card h2{margin:0 0 4px; font-size:22px;}
+  .overlay-card .role-tag{font-size:14px; color:var(--ink-60); margin-bottom:14px;}
+  .overlay-row{margin-bottom:14px;}
+  .overlay-row .k{font-size:14px; text-transform:uppercase; letter-spacing:.08em; font-weight:700; color:var(--blue); margin-bottom:3px;}
+  .overlay-row .v{font-size:16px;}
+  .overlay-row.nebel .k{color:var(--amber);}
+  .overlay-row.nebel{background:var(--amber-soft); padding:10px 12px; border-radius:8px;}
+  .overlay-close{margin-top:8px; width:100%;}
+
+  .end-panel{display:none; margin-top:20px; border:2px solid var(--green); background:var(--green-soft); border-radius:12px; padding:20px;}
+  .end-panel.show{display:block;}
+  .end-panel h2{margin-top:0;}
+  table.recap{width:100%; border-collapse:collapse; margin-top:10px; font-size:15px;}
+  table.recap td, table.recap th{text-align:left; padding:8px 6px; border-bottom:1px solid var(--grid); vertical-align:top;}
+  table.recap th{font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-60);}
+
+  footer{max-width:1080px; margin:32px auto 0; padding:20px 24px 40px; border-top:2px solid var(--ink);}
+  .footer-head{display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .footer-head .signature{text-align:left; white-space:normal;}
+  .panels{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+  details{border:1px solid var(--grid); border-radius:8px; padding:0; background:var(--paper);}
+  details summary{cursor:pointer; font-weight:700; font-size:15px; padding:12px 14px; min-height:44px; display:flex; align-items:center; list-style:none;}
+  details summary::-webkit-details-marker{display:none;}
+  details summary::before{content:"▸ "; color:var(--blue);}
+  details[open] summary::before{content:"▾ "; color:var(--blue);}
+  details .panel-body{padding:0 14px 14px; font-size:14px; color:var(--ink-60);}
+  details .panel-body p{margin:6px 0;}
+  details .panel-body ul{margin:6px 0; padding-left:18px;}
+
+  @media (prefers-reduced-motion:reduce){ .card-inner{transition:none;} }
+</style>
+</head>
+<body class="blueprint-bg">
+
+<header>
+  <div class="title-block">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <p class="eyebrow mono">Denkraum · Nebel-Typ Stakeholder</p>
+    <h1>Stakeholder Memory</h1>
+    <p class="subtitle">Nicht die Forderung merken — das Bedürfnis dahinter finden. Sechs Personas, sechs Zitate, sechs blinde Flecken.</p>
+  </div>
+  <div class="header-actions">
+    <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">
+      <strong>Michaela Kühn</strong>
+      Mit KI steuern, nicht hoffen
+    </a>
+    <button class="secondary" id="beamerToggle" type="button" title="Vergrößert die gesamte Darstellung für Präsentationen — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
+  </div>
+</header>
+
+<main>
+
+  <div class="hud">
+    <div class="hud-stats">
+      <div class="stat"><span class="num mono" id="statMoves">0</span><span class="lbl">Züge</span></div>
+      <div class="stat"><span class="num mono" id="statMatches">0/6</span><span class="lbl">Paare gefunden</span></div>
+      <div class="stat"><span class="num mono" id="statTime">00:00</span><span class="lbl">Zeit</span></div>
+    </div>
+    <div class="hud-actions">
+      <select id="modeSelect" aria-label="Spielmodus">
+        <option value="hint">Grundlagen — mit Quadrant-Hinweis</option>
+        <option value="pro">Profi — nur Zitat, kein Hinweis</option>
+      </select>
+      <button id="restartBtn" class="primary" type="button">Neu mischen</button>
+    </div>
+  </div>
+
+  <div class="board" id="board" role="list" aria-label="Memory-Spielfeld"></div>
+
+  <div class="end-panel" id="endPanel">
+    <h2>Runde geschlossen — Debrief</h2>
+    <p>Sechs Personas, sechs Zitate, sechs echte Bedürfnisse. Für den Workshop-Transfer: Wer wurde im Alltag zuletzt beim Wort statt beim Bedürfnis genommen?</p>
+    <table class="recap" id="recapTable">
+      <thead><tr><th>Persona</th><th>Zitat</th><th>Echtes Bedürfnis</th><th>Nebel-Typ</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <button class="primary" id="restartBtn2" type="button" style="margin-top:14px">Nochmal spielen</button>
+  </div>
+
+</main>
+
+<div class="overlay" id="overlay">
+  <div class="overlay-card" id="overlayCard"></div>
+</div>
+
+<footer>
+  <div class="footer-head">
+    <div class="signature"><strong>Michaela Kühn</strong> — Mit KI steuern, nicht hoffen · Stakeholder Memory · Pilot v1.0</div>
+  </div>
+  <div class="panels">
+    <details>
+      <summary>Systemprompt</summary>
+      <div class="panel-body">
+        <p>Dieses Tool ist ein reines Frontend-Spiel ohne KI-Anbindung. Es benötigt keinen Systemprompt zur Laufzeit.</p>
+        <p>Didaktische Regie folgt dem Denkraum-Modell: jede Zitat-Karte repräsentiert eine <em>Oberflächen-Forderung</em>, jede Auflösung zeigt den <em>Nebel-Typ Stakeholder</em> — die Lücke zwischen Gesagtem und Gemeintem.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Handbuch</summary>
+      <div class="panel-body">
+        <ul>
+          <li>Karte antippen, zweite Karte antippen.</li>
+          <li>Passt Persona zu Zitat → Detailkarte mit echtem Bedürfnis, Machtinteresse-Einordnung und Nebel-Typ öffnet sich.</li>
+          <li>Passt es nicht → beide Karten drehen sich nach kurzer Pause zurück.</li>
+          <li>Modus „Grundlagen" zeigt zusätzlich einen Quadrant-Hinweis auf der Zitat-Karte, „Profi" verzichtet darauf.</li>
+          <li>Offline, single-file, kein Server nötig — läuft lokal im Browser, auch auf iPad/Safari.</li>
+        </ul>
+      </div>
+    </details>
+    <details>
+      <summary>Vortrags-Skript</summary>
+      <div class="panel-body">
+        <p><strong>Moderationsblock, ca. 10–15 Min.:</strong></p>
+        <ul>
+          <li>Einstieg (1 Min): „Bevor wir Anforderungen aufschreiben, sammeln wir Forderungen. Die sind fast nie das Gleiche."</li>
+          <li>Spielphase (5–7 Min): Teilnehmende spielen paarweise oder am Beamer im Plenum.</li>
+          <li>Bei jedem Match kurz innehalten: „Was hätten wir dokumentiert, wenn wir nur das Zitat genommen hätten?"</li>
+          <li>Debrief (4–5 Min): Recap-Tabelle zeigen, Transferfrage stellen: „Welche Persona aus eurem Projekt fehlt hier — und was ist ihr Zitat?"</li>
+          <li>Brücke: Überleitung zum Nebel-Typ-Konzept im Denkraum-Modell bzw. zur vollständigen Stakeholder-Analyse (Macht-Interesse-Grid).</li>
+        </ul>
+      </div>
+    </details>
+    <details>
+      <summary>Normen-Register</summary>
+      <div class="panel-body">
+        <ul>
+          <li>IREB CPRE — Stakeholder-Analyse als RE-Grundtätigkeit.</li>
+          <li>BABOK v3 (IIBA) — Stakeholder Engagement, Power/Interest-Klassifikation.</li>
+          <li>Denkraum-Modell (Michaela Kühn) — Nebel-Typ Stakeholder, einer von vier Nebel-Typen (Absicht, Stakeholder, Lösung, Qualität).</li>
+          <li>Didaktische Personas: Herr Bachmeier, Ela, Knut, Sarah, Petra — konsistent aus dem PromptSchule-Trainingskorpus.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var PERSONAS = [
+    {
+      id: "bachmeier", icon: "🏢", name: "Herr Bachmeier", role: "CEO",
+      zitat: "„Ich will in drei Monaten Ergebnisse sehen — ohne dass es mir Kopfschmerzen bereitet.“",
+      bedürfnis: "Schnelle, sichtbare Wertschöpfung bei minimalem persönlichem Risiko fürs eigene Standing.",
+      quadrant: "Key Player (situativ)",
+      nebel: "Absicht-Nebel — die Forderung „Ergebnisse“ sagt nichts über das WOZU."
+    },
+    {
+      id: "ela", icon: "📋", name: "Ela", role: "Projektleiterin",
+      zitat: "„Ich brauche eine Punktlandung — Termin, Budget, Scope, alles im grünen Bereich.“",
+      bedürfnis: "Steuerbarkeit und Vorhersagbarkeit — nicht überrascht werden, früh Abweichungen erkennen.",
+      quadrant: "Key Player",
+      nebel: "Lösungs-Nebel — sie denkt oft schon in fertigen Maßnahmen statt im Ziel."
+    },
+    {
+      id: "knut", icon: "💻", name: "Knut", role: "Entwicklung",
+      zitat: "„Sagt mir doch einfach, WAS das System tun soll — nicht WIE ich es bauen soll.“",
+      bedürfnis: "Klare, testbare Anforderungen ohne technische Bevormundung durch den Fachbereich.",
+      quadrant: "Keep Informed (oft unterschätzt)",
+      nebel: "Qualitäts-Nebel — was „gut genug“ heißt, bleibt unausgesprochen."
+    },
+    {
+      id: "sarah", icon: "📈", name: "Sarah", role: "Vertrieb",
+      zitat: "„Der Kunde hat das schon so ähnlich woanders gesehen — das MUSS auch bei uns rein.“",
+      bedürfnis: "Wettbewerbsfähigkeit im Verkaufsgespräch — nicht zwingend das konkrete Feature selbst.",
+      quadrant: "Key Player (bei Vertriebsargumenten)",
+      nebel: "Absicht-Nebel — Forderung und tatsächlicher Bedarf sind nicht deckungsgleich."
+    },
+    {
+      id: "petra", icon: "✅", name: "Petra", role: "Qualitätsmanagement",
+      zitat: "„Bitte alles sauber dokumentiert und nachweisbar — Audit kommt bestimmt.“",
+      bedürfnis: "Nachvollziehbarkeit und Compliance-Absicherung, nicht Bürokratie als Selbstzweck.",
+      quadrant: "Keep Satisfied (spät Key Player)",
+      nebel: "Qualitäts-Nebel & Stakeholder-Nebel — wessen Norm eigentlich gilt, bleibt offen."
+    },
+    {
+      id: "meike", icon: "🖥️", name: "Meike", role: "Endanwenderin, Sachbearbeitung",
+      zitat: "„Hauptsache, ich muss nicht drei Systeme gleichzeitig offen haben.“",
+      bedürfnis: "Effizienz im Arbeitsalltag und kognitive Entlastung — wird selten aktiv gefragt.",
+      quadrant: "Minimal Effort (fälschlich) — eigentlich Key Player für Usability",
+      nebel: "Stakeholder-Nebel — genau diese Rolle wird in Requirements-Workshops am häufigsten vergessen."
+    }
+  ];
+
+  var board = document.getElementById("board");
+  var statMoves = document.getElementById("statMoves");
+  var statMatches = document.getElementById("statMatches");
+  var statTime = document.getElementById("statTime");
+  var endPanel = document.getElementById("endPanel");
+  var recapBody = document.querySelector("#recapTable tbody");
+  var overlay = document.getElementById("overlay");
+  var overlayCard = document.getElementById("overlayCard");
+  var modeSelect = document.getElementById("modeSelect");
+  var beamerToggle = document.getElementById("beamerToggle");
+
+  var STORAGE_KEY = "denkraumStakeholderMemory";
+  var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+
+  var state = {
+    tiles: [],
+    flipped: [],
+    matchedCount: 0,
+    moves: 0,
+    timerId: null,
+    seconds: 0,
+    locked: false
+  };
+
+  function loadPersisted(){
+    try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") || {}; }
+    catch(e){ return {}; }
+  }
+  function savePersisted(data){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }catch(e){}
+  }
+
+  function applyBeamerLevel(level){
+    document.documentElement.setAttribute("data-beamer", String(level));
+    beamerToggle.textContent = BEAMER_LABELS[level];
+    beamerToggle.classList.toggle("active", level > 0);
+  }
+  var persisted = loadPersisted();
+  applyBeamerLevel(persisted.beamerLevel || 0);
+  beamerToggle.addEventListener("click", function(){
+    var current = loadPersisted();
+    var level = ((current.beamerLevel || 0) + 1) % BEAMER_LABELS.length;
+    savePersisted({ beamerLevel: level });
+    applyBeamerLevel(level);
+  });
+
+  function shuffle(arr){
+    for(var i = arr.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+    }
+    return arr;
+  }
+
+  function buildTiles(){
+    var tiles = [];
+    PERSONAS.forEach(function(p){
+      tiles.push({ pairId: p.id, type: "persona", data: p });
+      tiles.push({ pairId: p.id, type: "zitat", data: p });
+    });
+    return shuffle(tiles);
+  }
+
+  function formatTime(totalSeconds){
+    var m = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
+    var s = (totalSeconds % 60).toString().padStart(2, "0");
+    return m + ":" + s;
+  }
+
+  function startTimer(){
+    stopTimer();
+    state.seconds = 0;
+    statTime.textContent = "00:00";
+    state.timerId = setInterval(function(){
+      state.seconds++;
+      statTime.textContent = formatTime(state.seconds);
+    }, 1000);
+  }
+  function stopTimer(){
+    if(state.timerId){ clearInterval(state.timerId); state.timerId = null; }
+  }
+
+  function renderBoard(){
+    board.innerHTML = "";
+    endPanel.classList.remove("show");
+
+    state.tiles.forEach(function(tile, idx){
+      var card = document.createElement("div");
+      card.className = "card";
+      card.setAttribute("role", "listitem");
+      card.dataset.index = idx;
+
+      var inner = document.createElement("div");
+      inner.className = "card-inner";
+
+      var back = document.createElement("button");
+      back.type = "button";
+      back.className = "face face-back";
+      back.setAttribute("aria-label", "Karte aufdecken");
+
+      var front = document.createElement("div");
+      front.className = "face face-front";
+
+      if(tile.type === "persona"){
+        front.innerHTML =
+          "<div class=\"icon\">" + tile.data.icon + "</div>" +
+          "<div class=\"name\">" + tile.data.name + "</div>" +
+          "<div class=\"role\">" + tile.data.role + "</div>";
+      } else {
+        var showHint = modeSelect.value === "hint";
+        front.innerHTML =
+          "<div class=\"zitat\">" + tile.data.zitat + "</div>" +
+          (showHint ? "<div class=\"role\">" + tile.data.quadrant + "</div>" : "");
+      }
+
+      inner.appendChild(back);
+      inner.appendChild(front);
+      card.appendChild(inner);
+      board.appendChild(card);
+
+      back.addEventListener("click", function(){ flipCard(idx, card); });
+    });
+  }
+
+  function flipCard(idx, card){
+    if(state.locked) return;
+    if(card.classList.contains("flipped") || card.classList.contains("matched")) return;
+    if(state.flipped.length >= 2) return;
+
+    card.classList.add("flipped");
+    state.flipped.push({ idx: idx, card: card });
+
+    if(state.flipped.length === 2){
+      state.moves++;
+      statMoves.textContent = state.moves;
+      evaluatePair();
+    }
+  }
+
+  function evaluatePair(){
+    state.locked = true;
+    var first = state.flipped[0];
+    var second = state.flipped[1];
+    var tileA = state.tiles[first.idx];
+    var tileB = state.tiles[second.idx];
+    var isMatch = tileA.pairId === tileB.pairId && tileA.type !== tileB.type;
+
+    if(isMatch){
+      setTimeout(function(){
+        first.card.classList.add("matched");
+        second.card.classList.add("matched");
+        state.matchedCount++;
+        statMatches.textContent = state.matchedCount + "/6";
+        showDetailOverlay(tileA.data);
+        state.flipped = [];
+        state.locked = false;
+        if(state.matchedCount === PERSONAS.length){
+          stopTimer();
+          showDebrief();
+        }
+      }, 350);
+    } else {
+      setTimeout(function(){
+        first.card.classList.remove("flipped");
+        second.card.classList.remove("flipped");
+        state.flipped = [];
+        state.locked = false;
+      }, 900);
+    }
+  }
+
+  function showDetailOverlay(persona){
+    overlayCard.innerHTML =
+      "<h2>" + persona.icon + " " + persona.name + "</h2>" +
+      "<div class=\"role-tag\">" + persona.role + "</div>" +
+      "<div class=\"overlay-row\"><div class=\"k\">Zitat</div><div class=\"v\">" + persona.zitat + "</div></div>" +
+      "<div class=\"overlay-row\"><div class=\"k\">Echtes Bedürfnis</div><div class=\"v\">" + persona.bedürfnis + "</div></div>" +
+      "<div class=\"overlay-row\"><div class=\"k\">Macht-Interesse</div><div class=\"v\">" + persona.quadrant + "</div></div>" +
+      "<div class=\"overlay-row nebel\"><div class=\"k\">Nebel-Typ</div><div class=\"v\">" + persona.nebel + "</div></div>" +
+      "<button class=\"primary overlay-close\" type=\"button\">Weiter</button>";
+    overlay.classList.add("show");
+    overlayCard.querySelector(".overlay-close").addEventListener("click", function(){
+      overlay.classList.remove("show");
+    });
+  }
+
+  function showDebrief(){
+    recapBody.innerHTML = "";
+    PERSONAS.forEach(function(p){
+      var row = document.createElement("tr");
+      row.innerHTML =
+        "<td><strong>" + p.icon + " " + p.name + "</strong><br><span style=\"color:var(--ink-60);font-size:13px;\">" + p.role + "</span></td>" +
+        "<td>" + p.zitat + "</td>" +
+        "<td>" + p.bedürfnis + "</td>" +
+        "<td>" + p.nebel + "</td>";
+      recapBody.appendChild(row);
+    });
+    endPanel.classList.add("show");
+  }
+
+  function startGame(){
+    overlay.classList.remove("show");
+    state.tiles = buildTiles();
+    state.flipped = [];
+    state.matchedCount = 0;
+    state.moves = 0;
+    state.locked = false;
+    statMoves.textContent = "0";
+    statMatches.textContent = "0/6";
+    startTimer();
+    renderBoard();
+  }
+
+  document.getElementById("restartBtn").addEventListener("click", startGame);
+  document.getElementById("restartBtn2").addEventListener("click", startGame);
+  modeSelect.addEventListener("change", startGame);
+  overlay.addEventListener("click", function(e){
+    if(e.target === overlay){ overlay.classList.remove("show"); }
+  });
+
+  startGame();
+})();
+</script>
+
+</body>
+</html>
