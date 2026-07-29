@@ -13,9 +13,8 @@
     --mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
     --sans: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
-  html.beamer{zoom:1.25}
-  html.beamer.beamer-xl{zoom:1.55}
-  html.beamer.beamer-xl.beamer-xxl{zoom:1.9}
+  html[data-beamer="1"]{zoom:1.35}
+  html[data-beamer="2"]{zoom:1.75}
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);color-scheme:light;}
   body{font-family:var(--sans); font-size:18px; line-height:1.5;}
@@ -126,8 +125,9 @@
   .footer-table{width:100%;border-collapse:collapse;font-size:14px;}
   .footer-table th,.footer-table td{border:1px solid var(--line);padding:6px 10px;text-align:left;}
 
-  html.beamer footer{display:none !important;}
-  html.beamer .back-link,html.beamer .eyebrow,html.beamer .view-btn,html.beamer .task-box{display:none !important;}
+  html[data-beamer="1"] footer,html[data-beamer="2"] footer{display:none !important;}
+  html[data-beamer="1"] .back-link,html[data-beamer="1"] .eyebrow,html[data-beamer="1"] .view-btn,html[data-beamer="1"] .task-box,
+  html[data-beamer="2"] .back-link,html[data-beamer="2"] .eyebrow,html[data-beamer="2"] .view-btn,html[data-beamer="2"] .task-box{display:none !important;}
 
   @media(max-width:640px){
     .app{padding:16px}
@@ -254,7 +254,7 @@ DESIGN
 - Farbpalette identisch zu den anderen DenkRaum-Tools im Ökosystem (Hex-Konsistenz): --accent:#0B5E63, --ink:#1B1F23, --ink-soft:#5B6570, --line:#DEE3E6, --card:#F7F8F9. Abweichend davon bewusst Lila statt Grün für "neu hinzugekommene Kategorie" im Prompt-Aufbau: --good:#6D28D9, --good-soft:#EDE9FE (Design-Entscheidung für dieses Tool, nicht für das übrige Ökosystem).
 - Fließtext ≥16px, Sekundärtext ≥14px (auch Badges/Chips/Tabellen).
 - Signatur oben rechts fix positioniert (position:fixed;top:14px;right:28px), unter 900px Breite Fallback auf position:static.
-- Beamer-Modus: vierstufiger Button (Normal → Beamer → Beamer XL → Beamer XXL), Klassen kumulativ auf <html> ('', 'beamer', 'beamer beamer-xl', 'beamer beamer-xl beamer-xxl'), reine Größensteigerung per zoom, Footer ab Stufe 1 ausgeblendet, State in localStorage persistiert.
+- Beamer-Modus: dreistufiger Button (Normal → 1.35x → 1.75x), data-beamer-Attribut auf <html>, reine Größensteigerung per zoom, Footer ab Stufe 1 ausgeblendet, State in localStorage persistiert.
 - Footer mit drei getrennten <details>-Boxen (Systemprompt/Handbuch/Vortrags-Skript), .footer-sig mit Audit-Status-Zeile, kanonische Klassennamen (.footer-sig/.footer-details/.footer-box/.footer-summary/.footer-content/.footer-mono/.footer-sans/.footer-table).
 
 TECHNIK
@@ -417,22 +417,21 @@ NICHT TUN
   function safeGet(key){ try{ return localStorage.getItem(key); }catch(e){ return null; } }
   function safeSet(key, val){ try{ localStorage.setItem(key, val); }catch(e){} }
 
-  /* ================= BEAMER-MODUS (vierstufig, K18) ================= */
-  var BEAMER_CLASSES = ['', 'beamer', 'beamer beamer-xl', 'beamer beamer-xl beamer-xxl'];
-  var BEAMER_LABELS = ['🔍 Beamer-Modus', '🔍 Beamer', '🔍 Beamer XL', '🔍 Beamer XXL'];
+  /* ================= BEAMER-MODUS ================= */
+  var BEAMER_LABELS = ['🔍 Beamer-Modus', '🔍 Beamer: Groß', '🔍 Beamer: Sehr groß'];
   var beamerLevel = 0;
   (function(){
     var saved = Number(safeGet('profileLabBeamer'));
-    if(!isNaN(saved) && saved >= 0 && saved < BEAMER_CLASSES.length) beamerLevel = saved;
+    if(!isNaN(saved) && saved >= 0 && saved < BEAMER_LABELS.length) beamerLevel = saved;
   })();
   function applyBeamer(){
-    document.documentElement.className = BEAMER_CLASSES[beamerLevel];
+    document.documentElement.setAttribute('data-beamer', String(beamerLevel));
     var btn = document.getElementById('beamerToggle');
     btn.textContent = BEAMER_LABELS[beamerLevel];
     btn.classList.toggle('active', beamerLevel > 0);
   }
   document.getElementById('beamerToggle').addEventListener('click', function(){
-    beamerLevel = (beamerLevel + 1) % BEAMER_CLASSES.length;
+    beamerLevel = (beamerLevel + 1) % BEAMER_LABELS.length;
     safeSet('profileLabBeamer', String(beamerLevel));
     applyBeamer();
   });

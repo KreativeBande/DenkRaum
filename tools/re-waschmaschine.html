@@ -230,22 +230,11 @@ textarea#faInput:focus{outline:2px solid var(--iso25);outline-offset:1px;}
 .footer-sig{font-size:14px;color:var(--ink-soft);margin-top:4px;line-height:1.5;}
 @media(min-width:901px){.footer-triple{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}.footer-triple details{margin-bottom:0;}}
 
-/* ===== Beamer-Modus (vierstufig, K18) ===== */
-html.beamer .subtitle,html.beamer .merkmal-text,html.beamer .pill-text,html.beamer .fleck-item,html.beamer .nebel-item{font-size:19px;}
-html.beamer h1{font-size:52px;}
-html.beamer .results-head h2{font-size:30px;}
-html.beamer .stueck-fa .text{font-size:19px;}
-html.beamer .footer,html.beamer .header-tools .back-link{display:none;}
-
-html.beamer-xl .subtitle,html.beamer-xl .merkmal-text,html.beamer-xl .pill-text,html.beamer-xl .fleck-item,html.beamer-xl .nebel-item{font-size:22px;}
-html.beamer-xl h1{font-size:58px;}
-html.beamer-xl .results-head h2{font-size:34px;}
-html.beamer-xl .stueck-fa .text{font-size:22px;}
-
-html.beamer-xxl .subtitle,html.beamer-xxl .merkmal-text,html.beamer-xxl .pill-text,html.beamer-xxl .fleck-item,html.beamer-xxl .nebel-item{font-size:26px;}
-html.beamer-xxl h1{font-size:64px;}
-html.beamer-xxl .results-head h2{font-size:38px;}
-html.beamer-xxl .stueck-fa .text{font-size:26px;}
+/* ===== Beamer-Modus ===== */
+html[data-beamer="1"]{zoom:1.35}
+html[data-beamer="2"]{zoom:1.75}
+html[data-beamer="1"] .footer,html[data-beamer="1"] .header-tools .back-link,
+html[data-beamer="2"] .footer,html[data-beamer="2"] .header-tools .back-link{display:none;}
 
 .loading-phase{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--ink-soft);margin-top:6px;}
 </style>
@@ -414,7 +403,7 @@ Nachbau-Tipp: Wer selbst so ein Tool bauen will, dreht die Reihenfolge um — er
 <div class="wrap">
 
 <div class="header-tools">
-  <button type="button" class="beamer-btn" id="beamerBtn">☀ Beamer</button>
+  <button type="button" class="beamer-btn" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
 </div>
 <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
 
@@ -1074,14 +1063,21 @@ Hinweis: Dieser Prompt ist die rekonstruierte, wiederverwendbare Bauanleitung f�
 
   updateLineCount();
 
-  var BEAMER_LEVELS=[{classes:[],label:"☀ Beamer"},{classes:["beamer"],label:"☀ Beamer XL"},{classes:["beamer","beamer-xl"],label:"☀ Beamer XXL"},{classes:["beamer","beamer-xl","beamer-xxl"],label:"☀ Normal"}];
+  var BEAMER_LABELS=["🔍 Beamer-Modus","🔍 Beamer: Groß","🔍 Beamer: Sehr groß"];
   var beamerLevel=0;
-  document.getElementById('beamerBtn').addEventListener('click',function(){
-    beamerLevel=(beamerLevel+1)%4;
-    document.documentElement.classList.remove('beamer','beamer-xl','beamer-xxl');
-    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
-    this.textContent=BEAMER_LEVELS[beamerLevel].label;
-    this.classList.toggle('active',beamerLevel!==0);
+  try{ beamerLevel=Number(localStorage.getItem("rewasch_beamer"))||0; }catch(e){}
+  if(!(beamerLevel>=0 && beamerLevel<=2)) beamerLevel=0;
+  function applyBeamerLevel(l){
+    document.documentElement.setAttribute("data-beamer", String(l));
+    var btn=document.getElementById("beamerToggle");
+    btn.textContent=BEAMER_LABELS[l];
+    btn.classList.toggle("active", l>0);
+  }
+  applyBeamerLevel(beamerLevel);
+  document.getElementById('beamerToggle').addEventListener('click',function(){
+    beamerLevel=(beamerLevel+1)%BEAMER_LABELS.length;
+    try{ localStorage.setItem("rewasch_beamer", String(beamerLevel)); }catch(e){}
+    applyBeamerLevel(beamerLevel);
   });
 })();
 </script>

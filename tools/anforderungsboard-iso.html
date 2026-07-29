@@ -203,35 +203,10 @@ header{
   .footer-triple details{margin-bottom:0;}
 }
 
-/* ===== Beamer-Modus (vierstufig, K18) ===== */
-html.beamer{ --ink-dim:#3D4A5C; }
-html.beamer .card-stage .nfa-text{font-size:22px;}
-html.beamer .panel-head .p-name{font-size:44px;}
-html.beamer .h-title h1{font-size:26px;}
-html.beamer .bucket-btn{font-size:16px;}
-html.beamer .feedback{font-size:15px;}
-html.beamer .type-chip, html.beamer .subtag-row, html.beamer .persona-text{font-size:15px;}
-html.beamer .card-hint, html.beamer .dot{font-size:15px;}
-html.beamer .dot{height:30px;}
-html.beamer .footer{display:none;}
-
-html.beamer-xl .card-stage .nfa-text{font-size:28px;}
-html.beamer-xl .panel-head .p-name{font-size:54px;}
-html.beamer-xl .h-title h1{font-size:30px;}
-html.beamer-xl .bucket-btn{font-size:18px;}
-html.beamer-xl .feedback{font-size:18px;}
-html.beamer-xl .type-chip, html.beamer-xl .subtag-row, html.beamer-xl .persona-text{font-size:18px;}
-html.beamer-xl .card-hint, html.beamer-xl .dot{font-size:18px;}
-html.beamer-xl .dot{height:34px;}
-
-html.beamer-xxl .card-stage .nfa-text{font-size:34px;}
-html.beamer-xxl .panel-head .p-name{font-size:64px;}
-html.beamer-xxl .h-title h1{font-size:36px;}
-html.beamer-xxl .bucket-btn{font-size:21px;}
-html.beamer-xxl .feedback{font-size:21px;}
-html.beamer-xxl .type-chip, html.beamer-xxl .subtag-row, html.beamer-xxl .persona-text{font-size:21px;}
-html.beamer-xxl .card-hint, html.beamer-xxl .dot{font-size:21px;}
-html.beamer-xxl .dot{height:38px;}
+/* ===== Beamer-Modus ===== */
+html[data-beamer="1"]{zoom:1.35}
+html[data-beamer="2"]{zoom:1.75}
+html[data-beamer="1"] .footer, html[data-beamer="2"] .footer{display:none;}
 
 </style>
 </head>
@@ -246,7 +221,7 @@ html.beamer-xxl .dot{height:38px;}
   </div>
   <div class="h-tools">
     <button class="pill-btn reset-btn" id="resetBtn">↺ Zurücksetzen</button>
-    <button class="pill-btn beamer-btn" id="beamerBtn">☀ Beamer</button>
+    <button class="pill-btn beamer-btn" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
   </div>
 </header>
 <span class="trainer-sig"><b>Michaela Kühn</b> · IREB CPRE<br><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></span>
@@ -716,21 +691,25 @@ function resetAll(){
   renderDashboard();
 }
 
-/* ===================== Beamer-Modus (K18, kanonisches Muster) ===================== */
-var BEAMER_LEVELS = [
-  { classes: [],                                    label: '☀ Beamer' },
-  { classes: ['beamer'],                            label: '☀ Beamer XL' },
-  { classes: ['beamer', 'beamer-xl'],               label: '☀ Beamer XXL' },
-  { classes: ['beamer', 'beamer-xl', 'beamer-xxl'], label: '☀ Normal' }
-];
-var beamerLevel = 0;
-document.getElementById('beamerBtn').addEventListener('click', function(){
-  beamerLevel = (beamerLevel + 1) % 4;
-  document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
-  BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
-  this.textContent = BEAMER_LEVELS[beamerLevel].label;
-  this.classList.toggle('active', beamerLevel !== 0);
-});
+/* ===================== Beamer-Modus ===================== */
+var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+(function(){
+  var level = 0;
+  try{ level = Number(localStorage.getItem("aiso_beamer")) || 0; }catch(e){}
+  if(!(level >= 0 && level <= 2)) level = 0;
+  function applyBeamerLevel(l){
+    document.documentElement.setAttribute("data-beamer", String(l));
+    var btn = document.getElementById("beamerToggle");
+    btn.textContent = BEAMER_LABELS[l];
+    btn.classList.toggle("active", l > 0);
+  }
+  applyBeamerLevel(level);
+  document.getElementById("beamerToggle").addEventListener("click", function(){
+    level = (level + 1) % BEAMER_LABELS.length;
+    try{ localStorage.setItem("aiso_beamer", String(level)); }catch(e){}
+    applyBeamerLevel(level);
+  });
+})();
 
 /* ===================== Events ===================== */
 document.querySelectorAll(".bucket-btn").forEach(function(btn){

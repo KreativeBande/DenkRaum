@@ -104,22 +104,11 @@ h2{margin:0;color:#1a3a5c;font-size:clamp(22px,3vw,34px);line-height:1.08;letter
 .footer-sig{font-size:14px;color:#75818a;margin-top:4px;line-height:1.5;}
 @media(min-width:901px){.footer-triple{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}.footer-triple details{margin-bottom:0;}}
 
-/* ===== Beamer-Modus (vierstufig, K18) ===== */
-html.beamer .lead,html.beamer .card p,html.beamer p{font-size:19px;}
-html.beamer h1{font-size:30px;}
-html.beamer h2{font-size:26px;}
-html.beamer .tab{font-size:15px;}
-html.beamer .footer,html.beamer .footerSig{display:none;}
-
-html.beamer-xl .lead,html.beamer-xl .card p,html.beamer-xl p{font-size:22px;}
-html.beamer-xl h1{font-size:34px;}
-html.beamer-xl h2{font-size:30px;}
-html.beamer-xl .tab{font-size:17px;}
-
-html.beamer-xxl .lead,html.beamer-xxl .card p,html.beamer-xxl p{font-size:26px;}
-html.beamer-xxl h1{font-size:38px;}
-html.beamer-xxl h2{font-size:34px;}
-html.beamer-xxl .tab{font-size:19px;}
+/* ===== Beamer-Modus ===== */
+html[data-beamer="1"]{zoom:1.35}
+html[data-beamer="2"]{zoom:1.75}
+html[data-beamer="1"] .footer,html[data-beamer="1"] .footerSig,
+html[data-beamer="2"] .footer,html[data-beamer="2"] .footerSig{display:none;}
 </style>
 </head>
 <body>
@@ -133,7 +122,7 @@ html.beamer-xxl .tab{font-size:19px;}
         <p class="subtitle">Ein interaktives Lerntool für Requirements Engineering, KI-Literacy und souveräne Prompt-Steuerung.</p>
       </div>
       <div>
-        <button id="beamerBtn" class="beamerBtn">☀ Beamer</button>
+        <button id="beamerToggle" class="beamerBtn" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
         <button id="restart" class="restart">Restart</button>
       </div>
     </div>
@@ -207,7 +196,7 @@ Hinweis: Dieser Prompt ist die rekonstruierte, wiederverwendbare Bauanleitung f�
           <div class="step"><b>8. Temperatur</b><span class="regie">(Schritt 6, Slider bewegen)</span><br>„Temperatur verändert nicht den Kontext, sondern die Varianz. Links bleibt die Antwort bei T=0 stabil, rechts wird sie kreativer — aber der Projektkontext bleibt immer erhalten."</div>
           <div class="step"><b>9. Antwort entsteht</b><span class="regie">(Schritt 7, „Nächsten Satz aufbauen" klicken)</span><br>„Oben die Sofortantwort ohne Steuerung, unten die Antwort, die Satz für Satz aus Kontext und STAKE entsteht."</div>
           <div class="step"><b>10. Fork und Auflösung</b><span class="regie">(Schritt 8 und 10 zeigen)</span><br>„Und hier der direkte Vergleich: derselbe Wunsch, einmal ohne und einmal mit STAKE. Die STAKE-Formel ist am Ende nichts anderes als eine Anforderungsformel für KI-Systeme."</div>
-          <div class="step"><b>11. Beamer-Modus zeigen</b><span class="regie">(Klick auf „☀ Beamer")</span><br>„Für die letzte Reihe: ein Klick, alles wird größer."</div>
+          <div class="step"><b>11. Beamer-Modus zeigen</b><span class="regie">(Klick auf „🔍 Beamer-Modus")</span><br>„Für die letzte Reihe: ein Klick, alles wird größer."</div>
           <p><b>Allgemeine Regie-Hinweise:</b> Wenn Zeit fehlt, den Blank-Fall am Ende gegen ERP gegenschneiden — der Kontrast zwischen Gleichverteilung und klarer Dominanz ist der stärkste Aha-Moment. Zeitbudget: 10–12 Minuten für einen kompakten Durchlauf durch alle 11 Schritte an einem Projekt.</p>
         </div>
       </details>
@@ -305,9 +294,22 @@ function render9(){var d=data();var h=head(9,"Reflexion","Drei Merkpunkte verank
 function copyText(text){try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text);return;}}catch(e){}try{var ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);}catch(err){}}
 function render10(){var d=data();stage.innerHTML=head(10,"Auflösung","Du hast verstanden, wie KI denkt. Jetzt siehst du, was das für deinen Prompt bedeutet.")+"<div class='compare'><div class='card bad'><h3>Vorher</h3><p>"+esc(d.fbad)+"</p></div><div class='card good'><h3>Nachher</h3><p>"+esc(d.gprompt)+"</p></div></div><div class='panel'><div class='panelTitle'>STAKE-Formel</div><div class='formula'>Stakeholder + Task + Audience + Kriterien + Eingrenzung = steuerbarer Prompt</div></div><div class='card dark'><h3>Souveräne KI-Steuerung verstanden.</h3><p>Das Modell hat sich nicht verändert. Du hast gelernt, es zu steuern.</p><p style='margin-top:10px;'>Wer Requirements Engineering kennt, kann KI souverän steuern - weil Prompting dieselbe Denkstruktur hat. Das ist nicht Technologie. Das ist Methode. Das ist PromptSchule.</p></div>";}
 q("restart").onclick=function(){step=0;chosen="";visited={};tokenCount=0;temp=0;render();};render();
-var BEAMER_LEVELS=[{classes:[],label:"☀ Beamer"},{classes:["beamer"],label:"☀ Beamer XL"},{classes:["beamer","beamer-xl"],label:"☀ Beamer XXL"},{classes:["beamer","beamer-xl","beamer-xxl"],label:"☀ Normal"}];
+var BEAMER_LABELS=["🔍 Beamer-Modus","🔍 Beamer: Groß","🔍 Beamer: Sehr groß"];
 var beamerLevel=0;
-q("beamerBtn").addEventListener("click",function(){beamerLevel=(beamerLevel+1)%4;document.documentElement.classList.remove("beamer","beamer-xl","beamer-xxl");BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){document.documentElement.classList.add(c);});this.textContent=BEAMER_LEVELS[beamerLevel].label;this.classList.toggle("active",beamerLevel!==0);});
+try{ beamerLevel=Number(localStorage.getItem("wkidpd_beamer"))||0; }catch(e){}
+if(!(beamerLevel>=0 && beamerLevel<=2)) beamerLevel=0;
+function applyBeamerLevel(l){
+  document.documentElement.setAttribute("data-beamer", String(l));
+  var btn=q("beamerToggle");
+  btn.textContent=BEAMER_LABELS[l];
+  btn.classList.toggle("active", l>0);
+}
+applyBeamerLevel(beamerLevel);
+q("beamerToggle").addEventListener("click",function(){
+  beamerLevel=(beamerLevel+1)%BEAMER_LABELS.length;
+  try{ localStorage.setItem("wkidpd_beamer", String(beamerLevel)); }catch(e){}
+  applyBeamerLevel(beamerLevel);
+});
 })();
 </script>
 </body>

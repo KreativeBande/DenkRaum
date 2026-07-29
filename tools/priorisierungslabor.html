@@ -14,9 +14,8 @@
     color-scheme:dark;
   }
   html{color-scheme:dark;}
-  html.beamer1{ --core-size:20px; --sec-size:15px; --head-size:24px; }
-  html.beamer2{ --core-size:24px; --sec-size:16px; --head-size:28px; }
-  html.beamer3{ --core-size:28px; --sec-size:18px; --head-size:32px; }
+  html[data-beamer="1"]{zoom:1.35}
+  html[data-beamer="2"]{zoom:1.75}
   *{box-sizing:border-box;}
   body{margin:0; font-family:'Segoe UI',Arial,sans-serif; background:var(--bg); color:var(--cream); min-height:100vh; background-image: radial-gradient(circle at 20% 10%, #2a1f15 0%, #1b1410 60%);}
   header{padding:20px 18px 10px; border-bottom:2px solid var(--line); display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap;}
@@ -24,7 +23,7 @@
   header h1{margin:0 0 4px; font-size:22px; color:var(--gold2);}
   header p{margin:0; color:#cbb89a; font-size:var(--sec-size); line-height:1.4;}
   .beamer-btn{background:transparent; border:1.5px solid var(--gold); color:var(--gold2); font-size:var(--sec-size); padding:9px 16px; border-radius:999px; cursor:pointer; white-space:nowrap;}
-  html.beamer1 .beamer-btn, html.beamer2 .beamer-btn, html.beamer3 .beamer-btn{background:var(--gold); color:#241a0f; font-weight:700; border-color:var(--gold);}
+  html[data-beamer="1"] .beamer-btn, html[data-beamer="2"] .beamer-btn{background:var(--gold); color:#241a0f; font-weight:700; border-color:var(--gold);}
   .header-right{display:flex; flex-direction:column; align-items:flex-end; gap:8px;}
   .trainer-sig{
     position:fixed; top:14px; right:28px; z-index:500;
@@ -37,7 +36,7 @@
   @media (max-width:900px){ .trainer-sig{position:static; background:none; padding:0; margin-bottom:6px;} }
   .back-link{font-size:var(--sec-size); font-weight:600; color:var(--gold2); text-decoration:none; display:inline-block; margin-bottom:8px;}
   .back-link:hover{text-decoration:underline;}
-  html.beamer1 .back-link, html.beamer2 .back-link, html.beamer3 .back-link{display:none;}
+  html[data-beamer="1"] .back-link, html[data-beamer="2"] .back-link{display:none;}
   nav{display:flex; gap:6px; padding:12px 18px; flex-wrap:wrap; border-bottom:1px solid var(--line); background:#221a13;}
   nav button{background:var(--panel); color:var(--cream); border:1px solid var(--line); padding:8px 11px; border-radius:6px; cursor:pointer; font-size:var(--sec-size);}
   nav button.active{background:var(--gold); color:#241a0f; font-weight:600; border-color:var(--gold);}
@@ -160,7 +159,7 @@
   .case-feedback.wrong{background:#402420; border:1px solid var(--must); display:block;}
   .score-bar{background:#221a13; padding:8px 12px; margin-bottom:12px; font-size:var(--sec-size); color:var(--gold2); border-radius:6px; display:inline-block;}
   footer{padding:20px 18px 30px; color:#cbb89a; font-size:var(--sec-size); max-width:1040px; margin:0 auto;}
-  html.beamer1 footer, html.beamer2 footer, html.beamer3 footer{display:none;}
+  html[data-beamer="1"] footer, html[data-beamer="2"] footer{display:none;}
   .footer-box{background:var(--panel); border:1px solid var(--line); border-radius:8px; margin-bottom:10px;}
   @media(min-width:901px){ .footer-triple{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;} .footer-triple .footer-box{margin-bottom:0;} }
   .footer-box summary{padding:12px 14px; cursor:pointer; font-weight:600; color:var(--gold2); font-size:var(--sec-size);}
@@ -179,7 +178,7 @@
     <p>Artefakt-Kette &amp; passende Priorisierungsmethoden — spielbar, mit Ela, Knut, Sarah, Petra &amp; Herrn Bachmeier.</p>
   </div>
   <div class="header-right">
-    <button class="beamer-btn" id="beamerBtn" onclick="cycleBeamer()">☀ Beamer</button>
+    <button class="beamer-btn" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
   </div>
   <div class="trainer-sig"><b>Michaela Kühn</b> · IREB CPRE<br><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></div>
 </header>
@@ -766,16 +765,25 @@ function renderCases(){
 }
 renderCases();
 
-/* ============ BEAMER-MODUS (4 Stufen) ============ */
-const beamerStages=['','beamer1','beamer2','beamer3'];
-const beamerLabels=['☀ Beamer','☀ Größer','☀ Am größten','☀ Normal'];
-let beamerIdx=0;
-function cycleBeamer(){
-  if(beamerStages[beamerIdx]) document.documentElement.classList.remove(beamerStages[beamerIdx]);
-  beamerIdx=(beamerIdx+1)%beamerStages.length;
-  if(beamerStages[beamerIdx]) document.documentElement.classList.add(beamerStages[beamerIdx]);
-  document.getElementById('beamerBtn').textContent=beamerLabels[beamerIdx];
-}
+/* ============ BEAMER-MODUS ============ */
+const BEAMER_LABELS=["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+(function(){
+  let level=0;
+  try{ level=Number(localStorage.getItem("priolab_beamer"))||0; }catch(e){}
+  if(!(level>=0 && level<=2)) level=0;
+  function applyBeamerLevel(l){
+    document.documentElement.setAttribute("data-beamer", String(l));
+    const btn=document.getElementById("beamerToggle");
+    btn.textContent=BEAMER_LABELS[l];
+    btn.classList.toggle("active", l>0);
+  }
+  applyBeamerLevel(level);
+  document.getElementById("beamerToggle").addEventListener("click", function(){
+    level=(level+1)%BEAMER_LABELS.length;
+    try{ localStorage.setItem("priolab_beamer", String(level)); }catch(e){}
+    applyBeamerLevel(level);
+  });
+})();
 
 /* ============ NAV ============ */
 const sections={journey:'journey-section', map:'map-section', moscow:'moscow', matrix:'matrix-section', kano:'kano-section', wsjf:'wsjf-section', rice:'rice-section', poker:'poker-section', conflict:'conflict-section'};

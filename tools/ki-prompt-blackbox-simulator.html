@@ -28,6 +28,12 @@
     .signature{text-align:right;font-size:13px;font-weight:800;color:var(--ink);text-decoration:none;line-height:1.4;white-space:nowrap;flex-shrink:0}
     .signature span{display:block;font-weight:600;color:var(--muted);font-size:12px}
     .signature:hover,.signature:hover span{color:var(--purple)}
+    .hero-back{display:inline-block;font-size:14px;font-weight:700;color:var(--muted);text-decoration:none;margin-bottom:8px}
+    .hero-back:hover{color:var(--purple)}
+    html[data-beamer="1"]{zoom:1.35}
+    html[data-beamer="2"]{zoom:1.75}
+    .beamer-btn{border:2px solid var(--line);border-radius:16px;background:#fff;padding:8px 14px;font-weight:850;font-size:13px;cursor:pointer;margin-top:10px}
+    .beamer-btn.active{background:var(--purple);color:#fff;border-color:var(--purple)}
     .tagrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;position:relative;z-index:1}.tag{border:2px solid var(--line);border-radius:999px;background:#fff;padding:8px 12px;font-weight:850;font-size:14px;white-space:normal}
     .scoreCard{padding:22px;display:grid;gap:12px;align-content:start}.bigScore{display:flex;align-items:center;justify-content:space-between;gap:12px}.dial{width:112px;height:112px;flex:0 0 112px;border:12px solid var(--green);border-radius:50%;display:grid;place-items:center;background:#fff;font-size:30px;font-weight:950}.scoreLabelRow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.scoreLabel{font-size:20px;font-weight:950}.hint{color:var(--muted);line-height:1.35}
     .legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)}.legend b{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:middle}.legend .lg-g b{background:var(--green)}.legend .lg-a b{background:var(--amber)}.legend .lg-r b{background:var(--red)}
@@ -66,10 +72,14 @@
     <section class="hero">
       <div class="hero-top">
         <div>
+          <a class="hero-back" href="../index.html">← Zurück zur Startseite</a>
           <h1>Prompt-Black-Box-Simulator</h1>
           <div class="subtitle">Ein klickbarer Aha-Moment: Ein KI-Modell bleibt eine Black Box – aber gutes Requirements-Engineering-Denken (Rolle, Kontext, Constraints, Prüfauftrag) macht ihre Wirkung steuerbar.</div>
         </div>
-        <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+          <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
+          <button class="beamer-btn" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
+        </div>
       </div>
       <div class="tagrow"><span class="tag">Prompt rein</span><span class="tag">Wirkung sichtbar</span><span class="tag">Antwort raus</span><span class="tag">RE-Denken steuert Qualität</span></div>
     </section>
@@ -192,6 +202,24 @@
   <div class="footer"><span>Didaktischer Demonstrator · keine echte KI-Auswertung, sondern eine nachvollziehbare Qualitätssimulation.</span><span><a href="../index.html">← Zurück zur Startseite</a></span></div>
 </div>
 <script>
+(function(){
+  var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+  var level = 0;
+  try{ level = Number(localStorage.getItem("kpbb_beamer")) || 0; }catch(e){}
+  if(!(level >= 0 && level <= 2)) level = 0;
+  function applyBeamerLevel(l){
+    document.documentElement.setAttribute("data-beamer", String(l));
+    var btn = document.getElementById("beamerToggle");
+    btn.textContent = BEAMER_LABELS[l];
+    btn.classList.toggle("active", l > 0);
+  }
+  applyBeamerLevel(level);
+  document.getElementById("beamerToggle").addEventListener("click", function(){
+    level = (level + 1) % BEAMER_LABELS.length;
+    try{ localStorage.setItem("kpbb_beamer", String(level)); }catch(e){}
+    applyBeamerLevel(level);
+  });
+})();
 const examples=[
   'Mach mir ein Dashboard.',
   'Erstelle mir ein Projektmanagement-Dashboard für Führungskräfte. Es soll den Projektstatus zeigen.',

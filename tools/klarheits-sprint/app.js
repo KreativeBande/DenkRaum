@@ -450,7 +450,7 @@ const state = {
   requireView: false,
   washRun: { schnell: false, fein: false, koch: false },
   washAdditions: [], // { std, key, text, program }
-  beamerMode: false,
+  beamerLevel: 0,
   gesamtbildOpen: false,
   liveScore: 0
 };
@@ -766,10 +766,12 @@ function wireEvents() {
     btn.addEventListener("click", () => runWaschprogramm(btn.dataset.program));
   });
 
+  const BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
   el.beamerToggle.addEventListener("click", () => {
-    state.beamerMode = !state.beamerMode;
-    document.body.classList.toggle("beamer-mode", state.beamerMode);
-    el.beamerToggle.classList.toggle("active", state.beamerMode);
+    state.beamerLevel = (state.beamerLevel + 1) % BEAMER_LABELS.length;
+    document.documentElement.setAttribute("data-beamer", String(state.beamerLevel));
+    el.beamerToggle.textContent = BEAMER_LABELS[state.beamerLevel];
+    el.beamerToggle.classList.toggle("active", state.beamerLevel > 0);
   });
 
   el.gesamtbildToggle.addEventListener("click", () => toggleGesamtbild());
