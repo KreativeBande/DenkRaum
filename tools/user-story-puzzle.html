@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>User Story Puzzle · Michaela Kühn</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #FFFFFF;
+    --ink: #1C2430;
+    --ink-soft: #4B5566;
+    --line: #D7DEE8;
+    --blue: #2E5EAA;
+    --blue-soft: #EAF0FB;
+    --amber: #C9791A;
+    --amber-soft: #FBEEDA;
+    --green: #237A4C;
+    --green-soft: #E4F4EA;
+    --red: #B23A32;
+    --red-soft: #FBEAE8;
+    --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { font-size: 18px; }
+  html[data-beamer="1"]{zoom:1.35}
+  html[data-beamer="2"]{zoom:1.75}
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    line-height: 1.5;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .app {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 20px 20px 40px;
+  }
+
+  /* ---------- Header ---------- */
+  .app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    border-bottom: 3px solid var(--ink);
+    padding-bottom: 18px;
+    margin-bottom: 20px;
+  }
+  .back-link {
+    display: inline-block;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--blue);
+    text-decoration: none;
+  }
+  .back-link:hover { text-decoration: underline; }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin: 0 0 6px;
+    font-weight: 700;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: 2.15rem;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    margin: 0;
+    max-width: 46ch;
+    color: var(--ink-soft);
+    font-size: 1rem;
+  }
+  .header-right {
+    text-align: right;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+  }
+  .stars {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    color: var(--amber);
+  }
+  .signature {
+    margin: 0;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+  .signature:hover { color: var(--blue); }
+  .beamer-btn {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 8px 14px;
+    min-height: 40px;
+    border-radius: 999px;
+    border: 1.5px solid var(--amber);
+    background: transparent;
+    color: var(--amber);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .beamer-btn.active {
+    background: var(--amber);
+    color: #fff;
+  }
+  html[data-beamer="1"] .back-link, html[data-beamer="2"] .back-link { display: none; }
+  html[data-beamer="1"] .app-footer, html[data-beamer="2"] .app-footer { display: none; }
+
+  /* ---------- Level Nav ---------- */
+  .level-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .level-btn {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 10px 14px;
+    min-height: 44px;
+    border-radius: 10px;
+    border: 2px solid var(--line);
+    background: #fff;
+    color: var(--ink);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .level-btn .stars-mini { color: var(--amber); letter-spacing: 1px; font-size: 0.9rem; }
+  .level-btn.active { border-color: var(--blue); background: var(--blue-soft); }
+  .level-btn.done::after { content: "✓"; color: var(--green); font-weight: 800; margin-left: 2px; }
+
+  /* ---------- Scenario ---------- */
+  .scenario-card {
+    background: var(--blue-soft);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+  }
+  .persona-tag {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--blue);
+    margin: 0 0 8px;
+    font-weight: 700;
+  }
+  .scenario-text {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+  .puzzle-progress {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    margin: 10px 0 0;
+  }
+
+  /* ---------- Slots ---------- */
+  .slots-row {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  .slot {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .slot-label {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .slot-drop {
+    min-height: 56px;
+    border: 2px dashed var(--line);
+    border-radius: 12px;
+    background: #FAFBFD;
+    display: flex;
+    align-items: stretch;
+    padding: 6px;
+    position: relative;
+    transition: border-color .15s, background .15s;
+  }
+  .slot-drop:empty::before {
+    content: attr(data-placeholder);
+    color: #97A2B4;
+    font-size: 0.95rem;
+    padding: 10px 12px;
+    align-self: center;
+  }
+  .slot-drop.correct { border-style: solid; border-color: var(--green); background: var(--green-soft); }
+  .slot-drop.wrong { border-style: solid; border-color: var(--red); background: var(--red-soft); }
+
+  /* ---------- Pool ---------- */
+  .pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px;
+    background: #F5F6F8;
+    border-radius: 14px;
+    border: 2px solid var(--line);
+    margin-bottom: 20px;
+    min-height: 74px;
+  }
+  .pool[data-empty="true"]::after {
+    content: "Alle Bausteine sind platziert – klicke auf ‚Prüfen'.";
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    padding: 8px;
+  }
+
+  /* ---------- Piece ---------- */
+  .piece {
+    background: var(--amber-soft);
+    border: 2px solid var(--amber);
+    border-radius: 10px;
+    padding: 10px 18px 10px 14px;
+    font-size: 1rem;
+    line-height: 1.35;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    position: relative;
+    max-width: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .piece::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -9px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--amber-soft);
+    border: 2px solid var(--amber);
+    transform: translateY(-50%);
+  }
+  .slot-drop .piece {
+    width: 100%;
+    background: #fff;
+    border-color: var(--blue);
+  }
+  .slot-drop .piece::after { background: #fff; border-color: var(--blue); }
+  .slot-drop.correct .piece { border-color: var(--green); }
+  .slot-drop.correct .piece::after { border-color: var(--green); background: var(--green-soft); }
+  .slot-drop.wrong .piece { border-color: var(--red); }
+  .slot-drop.wrong .piece::after { border-color: var(--red); background: var(--red-soft); }
+
+  .piece.selected { outline: 3px solid var(--blue); outline-offset: 2px; }
+  .piece.locked { cursor: default; }
+  .piece.dragging {
+    position: fixed;
+    z-index: 500;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+    opacity: 0.96;
+    pointer-events: none;
+  }
+
+  /* ---------- Controls ---------- */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .btn {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 11px 20px;
+    min-height: 44px;
+    border-radius: 10px;
+    border: 2px solid var(--ink);
+    cursor: pointer;
+    background: var(--ink);
+    color: #fff;
+  }
+  .btn-ghost {
+    background: #fff;
+    color: var(--ink);
+  }
+  .btn-primary { background: var(--blue); border-color: var(--blue); }
+  .btn-success { background: var(--green); border-color: var(--green); }
+  .btn:disabled { opacity: 0.45; cursor: default; }
+
+  /* ---------- Feedback ---------- */
+  .feedback {
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+    font-size: 0.98rem;
+  }
+  .feedback.ok { background: var(--green-soft); border: 2px solid var(--green); }
+  .feedback.err { background: var(--red-soft); border: 2px solid var(--red); }
+  .feedback ul { margin: 8px 0 0; padding-left: 20px; }
+  .feedback li { margin-bottom: 4px; }
+  .feedback strong { display: block; margin-bottom: 4px; }
+
+  .hint-box {
+    background: var(--amber-soft);
+    border: 2px solid var(--amber);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    font-size: 0.95rem;
+  }
+
+  .learning-note {
+    background: #F5F6F8;
+    border-left: 5px solid var(--blue);
+    border-radius: 4px;
+    padding: 14px 18px;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .learning-note strong { color: var(--ink); }
+
+  /* ---------- Completion ---------- */
+  .completion-card {
+    text-align: center;
+    padding: 40px 20px;
+    background: var(--blue-soft);
+    border: 2px solid var(--blue);
+    border-radius: 16px;
+  }
+  .completion-card h2 {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    margin: 0 0 10px;
+  }
+  .completion-card .stars { font-size: 2rem; margin: 10px 0; }
+
+  /* ---------- Footer ---------- */
+  .app-footer {
+    margin-top: 40px;
+    border-top: 3px solid var(--ink);
+    padding-top: 18px;
+  }
+  .app-footer details {
+    border-bottom: 1px solid var(--line);
+    padding: 10px 0;
+  }
+  .app-footer summary {
+    cursor: pointer;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--blue);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .app-footer p, .app-footer li {
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .app-footer ul { padding-left: 20px; margin: 8px 0; }
+  .footer-byline {
+    margin-top: 16px;
+    font-size: 0.82rem;
+    color: #97A2B4;
+    text-align: right;
+  }
+
+  @media (max-width: 640px) {
+    h1 { font-size: 1.7rem; }
+    .app-header { flex-direction: column; }
+    .header-right { text-align: left; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="app-header">
+    <div class="header-left">
+      <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+      <p class="eyebrow">RE &amp; BA Trainingstool · Denkraum-Reihe</p>
+      <h1>User Story Puzzle</h1>
+      <p class="subtitle">Baue aus einzelnen Bausteinen korrekte User Stories – von der Grundformel bis zur vollständigen Spezifikation mit Akzeptanzkriterium, Business Value und Priorität.</p>
+    </div>
+    <div class="header-right">
+      <button class="beamer-btn" id="beamerToggle" type="button" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
+      <div class="stars" id="overallStars">☆☆☆☆☆</div>
+      <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn</a>
+    </div>
+  </header>
+
+  <nav class="level-nav" id="levelNav"></nav>
+
+  <main id="puzzleStage">
+    <section class="scenario-card">
+      <p class="persona-tag" id="personaTag"></p>
+      <p class="scenario-text" id="scenarioText"></p>
+      <p class="puzzle-progress" id="puzzleProgress"></p>
+    </section>
+
+    <div class="hint-box" id="hintBox" hidden></div>
+
+    <section class="slots-row" id="slotsRow"></section>
+
+    <section class="pool" id="pool" aria-label="Bausteine-Pool"></section>
+
+    <div class="controls">
+      <button class="btn btn-ghost" id="hintBtn" type="button">Tipp</button>
+      <button class="btn btn-ghost" id="resetBtn" type="button">Zurücksetzen</button>
+      <button class="btn btn-primary" id="checkBtn" type="button">Prüfen</button>
+      <button class="btn btn-success" id="nextBtn" type="button" hidden>Weiter →</button>
+    </div>
+
+    <div class="feedback" id="feedback" hidden></div>
+    <div class="learning-note" id="learningNote" hidden></div>
+  </main>
+
+  <div id="completionStage" hidden></div>
+
+  <footer class="app-footer">
+    <details>
+      <summary>Systemprompt</summary>
+      <p>Dieses Tool trainiert die didaktische Kernthese ‚Requirements Engineering für User Stories': Eine gute Story entsteht nicht durch freies Formulieren, sondern durch das bewusste Erkennen und Ausschließen typischer Fehlformen – falsche Rolle, Lösung statt Bedarf, mehrere Anforderungen in einer Story, unklarer Nutzen, nicht belastbarer Business Value, willkürliche Priorisierung. Jede Distraktor-Option ist keine beliebige Verwechslung, sondern verkörpert einen realen, in Trainings wiederkehrenden Fehlertyp nach IREB, INVEST, BABOK v3 und MoSCoW. Die Progression über fünf Level folgt bewusst der Reihenfolge, in der Requirements-Engineering-Artefakte in der Praxis wachsen: Grundformel → präzise, INVEST-konforme Formulierung → Testbarkeit (Akzeptanzkriterium) → Wertbegründung (Business Value) → Entscheidung (Priorität).</p>
+    </details>
+    <details>
+      <summary>Handbuch</summary>
+      <p><strong>Bedienung:</strong> Baustein antippen und ziehen – oder antippen zum Auswählen, dann die Ziel-Lücke antippen. Ein zweites Antippen eines ausgewählten Bausteins hebt die Auswahl wieder auf. Bereits platzierte Bausteine lassen sich erneut antippen, um sie zu verschieben oder zurück in den Pool zu legen.</p>
+      <p><strong>Prüfen:</strong> Der Button ‚Prüfen' markiert jede Lücke grün (korrekt) oder rot (falsch/leer) und liefert bei falschen Bausteinen eine fachliche Begründung. Mehrere Versuche sind möglich. ‚Zurücksetzen' leert die aktuelle Aufgabe wieder in den Pool.</p>
+      <p><strong>Level:</strong> Alle fünf Level sind frei zugänglich – ideal, um im Workshop gezielt auf ein bestimmtes Level zu springen. Jedes Level enthält zwei Aufgaben; ein Häkchen in der Navigation zeigt abgeschlossene Level.</p>
+    </details>
+    <details>
+      <summary>Vortrags-Skript</summary>
+      <p><strong>Einsatzdauer:</strong> ca. 15–20 Minuten als Übungsblock, z. B. nach der Einführung der Grundformel ‚Als … möchte ich … damit …'.</p>
+      <p><strong>Ablauf:</strong> (1) Level 1 gemeinsam am Beamer lösen – laut denken, warum jeder Distraktor falsch ist. (2) Level 2–3 in Kleingruppen oder Einzelarbeit auf eigenen Geräten. (3) Level 4–5 als Transfer-Diskussion: Warum reicht ‚weil die Chefin es will' nicht als Business Value? Wann ist etwas wirklich Must-have?</p>
+      <p><strong>Debrief-Fragen:</strong> Welcher Distraktor hat euch am meisten überrascht? Wo formuliert ihr in eurem Alltag manchmal schon eine Lösung statt eines Bedarfs? Wie begründet ihr Business Value in eurem Team aktuell – nachvollziehbar oder eher gefühlt?</p>
+    </details>
+    <details>
+      <summary>Normen-Register</summary>
+      <ul>
+        <li>IREB CPRE – Qualitätskriterien für Anforderungen (atomar, testbar, eindeutig, konsistent, verfolgbar)</li>
+        <li>INVEST-Kriterien für User Stories (Wake, 2003): Independent, Negotiable, Valuable, Estimable, Small, Testable</li>
+        <li>BABOK v3 (IIBA) – Requirements Life Cycle Management, Value Assessment</li>
+        <li>Gherkin/BDD – Given-When-Then-Format für Akzeptanzkriterien</li>
+        <li>MoSCoW-Priorisierung (DSDM Consortium) – Must-have / Should-have / Could-have / Won't-have</li>
+        <li>Verordnung (EU) 2024/1689 (EU AI Act), Art. 50 – Transparenzpflichten ab 2. August 2026 (Stand: Juli 2026, Digital-Omnibus-Anpassung vom Juni 2026 berücksichtigt)</li>
+      </ul>
+    </details>
+    <p class="footer-byline">Michaela Kühn · PromptSchule / Haufe Akademie · User Story Puzzle · Pilotversion</p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------------------------------------------------------------
+  // Puzzle-Daten
+  // ---------------------------------------------------------------
+  const SLOT_LABELS = {
+    role: "Rolle · Als …",
+    goal: "Ziel · möchte ich …",
+    benefit: "Nutzen · damit …",
+    given: "Given · Ausgangslage",
+    when: "When · Auslöser",
+    then: "Then · Ergebnis",
+    value: "Business Value",
+    priority: "Priorität (MoSCoW)"
+  };
+
+  const PLACEHOLDER = "Baustein hierher ziehen oder antippen";
+
+  function slot(key) { return { key: key, label: SLOT_LABELS[key] }; }
+
+  const PUZZLES = [
+    // ---------------- LEVEL 1 ----------------
+    {
+      id: "l1p1", level: 1, persona: "Sarah · Vertrieb",
+      scenario: "Sarah aus dem Vertrieb verliert bei jedem Angebot Zeit, weil sie Daten manuell aus dem CRM in eine E-Mail überträgt. Baue ihre User Story korrekt zusammen.",
+      slots: [slot("role"), slot("goal"), slot("benefit")],
+      pieces: [
+        { id: "r1", correctSlot: "role", text: "Als Vertriebsmitarbeiterin" },
+        { id: "g1", correctSlot: "goal", text: "möchte ich Angebote direkt aus dem CRM per E-Mail versenden" },
+        { id: "b1", correctSlot: "benefit", text: "damit ich keine Zeit durch manuelle Übertragung in Excel verliere" },
+        { id: "d1", correctSlot: null, text: "Als Systemadministrator", note: "Falsche Rolle – nicht Sarah, sondern die IT-Administration. Eine User Story gehört immer zur Person mit dem eigentlichen Bedarf." },
+        { id: "d2", correctSlot: null, text: "möchte ich alle Kundendaten dauerhaft löschen können", note: "Passt fachlich nicht zum Szenario – eine User Story muss zum tatsächlichen Ziel der Rolle passen." },
+        { id: "d3", correctSlot: null, text: "damit das System allgemein schneller läuft", note: "Zu vage – der Nutzen muss konkret aus dem ‚möchte ich' folgen (IREB: eindeutig)." }
+      ],
+      hint: "Wer hat das Problem, was will die Person konkret tun, und warum lohnt sich das?",
+      learningNote: "Die Grundformel ‚Als … möchte ich … damit …' verbindet Rolle, Ziel und Wert. Der Nutzen (damit) ist der Test dafür, ob die Story wirklich einen Business Value liefert – nicht nur eine Funktion beschreibt."
+    },
+    {
+      id: "l1p2", level: 1, persona: "Ela · Projektleitung",
+      scenario: "Ela verliert bei komplexen Projekten leicht den Überblick über Meilensteine. Baue ihre User Story korrekt zusammen.",
+      slots: [slot("role"), slot("goal"), slot("benefit")],
+      pieces: [
+        { id: "r2", correctSlot: "role", text: "Als Projektleiterin" },
+        { id: "g2", correctSlot: "goal", text: "möchte ich auf einen Blick den aktuellen Status aller Projekt-Meilensteine sehen" },
+        { id: "b2", correctSlot: "benefit", text: "damit ich frühzeitig auf Verzögerungen reagieren kann" },
+        { id: "d1", correctSlot: null, text: "Als Entwickler", note: "Falsche Rolle – die Story beschreibt Elas Bedarf als Projektleiterin, nicht die Perspektive der Entwicklung." },
+        { id: "d2", correctSlot: null, text: "möchte ich das Datenbankschema optimieren", note: "Das ist eine technische Lösungsidee, kein fachliches Ziel – typischer Fehler: Lösung statt Bedarf (IREB-Nebeltyp ‚Lösung')." },
+        { id: "d3", correctSlot: null, text: "damit die Software moderner aussieht", note: "Nicht messbar und nicht mit dem Ziel verbunden – ein guter Nutzen erklärt, warum das Ziel wertvoll ist." }
+      ],
+      hint: "Denk an den IREB-Nebeltyp ‚Lösung': Eine User Story beschreibt den Bedarf, nicht schon die technische Umsetzung.",
+      learningNote: "Ein häufiger Fehler ist, bereits eine Lösung statt eines Bedarfs zu formulieren (‚Datenbank optimieren' statt ‚Status sehen'). Die Lösung gehört in die technische Umsetzung, nicht in die User Story."
+    },
+
+    // ---------------- LEVEL 2 ----------------
+    {
+      id: "l2p1", level: 2, persona: "Sarah · Vertrieb",
+      scenario: "Sarah möchte kleinere Rabatte selbst freigeben dürfen. Wähle die INVEST-konforme Formulierung – nicht jeder Baustein ist atomar und testbar.",
+      slots: [slot("role"), slot("goal"), slot("benefit")],
+      pieces: [
+        { id: "r3", correctSlot: "role", text: "Als Vertriebsmitarbeiterin" },
+        { id: "g3", correctSlot: "goal", text: "möchte ich Rabatte bis 10% selbst freigeben können" },
+        { id: "b3", correctSlot: "benefit", text: "damit ich Angebote ohne Rückfrage beim Vertriebsleiter abschließen kann" },
+        { id: "d1", correctSlot: null, text: "möchte ich Rabatte freigeben, automatisch eine Rechnung erstellen und den Kunden per E-Mail informieren", note: "Verstößt gegen ‚Independent' und ‚Small' (INVEST) – das sind drei Anforderungen in einer Story. Je Story ein Bedarf (IREB: atomar)." },
+        { id: "d2", correctSlot: null, text: "Als Vertriebsleiter", note: "Falsche Rolle – im Szenario hat Sarah den Bedarf, nicht ihr Vorgesetzter." },
+        { id: "d3", correctSlot: null, text: "damit der Umsatz allgemein steigt", note: "Nicht ‚Testable' (INVEST) – zu unspezifisch, um den Erfolg dieser konkreten Story zu prüfen." }
+      ],
+      hint: "INVEST: Independent, Negotiable, Valuable, Estimable, Small, Testable. Welcher Baustein bündelt heimlich mehrere Anforderungen?",
+      learningNote: "INVEST-Kriterium ‚Small': Eine Story sollte in einem Sprint umsetzbar und einzeln testbar sein. Verkettungen mit ‚und' sind ein Warnsignal für mangelnde Atomarität."
+    },
+    {
+      id: "l2p2", level: 2, persona: "Petra · Qualitätsmanagement",
+      scenario: "Petra möchte nach jedem Build sofort sehen, ob Regressionstests fehlgeschlagen sind. Wähle die INVEST-konforme Version.",
+      slots: [slot("role"), slot("goal"), slot("benefit")],
+      pieces: [
+        { id: "r4", correctSlot: "role", text: "Als Qualitätsmanagerin" },
+        { id: "g4", correctSlot: "goal", text: "möchte ich nach jedem Build automatisch die Ergebnisse der Regressionstests einsehen" },
+        { id: "b4", correctSlot: "benefit", text: "damit ich Qualitätsrisiken vor dem Release erkenne" },
+        { id: "d1", correctSlot: null, text: "möchte ich, dass Knut die Tests manuell ausführt, dokumentiert und mir danach in einer Besprechung präsentiert", note: "Beschreibt einen Lösungsweg statt eines Bedarfs und bündelt mehrere Schritte – verstößt gegen ‚Negotiable' und ‚Small'." },
+        { id: "d2", correctSlot: null, text: "Als Entwickler", note: "Falsche Rolle – Petra aus der Qualitätssicherung hat hier den Bedarf." },
+        { id: "d3", correctSlot: null, text: "damit generell alles besser wird", note: "Nicht testbar (INVEST ‚Testable') – kein prüfbares Kriterium für Erfolg." }
+      ],
+      hint: "Welcher Baustein beschreibt schon eine konkrete Lösung (Personen, Arbeitsschritte) statt eines Bedarfs?",
+      learningNote: "INVEST ‚Negotiable': Die Story beschreibt WAS gebraucht wird, nicht WIE es umgesetzt wird. Konkrete Personen oder Arbeitsschritte gehören in die Umsetzung, nicht in die Story."
+    },
+
+    // ---------------- LEVEL 3 ----------------
+    {
+      id: "l3p1", level: 3, persona: "Sarah · Vertrieb",
+      scenario: "Vervollständige Sarahs Story inklusive Akzeptanzkriterium im Given-When-Then-Format (Gherkin/BDD).",
+      slots: [slot("role"), slot("goal"), slot("benefit"), slot("given"), slot("when"), slot("then")],
+      pieces: [
+        { id: "r5", correctSlot: "role", text: "Als Vertriebsmitarbeiterin" },
+        { id: "g5", correctSlot: "goal", text: "möchte ich bei Rabatten über 10% automatisch eine Freigabeanfrage an den Vertriebsleiter senden" },
+        { id: "b5", correctSlot: "benefit", text: "damit keine Rabatte ohne Kontrolle vergeben werden" },
+        { id: "gi5", correctSlot: "given", text: "ein Angebot mit einem Rabatt von mehr als 10% erstellt wird" },
+        { id: "w5", correctSlot: "when", text: "ich das Angebot speichere" },
+        { id: "t5", correctSlot: "then", text: "erhält der Vertriebsleiter automatisch eine Freigabeanfrage" },
+        { id: "d1", correctSlot: null, text: "Als Vertriebsleiter", note: "Falsche Rolle – die Story gehört zu Sarah, die das Angebot erstellt." },
+        { id: "d2", correctSlot: null, text: "Given der Kunde ruft telefonisch an", note: "Kein Systemzustand, sondern ein unabhängiges Ereignis – Given beschreibt die Vorbedingung, nicht einen Zufall." },
+        { id: "d3", correctSlot: null, text: "wenn ich den Kunden anrufe", note: "Kein Auslöser im System – When beschreibt die auslösende Aktion, hier: das Speichern des Angebots." },
+        { id: "d4", correctSlot: null, text: "wird die Rechnung automatisch storniert", note: "Falsches Ergebnis – passt nicht zu Given/When dieser Story. Then muss die direkte Folge des Triggers sein." }
+      ],
+      hint: "Given = Ausgangslage, When = Auslöser, Then = Ergebnis. Was passiert in welcher Reihenfolge?",
+      learningNote: "Given-When-Then (Gherkin/BDD) macht ein Akzeptanzkriterium testbar (IREB-Kriterium ‚testbar'). Given beschreibt die Vorbedingung, When den Auslöser, Then das erwartete, prüfbare Ergebnis."
+    },
+    {
+      id: "l3p2", level: 3, persona: "Ela · Projektleitung",
+      scenario: "Vervollständige Elas Story inklusive Akzeptanzkriterium.",
+      slots: [slot("role"), slot("goal"), slot("benefit"), slot("given"), slot("when"), slot("then")],
+      pieces: [
+        { id: "r6", correctSlot: "role", text: "Als Projektleiterin" },
+        { id: "g6", correctSlot: "goal", text: "möchte ich bei Terminüberschreitung eines Meilensteins automatisch benachrichtigt werden" },
+        { id: "b6", correctSlot: "benefit", text: "damit ich rechtzeitig gegensteuern kann" },
+        { id: "gi6", correctSlot: "given", text: "ein Meilenstein ist mit einem Zieldatum definiert" },
+        { id: "w6", correctSlot: "when", text: "das Zieldatum überschritten wird, ohne dass der Meilenstein als abgeschlossen markiert ist" },
+        { id: "t6", correctSlot: "then", text: "erhalte ich automatisch eine Benachrichtigung per E-Mail" },
+        { id: "d1", correctSlot: null, text: "Als Knut aus der Entwicklung", note: "Falsche Rolle – der Bedarf liegt bei der Projektleitung, nicht bei der Entwicklung." },
+        { id: "d2", correctSlot: null, text: "Given das Projekt ist bereits vollständig abgeschlossen", note: "Widerspricht dem Szenario – ein abgeschlossenes Projekt kann keine offene Terminüberschreitung mehr haben." },
+        { id: "d3", correctSlot: null, text: "wenn Ela ins Büro kommt", note: "Kein systemischer Auslöser – When muss ein prüfbares Ereignis im System sein, kein Zufall." },
+        { id: "d4", correctSlot: null, text: "wird der Meilenstein automatisch gelöscht", note: "Unpassendes und riskantes Ergebnis – es soll benachrichtigt, nicht gelöscht werden." }
+      ],
+      hint: "Achte darauf, dass Given, When und Then logisch zusammenpassen und wirklich zum Ziel der Story passen.",
+      learningNote: "Ein Akzeptanzkriterium ist nur dann gut, wenn Given, When und Then in sich konsistent sind (IREB: ‚konsistent') und wirklich das Ziel der Story prüfbar machen."
+    },
+
+    // ---------------- LEVEL 4 ----------------
+    {
+      id: "l4p1", level: 4, persona: "Petra · Qualitätsmanagement",
+      scenario: "Vervollständige Petras Story inklusive Akzeptanzkriterium und Business Value.",
+      slots: [slot("role"), slot("goal"), slot("benefit"), slot("given"), slot("when"), slot("then"), slot("value")],
+      pieces: [
+        { id: "r7", correctSlot: "role", text: "Als Qualitätsmanagerin" },
+        { id: "g7", correctSlot: "goal", text: "möchte ich vor jedem Release automatisch einen Compliance-Report erhalten" },
+        { id: "b7", correctSlot: "benefit", text: "damit ich Verstöße gegen unsere Qualitätsmerkmale frühzeitig erkenne" },
+        { id: "gi7", correctSlot: "given", text: "ein Release ist zur Freigabe vorbereitet" },
+        { id: "w7", correctSlot: "when", text: "der Freigabeprozess gestartet wird" },
+        { id: "t7", correctSlot: "then", text: "wird automatisch ein Compliance-Report mit allen Qualitätsverstößen erzeugt" },
+        { id: "v7", correctSlot: "value", text: "Hoch – verhindert kostspielige Nacharbeiten nach dem Release und reduziert Haftungsrisiken" },
+        { id: "d1", correctSlot: null, text: "Als Geschäftsführer", note: "Falsche Rolle – der Compliance-Report ist Petras operativer Bedarf in der Qualitätssicherung." },
+        { id: "d2", correctSlot: null, text: "Given ein Release ist bereits produktiv im Einsatz", note: "Zu spät – die Story zielt auf eine Prüfung VOR der Freigabe, nicht danach." },
+        { id: "d3", correctSlot: null, text: "wenn ein Kunde sich beschwert", note: "Kein geeigneter Auslöser für einen präventiven Compliance-Report vor dem Release." },
+        { id: "d4", correctSlot: null, text: "wird das Release automatisch veröffentlicht", note: "Falsches Ergebnis – Ziel ist ein Report zur Prüfung, nicht die automatische Veröffentlichung." },
+        { id: "d5", correctSlot: null, text: "Niedrig – ist nur ein Reporting-Feature", note: "Unterschätzt das Risiko – ein fehlender Compliance-Check vor dem Release kann teure Nacharbeiten und Reputationsschäden verursachen." },
+        { id: "d6", correctSlot: null, text: "Hoch – weil Petra sich das schon lange wünscht", note: "Kein sachlicher Wertbezug – Business Value braucht eine nachvollziehbare Begründung, keine Wunschargumentation." }
+      ],
+      hint: "Ein guter Business Value benennt konkret Risiko, Kosten oder Nutzen – nicht Meinungen oder Wünsche einzelner Personen.",
+      learningNote: "Business Value sollte nachvollziehbar begründet sein (BABOK: Value Assessment) – etwa durch vermiedenes Risiko, Kosteneinsparung oder Nutzenpotenzial, nicht durch Autorität oder Bauchgefühl."
+    },
+    {
+      id: "l4p2", level: 4, persona: "Herr Bachmeier · Geschäftsführung",
+      scenario: "Vervollständige Herrn Bachmeiers Story inklusive Akzeptanzkriterium und Business Value.",
+      slots: [slot("role"), slot("goal"), slot("benefit"), slot("given"), slot("when"), slot("then"), slot("value")],
+      pieces: [
+        { id: "r8", correctSlot: "role", text: "Als Geschäftsführer" },
+        { id: "g8", correctSlot: "goal", text: "möchte ich eine monatliche Umsatzprognose auf Basis aktueller Vertriebsdaten erhalten" },
+        { id: "b8", correctSlot: "benefit", text: "damit ich fundierte strategische Entscheidungen treffen kann" },
+        { id: "gi8", correctSlot: "given", text: "der Monat ist abgeschlossen" },
+        { id: "w8", correctSlot: "when", text: "der Report generiert wird" },
+        { id: "t8", correctSlot: "then", text: "zeigt das System eine Umsatzprognose für die nächsten drei Monate" },
+        { id: "v8", correctSlot: "value", text: "Hoch – ermöglicht datenbasierte statt bauchgefühlbasierte strategische Entscheidungen" },
+        { id: "d1", correctSlot: null, text: "Als Vertriebsmitarbeiterin", note: "Falsche Rolle – die strategische Prognose ist der Bedarf der Geschäftsführung." },
+        { id: "d2", correctSlot: null, text: "Given der Monat hat gerade erst begonnen", note: "Passt nicht – eine Prognose auf Basis abgeschlossener Daten braucht den Monatsabschluss als Vorbedingung." },
+        { id: "d3", correctSlot: null, text: "wenn ein neuer Mitarbeiter eingestellt wird", note: "Kein passender Auslöser für eine monatliche Umsatzprognose." },
+        { id: "d4", correctSlot: null, text: "wird automatisch eine neue Stelle ausgeschrieben", note: "Unpassendes Ergebnis – Ziel ist die Anzeige einer Prognose, keine Personalentscheidung." },
+        { id: "d5", correctSlot: null, text: "Niedrig – Geschäftsführer haben ohnehin genug Informationen", note: "Unbegründete Annahme – der tatsächliche Wert ergibt sich aus der Entscheidungsqualität, nicht aus der Hierarchieebene." },
+        { id: "d6", correctSlot: null, text: "Hoch – weil der Chef es so will", note: "Autoritätsargument statt Wertbegründung – Business Value braucht eine sachliche Begründung." }
+      ],
+      hint: "Guter Business Value erklärt den strategischen Nutzen sachlich – nicht mit Hierarchie oder Wünschen.",
+      learningNote: "Auch bei Stories auf Geschäftsführungs-Ebene gilt: Business Value muss inhaltlich begründet sein, nicht mit der Position der anfragenden Person."
+    },
+
+    // ---------------- LEVEL 5 ----------------
+    {
+      id: "l5p1", level: 5, persona: "Petra · Qualitätsmanagement",
+      scenario: "Vervollständige die vollständige Story inklusive Priorität nach MoSCoW.",
+      slots: [slot("role"), slot("goal"), slot("benefit"), slot("given"), slot("when"), slot("then"), slot("value"), slot("priority")],
+      pieces: [
+        { id: "r9", correctSlot: "role", text: "Als Qualitätsmanagerin" },
+        { id: "g9", correctSlot: "goal", text: "möchte ich sicherstellen, dass alle unternehmenseigenen Chatbots sich gegenüber Nutzenden eindeutig als KI zu erkennen geben" },
+        { id: "b9", correctSlot: "benefit", text: "damit das Unternehmen die Transparenzpflichten nach Art. 50 EU AI Act erfüllt und keine Bußgelder riskiert" },
+        { id: "gi9", correctSlot: "given", text: "ein Chatbot wird produktiv mit Kundenkontakt eingesetzt" },
+        { id: "w9", correctSlot: "when", text: "eine Nutzerin oder ein Nutzer eine Unterhaltung startet" },
+        { id: "t9", correctSlot: "then", text: "wird zu Beginn eindeutig auf den KI-Einsatz hingewiesen" },
+        { id: "v9", correctSlot: "value", text: "Hoch – vermeidet empfindliche Bußgelder bei Verstößen gegen die Transparenzpflichten" },
+        { id: "p9", correctSlot: "priority", text: "Must-have – gesetzliche Frist ab 2. August 2026, keine Verhandlungsmasse" },
+        { id: "d1", correctSlot: null, text: "Als Geschäftsführer", note: "Operativ verantwortlich für die Umsetzung ist hier die Qualitätsmanagerin, nicht die Geschäftsführung direkt." },
+        { id: "d2", correctSlot: null, text: "Given ein Chatbot befindet sich noch in der internen Testphase", note: "Passt nicht – die Pflicht betrifft den produktiven Einsatz mit echtem Nutzerkontakt." },
+        { id: "d3", correctSlot: null, text: "wenn das Marketing eine neue Kampagne startet", note: "Kein passender Auslöser für die Kennzeichnungspflicht eines Chatbots." },
+        { id: "d4", correctSlot: null, text: "wird der Chatbot dauerhaft deaktiviert", note: "Falsches Ergebnis – Ziel ist die Kennzeichnung, nicht die Abschaltung." },
+        { id: "d5", correctSlot: null, text: "Niedrig – betrifft nur die Kennzeichnung", note: "Unterschätzt das Risiko – Verstöße gegen Transparenzpflichten können empfindliche Bußgelder nach sich ziehen." },
+        { id: "d6", correctSlot: null, text: "Should-have – wichtig, aber es gibt aktuell Dringenderes", note: "Unterschätzt den Charakter der Anforderung – eine gesetzliche Frist ist per Definition Must-have, nicht verhandelbar." },
+        { id: "d7", correctSlot: null, text: "Could-have – nice to have für zukünftige Audits", note: "Verkennt die rechtliche Verbindlichkeit – Transparenzpflichten sind keine Kür." },
+        { id: "d8", correctSlot: null, text: "Won't-have – aktuell nicht relevant", note: "Grob falsch – die Pflicht ist ab dem 2. August 2026 unmittelbar bindend." }
+      ],
+      hint: "MoSCoW: Must-have sind meist gesetzliche oder vertragliche Pflichten ohne Verhandlungsspielraum.",
+      learningNote: "Priorisierung nach MoSCoW (Must/Should/Could/Won't) sollte auf nachvollziehbaren Kriterien beruhen – gesetzliche Fristen wie die EU-AI-Act-Transparenzpflichten (Art. 50, ab 2. August 2026) sind ein klassisches Beispiel für Must-have."
+    },
+    {
+      id: "l5p2", level: 5, persona: "Sarah · Vertrieb",
+      scenario: "Vervollständige die vollständige Story inklusive Priorität – diesmal für ein Komfort-Feature.",
+      slots: [slot("role"), slot("goal"), slot("benefit"), slot("given"), slot("when"), slot("then"), slot("value"), slot("priority")],
+      pieces: [
+        { id: "r10", correctSlot: "role", text: "Als Vertriebsmitarbeiterin" },
+        { id: "g10", correctSlot: "goal", text: "möchte ich das CRM in einer von mir gewählten Akzentfarbe personalisieren können" },
+        { id: "b10", correctSlot: "benefit", text: "damit sich die Anwendung für mich vertrauter anfühlt" },
+        { id: "gi10", correctSlot: "given", text: "ich bin im CRM eingeloggt" },
+        { id: "w10", correctSlot: "when", text: "ich in den Einstellungen eine Akzentfarbe auswähle" },
+        { id: "t10", correctSlot: "then", text: "wird die Oberfläche in dieser Farbe dargestellt" },
+        { id: "v10", correctSlot: "value", text: "Niedrig bis mittel – steigert die Zufriedenheit Einzelner, ohne direkten Geschäftsnutzen" },
+        { id: "p10", correctSlot: "priority", text: "Could-have – angenehm, aber ohne Auswirkung auf Kernprozesse, gut verschiebbar" },
+        { id: "d1", correctSlot: null, text: "Als Systemadministrator", note: "Falsche Rolle – der Personalisierungswunsch kommt von Sarah als Nutzerin, nicht von der Administration." },
+        { id: "d2", correctSlot: null, text: "Given das CRM wird gerade neu installiert", note: "Passt nicht – die Personalisierung setzt eine laufende, eingeloggte Sitzung voraus." },
+        { id: "d3", correctSlot: null, text: "wenn ein neues Release ausgerollt wird", note: "Kein passender Auslöser für eine individuelle Farbeinstellung." },
+        { id: "d4", correctSlot: null, text: "werden alle Benutzerkonten zurückgesetzt", note: "Unpassendes und riskantes Ergebnis – Ziel ist eine rein visuelle Anpassung." },
+        { id: "d5", correctSlot: null, text: "Hoch – jede Personalisierung steigert automatisch den Umsatz", note: "Unbelegte Kausalität – ein Komfort-Feature hat meist keinen direkten, nachweisbaren Umsatzeffekt." },
+        { id: "d6", correctSlot: null, text: "Must-have – Nutzerzufriedenheit hat immer höchste Priorität", note: "Fehlschluss – nicht jede Zufriedenheitssteigerung ist geschäftskritisch. Must-have braucht einen zwingenden Grund (Gesetz, Vertrag, Kernprozess)." },
+        { id: "d7", correctSlot: null, text: "Should-have – wichtig für die Akzeptanz des gesamten Tools", note: "Überschätzt – ein reines Farbschema entscheidet in der Regel nicht über die Werkzeug-Akzeptanz." },
+        { id: "d8", correctSlot: null, text: "Won't-have – wird niemals umgesetzt", note: "MoSCoW-Missverständnis: ‚Won't-have' heißt ‚nicht in diesem Zeitraum/dieser Iteration', nicht ‚nie'." }
+      ],
+      hint: "Nicht jede Verbesserung der Zufriedenheit ist automatisch Must-have. Was passiert, wenn dieses Feature fehlt?",
+      learningNote: "MoSCoW-Feinheit: ‚Won't-have' bedeutet ‚nicht in diesem Release/Sprint', nicht ‚nie'. Die Einordnung als Could-have zeigt, dass Komfort-Features wertvoll, aber verschiebbar sind."
+    }
+  ];
+
+  // ---------------------------------------------------------------
+  // Zustand
+  // ---------------------------------------------------------------
+  let currentIndex = 0;
+  const completed = new Set();
+  let selectedPiece = null;
+  let dragCandidate = null;
+  let justDragged = false;
+
+  // ---------------------------------------------------------------
+  // DOM-Referenzen
+  // ---------------------------------------------------------------
+  const levelNav = document.getElementById("levelNav");
+  const personaTag = document.getElementById("personaTag");
+  const scenarioText = document.getElementById("scenarioText");
+  const puzzleProgress = document.getElementById("puzzleProgress");
+  const slotsRow = document.getElementById("slotsRow");
+  const pool = document.getElementById("pool");
+  const hintBtn = document.getElementById("hintBtn");
+  const hintBox = document.getElementById("hintBox");
+  const resetBtn = document.getElementById("resetBtn");
+  const checkBtn = document.getElementById("checkBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const feedback = document.getElementById("feedback");
+  const learningNote = document.getElementById("learningNote");
+  const overallStars = document.getElementById("overallStars");
+  const puzzleStage = document.getElementById("puzzleStage");
+  const completionStage = document.getElementById("completionStage");
+
+  // ---------------------------------------------------------------
+  // Level-Navigation
+  // ---------------------------------------------------------------
+  function buildLevelNav() {
+    levelNav.innerHTML = "";
+    for (let lvl = 1; lvl <= 5; lvl++) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "level-btn";
+      btn.dataset.level = lvl;
+      const starsMini = document.createElement("span");
+      starsMini.className = "stars-mini";
+      starsMini.textContent = "★".repeat(lvl);
+      const label = document.createElement("span");
+      label.textContent = "Level " + lvl;
+      btn.appendChild(starsMini);
+      btn.appendChild(label);
+      btn.addEventListener("click", function () {
+        const firstIdx = PUZZLES.findIndex(function (p) { return p.level === lvl; });
+        loadPuzzle(firstIdx);
+      });
+      levelNav.appendChild(btn);
+    }
+  }
+
+  function updateLevelNav() {
+    const buttons = levelNav.querySelectorAll(".level-btn");
+    buttons.forEach(function (btn) {
+      const lvl = parseInt(btn.dataset.level, 10);
+      const puzzle = PUZZLES[currentIndex];
+      btn.classList.toggle("active", puzzle && puzzle.level === lvl);
+      const levelPuzzles = PUZZLES.filter(function (p) { return p.level === lvl; });
+      const allDone = levelPuzzles.every(function (p) { return completed.has(p.id); });
+      btn.classList.toggle("done", allDone);
+    });
+    const doneLevels = [1, 2, 3, 4, 5].filter(function (lvl) {
+      return PUZZLES.filter(function (p) { return p.level === lvl; }).every(function (p) { return completed.has(p.id); });
+    }).length;
+    overallStars.textContent = "★".repeat(doneLevels) + "☆".repeat(5 - doneLevels);
+  }
+
+  // ---------------------------------------------------------------
+  // Shuffle
+  // ---------------------------------------------------------------
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  // ---------------------------------------------------------------
+  // Puzzle laden
+  // ---------------------------------------------------------------
+  function loadPuzzle(index) {
+    if (index >= PUZZLES.length) { showCompletion(); return; }
+    currentIndex = index;
+    const puzzle = PUZZLES[index];
+
+    puzzleStage.hidden = false;
+    completionStage.hidden = true;
+
+    personaTag.textContent = puzzle.persona + " · Level " + puzzle.level;
+    scenarioText.textContent = puzzle.scenario;
+    const puzzlesInLevel = PUZZLES.filter(function (p) { return p.level === puzzle.level; });
+    const posInLevel = puzzlesInLevel.indexOf(puzzle) + 1;
+    puzzleProgress.textContent = "Aufgabe " + posInLevel + " von " + puzzlesInLevel.length + " in Level " + puzzle.level + " · Insgesamt " + (index + 1) + " von " + PUZZLES.length;
+
+    hintBox.hidden = true;
+    hintBox.textContent = "Tipp: " + puzzle.hint;
+    feedback.hidden = true;
+    feedback.className = "feedback";
+    learningNote.hidden = true;
+    nextBtn.hidden = true;
+    checkBtn.disabled = false;
+    selectedPiece = null;
+
+    // Slots aufbauen
+    slotsRow.innerHTML = "";
+    puzzle.slots.forEach(function (s) {
+      const wrap = document.createElement("div");
+      wrap.className = "slot";
+      const label = document.createElement("div");
+      label.className = "slot-label";
+      label.textContent = s.label;
+      const drop = document.createElement("div");
+      drop.className = "slot-drop";
+      drop.dataset.key = s.key;
+      drop.dataset.placeholder = PLACEHOLDER;
+      drop.tabIndex = 0;
+      drop.setAttribute("role", "button");
+      drop.setAttribute("aria-label", s.label + " – Ablagefeld");
+      drop.addEventListener("click", function () { onSlotActivate(drop); });
+      drop.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSlotActivate(drop); }
+      });
+      wrap.appendChild(label);
+      wrap.appendChild(drop);
+      slotsRow.appendChild(wrap);
+    });
+
+    // Pool aufbauen
+    pool.innerHTML = "";
+    pool.removeAttribute("data-empty");
+    const piecesShuffled = shuffle(puzzle.pieces);
+    piecesShuffled.forEach(function (p) {
+      pool.appendChild(createPieceEl(p));
+    });
+
+    updateLevelNav();
+  }
+
+  function createPieceEl(pieceData) {
+    const el = document.createElement("div");
+    el.className = "piece";
+    el.dataset.id = pieceData.id;
+    el.tabIndex = 0;
+    el.setAttribute("role", "button");
+    const span = document.createElement("span");
+    span.textContent = pieceData.text;
+    el.appendChild(span);
+
+    el.addEventListener("pointerdown", onPieceDown);
+    el.addEventListener("click", onPieceClick);
+    el.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onPieceClick(e); }
+    });
+    return el;
+  }
+
+  // ---------------------------------------------------------------
+  // Auswahl (Tap-to-Place)
+  // ---------------------------------------------------------------
+  function selectPieceEl(piece) {
+    if (selectedPiece && selectedPiece !== piece) selectedPiece.classList.remove("selected");
+    if (selectedPiece === piece) {
+      piece.classList.remove("selected");
+      selectedPiece = null;
+    } else {
+      selectedPiece = piece;
+      piece.classList.add("selected");
+    }
+  }
+
+  function deselect() {
+    if (selectedPiece) selectedPiece.classList.remove("selected");
+    selectedPiece = null;
+  }
+
+  function onPieceClick(e) {
+    e.stopPropagation();
+    if (justDragged) return;
+    const piece = e.currentTarget;
+    if (piece.classList.contains("locked")) return;
+    selectPieceEl(piece);
+  }
+
+  function onSlotActivate(slotDrop) {
+    if (slotDrop.classList.contains("locked")) return;
+    if (selectedPiece) {
+      placePieceInSlot(selectedPiece, slotDrop);
+      deselect();
+    } else {
+      const existing = slotDrop.querySelector(".piece");
+      if (existing && !existing.classList.contains("locked")) selectPieceEl(existing);
+    }
+  }
+
+  pool.addEventListener("click", function (e) {
+    if (e.target === pool && selectedPiece) {
+      pool.appendChild(selectedPiece);
+      deselect();
+      pool.removeAttribute("data-empty");
+    }
+  });
+
+  function placePieceInSlot(piece, slotDrop) {
+    const existing = slotDrop.querySelector(".piece");
+    if (existing && existing !== piece) {
+      pool.appendChild(existing);
+    }
+    slotDrop.appendChild(piece);
+    piece.classList.remove("selected");
+    slotDrop.classList.remove("correct", "wrong");
+    clearFeedbackAfterEdit();
+    if (pool.children.length === 0) pool.setAttribute("data-empty", "true");
+    else pool.removeAttribute("data-empty");
+  }
+
+  function clearFeedbackAfterEdit() {
+    if (!feedback.hidden) { feedback.hidden = true; }
+    if (!learningNote.hidden) {
+      // Aufgabe war bereits gelöst – bei Änderung wieder freigeben
+    }
+  }
+
+  // ---------------------------------------------------------------
+  // Drag (Pointer Events)
+  // ---------------------------------------------------------------
+  function onPieceDown(e) {
+    const piece = e.currentTarget;
+    if (piece.classList.contains("locked")) return;
+    const rect = piece.getBoundingClientRect();
+    dragCandidate = {
+      piece: piece,
+      startX: e.clientX,
+      startY: e.clientY,
+      offsetX: e.clientX - rect.left,
+      offsetY: e.clientY - rect.top,
+      width: rect.width,
+      moved: false,
+      pointerId: e.pointerId
+    };
+    piece.setPointerCapture(e.pointerId);
+    piece.addEventListener("pointermove", onPieceMove);
+    piece.addEventListener("pointerup", onPieceUp);
+    piece.addEventListener("pointercancel", onPieceUp);
+  }
+
+  function onPieceMove(e) {
+    if (!dragCandidate) return;
+    const dx = e.clientX - dragCandidate.startX;
+    const dy = e.clientY - dragCandidate.startY;
+    if (!dragCandidate.moved && Math.hypot(dx, dy) > 6) {
+      dragCandidate.moved = true;
+      const piece = dragCandidate.piece;
+      piece.classList.add("dragging");
+      piece.style.width = dragCandidate.width + "px";
+    }
+    if (dragCandidate.moved) {
+      const piece = dragCandidate.piece;
+      piece.style.left = (e.clientX - dragCandidate.offsetX) + "px";
+      piece.style.top = (e.clientY - dragCandidate.offsetY) + "px";
+    }
+  }
+
+  function onPieceUp(e) {
+    if (!dragCandidate) return;
+    const piece = dragCandidate.piece;
+    try { piece.releasePointerCapture(e.pointerId); } catch (err) {}
+    piece.removeEventListener("pointermove", onPieceMove);
+    piece.removeEventListener("pointerup", onPieceUp);
+    piece.removeEventListener("pointercancel", onPieceUp);
+
+    if (dragCandidate.moved) {
+      piece.classList.remove("dragging");
+      piece.style.position = "";
+      piece.style.left = "";
+      piece.style.top = "";
+      piece.style.width = "";
+
+      const target = document.elementFromPoint(e.clientX, e.clientY);
+      const slotDrop = target ? target.closest(".slot-drop") : null;
+      if (slotDrop) {
+        placePieceInSlot(piece, slotDrop);
+      } else {
+        pool.appendChild(piece);
+        if (pool.children.length === 0) pool.setAttribute("data-empty", "true");
+        else pool.removeAttribute("data-empty");
+      }
+      justDragged = true;
+      setTimeout(function () { justDragged = false; }, 0);
+    }
+    dragCandidate = null;
+  }
+
+  // ---------------------------------------------------------------
+  // Prüfen
+  // ---------------------------------------------------------------
+  checkBtn.addEventListener("click", function () {
+    const puzzle = PUZZLES[currentIndex];
+    let allCorrect = true;
+    const problems = [];
+
+    puzzle.slots.forEach(function (s) {
+      const slotDrop = slotsRow.querySelector('.slot-drop[data-key="' + s.key + '"]');
+      const pieceEl = slotDrop.querySelector(".piece");
+      const correctPiece = puzzle.pieces.find(function (p) { return p.correctSlot === s.key; });
+
+      if (pieceEl && correctPiece && pieceEl.dataset.id === correctPiece.id) {
+        slotDrop.classList.remove("wrong");
+        slotDrop.classList.add("correct");
+      } else {
+        allCorrect = false;
+        slotDrop.classList.remove("correct");
+        slotDrop.classList.add("wrong");
+        if (pieceEl) {
+          const placedData = puzzle.pieces.find(function (p) { return p.id === pieceEl.dataset.id; });
+          const note = (placedData && placedData.note) ? placedData.note : "Das passt hier nicht – prüfe, ob dieser Baustein zu einer anderen Lücke gehört.";
+          problems.push(s.label + ": " + note);
+        } else {
+          problems.push(s.label + ": Hier fehlt noch ein Baustein.");
+        }
+      }
+    });
+
+    feedback.hidden = false;
+    if (allCorrect) {
+      feedback.className = "feedback ok";
+      feedback.innerHTML = "<strong>Richtig zusammengesetzt.</strong>Alle Bausteine sitzen an der passenden Stelle.";
+      learningNote.hidden = false;
+      learningNote.innerHTML = "<strong>Lerneinheit:</strong> " + puzzle.learningNote;
+      checkBtn.disabled = true;
+      nextBtn.hidden = false;
+      nextBtn.textContent = (currentIndex + 1 < PUZZLES.length) ? "Weiter →" : "Fertig – Ergebnis anzeigen";
+      // Bausteine sperren
+      slotsRow.querySelectorAll(".piece").forEach(function (p) { p.classList.add("locked"); });
+      completed.add(puzzle.id);
+      updateLevelNav();
+    } else {
+      feedback.className = "feedback err";
+      let html = "<strong>Noch nicht ganz richtig.</strong><ul>";
+      problems.forEach(function (line) {
+        const parts = line.split(": ");
+        html += "<li><strong style='display:inline'>" + parts[0] + ":</strong> " + parts.slice(1).join(": ") + "</li>";
+      });
+      html += "</ul>";
+      feedback.innerHTML = html;
+      learningNote.hidden = true;
+    }
+  });
+
+  // ---------------------------------------------------------------
+  // Tipp / Zurücksetzen / Weiter
+  // ---------------------------------------------------------------
+  hintBtn.addEventListener("click", function () {
+    hintBox.hidden = !hintBox.hidden;
+  });
+
+  resetBtn.addEventListener("click", function () {
+    const puzzle = PUZZLES[currentIndex];
+    if (puzzle.pieces.some(function (p) {
+      const el = slotsRow.querySelector('.piece[data-id="' + p.id + '"]');
+      return el && el.classList.contains("locked");
+    })) {
+      // bereits gelöst – kein Reset nötig, aber erlauben, falls gewünscht
+    }
+    loadPuzzle(currentIndex);
+  });
+
+  nextBtn.addEventListener("click", function () {
+    loadPuzzle(currentIndex + 1);
+  });
+
+  // ---------------------------------------------------------------
+  // Abschluss
+  // ---------------------------------------------------------------
+  function showCompletion() {
+    puzzleStage.hidden = true;
+    completionStage.hidden = false;
+    completionStage.innerHTML =
+      '<div class="completion-card">' +
+      '<h2>Alle Level gemeistert</h2>' +
+      '<div class="stars">★★★★★</div>' +
+      '<p>Du hast alle 10 Aufgaben zur Grundformel, INVEST, Akzeptanzkriterien, Business Value und Priorisierung korrekt gelöst.</p>' +
+      '<button class="btn btn-primary" id="restartBtn" type="button">Noch einmal von vorn</button>' +
+      '</div>';
+    document.getElementById("restartBtn").addEventListener("click", function () {
+      completed.clear();
+      loadPuzzle(0);
+    });
+    updateLevelNav();
+  }
+
+  // ---------------------------------------------------------------
+  // Beamer-Modus
+  // ---------------------------------------------------------------
+  const BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+  (function () {
+    let level = 0;
+    try { level = Number(localStorage.getItem("userStoryPuzzle_beamer")) || 0; } catch (e) {}
+    if (!(level >= 0 && level <= 2)) level = 0;
+    function applyBeamerLevel(l) {
+      document.documentElement.setAttribute("data-beamer", String(l));
+      const btn = document.getElementById("beamerToggle");
+      btn.textContent = BEAMER_LABELS[l];
+      btn.classList.toggle("active", l > 0);
+    }
+    applyBeamerLevel(level);
+    document.getElementById("beamerToggle").addEventListener("click", function () {
+      level = (level + 1) % BEAMER_LABELS.length;
+      try { localStorage.setItem("userStoryPuzzle_beamer", String(level)); } catch (e) {}
+      applyBeamerLevel(level);
+    });
+  })();
+
+  // ---------------------------------------------------------------
+  // Start
+  // ---------------------------------------------------------------
+  buildLevelNav();
+  loadPuzzle(0);
+})();
+</script>
+</body>
+</html>
