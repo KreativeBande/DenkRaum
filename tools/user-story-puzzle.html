@@ -501,6 +501,7 @@
 
     <div class="controls">
       <button class="btn btn-ghost" id="hintBtn" type="button">Tipp</button>
+      <button class="btn btn-ghost" id="solutionBtn" type="button">Musterlösung zeigen</button>
       <button class="btn btn-ghost" id="resetBtn" type="button">Zurücksetzen</button>
       <button class="btn btn-primary" id="checkBtn" type="button">Prüfen</button>
       <button class="btn btn-success" id="nextBtn" type="button" hidden>Weiter →</button>
@@ -792,6 +793,7 @@
   const pool = document.getElementById("pool");
   const hintBtn = document.getElementById("hintBtn");
   const hintBox = document.getElementById("hintBox");
+  const solutionBtn = document.getElementById("solutionBtn");
   const resetBtn = document.getElementById("resetBtn");
   const checkBtn = document.getElementById("checkBtn");
   const nextBtn = document.getElementById("nextBtn");
@@ -1159,6 +1161,20 @@
   // ---------------------------------------------------------------
   hintBtn.addEventListener("click", function () {
     hintBox.hidden = !hintBox.hidden;
+  });
+
+  solutionBtn.addEventListener("click", function () {
+    const puzzle = PUZZLES[currentIndex];
+    const isHidden = modelSolution.hidden;
+    if (isHidden) {
+      modelSolution.hidden = false;
+      modelSolution.innerHTML = "<strong>Musterlösung</strong>" + buildModelSolutionHtml(puzzle);
+      learningNote.hidden = false;
+      learningNote.innerHTML = "<strong>Lerneinheit:</strong> " + puzzle.learningNote;
+    } else {
+      modelSolution.hidden = true;
+      learningNote.hidden = true;
+    }
   });
 
   resetBtn.addEventListener("click", function () {
