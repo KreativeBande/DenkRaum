@@ -40,7 +40,7 @@
   }
 
   .app {
-    max-width: 980px;
+    max-width: 1180px;
     margin: 0 auto;
     padding: 20px 20px 40px;
   }
@@ -181,12 +181,32 @@
     margin: 10px 0 0;
   }
 
+  /* ---------- Zwei-Spalten-Layout: Felder links, Bausteine rechts ---------- */
+  .puzzle-columns {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 24px;
+    align-items: start;
+    margin-bottom: 22px;
+  }
+  .column-label {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+    margin: 0 0 10px;
+  }
+  @media (max-width: 760px) {
+    .puzzle-columns { grid-template-columns: 1fr; }
+  }
+
   /* ---------- Slots ---------- */
   .slots-row {
     display: flex;
     flex-direction: column;
     gap: 14px;
-    margin-bottom: 22px;
   }
   .slot {
     display: flex;
@@ -226,12 +246,12 @@
   .pool {
     display: flex;
     flex-wrap: wrap;
+    align-content: flex-start;
     gap: 12px;
     padding: 16px;
     background: #F5F6F8;
     border-radius: 14px;
     border: 2px solid var(--line);
-    margin-bottom: 20px;
     min-height: 74px;
   }
   .pool[data-empty="true"]::after {
@@ -437,9 +457,16 @@
 
     <div class="hint-box" id="hintBox" hidden></div>
 
-    <section class="slots-row" id="slotsRow"></section>
-
-    <section class="pool" id="pool" aria-label="Bausteine-Pool"></section>
+    <div class="puzzle-columns">
+      <div class="column-left">
+        <p class="column-label">Deine User Story</p>
+        <section class="slots-row" id="slotsRow"></section>
+      </div>
+      <div class="column-right">
+        <p class="column-label">Bausteine</p>
+        <section class="pool" id="pool" aria-label="Bausteine-Pool"></section>
+      </div>
+    </div>
 
     <div class="controls">
       <button class="btn btn-ghost" id="hintBtn" type="button">Tipp</button>
