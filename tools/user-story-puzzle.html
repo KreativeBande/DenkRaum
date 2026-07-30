@@ -372,6 +372,37 @@
   }
   .learning-note strong { color: var(--ink); }
 
+  .model-solution {
+    background: var(--green-soft);
+    border: 2px solid var(--green);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    font-size: 0.98rem;
+  }
+  .model-solution > strong {
+    display: block;
+    margin-bottom: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--green);
+  }
+  .model-solution .story-text {
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+  .model-solution .ac-block {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+  .model-solution .ac-block b { color: var(--green); }
+  .model-solution .meta-row { font-size: 0.95rem; margin-bottom: 4px; }
+  .model-solution .meta-row b { color: var(--ink); }
+
   /* ---------- Completion ---------- */
   .completion-card {
     text-align: center;
@@ -476,6 +507,7 @@
     </div>
 
     <div class="feedback" id="feedback" hidden></div>
+    <div class="model-solution" id="modelSolution" hidden></div>
     <div class="learning-note" id="learningNote" hidden></div>
   </main>
 
@@ -764,6 +796,7 @@
   const checkBtn = document.getElementById("checkBtn");
   const nextBtn = document.getElementById("nextBtn");
   const feedback = document.getElementById("feedback");
+  const modelSolution = document.getElementById("modelSolution");
   const learningNote = document.getElementById("learningNote");
   const overallStars = document.getElementById("overallStars");
   const puzzleStage = document.getElementById("puzzleStage");
@@ -843,6 +876,7 @@
     hintBox.textContent = "Tipp: " + puzzle.hint;
     feedback.hidden = true;
     feedback.className = "feedback";
+    modelSolution.hidden = true;
     learningNote.hidden = true;
     nextBtn.hidden = true;
     checkBtn.disabled = false;
@@ -1038,6 +1072,31 @@
   }
 
   // ---------------------------------------------------------------
+  // Musterlösung
+  // ---------------------------------------------------------------
+  function buildModelSolutionHtml(puzzle) {
+    const bySlot = {};
+    puzzle.pieces.forEach(function (p) {
+      if (p.correctSlot) bySlot[p.correctSlot] = p.text;
+    });
+
+    let html = "";
+    if (bySlot.role && bySlot.goal && bySlot.benefit) {
+      html += '<div class="story-text">' + bySlot.role + " " + bySlot.goal + ", " + bySlot.benefit + ".</div>";
+    }
+    if (bySlot.given || bySlot.when || bySlot.then) {
+      html += '<div class="ac-block">';
+      if (bySlot.given) html += "<div><b>Given</b> " + bySlot.given + "</div>";
+      if (bySlot.when) html += "<div><b>When</b> " + bySlot.when + "</div>";
+      if (bySlot.then) html += "<div><b>Then</b> " + bySlot.then + "</div>";
+      html += "</div>";
+    }
+    if (bySlot.value) html += '<div class="meta-row"><b>Business Value:</b> ' + bySlot.value + "</div>";
+    if (bySlot.priority) html += '<div class="meta-row"><b>Priorität:</b> ' + bySlot.priority + "</div>";
+    return html;
+  }
+
+  // ---------------------------------------------------------------
   // Prüfen
   // ---------------------------------------------------------------
   checkBtn.addEventListener("click", function () {
@@ -1071,6 +1130,8 @@
     if (allCorrect) {
       feedback.className = "feedback ok";
       feedback.innerHTML = "<strong>Richtig zusammengesetzt.</strong>Alle Bausteine sitzen an der passenden Stelle.";
+      modelSolution.hidden = false;
+      modelSolution.innerHTML = "<strong>Musterlösung</strong>" + buildModelSolutionHtml(puzzle);
       learningNote.hidden = false;
       learningNote.innerHTML = "<strong>Lerneinheit:</strong> " + puzzle.learningNote;
       checkBtn.disabled = true;
