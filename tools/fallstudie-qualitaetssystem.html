@@ -213,7 +213,13 @@
   .footer-sig a:hover{text-decoration:underline;}
   .footer-sig .audit-line{display:block;margin-top:4px;color:var(--ink-faint);}
   .footer-details{display:grid;grid-template-columns:1fr;gap:12px;}
-  @media(min-width:901px){.footer-details{grid-template-columns:repeat(4,1fr);}}
+  @media(min-width:901px){.footer-details{grid-template-columns:repeat(3,1fr);}}
+  .footer-content pre{white-space:pre-wrap;font-family:var(--font-mono);font-size:13.5px;
+    background:var(--blueprint-soft);border:1px solid var(--blueprint-line);
+    padding:14px 16px;border-radius:6px;line-height:1.5;overflow-x:auto;margin:12px 0 0;}
+  .footer-content .file-badge{display:flex;align-items:center;gap:8px;background:var(--blueprint-soft);
+    border:1px solid var(--blueprint-line);border-radius:6px;padding:8px 14px;
+    font-family:var(--font-mono);font-size:13px;color:var(--blueprint);margin-top:16px;}
   .footer-box{border:1px solid var(--line);border-radius:8px;background:#fff;overflow:hidden;}
   .footer-summary{cursor:pointer;list-style:none;padding:14px 16px;font-size:15px;font-weight:700;
     color:var(--blueprint);min-height:44px;display:flex;align-items:center;border-bottom:1px solid transparent;}
@@ -297,10 +303,10 @@ STRUKTUR
 - Kopfzeile: Zurück-Link zur Startseite, Marken-Zeile (klein, Monospace), fix positionierte Signatur (Name + Website-Link) oben rechts im Viewport, unter 900px als normaler Block.
 - Hero-Sektion: Eyebrow-Label, H1, Lead-Absatz, hervorgehobener "Warum das für Sie zählt"-Kasten. Beamer-Button oben rechts in der Hero-Zeile.
 - Zweispaltige "Stage Studio"-Ansicht: links eine vertikale Stufen-Leiter (eine Kachel pro Station, nummeriert, mit Fortschritts-Punkt), rechts das aktive Stationen-Panel.
-- Jede Station (außer der letzten) hat vier farblich unterschiedene Blöcke in fester Reihenfolge: SITUATION (neutral, was passiert ist) → PETRA FRAGT (violett, eine einzige offene Coaching-Frage, kursiv) → PRINZIP (grün, das dahinterliegende Qualitätsprinzip) → STANDARD-BEZUG (amber, Verknüpfung zu einem konkreten RE/BA-Standard mit <code>-Begriff). Darunter eine Selbstcheck-Checkbox ("Ich erkenne dieses Muster gerade in einem eigenen Projekt.").
+- Jede Station (außer der letzten) hat vier farblich unterschiedene Blöcke in fester Reihenfolge: SITUATION (neutral, was passiert ist) → PETRA FRAGT (violett, eine einzige offene Coaching-Frage, kursiv) → PRINZIP (grün, das dahinterliegende Qualitätsprinzip) → STANDARD-BEZUG (amber, Verknüpfung zu einem konkreten RE/BA-Standard mit &lt;code&gt;-Begriff). Darunter eine Selbstcheck-Checkbox ("Ich erkenne dieses Muster gerade in einem eigenen Projekt.").
 - Letzte Station ist eine Transfer-Übung: Situationsblock, darunter ein 2x2-Grid mit vier bis sechs anklickbaren "Das trifft bei mir zu"-Optionen, die je nach Auswahl eine passende Handlungsempfehlung einblenden.
 - Navigation unten in jedem Panel: Zurück-Button (deaktiviert auf Station 1), Fortschrittsanzeige "Station X von Y", Weiter-Button (auf letzter Station: "Zur Fallstudie zurück", springt auf Station 1).
-- Footer mit vier Aufklapp-Boxen: Systemprompt (dieser Master-Bau-Prompt inkl. Zusatz-Prompt), Handbuch, Vortrags-Skript, Normen-Register.
+- Footer mit sechs Aufklapp-Boxen: Systemprompt (dieser Master-Bau-Prompt inkl. Zusatz-Prompt), Handbuch, Vortrags-Skript, Normen-Register, sowie ergänzend Skill-Datei (A1) und vollständige K1–K17-Qualitätsprüfung (A2).
 
 DATENMODELL
 - Ein Array `stages` mit sieben Objekten: code, phase, title, situation, petra, prinzip, standard (bei der letzten Station: isTransfer:true statt der vier Textfelder).
@@ -395,6 +401,168 @@ Warte nach Schritt 2 auf meine Antwort, bevor du mit 3 fortfährst.</div>
           <p style="margin-top:14px;">Hinweis: Der Status der deutschen C3A-Fassung sollte vor jeder erneuten Verwendung dieser Fallstudie neu geprüft werden — das ist exakt das Prinzip aus Station 5 (K17), hier auf das eigene Material angewendet.</p>
         </div>
       </details>
+
+      <details class="footer-box">
+        <summary class="footer-summary">🧩 A1 · Skill-Datei</summary>
+        <div class="footer-content footer-sans">
+          <p>Diese Fallstudie folgt einem festen Muster (Situation → Petra fragt → Prinzip → Standard-Bezug). Damit Claude dieses Muster künftig automatisch anwendet — ohne dass es jedes Mal neu erklärt werden muss — wurde daraus eine Skill-Datei gebaut: eine kurze Markdown-Datei mit Trigger-Beschreibung und Bauanleitung, die ein KI-Assistent selbstständig lädt, sobald das Thema passt.</p>
+          <div class="file-badge"><span>📄</span><span>petra-fallstudien-format/SKILL.md</span></div>
+          <pre>---
+name: petra-fallstudien-format
+description: &gt;
+  Baut interaktive Fallstudien und Lernpfade im Petra-Coaching-Muster:
+  Situation → Petra fragt → Prinzip → Standard-Bezug, mit Pflicht-Transfer-Station
+  am Ende. Immer verwenden, wenn Michaela eine Fallstudie, ein Lernszenario, ein
+  reflexives Coaching-Tool oder einen Reifegrad-/Reifepfad für RE/BA, PM,
+  AI-Literacy oder hybrides Arbeiten bauen will — auch wenn sie das Muster nicht
+  explizit nennt, sondern nur „Fallstudie", „Lernpfad", „so wie mit Petra",
+  „zeig mir wie ich dahin gekommen bin" oder „mach daraus ein Lernszenario" sagt.
+  Auch verwenden, wenn ein reales Projekt-/Arbeitsereignis Michaelas didaktisch
+  aufbereitet werden soll, statt es nur zu dokumentieren.
+---
+
+# Petra-Fallstudien-Format
+
+Ein wiederverwendbares Erzähl- und Coaching-Muster für Lernmaterialien.
+Kernidee: nicht das fertige Ergebnis zeigen, sondern den Weg dorthin —
+inklusive der Frage, die den nächsten Klarheits-Schritt ausgelöst hat.
+
+---
+
+## Wann dieser Skill greift
+
+- Michaela will ein reales Ereignis (eigenes Projekt, eigene Entwicklung,
+  Team-Situation) in ein Lernformat übersetzen
+- Es geht um einen Reifegrad-Sprung: von unscharf zu systematisch,
+  von Einzelfall zu Regel, von Fehler zu Prinzip
+- Zielgruppe sind Einsteiger:innen oder Menschen, die von *Vorgehen* lernen
+  sollen, nicht nur von *Ergebnissen*
+
+Nicht verwenden für reine Referenzkarten, Quizze ohne Erzählbogen, oder
+Artefakt-Vorlagen (dafür → `requirements-business-analyse/references/artefakte.md`).
+
+---
+
+## Struktur pro Station
+
+Jede Station besteht aus genau vier Blöcken, in dieser Reihenfolge:
+
+1. **Situation** — reale oder realistische Ausgangslage. Konkret, mit Namen,
+   Zahlen, Artefakten. Kein Lehrbuch-Beispiel, kein Platzhalter (K8-Fail sonst).
+2. **Petra fragt** — genau *eine* offene Frage. Kein Ratschlag, keine Antwort
+   mitgeliefert. Die Frage muss den blinden Fleck sichtbar machen, den die
+   Situation gerade noch verdeckt. Figuren-Konsistenz beachten:
+   → `marmorkuchen-metapher/references/figuren.md`, Abschnitt Petra.
+3. **Prinzip** — das verallgemeinerbare Qualitätsprinzip, das aus der
+   (gedachten oder tatsächlichen) Antwort auf Petras Frage folgt. Ein bis
+   zwei Sätze, muss auf andere Projekte übertragbar sein — keine
+   Ereignis-spezifische Formulierung.
+4. **Standard-Bezug** — Verknüpfung zu einem konkreten RE/BA/PM-Standard
+   (IREB, BABOK, ISO 25010, IEEE 29148, PMI/PMBOK). Norm-Status vor
+   Verwendung prüfen, nie aus dem Training übernehmen — siehe K17-Logik in
+   `requirements-business-analyse/SKILL.md`.
+
+**Reihenfolge der Stationen:** Nur eine feste Chronologie verwenden (01, 02,
+03 …), wenn die Stationen tatsächlich eine echte zeitliche Abfolge sind.
+Ist das nicht der Fall, keine erzwungene Nummerierung — stattdessen
+Themen-Karten oder Tabs ohne Reihenfolge-Anspruch.
+
+**Anzahl Stationen:** 5–8 ist der Zielkorridor. Weniger als 5 wirkt dünn,
+mehr als 8 verwässert die Pointe. Bei mehr Material: verdichten, nicht
+alle Ereignisse einzeln erzählen.
+
+---
+
+## Pflicht-Transfer-Station
+
+Jede Fallstudie endet mit einer Selbstzuordnungs-Übung, keiner reinen
+Zusammenfassung:
+
+- 4–6 kurze, konkrete "Wo stehen Sie gerade"-Optionen, jede formuliert als
+  Symptom aus dem Alltag der Zielgruppe (nicht als Fachbegriff)
+- Jede Option verweist auf genau eine Station zurück und liefert eine
+  konkrete nächste Handlung, keine allgemeine Ermutigung
+- Interaktiv umsetzen (klickbare Auswahl mit sofortigem Ergebnis), nicht
+  als reine Textliste
+
+---
+
+## Technische Umsetzung
+
+- **Format:** Single-File HTML nach Michaelas Design-Standards — 18px
+  Fließtext / 14px Kleintext, 44px Klickflächen, weißer Hintergrund,
+  `color-scheme: light`, Pointer Events API, offline-fähig
+- **Navigation:** Klickbare Stationen-Übersicht (z. B. Reifegrad-Leiter,
+  Kartenraster), plus Vor/Zurück — kein reines Scroll-Dokument bei mehr
+  als 4 Stationen
+- **Footer:** vier-teiliges Standard-Panel — Systemprompt, Handbuch,
+  Vortrags-Skript, Normen-Register (Inhalte pro Fallstudie neu befüllen,
+  nie generisch lassen)
+- Vor Auslieferung: Beamer-Tauglichkeit, Platzhalter-Freiheit und
+  Normen-Aktualität prüfen (K1–K17, siehe `requirements-business-analyse`)
+
+---
+
+## Verknüpfte Skills
+
+| Skill | Wann einsetzen |
+|---|---|
+| `marmorkuchen-metapher` | Figuren-Konsistenz (Petra, Sarah, Herr Bachmeier, Ela, Knut) |
+| `requirements-business-analyse` | Normen-Register-Inhalte, K1–K17-Qualitätsprüfung |
+| `denkraum-klarheitssprung` | Wenn eine Station selbst eine Anforderungs-Analyse ist |
+| `promptschule` | Wenn die Fallstudie ein AI-Literacy-Thema statt RE/BA behandelt |
+
+---
+
+## Referenzdateien
+
+- `references/beispiel-qualitaetssystem.md` — vollständiges Beispiel
+  (Fallstudie „Von der Idee zum Qualitätssystem") als Referenz für Ton,
+  Dichte und Übergänge zwischen den vier Blöcken</pre>
+          <p style="margin-top:14px;">Die Datei besteht aus zwei Teilen: dem <strong>Frontmatter</strong> ganz oben (<code>name</code> und <code>description</code>) — das ist der einzige Teil, den ein Assistent immer im Kontext hält, um zu entscheiden, ob der Skill gerade relevant ist — und dem <strong>Textkörper</strong> darunter, der erst geladen wird, wenn der Skill tatsächlich greift. Genau dieses Prinzip macht Skills sparsam im Kontextverbrauch, auch wenn jemand Dutzende davon angelegt hat.</p>
+        </div>
+      </details>
+
+      <details class="footer-box">
+        <summary class="footer-summary">✅ A2 · Qualitätsprüfung</summary>
+        <div class="footer-content footer-sans">
+          <p>Diese Fallstudie erzählt selbst, wie diese Liste entstanden ist (Stationen 3, 5 und 6). Hier steht sie einmal vollständig — genau die Kriterien, die vor jeder Auslieferung eines Tools geprüft werden, aufgeteilt nach Prüfmethode statt als eine lange, unsortierte Liste.</p>
+
+          <p style="margin-top:18px;"><strong>Stufe 1 — automatisiert (Skript/jsdom)</strong></p>
+          <table class="footer-table">
+            <tr><th>#</th><th>Kriterium</th><th>Prüfmethode</th></tr>
+            <tr><td>K1</td><td>Offlinefähigkeit</td><td><code>grep "fetch("</code> — 0 aktive Aufrufe</td></tr>
+            <tr><td>K2</td><td>Kein Blocking durch Storage-APIs</td><td><code>grep "sessionStorage|localStorage"</code></td></tr>
+            <tr><td>K3</td><td>Touch-Tauglichkeit</td><td><code>grep "draggable=|dragstart|dragover"</code> — HTML5-DnD funktioniert nicht auf Touch</td></tr>
+            <tr><td>K4</td><td>Weißer Hintergrund / color-scheme</td><td><code>grep "color-scheme"</code> + Hexwert-Check</td></tr>
+            <tr><td>K5</td><td>Beamer-Lesbarkeit (Mindestgröße)</td><td>Font-Size-Scan, kein Wert unter 14px</td></tr>
+            <tr><td>K7</td><td>UTF-8 sauber</td><td>Scan auf fehlerhafte Escape-Sequenzen</td></tr>
+            <tr><td>K12</td><td>Validierungsnachweis</td><td>jsdom-Testlauf, Pass/Fail-Zahl im Protokoll</td></tr>
+            <tr><td>K14</td><td>Audit-Status-Zeile</td><td>Footer-Existenz + Datumsabgleich zur letzten Änderung</td></tr>
+          </table>
+
+          <p style="margin-top:18px;"><strong>Stufe 2 — manuelles Urteilsvermögen</strong></p>
+          <table class="footer-table">
+            <tr><th>#</th><th>Kriterium</th><th>Worauf geprüft wird</th></tr>
+            <tr><td>K6</td><td>Kein Sliding-Panel</td><td>Alle Inhalte ohne versteckte Zusatzinfo direkt verständlich</td></tr>
+            <tr><td>K8</td><td>Keine generischen Werte</td><td>Framework-Version/Norm-Status korrekt und konkret benannt, kein Platzhalter</td></tr>
+            <tr><td>K9</td><td>Szenariotreue</td><td>Personas (Sarah, Ela, Knut, Petra, Herr Bachmeier) rollen- und charakterkonsistent</td></tr>
+            <tr><td>K10</td><td>Problem-Requirement-Solution-Trennung</td><td>Didaktische Struktur sauber getrennt, keine Vermischung der Ebenen</td></tr>
+            <tr><td>K11</td><td>Design-System-Konformität</td><td>Persona-Referenzfarben u. ä. gegen bestehende Tools — <span class="status-pending">aktuell ohne vollständige Referenzdatei, dauerhaft offen</span></td></tr>
+            <tr><td>K13</td><td>Vortrags-Skript-Box</td><td>Inhalt passt zum tatsächlichen Tool-Flow, keine Textleiche nach Änderungen</td></tr>
+            <tr><td>K15</td><td>Erreichbarkeit nicht-live-relevanter Inhalte</td><td>Teils automatisiert (Overflow-Check), teils Bewertung der Auffindbarkeit</td></tr>
+            <tr><td>K16</td><td>Companion-Sprecher-Skript</td><td>Separates Sprecher-Skript synchron zum aktuellen Footer-Inhalt</td></tr>
+          </table>
+
+          <p style="margin-top:18px;"><strong>K17 — die jüngste Ergänzung zum Zeitpunkt dieser Fallstudie</strong></p>
+          <div class="block b-prinzip" style="margin-top:10px;">
+            <span class="kicker">Kriterium</span>
+            <p><strong>K17 — Normen-Aktualität:</strong> Jede referenzierte Norm oder jedes Framework muss vor Verwendung aktiv auf ihren aktuellen Status geprüft werden — nie aus dem Training oder aus der Erinnerung übernommen. Entstanden genau aus dem Vorfall in Station 4 dieser Fallstudie (veraltete Referenz „BSI A5" statt C3A).</p>
+          </div>
+
+          <p style="margin-top:16px;">Einordnung zum damaligen Stand K1–K17: „Muss" waren K1–K10 und K15, „Kann" für die Auszeichnung K11–K14 und K16, K17 war bewusst außerhalb dieser Zählung — es prüft nicht das Tool, sondern die Aktualität dessen, worauf sich das Tool beruft. Die aktuell gültige Zählung (inzwischen K1–K19) steht in <code>CLAUDE.md</code> bzw. der Notion-Qualitätskriterien-Checkliste — diese Tabelle bildet bewusst den historischen Stand ab, den die Fallstudie erzählt.</p>
+        </div>
+      </details>
     </div>
   </footer>
 
@@ -426,7 +594,7 @@ Warte nach Schritt 2 auf meine Antwort, bevor du mit 3 fortfährst.</div>
     {
       code: "03",
       phase: "Systematik",
-      title: "Aus Einzelfällen wird eine Checkliste",
+      title: "Aus Einzelfällen wird eine Checkliste — K1 bis K16",
       situation: "Mit jedem neuen Tool tauchen dieselben Fragen wieder auf: Sind die Klickflächen groß genug? Stehen echte Beispiele statt Platzhaltern im Tool? Ist der Footer einheitlich? Jede Frage einzeln im Kopf zu behalten, funktioniert nicht mehr.",
       petra: "„Was passiert, wenn zwei Tools dieselbe Frage unterschiedlich beantworten? Woher weiß die nächste Person, welche Antwort gilt?“",
       prinzip: "Wiederkehrende Einzelentscheidungen werden zu benannten, wiederverwendbaren Kriterien zusammengefasst — einer Checkliste. Das ist der Schritt von punktueller Sorgfalt zu einem System, das unabhängig von der Tagesform trägt.",
@@ -436,7 +604,7 @@ Warte nach Schritt 2 auf meine Antwort, bevor du mit 3 fortfährst.</div>
       code: "04",
       phase: "Lücke entdeckt",
       title: "Die Checkliste prüft Form — aber nicht, ob der Inhalt noch stimmt",
-      situation: "In mehreren Materialien steht ein Souveränitäts-Rahmenwerk unter einem Namen, der inzwischen überholt ist: „BSI A5“. Tatsächlich veröffentlichte das BSI am 27.04.2026 die C3A (Criteria enabling Cloud Computing Autonomy), aufbauend auf dem seit Ende März 2026 finalen C5:2026. Die Checkliste hätte das nicht gefunden — sie prüft Form, Struktur, Beamer-Tauglichkeit. Nicht fachliche Aktualität.",
+      situation: "In mehreren Materialien steht ein Souveränitäts-Rahmenwerk unter einem Namen, der inzwischen überholt ist: „BSI A5“. Tatsächlich veröffentlichte das BSI am 27.04.2026 die C3A (Criteria enabling Cloud Computing Autonomy), aufbauend auf dem seit Ende März 2026 finalen C5:2026. Die Checkliste K1–K16 hätte das nicht gefunden — sie prüft Form, Struktur, Beamer-Tauglichkeit. Nicht fachliche Aktualität.",
       petra: "„Woher wissen Sie, dass eine Norm, die Sie vor einem Jahr gelernt haben, heute noch so heißt? Reicht es, sich zu erinnern?“",
       prinzip: "Fachwissen veraltet, ohne dass man es merkt. Aktualität ist selbst eine nicht-funktionale Anforderung an ein Trainingsmaterial — und sie darf nicht im Kopf der Autorin liegen, sondern muss im Prozess verankert sein.",
       standard: "BABOK v3, <code>Requirements Life Cycle Management</code>: Anforderungen — und referenzierte Normen — müssen über die Zeit aktiv gepflegt, nicht nur einmalig erhoben werden."
@@ -445,10 +613,10 @@ Warte nach Schritt 2 auf meine Antwort, bevor du mit 3 fortfährst.</div>
       code: "05",
       phase: "Reifegrad-Sprung",
       title: "Nicht der Fehler wird korrigiert — die Fehlerklasse wird verhindert",
-      situation: "Die falschen Verweise werden korrigiert. Das allein würde aber nur dieses eine Symptom beheben. Stattdessen entsteht ein neues Kriterium: Jede referenzierte Norm oder jedes Framework muss vor Verwendung aktiv auf ihren aktuellen Status geprüft werden — nie aus dem Gedächtnis übernommen.",
+      situation: "Die falschen Verweise werden korrigiert. Das allein würde aber nur dieses eine Symptom beheben. Stattdessen entsteht ein siebzehntes Kriterium, K17: Jede referenzierte Norm oder jedes Framework muss vor Verwendung aktiv auf ihren aktuellen Status geprüft werden — nie aus dem Gedächtnis übernommen.",
       petra: "„Reicht eine einmalige Korrektur — oder brauchen Sie eine Regel, die verhindert, dass derselbe Fehler in sechs Monaten wieder auftaucht?“",
       prinzip: "Ein Qualitätssystem reift nicht durch das Ausbessern einzelner Fehler, sondern dadurch, dass aus einem Fehler ein neues, allgemeines Kriterium wird, das die ganze Fehlerklasse abdeckt.",
-      standard: "IREB-Qualitätskriterium <code>verfolgbar</code>: Herkunft und Auswirkung eines Kriteriums müssen nachvollziehbar sein — das neue Kriterium lässt sich bis zu genau diesem Vorfall zurückverfolgen."
+      standard: "IREB-Qualitätskriterium <code>verfolgbar</code>: Herkunft und Auswirkung eines Kriteriums müssen nachvollziehbar sein — K17 lässt sich bis zu genau diesem Vorfall zurückverfolgen."
     },
     {
       code: "06",
