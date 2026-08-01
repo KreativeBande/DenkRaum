@@ -75,7 +75,12 @@ Wird ein neues Tool hinzugefügt (oder ein bestehendes ohne diese drei Elemente 
 
 ### Hero-/Einleitungstext-Breite
 
-Überschrift (H1) und Einleitungstext (Lead-Absatz) im Kopf-/Hero-Bereich werden über die gesamte Zeile gezogen — sie füllen die volle verfügbare Breite des Hauptinhalts-Containers (`.wrap`/`.container` o. ä.) aus, genau wie die übrigen Hauptinhalts-Bereiche des Tools (Panels, Karten, Boards) weiter unten. Kein `max-width`, das Überschrift oder Einleitung spürbar schmaler macht als den Rest des Tools und dadurch sichtbaren, unbenutzten Weißraum daneben stehen lässt.
+**Referenzimplementierung: `tools/steckbrief.html`.** Bei Zweifel, wie ein Hero-Bereich aufgebaut sein soll, dort nachsehen statt neu zu improvisieren.
+
+Struktur (verbindlich für jedes Tool mit einem klassischen Hero-Bereich, d.h. H1 + mehrsätziger Einleitungsabsatz — nicht für kompakte Sticky-Utility-Header ohne Fließtext-Intro):
+
+1. **Topbar** (eigene Zeile, oberhalb der Hero-Karte/des Hero-Bereichs): Zurück-Link links, Signatur + Beamer-Modus-Button rechts. Diese Zeile enthält ausschließlich Navigation/Meta-Controls, nie die Überschrift oder den Einleitungstext.
+2. **Hero darunter**: Eyebrow (optional), H1, Lead-Absatz — ohne jeden konkurrierenden Flex-/Grid-Nachbarn in derselben Zeile und ohne `max-width`. Beide füllen die volle verfügbare Breite des Hauptinhalts-Containers (`.wrap`/`.app`/`.container` o. ä.) aus, genau wie die übrigen Hauptinhalts-Bereiche des Tools (Panels, Karten, Boards) weiter unten.
 
 Anti-Pattern (so nicht):
 
@@ -88,7 +93,9 @@ Stationen ...
 [Lead-Absatz genauso schmal, rechts daneben nur Leerraum]
 ```
 
-Ausnahme nur bei einer bewussten, im Tool erkennbaren Layout-Entscheidung (z. B. zweispaltiger Hero mit Illustration/Bild daneben) — nicht als Standardfall und nicht als Nebeneffekt eines beliebig gewählten `max-width`-Werts. Vor Auslieferung auf einem breiten Viewport (≥1280px) gegenprüfen: Wirkt neben Überschrift oder Einleitung auffällig viel ungenutzter Weißraum, ist das ein Fehler, kein Stil.
+Ebenfalls Anti-Pattern, auch ohne `max-width`: H1/Lead-Absatz stehen als Flex-Item neben einem Beamer-Button oder einer nicht `position:fixed` gesetzten Signatur in derselben Zeile — das Textelement schrumpft dann auf seine Inhaltsbreite (Shrink-to-fit), statt die Zeile zu füllen, auch ganz ohne explizite Breitenangabe.
+
+Ausnahme nur bei einer bewussten, im Tool erkennbaren Layout-Entscheidung mit echtem funktionalem Inhalt daneben (z. B. ein interaktives Score-Dial-Widget in einem zweispaltigen Hero) — nicht bei Navigation/Meta-Controls (Zurück-Link, Signatur, Beamer-Button), die immer in die Topbar gehören. Vor Auslieferung auf einem breiten Viewport (≥1280px) gegenprüfen: Wirkt neben Überschrift oder Einleitung auffällig viel ungenutzter Weißraum, ist das ein Fehler, kein Stil.
 
 ### "NEU"-Badge auf index.html
 
