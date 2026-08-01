@@ -75,7 +75,20 @@ Wird ein neues Tool hinzugefügt (oder ein bestehendes ohne diese drei Elemente 
 
 ### Hero-/Einleitungstext-Breite
 
-H1, Lead-Absatz und Hervorhebungs-Boxen im Hero-Bereich dürfen nicht durch ein unnötig enges `max-width` eingeengt werden, wenn dadurch neben dem Text auffällig viel unbenutzter Weißraum entsteht (sichtbar v. a. ab ≥1280px Viewport-Breite). Richtwert: `max-width` nicht deutlich unter der Breite anderer Hauptinhalts-Elemente des Tools (z. B. Stage-/Panel-Bereiche), es sei denn ein bewusster Lesbarkeits-Grund rechtfertigt es explizit. Vor Auslieferung auf einem breiten Viewport kurz gegenprüfen.
+Überschrift (H1) und Einleitungstext (Lead-Absatz) im Kopf-/Hero-Bereich werden über die gesamte Zeile gezogen — sie füllen die volle verfügbare Breite des Hauptinhalts-Containers (`.wrap`/`.container` o. ä.) aus, genau wie die übrigen Hauptinhalts-Bereiche des Tools (Panels, Karten, Boards) weiter unten. Kein `max-width`, das Überschrift oder Einleitung spürbar schmaler macht als den Rest des Tools und dadurch sichtbaren, unbenutzten Weißraum daneben stehen lässt.
+
+Anti-Pattern (so nicht):
+
+```
+Von der ersten Idee zum Qualitätssystem
+[H1 bricht nach ~500px um, obwohl 1100px+ Platz da wären]
+
+Diese Fallstudie ist keine Erfindung. Sie zeigt sieben reale
+Stationen ...
+[Lead-Absatz genauso schmal, rechts daneben nur Leerraum]
+```
+
+Ausnahme nur bei einer bewussten, im Tool erkennbaren Layout-Entscheidung (z. B. zweispaltiger Hero mit Illustration/Bild daneben) — nicht als Standardfall und nicht als Nebeneffekt eines beliebig gewählten `max-width`-Werts. Vor Auslieferung auf einem breiten Viewport (≥1280px) gegenprüfen: Wirkt neben Überschrift oder Einleitung auffällig viel ungenutzter Weißraum, ist das ein Fehler, kein Stil.
 
 ### "NEU"-Badge auf index.html
 
