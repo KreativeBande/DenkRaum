@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Von der Idee zum Qualitätssystem — Eine Fallstudie — Michaelas Denkraum</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --ink:#1a2130;
+    --ink-soft:#4b5568;
+    --ink-faint:#8891a0;
+    --line:#d8dce3;
+    --line-soft:#eceef2;
+    --blueprint:#24476e;
+    --blueprint-soft:#eef2f7;
+    --blueprint-line:#b9c8dc;
+    --amber:#a8721f;
+    --amber-soft:#faf3e6;
+    --amber-line:#e6cd9e;
+    --sage:#3f7d58;
+    --sage-soft:#eef6f0;
+    --sage-line:#c3ddc9;
+    --petra:#5b4b8a;
+    --petra-soft:#f1eef8;
+    --petra-line:#cdc2e6;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-display: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Consolas", monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:var(--font-body);font-size:18px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;}
+  small,.small,.caption{font-size:14px;}
+  h1,h2,h3{font-family:var(--font-display);font-weight:600;margin:0;color:var(--ink);}
+  a{color:var(--blueprint);}
+  button{font-family:inherit;font-size:16px;cursor:pointer;}
+  ::selection{background:var(--amber-soft);}
+
+  /* ---------- LAYOUT ---------- */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px 80px;}
+  header.top{
+    display:flex;flex-direction:column;gap:4px;
+    padding:28px 28px 22px;border-bottom:1px solid var(--line);
+    max-width:1180px;margin:0 auto;
+  }
+  header.top .back-link{font-size:14px;font-weight:700;color:var(--blueprint);text-decoration:none;}
+  header.top .back-link:hover{text-decoration:underline;}
+  header.top .brand{font-family:var(--font-mono);font-size:14px;color:var(--ink-faint);
+    letter-spacing:.04em;}
+
+  /* ---------- SIGNATUR (fest, kollisionsfrei) ---------- */
+  .site-sig{
+    position:fixed;top:14px;right:28px;z-index:500;
+    font-family:var(--font-mono);font-size:14px;color:var(--ink-soft);
+    text-align:right;line-height:1.4;
+    background:rgba(255,255,255,.9);padding:4px 10px;border-radius:8px;
+  }
+  .site-sig strong{display:block;color:var(--ink);font-weight:600;}
+  .site-sig a{color:var(--blueprint);text-decoration:none;}
+  .site-sig a:hover{text-decoration:underline;}
+  @media (max-width:900px){
+    .site-sig{position:static;background:none;padding:0;text-align:left;margin:10px 28px 0;}
+  }
+
+  .hero{padding:40px 0 40px;border-bottom:1px solid var(--line);}
+  .hero-top-row{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
+  .hero .eyebrow{font-family:var(--font-mono);font-size:14px;color:var(--blueprint);
+    letter-spacing:.06em;text-transform:uppercase;display:block;}
+  .hero h1{font-size:40px;line-height:1.15;max-width:780px;}
+  .hero p.lede{font-size:19px;color:var(--ink-soft);max-width:640px;margin-top:18px;}
+  .hero .frame{
+    margin-top:28px;padding:18px 20px;background:var(--blueprint-soft);
+    border:1px solid var(--blueprint-line);border-radius:6px;
+    max-width:640px;font-size:16px;color:var(--ink-soft);
+  }
+  .hero .frame strong{color:var(--blueprint);}
+
+  /* ---------- BEAMER-BUTTON (K18, vierstufig) ---------- */
+  .beamer-btn{
+    background:transparent;border:1.5px solid var(--line);
+    color:var(--ink-soft);font-size:15px;padding:10px 20px;
+    border-radius:999px;cursor:pointer;min-height:44px;white-space:nowrap;
+  }
+  html.beamer .beamer-btn,
+  html.beamer-xl .beamer-btn,
+  html.beamer-xxl .beamer-btn{ background:var(--ink); color:#fff; border-color:var(--ink); }
+
+  /* ---------- STAGE STUDIO ---------- */
+  .studio{display:grid;grid-template-columns:220px 1fr;gap:0;margin-top:44px;
+    border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .ladder-col{background:var(--blueprint-soft);border-right:1px solid var(--line);
+    padding:28px 14px;}
+  .ladder-title{font-family:var(--font-mono);font-size:12px;text-transform:uppercase;
+    letter-spacing:.06em;color:var(--blueprint);margin-bottom:18px;padding:0 6px;}
+  .rung{
+    display:flex;align-items:center;gap:10px;width:100%;
+    background:transparent;border:none;text-align:left;
+    padding:10px 8px;border-radius:6px;min-height:44px;
+    color:var(--ink-soft);position:relative;
+  }
+  .rung .dot{width:26px;height:26px;border-radius:50%;flex:0 0 26px;
+    border:2px solid var(--blueprint-line);background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-mono);font-size:12px;color:var(--blueprint);}
+  .rung .label{font-size:14px;line-height:1.3;}
+  .rung.done .dot{background:var(--amber);border-color:var(--amber);color:#fff;}
+  .rung.active{background:#fff;box-shadow:0 0 0 1px var(--blueprint-line);}
+  .rung.active .dot{background:var(--blueprint);border-color:var(--blueprint);color:#fff;}
+  .rung.active .label{color:var(--ink);font-weight:600;}
+  .rung .connector{position:absolute;left:21px;top:44px;width:2px;height:14px;
+    background:var(--blueprint-line);}
+  .rung:last-child .connector{display:none;}
+
+  .stage-panel{padding:36px 40px 32px;min-height:520px;display:flex;flex-direction:column;}
+  .stage-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px;}
+  .stage-code{font-family:var(--font-mono);font-size:14px;color:var(--blueprint);
+    background:var(--blueprint-soft);border:1px solid var(--blueprint-line);
+    padding:3px 9px;border-radius:4px;}
+  .stage-phase{font-family:var(--font-mono);font-size:13px;color:var(--ink-faint);
+    text-transform:uppercase;letter-spacing:.05em;}
+  .stage-panel h2{font-size:26px;margin:10px 0 18px;max-width:640px;}
+
+  .block{margin-bottom:18px;padding:18px 20px;border-radius:6px;border:1px solid var(--line-soft);}
+  .block p{margin:0 0 10px;}
+  .block p:last-child{margin-bottom:0;}
+  .block .kicker{font-family:var(--font-mono);font-size:13px;text-transform:uppercase;
+    letter-spacing:.05em;margin-bottom:8px;display:block;}
+
+  .b-situation{background:#fbfbfc;border-color:var(--line);}
+  .b-situation .kicker{color:var(--ink-faint);}
+
+  .b-petra{background:var(--petra-soft);border-color:var(--petra-line);}
+  .b-petra .kicker{color:var(--petra);}
+  .b-petra p{font-style:italic;color:var(--ink);}
+
+  .b-prinzip{background:var(--sage-soft);border-color:var(--sage-line);}
+  .b-prinzip .kicker{color:var(--sage);}
+  .b-prinzip strong{color:var(--sage);}
+
+  .b-standard{background:var(--amber-soft);border-color:var(--amber-line);font-size:15px;}
+  .b-standard .kicker{color:var(--amber);}
+  .b-standard code{font-family:var(--font-mono);font-size:14px;background:#fff;
+    padding:1px 5px;border-radius:3px;border:1px solid var(--amber-line);}
+
+  .selfcheck{margin-top:auto;padding-top:16px;border-top:1px dashed var(--line);}
+  .selfcheck label{display:flex;gap:10px;align-items:flex-start;font-size:15px;
+    color:var(--ink-soft);cursor:pointer;min-height:44px;padding:4px 0;}
+  .selfcheck input[type=checkbox]{width:20px;height:20px;flex:0 0 20px;margin-top:2px;accent-color:var(--sage);}
+
+  .nav-row{display:flex;justify-content:space-between;align-items:center;
+    margin-top:24px;padding-top:20px;border-top:1px solid var(--line);}
+  .nav-btn{min-height:44px;padding:0 20px;border-radius:6px;border:1px solid var(--line);
+    background:#fff;color:var(--ink);font-size:15px;display:inline-flex;align-items:center;gap:8px;}
+  .nav-btn:hover{border-color:var(--blueprint);color:var(--blueprint);}
+  .nav-btn:disabled{opacity:.35;cursor:default;}
+  .nav-btn:disabled:hover{border-color:var(--line);color:var(--ink);}
+  .nav-btn.primary{background:var(--blueprint);border-color:var(--blueprint);color:#fff;}
+  .nav-btn.primary:hover{background:#1b3757;color:#fff;}
+  .progress-txt{font-family:var(--font-mono);font-size:13px;color:var(--ink-faint);}
+
+  /* ---------- TRANSFER / QUIZ ---------- */
+  .transfer-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0 18px;}
+  .transfer-opt{border:1px solid var(--line);border-radius:6px;padding:16px 18px;
+    min-height:44px;background:#fff;text-align:left;font-size:15px;color:var(--ink-soft);
+    cursor:pointer;}
+  .transfer-opt:hover{border-color:var(--blueprint);}
+  .transfer-opt.selected{border-color:var(--blueprint);background:var(--blueprint-soft);
+    color:var(--ink);font-weight:600;}
+  .transfer-result{margin-top:8px;}
+  .transfer-result.hidden{display:none;}
+
+  /* ---------- BEAMER-MODUS (K18, vierstufig) ---------- */
+  html.beamer{ --ink-soft:#3D4A5C; }
+  html.beamer .hero h1{ font-size:48px; }
+  html.beamer .hero p.lede{ font-size:22px; }
+  html.beamer .stage-panel h2{ font-size:44px; }
+  html.beamer .block p{ font-size:22px; }
+  html.beamer .selfcheck label{ font-size:22px; }
+  html.beamer .transfer-opt{ font-size:22px; }
+  html.beamer .stage-code, html.beamer .stage-phase, html.beamer .block .kicker,
+  html.beamer .rung .label, html.beamer .ladder-title, html.beamer .progress-txt,
+  html.beamer .b-standard{ font-size:15px; }
+  html.beamer footer.panels{ display:none; }
+
+  html.beamer-xl .hero h1{ font-size:56px; }
+  html.beamer-xl .hero p.lede{ font-size:25px; }
+  html.beamer-xl .stage-panel h2{ font-size:54px; }
+  html.beamer-xl .block p{ font-size:28px; }
+  html.beamer-xl .selfcheck label{ font-size:28px; }
+  html.beamer-xl .transfer-opt{ font-size:28px; }
+  html.beamer-xl .stage-code, html.beamer-xl .stage-phase, html.beamer-xl .block .kicker,
+  html.beamer-xl .rung .label, html.beamer-xl .ladder-title, html.beamer-xl .progress-txt,
+  html.beamer-xl .b-standard{ font-size:18px; }
+
+  html.beamer-xxl .hero h1{ font-size:64px; }
+  html.beamer-xxl .hero p.lede{ font-size:28px; }
+  html.beamer-xxl .stage-panel h2{ font-size:64px; }
+  html.beamer-xxl .block p{ font-size:34px; }
+  html.beamer-xxl .selfcheck label{ font-size:34px; }
+  html.beamer-xxl .transfer-opt{ font-size:34px; }
+  html.beamer-xxl .stage-code, html.beamer-xxl .stage-phase, html.beamer-xxl .block .kicker,
+  html.beamer-xxl .rung .label, html.beamer-xxl .ladder-title, html.beamer-xxl .progress-txt,
+  html.beamer-xxl .b-standard{ font-size:21px; }
+
+  /* ---------- FOOTER ---------- */
+  footer.panels{max-width:1180px;margin:56px auto 0;padding:0 28px 40px;border-top:1px solid var(--line);padding-top:20px;}
+  .footer-sig{font-size:14px;color:var(--ink-faint);margin-bottom:16px;line-height:1.5;}
+  .footer-sig strong{color:var(--ink);}
+  .footer-sig a{color:var(--blueprint);font-weight:700;text-decoration:none;}
+  .footer-sig a:hover{text-decoration:underline;}
+  .footer-sig .audit-line{display:block;margin-top:4px;color:var(--ink-faint);}
+  .footer-details{display:grid;grid-template-columns:1fr;gap:12px;}
+  @media(min-width:901px){.footer-details{grid-template-columns:repeat(4,1fr);}}
+  .footer-box{border:1px solid var(--line);border-radius:8px;background:#fff;overflow:hidden;}
+  .footer-summary{cursor:pointer;list-style:none;padding:14px 16px;font-size:15px;font-weight:700;
+    color:var(--blueprint);min-height:44px;display:flex;align-items:center;border-bottom:1px solid transparent;}
+  .footer-box[open] .footer-summary{border-bottom-color:var(--line);}
+  .footer-summary::-webkit-details-marker{display:none;}
+  .footer-content{padding:14px 16px;max-height:440px;overflow-y:auto;}
+  .footer-mono{font-family:var(--font-mono);font-size:14px;line-height:1.6;white-space:pre-wrap;color:var(--ink);}
+  .footer-mono hr{border:none;border-top:1px dashed var(--line);margin:18px 0;}
+  .footer-mono .zusatz-label{color:var(--ink-faint);font-style:normal;}
+  .footer-sans{font-family:var(--font-body);font-size:15px;line-height:1.6;color:var(--ink-soft);}
+  .footer-sans p{margin:0 0 10px;}
+  .footer-sans p:last-child{margin-bottom:0;}
+  .footer-sans strong{color:var(--ink);}
+  .footer-sans .regie{color:var(--ink-faint);font-style:italic;}
+  .footer-sans .schritt{margin:0 0 14px;padding-bottom:14px;border-bottom:1px dashed var(--line);}
+  .footer-sans .schritt:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .footer-sans .schritt strong{display:block;color:var(--blueprint);margin-bottom:4px;}
+  .footer-table{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0;}
+  .footer-table th,.footer-table td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
+  .footer-table th{background:var(--blueprint-soft);color:var(--blueprint);font-weight:700;}
+  .status-ok{color:var(--sage);font-weight:600;}
+  .status-pending{color:var(--amber);font-weight:600;}
+
+  @media (max-width:820px){
+    .studio{grid-template-columns:1fr;}
+    .ladder-col{border-right:none;border-bottom:1px solid var(--line);
+      display:flex;overflow-x:auto;gap:4px;padding:14px 10px;}
+    .ladder-title{display:none;}
+    .rung{flex-direction:column;min-width:88px;text-align:center;gap:4px;}
+    .rung .connector{display:none;}
+    .rung .label{font-size:11px;}
+    .stage-panel{padding:26px 20px;}
+    .hero h1{font-size:30px;}
+    .transfer-grid{grid-template-columns:1fr;}
+    header.top{padding:20px 20px 16px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+  <div class="brand">PromptSchule · RE/BA-Werkstatt</div>
+</header>
+<span class="site-sig">
+  <strong>Michaela Kühn</strong>
+  <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a>
+</span>
+
+<div class="wrap">
+
+  <section class="hero">
+    <div class="hero-top-row">
+      <span class="eyebrow">Fallstudie · für RE/BA-Einsteiger</span>
+      <button class="beamer-btn" id="beamerBtn" type="button" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">☀ Beamer</button>
+    </div>
+    <h1>Von der ersten Idee zum Qualitätssystem</h1>
+    <p class="lede">Diese Fallstudie ist keine Erfindung. Sie zeigt sieben reale Stationen, an denen aus einzelnen Trainingswerkzeugen ein belastbarer Qualitätsstandard entstanden ist — mit den Umwegen, die dazugehören.</p>
+    <div class="frame">
+      <strong>Warum das für Sie zählt:</strong> Die fertige Checkliste einer erfahrenen Person zu lesen bringt wenig. Zu sehen, <em>wie</em> aus einer unscharfen Ahnung ein prüfbares Kriterium wurde, lässt sich auf jedes eigene Projekt übertragen — das ist der eigentliche Lernstoff.
+    </div>
+  </section>
+
+  <section class="studio" id="studio">
+    <nav class="ladder-col" id="ladder" aria-label="Stationen der Fallstudie"></nav>
+    <div class="stage-panel" id="stagePanel"></div>
+  </section>
+
+  <footer class="panels">
+    <div class="footer-sig">
+      <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a> — Referenzrahmen: IREB CPRE, BABOK v3 (IIBA), ISO/IEC 25010:2023, BSI C5/C3A
+      <span class="audit-line">Zuletzt geprüft: 01.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+    </div>
+
+    <div class="footer-details">
+      <details class="footer-box">
+        <summary class="footer-summary">🧭 Systemprompt</summary>
+        <div class="footer-content footer-mono">Baue mir ein einzelnes HTML-Tool "Von der Idee zum Qualitätssystem" als Fallstudie für RE/BA-Einsteiger:innen, die anhand von sieben REALEN Entwicklungsstationen erleben, wie aus einzelnen Trainingswerkzeugen ein belastbares Qualitätssystem (Checkliste K1-K19) entstanden ist.
+
+STRUKTUR
+- Kopfzeile: Zurück-Link zur Startseite, Marken-Zeile (klein, Monospace), fix positionierte Signatur (Name + Website-Link) oben rechts im Viewport, unter 900px als normaler Block.
+- Hero-Sektion: Eyebrow-Label, H1, Lead-Absatz, hervorgehobener "Warum das für Sie zählt"-Kasten. Beamer-Button oben rechts in der Hero-Zeile.
+- Zweispaltige "Stage Studio"-Ansicht: links eine vertikale Stufen-Leiter (eine Kachel pro Station, nummeriert, mit Fortschritts-Punkt), rechts das aktive Stationen-Panel.
+- Jede Station (außer der letzten) hat vier farblich unterschiedene Blöcke in fester Reihenfolge: SITUATION (neutral, was passiert ist) → PETRA FRAGT (violett, eine einzige offene Coaching-Frage, kursiv) → PRINZIP (grün, das dahinterliegende Qualitätsprinzip) → STANDARD-BEZUG (amber, Verknüpfung zu einem konkreten RE/BA-Standard mit <code>-Begriff). Darunter eine Selbstcheck-Checkbox ("Ich erkenne dieses Muster gerade in einem eigenen Projekt.").
+- Letzte Station ist eine Transfer-Übung: Situationsblock, darunter ein 2x2-Grid mit vier bis sechs anklickbaren "Das trifft bei mir zu"-Optionen, die je nach Auswahl eine passende Handlungsempfehlung einblenden.
+- Navigation unten in jedem Panel: Zurück-Button (deaktiviert auf Station 1), Fortschrittsanzeige "Station X von Y", Weiter-Button (auf letzter Station: "Zur Fallstudie zurück", springt auf Station 1).
+- Footer mit vier Aufklapp-Boxen: Systemprompt (dieser Master-Bau-Prompt inkl. Zusatz-Prompt), Handbuch, Vortrags-Skript, Normen-Register.
+
+DATENMODELL
+- Ein Array `stages` mit sieben Objekten: code, phase, title, situation, petra, prinzip, standard (bei der letzten Station: isTransfer:true statt der vier Textfelder).
+- Ein Array `transferOptions` mit Label (Symptom-Beschreibung) und result (Handlungsempfehlung mit Rückverweis auf die passende Station).
+- Kein Server, keine KI-Anbindung — reine statische Daten, per JS gerendert.
+
+INHALTLICHE LOGIK DER SIEBEN STATIONEN (reale Abfolge, kein Dogma)
+1. Ausgangslage: viele gute Tools, kein gemeinsamer Prüfmaßstab → IREB "testbar".
+2. Erste Konkretisierung: vage NFR ("gut lesbar") wird zu Pixel-/Zentimeter-Messkriterien → ISO/IEC 25010:2023 Interaction Capability.
+3. Systematik: wiederkehrende Einzelfragen werden zur benannten Checkliste → IREB "konsistent".
+4. Lücke entdeckt: die Checkliste prüft Form, nicht fachliche Aktualität (Beispiel: veralteter Normenverweis) → BABOK Requirements Life Cycle Management.
+5. Reifegrad-Sprung: aus dem Einzelfehler wird ein neues, allgemeines Kriterium (hier: K17, aktive Normen-Prüfpflicht) → IREB "verfolgbar".
+6. Methodische Trennung: Verifizieren (automatisiert prüfbar) und Validieren (Urteilsvermögen) werden in zwei Prüfstufen getrennt → BABOK Verify vs. Validate.
+7. Transfer: kein Petra-Block, stattdessen eine Selbstzuordnungs-Übung, die die eigene Situation der Teilnehmenden auf eine der sechs vorherigen Stationen abbildet.
+
+DESIGN-VORGABEN
+- Ruhige "Blueprint"-Ästhetik: Serif-Überschriften (Georgia/Iowan Old Style), Sans-Serif-Fließtext, Monospace für Codes/Eyebrows. Helle Basis, gedeckte Akzentfarben (Blueprint-Blau, Amber, Sage-Grün, Petra-Violett) je Blocktyp konsistent wiederverwendet.
+- Fließtext ≥16px, Kleintext/Codes ≥14px, klickbare Flächen ≥44px (eigene NFR-Vorgabe des Tools, siehe Station 2 — muss im eigenen Bau eingehalten werden, sonst widerspricht das Tool seiner eigenen Lehre).
+- Beamer-Modus rein additiv über kumulative CSS-Klassen auf &lt;html&gt; (beamer/beamer-xl/beamer-xxl), keine Inhaltsänderung, Footer ab Stufe 1 ausgeblendet.
+- Responsive: unter 820px wird die Stufen-Leiter horizontal scrollbar, Blöcke bleiben gestapelt.
+
+PERSONA-BEZUG
+- "Petra" ist die wiederkehrende Coaching-Figur aus Michaelas RE/BA-Trainingsmaterialien: ruhig, erfahren, stellt genau eine offene Frage statt eine Antwort zu liefern. In dieser Fallstudie erscheint sie ausschließlich im PETRA-FRAGT-Block, nie als direkte Lösungsansage.
+
+NICHT TUN
+- Keine erfundenen Stationen zur Dramatisierung hinzufügen — alle sieben Stationen bilden reale Entwicklungsschritte ab, keine didaktische Fiktion.
+- Keine Normen-Status-Angabe ohne Datumsstempel und Prüfhinweis übernehmen (das ist exakt die Fehlerklasse aus Station 4/5 — würde sich selbst widersprechen).
+- Kein Fortschrittszwang: alle Stationen bleiben über die Leiter frei anklickbar, kein linearer Lock.
+- Keine externe Bibliothek, kein Build-Prozess — single-file, offlinefähig.
+
+---
+<span class="zusatz-label">Zusatz: Transfer-Prompt für eigene Projekte (kein Bau-, sondern ein Nutzungs-Prompt zum Copy-Paste)</span>
+
+Du bist ein RE/BA-Coach nach dem Vorbild der Figur "Petra": ruhig,
+erfahren, gibt keine direkten Antworten, sondern stellt die Frage,
+die den nächsten Klarheits-Schritt auslöst.
+
+Ich beschreibe dir eine aktuelle Situation aus meinem Projekt.
+Antworte in genau vier Teilen:
+1. SITUATION — fasse zusammen, was ich beschrieben habe (2-3 Sätze)
+2. PETRA FRAGT — eine einzige offene Frage, die den blinden Fleck
+   sichtbar macht (kein Ratschlag, nur eine Frage)
+3. PRINZIP — nachdem ich geantwortet habe, formuliere das
+   allgemeine Qualitätsprinzip, das hinter meiner Antwort steckt
+4. STANDARD-BEZUG — verknüpfe das Prinzip mit einem konkreten
+   RE/BA-Standard (IREB, BABOK, ISO 25010, IEEE 29148)
+
+Warte nach Schritt 2 auf meine Antwort, bevor du mit 3 fortfährst.</div>
+      </details>
+
+      <details class="footer-box">
+        <summary class="footer-summary">📖 Handbuch</summary>
+        <div class="footer-content footer-sans">
+          <p><strong>Framework:</strong> RTF (Rolle–Task–Format), angewendet nicht auf einen Prompt, sondern auf die Coaching-Interaktion selbst: Petra (Rolle) stellt eine Frage (Task), die Antwort mündet in Prinzip + Standard-Bezug (Format). Jede Station durchläuft dieses Muster identisch — das macht die Fallstudie selbst lernbar als Vorlage.</p>
+          <p><strong>Die 5 Dimensionen, auf diese Fallstudie angewendet:</strong></p>
+          <table class="footer-table">
+            <tr><th>Dimension</th><th>Umsetzung in diesem Tool</th></tr>
+            <tr><td>Rolle</td><td>Petra als wiederkehrende Coaching-Figur — stellt Fragen, liefert keine Lösungen.</td></tr>
+            <tr><td>Aufgabe</td><td>Sieben reale Stationen nachvollziehen und auf ein eigenes Projekt übertragen (Transfer-Station).</td></tr>
+            <tr><td>Kontext</td><td>Echte Entstehungsgeschichte des K1–K19-Qualitätssystems, inklusive eines echten Fehlers (Station 4) statt eines Lehrbuchbeispiels.</td></tr>
+            <tr><td>Format</td><td>Vier-Block-Muster (Situation/Petra/Prinzip/Standard) pro Station, plus Selbstcheck-Box, plus abschließende Zuordnungs-Übung.</td></tr>
+            <tr><td>Eingrenzung</td><td>Kein linearer Zwang (freie Navigation über die Leiter), aber genau sieben Stationen — keine beliebige Erweiterung ohne neuen realen Anlass.</td></tr>
+          </table>
+          <p><strong>Zentraler Lernhinweis:</strong> Ein Qualitätssystem reift nicht dadurch, dass jemand von Anfang an alles richtig macht, sondern dadurch, dass aus jedem entdeckten Fehler ein allgemeines, wiederverwendbares Kriterium wird (Station 5, K17). Genau das lässt sich weder auswendig lernen noch abkürzen — nur nachvollziehen.</p>
+          <p><strong>Nachbau-Tipp:</strong> Wer eine eigene Fallstudie nach diesem Muster bauen will, sollte mit der Frage beginnen: "Welche echte Situation hat bei uns zu einer neuen Regel geführt?" — nicht mit der fertigen Regel. Das Vier-Block-Muster (Situation → offene Frage → Prinzip → Standard) lässt sich unverändert auf jede andere Fachdomäne übertragen.</p>
+        </div>
+      </details>
+
+      <details class="footer-box">
+        <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+        <div class="footer-content footer-sans">
+          <div class="schritt"><strong>Einstieg</strong><span class="regie">(Hero-Sektion zeigen, noch nicht in die Stage-Studio scrollen)</span><br>„Ich zeige Ihnen kein fertiges Qualitätsmodell zum Auswendiglernen. Ich zeige Ihnen, wie eines entstanden ist — mit den Umwegen, die dazugehören. Das ist der eigentliche Lernstoff."</div>
+          <div class="schritt"><strong>Stationen 1–3</strong><span class="regie">(durch die ersten drei Stufen klicken, vor dem Prinzip-Block kurz anhalten)</span><br>„Am Anfang stand die einfachste aller Fragen: Woran erkenne ich, dass etwas fertig ist? Aus dieser einen Frage wurde über drei Stationen eine erste Checkliste."</div>
+          <div class="schritt"><strong>Station 4</strong><span class="regie">(auf Stufe 4 wechseln, Situationsblock vorlesen, dann Pause)</span><br>„Dann kam der Moment, den jedes Qualitätssystem irgendwann erlebt: Die Checkliste hat etwas übersehen. Nicht die Form war falsch — der Inhalt war veraltet. Das ist der Moment, der zeigt, ob ein System reift oder stehen bleibt."</div>
+          <div class="schritt"><strong>Stationen 5–6</strong><span class="regie">(weiterklicken, Standard-Bezug-Block jeweils betonen)</span><br>„Die Reaktion darauf war nicht 'Fehler korrigieren', sondern 'Fehlerklasse verhindern'. Und als die Liste dadurch zu groß wurde, kam die nächste Reifestufe: trennen, was Maschinen prüfen können, von dem, was Urteilsvermögen braucht."</div>
+          <div class="schritt"><strong>Transfer (Station 7)</strong><span class="regie">(auf die letzte Stufe wechseln, Gruppe eine Option wählen lassen, bevor Sie die Empfehlung aufdecken)</span><br>„Jetzt sind Sie dran: Wo in Ihrem eigenen Projekt erkennen Sie eine dieser sieben Stationen wieder?"</div>
+          <p class="regie">Allgemeine Regie-Hinweise: Nicht mit Station 4 (dem Fehler) einsteigen, auch wenn sie am spannendsten wirkt — ohne die ersten drei Stationen fehlt der Kontrast, der den Wendepunkt erst zeigt. Gesamtdauer geführt: ca. 20–30 Minuten inkl. Diskussion, als reiner 5-Minuten-Teaser nur Einstieg + Station 4 + Transfer verwenden. Beamer-Modus vor Kursbeginn einmal durchklicken, damit die Stufe zur Raumgröße passt.</p>
+        </div>
+      </details>
+
+      <details class="footer-box">
+        <summary class="footer-summary">📚 Normen-Register</summary>
+        <div class="footer-content footer-sans">
+          <table class="footer-table">
+            <tr><th>Standard</th><th>Bezug in dieser Fallstudie</th><th>Status (Stand: 01.08.2026)</th></tr>
+            <tr><td>IREB CPRE</td><td>Qualitätskriterien: testbar, konsistent, verfolgbar</td><td class="status-ok">aktuell</td></tr>
+            <tr><td>BABOK v3 (IIBA)</td><td>Requirements Life Cycle Management, Verify vs. Validate</td><td class="status-ok">aktuell</td></tr>
+            <tr><td>ISO/IEC 25010:2023</td><td>Qualitätsmerkmal Interaction Capability (NFR-Konkretisierung)</td><td class="status-ok">aktuell, Edition 2</td></tr>
+            <tr><td>BSI C5:2026</td><td>Grundlage für C3A, Beispiel Normen-Drift (Station 4)</td><td class="status-ok">final seit Ende März 2026</td></tr>
+            <tr><td>BSI C3A</td><td>Ersetzt veraltete Referenz „BSI A5" (Station 4)</td><td class="status-pending">englische Fassung seit 27.04.2026 final, deutsche Fassung angekündigt für Ende Q2 2026</td></tr>
+          </table>
+          <p style="margin-top:14px;">Hinweis: Der Status der deutschen C3A-Fassung sollte vor jeder erneuten Verwendung dieser Fallstudie neu geprüft werden — das ist exakt das Prinzip aus Station 5 (K17), hier auf das eigene Material angewendet.</p>
+        </div>
+      </details>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+
+  /* ============ STAGE DATA (reale Stationen) ============ */
+  const stages = [
+    {
+      code: "01",
+      phase: "Ausgangslage",
+      title: "Viele gute Tools — kein gemeinsamer Maßstab",
+      situation: "Mehrere Trainingswerkzeuge entstehen parallel: ein Prompt-Governance-Canvas, ein Presenter-Tool mit zwölf Missionen, ein Framework-Deklinator. Jedes davon funktioniert gut für sich. Aber es gibt keine Antwort auf die Frage: Woran erkenne ich, dass eines dieser Tools „fertig“ ist — und ein anderes noch nicht?",
+      petra: "„Woran genau erkennen Sie, dass ein Tool fertig ist? Nennen Sie mir ein Kriterium, das man prüfen kann — nicht nur ein Gefühl.“",
+      prinzip: "Ohne ein benanntes, prüfbares Kriterium ist „fertig“ Geschmackssache. Das ist der Ausgangspunkt jeder Qualitätsarbeit: das unausgesprochene Bauchgefühl in eine Aussage überführen, die man bestätigen oder widerlegen kann.",
+      standard: "IREB-Qualitätskriterium <code>testbar</code>: Eine Anforderung — oder ein Akzeptanzkriterium für ein Artefakt — muss so formuliert sein, dass sich objektiv prüfen lässt, ob sie erfüllt ist."
+    },
+    {
+      code: "02",
+      phase: "Erste Konkretisierung",
+      title: "„Gut lesbar“ wird zu 18px, 14px und 44px",
+      situation: "Die Tools sollen auch per Beamer aus über zehn Metern Entfernung nutzbar sein — für Vorträge und Workshops. „Gut lesbar“ und „gut klickbar“ sind als Anforderung nutzlos, solange niemand sagt, was das in Pixeln und Zentimetern bedeutet.",
+      petra: "„Zehn Meter Entfernung — was heißt das für die Schriftgröße? Für die Fläche, auf die jemand mit dem Finger oder dem Cursor trifft?“",
+      prinzip: "Eine nicht-funktionale Anforderung wird erst wertvoll, wenn ein konkreter Nutzungskontext in ein Messkriterium übersetzt wird. Aus „Beamer, große Distanz“ wurde: Fließtext mindestens 18px, Kleintext mindestens 14px, klickbare Flächen mindestens 44px.",
+      standard: "ISO/IEC 25010:2023, Qualitätsmerkmal <code>Interaction Capability</code> (vormals Usability): NFRs brauchen ein Messkriterium, keine Adjektive."
+    },
+    {
+      code: "03",
+      phase: "Systematik",
+      title: "Aus Einzelfällen wird eine Checkliste",
+      situation: "Mit jedem neuen Tool tauchen dieselben Fragen wieder auf: Sind die Klickflächen groß genug? Stehen echte Beispiele statt Platzhaltern im Tool? Ist der Footer einheitlich? Jede Frage einzeln im Kopf zu behalten, funktioniert nicht mehr.",
+      petra: "„Was passiert, wenn zwei Tools dieselbe Frage unterschiedlich beantworten? Woher weiß die nächste Person, welche Antwort gilt?“",
+      prinzip: "Wiederkehrende Einzelentscheidungen werden zu benannten, wiederverwendbaren Kriterien zusammengefasst — einer Checkliste. Das ist der Schritt von punktueller Sorgfalt zu einem System, das unabhängig von der Tagesform trägt.",
+      standard: "IREB-Qualitätskriterium <code>konsistent</code>: Kein Widerspruch zwischen einzelnen Artefakten. Ohne benannte Kriterien ist Konsistenz reiner Zufall."
+    },
+    {
+      code: "04",
+      phase: "Lücke entdeckt",
+      title: "Die Checkliste prüft Form — aber nicht, ob der Inhalt noch stimmt",
+      situation: "In mehreren Materialien steht ein Souveränitäts-Rahmenwerk unter einem Namen, der inzwischen überholt ist: „BSI A5“. Tatsächlich veröffentlichte das BSI am 27.04.2026 die C3A (Criteria enabling Cloud Computing Autonomy), aufbauend auf dem seit Ende März 2026 finalen C5:2026. Die Checkliste hätte das nicht gefunden — sie prüft Form, Struktur, Beamer-Tauglichkeit. Nicht fachliche Aktualität.",
+      petra: "„Woher wissen Sie, dass eine Norm, die Sie vor einem Jahr gelernt haben, heute noch so heißt? Reicht es, sich zu erinnern?“",
+      prinzip: "Fachwissen veraltet, ohne dass man es merkt. Aktualität ist selbst eine nicht-funktionale Anforderung an ein Trainingsmaterial — und sie darf nicht im Kopf der Autorin liegen, sondern muss im Prozess verankert sein.",
+      standard: "BABOK v3, <code>Requirements Life Cycle Management</code>: Anforderungen — und referenzierte Normen — müssen über die Zeit aktiv gepflegt, nicht nur einmalig erhoben werden."
+    },
+    {
+      code: "05",
+      phase: "Reifegrad-Sprung",
+      title: "Nicht der Fehler wird korrigiert — die Fehlerklasse wird verhindert",
+      situation: "Die falschen Verweise werden korrigiert. Das allein würde aber nur dieses eine Symptom beheben. Stattdessen entsteht ein neues Kriterium: Jede referenzierte Norm oder jedes Framework muss vor Verwendung aktiv auf ihren aktuellen Status geprüft werden — nie aus dem Gedächtnis übernommen.",
+      petra: "„Reicht eine einmalige Korrektur — oder brauchen Sie eine Regel, die verhindert, dass derselbe Fehler in sechs Monaten wieder auftaucht?“",
+      prinzip: "Ein Qualitätssystem reift nicht durch das Ausbessern einzelner Fehler, sondern dadurch, dass aus einem Fehler ein neues, allgemeines Kriterium wird, das die ganze Fehlerklasse abdeckt.",
+      standard: "IREB-Qualitätskriterium <code>verfolgbar</code>: Herkunft und Auswirkung eines Kriteriums müssen nachvollziehbar sein — das neue Kriterium lässt sich bis zu genau diesem Vorfall zurückverfolgen."
+    },
+    {
+      code: "06",
+      phase: "Methodische Trennung",
+      title: "Verifizieren und Validieren sind zwei verschiedene Fragen",
+      situation: "Die Checkliste wächst weiter — und wird unübersichtlich, weil sie zwei ganz unterschiedliche Arten von Prüfung vermischt: „Ist die Klickfläche mindestens 44px groß?“ lässt sich automatisiert per Skript beantworten. „Wirkt die Ansprache für Herrn Bachmeier plausibel?“ nicht. Die Lösung: ein zweistufiges System — Stufe 1 automatisiert (Skript, prüft messbare Kriterien), Stufe 2 manuell (Checkliste für Urteilsvermögen).",
+      petra: "„Kann eine Maschine prüfen, ob etwas messbar korrekt gebaut ist? Kann sie auch prüfen, ob es das Richtige ist?“",
+      prinzip: "Verifizieren („Habe ich es richtig gebaut?“) und Validieren („Habe ich das Richtige gebaut?“) beantworten unterschiedliche Fragen und brauchen unterschiedliche Prüfmethoden. Beides in eine Liste zu packen, macht beides schwächer.",
+      standard: "BABOK v3 unterscheidet <code>Verify</code> und <code>Validate Requirements</code> explizit als getrennte Aufgaben im Requirements Life Cycle Management."
+    },
+    {
+      code: "07",
+      phase: "Transfer",
+      title: "Wo stehen Sie gerade — mit Ihrem eigenen Projekt?",
+      situation: "Die Stationen oben sind eine echte Abfolge. Aber die Reihenfolge ist kein Dogma — jedes Projekt startet an einem anderen Punkt. Ordnen Sie Ihre aktuelle Situation kurz zu, um zu sehen, welches Prinzip als Nächstes am meisten bringt.",
+      petra: null,
+      prinzip: null,
+      standard: null,
+      isTransfer: true
+    }
+  ];
+
+  const transferOptions = [
+    {
+      label: "Wir diskutieren ständig, ob etwas „fertig“ ist — ohne uns einig zu werden.",
+      result: "Das ist Station 1. Legen Sie zuerst ein prüfbares Akzeptanzkriterium fest, bevor Sie irgendetwas anderes systematisieren — sonst bauen Sie auf Sand."
+    },
+    {
+      label: "Wir haben NFRs formuliert, aber sie sind vage („performant“, „benutzerfreundlich“).",
+      result: "Das ist Station 2. Übersetzen Sie jede vage NFR in ein Messkriterium mit konkretem Kontext — Zahl, Einheit, Bedingung. Ohne das bleibt jede NFR Meinungssache."
+    },
+    {
+      label: "Jede Person im Team prüft Dinge anders — es gibt keine gemeinsame Checkliste.",
+      result: "Das ist Station 3. Sammeln Sie die wiederkehrenden Prüffragen und benennen Sie sie einmal konsistent — das allein schafft schon Konsistenz zwischen Artefakten."
+    },
+    {
+      label: "Wir haben eine Checkliste, aber sie prüft nur Form, nicht fachliche Aktualität.",
+      result: "Das ist Station 4 und 5. Ergänzen Sie ein Kriterium, das aktiv zur Prüfpflicht macht, was sonst nur „im Kopf“ existiert — und das mit jedem neuen Fehler wächst."
+    },
+    {
+      label: "Unsere Checkliste ist inzwischen so groß, dass niemand sie mehr vollständig durchgeht.",
+      result: "Das ist Station 6. Trennen Sie, was sich automatisiert messen lässt, von dem, was Urteilsvermögen braucht — zwei kleinere, schärfere Prüfschritte statt einer überladenen Liste."
+    }
+  ];
+
+  let current = 0;
+  const done = new Set();
+
+  const ladder = document.getElementById('ladder');
+  const stagePanel = document.getElementById('stagePanel');
+
+  function renderLadder(){
+    ladder.innerHTML = '<div class="ladder-title">Reifegrad-Leiter</div>';
+    stages.forEach((s, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'rung' + (i === current ? ' active' : '') + (done.has(i) ? ' done' : '');
+      btn.setAttribute('type','button');
+      btn.innerHTML = '<span class="dot">' + (done.has(i) ? '✓' : s.code) + '</span>' +
+                      '<span class="label">' + s.phase + '</span>' +
+                      '<span class="connector"></span>';
+      btn.addEventListener('click', () => { goTo(i); });
+      ladder.appendChild(btn);
+    });
+  }
+
+  function renderStage(){
+    const s = stages[current];
+    let html = '';
+    html += '<div class="stage-head">';
+    html += '<span class="stage-code">Station ' + s.code + '</span>';
+    html += '<span class="stage-phase">' + s.phase + '</span>';
+    html += '</div>';
+    html += '<h2>' + s.title + '</h2>';
+
+    if(!s.isTransfer){
+      html += '<div class="block b-situation"><span class="kicker">Situation</span><p>' + s.situation + '</p></div>';
+      html += '<div class="block b-petra"><span class="kicker">Petra fragt</span><p>' + s.petra + '</p></div>';
+      html += '<div class="block b-prinzip"><span class="kicker">Prinzip</span><p>' + s.prinzip + '</p></div>';
+      html += '<div class="block b-standard"><span class="kicker">Standard-Bezug</span><p>' + s.standard + '</p></div>';
+      html += '<div class="selfcheck"><label><input type="checkbox" id="selfcheck-' + current + '"> Ich erkenne dieses Muster gerade in einem eigenen Projekt.</label></div>';
+    } else {
+      html += '<div class="block b-situation"><span class="kicker">Situation</span><p>' + s.situation + '</p></div>';
+      html += '<div class="transfer-grid" id="transferGrid"></div>';
+      html += '<div class="block b-prinzip transfer-result hidden" id="transferResult"><span class="kicker">Empfehlung</span><p id="transferResultText"></p></div>';
+    }
+
+    html += '<div class="nav-row">';
+    html += '<button class="nav-btn" id="prevBtn" type="button">← Zurück</button>';
+    html += '<span class="progress-txt">Station ' + (current+1) + ' von ' + stages.length + '</span>';
+    html += '<button class="nav-btn primary" id="nextBtn" type="button">' + (current === stages.length-1 ? 'Zur Fallstudie zurück' : 'Weiter →') + '</button>';
+    html += '</div>';
+
+    stagePanel.innerHTML = html;
+
+    document.getElementById('prevBtn').disabled = (current === 0);
+    document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      done.add(current);
+      if(current === stages.length - 1){ goTo(0); } else { goTo(current + 1); }
+    });
+
+    if(!s.isTransfer){
+      const cb = document.getElementById('selfcheck-' + current);
+      cb.addEventListener('change', () => { if(cb.checked) done.add(current); renderLadder(); });
+    } else {
+      const grid = document.getElementById('transferGrid');
+      transferOptions.forEach((opt, idx) => {
+        const b = document.createElement('button');
+        b.className = 'transfer-opt';
+        b.type = 'button';
+        b.textContent = opt.label;
+        b.addEventListener('click', () => {
+          document.querySelectorAll('.transfer-opt').forEach(el => el.classList.remove('selected'));
+          b.classList.add('selected');
+          const res = document.getElementById('transferResult');
+          document.getElementById('transferResultText').textContent = opt.result;
+          res.classList.remove('hidden');
+          done.add(current);
+          renderLadder();
+        });
+        grid.appendChild(b);
+      });
+    }
+  }
+
+  function goTo(i){
+    current = Math.max(0, Math.min(stages.length - 1, i));
+    renderLadder();
+    renderStage();
+    document.getElementById('studio').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  renderLadder();
+  renderStage();
+
+  /* ============ BEAMER-MODUS (K18, vierstufig) ============ */
+  const BEAMER_LEVELS = [
+    { classes: [],                                    label: '☀ Beamer' },
+    { classes: ['beamer'],                             label: '☀ Beamer XL' },
+    { classes: ['beamer', 'beamer-xl'],                label: '☀ Beamer XXL' },
+    { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: '☀ Normal' }
+  ];
+  const BEAMER_STORAGE_KEY = "denkraumFallstudieQualitaetssystem";
+  let beamerLevel = 0;
+  try{
+    const saved = JSON.parse(sessionStorage.getItem(BEAMER_STORAGE_KEY) || "null");
+    if(saved && typeof saved.beamerLevel === "number") beamerLevel = saved.beamerLevel;
+  }catch(e){}
+
+  function applyBeamerLevel(){
+    document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(c => document.documentElement.classList.add(c));
+    document.getElementById('beamerBtn').textContent = BEAMER_LEVELS[beamerLevel].label;
+  }
+  applyBeamerLevel();
+
+  document.getElementById('beamerBtn').addEventListener('click', function(){
+    beamerLevel = (beamerLevel + 1) % 4;
+    applyBeamerLevel();
+    try{ sessionStorage.setItem(BEAMER_STORAGE_KEY, JSON.stringify({ beamerLevel: beamerLevel })); }catch(e){}
+  });
+
+})();
+</script>
+</body>
+</html>
