@@ -73,6 +73,14 @@ Persistenz nach dem im jeweiligen Tool bereits verwendeten Muster (`localStorage
 
 Wird ein neues Tool hinzugefügt (oder ein bestehendes ohne diese drei Elemente bearbeitet), diese Konventionen anwenden, ohne dass explizit danach gefragt wird. Neue Tools zusätzlich immer als Kachel auf `index.html` verlinken, in der thematisch passenden Rubrik.
 
+### Hero-/Einleitungstext-Breite
+
+H1, Lead-Absatz und Hervorhebungs-Boxen im Hero-Bereich dürfen nicht durch ein unnötig enges `max-width` eingeengt werden, wenn dadurch neben dem Text auffällig viel unbenutzter Weißraum entsteht (sichtbar v. a. ab ≥1280px Viewport-Breite). Richtwert: `max-width` nicht deutlich unter der Breite anderer Hauptinhalts-Elemente des Tools (z. B. Stage-/Panel-Bereiche), es sei denn ein bewusster Lesbarkeits-Grund rechtfertigt es explizit. Vor Auslieferung auf einem breiten Viewport kurz gegenprüfen.
+
+### "NEU"-Badge auf index.html
+
+Das `new-badge`-Element markiert ausschließlich Tools, die am selben Tag gebaut oder gemergt wurden — keine wochen- oder projektbezogene Interpretation. Bei jedem neuen Tool-Merge: zuerst bestehende `NEU`-Badges auf Kacheln entfernen, die nicht mehr vom aktuellen Tag stammen, dann den Badge für das neue Tool setzen. Badges bleiben nie über den Bau-Tag hinaus stehen.
+
 ## Footer-Standard
 
 Jedes Tool bekommt im Footer drei strikt inhaltlich getrennte Aufklapp-Boxen (`<details>`), kein Impressum:
