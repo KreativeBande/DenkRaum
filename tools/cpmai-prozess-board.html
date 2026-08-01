@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="de" style="color-scheme: light;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>CPMAI-Prozess-Board — Die sechs Phasen sortieren</title>
+<style>
+  :root{
+    --ink:#1a2333;
+    --ink-soft:#4a5568;
+    --muted:#7a869a;
+    --paper:#ffffff;
+    --line:#d7dce3;
+    --blueprint:#1f5c7a;
+    --blueprint-deep:#123a4e;
+    --blueprint-pale:#eaf3f7;
+    --amber:#b3620a;
+    --amber-pale:#fdf1e2;
+    --good:#1f7a4d;
+    --good-pale:#e7f5ee;
+    --bad:#b3261e;
+    --bad-pale:#fbe9e8;
+    --card-bg:#f6f8fa;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    font-size:18px;
+    line-height:1.45;
+    margin:0;
+    padding:0;
+    color-scheme:light;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+  .wrap{max-width:1320px;margin:0 auto;padding:20px 24px 40px;}
+
+  /* ===== Zurück-Link & Signatur ===== */
+  .back-link{
+    display:inline-block;
+    margin-bottom:8px;
+    font-size:14px;
+    font-weight:700;
+    color:var(--blueprint);
+    text-decoration:none;
+  }
+  .back-link:hover{text-decoration:underline;}
+  .site-sig{
+    position:fixed;
+    top:14px;
+    right:28px;
+    z-index:500;
+    font-size:14px;
+    color:var(--ink-soft);
+    text-align:right;
+    line-height:1.4;
+    background:rgba(255,255,255,.9);
+    padding:4px 10px;
+    border-radius:8px;
+  }
+  .site-sig strong{display:block;color:var(--ink);}
+  .site-sig a{color:var(--blueprint);text-decoration:none;}
+  .site-sig a:hover{text-decoration:underline;}
+  @media (max-width:900px){
+    .site-sig{position:static;background:none;padding:0;margin:0 0 10px;text-align:right;}
+  }
+
+  header.board-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:16px;
+    border-bottom:3px solid var(--blueprint-deep);
+    padding-bottom:14px;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+  }
+  .head-left{max-width:100%;}
+  .eyebrow{
+    font-size:14px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--blueprint);
+    font-weight:700;
+    margin:0 0 4px;
+  }
+  h1{font-size:28px;margin:0 0 6px;color:var(--blueprint-deep);}
+  .sub{font-size:16px;color:var(--ink-soft);margin:0;}
+
+  .iterativ-note{
+    font-size:14px;
+    color:var(--ink-soft);
+    background:var(--blueprint-pale);
+    border-left:4px solid var(--blueprint);
+    padding:8px 14px;
+    margin:14px 0 20px;
+    border-radius:4px;
+  }
+
+  .toolbar{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    align-items:center;
+    margin-bottom:18px;
+  }
+  button{
+    font:inherit;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    border-radius:8px;
+    min-height:44px;
+    padding:10px 20px;
+    border:2px solid var(--blueprint-deep);
+    background:var(--blueprint);
+    color:#fff;
+    transition:transform .05s ease;
+  }
+  button:active{transform:scale(.97);}
+  button.secondary{background:var(--paper);color:var(--blueprint-deep);}
+  button.ghost{background:var(--paper);color:var(--ink-soft);border-color:var(--line);}
+  .beamer-btn{
+    background:transparent;
+    border:1.5px solid var(--line);
+    color:var(--ink-soft);
+    font-family:inherit;
+  }
+  html.beamer .beamer-btn,
+  html.beamer-xl .beamer-btn,
+  html.beamer-xxl .beamer-btn{
+    background:var(--blueprint-deep); color:#fff; border-color:var(--blueprint-deep);
+  }
+  #score{
+    font-size:16px;
+    font-weight:700;
+    color:var(--blueprint-deep);
+    margin-left:auto;
+    background:var(--blueprint-pale);
+    border:2px solid var(--blueprint);
+    border-radius:8px;
+    padding:8px 16px;
+    min-height:44px;
+    display:flex;
+    align-items:center;
+  }
+
+  .pool{
+    background:var(--blueprint-pale);
+    border:2px dashed var(--blueprint);
+    border-radius:var(--radius);
+    padding:14px;
+    margin-bottom:26px;
+    min-height:80px;
+  }
+  .pool-label{font-size:14px;font-weight:700;color:var(--blueprint-deep);text-transform:uppercase;letter-spacing:.06em;margin:0 0 10px;}
+  .card-row{display:flex;flex-wrap:wrap;gap:10px;}
+
+  .card{
+    background:var(--card-bg);
+    border:2px solid var(--line);
+    border-radius:8px;
+    padding:10px 14px;
+    font-size:15px;
+    min-height:44px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    max-width:280px;
+    cursor:grab;
+    touch-action:none;
+    box-shadow:0 1px 2px rgba(0,0,0,.06);
+  }
+  .card .en{font-weight:700;font-size:16px;color:var(--blueprint-deep);}
+  .card .de{font-size:14px;color:var(--ink-soft);margin-top:2px;}
+  .card:active{cursor:grabbing;}
+  .card.dragging{
+    opacity:.85;
+    box-shadow:0 8px 20px rgba(0,0,0,.22);
+    z-index:50;
+    position:fixed;
+    pointer-events:none;
+  }
+  .card.correct{border-color:var(--good);background:var(--good-pale);}
+  .card.incorrect{border-color:var(--bad);background:var(--bad-pale);}
+  .card.selected{outline:3px solid var(--blueprint);outline-offset:2px;}
+  .card:focus-visible{outline:3px solid var(--blueprint);outline-offset:2px;}
+
+  .flow{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:8px;
+    align-items:stretch;
+    margin-bottom:18px;
+  }
+  .arrow{
+    display:flex;align-items:center;justify-content:center;
+    color:var(--blueprint);font-size:20px;font-weight:900;
+  }
+  @media (max-width:1080px){
+    .flow{grid-template-columns:1fr;}
+    .arrow{transform:rotate(90deg);margin:2px 0;}
+  }
+
+  .zone{
+    background:var(--paper);
+    border:2px solid var(--blueprint);
+    border-radius:var(--radius);
+    padding:12px;
+    min-height:200px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .zone.dragover{background:var(--blueprint-pale);border-style:dashed;}
+  .zone:focus-visible, .quer:focus-visible, .pool:focus-visible{outline:3px solid var(--blueprint);outline-offset:2px;}
+  .zone-num{
+    font-family:"Consolas","SF Mono",monospace;
+    font-size:14px;
+    color:var(--blueprint);
+    font-weight:700;
+  }
+  .zone-title{font-size:18px;font-weight:700;color:var(--blueprint-deep);margin:0;}
+  .zone-desc{font-size:14px;color:var(--ink-soft);margin:0 0 4px;}
+  .zone-cards{display:flex;flex-direction:column;gap:8px;min-height:44px;flex:1;}
+  .zone-cards .card{max-width:none;}
+
+  .quer{
+    margin-top:6px;
+    background:var(--amber-pale);
+    border:2px dashed var(--amber);
+    border-radius:var(--radius);
+    padding:14px;
+  }
+  .quer .zone-title{color:var(--amber);}
+  .quer .zone-desc{color:#7a4405;}
+  .quer .zone-cards{flex-direction:row;flex-wrap:wrap;}
+  .quer .zone-cards .card{max-width:290px;}
+
+  /* ===== Beamer-Modus (K18, vierstufig) ===== */
+  html.beamer{ --ink-soft:#3D4A5C; }
+  html.beamer .card .en{ font-size:22px; }
+  html.beamer .card .de{ font-size:16px; }
+  html.beamer .zone-title{ font-size:26px; }
+  html.beamer .zone-num, html.beamer .zone-desc, html.beamer .pool-label{ font-size:15px; }
+  html.beamer #score{ font-size:18px; }
+  html.beamer .iterativ-note{ font-size:15px; }
+  html.beamer .board-foot{ display:none; }
+
+  html.beamer-xl .card .en{ font-size:28px; }
+  html.beamer-xl .card .de{ font-size:19px; }
+  html.beamer-xl .zone-title{ font-size:32px; }
+  html.beamer-xl .zone-num, html.beamer-xl .zone-desc, html.beamer-xl .pool-label{ font-size:18px; }
+  html.beamer-xl #score{ font-size:21px; }
+  html.beamer-xl .iterativ-note{ font-size:17px; }
+
+  html.beamer-xxl .card .en{ font-size:34px; }
+  html.beamer-xxl .card .de{ font-size:22px; }
+  html.beamer-xxl .zone-title{ font-size:38px; }
+  html.beamer-xxl .zone-num, html.beamer-xxl .zone-desc, html.beamer-xxl .pool-label{ font-size:21px; }
+  html.beamer-xxl #score{ font-size:24px; }
+  html.beamer-xxl .iterativ-note{ font-size:19px; }
+
+  /* ===== Footer: Systemprompt / Handbuch / Vortrags-Skript / Normen-Register ===== */
+  footer.board-foot{
+    margin-top:30px;
+    border-top:3px solid var(--blueprint-deep);
+    padding-top:16px;
+  }
+  .footer-sig{font-size:14px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
+  .footer-sig strong{color:var(--ink);}
+  .footer-sig a{color:var(--blueprint);font-weight:700;text-decoration:none;}
+  .footer-sig a:hover{text-decoration:underline;}
+  .footer-sig .audit-line{display:block;margin-top:4px;color:var(--muted);}
+  .footer-details{display:grid;grid-template-columns:1fr;gap:12px;}
+  @media (min-width:901px){ .footer-details{grid-template-columns:repeat(4,1fr);} }
+  .footer-box{border:1px solid var(--line);border-radius:8px;background:var(--paper);overflow:hidden;}
+  .footer-summary{
+    cursor:pointer;
+    list-style:none;
+    padding:14px 16px;
+    font-size:16px;
+    font-weight:700;
+    color:var(--blueprint-deep);
+    min-height:44px;
+    display:flex;
+    align-items:center;
+    border-bottom:1px solid transparent;
+  }
+  .footer-box[open] .footer-summary{border-bottom-color:var(--line);}
+  .footer-summary::-webkit-details-marker{display:none;}
+  .footer-content{padding:14px 16px;font-size:15px;color:var(--ink-soft);white-space:pre-wrap;}
+  .footer-mono{
+    font-family:"Consolas","SF Mono",monospace;
+    font-size:14px;
+    line-height:1.6;
+    color:var(--ink);
+    background:var(--card-bg);
+    border-radius:6px;
+  }
+  .footer-sans{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.6;white-space:normal;}
+  .footer-sans .regie{color:var(--ink-soft);font-style:italic;}
+  .footer-sans .schritt{margin:0 0 14px;padding-bottom:14px;border-bottom:1px dashed var(--line);}
+  .footer-sans .schritt:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .footer-sans .schritt strong{display:block;color:var(--blueprint);margin-bottom:4px;}
+  .footer-table{width:100%;border-collapse:collapse;font-size:14px;}
+  .footer-table th,.footer-table td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
+  .footer-table th{background:var(--blueprint-pale);color:var(--blueprint-deep);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="board-head">
+    <div class="head-left">
+      <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+      <p class="eyebrow">PMI-CPMAI™ Prüfungsvorbereitung</p>
+      <h1>CPMAI-Prozess-Board</h1>
+      <p class="sub">Die sechs CPMAI-Phasen — Aufgaben rund um den XYZ-Company-Chatbot der richtigen Phase zuordnen.</p>
+    </div>
+  </header>
+  <span class="site-sig">
+    <strong>Michaela Kühn</strong>
+    <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a>
+  </span>
+
+  <p class="iterativ-note">Hinweis fürs Debrief: Die sechs Phasen werden zwar in dieser Reihenfolge geprüft — in der Praxis ist CPMAI iterativ, Teams springen bei neuen Erkenntnissen zwischen Phasen zurück.</p>
+
+  <div class="toolbar">
+    <button id="btnCheck">Prüfen</button>
+    <button id="btnSolution" class="secondary">Lösung zeigen</button>
+    <button id="btnReset" class="ghost">Zurücksetzen</button>
+    <button id="beamerBtn" class="beamer-btn" type="button">☀ Beamer</button>
+    <span id="score">0 / 21 richtig einsortiert</span>
+  </div>
+
+  <div class="pool" id="pool" tabindex="0" role="button" aria-label="Kartenpool – ausgewählte Karte hier zurücklegen">
+    <p class="pool-label">Kartenpool — auf die passende CPMAI-Phase ziehen (oder: Karte antippen, dann Zielzone antippen)</p>
+    <div class="card-row" id="poolRow"></div>
+  </div>
+
+  <div class="flow" id="flow">
+    <!-- zones injected by JS -->
+  </div>
+
+  <div class="quer" id="quer" tabindex="0" role="button" aria-label="Querschnitts-Zone Governance und Ethik – ausgewählte Karte hier ablegen">
+    <p class="zone-num">⟲ QUERSCHNITT</p>
+    <p class="zone-title">Governance &amp; Ethik — in JEDER Phase relevant</p>
+    <p class="zone-desc">Keine einzelne Phase, sondern eine Daueraufgabe über den gesamten Lifecycle hinweg.</p>
+    <div class="zone-cards" id="querCards"></div>
+  </div>
+
+  <footer class="board-foot">
+    <div class="footer-sig">
+      <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a> — PromptSchule · Training &amp; Consulting · Referenzrahmen: PMI-CPMAI™ Methodology (ECO), Trustworthy-AI-Prinzipien
+      <span class="audit-line">Zuletzt geprüft: 01.08.2026 · Status: ⭐ Zertifiziert mit Auszeichnung · Details siehe Audit-Protokoll</span>
+    </div>
+
+    <div class="footer-details">
+      <details class="footer-box">
+        <summary class="footer-summary">🧭 Systemprompt</summary>
+        <div class="footer-content footer-mono">Baue mir ein einzelnes HTML-Tool als Lern-Drill für die PMI-CPMAI™-Prüfungsvorbereitung: ein Kartenpool mit 21 Aufgaben-Karten rund um einen fiktiven XYZ-Company-Chatbot, die per Drag-and-Drop den sechs CPMAI-Phasen (Business Understanding, Data Understanding, Data Preparation, Model Development, Model Evaluation, Model Operationalization) sowie einer siebten Querschnitts-Zone "Governance &amp; Ethik" zugeordnet werden.
+
+STRUKTUR
+- Kopfzeile: Zurück-Link zur Startseite, Eyebrow + H1 + Subtitle, fix positionierte Signatur (Name + Website-Link) oben rechts im Viewport, unter 900px als normaler Block rechtsbündig.
+- Direkt darunter ein Hinweis-Banner zur Iterativität von CPMAI (Phasen werden linear gelehrt, in der Praxis übersprungen/wiederholt).
+- Toolbar mit 3 Aktions-Buttons (Prüfen, Lösung zeigen, Zurücksetzen), einem 4-stufigen Beamer-Modus-Button und einem Live-Score-Zähler ("X / 21 richtig einsortiert").
+- Ein Kartenpool oben (gestrichelter Rahmen), sechs Phasen-Zonen als 6-Spalten-Grid mit Pfeilen dazwischen (auf schmalen Viewports vertikal gestapelt mit rotierten Pfeilen), darunter eine visuell abgesetzte Querschnitts-Zone (gestrichelter Amber-Rahmen) für Governance &amp; Ethik.
+- Footer mit vier Aufklapp-Boxen: Systemprompt (dieser Master-Bau-Prompt), Handbuch, Vortrags-Skript, Normen-Register.
+
+INTERAKTION
+- Primär: Pointer-Events-basiertes Drag-and-Drop (funktioniert auf Maus, Touch/iPad und Trackpad). Karte wird beim Greifen aus dem Layout gelöst (position:fixed, folgt dem Pointer) und beim Loslassen in den Container unter dem Pointer eingefügt.
+- Sekundär (Tastatur/Barrierefreiheit): Jede Karte und jede Ablagezone ist fokussierbar (tabindex, role="button", aria-label). Karte per Klick/Enter auswählen (visuell hervorgehoben), Zielzone per Klick/Enter aktivieren, um die ausgewählte Karte dort abzulegen — vollständig ohne Drag nutzbar.
+- "Prüfen" markiert jede platzierte Karte grün (richtige Phase) oder rot (falsche Phase), Karten im Pool bleiben neutral. "Lösung zeigen" sortiert alle Karten korrekt ein. "Zurücksetzen" mischt alle Karten zurück in den Pool.
+
+INHALT PRO KARTE
+- 21 Karten (3 pro der 6 Phasen + 3 Querschnitts-Karten), jede mit englischem CPMAI-Fachbegriff (fett) und deutscher Konkretisierung anhand des XYZ-Company-Chatbots (z. B. "Define Success Criteria" / "Für den XYZ-Chatbot: Ziel „Ticketvolumen um 20 % senken" festlegen").
+- Die drei Querschnitts-Karten (Datenschutz, Stakeholder-Alignment, Dokumentation) gehören bewusst zu KEINER Einzelphase, sondern in die separate Governance-Zone — das ist die zentrale Prüfungsfalle, die das Tool lehrt.
+
+DESIGN-VORGABEN
+- Helles "Blueprint"-Farbschema (Ink/Blueprint-Blau, Amber für die Querschnitts-Zone, Grün/Rot für Feedback), color-scheme:light.
+- Fließtext ≥16px, Sekundärtext (Zonen-Codes, Badges) ≥14px, Touch-Ziele ≥44px.
+- Beamer-Modus rein additiv über kumulative CSS-Klassen auf &lt;html&gt; (beamer/beamer-xl/beamer-xxl), keine Inhaltsänderung, Footer ab Stufe 1 ausgeblendet.
+- Kein natives HTML5-Drag-and-Drop (Touch-Probleme), stattdessen eigene Pointer-Events-Logik ohne Browser-Drag-Ghost.
+
+PERSONA-/FALLBEZUG
+- Ein einziger durchgehender Fall (XYZ-Company-Chatbot) verankert jede der 21 Karten konkret — keine wechselnden Personas nötig.
+
+NICHT TUN
+- Keine externe Drag-and-Drop-Bibliothek einbinden — single-file, offlinefähig.
+- Keine KI-Anbindung/API-Aufruf — das Tool ist eine rein regelbasierte Zuordnungsübung, kein Chat mit echtem Modell.
+- Keine Phasen-Reihenfolge erzwingen — freies, beliebig oft wiederholbares Sortieren, kein linearer Zwang.
+- Keine generischen Kartentexte ohne XYZ-Company-Bezug.</div>
+      </details>
+
+      <details class="footer-box">
+        <summary class="footer-summary">📘 Handbuch</summary>
+        <div class="footer-content footer-sans">
+          <p><strong>Fachliches Framework:</strong> PMI-CPMAI™ 6-Phasen-Modell (Business Understanding → Data Understanding → Data Preparation → Model Development → Model Evaluation → Model Operationalization), ergänzt um Governance &amp; Ethik als Querschnittsthema. Die Reihenfolge im Board entspricht der Prüfungslogik, das Hinweis-Banner relativiert sie bewusst als in der Praxis iterativ.</p>
+          <p><strong>Design-Entscheidung je Baustein:</strong></p>
+          <table class="footer-table">
+            <tr><th>Baustein</th><th>Umsetzung im Tool</th><th>Warum</th></tr>
+            <tr><td>Zielgruppe/Aufgabe</td><td>21 Einzelkarten statt Multiple-Choice</td><td>Zuordnen statt Erkennen trainiert die Transferleistung, die die Prüfung tatsächlich abfragt.</td></tr>
+            <tr><td>Kontext</td><td>Ein durchgehender Fall (XYZ-Company-Chatbot) für alle 21 Karten</td><td>Ohne roten Faden bleibt jede Karte abstrakt — mit Fallbezug wird sofort klar, WELCHE Frage eine Phase beantwortet.</td></tr>
+            <tr><td>Format</td><td>Kartenpool + 6-Spalten-Flow + separate Querschnitts-Zone</td><td>Die räumliche Trennung der Querschnitts-Zone macht "gilt in jeder Phase" sichtbar, statt es nur zu behaupten.</td></tr>
+            <tr><td>Eingrenzung</td><td>Genau 3 Karten pro Phase + 3 Querschnitts-Karten, keine Distraktoren</td><td>Der Drill übt die Zuordnung selbst; fachliche Distraktoren (falsche Formulierungen) wären ein anderer Übungstyp.</td></tr>
+          </table>
+          <p><strong>Zentraler Lernhinweis:</strong> Governance &amp; Ethik ist die häufigste Prüfungsfalle im CPMAI-Kontext — die Prüfung fragt gern nach der EINEN Phase, in der Datenschutz oder Stakeholder-Alignment "stattfindet". Die richtige Antwort ist: in allen. Die Querschnitts-Zone macht das räumlich erfahrbar, nicht nur behauptet.</p>
+          <p><strong>Nachbau-Tipp:</strong> Wer ein ähnliches Zuordnungs-Board für ein anderes Phasenmodell bauen will, sollte mit zwei Datenstrukturen beginnen: einem <code>ZONES</code>-Array (Phasen mit Nummer/Name) und einem <code>CARDS</code>-Array (Aufgabe + korrekte Zone-ID). Die Pointer-Events-Logik (Greifen → Platzhalter → Loslassen an <code>elementFromPoint</code>) sowie die Klick-Alternative für Tastatur/Barrierefreiheit lassen sich unverändert auf jedes neue Phasenmodell übertragen.</p>
+        </div>
+      </details>
+
+      <details class="footer-box">
+        <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+        <div class="footer-content footer-sans">
+          <div class="schritt"><strong>Einstieg</strong><span class="regie">(vor dem ersten Sortieren, Board noch ungemischt zeigen)</span><br>„Ihr kennt die sechs CPMAI-Phasen jetzt aus dem Workbook — heute geht es darum, ob ihr eine konkrete Aufgabe blitzschnell der richtigen Phase zuordnen könnt. Das ist genau die Art von Transferleistung, die in der Prüfung gefragt ist."</div>
+          <div class="schritt"><strong>Während des Sortierens</strong><span class="regie">(Teilnehmende sortieren, ggf. am Beamer im Plenum)</span><br>„Nutzt den XYZ-Company-Chatbot als roten Faden — jede Karte hat einen Bezug dazu. Wenn ihr eine Karte nicht zuordnen könnt: Fragt euch, WELCHE Frage sie beantwortet. Eine Frage nach dem 'Warum' gehört zu Business Understanding, eine Frage nach den Daten zu Data Understanding."</div>
+          <div class="schritt"><strong>Nach "Prüfen"</strong><span class="regie">(Klick auf "Prüfen", rot markierte Karten gemeinsam besprechen)</span><br>„Schaut auf die rot markierten Karten — nicht als Fehler, sondern als Ausgangspunkt. Warum wirkt diese Aufgabe auf den ersten Blick wie Phase X, gehört aber zu Phase Y?"</div>
+          <div class="schritt"><strong>Nach "Lösung zeigen"</strong><span class="regie">(Klick auf "Lösung zeigen")</span><br>„Schaut auf die Querschnitts-Zone: Datenschutz, Stakeholder-Alignment und Dokumentation laufen NICHT nur einmal, sondern durch alle sechs Phasen. Das ist ein beliebter Prüfungs-Fallstrick — die Prüfung fragt gern, in welcher EINEN Phase Governance stattfindet. Antwort: in allen."</div>
+          <div class="schritt"><strong>Transfer-Frage zum Abschluss</strong><span class="regie">(offene Frage ins Plenum)</span><br>„Stellt euch vor, Phase 5 (Model Evaluation) zeigt starken Bias im Chatbot. In welche Phase springt das Team zurück — und warum nicht einfach direkt zu Phase 6?"</div>
+          <p class="regie">Allgemeine Regie-Hinweise: Nicht mit der Querschnitts-Zone einsteigen, bevor die sechs Kernphasen sitzen — sonst wirkt Governance wie eine siebte Phase statt wie ein Querschnittsthema. Beamer-Modus vor Kursbeginn einmal durchklicken (Normal → Beamer → Beamer XL → Beamer XXL), damit die Stufe zur Raumgröße passt. "Zurücksetzen" eignet sich auch als Wiederholungs-Drill in den letzten Tagen vor der Prüfung.</p>
+        </div>
+      </details>
+
+      <details class="footer-box">
+        <summary class="footer-summary">📚 Normen-Register</summary>
+        <div class="footer-content footer-sans">
+          <table class="footer-table">
+            <tr><th>Framework/Quelle</th><th>Fassung/Status</th><th>Bezug im Tool</th></tr>
+            <tr><td>PMI-CPMAI™ Methodology</td><td>6-Phasen-Modell, aktuelles Exam Content Outline (ECO)</td><td>Zonen-Reihenfolge Business Understanding → Operationalization</td></tr>
+            <tr><td>CPMAI-Prinzip: Iterativität</td><td>Phasen linear gelehrt, in der Praxis iterativ</td><td>Hinweis-Banner oben im Tool</td></tr>
+            <tr><td>Trustworthy-AI-Prinzipien</td><td>Governance/Ethik als Querschnittsthema laut CPMAI-Methodik</td><td>Querschnitts-Zone „Governance &amp; Ethik"</td></tr>
+          </table>
+          <p style="margin-top:10px;font-size:13px;">Hinweis: PMI aktualisiert das Exam Content Outline (ECO) regelmäßig — vor der Prüfung den aktuellen ECO-Stand auf pmi.org gegenprüfen.</p>
+        </div>
+      </details>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const ZONES = [
+    {id:"z1", num:"01", en:"Business Understanding", de:"Geschäftsverständnis"},
+    {id:"z2", num:"02", en:"Data Understanding", de:"Datenverständnis"},
+    {id:"z3", num:"03", en:"Data Preparation", de:"Datenaufbereitung"},
+    {id:"z4", num:"04", en:"Model Development", de:"Modellentwicklung"},
+    {id:"z5", num:"05", en:"Model Evaluation", de:"Modellevaluierung"},
+    {id:"z6", num:"06", en:"Model Operationalization", de:"Operationalisierung"}
+  ];
+
+  const CARDS = [
+    {id:"B1", zone:"z1", en:"Define Success Criteria", de:"Für den XYZ-Chatbot: Ziel „Ticketvolumen um 20 % senken“ festlegen"},
+    {id:"B2", zone:"z1", en:"Identify AI Pattern", de:"Passt hier Conversation, Recognition oder Prediction als KI-Muster?"},
+    {id:"B3", zone:"z1", en:"Assess Feasibility", de:"Ist KI wirklich die richtige Lösung — oder reicht ein Regelwerk?"},
+    {id:"D1", zone:"z2", en:"Identify Data Sources", de:"Welche Datenquellen liefert XYZ: Chat-Logs, Ticket-Historie, FAQ-DB?"},
+    {id:"D2", zone:"z2", en:"Assess Data Quality", de:"Erste Einschätzung: Sind die Chat-Logs vollständig und aktuell?"},
+    {id:"D3", zone:"z2", en:"Explore the Data", de:"Explorative Analyse: Welche Intents kommen am häufigsten vor?"},
+    {id:"P1", zone:"z3", en:"Clean &amp; Label Data", de:"Trainingsdaten für den Chatbot bereinigen und Intents labeln"},
+    {id:"P2", zone:"z3", en:"Engineer Features", de:"Relevante Merkmale aus den Chat-Verläufen extrahieren"},
+    {id:"P3", zone:"z3", en:"Split Train/Test Sets", de:"Datensatz in Trainings- und Testdaten aufteilen"},
+    {id:"M1", zone:"z4", en:"Select Algorithm/Architecture", de:"Modellarchitektur für den Chatbot auswählen"},
+    {id:"M2", zone:"z4", en:"Train the Model", de:"Modell mit den vorbereiteten Trainingsdaten trainieren"},
+    {id:"M3", zone:"z4", en:"Iterate &amp; Prototype", de:"Iterativ Prototypen testen und verfeinern"},
+    {id:"E1", zone:"z5", en:"Measure Model Performance", de:"Genauigkeit, Precision und Recall des Chatbots messen"},
+    {id:"E2", zone:"z5", en:"Check for Bias &amp; Fairness", de:"Modell auf verzerrte oder unfaire Antworten prüfen"},
+    {id:"E3", zone:"z5", en:"Validate Against Business Goals", de:"Erreicht der Chatbot das Ziel aus Phase 1?"},
+    {id:"O1", zone:"z6", en:"Deploy to Production", de:"Chatbot live schalten"},
+    {id:"O2", zone:"z6", en:"Set Up Monitoring", de:"Laufende Überwachung von Antwortqualität und Ausfällen einrichten"},
+    {id:"O3", zone:"z6", en:"Plan Retraining Cycle", de:"Regelmäßiges Nachtrainieren mit neuen Daten planen"},
+    {id:"G1", zone:"quer", en:"Ensure Data Privacy &amp; Compliance", de:"Datenschutz-Check in JEDER Phase, nicht nur einmalig"},
+    {id:"G2", zone:"quer", en:"Maintain Stakeholder Alignment", de:"Kontinuierliche Abstimmung mit der Business-Seite über alle Phasen"},
+    {id:"G3", zone:"quer", en:"Document for Traceability", de:"Nachvollziehbare Dokumentation als Daueraufgabe (Trustworthy AI)"}
+  ];
+
+  const flow = document.getElementById("flow");
+  const poolRow = document.getElementById("poolRow");
+  const querCards = document.getElementById("querCards");
+  const scoreEl = document.getElementById("score");
+  const poolEl = document.getElementById("pool");
+  const querEl = document.getElementById("quer");
+
+  let selectedCard = null;
+
+  function onZoneActivate(zoneEl){
+    if(!selectedCard) return;
+    let container;
+    if(zoneEl.classList.contains("zone")) container = zoneEl.querySelector(".zone-cards");
+    else if(zoneEl.id === "quer") container = querCards;
+    else container = poolRow;
+    container.appendChild(selectedCard);
+    selectedCard.classList.remove("selected");
+    selectedCard.setAttribute("aria-pressed", "false");
+    selectedCard = null;
+  }
+
+  function registerZoneActivation(zoneEl){
+    zoneEl.addEventListener("click", function(){ onZoneActivate(zoneEl); });
+    zoneEl.addEventListener("keydown", function(e){
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); onZoneActivate(zoneEl); }
+    });
+  }
+
+  ZONES.forEach((z,i)=>{
+    const zoneEl = document.createElement("div");
+    zoneEl.className = "zone";
+    zoneEl.id = z.id;
+    zoneEl.tabIndex = 0;
+    zoneEl.setAttribute("role", "button");
+    zoneEl.setAttribute("aria-label", z.en + " (" + z.de + ") – ausgewählte Karte hier ablegen");
+    zoneEl.innerHTML = `
+      <span class="zone-num">${z.num}</span>
+      <p class="zone-title">${z.en}</p>
+      <p class="zone-desc">${z.de}</p>
+      <div class="zone-cards" id="cards-${z.id}"></div>
+    `;
+    flow.appendChild(zoneEl);
+    registerZoneActivation(zoneEl);
+    if(i < ZONES.length-1){
+      const arrow = document.createElement("div");
+      arrow.className = "arrow";
+      arrow.textContent = "→";
+      flow.appendChild(arrow);
+    }
+  });
+
+  registerZoneActivation(querEl);
+  registerZoneActivation(poolEl);
+
+  function shuffled(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+
+  function toggleSelect(card){
+    if(selectedCard === card){
+      card.classList.remove("selected");
+      card.setAttribute("aria-pressed", "false");
+      selectedCard = null;
+      return;
+    }
+    if(selectedCard){
+      selectedCard.classList.remove("selected");
+      selectedCard.setAttribute("aria-pressed", "false");
+    }
+    card.classList.remove("correct","incorrect");
+    card.classList.add("selected");
+    card.setAttribute("aria-pressed", "true");
+    selectedCard = card;
+  }
+
+  function suppressNextClick(card){
+    card.dataset.justDragged = "1";
+    setTimeout(function(){ delete card.dataset.justDragged; }, 0);
+  }
+
+  function onCardClick(e){
+    const card = e.currentTarget;
+    if(card.dataset.justDragged === "1"){ return; }
+    e.stopPropagation();
+    toggleSelect(card);
+  }
+
+  function makeCard(c){
+    const el = document.createElement("div");
+    el.className = "card";
+    el.id = "card-"+c.id;
+    el.dataset.zone = c.zone;
+    el.tabIndex = 0;
+    el.setAttribute("role", "button");
+    el.setAttribute("aria-pressed", "false");
+    el.setAttribute("aria-label", c.en + " – " + c.de);
+    el.innerHTML = `<span class="en">${c.en}</span><span class="de">${c.de}</span>`;
+    attachDrag(el);
+    el.addEventListener("click", onCardClick);
+    el.addEventListener("keydown", function(e){
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); onCardClick(e); }
+    });
+    return el;
+  }
+
+  shuffled(CARDS).forEach(c=>{
+    poolRow.appendChild(makeCard(c));
+  });
+
+  let dragEl = null, offsetX=0, offsetY=0, placeholder=null, startX=0, startY=0, dragMoved=false;
+
+  function attachDrag(el){
+    el.addEventListener("pointerdown", onDown);
+  }
+
+  function onDown(e){
+    dragEl = e.currentTarget;
+    const rect = dragEl.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    startX = e.clientX;
+    startY = e.clientY;
+    dragMoved = false;
+
+    placeholder = document.createElement("div");
+    placeholder.className = "card";
+    placeholder.style.visibility = "hidden";
+    placeholder.style.minHeight = rect.height+"px";
+    dragEl.parentNode.insertBefore(placeholder, dragEl.nextSibling);
+
+    dragEl.style.width = rect.width+"px";
+    dragEl.classList.add("dragging");
+    dragEl.style.left = rect.left+"px";
+    dragEl.style.top = rect.top+"px";
+    dragEl.classList.remove("correct","incorrect");
+    document.body.appendChild(dragEl);
+
+    dragEl.setPointerCapture(e.pointerId);
+    dragEl.addEventListener("pointermove", onMove);
+    dragEl.addEventListener("pointerup", onUp);
+    dragEl.addEventListener("pointercancel", onUp);
+  }
+
+  function onMove(e){
+    if(!dragEl) return;
+    if(Math.abs(e.clientX - startX) > 4 || Math.abs(e.clientY - startY) > 4){ dragMoved = true; }
+    dragEl.style.left = (e.clientX - offsetX)+"px";
+    dragEl.style.top = (e.clientY - offsetY)+"px";
+
+    document.querySelectorAll(".zone,.quer,.pool").forEach(z=>z.classList.remove("dragover"));
+    dragEl.style.pointerEvents = "none";
+    const under = document.elementFromPoint(e.clientX, e.clientY);
+    dragEl.style.pointerEvents = "";
+    const target = under && under.closest(".zone,.quer,.pool");
+    if(target) target.classList.add("dragover");
+  }
+
+  function onUp(e){
+    if(!dragEl) return;
+    const releasedCard = dragEl;
+    const wasMoved = dragMoved;
+
+    releasedCard.style.pointerEvents = "none";
+    const under = document.elementFromPoint(e.clientX, e.clientY);
+    releasedCard.style.pointerEvents = "";
+    document.querySelectorAll(".zone,.quer,.pool").forEach(z=>z.classList.remove("dragover"));
+
+    releasedCard.classList.remove("dragging");
+    releasedCard.style.position = "";
+    releasedCard.style.left = "";
+    releasedCard.style.top = "";
+    releasedCard.style.width = "";
+
+    if(wasMoved){
+      let dropTarget = under && under.closest(".zone,.quer,.pool");
+      let container;
+      if(!dropTarget){
+        container = placeholder.parentNode;
+      } else if(dropTarget.classList.contains("zone")){
+        container = dropTarget.querySelector(".zone-cards");
+      } else if(dropTarget.id === "quer"){
+        container = querCards;
+      } else {
+        container = poolRow;
+      }
+      container.appendChild(releasedCard);
+    } else {
+      /* Pointerup ohne Bewegung = Tap/Klick: Karte an ihrer Ausgangsposition
+         belassen und stattdessen als Tastatur-/Klick-Auswahl behandeln, da
+         der native "click"-Event nach setPointerCapture + Reparenting in
+         manchen Browsern nicht mehr zuverlässig feuert. */
+      placeholder.parentNode.insertBefore(releasedCard, placeholder);
+      toggleSelect(releasedCard);
+    }
+    suppressNextClick(releasedCard);
+    placeholder.remove();
+
+    releasedCard.removeEventListener("pointermove", onMove);
+    releasedCard.removeEventListener("pointerup", onUp);
+    releasedCard.removeEventListener("pointercancel", onUp);
+    dragEl = null;
+  }
+
+  document.getElementById("btnCheck").addEventListener("click", ()=>{
+    let correct = 0;
+    document.querySelectorAll(".card").forEach(card=>{
+      card.classList.remove("correct","incorrect");
+      const parentZone = card.closest(".zone");
+      const parentQuer = card.closest("#quer");
+      const inPool = card.closest("#pool");
+      if(inPool){ return; }
+      const currentZoneId = parentZone ? parentZone.id : (parentQuer ? "quer" : null);
+      if(currentZoneId === card.dataset.zone){
+        card.classList.add("correct");
+        correct++;
+      } else {
+        card.classList.add("incorrect");
+      }
+    });
+    scoreEl.textContent = correct + " / " + CARDS.length + " richtig einsortiert";
+  });
+
+  document.getElementById("btnSolution").addEventListener("click", ()=>{
+    CARDS.forEach(c=>{
+      const card = document.getElementById("card-"+c.id);
+      let container;
+      if(c.zone === "quer"){
+        container = querCards;
+      } else {
+        container = document.getElementById("cards-"+c.zone);
+      }
+      container.appendChild(card);
+      card.classList.remove("incorrect");
+      card.classList.add("correct");
+    });
+    scoreEl.textContent = CARDS.length + " / " + CARDS.length + " richtig einsortiert";
+  });
+
+  document.getElementById("btnReset").addEventListener("click", ()=>{
+    document.querySelectorAll(".card").forEach(card=>{
+      card.classList.remove("correct","incorrect","selected");
+      card.setAttribute("aria-pressed", "false");
+    });
+    selectedCard = null;
+    shuffled(Array.from(document.querySelectorAll(".card"))).forEach(card=>{
+      poolRow.appendChild(card);
+    });
+    scoreEl.textContent = "0 / " + CARDS.length + " richtig einsortiert";
+  });
+
+  /* ===== Beamer-Modus (K18, vierstufig) ===== */
+  const BEAMER_LEVELS = [
+    { classes: [],                                    label: '☀ Beamer' },
+    { classes: ['beamer'],                             label: '☀ Beamer XL' },
+    { classes: ['beamer', 'beamer-xl'],                label: '☀ Beamer XXL' },
+    { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: '☀ Normal' }
+  ];
+  const BEAMER_STORAGE_KEY = "denkraumCpmaiProzessBoard";
+  let beamerLevel = 0;
+  try{
+    const saved = JSON.parse(localStorage.getItem(BEAMER_STORAGE_KEY) || "null");
+    if(saved && typeof saved.beamerLevel === "number") beamerLevel = saved.beamerLevel;
+  }catch(e){}
+
+  function applyBeamerLevel(){
+    document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(c => document.documentElement.classList.add(c));
+    document.getElementById('beamerBtn').textContent = BEAMER_LEVELS[beamerLevel].label;
+  }
+  applyBeamerLevel();
+
+  document.getElementById('beamerBtn').addEventListener('click', function(){
+    beamerLevel = (beamerLevel + 1) % 4;
+    applyBeamerLevel();
+    try{ localStorage.setItem(BEAMER_STORAGE_KEY, JSON.stringify({ beamerLevel: beamerLevel })); }catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
