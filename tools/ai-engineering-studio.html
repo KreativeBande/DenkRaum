@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI Engineering Studio — Vom Prompt zum Multi-Agent-System</title>
+<style>
+:root{
+  --bg:#f4f7fb;
+  --paper:#ffffff;
+  --ink:#16273f;
+  --ink-soft:#42536a;
+  --muted:#65788a;
+  --line:#d9e2ec;
+  --blue:#1f5f99;
+  --blue-deep:#0d3f6d;
+  --soft:#edf4fb;
+  --c-risk:#b3261e;
+  --risk-pale:#fbe9e8;
+  --c-warn:#b3620a;
+  --warn-pale:#fdf1e2;
+  --c-ok:#1f7a4d;
+  --ok-pale:#e7f5ee;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  font-size:16px;
+  line-height:1.5;
+}
+button{font:inherit;touch-action:manipulation;cursor:pointer}
+button:focus-visible{outline:3px solid rgba(31,95,153,.3);outline-offset:2px}
+h1,h2,h3,h4{font-family:inherit}
+
+/* ===== Topbar, Zurück-Link, Signatur ===== */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1600px;margin:auto;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.topbar-left{display:flex;align-items:center;gap:16px;flex-wrap:wrap;min-width:0}
+.back-link{font-size:14px;font-weight:700;color:var(--blue);text-decoration:none;white-space:nowrap}
+.back-link:hover{text-decoration:underline}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:800;font-size:12px;flex:none}
+.brand-title{font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-right:200px}
+.home-btn{border:1px solid var(--line);background:#fff;color:var(--blue-deep);border-radius:999px;padding:9px 16px;font-weight:700;font-size:13px}
+.home-btn:hover{border-color:var(--blue)}
+.progress-chip{font-size:12px;font-weight:700;color:var(--muted);background:var(--soft);border-radius:999px;padding:8px 13px;white-space:nowrap}
+.beamer-btn{background:transparent;border:1.5px solid var(--line);color:var(--muted);font-size:14px;padding:9px 18px;border-radius:999px}
+html.beamer .beamer-btn, html.beamer-xl .beamer-btn, html.beamer-xxl .beamer-btn{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.site-sig{
+  position:fixed;top:14px;right:28px;z-index:500;
+  font-size:14px;color:var(--ink-soft);text-align:right;line-height:1.4;
+  background:rgba(255,255,255,.92);padding:5px 12px;border-radius:8px;
+}
+.site-sig strong{display:block;color:var(--ink)}
+.site-sig a{color:var(--blue);text-decoration:none}
+.site-sig a:hover{text-decoration:underline}
+@media(max-width:900px){
+  .site-sig{position:static;background:none;padding:0;text-align:right;margin:8px 18px 0}
+  .topbar-right{padding-right:0}
+}
+
+/* ===== Views ===== */
+.view{display:none}
+.view.active{display:block}
+
+/* ===== Home ===== */
+.home{max-width:1500px;margin:auto;padding:22px}
+.home-hero{background:linear-gradient(135deg,var(--blue-deep),var(--blue));color:#fff;border-radius:24px;padding:30px;margin-bottom:20px}
+.home-hero .eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;opacity:.85;margin:0 0 8px}
+.home-hero h1{margin:0 0 10px;font-size:34px;line-height:1.15}
+.home-hero p{margin:0;max-width:920px;line-height:1.55;font-size:16px}
+.home-stats{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.stat-pill{background:rgba(255,255,255,.16);border-radius:999px;padding:8px 16px;font-size:13px;font-weight:700}
+.stat-pill strong{font-size:16px;margin-right:6px}
+
+.module-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.module-card{border:1px solid var(--line);background:#fff;border-radius:18px;padding:20px;text-align:left;min-height:172px;box-shadow:0 6px 20px rgba(31,95,153,.05);transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease;display:flex;flex-direction:column}
+.module-card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(31,95,153,.10);border-color:#b6cadc}
+.module-card.primary{grid-column:span 2;background:linear-gradient(180deg,#fff,#f5f9fd);border-color:#b8ccde}
+.module-tag{display:inline-block;padding:5px 9px;border-radius:999px;background:var(--soft);color:var(--blue-deep);font-size:11px;font-weight:800;margin-bottom:10px;align-self:flex-start}
+.module-card h2{margin:0 0 8px;font-size:21px}
+.module-card p{margin:0;color:var(--muted);line-height:1.5;flex:1}
+.module-footer{margin-top:16px;font-weight:800;color:var(--blue-deep);font-size:14px}
+@media(max-width:1150px){.module-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){
+  .module-grid{grid-template-columns:1fr}
+  .module-card.primary{grid-column:auto}
+  .home{padding:14px}
+  .home-hero{padding:22px}
+  .home-hero h1{font-size:27px}
+}
+
+/* ===== Workspace-Shell (Sidebar + Main + Erklär-Panel) ===== */
+.workspace{max-width:1600px;margin:auto;padding:14px;display:grid;grid-template-columns:290px minmax(0,1fr) 360px;gap:14px;align-items:start}
+.side,.main-panel,.explain-panel{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.panel-head{padding:14px 16px;border-bottom:1px solid var(--line)}
+.panel-head .eyebrow-small{display:block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--sc,var(--blue));margin-bottom:4px}
+.panel-head h2{margin:0;font-size:19px}
+.panel-head p{margin:6px 0 0;font-size:13px;color:var(--muted);line-height:1.45}
+.side-list{padding:10px;display:grid;gap:8px}
+.side-item{border:1px solid var(--line);border-left:6px solid var(--sc,var(--blue));border-radius:12px;padding:10px 12px;background:#fff;text-align:left;width:100%;color:var(--ink)}
+.side-item.active{background:color-mix(in srgb,var(--sc,var(--blue)) 10%,white);border-color:color-mix(in srgb,var(--sc,var(--blue)) 45%,var(--line));box-shadow:0 4px 14px rgba(15,40,70,.08)}
+.side-item strong{display:block;margin-bottom:2px;font-size:14px}
+.side-item span{font-size:12px;color:var(--muted)}
+.side-item .state-tag{float:right;margin-left:6px}
+.work{padding:16px}
+.card{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff}
+.card+.card{margin-top:12px}
+.card h3{margin:0 0 10px;font-size:16px}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.tag{display:inline-block;background:color-mix(in srgb,var(--sc,var(--blue)) 12%,white);color:var(--sc,var(--blue-deep));padding:4px 10px;border-radius:999px;font-size:11px;font-weight:800}
+.mini-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.mini-card{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fafbfd}
+.mini-card h4{margin:0 0 6px;font-size:13px;color:var(--sc,var(--blue-deep))}
+.mini-card p{margin:0}
+.codebox{background:#0f2942;color:#eaf3ff;padding:14px;border-radius:12px;font-size:13px;line-height:1.6;white-space:pre-wrap;font-family:Consolas,"SF Mono",monospace}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.btn{border:0;border-radius:12px;padding:10px 16px;background:var(--blue);color:#fff;font-weight:700}
+.btn:hover{background:var(--blue-deep)}
+.btn.secondary{background:#eef3f8;color:var(--blue-deep);border:1px solid var(--line)}
+.btn.ghost{background:#fff;color:var(--blue-deep);border:1px solid var(--line)}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.flow-node{padding:9px 12px;border-radius:10px;background:#eef3f8;border:1px solid var(--line);font-weight:700;font-size:13px;color:var(--ink)}
+.flow-node.active{background:var(--sc,var(--blue));color:#fff;border-color:var(--sc,var(--blue))}
+.flow-arrow{color:var(--muted);font-weight:900}
+.explain-content{padding:14px}
+.explain-section{border-left:5px solid var(--sc,var(--blue));background:color-mix(in srgb,var(--sc,var(--blue)) 5%,white);border-radius:12px;padding:13px;margin-bottom:10px}
+.explain-section:last-child{margin-bottom:0}
+.explain-section h3{margin:0 0 7px;font-size:13px;color:var(--sc,var(--blue-deep))}
+.explain-section p{margin:0 0 8px;line-height:1.5}
+.explain-section p:last-child{margin-bottom:0}
+.state-tag{font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;display:inline-block}
+.state-tag.offen{background:var(--risk-pale);color:var(--c-risk)}
+.state-tag.teilweise{background:var(--warn-pale);color:var(--c-warn)}
+.state-tag.geklaert{background:var(--ok-pale);color:var(--c-ok)}
+.sim-log{background:#0f2942;color:#eaf3ff;border-radius:12px;padding:14px;min-height:260px;font-size:14px;line-height:1.65}
+.sim-line{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+.sim-line:last-child{border-bottom:0}
+.risk-note{border-left:5px solid var(--c-warn);background:var(--warn-pale);border-radius:12px;padding:12px 14px;margin-top:12px}
+.risk-note.ok{border-color:var(--c-ok);background:var(--ok-pale)}
+.note{font-size:13px;color:var(--muted)}
+
+@media(max-width:1150px){
+  .workspace{grid-template-columns:1fr}
+  .side{order:1}
+  .main-panel{order:2}
+  .explain-panel{order:3}
+}
+@media(max-width:700px){
+  .side-list{display:flex;overflow-x:auto;gap:8px;padding:10px}
+  .side-item{min-width:220px;flex:none}
+  .workspace{padding:8px;gap:10px}
+  .mini-grid{grid-template-columns:1fr}
+}
+
+/* ===== Beamer-Modus (K18, vierstufig) ===== */
+html.beamer{ --muted:#3D4A5C; --ink-soft:#3D4A5C; }
+html.beamer .panel-head h2, html.beamer .home-hero h1{ font-size:44px; }
+html.beamer .bm-text, html.beamer .card p, html.beamer .card li, html.beamer .mini-card p,
+html.beamer .explain-section p, html.beamer .codebox, html.beamer .sim-line, html.beamer .flow-node,
+html.beamer .side-item strong{ font-size:22px; }
+html.beamer .bm-secondary, html.beamer .tag, html.beamer .side-item span, html.beamer .note,
+html.beamer .eyebrow-small, html.beamer .state-tag, html.beamer .module-tag{ font-size:15px; }
+html.beamer .footer{ display:none; }
+
+html.beamer-xl .panel-head h2, html.beamer-xl .home-hero h1{ font-size:54px; }
+html.beamer-xl .bm-text, html.beamer-xl .card p, html.beamer-xl .card li, html.beamer-xl .mini-card p,
+html.beamer-xl .explain-section p, html.beamer-xl .codebox, html.beamer-xl .sim-line, html.beamer-xl .flow-node,
+html.beamer-xl .side-item strong{ font-size:28px; }
+html.beamer-xl .bm-secondary, html.beamer-xl .tag, html.beamer-xl .side-item span, html.beamer-xl .note,
+html.beamer-xl .eyebrow-small, html.beamer-xl .state-tag, html.beamer-xl .module-tag{ font-size:18px; }
+
+html.beamer-xxl .panel-head h2, html.beamer-xxl .home-hero h1{ font-size:64px; }
+html.beamer-xxl .bm-text, html.beamer-xxl .card p, html.beamer-xxl .card li, html.beamer-xxl .mini-card p,
+html.beamer-xxl .explain-section p, html.beamer-xxl .codebox, html.beamer-xxl .sim-line, html.beamer-xxl .flow-node,
+html.beamer-xxl .side-item strong{ font-size:34px; }
+html.beamer-xxl .bm-secondary, html.beamer-xxl .tag, html.beamer-xxl .side-item span, html.beamer-xxl .note,
+html.beamer-xxl .eyebrow-small, html.beamer-xxl .state-tag, html.beamer-xxl .module-tag{ font-size:21px; }
+
+/* ===== Footer ===== */
+.footer{max-width:1600px;margin:24px auto 40px;padding:0 18px}
+.footer-sig{font-size:14px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+.footer-sig strong{color:var(--ink)}
+.footer-sig a{color:var(--blue);font-weight:700;text-decoration:none}
+.footer-sig a:hover{text-decoration:underline}
+.footer-sig .audit-line{display:block;margin-top:4px;color:var(--muted)}
+.footer-details{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:901px){.footer-details{grid-template-columns:repeat(3,1fr)}}
+.footer-box{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}
+.footer-summary{cursor:pointer;list-style:none;padding:14px 16px;font-size:16px;font-weight:700;color:var(--blue-deep);display:flex;align-items:center;border-bottom:1px solid transparent}
+.footer-box[open] .footer-summary{border-bottom-color:var(--line)}
+.footer-summary::-webkit-details-marker{display:none}
+.footer-content{padding:14px 16px;color:var(--ink-soft)}
+.footer-mono{font-family:Consolas,"SF Mono",monospace;font-size:14px;line-height:1.6;color:var(--ink);background:#f6f8fa;white-space:pre-wrap}
+.footer-sans{font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6}
+.footer-sans .regie{color:var(--muted);font-style:italic}
+.footer-sans .schritt{margin:0 0 14px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+.footer-sans .schritt:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.footer-sans .schritt strong{display:block;color:var(--blue);margin-bottom:4px}
+.footer-table{width:100%;border-collapse:collapse;font-size:14px}
+.footer-table th,.footer-table td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.footer-table th{background:var(--soft);color:var(--blue-deep)}
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+        <div class="brand"><div class="logo">MKU</div><div class="brand-title">AI Engineering Studio</div></div>
+      </div>
+      <div class="topbar-right">
+        <span class="progress-chip" id="progressChip">0 von 7 Modulen besucht</span>
+        <button class="home-btn" id="homeBtn" type="button" style="display:none">🏠 Modul-Übersicht</button>
+        <button class="beamer-btn" id="beamerBtn" type="button">☀ Beamer</button>
+      </div>
+    </div>
+  </header>
+  <span class="site-sig">
+    <strong>Michaela Kühn</strong>
+    <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a>
+  </span>
+
+  <!-- ============ HOME ============ -->
+  <section class="view active" id="view-home">
+    <div class="home">
+      <div class="home-hero">
+        <p class="eyebrow">AI Engineering Studio</p>
+        <h1>Vom Prompt zum handelnden KI-System</h1>
+        <p>Ein GPT antwortet auf einen Prompt. Ein Agent verfolgt ein Ziel, plant Schritte und nutzt Werkzeuge innerhalb definierter Grenzen. Ein Multi-Agent-System verteilt das auf spezialisierte Rollen mit Übergaben und Orchestrierung. Sieben Module führen von diesem Unterschied bis zur Live-Simulation eines Requirements Agent — mit demselben Fall als rotem Faden: der digitalen Studierendenakte.</p>
+        <div class="home-stats">
+          <span class="stat-pill"><strong>3</strong>Systemtypen</span>
+          <span class="stat-pill"><strong>10</strong>Agentenrollen</span>
+          <span class="stat-pill"><strong>8</strong>Werkzeugklassen</span>
+          <span class="stat-pill"><strong>7</strong>Module</span>
+        </div>
+      </div>
+
+      <div class="module-grid" id="moduleGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============ M1: GPT / Agent / Multi-Agent ============ -->
+  <section class="view" id="view-compare" style="--sc:#1f5f99">
+    <div class="workspace">
+      <div class="side">
+        <div class="panel-head"><span class="eyebrow-small">Modul 1 · Einstieg</span><h2>Systemtypen</h2></div>
+        <div class="side-list" id="compareList"></div>
+      </div>
+      <div class="main-panel">
+        <div class="panel-head"><span class="eyebrow-small">Vergleich</span><h2 id="compareTitle">GPT</h2><p>Stärke, Grenze, Kontrolle und typischer Ablauf des gewählten Systemtyps.</p></div>
+        <div class="work">
+          <div class="card">
+            <h3>Einordnung</h3>
+            <div id="compareDetail"></div>
+          </div>
+          <div class="card">
+            <h3>Typischer Ablauf</h3>
+            <div class="flow" id="compareFlow"></div>
+          </div>
+        </div>
+      </div>
+      <div class="explain-panel">
+        <div class="panel-head"><span class="eyebrow-small">Didaktische Erklärung</span><h2 style="font-size:16px">Warum diese Unterscheidung zählt</h2></div>
+        <div class="explain-content">
+          <div class="explain-section"><h3>RE-Analogie</h3><p>GPT ↔ Einzelanforderung: eine Eingabe, eine Antwort, der Mensch prüft jedes Mal selbst. Agent ↔ Use Case: ein Ziel wird in Schritten verfolgt, mit Kontrollpunkten. Multi-Agent ↔ Anforderungssystem mit Rollen: mehrere Fachperspektiven, klare Übergaben, Traceability zwischen den Teilen.</p></div>
+          <div class="explain-section"><h3>Zentraler Satz</h3><p>Ein Agent ist nicht einfach ein längerer Prompt. Er kombiniert Ziel, Rolle, Gedächtnis, Werkzeuge, Entscheidungslogik, Grenzen und Kontrollpunkte — genau die Bausteine, die in den nächsten Modulen einzeln gebaut werden.</p></div>
+          <div class="explain-section"><h3>Vortragsimpuls</h3><p>Frag ins Publikum: „Wie viele eurer aktuellen KI-Anwendungsfälle sind eigentlich ein GPT, das ihr Agent nennt?" Meist mehr, als man denkt.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ M2: Agent Designer ============ -->
+  <section class="view" id="view-designer" style="--sc:#1f7a6c">
+    <div class="workspace">
+      <div class="side">
+        <div class="panel-head"><span class="eyebrow-small">Modul 2 · Rolle bauen</span><h2>Agentenrollen</h2></div>
+        <div class="side-list" id="designerList"></div>
+      </div>
+      <div class="main-panel">
+        <div class="panel-head"><span class="eyebrow-small">Agent Designer</span><h2 id="agentTitle">Requirements Agent</h2><p>Verantwortung, Input, Output, Qualitätsregeln und ein einsatzbereiter Systemprompt.</p></div>
+        <div class="work">
+          <div class="card">
+            <div class="tag-row" id="agentTags"></div>
+            <p id="agentSummary" class="bm-text"></p>
+            <div class="mini-grid">
+              <div class="mini-card"><h4>Verantwortung</h4><p id="agentResponsibility"></p></div>
+              <div class="mini-card"><h4>Input</h4><p id="agentInput"></p></div>
+              <div class="mini-card"><h4>Output</h4><p id="agentOutput"></p></div>
+              <div class="mini-card"><h4>Qualitätsregeln</h4><p id="agentQuality"></p></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Systemprompt für diesen Agenten</h3>
+            <div class="codebox" id="agentPrompt"></div>
+            <div class="btn-row"><button class="btn" id="copyAgentPrompt">Systemprompt kopieren</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="explain-panel">
+        <div class="panel-head"><span class="eyebrow-small">Didaktische Erklärung</span><h2 style="font-size:16px">Warum diese Bausteine?</h2></div>
+        <div class="explain-content">
+          <div class="explain-section"><h3>Fünf Elemente je Rolle</h3><p>Jede Rolle besteht aus denselben fünf Bausteinen: Zusammenfassung, Verantwortung, Input, Output und Qualitätsregeln. Aus genau diesen fünf Bausteinen entsteht am Ende automatisch der Systemprompt — nichts davon ist zufällig formuliert.</p></div>
+          <div class="explain-section" id="designerDynamic"></div>
+          <div class="explain-section"><h3>Transfer</h3><p>Wer eine eigene Agentenrolle entwerfen will, füllt dieselben fünf Felder für den eigenen Anwendungsfall — die Struktur bleibt gleich, nur der Inhalt wechselt.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ M3: Workflow-Orchestrator ============ -->
+  <section class="view" id="view-workflow" style="--sc:#4b5da5">
+    <div class="workspace">
+      <div class="side">
+        <div class="panel-head"><span class="eyebrow-small">Modul 3 · Orchestrierung</span><h2>Workflow-Schritte</h2></div>
+        <div class="side-list" id="workflowList"></div>
+      </div>
+      <div class="main-panel">
+        <div class="panel-head"><span class="eyebrow-small">Workflow-Orchestrator</span><h2>Digitale Studierendenakte</h2><p>Ein Multi-Agent-Workflow von der Idee bis zur menschlichen Freigabe.</p></div>
+        <div class="work">
+          <div class="card">
+            <div class="flow" id="workflowFlow"></div>
+            <div class="btn-row">
+              <button class="btn secondary" id="workflowPrev">← Zurück</button>
+              <button class="btn" id="workflowNext">Weiter →</button>
+            </div>
+          </div>
+          <div class="card"><h3 id="workflowTitle"></h3><p id="workflowDetail" class="bm-text"></p></div>
+          <div class="card"><h3>Übergabeobjekt an den nächsten Agenten</h3><div class="codebox" id="workflowHandover"></div></div>
+        </div>
+      </div>
+      <div class="explain-panel">
+        <div class="panel-head"><span class="eyebrow-small">Didaktische Erklärung</span><h2 style="font-size:16px">Übergaben statt Chaos</h2></div>
+        <div class="explain-content">
+          <div class="explain-section"><h3>Traceability-Analogie</h3><p>Jedes Übergabeobjekt entspricht dem, was in klassischem RE eine Traceability-Verknüpfung leistet: Ein Ergebnis wird nicht neu erfunden, sondern nachvollziehbar an die nächste Rolle weitergereicht.</p></div>
+          <div class="explain-section"><h3>Die letzte Station ist kein Agent</h3><p>Der letzte Schritt heißt bewusst „Human Approval" und nicht „Freigabe-Agent" — Multi-Agent-Systeme ersetzen die menschliche Entscheidung an kritischen Punkten nicht, sie bereiten sie vor.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ M4: Tool Studio ============ -->
+  <section class="view" id="view-toolstudio" style="--sc:#5b7da8">
+    <div class="workspace">
+      <div class="side">
+        <div class="panel-head"><span class="eyebrow-small">Modul 4 · Werkzeuge</span><h2>Tool-Auswahl</h2></div>
+        <div class="side-list" id="toolList"></div>
+      </div>
+      <div class="main-panel">
+        <div class="panel-head"><span class="eyebrow-small">Tool Studio</span><h2>Agentenprofil</h2><p>Werkzeuge zu- und abschalten und live beobachten, wie sich Fähigkeit und Risiko verändern.</p></div>
+        <div class="work">
+          <div class="card">
+            <h3>Aktive Werkzeuge</h3>
+            <p id="toolSummary" class="bm-text"></p>
+          </div>
+          <div class="risk-note" id="toolRisk"></div>
+        </div>
+      </div>
+      <div class="explain-panel">
+        <div class="panel-head"><span class="eyebrow-small">Didaktische Erklärung</span><h2 style="font-size:16px">Tools = Function Calling</h2></div>
+        <div class="explain-content">
+          <div class="explain-section"><h3>Jedes Werkzeug ist eine Grenzerweiterung</h3><p>Technisch heißt das, was hier „Werkzeug" genannt wird, meist Function Calling oder Tool Use: das Modell darf eine definierte Funktion mit Parametern aufrufen. Jede zusätzliche Funktion vergrößert die Angriffs- und Fehlerfläche.</p></div>
+          <div class="explain-section"><h3>Analyse vs. Aktion</h3><p>LLM, Dateien, Web und Datenbank sind lesende Werkzeuge — der Agent gewinnt Informationen. API, E-Mail und Kalender sind handelnde Werkzeuge — der Agent verändert etwas außerhalb seines eigenen Kontexts. Genau da beginnt Governance-Bedarf.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ M5: Human in the Loop ============ -->
+  <section class="view" id="view-hil" style="--sc:#2f7a4f">
+    <div class="workspace">
+      <div class="side">
+        <div class="panel-head"><span class="eyebrow-small">Modul 5 · Kontrollpunkte</span><h2>Ablaufschritte</h2></div>
+        <div class="side-list" id="hilList"></div>
+      </div>
+      <div class="main-panel">
+        <div class="panel-head"><span class="eyebrow-small">Human in the Loop</span><h2 id="hilTitle">Auftrag prüfen</h2><p>Wann darf der Agent allein weiterarbeiten, wann braucht es eine Freigabe?</p></div>
+        <div class="work">
+          <div class="card"><p id="hilDetail" class="bm-text"></p></div>
+          <div class="card"><h3>Kontrollpunkt</h3><p id="hilDecision" class="bm-text"></p></div>
+          <div class="btn-row">
+            <button class="btn secondary" id="hilPrev">← Zurück</button>
+            <button class="btn" id="hilNext">Weiter →</button>
+          </div>
+        </div>
+      </div>
+      <div class="explain-panel">
+        <div class="panel-head"><span class="eyebrow-small">Didaktische Erklärung</span><h2 style="font-size:16px">Freigabepunkte = Meilensteine</h2></div>
+        <div class="explain-content">
+          <div class="explain-section"><h3>Bekanntes Muster, neuer Kontext</h3><p>Diese sechs Kontrollpunkte entsprechen Meilenstein-Reviews im klassischen Projektmanagement: Nicht jeder Schritt braucht eine Freigabe, aber jeder kritische Übergang schon.</p></div>
+          <div class="explain-section"><h3>Kein Blockieren, sondern Filtern</h3><p>Human in the Loop bedeutet nicht, jeden Schritt zu bremsen — sondern genau die Stellen zu markieren, an denen ein Agent Annahmen NICHT selbst treffen darf.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ M6: Agent Governance ============ -->
+  <section class="view" id="view-governance" style="--sc:#7555a2">
+    <div class="workspace">
+      <div class="side">
+        <div class="panel-head"><span class="eyebrow-small">Modul 6 · Leitplanken</span><h2>Klärungs-Checkliste</h2></div>
+        <div class="side-list" id="governanceList"></div>
+      </div>
+      <div class="main-panel">
+        <div class="panel-head"><span class="eyebrow-small">Agent Governance</span><h2 id="govTitle">Berechtigungen</h2><p>Klicke eine Leitplanke an, um ihren Klärungsstatus zu ändern: offen → teilweise → geklärt.</p></div>
+        <div class="work">
+          <div class="card"><p id="govDetail" class="bm-text"></p></div>
+          <div class="card">
+            <h3>Governance-Zusammenfassung</h3>
+            <p id="govSummary" class="bm-text"></p>
+            <div class="risk-note" id="govNext"></div>
+          </div>
+        </div>
+      </div>
+      <div class="explain-panel">
+        <div class="panel-head"><span class="eyebrow-small">Didaktische Erklärung</span><h2 style="font-size:16px">Governance ist kein Formular</h2></div>
+        <div class="explain-content">
+          <div class="explain-section"><h3>Checkliste statt Bauchgefühl</h3><p>Governance-Fragen wirken abstrakt, bis ein Agent tatsächlich handelt. Diese acht Punkte machen sichtbar, was vor einem produktiven Einsatz konkret geklärt sein muss.</p></div>
+          <div class="explain-section"><h3>Vertiefung</h3><p>Für eine vollständige, unternehmensweite Governance-Struktur bietet DenkRaum ein eigenes Workshop-Canvas: „AI Governance Framework" — dort werden diese Punkte auf zwölf Bausteinen ausformuliert.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ M7: Live-Simulation ============ -->
+  <section class="view" id="view-simulation" style="--sc:#b3620a">
+    <div class="workspace">
+      <div class="side">
+        <div class="panel-head"><span class="eyebrow-small">Modul 7 · Abschluss</span><h2>Protokollschritte</h2></div>
+        <div class="side-list" id="simList"></div>
+      </div>
+      <div class="main-panel">
+        <div class="panel-head"><span class="eyebrow-small">Live-Simulation</span><h2>Requirements Agent im Einsatz</h2><p>Derselbe Fall wie in den Modulen 2 und 3 — jetzt als durchlaufende Simulation.</p></div>
+        <div class="work">
+          <div class="card">
+            <h3>Auftrag</h3>
+            <div class="codebox">Analysiere die Projektidee „Digitale Studierendenakte" und bereite ein erstes Anforderungsset vor. Erfinde keine Anforderungen.</div>
+            <div class="btn-row">
+              <button class="btn" id="simStart">Simulation starten</button>
+              <button class="btn secondary" id="simReset">Zurücksetzen</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Agentenprotokoll</h3>
+            <div class="sim-log" id="simLog"></div>
+          </div>
+        </div>
+      </div>
+      <div class="explain-panel">
+        <div class="panel-head"><span class="eyebrow-small">Didaktische Erklärung</span><h2 style="font-size:16px">Alles bisher Gelernte an einem Fall</h2></div>
+        <div class="explain-content">
+          <div class="explain-section"><h3>Was hier zusammenkommt</h3><p>Die Rolle aus Modul 2 (Requirements Agent), die Übergabelogik aus Modul 3, die Werkzeugfrage aus Modul 4 und der Freigabepunkt aus Modul 5 laufen hier in einem einzigen Protokoll zusammen.</p></div>
+          <div class="explain-section"><h3>Der entscheidende Moment</h3><p>Schritt 4 ist der wichtigste: Der Agent bereitet Rückfragen vor, statt fehlende Informationen stillschweigend zu erfinden. Genau das unterscheidet einen brauchbaren Requirements Agent von einem, der nur überzeugend klingt.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="footer-sig">
+      <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a> — PromptSchule · Training &amp; Consulting · Referenzrahmen: IREB CPRE, BABOK v3, ISO/IEC 25010:2023, EU AI Act
+      <span class="audit-line">Zuletzt geprüft: 02.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+    </div>
+    <div class="footer-details">
+      <details class="footer-box">
+        <summary class="footer-summary">🧭 Systemprompt</summary>
+        <div class="footer-content footer-mono">Baue mir ein einzelnes HTML-Tool "AI Engineering Studio", das den Unterschied zwischen GPT, Agent und Multi-Agent-System vermittelt und in sieben Modulen zeigt, aus welchen Bausteinen ein handelndes KI-System tatsächlich besteht — mit einem durchgehenden Fall (digitale Studierendenakte) als rotem Faden.
+
+STRUKTUR
+- Startseite mit Hero (Kernaussage, vier Kennzahlen-Pillen) und sieben Modul-Kacheln, die erste als "primary" doppelt breit.
+- Jedes Modul öffnet dieselbe dreispaltige Workspace-Shell: linke Sidebar (klickbare Liste von Items), mittleres Hauptpanel (Detailinhalt, wechselt je nach Auswahl), rechtes Erklär-Panel (didaktische Einordnung, fest formuliert, nicht interaktiv).
+- Topbar mit Zurück-Link, Modul-Übersicht-Button (nur sichtbar innerhalb eines Moduls), Fortschritts-Chip ("X von 7 Modulen besucht", persistiert in localStorage) und 4-stufigem Beamer-Modus-Button. Signatur fix oben rechts im Viewport.
+- Footer mit drei Aufklapp-Boxen: Systemprompt, Handbuch, Vortrags-Skript.
+
+INHALT PRO MODUL
+1. GPT/Agent/Multi-Agent: drei Systemtypen mit Stärke, Grenze, Kontrolle und Ablauf-Diagramm (Klick durch die Flow-Nodes).
+2. Agent Designer: zehn Agentenrollen (Requirements, Business Analysis, Project, Product Owner, Architecture, Test, Privacy, Security, Governance, Training Agent), je mit Tags, Zusammenfassung, Verantwortung, Input, Output, Qualitätsregeln und fertigem Systemprompt zum Kopieren.
+3. Workflow-Orchestrator: sechsstufiger Multi-Agent-Workflow (Business Case → Requirements → Review → Risk → Governance → Human Approval) mit Übergabeobjekt je Schritt.
+4. Tool Studio: acht zuschaltbare Werkzeuge (LLM, Dateien, Web, Datenbank, API, E-Mail, Kalender, Speicher); Fähigkeits- und Governance-Hinweis reagiert live auf die Auswahl.
+5. Human in the Loop: sechs Kontrollpunkte zwischen Auftragsannahme und Ausführung, vor/zurück navigierbar.
+6. Agent Governance: acht Leitplanken als Klärungs-Checkliste, Klick zykliert offen → teilweise → geklärt, Zusammenfassung zählt live mit.
+7. Live-Simulation: Klick auf "Simulation starten" spielt ein achtstufiges Agentenprotokoll zeitversetzt ab (setInterval), Sidebar zeigt Fortschritt als Checkliste.
+
+DESIGN-VORGABEN
+- Helles Blau/Ink-Farbschema, pro Modul ein eigener Akzentton (CSS-Custom-Property --sc auf dem jeweiligen &lt;section&gt;), verwendet für Sidebar-Border, aktive Zustände und Tags via color-mix().
+- Beamer-Modus rein additiv über kumulative Klassen auf &lt;html&gt; (beamer/beamer-xl/beamer-xxl), Größentabelle wie im Master-Repo-Standard, Footer ab Stufe 1 ausgeblendet.
+- Responsive: unter 1150px wird die dreispaltige Workspace-Shell zur Einspalten-Stapelung (Sidebar → Hauptpanel → Erklär-Panel), unter 700px wird die Sidebar zur horizontal scrollbaren Zeile.
+- Kein echter KI-Aufruf, keine externen Bibliotheken — reine Vanilla-JS-Simulation, offlinefähig.
+
+PERSONA-/FALLBEZUG
+- Ein einziger Fall (digitale Studierendenakte: Studierende, Prüfungsamt, Fachbereiche, IT, Datenschutz, Archiv) verankert Agent-Designer-Beispielrolle, Workflow-Übergaben und die Live-Simulation.
+
+NICHT TUN
+- Keine zusätzliche Agentenrolle ohne RE/BA/PM-Bezug erfinden — alle zehn Rollen bleiben im Requirements-Engineering-nahen Aufgabenspektrum.
+- Keine Governance-Zustände automatisch als "geklärt" vorbelegen — die Übung lebt davon, dass Teilnehmende selbst durchklicken.
+- Keine Tool-Freischaltung ohne begleitenden Governance-Hinweis, sobald ein handelndes Werkzeug (API/E-Mail/Kalender) aktiv ist.</div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary">📘 Handbuch</summary>
+        <div class="footer-content footer-sans">
+          <p><strong>Fachliches Framework:</strong> Die Modul-Reihenfolge folgt einer bewussten Eskalationslogik — erst verstehen, WAS ein Agent von einem GPT unterscheidet, dann eine Rolle bauen, dann mehrere Rollen verketten, dann Werkzeuge und Kontrollpunkte zuweisen, dann Leitplanken klären, zuletzt alles an einem Fall live sehen.</p>
+          <p><strong>Design-Entscheidung je Baustein:</strong></p>
+          <table class="footer-table">
+            <tr><th>Baustein</th><th>Umsetzung im Tool</th><th>Warum</th></tr>
+            <tr><td>Rolle</td><td>Fünf feste Felder je Agentenrolle (Verantwortung/Input/Output/Qualität/Prompt)</td><td>Macht sichtbar, dass ein guter Systemprompt aus strukturierten Vorentscheidungen entsteht, nicht aus einem cleveren Satz.</td></tr>
+            <tr><td>Kontext</td><td>Ein Fall (digitale Studierendenakte) durch alle Module</td><td>Ohne roten Faden bleiben Agent-Konzepte abstrakt; mit Fallbezug wird der Übergang zwischen Modulen konkret.</td></tr>
+            <tr><td>Format</td><td>Dreispaltige Workspace-Shell für jedes Modul</td><td>Trennt konsequent Auswahl (links), Inhalt (Mitte) und didaktische Einordnung (rechts) — dieselbe Struktur senkt die Lernkurve zwischen den sieben Modulen.</td></tr>
+            <tr><td>Eingrenzung</td><td>Sieben Module statt aller denkbaren Agentic-Themen</td><td>Bewusste Auswahl der Themen, die noch nicht in anderen DenkRaum-Tools abgedeckt sind (Prompt Engineering selbst ist an anderer Stelle vertieft).</td></tr>
+          </table>
+          <p><strong>Zentraler Lernhinweis:</strong> Die häufigste Verwechslung in der Praxis ist, einen langen, gut strukturierten Prompt bereits „Agent" zu nennen. Der Unterschied entsteht erst durch Werkzeugnutzung, Entscheidungslogik und definierte Kontrollpunkte — nicht durch die Prompt-Länge.</p>
+          <p><strong>Nachbau-Tipp:</strong> Wer ein ähnliches Studio für ein anderes Themenfeld bauen will, beginnt mit der Workspace-Shell (Sidebar-Liste + Hauptpanel + Erklär-Panel) als wiederverwendbarem CSS/HTML-Gerüst und befüllt sie modulweise mit eigenen Datenarrays — das Muster überträgt sich unverändert.</p>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+        <div class="footer-content footer-sans">
+          <div class="schritt"><strong>Einstieg (Startseite)</strong><span class="regie">(Startseite zeigen, noch kein Modul geöffnet)</span><br>„Fast jede KI-Anwendung, die gerade als 'Agent' verkauft wird, ist eigentlich ein GPT mit einem langen Prompt. Heute bauen wir uns durch, was einen echten Agenten wirklich ausmacht — und zwar an einem einzigen durchgehenden Fall."</div>
+          <div class="schritt"><strong>Modul 1 — Vergleich</strong><span class="regie">(Klick durch GPT → Agent → Multi-Agent, jeweils den Ablauf zeigen)</span><br>„Schaut auf die Kontrolle-Zeile: Bei GPT steuert der Mensch jeden Auftrag direkt. Beim Agent definiert der Mensch nur noch Ziele, Freigaben und Stopppunkte. Genau dieser Kontrollverlust — bewusst gestaltet — ist der eigentliche Sprung."</div>
+          <div class="schritt"><strong>Modul 2 — Agent Designer</strong><span class="regie">(Requirements Agent auswählen, Systemprompt zeigen, kopieren)</span><br>„Das hier ist kein Zufallsprodukt. Verantwortung, Input, Output und Qualitätsregeln stehen fest — der Systemprompt unten ist nur die Zusammenfassung dieser vier Entscheidungen."</div>
+          <div class="schritt"><strong>Modul 3 — Workflow</strong><span class="regie">(durch die sechs Schritte klicken, Übergabeobjekte lesen)</span><br>„Jeder Pfeil zwischen zwei Agenten transportiert ein konkretes Übergabeobjekt — nicht 'irgendwie Kontext', sondern ein benanntes Artefakt. Das ist dieselbe Disziplin wie Traceability zwischen Anforderungsartefakten."</div>
+          <div class="schritt"><strong>Modul 4 — Tool Studio</strong><span class="regie">(API oder E-Mail zuschalten, Governance-Hinweis live beobachten)</span><br>„Sobald ein handelndes Werkzeug aktiv wird, ändert sich der Hinweis unten sofort. Das ist der Moment, in dem aus 'die KI analysiert etwas' 'die KI tut etwas' wird — und genau da beginnt Governance-Pflicht."</div>
+          <div class="schritt"><strong>Modul 5 — Human in the Loop</strong><span class="regie">(Schritt für Schritt durchklicken)</span><br>„Nicht jeder Schritt braucht eine Freigabe. Aber genau an den kritischen Übergängen — hier bei Schritt 5 — muss ein Mensch bewusst entscheiden, nicht der Agent."</div>
+          <div class="schritt"><strong>Modul 6 — Governance</strong><span class="regie">(eine Leitplanke anklicken, Status zykeln lassen)</span><br>„Diese acht Punkte sind keine Bürokratie zum Selbstzweck — jeder einzelne verhindert ein konkretes Szenario, das ohne Klärung schiefgehen kann."</div>
+          <div class="schritt"><strong>Modul 7 — Live-Simulation</strong><span class="regie">(Simulation starten, Protokoll live mitlesen)</span><br>„Achtet auf Schritt vier: Der Agent bereitet Rückfragen vor, statt fehlende Informationen zu erfinden. Wenn ihr euch nur einen Satz aus der heutigen Stunde merkt — dann diesen."</div>
+          <p class="regie">Allgemeine Regie-Hinweise: Modul 1 nie überspringen — ohne die Begriffsklärung wirken die folgenden Module wie Spielerei statt wie System. Beamer-Modus vor Kursbeginn einmal durchklicken. Modul 7 eignet sich als Abschluss und Zusammenfassung, nicht als Einstieg.</p>
+        </div>
+      </details>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var byId=function(id){return document.getElementById(id);};
+
+  /* ===== Modul-Definitionen für die Startseite ===== */
+  var MODULES=[
+    {key:'compare',   tag:'Modul 1 · Einstieg',      title:'GPT, Agent oder Multi-Agent?', desc:'Drei Systemtypen im direkten Vergleich: Stärke, Grenze, Kontrolle und typischer Ablauf.', cta:'Vergleichen →', primary:true},
+    {key:'designer',  tag:'Modul 2 · Rolle bauen',   title:'Agent Designer', desc:'Zehn RE-nahe Agentenrollen mit Verantwortung, Input, Output, Qualitätsregeln und fertigem Systemprompt.', cta:'Rolle wählen →'},
+    {key:'workflow',  tag:'Modul 3 · Orchestrierung',title:'Workflow-Orchestrator', desc:'Ein Multi-Agent-Workflow von der Idee bis zur menschlichen Freigabe, Schritt für Schritt.', cta:'Workflow starten →'},
+    {key:'toolstudio',tag:'Modul 4 · Werkzeuge',     title:'Tool Studio', desc:'Werkzeuge zu- und abschalten und live beobachten, wie sich Fähigkeit und Risiko verändern.', cta:'Werkzeuge testen →'},
+    {key:'hil',       tag:'Modul 5 · Kontrollpunkte',title:'Human in the Loop', desc:'Sechs Kontrollpunkte zwischen Auftrag und Ausführung — wo darf der Agent allein weiterarbeiten?', cta:'Kontrollpunkte öffnen →'},
+    {key:'governance',tag:'Modul 6 · Leitplanken',   title:'Agent Governance', desc:'Acht Leitplanken als Klärungs-Checkliste: Berechtigungen, Eskalation, Logging, Abschaltung.', cta:'Checkliste öffnen →'},
+    {key:'simulation',tag:'Modul 7 · Abschluss',      title:'Live-Simulation', desc:'Der Requirements Agent im Einsatz: ein Auftrag, acht protokollierte Schritte, ein Ergebnis zur Freigabe.', cta:'Simulation öffnen →'}
+  ];
+
+  var grid=byId('moduleGrid');
+  MODULES.forEach(function(m){
+    var card=document.createElement('button');
+    card.className='module-card'+(m.primary?' primary':'');
+    card.innerHTML='<span class="module-tag">'+m.tag+'</span><h2>'+m.title+'</h2><p>'+m.desc+'</p><span class="module-footer">'+m.cta+'</span>';
+    card.addEventListener('click',function(){ openModule(m.key); });
+    grid.appendChild(card);
+  });
+
+  /* ===== View-Wechsel + Fortschritt ===== */
+  var STORAGE_KEY='denkraumAiEngineeringStudio';
+  var state={visited:{},beamerLevel:0};
+  try{
+    var saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
+    if(saved){ state.visited=saved.visited||{}; state.beamerLevel=saved.beamerLevel||0; }
+  }catch(e){}
+
+  function persist(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+  function updateProgress(){
+    var n=Object.keys(state.visited).length;
+    byId('progressChip').textContent=n+' von 7 Modulen besucht';
+  }
+  updateProgress();
+
+  window.openModule=function(key){
+    document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
+    byId('view-'+key).classList.add('active');
+    byId('homeBtn').style.display='inline-block';
+    state.visited[key]=true;
+    persist();
+    updateProgress();
+    window.scrollTo(0,0);
+  };
+  function goHome(){
+    document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
+    byId('view-home').classList.add('active');
+    byId('homeBtn').style.display='none';
+    window.scrollTo(0,0);
+  }
+  byId('homeBtn').addEventListener('click', goHome);
+
+  /* =========================================================
+     MODUL 1: GPT / Agent / Multi-Agent
+     ========================================================= */
+  var systems=[
+    {key:'gpt',name:'GPT',summary:'Erzeugt Antworten und Artefakte auf Basis eines Prompts.',
+     strength:'Schnell, flexibel, gut für Analyse und Textproduktion.',
+     limit:'Handelt nicht eigenständig und nutzt Werkzeuge nur, wenn sie ausdrücklich eingebunden sind.',
+     control:'Der Mensch steuert jeden Auftrag direkt.',
+     flow:['Prompt','Antwort','Mensch prüft']},
+    {key:'agent',name:'Agent',summary:'Verfolgt ein Ziel, plant Schritte und nutzt Werkzeuge innerhalb definierter Grenzen.',
+     strength:'Kann komplexe Aufgaben in Teilaufgaben zerlegen und Ergebnisse zusammenführen.',
+     limit:'Benötigt klare Grenzen, Berechtigungen, Protokollierung und Eskalationsregeln.',
+     control:'Der Mensch definiert Ziele, Freigaben und Stopppunkte.',
+     flow:['Ziel','Plan','Werkzeug','Prüfung','Ergebnis']},
+    {key:'multi',name:'Multi-Agent',summary:'Mehrere spezialisierte Agenten arbeiten mit klaren Rollen und Übergaben zusammen.',
+     strength:'Komplexe Aufgaben können nach Fachperspektiven zerlegt werden.',
+     limit:'Koordination, Konflikte und fehlerhafte Übergaben erhöhen die Komplexität.',
+     control:'Zusätzliche Orchestrierung und Governance sind notwendig.',
+     flow:['Orchestrator','Fachagenten','Review','Konsolidierung','Freigabe']}
+  ];
+  var activeSystem=0;
+  function renderCompareList(){
+    var wrap=byId('compareList'); wrap.innerHTML='';
+    systems.forEach(function(s,i){
+      var b=document.createElement('button');
+      b.className='side-item'+(i===activeSystem?' active':'');
+      b.innerHTML='<strong>'+s.name+'</strong><span>'+s.summary+'</span>';
+      b.addEventListener('click',function(){ activeSystem=i; renderCompare(); });
+      wrap.appendChild(b);
+    });
+  }
+  function renderCompare(){
+    renderCompareList();
+    var s=systems[activeSystem];
+    byId('compareTitle').textContent=s.name;
+    byId('compareDetail').innerHTML=
+      '<p class="bm-text"><strong>Stärke:</strong> '+s.strength+'</p>'+
+      '<p class="bm-text"><strong>Grenze:</strong> '+s.limit+'</p>'+
+      '<p class="bm-text"><strong>Kontrolle:</strong> '+s.control+'</p>';
+    var flow=byId('compareFlow'); flow.innerHTML='';
+    s.flow.forEach(function(node,j){
+      var n=document.createElement('span'); n.className='flow-node'+(j===0?' active':''); n.textContent=node;
+      flow.appendChild(n);
+      if(j<s.flow.length-1){ var a=document.createElement('span'); a.className='flow-arrow'; a.textContent='→'; flow.appendChild(a); }
+    });
+  }
+  renderCompare();
+
+  /* =========================================================
+     MODUL 2: Agent Designer
+     ========================================================= */
+  var agents=[
+    {name:'Requirements Agent',tags:['RE','Qualität','Traceability'],
+     summary:'Erhebt, strukturiert, prüft und dekliniert Anforderungen.',
+     responsibility:'Bedarf klären, Anforderungen ableiten, Lücken markieren und Traceability vorbereiten.',
+     input:'Projektideen, Workshop-Ergebnisse, Ausschreibungen, Use Cases und bestehende Anforderungen.',
+     output:'Anforderungsliste, offene Fragen, Traceability, Akzeptanzkriterien und Testideen.',
+     quality:'Keine Erfindungen, klare Quellenkennzeichnung, testbare Formulierungen und sichtbare Annahmen.',
+     prompt:'Du arbeitest als Requirements Agent. Analysiere den bereitgestellten Projektkontext, identifiziere fehlende Informationen und stelle zuerst gezielte Rückfragen. Erfinde keine Anforderungen. Trenne Problem, Bedürfnis, Anforderung und Lösungsidee. Formuliere Anforderungen klar, eindeutig, widerspruchsfrei und testbar. Zeige Quellen, Annahmen, Risiken, Abhängigkeiten und offene Punkte.',
+     explain:'Diese Rolle steht bewusst an erster Stelle: Sie ist die Blaupause, an der sich die übrigen neun Rollen orientieren — dieselben fünf Felder, andere fachliche Füllung.'},
+    {name:'Business Analysis Agent',tags:['BA','Stakeholder','Entscheidung'],
+     summary:'Analysiert Stakeholder, Prozesse, Nutzen, Risiken und Entscheidungsoptionen.',
+     responsibility:'Geschäftsbedarf verstehen und Entscheidungsgrundlagen erzeugen.',
+     input:'Prozessbeschreibungen, Stakeholderaussagen, Ziele, Probleme und Kennzahlen.',
+     output:'Stakeholderanalyse, Prozessbild, Business Case, Optionen und Empfehlung.',
+     quality:'Perspektiven trennen, Annahmen markieren und Entscheidungskriterien offenlegen.',
+     prompt:'Du arbeitest als Business Analysis Agent. Analysiere Geschäftsbedarf, Stakeholder, Prozesse, Risiken und Optionen. Stelle offene Fragen vor Empfehlungen. Trenne Fakten, Annahmen und Schlussfolgerungen. Begründe jede Empfehlung anhand transparenter Kriterien.',
+     explain:'BABOK-nah: Diese Rolle liefert die Entscheidungsgrundlage, bevor der Requirements Agent überhaupt strukturiert zu formulieren beginnt.'},
+    {name:'Project Agent',tags:['PM','Planung','Steuerung'],
+     summary:'Strukturiert Projektstart, Roadmap, Risiken, Meilensteine und Status.',
+     responsibility:'Planung und Steuerungsartefakte vorbereiten.',
+     input:'Projektziel, Scope, Laufzeit, Ressourcen und Risiken.',
+     output:'Projektauftrag, Roadmap, Meilensteine, Risikoregister und Statusbericht.',
+     quality:'Abhängigkeiten, Annahmen und kritische Pfade sichtbar machen.',
+     prompt:'Du arbeitest als Project Agent. Strukturiere Projektziel, Scope, Stakeholder, Risiken, Abhängigkeiten, Ressourcen und Erfolgskriterien. Erzeuge nur Artefakte, die durch den vorhandenen Kontext gestützt werden. Kennzeichne fehlende Planungsgrundlagen.',
+     explain:'PMBOK-nah: Diese Rolle sorgt dafür, dass die Ergebnisse der Fachrollen auch terminlich und ressourcenseitig anschlussfähig bleiben.'},
+    {name:'Product Owner Agent',tags:['PO','Backlog','Value'],
+     summary:'Strukturiert Produktvision, Epics, User Stories und Priorisierung.',
+     responsibility:'Nutzenorientierte Backlog-Struktur vorbereiten.',
+     input:'Vision, Ziele, Features, Nutzergruppen und Einschränkungen.',
+     output:'Epics, User Stories, Prioritäten, Akzeptanzkriterien und MVP-Vorschlag.',
+     quality:'Business Value, Nutzerbedarf und Abhängigkeiten transparent machen.',
+     prompt:'Du arbeitest als Product Owner Agent. Leite aus Vision und Zielen ein wertorientiertes Backlog ab. Formuliere Epics und User Stories mit Nutzen. Ergänze offene Fragen, Risiken, Abhängigkeiten und Akzeptanzkriterien.',
+     explain:'Übersetzt die Ergebnisse des Requirements Agent in ein priorisiertes, agil bearbeitbares Format — dieselbe Anforderung, andere Zielform.'},
+    {name:'Architecture Agent',tags:['Architektur','Schnittstellen','Trade-offs'],
+     summary:'Analysiert Architekturvarianten, Schnittstellen und technische Abhängigkeiten.',
+     responsibility:'Technische Optionen strukturieren und Trade-offs sichtbar machen.',
+     input:'Systemkontext, Anforderungen, Schnittstellen und Qualitätsziele.',
+     output:'Architekturoptionen, Risiken, Abhängigkeiten und Entscheidungskriterien.',
+     quality:'Keine unbegründete Technologiewahl, klare Annahmen und dokumentierte Trade-offs.',
+     prompt:'Du arbeitest als Architecture Agent. Analysiere Systemkontext, Schnittstellen, Qualitätsanforderungen und technische Abhängigkeiten. Vergleiche Optionen anhand transparenter Kriterien und kennzeichne Annahmen.',
+     explain:'Arbeitet mit denselben Qualitätsanforderungen wie der Requirements Agent — nur mit technischer statt fachlicher Brille.'},
+    {name:'Test Agent',tags:['Test','Gherkin','Qualität'],
+     summary:'Leitet Testfälle und Akzeptanzkriterien aus Anforderungen ab.',
+     responsibility:'Prüfbarkeit herstellen und Abdeckungslücken erkennen.',
+     input:'Requirements, Use Cases, User Stories und NFA.',
+     output:'Gherkin-Kriterien, Testfälle, Edge Cases und Abdeckungsmatrix.',
+     quality:'Positive, negative und alternative Szenarien berücksichtigen.',
+     prompt:'Du arbeitest als Test Agent. Leite aus Anforderungen und User Stories prüfbare Akzeptanzkriterien und Testfälle ab. Ergänze Edge Cases, Fehlerfälle und negative Szenarien. Markiere Anforderungen ohne ausreichende Testbasis.',
+     explain:'Schließt den Kreis zum Requirements Agent: Eine Anforderung ohne ableitbaren Testfall gilt hier als Qualitätsmangel, nicht als Formsache.'},
+    {name:'Privacy Agent',tags:['Datenschutz','Daten','Risiko'],
+     summary:'Analysiert Datenschutzanforderungen und offene Klärungspunkte.',
+     responsibility:'Datenarten, Zwecke, Zugriffe und Risiken sichtbar machen.',
+     input:'Prozesse, Datenflüsse, Rollen und Systemkontext.',
+     output:'Datenschutzfragen, Anforderungen, Risiken und Nachweisbedarf.',
+     quality:'Keine Rechtsberatung simulieren; offene Punkte und Prüfbedarf klar kennzeichnen.',
+     prompt:'Du arbeitest als Privacy Agent. Analysiere Datenarten, Zwecke, Zugriffe, Aufbewahrung, Weitergabe und Betroffenenrechte. Kennzeichne offenen Rechts- und Prüfbedarf. Erfinde keine regulatorischen Fakten.',
+     explain:'Bewusst zurückhaltend formuliert: Diese Rolle bereitet Prüfbedarf vor, ersetzt aber nie eine echte Rechtsprüfung.'},
+    {name:'Security Agent',tags:['Security','Kontrollen','Risiko'],
+     summary:'Identifiziert Sicherheitsanforderungen, Bedrohungen und Kontrollen.',
+     responsibility:'Schutzbedarf, Risiken und technische wie organisatorische Maßnahmen strukturieren.',
+     input:'Systemkontext, Daten, Schnittstellen und Rollen.',
+     output:'Sicherheitsanforderungen, Bedrohungen, Kontrollen und offene Fragen.',
+     quality:'Schutzbedarf, Nachvollziehbarkeit und Verifikation berücksichtigen.',
+     prompt:'Du arbeitest als Security Agent. Analysiere Schutzbedarf, Daten, Rollen, Schnittstellen, Bedrohungen und Kontrollen. Formuliere prüfbare Sicherheitsanforderungen und kennzeichne Annahmen.',
+     explain:'Arbeitet eng mit dem Governance Agent zusammen: Sicherheitsanforderungen ohne Freigabe- und Eskalationsregeln bleiben wirkungslos.'},
+    {name:'Governance Agent',tags:['Governance','Freigabe','Kontrolle'],
+     summary:'Definiert Rollen, Entscheidungsrechte, Eskalationen und Nachweise.',
+     responsibility:'Steuerungs- und Kontrollrahmen für KI-Systeme vorbereiten.',
+     input:'Agentenrollen, Werkzeuge, Risiken, Berechtigungen und Freigabepunkte.',
+     output:'Governance-Matrix, Kontrollpunkte, Protokollierung und Eskalationswege.',
+     quality:'Menschliche Aufsicht, Nachvollziehbarkeit und Stopprechte festlegen.',
+     prompt:'Du arbeitest als Governance Agent. Definiere Rollen, Verantwortlichkeiten, Entscheidungsrechte, Berechtigungen, Freigaben, Logging, Eskalation und Stopprechte. Kennzeichne nicht geklärte Governance-Fragen.',
+     explain:'Diese Rolle erzeugt genau die acht Leitplanken, die in Modul 6 als Klärungs-Checkliste durchgeklickt werden.'},
+    {name:'Training Agent',tags:['Lernen','Übungen','Feedback'],
+     summary:'Erstellt Lernpfade, Übungen, Fragen und Feedback.',
+     responsibility:'Komplexe Inhalte verständlich und transferorientiert vermitteln.',
+     input:'Thema, Zielgruppe, Lernziel und Praxisbeispiele.',
+     output:'Lernpfad, Übungen, Quiz, Musterlösungen und Reflexionsfragen.',
+     quality:'Erklären, anwenden, reflektieren und Transfer sichern.',
+     prompt:'Du arbeitest als Training Agent. Erkläre komplexe Inhalte verständlich, nutze passende Beispiele und führe die Zielgruppe schrittweise durch Übungen, Reflexion und Transfer. Lösungen werden erst nach der Aufgabe sichtbar.',
+     explain:'Diese Rolle erklärt letztlich, wie dieses Studio selbst didaktisch aufgebaut ist — ein Agent, der über Agenten unterrichtet.'}
+  ];
+  var activeAgent=0;
+  function renderDesignerList(){
+    var wrap=byId('designerList'); wrap.innerHTML='';
+    agents.forEach(function(a,i){
+      var b=document.createElement('button');
+      b.className='side-item'+(i===activeAgent?' active':'');
+      b.innerHTML='<strong>'+a.name+'</strong><span>'+a.summary+'</span>';
+      b.addEventListener('click',function(){ activeAgent=i; renderDesigner(); });
+      wrap.appendChild(b);
+    });
+  }
+  function renderDesigner(){
+    renderDesignerList();
+    var a=agents[activeAgent];
+    byId('agentTitle').textContent=a.name;
+    byId('agentTags').innerHTML=a.tags.map(function(t){ return '<span class="tag">'+t+'</span>'; }).join('');
+    byId('agentSummary').textContent=a.summary;
+    byId('agentResponsibility').textContent=a.responsibility;
+    byId('agentInput').textContent=a.input;
+    byId('agentOutput').textContent=a.output;
+    byId('agentQuality').textContent=a.quality;
+    byId('agentPrompt').textContent=a.prompt;
+    byId('designerDynamic').innerHTML='<h3>Einordnung: '+a.name+'</h3><p>'+a.explain+'</p>';
+  }
+  byId('copyAgentPrompt').addEventListener('click',function(){
+    var text=byId('agentPrompt').textContent;
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text); }
+    else{ var ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
+  });
+  renderDesigner();
+
+  /* =========================================================
+     MODUL 3: Workflow-Orchestrator
+     ========================================================= */
+  var workflow=[
+    {name:'Business Case Agent',detail:'Prüft Problem, Nutzen, Optionen und Entscheidungskriterien.',handover:'Business Case mit Empfehlung, Annahmen und offenen Punkten.'},
+    {name:'Requirements Agent',detail:'Leitet funktionale und nicht-funktionale Anforderungen ab.',handover:'Anforderungsliste mit Quellen, Stakeholdern und offenen Fragen.'},
+    {name:'Review Agent',detail:'Prüft Klarheit, Testbarkeit, Widersprüche und Lücken.',handover:'Reviewbericht mit Verbesserungsvorschlägen.'},
+    {name:'Risk Agent',detail:'Analysiert technische, organisatorische und Stakeholder-Risiken.',handover:'Risikoregister mit Frühwarnindikatoren und Maßnahmen.'},
+    {name:'Governance Agent',detail:'Prüft Rollen, Freigaben, Logging und menschliche Aufsicht.',handover:'Governance-Matrix und Eskalationswege.'},
+    {name:'Human Approval',detail:'Ein Mensch prüft die konsolidierten Ergebnisse.',handover:'Freigabe, Rückfrage oder Abbruch.'}
+  ];
+  var workflowIndex=0;
+  function renderWorkflow(){
+    var flow=byId('workflowFlow'); flow.innerHTML='';
+    workflow.forEach(function(w,i){
+      var n=document.createElement('button'); n.className='flow-node'+(i===workflowIndex?' active':''); n.textContent=w.name;
+      n.addEventListener('click',function(){ workflowIndex=i; renderWorkflow(); });
+      flow.appendChild(n);
+      if(i<workflow.length-1){ var a=document.createElement('span'); a.className='flow-arrow'; a.textContent='→'; flow.appendChild(a); }
+    });
+    var wrap=byId('workflowList'); wrap.innerHTML='';
+    workflow.forEach(function(w,i){
+      var b=document.createElement('button');
+      b.className='side-item'+(i===workflowIndex?' active':'');
+      b.innerHTML='<strong>'+(i+1)+'. '+w.name+'</strong><span>'+w.detail+'</span>';
+      b.addEventListener('click',function(){ workflowIndex=i; renderWorkflow(); });
+      wrap.appendChild(b);
+    });
+    byId('workflowTitle').textContent=workflow[workflowIndex].name;
+    byId('workflowDetail').textContent=workflow[workflowIndex].detail;
+    byId('workflowHandover').textContent=workflow[workflowIndex].handover;
+  }
+  byId('workflowNext').addEventListener('click',function(){ if(workflowIndex<workflow.length-1){ workflowIndex++; renderWorkflow(); } });
+  byId('workflowPrev').addEventListener('click',function(){ if(workflowIndex>0){ workflowIndex--; renderWorkflow(); } });
+  renderWorkflow();
+
+  /* =========================================================
+     MODUL 4: Tool Studio
+     ========================================================= */
+  var tools=[
+    {name:'LLM',desc:'Erzeugt und analysiert Text.',locked:true},
+    {name:'Dateien',desc:'Liest bereitgestellte Dokumente.'},
+    {name:'Web',desc:'Ruft aktuelle externe Informationen ab.'},
+    {name:'Datenbank',desc:'Liest strukturierte Projektdaten.'},
+    {name:'API',desc:'Führt definierte Systemaktionen aus.',action:true},
+    {name:'E-Mail',desc:'Liest oder versendet Nachrichten.',action:true},
+    {name:'Kalender',desc:'Prüft Termine und Verfügbarkeiten.',action:true},
+    {name:'Speicher',desc:'Bewahrt ausgewählte Informationen auf.'}
+  ];
+  var toolState={LLM:true};
+  function renderTools(){
+    var wrap=byId('toolList'); wrap.innerHTML='';
+    tools.forEach(function(t){
+      var b=document.createElement('button');
+      b.className='side-item'+(toolState[t.name]?' active':'');
+      b.innerHTML='<strong>'+(toolState[t.name]?'✓ ':'')+t.name+'</strong><span>'+t.desc+'</span>';
+      b.addEventListener('click',function(){ if(!t.locked){ toolState[t.name]=!toolState[t.name]; renderTools(); } });
+      wrap.appendChild(b);
+    });
+    var active=[]; for(var key in toolState){ if(toolState[key]) active.push(key); }
+    byId('toolSummary').innerHTML='<strong>Aktive Werkzeuge:</strong> '+active.join(', ')+'<br><br><strong>Fähigkeit:</strong> '+(active.length===1?'Der Agent kann nur analysieren und Text erzeugen.':'Der Agent kann Informationen abrufen oder Aktionen in verbundenen Systemen vorbereiten.');
+    var actionTools=['API','E-Mail','Kalender'];
+    var riskCount=0; actionTools.forEach(function(n){ if(toolState[n]) riskCount++; });
+    var riskEl=byId('toolRisk');
+    riskEl.className='risk-note'+(riskCount===0?' ok':'');
+    riskEl.innerHTML='<strong>Governance-Hinweis:</strong> '+(riskCount===0?'Der Agent besitzt aktuell keine direkten Aktionswerkzeuge.':'Aktionswerkzeuge sind aktiv. Berechtigungen, Freigaben, Logging und Stopprechte müssen definiert werden.');
+  }
+  renderTools();
+
+  /* =========================================================
+     MODUL 5: Human in the Loop
+     ========================================================= */
+  var hil=[
+    {name:'Auftrag prüfen',detail:'Der Agent analysiert Ziel, Kontext und Grenzen.',decision:'Weiterarbeiten erlaubt, wenn Aufgabe und Zuständigkeit klar sind.'},
+    {name:'Rückfragen stellen',detail:'Fehlende Informationen werden sichtbar gemacht.',decision:'Mensch liefert Kontext oder entscheidet, ob mit Annahmen weitergearbeitet werden darf.'},
+    {name:'Artefakte erzeugen',detail:'Der Agent erstellt einen ersten Entwurf.',decision:'Keine automatische Freigabe. Entwurf bleibt vorläufig.'},
+    {name:'Qualität prüfen',detail:'Ein Review-Agent prüft Lücken, Widersprüche und Risiken.',decision:'Kritische Punkte werden zur Entscheidung eskaliert.'},
+    {name:'Menschliche Freigabe',detail:'Ein Mensch prüft Ergebnis, Quellen und Auswirkungen.',decision:'Freigeben, zurückweisen oder überarbeiten lassen.'},
+    {name:'Ausführung',detail:'Erst nach Freigabe darf eine nachgelagerte Aktion erfolgen.',decision:'Ausführung wird protokolliert und bleibt stoppbar.'}
+  ];
+  var hilIndex=0;
+  function renderHil(){
+    var wrap=byId('hilList'); wrap.innerHTML='';
+    hil.forEach(function(h,i){
+      var b=document.createElement('button');
+      b.className='side-item'+(i===hilIndex?' active':'');
+      b.innerHTML='<strong>'+(i+1)+'. '+h.name+'</strong>';
+      b.addEventListener('click',function(){ hilIndex=i; renderHil(); });
+      wrap.appendChild(b);
+    });
+    byId('hilTitle').textContent=hil[hilIndex].name;
+    byId('hilDetail').textContent=hil[hilIndex].detail;
+    byId('hilDecision').textContent=hil[hilIndex].decision;
+  }
+  byId('hilNext').addEventListener('click',function(){ if(hilIndex<hil.length-1){ hilIndex++; renderHil(); } });
+  byId('hilPrev').addEventListener('click',function(){ if(hilIndex>0){ hilIndex--; renderHil(); } });
+  renderHil();
+
+  /* =========================================================
+     MODUL 6: Agent Governance
+     ========================================================= */
+  var guardrails=[
+    {name:'Berechtigungen',detail:'Welche Systeme und Daten darf der Agent nutzen?'},
+    {name:'Scope-Grenzen',detail:'Welche Aufgaben darf der Agent nicht übernehmen?'},
+    {name:'Menschliche Aufsicht',detail:'Wo ist eine Freigabe zwingend erforderlich?'},
+    {name:'Logging',detail:'Welche Schritte, Quellen und Entscheidungen werden protokolliert?'},
+    {name:'Eskalation',detail:'Wann stoppt der Agent und informiert einen Menschen?'},
+    {name:'Datenzugriff',detail:'Welche Datenklassen sind erlaubt oder gesperrt?'},
+    {name:'Qualitätsprüfung',detail:'Welche Kriterien müssen vor Übergabe erfüllt sein?'},
+    {name:'Abschaltung',detail:'Wer kann den Agenten sofort stoppen?'}
+  ];
+  var guardrailStates={};
+  var activeGuardrail=0;
+  function stateClass(s){ return s==='geklärt'?'geklaert':s; }
+  function renderGovernance(){
+    var wrap=byId('governanceList'); wrap.innerHTML='';
+    guardrails.forEach(function(g,i){
+      if(!guardrailStates[i]) guardrailStates[i]='offen';
+      var b=document.createElement('button');
+      b.className='side-item'+(i===activeGuardrail?' active':'');
+      b.innerHTML='<span class="state-tag '+stateClass(guardrailStates[i])+'">'+guardrailStates[i]+'</span><strong>'+g.name+'</strong>';
+      b.addEventListener('click',function(){
+        activeGuardrail=i;
+        var order=['offen','teilweise','geklärt'];
+        guardrailStates[i]=order[(order.indexOf(guardrailStates[i])+1)%order.length];
+        renderGovernance();
+      });
+      wrap.appendChild(b);
+    });
+    var g=guardrails[activeGuardrail];
+    byId('govTitle').textContent=g.name;
+    byId('govDetail').innerHTML='<span class="state-tag '+stateClass(guardrailStates[activeGuardrail])+'">'+guardrailStates[activeGuardrail]+'</span><br><br>'+g.detail;
+    var counts={offen:0,teilweise:0,'geklärt':0};
+    for(var k in guardrailStates){ counts[guardrailStates[k]]++; }
+    byId('govSummary').innerHTML='<span class="state-tag offen">Offen: '+counts.offen+'</span> <span class="state-tag teilweise">Teilweise: '+counts.teilweise+'</span> <span class="state-tag geklaert">Geklärt: '+counts['geklärt']+'</span>';
+    var nextEl=byId('govNext');
+    nextEl.className='risk-note'+(counts.offen===0?' ok':'');
+    nextEl.innerHTML='<strong>Nächster Schritt:</strong> '+(counts.offen>0?'Offene Governance-Fragen vor produktivem Einsatz klären.':'Teilweise geklärte Punkte vervollständigen und Nachweise dokumentieren.');
+  }
+  renderGovernance();
+
+  /* =========================================================
+     MODUL 7: Live-Simulation
+     ========================================================= */
+  var simSteps=[
+    'Auftrag erkannt: Digitale Studierendenakte analysieren.',
+    'Grenze erkannt: Keine Anforderungen erfinden.',
+    'Fehlende Informationen identifiziert: Ziel, Scope, Stakeholder, Prozesse, Daten, Schnittstellen.',
+    'Rückfragen vorbereitet statt Annahmen zu verstecken.',
+    'Vorhandenen Kontext in Problem, Bedürfnis, Anforderung und Lösungsidee getrennt.',
+    'Erstes Anforderungsgerüst mit offenen Feldern erzeugt.',
+    'Review auf Klarheit, Testbarkeit und Traceability durchgeführt.',
+    'Ergebnis zur menschlichen Freigabe vorbereitet.'
+  ];
+  var simIndex=0, simTimer=null;
+  function renderSimList(){
+    var wrap=byId('simList'); wrap.innerHTML='';
+    simSteps.forEach(function(s,i){
+      var b=document.createElement('div');
+      b.className='side-item'+(i<simIndex?' active':'');
+      b.style.opacity=i<simIndex?'1':'.5';
+      b.innerHTML='<strong>'+(i+1)+'. '+(i<simIndex?'✓ erledigt':'ausstehend')+'</strong><span>'+s+'</span>';
+      wrap.appendChild(b);
+    });
+  }
+  renderSimList();
+  function appendSim(){
+    if(simIndex>=simSteps.length){ clearInterval(simTimer); simTimer=null; return; }
+    var line=document.createElement('div'); line.className='sim-line'; line.textContent=(simIndex+1)+'. '+simSteps[simIndex];
+    byId('simLog').appendChild(line);
+    simIndex++;
+    renderSimList();
+  }
+  byId('simStart').addEventListener('click',function(){
+    if(simTimer) return;
+    if(simIndex>=simSteps.length){ simIndex=0; byId('simLog').innerHTML=''; renderSimList(); }
+    appendSim();
+    simTimer=setInterval(appendSim,700);
+  });
+  byId('simReset').addEventListener('click',function(){
+    if(simTimer){ clearInterval(simTimer); simTimer=null; }
+    simIndex=0; byId('simLog').innerHTML=''; renderSimList();
+  });
+
+  /* ===== Beamer-Modus (K18, vierstufig) ===== */
+  var BEAMER_LEVELS=[
+    { classes: [],                                    label: '☀ Beamer' },
+    { classes: ['beamer'],                             label: '☀ Beamer XL' },
+    { classes: ['beamer', 'beamer-xl'],                label: '☀ Beamer XXL' },
+    { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: '☀ Normal' }
+  ];
+  var beamerLevel=state.beamerLevel||0;
+  function applyBeamerLevel(){
+    document.documentElement.classList.remove('beamer','beamer-xl','beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    byId('beamerBtn').textContent=BEAMER_LEVELS[beamerLevel].label;
+  }
+  applyBeamerLevel();
+  byId('beamerBtn').addEventListener('click',function(){
+    beamerLevel=(beamerLevel+1)%4;
+    applyBeamerLevel();
+    state.beamerLevel=beamerLevel;
+    persist();
+  });
+})();
+</script>
+</body>
+</html>
