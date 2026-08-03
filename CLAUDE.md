@@ -118,15 +118,33 @@ Kanonische CSS-Klassennamen (verbindlich): `.footer-sig`, `.footer-details`, `.f
 
 Bei jeder Erstellung oder inhaltlichen Änderung der Vortrags-Skript-Box wird automatisch — ohne separate Aufforderung — zusätzlich eine eigenständige Datei `Sprecher-Skript_<Toolname>.md` mitgeliefert (gleiche Schritt-Gliederung, identischer Inhalt, inkl. Klick-Hinweisen und Regie-Hinweisen am Ende). Bei Diskrepanz gilt die Footer-Box als Quelle; die `.md` wird bei der nächsten Änderung synchronisiert.
 
-### Glossar: Standort entschieden, Rollout weiterhin offen
+### Glossar: optionale fünfte Footer-Box (Format festgelegt, Rollout weiterhin offen)
 
 Korrektur (03.08.2026): Der Punkt hieß ursprünglich „Normenregister & Glossar" und ging davon aus, dass es noch kein Normenregister gäbe. Das war falsch — 15 Tools hatten zu diesem Zeitpunkt bereits eine vierte Footer-Box „Normen-Register", nur undokumentiert. Der Footer-Standard oben ist entsprechend korrigiert (vier Boxen statt drei); dieser Teil ist damit erledigt.
 
-**Entschieden (03.08.2026): Ein Glossar gehört, wenn es eingeführt wird, als eigene Footer-Box ins jeweilige Tool selbst — analog zum Normen-Register, nicht auf eine zentrale `index.html`-Seite.** Begründung: K1 (Offlinefähigkeit) verlangt, dass jedes Tool für sich allein funktioniert, auch als lokal geöffnete Datei ohne Zugriff auf `index.html` (z. B. `file://` auf einem iPad im Seminar) — ein rein zentrales Glossar wäre in diesem Fall unerreichbar. Eine zentrale Übersichtsseite kann langfristig ergänzend dazukommen (Konsolidierung/Querverweis über mehrere Tools hinweg), aber nie als Ersatz für die Tool-lokale Box — das Tool muss für sich allein lesbar/nachbaubar bleiben.
+**Standort entschieden (03.08.2026):** Ein Glossar gehört, wenn es eingeführt wird, als eigene Footer-Box ins jeweilige Tool selbst — analog zum Normen-Register, nicht auf eine zentrale `index.html`-Seite. Begründung: K1 (Offlinefähigkeit) verlangt, dass jedes Tool für sich allein funktioniert, auch als lokal geöffnete Datei ohne Zugriff auf `index.html` (z. B. `file://` auf einem iPad im Seminar) — ein rein zentrales Glossar wäre in diesem Fall unerreichbar. Eine zentrale Übersichtsseite kann langfristig ergänzend dazukommen (Konsolidierung/Querverweis über mehrere Tools hinweg), aber nie als Ersatz für die Tool-lokale Box.
 
-**Weiterhin offen:** Ob/wann ein Glossar für ein Tool überhaupt verbindlich wird (aktuell nur Insel-Feature in `tools/ki-prompt-blackbox-simulator.html`, kein Muss-Kriterium) und das exakte Format der Box (Klassenname, Aufbau, Abgrenzung zum Normen-Register). Bei Einführung eines neuen Glossars das Format mit Michaela abstimmen statt aus dem bestehenden Insel-Beispiel zu extrapolieren.
+**Format festgelegt (03.08.2026), Referenzimplementierung `tools/story-mapping-kundenperspektiven.html`:** Optionale **fünfte** Footer-Box „📖 Glossar" (`.footer-box`/`.footer-summary`/`.footer-content.footer-sans` wie die anderen vier), Inhalt als Definitionsliste statt Tabelle:
 
-**Status: Standort entschieden (pro Tool, nicht zentral). Rollout/Pflicht weiterhin unentschieden, kein Muss-Kriterium.**
+```html
+<dl class="footer-glossary">
+  <dt>Begriff</dt>
+  <dd>Kurzerklärung, bezogen auf die Verwendung in diesem Tool.</dd>
+</dl>
+```
+
+```css
+.footer-glossary{ margin:0; }
+.footer-glossary dt{ font-weight:700; color:var(--ink); font-size:15px; margin-top:12px; }
+.footer-glossary dt:first-child{ margin-top:0; }
+.footer-glossary dd{ margin:2px 0 0; color:var(--ink-soft); font-size:14px; line-height:1.5; }
+```
+
+Nur Begriffe, die im jeweiligen Tool tatsächlich vorkommen (kein allgemeines Fach-Lexikon) — kein Ersatz für Handbuch/Normen-Register, sondern kurze Vokabel-Klärung für Teilnehmende. `.footer-details`-Grid bei fünf Boxen auf `repeat(5,1fr)` (≥901px) statt `repeat(4,1fr)`.
+
+**Weiterhin offen:** Ob/wann ein Glossar für ein Tool verbindlich wird — aktuell **optional**, kein Muss-Kriterium. Nur einführen, wenn ein Tool tatsächlich erklärungsbedürftige Begriffe verwendet, nicht als Pflichtbaustein bei jedem neuen Tool ergänzen.
+
+**Status: Standort und Format entschieden. Rollout/Pflicht weiterhin offen — Einführung pro Tool im Einzelfall, kein automatischer Rollout über den Bestand.**
 
 ### Audit-Status-Zeile (K14)
 
