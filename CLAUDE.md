@@ -103,13 +103,14 @@ Das `new-badge`-Element markiert ausschließlich Tools, die am selben Tag gebaut
 
 ## Footer-Standard
 
-Jedes Tool bekommt im Footer drei strikt inhaltlich getrennte Aufklapp-Boxen (`<details>`), kein Impressum:
+Jedes Tool bekommt im Footer vier strikt inhaltlich getrennte Aufklapp-Boxen (`<details>`), kein Impressum:
 
 1. **Systemprompt** (Monospace, ≥14px) — enthält **immer den wiederverwendbaren Master-Bau-Prompt** für dieses Tool: Struktur/Layout, Inhalt pro Spur/Modus, Design-Vorgaben, Persona-Bezug, explizite Nicht-tun-Liste — geschrieben so, dass eine interessierte Person damit ein vergleichbares Tool selbst entwickeln könnte (K19, **Muss-Kriterium**). Reine Bauanleitung, keine didaktische Aufbereitung. Falls das Tool zusätzlich einen echten Laufzeit-Prompt verwendet (z. B. Online-Modus mit echtem KI-Aufruf), wird dieser als separater, klar abgegrenzter Abschnitt ergänzt, ohne den Master-Bau-Prompt zu ersetzen.
 2. **Handbuch** (Sans-Serif, ≥16px) — didaktische Konstruktionslogik nach PromptSchule-Methodik: Framework (RTF/CO-STAR/RISEN/TRACE/PACT/APE), 5 Dimensionen (Rolle/Aufgabe/Kontext/Format/Eingrenzung), zentraler Lernhinweis, Nachbau-Tipp. Zielgruppe: Trainerin als Entwicklerin, keine Vortragsinhalte.
 3. **Vortrags-Skript** (Sans-Serif, ≥16px, Klick-Hinweise kursiv/eingeklammert) — Sprechtext für den Live-Vortrag, Schritt für Schritt entlang der Tool-States: Klick-/Regieanweisung + wörtlicher Sprechtext + Übergangssatz je Schritt, am Ende allgemeine Regie-Hinweise (Timing, was nicht zuerst gesagt werden soll).
+4. **Normen-Register** (Sans-Serif, ≥16px) — Tabelle der im Tool tatsächlich referenzierten Normen/Frameworks/Quellen (Spalten: Framework/Quelle, Fassung/Status, Bezug im Tool), plus ein kurzer Hinweis, den Stand vor Einsatz in neuen Materialien zu prüfen (K17-Bezug). Ergänzt die einzeilige Kurzfassung in `.footer-sig`, ersetzt sie nicht. War bereits vor dieser Dokumentation in mehreren Tools gelebte Praxis (u. a. `tools/cpmai-prozess-board.html`); hier nachträglich als verbindlicher vierter Baustein festgehalten (Korrektur 03.08.2026).
 
-Kanonische CSS-Klassennamen (verbindlich): `.footer-sig`, `.footer-details`, `.footer-box`, `.footer-summary`, `.footer-content`, `.footer-mono` (Systemprompt-Box), `.footer-sans` (Handbuch/Vortrags-Skript), `.footer-table`. Anordnung der drei Boxen (nebeneinander oder gestapelt) ist Tool-Entscheidung; Pflicht-Fallback unter 900px Breite: immer gestapelt.
+Kanonische CSS-Klassennamen (verbindlich): `.footer-sig`, `.footer-details`, `.footer-box`, `.footer-summary`, `.footer-content`, `.footer-mono` (Systemprompt-Box), `.footer-sans` (Handbuch/Vortrags-Skript/Normen-Register), `.footer-table` (Tabellen in Handbuch/Normen-Register). Anordnung der vier Boxen (nebeneinander oder gestapelt) ist Tool-Entscheidung; Pflicht-Fallback unter 900px Breite: immer gestapelt.
 
 `.footer-sig` beginnt immer mit Name + Website-Link, gefolgt von den im Tool tatsächlich referenzierten Normen/Standards, danach optional die Audit-Status-Zeile.
 
@@ -117,13 +118,13 @@ Kanonische CSS-Klassennamen (verbindlich): `.footer-sig`, `.footer-details`, `.f
 
 Bei jeder Erstellung oder inhaltlichen Änderung der Vortrags-Skript-Box wird automatisch — ohne separate Aufforderung — zusätzlich eine eigenständige Datei `Sprecher-Skript_<Toolname>.md` mitgeliefert (gleiche Schritt-Gliederung, identischer Inhalt, inkl. Klick-Hinweisen und Regie-Hinweisen am Ende). Bei Diskrepanz gilt die Footer-Box als Quelle; die `.md` wird bei der nächsten Änderung synchronisiert.
 
-### Geplant: seiten-weites Normenregister & Glossar (offen, noch nicht umgesetzt)
+### Offen: seiten-weites Glossar (Normenregister inzwischen erledigt)
 
-Bestandsaufnahme (03.08.2026): Nur ein Teil der Tools hat den 3-Box-Footer oben überhaupt schon umgesetzt; „Glossar" existiert bisher nur als Insel-Feature in einzelnen Tools (z. B. `tools/ki-prompt-blackbox-simulator.html`), ein „Normenregister" gibt es noch gar nicht als Konzept.
+Korrektur (03.08.2026): Der Punkt hieß ursprünglich „Normenregister & Glossar" und ging davon aus, dass es noch kein Normenregister gäbe. Das war falsch — 15 Tools hatten zu diesem Zeitpunkt bereits eine vierte Footer-Box „Normen-Register", nur undokumentiert. Der Footer-Standard oben ist entsprechend korrigiert (vier Boxen statt drei); dieser Punkt ist damit erledigt, nicht mehr offen.
 
-Idee statt Duplikation in jedem Tool-Footer: **ein zentrales, seiten-weites Normenregister** (alle referenzierten Normen/Standards wie IREB, BABOK, ISO 25010, IEEE 29148 an einer Stelle) und **ein zentrales Glossar** (Fachbegriffe über alle Tools hinweg), beide als eigene Seite im Repo, aus jedem `.footer-sig` heraus verlinkt statt pro Tool repliziert. Begründung: viele Tools referenzieren dieselben Normen/Begriffe; eine zentrale Quelle vermeidet Drift zwischen Kopien und hält die Footer schlank.
+Weiterhin offen: **ein Glossar** existiert bislang nur als Insel-Feature in einzelnen Tools (z. B. `tools/ki-prompt-blackbox-simulator.html`), nicht als wiederverwendbares Footer-Element oder als seiten-weite Lösung. Ebenfalls offen: ob die vielen pro-Tool-Normen-Register-Boxen langfristig zusätzlich durch eine zentrale Übersichtsseite ergänzt werden sollten (Konsolidierung/Querverweis, kein Ersatz — die Tool-lokale Box bleibt in jedem Fall bestehen, das Tool muss für sich allein lesbar/nachbaubar bleiben).
 
-**Status: unentschieden, kein Muss-Kriterium.** Bevor das umgesetzt wird: Rollout des bestehenden 3-Box-Footer-Standards auf die noch fehlenden Tools hat Vorrang (siehe Bestandsaufnahme oben). Bei Umsetzung: Format/Ort der zentralen Seite(n) und Verlinkungsmuster vorher mit Michaela klären, nicht eigenmächtig festlegen.
+**Status: unentschieden, kein Muss-Kriterium.** Bei Umsetzung (Glossar-Muster und/oder zentrale Normen-Übersicht): Format/Ort vorher mit Michaela klären, nicht eigenmächtig festlegen.
 
 ### Audit-Status-Zeile (K14)
 
