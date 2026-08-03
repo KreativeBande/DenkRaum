@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Story Mapping — Kundenperspektiven · Vantera Connect</title>
+<style>
+  :root{
+    color-scheme: light;
+    --ink: #14181F;
+    --ink-soft: #4B5563;
+    --line: #E2E5EA;
+    --line-strong: #C7CCD4;
+    --bg: #FFFFFF;
+    --bg-soft: #F7F8FA;
+    --mvp: #14181F;
+    --r2: #6B7280;
+    --backlog: #9CA3AF;
+    --focus: #1D4ED8;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ margin:0; padding:0; background:var(--bg); color:var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; font-size:18px; line-height:1.45; }
+  body{ padding-bottom: 64px; touch-action: manipulation; }
+  h1,h2,h3{ margin:0; font-weight:700; }
+  button{ font-family:inherit; font-size:16px; cursor:pointer; }
+  button:focus-visible, [tabindex]:focus-visible, .card:focus-visible{
+    outline:3px solid var(--focus); outline-offset:2px;
+  }
+  .cap{ font-size:14px; color:var(--ink-soft); }
+
+  /* ---------- Zurück-Link & Signatur ---------- */
+  .back-link{ display:inline-block; margin-bottom:8px; font-size:14px; font-weight:700; color:var(--focus); text-decoration:none; }
+  .back-link:hover{ text-decoration:underline; }
+  .who{
+    position:fixed; top:14px; right:28px; z-index:500;
+    text-align:right; white-space:nowrap; line-height:1.4;
+    background:rgba(255,255,255,.9); padding:4px 10px; border-radius:8px;
+  }
+  .who .name{ font-size:16px; font-weight:700; }
+  .who .tag{ font-size:14px; color:var(--ink-soft); }
+  @media (max-width:900px){
+    .who{ position:static; background:none; padding:0; margin:0 0 10px; text-align:right; }
+  }
+
+  /* ---------- Header ---------- */
+  header{ padding:22px 28px 16px; border-bottom:2px solid var(--ink); }
+  header .title-block h1{ font-size:26px; letter-spacing:-0.01em; }
+  header .title-block .sub{ margin-top:4px; font-size:16px; color:var(--ink-soft); }
+
+  /* ---------- Intro / instructions ---------- */
+  .intro{
+    padding:14px 28px; background:var(--bg-soft); border-bottom:1px solid var(--line);
+    font-size:15px; color:var(--ink-soft); display:flex; gap:22px; flex-wrap:wrap;
+  }
+  .intro span{ display:inline-flex; align-items:center; gap:6px; }
+
+  /* ---------- Controls ---------- */
+  .controls{
+    position:sticky; top:0; z-index:40; background:var(--bg);
+    padding:14px 28px; border-bottom:1px solid var(--line);
+    display:flex; flex-wrap:wrap; align-items:center; gap:18px 28px;
+  }
+  .ctrl-group{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .ctrl-label{ font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-right:4px; }
+  .tab{
+    min-height:44px; padding:0 16px; border-radius:10px; border:2px solid var(--line-strong);
+    background:#fff; color:var(--ink); font-weight:600; display:inline-flex; align-items:center; gap:8px;
+    transition: background .15s, border-color .15s, color .15s, opacity .15s;
+  }
+  .tab .dot{ width:11px; height:11px; border-radius:50%; flex:none; }
+  .tab.active{ border-color: var(--tab-color, var(--ink)); background: var(--tab-color, var(--ink)); color:#fff; }
+  .tab[disabled]{ opacity:.4; cursor:not-allowed; }
+
+  .switch{
+    display:inline-flex; align-items:center; gap:10px; min-height:44px; padding:0 4px;
+  }
+  .switch input{ width:24px; height:24px; accent-color: var(--ink); cursor:pointer; }
+  .switch label{ font-weight:600; cursor:pointer; }
+
+  .seg{ display:inline-flex; border:2px solid var(--line-strong); border-radius:10px; overflow:hidden; }
+  .seg button{
+    min-height:44px; padding:0 16px; background:#fff; border:none; border-right:2px solid var(--line-strong);
+    font-weight:600; color:var(--ink-soft);
+  }
+  .seg button:last-child{ border-right:none; }
+  .seg button.active{ background:var(--ink); color:#fff; }
+
+  .right-actions{ margin-left:auto; display:flex; align-items:center; gap:10px; }
+  .beamer-btn{
+    background:transparent; border:1.5px solid var(--line-strong);
+    color:var(--ink-soft); font-size:15px; padding:0 20px; min-height:44px;
+    border-radius:999px; cursor:pointer; font-family:inherit;
+  }
+  html.beamer .beamer-btn,
+  html.beamer-xl .beamer-btn,
+  html.beamer-xxl .beamer-btn{ background:var(--ink); color:#fff; border-color:var(--ink); }
+  .reset-btn{
+    min-height:44px; padding:0 18px; border-radius:10px; border:2px solid var(--line-strong);
+    background:#fff; font-weight:600; color:var(--ink-soft);
+  }
+  .reset-btn:hover{ border-color:var(--ink); color:var(--ink); }
+
+  /* ---------- Backbone ---------- */
+  .backbone-wrap{ padding:18px 28px 0; overflow-x:auto; }
+  .backbone{
+    display:grid; grid-template-columns: repeat(6, minmax(180px,1fr)); gap:10px;
+    min-width:1080px;
+  }
+  .backbone .step{
+    background:var(--ink); color:#fff; border-radius:12px; padding:14px 14px;
+    display:flex; flex-direction:column; gap:4px; min-height:64px; justify-content:center;
+  }
+  .backbone .step .n{ font-size:14px; opacity:.7; letter-spacing:.06em; text-transform:uppercase; }
+  .backbone .step .label{ font-size:17px; font-weight:700; display:flex; align-items:center; gap:8px; }
+  .backbone-arrow{ display:flex; align-items:center; justify-content:center; color:var(--line-strong); font-size:20px; }
+
+  /* ---------- Map ---------- */
+  .map{ padding:14px 28px 40px; overflow-x:auto; }
+  .lane{ min-width:1080px; margin-top:26px; border-top:1px solid var(--line); padding-top:14px; }
+  .lane:first-child{ margin-top:18px; }
+  .lane-header{
+    display:flex; align-items:center; gap:12px; margin-bottom:12px; padding:10px 14px;
+    border-radius:10px; background: var(--lane-bg,#F7F8FA); border:1px solid var(--line);
+  }
+  .lane-header .icon{ font-size:22px; }
+  .lane-header .name{ font-weight:800; font-size:18px; color: var(--lane-color,#111); }
+  .lane-header .role{ font-size:14px; color:var(--ink-soft); }
+  .lane-header .focus{ margin-left:auto; font-size:14px; color:var(--ink-soft); text-align:right; }
+
+  .release-row{ display:grid; grid-template-columns: 176px 1fr; gap:10px; margin-bottom:10px; }
+  .release-row[hidden]{ display:none; }
+  .release-tag{
+    display:flex; flex-direction:column; justify-content:center; gap:2px;
+    padding:8px 10px; border-radius:10px; background:#fff; border:1.5px dashed var(--line-strong);
+  }
+  .release-tag .rl{ font-weight:700; font-size:14px; }
+  .release-tag .rh{ font-size:14px; color:var(--ink-soft); }
+  .release-row[data-release="mvp"] .release-tag{ border-style:solid; border-color:var(--ink); }
+
+  .cells{ display:grid; grid-template-columns: repeat(6, minmax(180px,1fr)); gap:10px; }
+  .cell{
+    min-height:56px; border-radius:10px; border:1.5px dashed var(--line);
+    padding:6px; display:flex; flex-direction:column; gap:6px;
+    transition: background .12s, border-color .12s;
+  }
+  .cell.drop-ok{ background:#EFF6FF; border-color:var(--focus); border-style:solid; }
+
+  .card{
+    background:#fff; border:1.5px solid var(--line-strong); border-left:6px solid var(--card-color,#111);
+    border-radius:9px; padding:10px 12px; min-height:44px; display:flex; flex-direction:column; gap:3px;
+    cursor:grab; user-select:none; touch-action:none;
+    box-shadow:0 1px 2px rgba(20,24,31,.05);
+  }
+  .card:active{ cursor:grabbing; }
+  .card.dragging{ box-shadow:0 10px 24px rgba(20,24,31,.25); opacity:.96; }
+  .card .t{ font-size:16px; font-weight:700; line-height:1.25; }
+  .card .badges{ display:flex; gap:6px; align-items:center; margin-top:2px; flex-wrap:wrap; }
+  .badge{ font-size:14px; font-weight:700; padding:2px 7px; border-radius:999px; }
+  .badge.invest{ background:#FEF3C7; color:#92400E; }
+  .badge.rel{ background:var(--bg-soft); color:var(--ink-soft); border:1px solid var(--line); }
+
+  /* ---------- Modal ---------- */
+  .overlay{
+    position:fixed; inset:0; background:rgba(20,24,31,.55); display:none;
+    align-items:center; justify-content:center; z-index:100; padding:20px;
+  }
+  .overlay.open{ display:flex; }
+  .modal{
+    background:#fff; border-radius:16px; max-width:640px; width:100%; max-height:88vh; overflow-y:auto;
+    padding:26px 26px 22px; border-top:8px solid var(--card-color,#111);
+  }
+  .modal .m-persona{ font-size:14px; font-weight:700; color:var(--card-color,#111); text-transform:uppercase; letter-spacing:.04em; }
+  .modal h2{ font-size:21px; margin-top:6px; }
+  .modal .block{ margin-top:16px; }
+  .modal .block .k{ font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); margin-bottom:4px; }
+  .modal .block .v{ font-size:17px; }
+  .modal .story-box{ background:var(--bg-soft); border-radius:10px; padding:12px 14px; font-style:italic; }
+  .modal .ac-box{ background:#F0FDF4; border:1px solid #BBF7D0; border-radius:10px; padding:12px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:16px; }
+  .modal .sol-box{ background:#EFF6FF; border:1px solid #BFDBFE; border-radius:10px; padding:12px 14px; }
+  .modal .inv-box{ background:#FFFBEB; border:1px solid #FDE68A; border-radius:10px; padding:12px 14px; }
+  .modal .m-meta{ margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; }
+  .modal-close{
+    min-height:44px; min-width:44px; border-radius:10px; border:2px solid var(--line-strong); background:#fff;
+    float:right; font-weight:700; font-size:20px; line-height:1; padding:0 12px;
+  }
+
+  /* ---------- Beamer-Modus (K18, vierstufig) ---------- */
+  html.beamer{ --ink-soft:#3D4A5C; }
+  html.beamer .card .t{ font-size:22px; }
+  html.beamer .lane-header .name{ font-size:44px; }
+  html.beamer .backbone .step .label{ font-size:26px; }
+  html.beamer .badge, html.beamer .release-tag .rl, html.beamer .release-tag .rh,
+  html.beamer .backbone .step .n, html.beamer .lane-header .role, html.beamer .lane-header .focus,
+  html.beamer .modal .m-persona, html.beamer .modal .block .k{ font-size:15px; }
+  html.beamer .modal h2{ font-size:28px; }
+  html.beamer .modal .v{ font-size:22px; }
+  html.beamer footer{ display:none; }
+
+  html.beamer-xl .card .t{ font-size:28px; }
+  html.beamer-xl .lane-header .name{ font-size:54px; }
+  html.beamer-xl .backbone .step .label{ font-size:32px; }
+  html.beamer-xl .badge, html.beamer-xl .release-tag .rl, html.beamer-xl .release-tag .rh,
+  html.beamer-xl .backbone .step .n, html.beamer-xl .lane-header .role, html.beamer-xl .lane-header .focus,
+  html.beamer-xl .modal .m-persona, html.beamer-xl .modal .block .k{ font-size:18px; }
+  html.beamer-xl .modal h2{ font-size:34px; }
+  html.beamer-xl .modal .v{ font-size:28px; }
+
+  html.beamer-xxl .card .t{ font-size:34px; }
+  html.beamer-xxl .lane-header .name{ font-size:64px; }
+  html.beamer-xxl .backbone .step .label{ font-size:38px; }
+  html.beamer-xxl .badge, html.beamer-xxl .release-tag .rl, html.beamer-xxl .release-tag .rh,
+  html.beamer-xxl .backbone .step .n, html.beamer-xxl .lane-header .role, html.beamer-xxl .lane-header .focus,
+  html.beamer-xxl .modal .m-persona, html.beamer-xxl .modal .block .k{ font-size:21px; }
+  html.beamer-xxl .modal h2{ font-size:40px; }
+  html.beamer-xxl .modal .v{ font-size:34px; }
+
+  /* ---------- Footer ---------- */
+  footer{ border-top:2px solid var(--ink); margin-top:30px; padding:16px 28px 30px; }
+  .footer-sig{ font-size:14px; color:var(--ink-soft); margin-bottom:14px; line-height:1.5; }
+  .footer-sig strong{ color:var(--ink); }
+  .footer-sig a{ color:var(--focus); font-weight:700; text-decoration:none; }
+  .footer-sig a:hover{ text-decoration:underline; }
+  .footer-sig .audit-line{ display:block; margin-top:4px; color:var(--ink-soft); }
+  .footer-details{ display:grid; grid-template-columns:1fr; gap:12px; }
+  @media (min-width:901px){ .footer-details{ grid-template-columns:repeat(4,1fr); } }
+  .footer-box{ border:1px solid var(--line); border-radius:8px; background:#fff; overflow:hidden; }
+  .footer-summary{
+    cursor:pointer; list-style:none; padding:14px 16px; font-size:16px; font-weight:700;
+    color:var(--ink); min-height:44px; display:flex; align-items:center; border-bottom:1px solid transparent;
+  }
+  .footer-box[open] .footer-summary{ border-bottom-color:var(--line); }
+  .footer-summary::-webkit-details-marker{ display:none; }
+  .footer-content{ padding:14px 16px; font-size:15px; color:var(--ink-soft); }
+  .footer-mono{
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:14px; line-height:1.6;
+    color:var(--ink); background:var(--bg-soft); border-radius:6px; white-space:pre-wrap;
+  }
+  .footer-sans{ font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif; font-size:16px; line-height:1.6; }
+  .footer-sans .regie{ color:var(--ink-soft); font-style:italic; }
+  .footer-sans .schritt{ margin:0 0 14px; padding-bottom:14px; border-bottom:1px dashed var(--line); }
+  .footer-sans .schritt:last-child{ border-bottom:none; margin-bottom:0; padding-bottom:0; }
+  .footer-sans .schritt strong{ display:block; color:var(--focus); margin-bottom:4px; }
+  .footer-table{ width:100%; border-collapse:collapse; font-size:14px; }
+  .footer-table th,.footer-table td{ border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top; }
+  .footer-table th{ background:var(--bg-soft); color:var(--ink); }
+
+  @media (max-width: 720px){
+    .right-actions{ margin-left:0; width:100%; justify-content:flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title-block">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <h1>🗺️ Story Mapping — Kundenperspektiven</h1>
+    <div class="sub">Case: Vantera Systemtechnik · Einführung „Vantera Connect" (B2B-Kundenportal)</div>
+  </div>
+</header>
+<div class="who">
+  <div class="name">Michaela Kühn</div>
+  <div class="tag">PromptSchule · Requirements Engineering &amp; Business Analyse</div>
+</div>
+
+<div class="intro">
+  <span>🖐️ Karten zwischen den Release-Zeilen <b>verschieben</b> (Ziehen)</span>
+  <span>👆 Kurzes Antippen öffnet <b>User Story · Akzeptanzkriterium · Lösungsempfehlung</b></span>
+  <span>👥 Perspektiven einzeln oder im <b>Vergleich</b> gegenüberstellen</span>
+</div>
+
+<div class="controls">
+  <div class="ctrl-group" id="personaTabs">
+    <span class="ctrl-label">Kundenperspektive</span>
+    <!-- persona tabs injected by JS -->
+  </div>
+  <div class="ctrl-group">
+    <div class="switch">
+      <input type="checkbox" id="compareToggle">
+      <label for="compareToggle">Alle Perspektiven vergleichen</label>
+    </div>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">Release-Slicing</span>
+    <div class="seg" id="releaseSeg">
+      <button data-max="0" class="active">Nur MVP</button>
+      <button data-max="1">+ Release 2</button>
+      <button data-max="2">+ Backlog</button>
+    </div>
+  </div>
+  <div class="right-actions">
+    <button class="beamer-btn" id="beamerBtn" type="button">☀ Beamer</button>
+    <button class="reset-btn" id="resetBtn">↺ Zurücksetzen</button>
+  </div>
+</div>
+
+<div class="backbone-wrap">
+  <div class="backbone" id="backbone"><!-- injected --></div>
+</div>
+
+<div class="map" id="map"><!-- lanes injected --></div>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal"><!-- injected --></div>
+</div>
+
+<footer>
+  <div class="footer-sig">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a> — PromptSchule · Training &amp; Consulting · Referenzrahmen: Jeff Patton (User Story Mapping), INVEST (Wake 2003), IREB CPRE, BABOK® Guide v3 (IIBA), Gherkin/BDD
+    <span class="audit-line">Zuletzt geprüft: 03.08.2026 · Status: ⭐ Zertifiziert mit Auszeichnung · Details siehe Audit-Protokoll</span>
+  </div>
+
+  <div class="footer-details">
+    <details class="footer-box">
+      <summary class="footer-summary">💬 Systemprompt</summary>
+      <div class="footer-content footer-mono">Baue mir ein einzelnes HTML-Tool als Story-Mapping-Board (nach Jeff Patton) für einen fiktiven B2B-Kundenportal-Case: "Vantera Systemtechnik" führt ein Kundenportal "Vantera Connect" ein. Vier Kundenperspektiven (Einkäufer, Servicetechniker, Geschäftsführung, Neukunde) bekommen jeweils eine eigene Story-Map über dieselbe sechsteilige Kundenreise (Backbone), mit Release-Slicing (MVP/Release 2/Backlog) und Drag-and-Drop-Priorisierung.
+
+STRUKTUR
+- Kopfzeile: Zurück-Link zur Startseite, H1 + einzeiliger Case-Untertitel, fix positionierte Signatur (Name + Website-Link) oben rechts im Viewport, unter 900px als normaler Block rechtsbündig.
+- Darunter eine Hinweiszeile mit drei Kurzanleitungen (Ziehen, Antippen, Perspektiven vergleichen).
+- Sticky Controls-Leiste: Persona-Tabs (deaktiviert im Vergleichsmodus), ein Vergleichs-Schalter ("Alle Perspektiven vergleichen"), ein 3-stufiges Release-Slicing-Segment (Nur MVP / + Release 2 / + Backlog), rechts ein 4-stufiger Beamer-Modus-Button und ein Zurücksetzen-Button.
+- Backbone-Leiste: sechs gleich breite, dunkle Kacheln (Informieren → Anfragen &amp; Anbieten → Bestellen &amp; Vertrag → Betreiben &amp; Nutzen → Support erhalten → Erweitern &amp; Verlängern) — bleibt für jede Perspektive identisch.
+- Map-Bereich: eine Swimlane pro aktiver Perspektive (im Vergleichsmodus alle vier untereinander), jede Lane mit farbigem Kopf (Icon, Name, Rolle, Fokus-Stichworte) und darunter bis zu drei Release-Zeilen (MVP/Release 2/Backlog, je nach Slicing-Stufe sichtbar), jede Release-Zeile ein 6-Spalten-Grid parallel zum Backbone mit Story-Karten in den passenden Zellen.
+- Klick auf eine Karte öffnet ein Modal mit User Story, Akzeptanzkriterium (Gherkin-Stil), Lösungsempfehlung und optionalem INVEST-Hinweis.
+- Footer mit vier Aufklapp-Boxen: Systemprompt (dieser Master-Bau-Prompt), Handbuch, Vortrags-Skript, Normen-Register.
+
+INHALT PRO PERSPEKTIVE (je 5-6 Karten über die sechs Backbone-Schritte verteilt, unterschiedlich auf MVP/Release 2/Backlog verteilt)
+- Einkäufer (Procurement Manager, Fokus Kosten/Verträge/Compliance): Datenblätter/Preise, Sammelanfrage, Rahmenverträge, Kostenstellen-Reporting, Reklamations-Tracking, Vertragsablauf-Erinnerung.
+- Servicetechniker (Einsatz vor Ort, Fokus mobiler Zugriff/Ersatzteile/Störungen): Offline-Handbücher, Ersatzteil-Scan, Wartungsverlauf, Störungsmeldung mit Foto, Wartungsvertrag-Status.
+- Geschäftsführung (Kunden-C-Level, Fokus ROI/Reporting/Risiko): Referenzvergleich, Freigabe-Workflow, konzernweites Vertragsvolumen, Ausfallzeiten-KPI, Eskalation bei kritischen Fällen, Folgekosten-Prognose.
+- Neukunde (Interessent, Fokus Vertrauen/Vergleichbarkeit/geringe Hürde): Referenzen ohne Login, Sofort-Kostenschätzung, transparente Konditionen.
+- Jede Karte: Titel, User Story ("Als [Rolle] möchte ich [Ziel], damit [Nutzen]"), Gherkin-Akzeptanzkriterium (Gegeben/wenn/dann), konkrete Lösungsempfehlung, optional ein INVEST-Konflikthinweis (z. B. "Independent ⚠ — hängt von X ab").
+- Bewusster Lehrpunkt: dieselbe Backbone-Aktivität hat für unterschiedliche Perspektiven unterschiedliche Priorität (z. B. "Support erhalten" ist beim Servicetechniker MVP, bei der Geschäftsführung Backlog) — im Vergleichsmodus sichtbar machen.
+
+INTERAKTION
+- Pointer-Events-basiertes Drag-and-Drop einer Karte zwischen den drei Release-Zeilen derselben Perspektive/Aktivität-Spalte (kein Wechsel der Spalte/Perspektive per Drag). Kurzes Antippen ohne Bewegung öffnet stattdessen das Detail-Modal.
+- Persona-Tabs wechseln die sichtbare Lane; Vergleichs-Schalter zeigt alle vier Lanes untereinander und deaktiviert die Tabs.
+- Release-Segment blendet Release-Zeilen kumulativ ein (Nur MVP zeigt nur MVP-Zeile, + Release 2 zeigt MVP+R2, + Backlog zeigt alle drei).
+- Zurücksetzen stellt Kartenzuordnung, aktive Perspektive, Vergleichsmodus und Release-Stufe auf den Ausgangszustand zurück.
+
+DESIGN-VORGABEN
+- Helles, neutrales Farbschema (Ink/Grau-Töne), color-scheme:light, je Perspektive eine eigene Akzentfarbe (Blau/Orange/Violett/Grün) für Lane-Kopf, Karten-Randfarbe und Modal-Akzent.
+- Fließtext/Karteninhalt ≥16px, Sekundärtext (Badges, Codes, Rollen-Zeilen) ≥14px, Touch-Ziele ≥44px.
+- Beamer-Modus rein additiv über kumulative CSS-Klassen auf &lt;html&gt; (beamer/beamer-xl/beamer-xxl), keine Inhaltsänderung, Footer ab Stufe 1 ausgeblendet, Beamer-Stufe in localStorage gemerkt (try/catch-abgesichert).
+- Kein natives HTML5-Drag-and-Drop, stattdessen eigene Pointer-Events-Logik ohne Browser-Drag-Ghost.
+
+PERSONA-/FALLBEZUG
+- Ein durchgehender Case (Vantera Systemtechnik / Vantera Connect) verankert alle vier Perspektiven — keine wechselnden Fälle, nur wechselnde Blickwinkel auf denselben Case.
+
+NICHT TUN
+- Keine externe Drag-and-Drop- oder UI-Bibliothek einbinden — single-file, offlinefähig, kein fetch()/XHR.
+- Keine KI-Anbindung/API-Aufruf — rein clientseitige, regelbasierte Demo.
+- Keinen Spaltenwechsel per Drag zulassen (Karten dürfen die Backbone-Aktivität nicht verlassen) — nur die Release-Zeile ändert sich.
+- Keine generischen Karteninhalte ohne Vantera-Connect-Bezug; jede Story/AC/Lösung muss fallbezogen und konkret sein (kein "angemessene Zeit"/"ausreichend sicher").</div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">📘 Handbuch</summary>
+      <div class="footer-content footer-sans">
+        <p><strong>Prompt-Framework:</strong> RTF (Rolle – Task – Format), ergänzt um die fünf PromptSchule-Dimensionen.</p>
+        <table class="footer-table">
+          <tr><th>Dimension</th><th>Umsetzung im Master-Bau-Prompt</th><th>Warum</th></tr>
+          <tr><td>Rolle</td><td>„Baue mir ein Story-Mapping-Board nach Jeff Patton"</td><td>Verortet die KI sofort als Tool-Entwicklerin, nicht als Trainerin oder Beraterin.</td></tr>
+          <tr><td>Aufgabe</td><td>Vier Kundenperspektiven über dieselbe Backbone-Kundenreise, mit Release-Slicing</td><td>Erzwingt Konsistenz: eine Struktur, vier Blickwinkel — sonst entstehen vier unvergleichbare Tools.</td></tr>
+          <tr><td>Kontext</td><td>Ein durchgehender Case (Vantera Systemtechnik/Vantera Connect)</td><td>Ohne Fallbezug bleibt jede Story abstrakt; der Case macht Prioritätskonflikte zwischen Perspektiven konkret erfahrbar.</td></tr>
+          <tr><td>Format</td><td>Single-File HTML, Pointer-Events-Drag-and-Drop, Modal-Details, 4-Box-Footer</td><td>Offlinefähig, seminartauglich, keine Abhängigkeit von externen Bibliotheken.</td></tr>
+          <tr><td>Eingrenzung</td><td>Karten dürfen nur die Release-Zeile wechseln, nicht die Backbone-Spalte</td><td>Verhindert, dass Teilnehmende beim Ausprobieren die fachliche Struktur (Aktivität) versehentlich zerstören.</td></tr>
+        </table>
+        <p><strong>Zentraler Lernhinweis:</strong> Story Mapping funktioniert nur, wenn dieselbe Backbone-Struktur für alle Perspektiven gilt — sonst vergleicht man Äpfel mit Birnen. Der eigentliche Aha-Moment entsteht erst im Vergleichsmodus: dieselbe Aktivität kann für zwei Rollen gleichzeitig MVP und Backlog sein — das ist der Kern von Stakeholder-Priorisierungskonflikten in der Praxis.</p>
+        <p><strong>Nachbau-Tipp:</strong> Wer ein eigenes Multi-Perspektiven-Board bauen will, beginnt mit drei Datenstrukturen: <code>ACTIVITIES</code> (Backbone), <code>PERSONAS</code> (Rolle + Farbe + Fokus) und <code>CARDS</code> (Persona + Aktivität + Release + Story + AC + Lösung). Die Drag-Logik beschränkt das Zielelement per <code>data-persona</code>/<code>data-activity</code>-Abgleich auf dieselbe Spalte — dieses Muster lässt sich unverändert auf jedes andere Mehr-Perspektiven-Board übertragen.</p>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+      <div class="footer-content footer-sans">
+        <div class="schritt"><strong>Einstieg</strong><span class="regie">(vor dem ersten Öffnen, Board noch auf „Nur MVP" mit erster Perspektive zeigen)</span><br>„Wir bauen gerade ein Kundenportal für Vantera Systemtechnik. Die Frage ist nicht ‚was baut das Entwicklungsteam', sondern: Wessen Reise bilden wir eigentlich ab? Ein Portal hat selten nur eine Kundschaft."</div>
+        <div class="schritt"><strong>Backbone erklären</strong><span class="regie">(auf die sechs Kacheln zeigen)</span><br>„Das ist die Kundenreise — grobkörnig, aktivitätsbasiert, nicht funktional. Sie ändert sich nicht, egal welche Perspektive wir uns ansehen."</div>
+        <div class="schritt"><strong>Eine Perspektive öffnen</strong><span class="regie">(Tab „Einkäufer" wählen, eine Karte antippen)</span><br>„Story, Akzeptanzkriterium und Lösungsempfehlung laut vorlesen. Betont: Die Lösungsempfehlung folgt aus dem Bedürfnis, nicht umgekehrt."</div>
+        <div class="schritt"><strong>Vergleichsansicht</strong><span class="regie">(„Alle Perspektiven vergleichen" aktivieren)</span><br>„Schaut auf die Aktivität ‚Support erhalten' — für den Servicetechniker ist das MVP, für die Geschäftsführung Backlog. Genau das ist der Wert von Story Mapping: Konflikte sichtbar machen, bevor sie im Sprint auftauchen."</div>
+        <div class="schritt"><strong>Slicing</strong><span class="regie">(von „Nur MVP" zu „+ Backlog" klicken)</span><br>„Das ist der Walking Skeleton — ein dünner, aber vollständiger Pfad durch alle Aktivitäten, nicht ein fertiges Modul nach dem anderen."</div>
+        <div class="schritt"><strong>Transfer</strong><span class="regie">(Teilnehmende live eine Karte verschieben lassen)</span><br>„Verschiebt eine Karte eine Release-Zeile höher oder tiefer und begründet vor der Gruppe, warum."</div>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">📚 Normen-Register</summary>
+      <div class="footer-content footer-sans">
+        <table class="footer-table">
+          <tr><th>Framework/Quelle</th><th>Fassung/Status</th><th>Bezug im Tool</th></tr>
+          <tr><td>Jeff Patton, <i>User Story Mapping</i></td><td>O'Reilly, 2014 — etablierte Praxis, keine formale Norm</td><td>Backbone-Struktur, Release-Slicing (MVP/Release 2/Backlog)</td></tr>
+          <tr><td>INVEST-Kriterien</td><td>Bill Wake, 2003, seither agile Praxisheuristik</td><td>INVEST-Hinweis-Badges in einzelnen Karten</td></tr>
+          <tr><td>IREB CPRE</td><td>Qualitätskriterien für Anforderungen (atomar, testbar, eindeutig, konsistent, verfolgbar)</td><td>Akzeptanzkriterien je Karte</td></tr>
+          <tr><td>BABOK® Guide v3 (IIBA)</td><td>aktuell gültige Fassung (Erstveröffentlichung 2015)</td><td>Stakeholderorientierte Anforderungsanalyse, Perspektivenvergleich</td></tr>
+          <tr><td>Gherkin/BDD</td><td>Given-When-Then-Format</td><td>Akzeptanzkriterien-Formulierung der Karten</td></tr>
+        </table>
+        <p style="margin-top:10px;font-size:13px;">Hinweis: Alle Norm-/Framework-Bezüge vor Einsatz in neuen Materialien auf aktuellen Stand prüfen (K17-Check).</p>
+      </div>
+    </details>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  const ACTIVITIES = [
+    {id:'informieren', label:'Informieren'},
+    {id:'anfragen',    label:'Anfragen &amp; Anbieten'},
+    {id:'bestellen',   label:'Bestellen &amp; Vertrag'},
+    {id:'betreiben',   label:'Betreiben &amp; Nutzen'},
+    {id:'support',     label:'Support erhalten'},
+    {id:'erweitern',   label:'Erweitern &amp; Verlängern'}
+  ];
+
+  const PERSONAS = [
+    {id:'einkauf',   label:'Einkäufer',        role:'Procurement Manager', icon:'💼', color:'#2563EB', bg:'#EFF6FF', focus:'Kosten · Verträge · Compliance'},
+    {id:'technik',   label:'Servicetechniker', role:'Einsatz vor Ort',     icon:'🔧', color:'#EA580C', bg:'#FFF7ED', focus:'Mobiler Zugriff · Ersatzteile · Störungen'},
+    {id:'gf',        label:'Geschäftsführung', role:'Kunden-C-Level',      icon:'📊', color:'#7C3AED', bg:'#F5F3FF', focus:'ROI · Reporting · Risiko'},
+    {id:'neukunde',  label:'Neukunde',         role:'Interessent',         icon:'🌱', color:'#059669', bg:'#ECFDF5', focus:'Vertrauen · Vergleichbarkeit · geringe Hürde'}
+  ];
+
+  const RELEASES = [
+    {id:'mvp',     idx:0, label:'Release 1 · Walking Skeleton', hint:'Minimal nutzbarer Ende-zu-Ende-Pfad'},
+    {id:'r2',      idx:1, label:'Release 2 · Ausbaustufe',       hint:'Erweiterung nach Markteinführung'},
+    {id:'backlog', idx:2, label:'Backlog · Später',              hint:'Wertvoll, aber (noch) nicht priorisiert'}
+  ];
+
+  const INITIAL_CARDS = [
+    // Einkäufer
+    {id:'ek1', persona:'einkauf', activity:'informieren', release:'mvp', title:'Datenblätter &amp; Preise einsehen',
+      story:'Als Einkäufer möchte ich technische Datenblätter und Rahmenvertragspreise standortübergreifend einsehen, damit ich Anfragen intern vorbereiten kann.',
+      ac:'Gegeben ich bin mit einem Firmenaccount eingeloggt, wenn ich nach Baureihe filtere, dann sehe ich Datenblätter als PDF inkl. meiner Vertragspreise.',
+      solution:'Zentrale Produktdatenbank mit rollenbasiertem Preis-Overlay – Nettopreise nur für autorisierte Procurement-Accounts sichtbar.'},
+    {id:'ek2', persona:'einkauf', activity:'anfragen', release:'mvp', title:'Sammelanfrage für mehrere Standorte',
+      story:'Als Einkäufer möchte ich eine Anfrage für mehrere Lieferstandorte gleichzeitig stellen, damit ich nicht jede Bestellung einzeln anlegen muss.',
+      ac:'Gegeben ich habe mehrere Lieferadressen im Warenkorb hinterlegt, wenn ich die Anfrage absende, dann entsteht ein Sammelangebot mit Positionen je Standort.',
+      solution:'Multi-Adress-Warenkorb mit Splitversand-Option und konsolidierter Angebots-PDF.',
+      invest:'Independent ⚠ — hängt vom Adressbuch-Modul ab, das erst in Release 1 selbst entsteht.'},
+    {id:'ek3', persona:'einkauf', activity:'bestellen', release:'r2', title:'Rahmenverträge referenzieren',
+      story:'Als Einkäufer möchte ich hinterlegte Rahmenverträge im Checkout referenzieren, damit Bestellungen automatisch zu Vertragskonditionen abgerechnet werden.',
+      ac:'Gegeben eine gültige Rahmenvertrags-ID ist meinem Account zugeordnet, wenn ich bestelle, dann greift automatisch der Vertragspreis statt des Listenpreises.',
+      solution:'Vertragsverknüpfung im Checkout mit automatischem Preisabgleich gegen hinterlegte Rahmenvertrags-IDs.'},
+    {id:'ek4', persona:'einkauf', activity:'betreiben', release:'r2', title:'Kosten je Kostenstelle',
+      story:'Als Einkäufer möchte ich Bestellkosten je Kostenstelle auswerten, damit ich das Budget im Blick behalte.',
+      ac:'Gegeben Bestellungen sind Kostenstellen zugeordnet, wenn ich den Berichtszeitraum wähle, dann sehe ich eine Summenübersicht je Kostenstelle mit CSV-Export.',
+      solution:'Reporting-Dashboard mit Filter nach Kostenstelle und ERP-kompatiblem CSV-Export.'},
+    {id:'ek5', persona:'einkauf', activity:'support', release:'backlog', title:'Reklamations-Status verfolgen',
+      story:'Als Einkäufer möchte ich den Bearbeitungsstatus offener Reklamationen sehen, damit ich Lieferanten-KPIs dokumentieren kann.',
+      ac:'Gegeben eine Reklamation ist erfasst, wenn sich ihr Status ändert, dann sehe ich das Update in meiner Übersicht ohne Rückfrage per Telefon.',
+      solution:'Reklamations-Tracker mit Statushistorie, verknüpft mit der Bestellhistorie.'},
+    {id:'ek6', persona:'einkauf', activity:'erweitern', release:'mvp', title:'Vertragsablauf-Erinnerung',
+      story:'Als Einkäufer möchte ich 60 Tage vor Vertragsablauf automatisch benachrichtigt werden, damit ich Verlängerungen rechtzeitig ausschreiben kann.',
+      ac:'Gegeben ein Rahmenvertrag läuft in 60 Tagen ab, wenn dieser Zeitpunkt erreicht wird, dann erhalte ich eine E-Mail und ein Portal-Badge.',
+      solution:'Automatisiertes Ablauf-Alerting per E-Mail-Job und Dashboard-Badge, gestuft bei 60/30/7 Tagen.'},
+
+    // Servicetechniker
+    {id:'te1', persona:'technik', activity:'informieren', release:'r2', title:'Handbücher offline nutzen',
+      story:'Als Servicetechniker möchte ich technische Handbücher offline verfügbar haben, damit ich auch ohne Netzabdeckung vor Ort nachschlagen kann.',
+      ac:'Gegeben ich habe eine Anlage vorab synchronisiert, wenn ich offline bin, dann kann ich das zugehörige Handbuch trotzdem öffnen.',
+      solution:'Progressive Web App mit Offline-Cache für PDF-Handbücher je Seriennummer.'},
+    {id:'te2', persona:'technik', activity:'bestellen', release:'mvp', title:'Ersatzteile per Scan bestellen',
+      story:'Als Servicetechniker möchte ich Ersatzteile über einen Seriennummern-Scan bestellen, damit ich ohne Teilesuche schnell nachbestellen kann.',
+      ac:'Gegeben ich scanne die Seriennummer einer Anlage, wenn passende Ersatzteile existieren, dann werden sie automatisch in meinen Warenkorb vorgeschlagen.',
+      solution:'Kamera-Scan (QR/Barcode) mit automatischer Ersatzteil-Zuordnung über die Anlagen-Stückliste.',
+      invest:'Small ⚠ — Scan-Funktion und Stücklisten-Verknüpfung sollten getrennt geschätzt werden.'},
+    {id:'te3', persona:'technik', activity:'betreiben', release:'mvp', title:'Wartungsverlauf vor Ort',
+      story:'Als Servicetechniker möchte ich den Wartungsverlauf einer Anlage vor Ort einsehen, damit ich weiß, welche Arbeiten bereits durchgeführt wurden.',
+      ac:'Gegeben ich öffne eine Anlage über ihre Seriennummer, wenn ich den Reiter Historie wähle, dann sehe ich alle dokumentierten Wartungen chronologisch.',
+      solution:'Anlagen-Historie verknüpft mit Seriennummer, mobil optimiert abrufbar.'},
+    {id:'te4', persona:'technik', activity:'support', release:'mvp', title:'Störung mit Foto melden',
+      story:'Als Servicetechniker möchte ich eine Störung mit Foto und Standort direkt aus der App melden, damit der Support sofort den vollen Kontext hat.',
+      ac:'Gegeben ich erstelle ein Ticket vor Ort, wenn ich ein Foto und den GPS-Standort anhänge, dann sind beide automatisch im Ticket hinterlegt.',
+      solution:'Mobile Ticket-Erstellung mit Kamera- und GPS-Integration, Vorbefüllung aus der Anlagen-Seriennummer.'},
+    {id:'te5', persona:'technik', activity:'erweitern', release:'backlog', title:'Wartungsvertrag-Status prüfen',
+      story:'Als Servicetechniker möchte ich sehen, ob für eine Anlage ein aktiver Wartungsvertrag besteht, damit ich weiß, ob mein Einsatz abgerechnet wird.',
+      ac:'Gegeben ich öffne eine Anlage, wenn ein Wartungsvertrag existiert, dann sehe ich Status und Restlaufzeit auf einen Blick.',
+      solution:'Vertragsstatus-Anzeige direkt im Anlagen-Profil, gespeist aus dem Vertragsmodul.'},
+
+    // Geschäftsführung
+    {id:'gf1', persona:'gf', activity:'informieren', release:'backlog', title:'Branchenreferenzen vergleichen',
+      story:'Als Geschäftsführerin möchte ich eine Referenzübersicht vergleichbarer Branchenlösungen sehen, damit ich die Investitionsentscheidung strategisch einordnen kann.',
+      ac:'Gegeben ich öffne den Referenzbereich, wenn ich nach Branche filtere, dann sehe ich vergleichbare Kundenprojekte mit Kennzahlen.',
+      solution:'Kuratierte Referenzgalerie mit Branchenfilter und anonymisierten Kennzahlen.'},
+    {id:'gf2', persona:'gf', activity:'anfragen', release:'r2', title:'Freigabe-Workflow ab Schwellenwert',
+      story:'Als Geschäftsführerin möchte ich Angebote über einer definierten Freigabegrenze zur digitalen Freigabe vorgelegt bekommen, damit die Beschaffung revisionssicher dokumentiert ist.',
+      ac:'Gegeben ein Angebot überschreitet den hinterlegten Schwellenwert, wenn es final gestellt wird, dann erhalte ich eine Freigabeanfrage mit Audit-Log-Eintrag.',
+      solution:'Digitaler Freigabe-Workflow mit konfigurierbaren Schwellenwerten und lückenlosem Audit-Log.'},
+    {id:'gf3', persona:'gf', activity:'bestellen', release:'r2', title:'Konzernweites Vertragsvolumen',
+      story:'Als Geschäftsführerin möchte ich das Gesamt-Vertragsvolumen aller Standorte auf einen Blick sehen, damit ich Verhandlungsspielräume erkenne.',
+      ac:'Gegeben mehrere Standorte sind meinem Konzernaccount zugeordnet, wenn ich das Dashboard öffne, dann sehe ich die aggregierte Vertragssumme aller Standorte.',
+      solution:'Konzern-Dashboard mit Aggregation über alle Kostenstellen und Standorte.'},
+    {id:'gf4', persona:'gf', activity:'betreiben', release:'mvp', title:'Ausfallzeiten-Kennzahl je Anlage',
+      story:'Als Geschäftsführerin möchte ich eine Ausfallzeiten-Kennzahl je Anlage sehen, damit ich Investitionsentscheidungen datenbasiert treffen kann.',
+      ac:'Gegeben Störungsdaten liegen für eine Anlage vor, wenn ich das KPI-Dashboard öffne, dann sehe ich Verfügbarkeit und MTTR je Anlage.',
+      solution:'KPI-Dashboard: Verfügbarkeit, MTTR (Mean Time To Repair) und Wartungskosten je Anlage.',
+      invest:'Estimable ⚠ — Datenqualität der Störungshistorie muss vor Schätzung geprüft werden.'},
+    {id:'gf5', persona:'gf', activity:'support', release:'backlog', title:'Eskalation bei kritischen Fällen',
+      story:'Als Geschäftsführerin möchte ich bei eskalierten Supportfällen automatisch informiert werden, damit ich bei kritischen Ausfällen sofort reagieren kann.',
+      ac:'Gegeben ein Ticket wird auf Priorität kritisch gesetzt, wenn es 4 Stunden ohne Lösung bleibt, dann erhalte ich eine Eskalationsbenachrichtigung.',
+      solution:'Eskalationsregel ab Priorität „kritisch" mit zeitgesteuerter Management-Benachrichtigung.'},
+    {id:'gf6', persona:'gf', activity:'erweitern', release:'r2', title:'Folgekosten-Prognose',
+      story:'Als Geschäftsführerin möchte ich eine Prognose der Folgekosten bei Vertragsverlängerung sehen, damit ich die Budgetplanung frühzeitig absichern kann.',
+      ac:'Gegeben Nutzungsdaten der letzten 12 Monate liegen vor, wenn ich die Prognose öffne, dann sehe ich eine Kostenschätzung für die nächste Vertragsperiode.',
+      solution:'Forecast-Modul auf Basis von Nutzungshistorie und aktuellem Preisindex.'},
+
+    // Neukunde
+    {id:'nk1', persona:'neukunde', activity:'informieren', release:'mvp', title:'Referenzen ohne Login',
+      story:'Als Interessent möchte ich Referenzprojekte und Kundenstimmen ohne Registrierung einsehen, damit ich Vertrauen in Vantera aufbauen kann, bevor ich Kontakt aufnehme.',
+      ac:'Gegeben ich besuche die öffentliche Website, wenn ich den Referenzbereich öffne, dann sehe ich Case Studies ohne Login-Zwang.',
+      solution:'Öffentlicher Referenzbereich mit Case Studies und Kundenzitaten, kein Login erforderlich.'},
+    {id:'nk2', persona:'neukunde', activity:'anfragen', release:'mvp', title:'Sofort-Kostenschätzung',
+      story:'Als Interessent möchte ich in unter 5 Minuten eine unverbindliche Kostenschätzung erhalten, damit ich die Einstiegshürde als gering empfinde.',
+      ac:'Gegeben ich beantworte 5 Konfigurationsfragen, wenn ich auf „Schätzen" klicke, dann erhalte ich sofort eine Preisspanne ohne Beratungsgespräch.',
+      solution:'Selbstbedienungs-Konfigurator mit Sofort-Preisspanne statt individuellem Angebotsprozess.',
+      invest:'Negotiable ✓ — Umfang der Konfigurationsfragen bewusst offen für Team-Diskussion gelassen.'},
+    {id:'nk3', persona:'neukunde', activity:'bestellen', release:'r2', title:'Transparente Konditionen',
+      story:'Als Interessent möchte ich Zahlungs- und Lieferbedingungen vor Vertragsabschluss transparent sehen, damit ich keine versteckten Kosten befürchten muss.',
+      ac:'Gegeben ich befinde mich im Checkout, wenn ich zur Zahlungsseite komme, dann sehe ich alle Konditionen vollständig und ohne versteckte Positionen.',
+      solution:'Transparente Konditionsübersicht als fester Bestandteil des Checkout-Flows, keine Kosten erst per Folge-E-Mail.'}
+  ];
+
+  // deep clone working copy so "Zurücksetzen" can restore initial state
+  let CARDS = JSON.parse(JSON.stringify(INITIAL_CARDS));
+
+  const state = {
+    activePersona: PERSONAS[0].id,
+    compare: false,
+    maxReleaseIdx: 0
+  };
+
+  const personaById = id => PERSONAS.find(p => p.id === id);
+  const releaseById = id => RELEASES.find(r => r.id === id);
+
+  // ---------- Render: backbone ----------
+  const backboneEl = document.getElementById('backbone');
+  function renderBackbone(){
+    backboneEl.innerHTML = ACTIVITIES.map((a,i) => `
+      <div class="step">
+        <div class="n">Schritt ${i+1}</div>
+        <div class="label">${a.label}</div>
+      </div>
+    `).join('');
+  }
+
+  // ---------- Render: persona tabs ----------
+  const tabsEl = document.getElementById('personaTabs');
+  function renderTabs(){
+    tabsEl.innerHTML = '<span class="ctrl-label">Kundenperspektive</span>' + PERSONAS.map(p => `
+      <button class="tab" data-persona="${p.id}" style="--tab-color:${p.color}" ${state.compare ? 'disabled' : ''}>
+        <span class="dot" style="background:${p.color}"></span>${p.icon} ${p.label}
+      </button>
+    `).join('');
+    tabsEl.querySelectorAll('.tab').forEach(btn => {
+      btn.classList.toggle('active', !state.compare && btn.dataset.persona === state.activePersona);
+      btn.addEventListener('click', () => {
+        if(state.compare) return;
+        state.activePersona = btn.dataset.persona;
+        renderTabs();
+        renderMap();
+      });
+    });
+  }
+
+  // ---------- Render: map ----------
+  const mapEl = document.getElementById('map');
+
+  function cardEl(card){
+    const p = personaById(card.persona);
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.dataset.id = card.id;
+    div.dataset.persona = card.persona;
+    div.dataset.activity = card.activity;
+    div.dataset.release = card.release;
+    div.style.setProperty('--card-color', p.color);
+    div.tabIndex = 0;
+    div.setAttribute('role','button');
+    div.setAttribute('aria-label', card.title + ' — Details öffnen');
+    div.innerHTML = `
+      <div class="t">${card.title}</div>
+      <div class="badges">
+        ${card.invest ? '<span class="badge invest">INVEST-Hinweis</span>' : ''}
+      </div>
+    `;
+    attachDrag(div);
+    div.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openDetail(card.id); }
+    });
+    return div;
+  }
+
+  function renderLane(persona){
+    const wrap = document.createElement('div');
+    wrap.className = 'lane';
+    wrap.style.setProperty('--lane-color', persona.color);
+    wrap.style.setProperty('--lane-bg', persona.bg);
+
+    const header = document.createElement('div');
+    header.className = 'lane-header';
+    header.innerHTML = `
+      <span class="icon">${persona.icon}</span>
+      <span class="name">${persona.label}</span>
+      <span class="role cap">${persona.role}</span>
+      <span class="focus">Fokus: ${persona.focus}</span>
+    `;
+    wrap.appendChild(header);
+
+    RELEASES.forEach(rel => {
+      const row = document.createElement('div');
+      row.className = 'release-row';
+      row.dataset.release = rel.id;
+      if(rel.idx > state.maxReleaseIdx) row.hidden = true;
+
+      const tag = document.createElement('div');
+      tag.className = 'release-tag';
+      tag.innerHTML = `<span class="rl">${rel.label}</span><span class="rh">${rel.hint}</span>`;
+      row.appendChild(tag);
+
+      const cells = document.createElement('div');
+      cells.className = 'cells';
+      ACTIVITIES.forEach(act => {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.persona = persona.id;
+        cell.dataset.activity = act.id;
+        cell.dataset.release = rel.id;
+        CARDS.filter(c => c.persona === persona.id && c.activity === act.id && c.release === rel.id)
+          .forEach(c => cell.appendChild(cardEl(c)));
+        cells.appendChild(cell);
+      });
+      row.appendChild(cells);
+      wrap.appendChild(row);
+    });
+
+    return wrap;
+  }
+
+  function renderMap(){
+    mapEl.innerHTML = '';
+    const list = state.compare ? PERSONAS : [personaById(state.activePersona)];
+    list.forEach(p => mapEl.appendChild(renderLane(p)));
+  }
+
+  // ---------- Drag & drop (Pointer Events) ----------
+  function clearDropHighlights(){
+    document.querySelectorAll('.cell.drop-ok').forEach(c => c.classList.remove('drop-ok'));
+  }
+
+  function findCellAt(x, y, card){
+    card.style.visibility = 'hidden';
+    const el = document.elementFromPoint(x, y);
+    card.style.visibility = '';
+    if(!el) return null;
+    const cell = el.closest('.cell');
+    if(!cell) return null;
+    if(cell.dataset.persona === card.dataset.persona && cell.dataset.activity === card.dataset.activity){
+      return cell;
+    }
+    return null;
+  }
+
+  function attachDrag(card){
+    card.addEventListener('pointerdown', function(e){
+      if(e.button !== undefined && e.button !== 0) return;
+      const startX = e.clientX, startY = e.clientY;
+      const rect = card.getBoundingClientRect();
+      const offsetX = startX - rect.left, offsetY = startY - rect.top;
+      const origParent = card.parentElement;
+      const origNext = card.nextSibling;
+      let dragging = false;
+
+      function onMove(ev){
+        const dx = ev.clientX - startX, dy = ev.clientY - startY;
+        if(!dragging && Math.hypot(dx, dy) > 6){
+          dragging = true;
+          card.classList.add('dragging');
+          card.style.width = rect.width + 'px';
+          card.style.position = 'fixed';
+          card.style.left = rect.left + 'px';
+          card.style.top = rect.top + 'px';
+          document.body.appendChild(card);
+        }
+        if(dragging){
+          card.style.left = (ev.clientX - offsetX) + 'px';
+          card.style.top = (ev.clientY - offsetY) + 'px';
+          clearDropHighlights();
+          const target = findCellAt(ev.clientX, ev.clientY, card);
+          if(target) target.classList.add('drop-ok');
+        }
+      }
+
+      function onUp(ev){
+        document.removeEventListener('pointermove', onMove);
+        document.removeEventListener('pointerup', onUp);
+        if(dragging){
+          card.classList.remove('dragging');
+          card.style.position = '';
+          card.style.left = '';
+          card.style.top = '';
+          card.style.width = '';
+          clearDropHighlights();
+          const target = findCellAt(ev.clientX, ev.clientY, card);
+          if(target){
+            target.appendChild(card);
+            const data = CARDS.find(c => c.id === card.dataset.id);
+            data.release = target.dataset.release;
+            card.dataset.release = target.dataset.release;
+          } else {
+            if(origNext) origParent.insertBefore(card, origNext);
+            else origParent.appendChild(card);
+          }
+        } else {
+          openDetail(card.dataset.id);
+        }
+      }
+
+      document.addEventListener('pointermove', onMove);
+      document.addEventListener('pointerup', onUp);
+    });
+  }
+
+  // ---------- Modal ----------
+  const overlay = document.getElementById('overlay');
+  const modal = document.getElementById('modal');
+
+  function openDetail(id){
+    const c = CARDS.find(x => x.id === id);
+    const p = personaById(c.persona);
+    const rel = releaseById(c.release);
+    const act = ACTIVITIES.find(a => a.id === c.activity);
+    modal.style.setProperty('--card-color', p.color);
+    modal.innerHTML = `
+      <button class="modal-close" id="modalClose" aria-label="Schließen">×</button>
+      <div class="m-persona">${p.icon} ${p.label} · ${p.role}</div>
+      <h2>${c.title}</h2>
+      <div class="block">
+        <div class="k">User Story</div>
+        <div class="v story-box">${c.story}</div>
+      </div>
+      <div class="block">
+        <div class="k">Akzeptanzkriterium</div>
+        <div class="v ac-box">${c.ac}</div>
+      </div>
+      <div class="block">
+        <div class="k">Lösungsempfehlung</div>
+        <div class="v sol-box">${c.solution}</div>
+      </div>
+      ${c.invest ? `
+      <div class="block">
+        <div class="k">INVEST-Hinweis</div>
+        <div class="v inv-box">${c.invest}</div>
+      </div>` : ''}
+      <div class="m-meta">
+        <span class="badge rel">${act.label}</span>
+        <span class="badge rel">${rel.label}</span>
+      </div>
+    `;
+    overlay.classList.add('open');
+    document.getElementById('modalClose').addEventListener('click', closeDetail);
+  }
+  function closeDetail(){ overlay.classList.remove('open'); }
+  overlay.addEventListener('click', e => { if(e.target === overlay) closeDetail(); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeDetail(); });
+
+  // ---------- Controls wiring ----------
+  document.getElementById('compareToggle').addEventListener('change', e => {
+    state.compare = e.target.checked;
+    renderTabs();
+    renderMap();
+  });
+
+  document.getElementById('releaseSeg').addEventListener('click', e => {
+    const btn = e.target.closest('button[data-max]');
+    if(!btn) return;
+    document.querySelectorAll('#releaseSeg button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.maxReleaseIdx = parseInt(btn.dataset.max, 10);
+    renderMap();
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    CARDS = JSON.parse(JSON.stringify(INITIAL_CARDS));
+    state.activePersona = PERSONAS[0].id;
+    state.compare = false;
+    state.maxReleaseIdx = 0;
+    document.getElementById('compareToggle').checked = false;
+    document.querySelectorAll('#releaseSeg button').forEach((b,i) => b.classList.toggle('active', i===0));
+    renderTabs();
+    renderMap();
+  });
+
+  // ---------- Beamer-Modus (K18, vierstufig) ----------
+  const BEAMER_LEVELS = [
+    { classes: [],                                    label: '☀ Beamer' },
+    { classes: ['beamer'],                             label: '☀ Beamer XL' },
+    { classes: ['beamer', 'beamer-xl'],                label: '☀ Beamer XXL' },
+    { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: '☀ Normal' }
+  ];
+  const BEAMER_KEY = 'denkraumStoryMappingKundenperspektiven';
+  let beamerLevel = 0;
+  try{
+    const saved = JSON.parse(localStorage.getItem(BEAMER_KEY) || 'null');
+    if(saved && typeof saved.beamerLevel === 'number') beamerLevel = saved.beamerLevel;
+  }catch(e){}
+
+  function applyBeamerLevel(){
+    document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(c => document.documentElement.classList.add(c));
+    document.getElementById('beamerBtn').textContent = BEAMER_LEVELS[beamerLevel].label;
+  }
+  applyBeamerLevel();
+
+  document.getElementById('beamerBtn').addEventListener('click', function(){
+    beamerLevel = (beamerLevel + 1) % 4;
+    applyBeamerLevel();
+    try{ localStorage.setItem(BEAMER_KEY, JSON.stringify({ beamerLevel: beamerLevel })); }catch(e){}
+  });
+
+  // ---------- Init ----------
+  renderBackbone();
+  renderTabs();
+  renderMap();
+})();
+</script>
+</body>
+</html>
