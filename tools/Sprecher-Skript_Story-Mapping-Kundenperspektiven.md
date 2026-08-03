@@ -4,7 +4,7 @@ Companion-Datei zur Vortrags-Skript-Box im Footer von `tools/story-mapping-kunde
 Bei Diskrepanz zwischen dieser Datei und der Footer-Box gilt die Footer-Box im Tool als Quelle;
 diese Datei wird bei der nächsten inhaltlichen Änderung synchronisiert.
 
-Referenzrahmen: Jeff Patton (User Story Mapping), INVEST (Wake 2003), IREB CPRE, BABOK® Guide v3 (IIBA), Gherkin/BDD.
+Referenzrahmen: Jeff Patton (User Story Mapping), INVEST (Wake 2003), IREB CPRE v3.3.0, BABOK® Guide v3 (IIBA), Gherkin/BDD.
 
 ---
 
