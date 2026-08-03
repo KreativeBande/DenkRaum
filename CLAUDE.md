@@ -117,6 +117,14 @@ Kanonische CSS-Klassennamen (verbindlich): `.footer-sig`, `.footer-details`, `.f
 
 Bei jeder Erstellung oder inhaltlichen Änderung der Vortrags-Skript-Box wird automatisch — ohne separate Aufforderung — zusätzlich eine eigenständige Datei `Sprecher-Skript_<Toolname>.md` mitgeliefert (gleiche Schritt-Gliederung, identischer Inhalt, inkl. Klick-Hinweisen und Regie-Hinweisen am Ende). Bei Diskrepanz gilt die Footer-Box als Quelle; die `.md` wird bei der nächsten Änderung synchronisiert.
 
+### Geplant: seiten-weites Normenregister & Glossar (offen, noch nicht umgesetzt)
+
+Bestandsaufnahme (03.08.2026): Nur ein Teil der Tools hat den 3-Box-Footer oben überhaupt schon umgesetzt; „Glossar" existiert bisher nur als Insel-Feature in einzelnen Tools (z. B. `tools/ki-prompt-blackbox-simulator.html`), ein „Normenregister" gibt es noch gar nicht als Konzept.
+
+Idee statt Duplikation in jedem Tool-Footer: **ein zentrales, seiten-weites Normenregister** (alle referenzierten Normen/Standards wie IREB, BABOK, ISO 25010, IEEE 29148 an einer Stelle) und **ein zentrales Glossar** (Fachbegriffe über alle Tools hinweg), beide als eigene Seite im Repo, aus jedem `.footer-sig` heraus verlinkt statt pro Tool repliziert. Begründung: viele Tools referenzieren dieselben Normen/Begriffe; eine zentrale Quelle vermeidet Drift zwischen Kopien und hält die Footer schlank.
+
+**Status: unentschieden, kein Muss-Kriterium.** Bevor das umgesetzt wird: Rollout des bestehenden 3-Box-Footer-Standards auf die noch fehlenden Tools hat Vorrang (siehe Bestandsaufnahme oben). Bei Umsetzung: Format/Ort der zentralen Seite(n) und Verlinkungsmuster vorher mit Michaela klären, nicht eigenmächtig festlegen.
+
 ### Audit-Status-Zeile (K14)
 
 Einzeilige Statusnotiz direkt in `.footer-sig` — nicht als eigene Box, nicht mit vollem Audit-Report-Inhalt:
