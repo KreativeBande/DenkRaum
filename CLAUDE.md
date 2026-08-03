@@ -118,13 +118,15 @@ Kanonische CSS-Klassennamen (verbindlich): `.footer-sig`, `.footer-details`, `.f
 
 Bei jeder Erstellung oder inhaltlichen Änderung der Vortrags-Skript-Box wird automatisch — ohne separate Aufforderung — zusätzlich eine eigenständige Datei `Sprecher-Skript_<Toolname>.md` mitgeliefert (gleiche Schritt-Gliederung, identischer Inhalt, inkl. Klick-Hinweisen und Regie-Hinweisen am Ende). Bei Diskrepanz gilt die Footer-Box als Quelle; die `.md` wird bei der nächsten Änderung synchronisiert.
 
-### Offen: seiten-weites Glossar (Normenregister inzwischen erledigt)
+### Glossar: Standort entschieden, Rollout weiterhin offen
 
-Korrektur (03.08.2026): Der Punkt hieß ursprünglich „Normenregister & Glossar" und ging davon aus, dass es noch kein Normenregister gäbe. Das war falsch — 15 Tools hatten zu diesem Zeitpunkt bereits eine vierte Footer-Box „Normen-Register", nur undokumentiert. Der Footer-Standard oben ist entsprechend korrigiert (vier Boxen statt drei); dieser Punkt ist damit erledigt, nicht mehr offen.
+Korrektur (03.08.2026): Der Punkt hieß ursprünglich „Normenregister & Glossar" und ging davon aus, dass es noch kein Normenregister gäbe. Das war falsch — 15 Tools hatten zu diesem Zeitpunkt bereits eine vierte Footer-Box „Normen-Register", nur undokumentiert. Der Footer-Standard oben ist entsprechend korrigiert (vier Boxen statt drei); dieser Teil ist damit erledigt.
 
-Weiterhin offen: **ein Glossar** existiert bislang nur als Insel-Feature in einzelnen Tools (z. B. `tools/ki-prompt-blackbox-simulator.html`), nicht als wiederverwendbares Footer-Element oder als seiten-weite Lösung. Ebenfalls offen: ob die vielen pro-Tool-Normen-Register-Boxen langfristig zusätzlich durch eine zentrale Übersichtsseite ergänzt werden sollten (Konsolidierung/Querverweis, kein Ersatz — die Tool-lokale Box bleibt in jedem Fall bestehen, das Tool muss für sich allein lesbar/nachbaubar bleiben).
+**Entschieden (03.08.2026): Ein Glossar gehört, wenn es eingeführt wird, als eigene Footer-Box ins jeweilige Tool selbst — analog zum Normen-Register, nicht auf eine zentrale `index.html`-Seite.** Begründung: K1 (Offlinefähigkeit) verlangt, dass jedes Tool für sich allein funktioniert, auch als lokal geöffnete Datei ohne Zugriff auf `index.html` (z. B. `file://` auf einem iPad im Seminar) — ein rein zentrales Glossar wäre in diesem Fall unerreichbar. Eine zentrale Übersichtsseite kann langfristig ergänzend dazukommen (Konsolidierung/Querverweis über mehrere Tools hinweg), aber nie als Ersatz für die Tool-lokale Box — das Tool muss für sich allein lesbar/nachbaubar bleiben.
 
-**Status: unentschieden, kein Muss-Kriterium.** Bei Umsetzung (Glossar-Muster und/oder zentrale Normen-Übersicht): Format/Ort vorher mit Michaela klären, nicht eigenmächtig festlegen.
+**Weiterhin offen:** Ob/wann ein Glossar für ein Tool überhaupt verbindlich wird (aktuell nur Insel-Feature in `tools/ki-prompt-blackbox-simulator.html`, kein Muss-Kriterium) und das exakte Format der Box (Klassenname, Aufbau, Abgrenzung zum Normen-Register). Bei Einführung eines neuen Glossars das Format mit Michaela abstimmen statt aus dem bestehenden Insel-Beispiel zu extrapolieren.
+
+**Status: Standort entschieden (pro Tool, nicht zentral). Rollout/Pflicht weiterhin unentschieden, kein Muss-Kriterium.**
 
 ### Audit-Status-Zeile (K14)
 
