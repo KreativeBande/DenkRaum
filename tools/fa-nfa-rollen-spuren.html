@@ -862,7 +862,7 @@ const BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: 
     font-family:var(--font-body);
   }
   .footer-details{ display:flex; flex-direction:column; gap:12px; margin-bottom:20px; }
-  @media(min-width:901px){ .footer-details{display:grid; grid-template-columns:1fr 1fr 1fr;} .footer-details .footer-box{margin-bottom:0;} }
+  @media(min-width:901px){ .footer-details{display:grid; grid-template-columns:1fr 1fr 1fr 1fr;} .footer-details .footer-box{margin-bottom:0;} }
   .footer-box{
     border:1.5px solid var(--line); border-radius:12px;
     background:#FFFFFF; overflow:hidden;
@@ -887,6 +887,9 @@ const BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: 
   .footer-content.footer-sans{
     font-family:var(--font-body); font-size:16px; line-height:1.7; color:var(--ink);
   }
+  .footer-table{ width:100%; border-collapse:collapse; font-size:14px; margin-top:6px; }
+  .footer-table th, .footer-table td{ border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top; }
+  .footer-table th{ background:#F7F5F0; color:var(--ink); }
   .box-handbuch .footer-content h4{
     font-size:17px; margin:20px 0 6px; color:var(--ink);
   }
@@ -1045,12 +1048,33 @@ Hinweis: Dieser Prompt ist die rekonstruierte, wiederverwendbare Bauanleitung f�
       </div>
     </details>
 
+    <!-- Box 4: Normen-Register -->
+    <details class="footer-box box-normen">
+      <summary class="footer-summary">📚 Normen-Register</summary>
+      <div class="footer-content footer-sans">
+        <table class="footer-table">
+          <tr><th>Framework/Quelle</th><th>Fassung/Status</th><th>Bezug im Tool</th></tr>
+          <tr><td>ISO/IEC 25010:2023</td><td>aktiv</td><td>Marmorkuchen-Szenario, Spuren „Saftigkeit &amp; Konsistenz" (Reliability/Maturity, Fault Tolerance), „Schnell serviert" (Performance Efficiency/Time Behaviour, Capacity, Resource Utilization) und „Jederzeit nachbestellbar" (Reliability/Availability)</td></tr>
+          <tr><td>LMIV — Verordnung (EU) Nr. 1169/2011</td><td>in Kraft</td><td>Marmorkuchen-Szenario, Spuren „Allergenkennzeichnung" (Anhang II, Art. 44) und „Lebensmittelunternehmer-Status" (Erwägungsgrund 15)</td></tr>
+          <tr><td>VO (EG) Nr. 852/2004 (Lebensmittelhygiene)</td><td>in Kraft</td><td>Marmorkuchen-Szenario, Spur „Lebensmittelhygiene" (Anhang II)</td></tr>
+          <tr><td>DSGVO — Verordnung (EU) 2016/679</td><td>in Kraft</td><td>Bürgeramt-Szenario, Spur „Datenschutz" (Art. 5, 13, 17, 32)</td></tr>
+          <tr><td>NIS2 — Richtlinie (EU) 2022/2555</td><td>in Kraft (national umgesetzt)</td><td>Bürgeramt-Szenario, Spur „Cyber-Resilienz" (Art. 21, 23)</td></tr>
+          <tr><td>EU AI Act — Verordnung (EU) 2024/1689</td><td>in Kraft seit 01.08.2024; Hochrisiko-Pflichten für eigenständige Systeme nach Anhang III per EU-Digital-Omnibus-Paket von ursprünglich 02.08.2026 auf 02.12.2027 verschoben (finale Zustimmung 29.06.2026) — der im Tool gezeigte Chatbot ist als „begrenztes Risiko" eingestuft, nicht Anhang III</td><td>Bürgeramt-Szenario, Spur „KI-Chatbot" (Art. 12, 14, 50)</td></tr>
+          <tr><td>CADA / EU Cloud Sovereignty Framework</td><td>Verordnungsvorschlag, kein geltendes Recht</td><td>Bürgeramt-Szenario, Spur „Cloud-Souveränität" (SOV-2, SOV-3)</td></tr>
+          <tr><td>ISO/IEC 27001:2022, Anhang A</td><td>aktiv</td><td>Bürgeramt-Szenario, Spur „ISMS-Nachweis" (A.5, A.8, A.8.15, A.8.8)</td></tr>
+          <tr><td>Data Act — Verordnung (EU) 2023/2854</td><td>in Kraft</td><td>Bürgeramt-Szenario, Spur „Wechselfreiheit" (Art. 23, 29, 30)</td></tr>
+          <tr><td>IREB CPRE Foundation Level Syllabus</td><td>v3.3.0 (01.04.2026)</td><td>Trainer-Signatur oben rechts (Zertifizierung „IREB CPRE") sowie Terminologie-Referenz „Mehrdeutigkeit — IREB: unklare Erfolgskriterien" (Rollen-Spur Product Owner, Marmorkuchen-Szenario)</td></tr>
+        </table>
+        <p style="margin-top:10px; font-size:13px;">Hinweis: Alle Norm-/Framework-Bezüge vor Einsatz in neuen Materialien auf aktuellen Stand prüfen (K17-Check).</p>
+      </div>
+    </details>
+
   </div>
 
   <div class="footer-sig">
     FA → NFA / Rollen-Spuren · RE-Trainingstool · Marmorkuchen & Bürgeramt<br>
     Referenzierte Normen: DSGVO Art. 5/13/17/32 (in Kraft) · NIS2 Art. 21/23 (in Kraft seit 06.12.2025) · EU AI Act Art. 12/14/50 (in Kraft seit 08/2024) · CADA SOV-2/3 (Verordnungsvorschlag, kein geltendes Recht) · ISO/IEC 27001:2022 Anhang A.5/A.8 (in Kraft) · Data Act Art. 23/29/30 (in Kraft) · LMIV (EU) 1169/2011, VO (EG) 852/2004 (in Kraft)
-    <span class="audit-status">Zuletzt geprüft: 13.07.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span><br>
+    <span class="audit-status">Zuletzt geprüft: 03.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span><br>
     Michaela Kühn · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener">www.michaela-kuehn.com</a>
   </div>
 </footer>
