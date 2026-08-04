@@ -162,12 +162,15 @@
   footer{padding:20px 18px 30px; color:#cbb89a; font-size:var(--sec-size); max-width:1040px; margin:0 auto;}
   html[data-beamer="1"] footer, html[data-beamer="2"] footer{display:none;}
   .footer-box{background:var(--panel); border:1px solid var(--line); border-radius:8px; margin-bottom:10px;}
-  @media(min-width:901px){ .footer-details{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;} .footer-details .footer-box{margin-bottom:0;} }
+  @media(min-width:901px){ .footer-details{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;} .footer-details .footer-box{margin-bottom:0;} }
   .footer-summary{padding:12px 14px; cursor:pointer; font-weight:600; color:var(--gold2); font-size:var(--sec-size);}
   .footer-content{padding:0 14px 14px; line-height:1.6;}
   .footer-content.footer-mono{font-family:'Courier New',monospace; font-size:14px; white-space:pre-wrap; color:#d8c9ae;}
   .footer-content.footer-sans{font-size:16px; color:var(--cream);}
   .footer-content.footer-sans i{color:#b59c79;}
+  .footer-table{width:100%; border-collapse:collapse; font-size:14px;}
+  .footer-table th,.footer-table td{border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top;}
+  .footer-table th{background:#241a0f; color:var(--gold2);}
   .footer-sig{text-align:center; font-size:14px; color:#7c6c52; margin-top:10px;}
 </style>
 </head>
@@ -359,9 +362,30 @@ Hinweis: Dieser Systemprompt ist eine anhand des fertigen Tools rekonstruierte S
       <i>Regie-Hinweise: Nicht mit der Eignungsmatrix beginnen — die wirkt ohne die Fallgeschichte abstrakt. Zeitbudget: ca. 12–15 Minuten für einen vollständigen Fall inklusive Publikumsraten. Beamer-Button vor Präsentationsbeginn auf die passende Stufe stellen.</i>
     </div>
   </details>
+  <details class="footer-box">
+    <summary class="footer-summary">📚 Normen-Register</summary>
+    <div class="footer-content footer-sans">
+      <table class="footer-table">
+        <tr><th>Framework/Quelle</th><th>Fassung/Status</th><th>Bezug im Tool</th></tr>
+        <tr><td>ISO/IEC 27001:2022, Anhang A.8.5</td><td>aktiv — formale Norm (Zugriffskontrolle/Authentifizierung)</td><td>NFA „starke, zweistufige Authentifizierung" im Fall Kundenportal &amp; MoSCoW-Anforderung „Login mit starker, zweistufiger Authentifizierung"</td></tr>
+        <tr><td>ISO/IEC 27001:2022, Anhang A.5.15</td><td>aktiv — formale Norm (Zugriffssteuerung)</td><td>NFA „rollenbasierte Zugriffssteuerung" im Fall PM-Software &amp; MoSCoW-Anforderung „Rollenbasierte Zugriffssteuerung"</td></tr>
+        <tr><td>ISO/IEC 25010</td><td>aktuell gültige Fassung — formale Norm (Qualitätsmodell für Softwareprodukte)</td><td>Einordnung der Artefaktebene „NFA" in der Artefakt-Kette (Tab „Artefakt × Methode")</td></tr>
+        <tr><td>DSGVO Art. 32</td><td>in Kraft, keine Änderung — Gesetzestext (Sicherheit der Verarbeitung)</td><td>Kano-Anforderung „Daten werden DSGVO-konform gespeichert (Art. 32 DSGVO)"</td></tr>
+        <tr><td>DSGVO Art. 28</td><td>in Kraft, keine Änderung — Gesetzestext (Auftragsverarbeitung)</td><td>NFA „keine Kundendaten an externe KI-Modelle ohne Auftragsverarbeitungsvertrag nach Art. 28 DSGVO" im Fall KI-Assistent</td></tr>
+        <tr><td>MoSCoW</td><td>Dai Clegg, 1994 — Praxisheuristik, keine formale Norm</td><td>Eigenes Modul „MoSCoW-Werkstatt" sowie Story-/FA-Ebene in allen drei durchgängigen Fällen</td></tr>
+        <tr><td>Kano-Modell</td><td>Noriaki Kano, 1984 — Praxisheuristik, keine formale Norm</td><td>Eigenes Modul „Kano-Check" sowie NFA-Ebene in allen drei durchgängigen Fällen</td></tr>
+        <tr><td>WSJF (Weighted Shortest Job First)</td><td>SAFe-Praxis (Scaled Agile Framework) — Praxisheuristik, keine formale Norm</td><td>Eigenes Modul „WSJF" sowie Epic-Ebene in mehreren durchgängigen Fällen</td></tr>
+        <tr><td>RICE-Scoring</td><td>Produktmanagement-Praxis (u. a. Intercom) — Praxisheuristik, keine formale Norm</td><td>Eigenes Modul „RICE-Scoring" sowie Epic-Ebene im Fall PM-Software/KI-Assistent</td></tr>
+        <tr><td>Wert-Aufwand-Matrix (Value/Effort)</td><td>gängige Agile-Praxis — Praxisheuristik, keine formale Norm</td><td>Eigenes Modul „Wert-Aufwand-Matrix" sowie Use-Case-Ebene in allen drei durchgängigen Fällen</td></tr>
+        <tr><td>Eisenhower-Matrix</td><td>Management-Heuristik (Dringlich/Wichtig), popularisiert u. a. durch Stephen Covey — keine formale Norm</td><td>Task-Ebene in allen drei durchgängigen Fällen sowie Eignungsmatrix</td></tr>
+        <tr><td>Story Points / Planning Poker</td><td>agile Schätzpraxis (u. a. Mike Cohn) — Praxisheuristik, keine formale Norm</td><td>Eigenes Modul „Story-Point-Schätzung" als Aufwands-Eingabe für WSJF/RICE/Wert-Aufwand</td></tr>
+      </table>
+      <p style="margin-top:10px;font-size:13px;color:#b59c79;">Hinweis: Alle Norm-/Framework-Bezüge vor Einsatz in neuen Materialien auf aktuellen Stand prüfen (K17-Check).</p>
+    </div>
+  </details>
   </div>
-  <div class="footer-sig">Referenzierte Normen: ISO/IEC 27001:2022 Anhang A.8.5 / A.5.15 (in Kraft) · DSGVO Art. 32, Art. 28 (in Kraft)<br>
-  Zuletzt geprüft: 13.07.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</div>
+  <div class="footer-sig">Referenzierte Normen: ISO/IEC 27001:2022 Anhang A.8.5 / A.5.15 (in Kraft) · DSGVO Art. 32, Art. 28 (in Kraft) · ISO/IEC 25010 (aktiv)<br>
+  Zuletzt geprüft: 03.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</div>
 </footer>
 <script>
 const methodName={bv:'Business Value / CoD', wsjf:'WSJF', rice:'RICE', wa:'Wert-Aufwand', kano:'Kano', moscow:'MoSCoW', sp:'Story Points', eis:'Eisenhower', none:'Nicht priorisieren — verifizieren'};
