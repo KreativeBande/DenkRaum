@@ -212,40 +212,40 @@
   #gesamtView.active{display:block;}
   main.layout.hidden{display:none;}
 
-  footer#masterPromptFooter{
+  .footer-details{
     border-top:2px solid var(--border-strong);
     background:var(--panel);
     padding:0;
     position:sticky;bottom:0;z-index:15;
     flex-shrink:0;
   }
-  footer#masterPromptFooter summary{
+  .footer-details .footer-summary{
     list-style:none;cursor:pointer;user-select:none;touch-action:manipulation;
     padding:12px 22px;font-size:14px;font-weight:700;color:var(--accent);
     display:flex;align-items:center;justify-content:space-between;
   }
-  footer#masterPromptFooter summary::-webkit-details-marker{display:none;}
-  footer#masterPromptFooter summary::after{
+  .footer-details .footer-summary::-webkit-details-marker{display:none;}
+  .footer-details .footer-summary::after{
     content:"▾";font-weight:400;transition:transform 0.15s;
   }
-  footer#masterPromptFooter[open] summary::after{transform:rotate(180deg);}
-  footer#masterPromptFooter .footer-prompt-body{
+  .footer-details[open] .footer-summary::after{transform:rotate(180deg);}
+  .footer-details .footer-content{
     padding:0 22px 18px;max-height:45vh;overflow-y:auto;
   }
-  footer#masterPromptFooter .vortrag-body{
+  .footer-details .vortrag-body{
     font-family:var(--sans);font-size:16px;line-height:1.6;
   }
-  footer#masterPromptFooter .vt-step{
+  .footer-details .vt-step{
     margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);
   }
-  footer#masterPromptFooter .vt-step:last-of-type{border-bottom:none;}
-  footer#masterPromptFooter .vt-regie{
+  .footer-details .vt-step:last-of-type{border-bottom:none;}
+  .footer-details .vt-regie{
     color:var(--accent);font-style:italic;margin:0 0 6px;font-size:14px;
   }
-  footer#masterPromptFooter .vt-uebergang{
+  .footer-details .vt-uebergang{
     color:var(--ink-soft);font-size:14px;margin-top:6px;
   }
-  footer#masterPromptFooter textarea#promptText{
+  .footer-details textarea#promptText{
     width:100%;height:32vh;font-family:var(--mono);font-size:16px;line-height:1.55;
     border:1.5px solid var(--border-strong);border-radius:8px;padding:14px;
     background:#fffefb;color:var(--ink);
@@ -322,17 +322,17 @@
   </div>
 </section>
 
-<footer id="masterPromptFooter">
-  <details id="promptDetails">
-    <summary>📋 Master-Prompt — für andere Lastenhefte (aufklappen)</summary>
-    <div class="footer-prompt-body">
+<footer id="masterPromptFooter" class="footer-details">
+  <details id="promptDetails" class="footer-box">
+    <summary class="footer-summary">📋 Master-Prompt — für andere Lastenhefte (aufklappen)</summary>
+    <div class="footer-content footer-mono">
       <textarea id="promptText" readonly></textarea>
       <div class="copy-hint">Text markieren und kopieren — für Notion, für Kolleg:innen ohne dieses Tool, oder als Anweisung an ein LLM, das dieselbe Fragen-Extraktion manuell auf einem anderen Lastenheft nachvollziehen soll.</div>
     </div>
   </details>
-  <details id="handbuchDetails">
-    <summary>📘 Handbuch — Konstruktionslogik (aufklappen)</summary>
-    <div class="footer-prompt-body" style="font-family:var(--sans);font-size:16px;line-height:1.6;">
+  <details id="handbuchDetails" class="footer-box">
+    <summary class="footer-summary">📘 Handbuch — Konstruktionslogik (aufklappen)</summary>
+    <div class="footer-content footer-sans" style="font-family:var(--sans);font-size:16px;line-height:1.6;">
       <p><b>Framework des Master-Prompts (oben):</b> RTF — Role (Requirements-Coach/Workshop-Moderator:in), Task (dieselbe neunstufige Fragen-Extraktion auf einem neuen Lastenheft nachvollziehen), Format (identische Nebel-Typ-Badges wie im Tool). Schlank gehalten, weil der Prompt ein Werkzeug für Kolleg:innen ohne dieses Tool ist, nicht ein didaktisches Lehrbeispiel.</p>
       <p><b>Denkraum-Bezug (Grundregel):</b> Jeder Schritt trägt eine feste Nebel-Typ-Badge (Absichts-, Stakeholder-, Lösungs- oder Qualitätsnebel bzw. Störstelle) und erzeugt Fragen nach dem Sprungmechanismus „Fragen“ bzw. „Messkriterium ergänzen“. Bewusste Designentscheidung: Die vier klassischen Lastenheft-Kapitel Abgrenzung, Annahmen, Risiken und Schnittstellen laufen alle unter „Störstelle“ — das ist kein Fehler, sondern zeigt genau, dass das Denkraum-Artefakt „Störstellen“ (Risiken, Lücken, Annahmen) mehrere klassische RE-Kapitel gleichzeitig abdeckt.</p>
       <p><b>Unterschied zum Pflichtenheft-Generator:</b> Der Pflichtenheft-Generator arbeitet mit einem echten, unverändert zitierten Ausschreibungsdokument und teils dokumentspezifischen Erkennungslisten (z. B. eine feste Stakeholder-Rollenliste für genau diese eine Studierendenakte). Der Fragenautomat muss dagegen auf JEDEM hochgeladenen Lastenheft funktionieren — deshalb sind alle Erkennungsregeln bewusst generisch gehalten (Wortlisten für Rollen, Qualitätsvokabular, Risikosprache statt Eigennamen). Der mitgelieferte Beispieltext ist deshalb ehrlich als frei konstruiert gekennzeichnet, nicht als echtes Dokument ausgegeben.</p>
@@ -340,9 +340,9 @@
       <p><b>Nachbau-Tipp:</b> Wer ein ähnliches Tool baut, sollte Wortlisten immer mit einem Metrik-Gegencheck kombinieren (Zahl/Einheit/Prozent im Satz vorhanden? → dann kein Nebel, kein Diskussionsbedarf) — sonst werden auch bereits präzise Sätze unnötig zur Diskussion gestellt.</p>
     </div>
   </details>
-  <details id="vortragDetails">
-    <summary>🎤 Vortrags-Skript — für den Workshop-Auftakt (aufklappen)</summary>
-    <div class="footer-prompt-body vortrag-body">
+  <details id="vortragDetails" class="footer-box">
+    <summary class="footer-summary">🎤 Vortrags-Skript — für den Workshop-Auftakt (aufklappen)</summary>
+    <div class="footer-content footer-sans vortrag-body">
       <div class="vt-step"><p class="vt-regie"><i>[Klick: Tool ist geöffnet, Kopfzeile + Pillnav sichtbar, „Quelle: Lastenheft“ ist aufgeklappt.]</i></p>
       <p><b>0 · Einstieg.</b> Das hier ist ein Fragenautomat — keine KI-Bewertung, sondern regelbasierte Mustererkennung. Er liest ein Lastenheft und schlägt an jeder unscharfen Stelle konkrete Klärungsfragen für den Workshop vor. Jede Frage ist an einen wörtlich zitierten Satz aus dem Dokument gebunden — nichts wird erfunden.</p>
       <p class="vt-uebergang">Übergang: Fangen wir mit der Zielsetzung an.</p></div>

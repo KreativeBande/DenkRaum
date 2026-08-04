@@ -89,20 +89,20 @@ h2{margin:0;color:#1a3a5c;font-size:clamp(22px,3vw,34px);line-height:1.08;letter
 
 /* ===== Footer (Systemprompt / Handbuch / Vortrags-Skript) ===== */
 .footer{margin-top:18px;border-top:2px solid #d8d8d4;padding-top:16px;}
-.footer details{border:1px solid #d8d8d4;border-radius:4px;margin-bottom:10px;background:#ffffff;}
-.footer summary{padding:12px 16px;font-weight:700;cursor:pointer;font-size:14.5px;list-style:none;display:flex;align-items:center;gap:8px;color:#1a3a5c;}
-.footer summary::-webkit-details-marker{display:none;}
-.footer summary:before{content:"▸";font-size:14px;color:#75818a;}
-.footer details[open] summary:before{content:"▾";}
-.footer .fbody{padding:0 16px 16px;color:#3f4d56;}
-.sys-box .fbody{font-family:"IBM Plex Mono",monospace;font-size:14px;line-height:1.6;white-space:pre-wrap;}
-.handbuch-box .fbody{font-size:16px;line-height:1.65;}
-.handbuch-box .fbody h4{font-size:14.5px;margin:14px 0 4px;color:#1a3a5c;}
-.skript-box .fbody{font-size:16px;line-height:1.7;}
+.footer .footer-box{border:1px solid #d8d8d4;border-radius:4px;margin-bottom:10px;background:#ffffff;}
+.footer .footer-summary{padding:12px 16px;font-weight:700;cursor:pointer;font-size:14.5px;list-style:none;display:flex;align-items:center;gap:8px;color:#1a3a5c;}
+.footer .footer-summary::-webkit-details-marker{display:none;}
+.footer .footer-summary:before{content:"▸";font-size:14px;color:#75818a;}
+.footer .footer-box[open] .footer-summary:before{content:"▾";}
+.footer .footer-content{padding:0 16px 16px;color:#3f4d56;}
+.footer-mono{font-family:"IBM Plex Mono",monospace;font-size:14px;line-height:1.6;white-space:pre-wrap;}
+.footer-sans{font-size:16px;line-height:1.7;}
+.handbuch-box .footer-sans{line-height:1.65;}
+.handbuch-box .footer-sans h4{font-size:14.5px;margin:14px 0 4px;color:#1a3a5c;}
 .skript-box .regie{font-style:italic;color:#75818a;display:block;margin-top:2px;}
 .skript-box .step{margin-bottom:14px;}
 .footer-sig{font-size:14px;color:#75818a;margin-top:4px;line-height:1.5;}
-@media(min-width:901px){.footer-triple{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}.footer-triple details{margin-bottom:0;}}
+@media(min-width:901px){.footer-details{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}.footer-details .footer-box{margin-bottom:0;}}
 
 /* ===== Beamer-Modus ===== */
 html[data-beamer="1"]{zoom:1.35}
@@ -134,10 +134,10 @@ html[data-beamer="2"] .footer,html[data-beamer="2"] .footerSig{display:none;}
   </header>
   <main id="stage" class="stage"></main>
   <footer class="footer">
-    <div class="footer-triple">
-      <details class="sys-box">
-        <summary>🔧 Systemprompt</summary>
-        <div class="fbody">Baue mir ein einzelnes HTML-Tool für eine Live-Demo am Beamer/iPad (Requirements-Training, Trainerin steuert, Teilnehmende schauen zu).
+    <div class="footer-details">
+      <details class="footer-box sys-box">
+        <summary class="footer-summary">🔧 Systemprompt</summary>
+        <div class="footer-content footer-mono">Baue mir ein einzelnes HTML-Tool für eine Live-Demo am Beamer/iPad (Requirements-Training, Trainerin steuert, Teilnehmende schauen zu).
 
 STRUKTUR
 - Ein durchgängiger Weg in 11 nummerierten Schritten (Tab-Navigation oben, Schritte per Vor/Zurück-Buttons), von der "jungfräulichen KI-Instanz" bis zur Auflösung
@@ -165,9 +165,9 @@ NICHT TUN
 Hinweis: Dieser Prompt ist die rekonstruierte, wiederverwendbare Bauanleitung für dieses Tool — er kann in neuen Konversationen eingesetzt werden, um ähnlich strukturierte Schritt-für-Schritt-Demonstratoren zu bauen.</div>
       </details>
 
-      <details class="handbuch-box">
-        <summary>📖 Handbuch</summary>
-        <div class="fbody">
+      <details class="footer-box handbuch-box">
+        <summary class="footer-summary">📖 Handbuch</summary>
+        <div class="footer-content footer-sans">
           <h4>Framework</h4>
           STAKE (Stakeholder · Task · Audience · Kriterien · Eingrenzung) — strukturell auf Requirements Engineering gespiegelt, damit RE-Wissen direkt auf Prompt-Steuerung übertragbar wird.
           <h4>5 Dimensionen</h4>
@@ -183,9 +183,9 @@ Hinweis: Dieser Prompt ist die rekonstruierte, wiederverwendbare Bauanleitung f�
         </div>
       </details>
 
-      <details class="skript-box">
-        <summary>🎤 Vortrags-Skript</summary>
-        <div class="fbody" id="skriptBody">
+      <details class="footer-box skript-box">
+        <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+        <div class="footer-content footer-sans" id="skriptBody">
           <div class="step"><b>1. Opener</b><span class="regie">(vor der Projektauswahl)</span><br>„Wenn eine KI-Antwort enttäuscht, liegt das selten am Modell — sondern daran, dass wir ihr keine Anforderungen mitgegeben haben. Genau das zeigen wir jetzt an vier Projekten."</div>
           <div class="step"><b>2. Projekt wählen</b><span class="regie">(Klick auf eine Projekt-Kachel, z. B. ERP)</span><br>„Wir starten mit einer SAP-Einführung: 800 User, viele Abhängigkeiten. Ab jetzt füllt dieses Projekt alle folgenden Schritte."</div>
           <div class="step"><b>3. Jungfräuliche Instanz</b><span class="regie">(Schritt 1 zeigen)</span><br>„Die KI ist nicht leer — sie bringt Weltwissen mit. Was fehlt, ist der Projektkontext. Das ist der Ausgangspunkt jeder Anforderungsklärung."</div>

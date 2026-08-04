@@ -192,14 +192,17 @@
 
   footer{max-width:1180px; margin:32px auto 0; padding:20px 24px 40px; border-top:2px solid var(--ink);}
   .footer-head{display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
-  .panels{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
-  details{border:1px solid var(--grid); border-radius:8px; background:var(--paper);}
-  details summary{cursor:pointer; font-weight:700; font-size:15px; padding:12px 14px; min-height:44px; display:flex; align-items:center; list-style:none;}
+  .footer-sig{font-size:14px; color:var(--ink-60);}
+  .footer-sig strong{display:block; color:var(--ink); font-size:15px;}
+  .footer-details{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+  .footer-box{border:1px solid var(--grid); border-radius:8px; background:var(--paper);}
+  .footer-summary{cursor:pointer; font-weight:700; font-size:15px; padding:12px 14px; min-height:44px; display:flex; align-items:center; list-style:none;}
   details summary::-webkit-details-marker{display:none;}
   details summary::before{content:"▸ "; color:var(--blue);}
   details[open] summary::before{content:"▾ "; color:var(--blue);}
-  details .panel-body{padding:0 14px 14px; font-size:14px; color:var(--ink-60);}
-  details .panel-body ul{margin:6px 0; padding-left:18px;}
+  .footer-content{padding:0 14px 14px; font-size:14px; color:var(--ink-60);}
+  .footer-content ul{margin:6px 0; padding-left:18px;}
+  .footer-mono{font-family: ui-monospace, SFMono-Regular, Menlo, monospace;}
 </style>
 </head>
 <body class="blueprint-bg">
@@ -243,18 +246,18 @@
 
 <footer>
   <div class="footer-head">
-    <div class="signature"><strong>Michaela Kühn</strong> — Escape Room KI-Prompting · Pilot v1.0</div>
+    <div class="footer-sig"><strong>Michaela Kühn</strong> — Escape Room KI-Prompting · Pilot v1.0</div>
   </div>
-  <div class="panels">
-    <details>
-      <summary>Systemprompt</summary>
-      <div class="panel-body">
+  <div class="footer-details">
+    <details class="footer-box">
+      <summary class="footer-summary">Systemprompt</summary>
+      <div class="footer-content footer-mono">
         <p>Dieses Tool ist ein reines Frontend-Spiel ohne KI-Anbindung — alle Aufgaben werden lokal deterministisch geprüft. Der „Systemprompt“, um den es inhaltlich geht, ist Gegenstand des Spiels selbst, nicht seine Laufzeit-Infrastruktur.</p>
       </div>
     </details>
-    <details>
-      <summary>Handbuch</summary>
-      <div class="panel-body">
+    <details class="footer-box">
+      <summary class="footer-summary">Handbuch</summary>
+      <div class="footer-content footer-sans">
         <ul>
           <li>Türen öffnen sich nur der Reihe nach — spätere Etappen bleiben gesperrt, bis die vorherige gelöst ist.</li>
           <li>Jede Etappe hat einen „Hinweis“-Button (kostet 10 Punkte) und einen „Prüfen“-Button.</li>
@@ -264,9 +267,9 @@
         </ul>
       </div>
     </details>
-    <details>
-      <summary>Vortrags-Skript</summary>
-      <div class="panel-body">
+    <details class="footer-box">
+      <summary class="footer-summary">Vortrags-Skript</summary>
+      <div class="footer-content footer-sans">
         <p><strong>Moderationsblock, ca. 60–90 Min. (Gruppen à 3–4 Personen):</strong></p>
         <ul>
           <li>Einstieg (5 Min): Anschluss an den RE-Escape-Room herstellen — „Die Hochschule Nordlicht will jetzt einen KI-Assistenten fürs RE-Team. Gleiche Denkweise, neues Zielsystem.“</li>
@@ -277,9 +280,9 @@
         </ul>
       </div>
     </details>
-    <details>
-      <summary>Normen-Register</summary>
-      <div class="panel-body">
+    <details class="footer-box">
+      <summary class="footer-summary">Normen-Register</summary>
+      <div class="footer-content footer-sans">
         <ul>
           <li>Prompt-Governance-Canvas (Michaela Kühn) — vierschichtiges Framework: Prompt-Decision-Records, R0–R3-Risikoklassifikation, rollenbasierte Zuweisung, Kontroll-Artefakte.</li>
           <li>EU AI Act — Risikobasierte Klassifikation als konzeptuelle Grundlage für R0–R3 (Status: in Kraft, gestaffelte Anwendbarkeit).</li>

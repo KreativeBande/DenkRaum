@@ -219,16 +219,16 @@ textarea#faInput:focus{outline:2px solid var(--iso25);outline-offset:1px;}
 .footer summary::-webkit-details-marker{display:none;}
 .footer summary:before{content:"▸ ";color:var(--ink-soft);}
 .footer details[open] summary:before{content:"▾ ";}
-.footer .fbody{padding:0 16px 16px;}
+.footer .footer-content{padding:0 16px 16px;}
 .sysprompt-note{font-size:14px;color:var(--ink-soft);margin:0 0 8px;}
 .sysprompt-view{white-space:pre-wrap;background:#fdfcf9;border:1px solid var(--line);border-radius:8px;padding:14px;max-height:280px;overflow:auto;font-family:'IBM Plex Mono',monospace;font-size:14px;}
 .handbuch-view{white-space:pre-wrap;background:#fdfcf9;border:1px solid var(--line);border-radius:8px;padding:16px;max-height:420px;overflow:auto;font-family:'IBM Plex Sans',sans-serif;font-size:16px;line-height:1.55;color:var(--ink);}
-.skript-box .fbody{font-size:16px;line-height:1.7;color:var(--ink);}
-.skript-box .regie{font-style:italic;color:var(--ink-soft);display:block;margin-top:2px;}
-.skript-box .step{margin-bottom:14px;}
+#skriptBody{font-size:16px;line-height:1.7;color:var(--ink);}
+#skriptBody .regie{font-style:italic;color:var(--ink-soft);display:block;margin-top:2px;}
+#skriptBody .step{margin-bottom:14px;}
 .disclaimer{font-size:14px;color:var(--ink-soft);margin-top:14px;}
 .footer-sig{font-size:14px;color:var(--ink-soft);margin-top:4px;line-height:1.5;}
-@media(min-width:901px){.footer-triple{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}.footer-triple details{margin-bottom:0;}}
+@media(min-width:901px){.footer-details{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}.footer-details details{margin-bottom:0;}}
 
 /* ===== Beamer-Modus ===== */
 html[data-beamer="1"]{zoom:1.35}
@@ -446,10 +446,10 @@ Nachbau-Tipp: Wer selbst so ein Tool bauen will, dreht die Reihenfolge um — er
 </section>
 
 <footer class="footer">
-  <div class="footer-triple">
-    <details class="sys-box">
-      <summary id="sysToggle"></summary>
-      <div class="fbody">
+  <div class="footer-details">
+    <details class="footer-box">
+      <summary id="sysToggle" class="footer-summary"></summary>
+      <div class="footer-content footer-mono">
         <p class="sysprompt-note">Master-Bau-Prompt für dieses Tool — geschrieben, damit eine interessierte Person ein vergleichbares Tool selbst entwickeln könnte:</p>
         <div class="sysprompt-view">Baue mir ein einzelnes HTML-Tool für eine Live-Demo am Beamer/iPad (Requirements-Training, Trainerin steuert, Teilnehmende schauen zu).
 
@@ -478,15 +478,15 @@ NICHT TUN
 Hinweis: Dieser Prompt ist die rekonstruierte, wiederverwendbare Bauanleitung für dieses Tool — er kann in neuen Konversationen eingesetzt werden, um ähnlich strukturierte Analyse-Tools zu bauen.</div>
       </div>
     </details>
-    <details class="handbuch-box">
-      <summary id="handbuchToggle"></summary>
-      <div class="fbody">
+    <details class="footer-box">
+      <summary id="handbuchToggle" class="footer-summary"></summary>
+      <div class="footer-content footer-sans">
         <div class="handbuch-view" id="handbuchView"></div>
       </div>
     </details>
-    <details class="skript-box">
-      <summary>🎤 Vortrags-Skript</summary>
-      <div class="fbody" id="skriptBody">
+    <details class="footer-box">
+      <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+      <div class="footer-content footer-sans" id="skriptBody">
         <div class="step"><b>1. Opener</b><span class="regie">(vor dem ersten Klick)</span><br>„Requirements sammeln ist leicht. Requirements auf blinde Flecken prüfen ist die eigentliche Arbeit. Diese Waschmaschine macht genau das sichtbar — an echten Sätzen."</div>
         <div class="step"><b>2. Ein Beispiel wählen</b><span class="regie">(Klick auf einen Beispiel-Chip, z. B. „Durchschnitt")</span><br>„Wir starten mit einem ganz normalen Satz: 'Das System soll Bestellungen als PDF-Datei exportieren.' Klingt fertig. Ist es nicht."</div>
         <div class="step"><b>3. Waschgang starten</b><span class="regie">(Klick auf „Waschgang starten")</span><br>„Die Heuristik prüft jetzt gegen die 8 Merkmale von ISO 25010 und die 4 Themenfelder von ISO 27001 — komplett offline, ohne Internetverbindung."</div>

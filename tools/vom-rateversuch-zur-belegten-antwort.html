@@ -197,15 +197,15 @@
   .footer-top .toolname{font-size:16px;font-weight:700;color:#EAF2FA;}
   .footer-top .authorname{color:#8CB4D6;text-decoration:none;}
   .footer-top .authorname:hover{color:#EAF2FA;}
-  footer details{border-bottom:1px solid #2A3E52;padding:14px 0;}
-  footer summary{cursor:pointer;font-size:16px;font-weight:700;color:#EAF2FA;list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:44px;}
-  footer summary::-webkit-details-marker{display:none;}
-  footer summary::after{content:"+";font-size:20px;color:var(--amber);}
-  footer details[open] summary::after{content:"–";}
-  footer .detail-body{font-size:15px;line-height:1.6;color:#B8CADA;padding-top:10px;max-width:700px;}
-  footer .detail-body p{margin:0 0 10px;}
-  footer .detail-body ul{margin:0;padding-left:20px;}
-  footer .detail-body li{margin-bottom:6px;}
+  .footer-box{border-bottom:1px solid #2A3E52;padding:14px 0;}
+  .footer-summary{cursor:pointer;font-size:16px;font-weight:700;color:#EAF2FA;list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:44px;}
+  .footer-summary::-webkit-details-marker{display:none;}
+  .footer-summary::after{content:"+";font-size:20px;color:var(--amber);}
+  .footer-box[open] .footer-summary::after{content:"–";}
+  .footer-content{font-size:15px;line-height:1.6;color:#B8CADA;padding-top:10px;max-width:700px;}
+  .footer-content p{margin:0 0 10px;}
+  .footer-content ul{margin:0;padding-left:20px;}
+  .footer-content li{margin-bottom:6px;}
 
   @media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important;}}
   @media (max-width: 560px){.flow-box{width:110px;font-size:12px;}}
@@ -423,20 +423,21 @@
   <div class="footer-inner">
     <div class="footer-top">
       <span class="toolname">Vom Rateversuch zur belegten Antwort — RAG im Denkraum-Modell, Pilotversion</span>
-      <a class="authorname" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn</a>
+      <a class="authorname footer-sig" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn</a>
     </div>
 
-    <details>
-      <summary>Systemprompt</summary>
-      <div class="detail-body">
+    <div class="footer-details">
+    <details class="footer-box">
+      <summary class="footer-summary">Systemprompt</summary>
+      <div class="detail-body footer-content footer-mono">
         <p>Rolle: Du bist Trainer:in für AI-Literacy und begleitest Teilnehmende dabei, Retrieval-Augmented Generation (RAG) über das Denkraum-Modell zu verstehen — von der unsichtbaren Wissenslücke eines reinen Sprachmodells (Zone 1: Sammeln) über die Retriever-Pipeline (Zone 2: Strukturieren) bis zum vollständigen, quellengestützten Antwortzyklus (Zone 3: Spezifizieren).</p>
         <p>Ziel: Teilnehmende sollen den Unterschied zwischen einer geratenen und einer belegten Antwort erklären und den fünfstufigen RAG-Zyklus in eigenen Worten nachvollziehen können.</p>
       </div>
     </details>
 
-    <details>
-      <summary>Handbuch</summary>
-      <div class="detail-body">
+    <details class="footer-box">
+      <summary class="footer-summary">Handbuch</summary>
+      <div class="detail-body footer-content footer-sans">
         <ul>
           <li>Einsatzdauer: ca. 15–20 Minuten als Opener oder Zwischenmodul, ein Tab pro Zone.</li>
           <li>Zone 1: Button „Frage ohne RAG stellen" tippen, dann die drei Konsequenz-Karten besprechen.</li>
@@ -447,18 +448,18 @@
       </div>
     </details>
 
-    <details>
-      <summary>Vortrags-Skript</summary>
-      <div class="detail-body">
+    <details class="footer-box">
+      <summary class="footer-summary">Vortrags-Skript</summary>
+      <div class="detail-body footer-content footer-sans">
         <p>„Ein Sprachmodell weiß nur, was zum Trainings-Stichtag in seinen Gewichten gelandet ist. Fragt man es nach internem oder aktuellem Wissen, füllt es die Lücke oft mit einer plausibel klingenden, aber unbelegten Antwort — reine Zone 1: Sammeln, ohne Beleg.</p>
         <p>RAG bringt Struktur hinein: Dokumente werden in Abschnitte zerlegt, als Vektoren abgelegt und über Ähnlichkeit im Bedeutungsraum gefunden — nicht über Wortgleichheit. Das ist Zone 2: Strukturieren.</p>
         <p>Der eigentliche Klarheits-Sprung passiert im fünfstufigen Zyklus: Frage, Embedding, Retrieval, Kontext-Injektion, Generierung. Erst danach antwortet das Modell — mit Quellenangabe statt Vermutung. Das ist Zone 3: Spezifizieren."</p>
       </div>
     </details>
 
-    <details>
-      <summary>Normen-Register</summary>
-      <div class="detail-body">
+    <details class="footer-box">
+      <summary class="footer-summary">Normen-Register</summary>
+      <div class="detail-body footer-content footer-sans">
         <ul>
           <li>Retrieval-Augmented Generation (RAG) — Begriff geprägt von Patrick Lewis et al., Facebook AI Research (heute Meta AI), NeurIPS 2020, Paper „Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks".</li>
           <li>Keine formale ISO- oder IEEE-Norm; RAG ist eine etablierte ML-Architektur, keine zertifizierte Spezifikation.</li>
@@ -467,6 +468,7 @@
         </ul>
       </div>
     </details>
+    </div>
   </div>
 </footer>
 
