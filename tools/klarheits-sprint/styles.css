@@ -599,17 +599,30 @@ button { font: inherit; cursor: pointer; }
 /* ---------------- Footer ---------------- */
 
 .site-footer { margin-top: 30px; }
-.site-footer details {
+.footer-details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+@media (min-width: 901px) {
+  .footer-details { grid-template-columns: repeat(3, 1fr); }
+}
+.footer-box {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 14px 18px;
   margin-bottom: 10px;
 }
-.site-footer summary { font-weight: 700; cursor: pointer; color: var(--accent-strong); }
-.site-footer details p, .site-footer details li { font-size: 14px; color: var(--ink); }
+@media (min-width: 901px) {
+  .footer-box { margin-bottom: 0; }
+}
+.footer-summary { font-weight: 700; cursor: pointer; color: var(--accent-strong); }
+.footer-content p, .footer-content li { color: var(--ink); }
+.footer-content.footer-mono { font-family: monospace; font-size: 14px; }
+.footer-content.footer-sans { font-size: 16px; }
 
-.signature-line {
+.footer-sig {
   text-align: center;
   font-size: 13px;
   color: var(--muted);
@@ -617,7 +630,7 @@ button { font: inherit; cursor: pointer; }
   padding-top: 16px;
   border-top: 1px solid var(--line);
 }
-.signature-line a { color: var(--accent); }
+.footer-sig a { color: var(--accent); }
 
 /* ---------------- Beamer-Modus ---------------- */
 
