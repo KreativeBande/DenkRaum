@@ -321,18 +321,20 @@
   .footer-top .toolname{font-size:16px;font-weight:700;color:#EAF2FA;}
   .footer-top .authorname{color:#8CB4D6;text-decoration:none;}
   .footer-top .authorname:hover{color:#EAF2FA;text-decoration:underline;}
-  footer details{border-bottom:1px solid #2A3E52;padding:14px 0;}
-  footer summary{
+  .footer-box{border-bottom:1px solid #2A3E52;padding:14px 0;}
+  .footer-summary{
     cursor:pointer;font-size:16px;font-weight:700;color:#EAF2FA;list-style:none;
     display:flex;justify-content:space-between;align-items:center;min-height:44px;
   }
-  footer summary::-webkit-details-marker{display:none;}
-  footer summary::after{content:"+";font-size:20px;color:var(--amber);}
-  footer details[open] summary::after{content:"–";}
-  footer .detail-body{font-size:15px;line-height:1.6;color:#B8CADA;padding-top:10px;max-width:700px;}
-  footer .detail-body p{margin:0 0 10px;}
-  footer .detail-body ul{margin:0;padding-left:20px;}
-  footer .detail-body li{margin-bottom:6px;}
+  .footer-summary::-webkit-details-marker{display:none;}
+  .footer-summary::after{content:"+";font-size:20px;color:var(--amber);}
+  .footer-box[open] .footer-summary::after{content:"–";}
+  .footer-content{font-size:15px;line-height:1.6;color:#B8CADA;padding-top:10px;max-width:700px;}
+  .footer-content p{margin:0 0 10px;}
+  .footer-content ul{margin:0;padding-left:20px;}
+  .footer-content li{margin-bottom:6px;}
+  .footer-mono{font-family:"SF Mono","Menlo","Consolas",monospace;font-size:14px;}
+  .footer-sans{font-family:-apple-system, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;font-size:16px;}
 
   @media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important;}}
 
@@ -558,22 +560,23 @@
 
 <footer>
   <div class="footer-inner">
-    <div class="footer-top">
+    <div class="footer-top footer-sig">
       <span class="toolname">Vom Tool-Chaos zum MCP-Handshake</span>
       <a class="authorname" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn</a>
     </div>
 
-    <details>
-      <summary>Systemprompt</summary>
-      <div class="detail-body">
+    <div class="footer-details">
+    <details class="footer-box">
+      <summary class="footer-summary">Systemprompt</summary>
+      <div class="footer-content footer-mono">
         <p>Rolle: Du bist Trainer:in für AI-Literacy und begleitest Teilnehmende dabei, das Model Context Protocol (MCP) über das Denkraum-Modell zu verstehen — von der unstrukturierten Zone 1 (Sammeln) über die musterbildende Zone 2 (Strukturieren) bis zur präzisen Zone 3 (Spezifizieren).</p>
         <p>Ziel: Teilnehmende sollen sowohl das N×M-Problem als auch den vierstufigen Handshake (Initialize, Bestätigung, Discovery, Aufruf) in eigenen Worten erklären können.</p>
       </div>
     </details>
 
-    <details>
-      <summary>Handbuch</summary>
-      <div class="detail-body">
+    <details class="footer-box">
+      <summary class="footer-summary">Handbuch</summary>
+      <div class="footer-content footer-sans">
         <ul>
           <li>Einsatzdauer: ca. 15–20 Minuten als Opener oder Zwischenmodul, ein Tab pro Zone.</li>
           <li>Zone 1: Button „Verbindungen sichtbar machen“ tippen, dann die drei Konsequenz-Karten besprechen.</li>
@@ -584,18 +587,18 @@
       </div>
     </details>
 
-    <details>
-      <summary>Vortrags-Skript</summary>
-      <div class="detail-body">
+    <details class="footer-box">
+      <summary class="footer-summary">Vortrags-Skript</summary>
+      <div class="footer-content footer-sans">
         <p>„Bevor es einen gemeinsamen Standard gab, musste jede KI-Anwendung jedes Werkzeug einzeln kennenlernen. Das nennt man das N×M-Problem — reine Zone 1: Sammeln, ohne Struktur. Und das kostet nicht nur beim Bauen, sondern bei jeder Wartung neu.</p>
         <p>MCP führt drei feste Rollen ein: Host, Client, Server — verbunden über eine gemeinsame Sprache, JSON-RPC. Für jeden Dienst gibt es einen eigenen Client mit genau einer 1:1-Verbindung. Das ist mehr als Ordnung — es ist ein Sicherheitsprinzip: Ein Notion-Client sieht niemals Figma-Daten, weil er den Figma-Server gar nicht kennt. Jeder Server bietet außerdem drei wiederkehrende Bausteine: Resources zum Lesen, Tools zum Handeln, Prompts als Vorlagen. Das ist Zone 2 — Strukturieren.</p>
         <p>Der eigentliche Klarheits-Sprung passiert im Handshake, Schritt für Schritt: Erst stellt sich der Client vor, dann bestätigt der Server seine Fähigkeiten, dann fragt der Client konkret nach dem Angebot — und erst dann wird eine Fähigkeit tatsächlich aufgerufen. Aus vagem Zugriffswunsch wird eine präzise, testbare Aktion — Zone 3.“</p>
       </div>
     </details>
 
-    <details>
-      <summary>Normen-Register</summary>
-      <div class="detail-body">
+    <details class="footer-box">
+      <summary class="footer-summary">Normen-Register</summary>
+      <div class="footer-content footer-sans">
         <ul>
           <li>Model Context Protocol (MCP) — offener Standard, veröffentlicht von Anthropic im November 2024, mittlerweile an die Agentic AI Foundation der Linux Foundation übergeben.</li>
           <li>Transportebene: JSON-RPC 2.0, Verbindungstypen stdio (lokal) und Streamable HTTP (entfernt).</li>
@@ -604,6 +607,7 @@
         </ul>
       </div>
     </details>
+    </div>
   </div>
 </footer>
 
