@@ -122,16 +122,16 @@
 
   footer{max-width:1080px; margin:32px auto 0; padding:20px 24px 40px; border-top:2px solid var(--ink);}
   .footer-head{display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
-  .footer-head .signature{text-align:left; white-space:normal;}
-  .panels{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
-  details{border:1px solid var(--grid); border-radius:8px; padding:0; background:var(--paper);}
-  details summary{cursor:pointer; font-weight:700; font-size:15px; padding:12px 14px; min-height:44px; display:flex; align-items:center; list-style:none;}
-  details summary::-webkit-details-marker{display:none;}
-  details summary::before{content:"▸ "; color:var(--blue);}
-  details[open] summary::before{content:"▾ "; color:var(--blue);}
-  details .panel-body{padding:0 14px 14px; font-size:14px; color:var(--ink-60);}
-  details .panel-body p{margin:6px 0;}
-  details .panel-body ul{margin:6px 0; padding-left:18px;}
+  .footer-sig{text-align:left; white-space:normal;}
+  .footer-details{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+  .footer-box{border:1px solid var(--grid); border-radius:8px; padding:0; background:var(--paper);}
+  .footer-box .footer-summary{cursor:pointer; font-weight:700; font-size:15px; padding:12px 14px; min-height:44px; display:flex; align-items:center; list-style:none;}
+  .footer-box .footer-summary::-webkit-details-marker{display:none;}
+  .footer-box .footer-summary::before{content:"▸ "; color:var(--blue);}
+  .footer-box[open] .footer-summary::before{content:"▾ "; color:var(--blue);}
+  .footer-box .footer-content{padding:0 14px 14px; font-size:14px; color:var(--ink-60);}
+  .footer-box .footer-content p{margin:6px 0;}
+  .footer-box .footer-content ul{margin:6px 0; padding-left:18px;}
 
   @media (prefers-reduced-motion:reduce){ .card-inner{transition:none;} }
 </style>
@@ -191,19 +191,19 @@
 
 <footer>
   <div class="footer-head">
-    <div class="signature"><strong>Michaela Kühn</strong> — Mit KI steuern, nicht hoffen · Stakeholder Memory · Pilot v1.0</div>
+    <div class="signature footer-sig"><strong>Michaela Kühn</strong> — Mit KI steuern, nicht hoffen · Stakeholder Memory · Pilot v1.0</div>
   </div>
-  <div class="panels">
-    <details>
-      <summary>Systemprompt</summary>
-      <div class="panel-body">
+  <div class="footer-details">
+    <details class="footer-box">
+      <summary class="footer-summary">Systemprompt</summary>
+      <div class="footer-content footer-mono">
         <p>Dieses Tool ist ein reines Frontend-Spiel ohne KI-Anbindung. Es benötigt keinen Systemprompt zur Laufzeit.</p>
         <p>Didaktische Regie folgt dem Denkraum-Modell: jede Zitat-Karte repräsentiert eine <em>Oberflächen-Forderung</em>, jede Auflösung zeigt den <em>Nebel-Typ Stakeholder</em> — die Lücke zwischen Gesagtem und Gemeintem.</p>
       </div>
     </details>
-    <details>
-      <summary>Handbuch</summary>
-      <div class="panel-body">
+    <details class="footer-box">
+      <summary class="footer-summary">Handbuch</summary>
+      <div class="footer-content footer-sans">
         <ul>
           <li>Karte antippen, zweite Karte antippen.</li>
           <li>Passt Persona zu Zitat → Detailkarte mit echtem Bedürfnis, Machtinteresse-Einordnung und Nebel-Typ öffnet sich.</li>
@@ -213,9 +213,9 @@
         </ul>
       </div>
     </details>
-    <details>
-      <summary>Vortrags-Skript</summary>
-      <div class="panel-body">
+    <details class="footer-box">
+      <summary class="footer-summary">Vortrags-Skript</summary>
+      <div class="footer-content footer-sans">
         <p><strong>Moderationsblock, ca. 10–15 Min.:</strong></p>
         <ul>
           <li>Einstieg (1 Min): „Bevor wir Anforderungen aufschreiben, sammeln wir Forderungen. Die sind fast nie das Gleiche."</li>
@@ -226,9 +226,9 @@
         </ul>
       </div>
     </details>
-    <details>
-      <summary>Normen-Register</summary>
-      <div class="panel-body">
+    <details class="footer-box">
+      <summary class="footer-summary">Normen-Register</summary>
+      <div class="footer-content footer-sans">
         <ul>
           <li>IREB CPRE — Stakeholder-Analyse als RE-Grundtätigkeit.</li>
           <li>BABOK v3 (IIBA) — Stakeholder Engagement, Power/Interest-Klassifikation.</li>

@@ -861,39 +861,36 @@ const BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: 
     padding:32px 40px 24px; margin-top:0;
     font-family:var(--font-body);
   }
-  .footer-boxes{ display:flex; flex-direction:column; gap:12px; margin-bottom:20px; }
-  @media(min-width:901px){ .footer-boxes{display:grid; grid-template-columns:1fr 1fr 1fr;} .footer-boxes .footer-box{margin-bottom:0;} }
+  .footer-details{ display:flex; flex-direction:column; gap:12px; margin-bottom:20px; }
+  @media(min-width:901px){ .footer-details{display:grid; grid-template-columns:1fr 1fr 1fr;} .footer-details .footer-box{margin-bottom:0;} }
   .footer-box{
     border:1.5px solid var(--line); border-radius:12px;
     background:#FFFFFF; overflow:hidden;
   }
-  .footer-box summary{
+  .footer-summary{
     padding:14px 20px; cursor:pointer; font-weight:700;
     font-size:16px; list-style:none; display:flex; align-items:center;
     gap:10px; user-select:none;
   }
-  .footer-box summary::-webkit-details-marker{ display:none; }
-  .footer-box summary::before{
+  .footer-summary::-webkit-details-marker{ display:none; }
+  .footer-summary::before{
     content:"▶"; font-size:14px; color:var(--ink-dim);
     transition:transform .2s ease;
   }
-  .footer-box[open] summary::before{ transform:rotate(90deg); }
-  .footer-box .box-body{ padding:20px 24px 24px; border-top:1.5px solid var(--line); }
+  .footer-box[open] .footer-summary::before{ transform:rotate(90deg); }
+  .footer-box .footer-content{ padding:20px 24px 24px; border-top:1.5px solid var(--line); }
 
-  .box-systemprompt .box-body{
+  .footer-content.footer-mono{
     font-family:var(--font-mono); font-size:14px; line-height:1.65;
     white-space:pre-wrap; color:var(--ink);
   }
-  .box-handbuch .box-body{
+  .footer-content.footer-sans{
     font-family:var(--font-body); font-size:16px; line-height:1.7; color:var(--ink);
   }
-  .box-handbuch .box-body h4{
+  .box-handbuch .footer-content h4{
     font-size:17px; margin:20px 0 6px; color:var(--ink);
   }
-  .box-handbuch .box-body h4:first-child{ margin-top:0; }
-  .box-skript .box-body{
-    font-family:var(--font-body); font-size:16px; line-height:1.7; color:var(--ink);
-  }
+  .box-handbuch .footer-content h4:first-child{ margin-top:0; }
   .box-skript .step{
     border-left:3px solid var(--line); padding:12px 0 12px 18px; margin-bottom:20px;
   }
@@ -916,12 +913,12 @@ const BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: 
 </style>
 
 <footer class="footer">
-  <div class="footer-boxes">
+  <div class="footer-details">
 
     <!-- Box 1: Systemprompt -->
     <details class="footer-box box-systemprompt">
-      <summary>🔧 Systemprompt</summary>
-      <div class="box-body">Baue mir ein einzelnes HTML-Tool für eine Live-Demo am Beamer/iPad (Requirements-Training, Trainerin steuert, Teilnehmende schauen zu).
+      <summary class="footer-summary">🔧 Systemprompt</summary>
+      <div class="footer-content footer-mono">Baue mir ein einzelnes HTML-Tool für eine Live-Demo am Beamer/iPad (Requirements-Training, Trainerin steuert, Teilnehmende schauen zu).
 
 STRUKTUR
 - Bildschirm fest geteilt: links 40%, rechts 60%
@@ -968,8 +965,8 @@ Hinweis: Dieser Prompt ist die rekonstruierte, wiederverwendbare Bauanleitung f�
 
     <!-- Box 2: Handbuch -->
     <details class="footer-box box-handbuch">
-      <summary>📖 Handbuch — Konstruktionslogik</summary>
-      <div class="box-body">
+      <summary class="footer-summary">📖 Handbuch — Konstruktionslogik</summary>
+      <div class="footer-content footer-sans">
         <h4>Framework: RTF (Role — Task — Format)</h4>
         <p>Der Prompt folgt dem RTF-Muster: <strong>Rolle</strong> (interaktives Lernwerkzeug für RE-Trainings), <strong>Task</strong> (FA in Perspektiven zerlegen), <strong>Format</strong> (HTML-Panel-Inhalt, keine Prosa). Das macht ihn reproduzierbar und modular erweiterbar.</p>
 
@@ -993,8 +990,8 @@ Hinweis: Dieser Prompt ist die rekonstruierte, wiederverwendbare Bauanleitung f�
 
     <!-- Box 3: Vortrags-Skript -->
     <details class="footer-box box-skript">
-      <summary>🎤 Vortrags-Skript</summary>
-      <div class="box-body">
+      <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+      <div class="footer-content footer-sans">
 
         <div class="step">
           <div class="step-cue">(Bildschirm zeigt: Startansicht, Normen-Spuren aktiv, Marmorkuchen, Übersichtskacheln rechts)</div>

@@ -184,23 +184,23 @@ header{
 
 /* ===== Footer ===== */
 .footer{margin-top:34px; border-top:2px solid var(--line); padding-top:18px;}
-.footer details{border:1.5px solid var(--line); border-radius:10px; margin-bottom:10px; background:#fff;}
-.footer summary{padding:12px 16px; font-weight:700; cursor:pointer; font-size:14.5px; list-style:none; display:flex; align-items:center; gap:8px;}
-.footer summary::-webkit-details-marker{display:none;}
-.footer summary:before{content:"▸"; font-size:14px; color:var(--ink-dim);}
-.footer details[open] summary:before{content:"▾";}
-.footer .fbody{padding:0 18px 18px;}
-.sys-box .fbody{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:14px; line-height:1.6; white-space:pre-wrap;}
-.handbuch-box .fbody{font-size:16px; line-height:1.65;}
-.handbuch-box .fbody h4{font-size:14.5px; margin:14px 0 4px;}
-.skript-box .fbody{font-size:16px; line-height:1.7;}
-.skript-box .regie{font-style:italic; color:var(--ink-dim); display:block; margin-top:2px;}
-.skript-box .step{margin-bottom:14px;}
+.footer-box{border:1.5px solid var(--line); border-radius:10px; margin-bottom:10px; background:#fff;}
+.footer-summary{padding:12px 16px; font-weight:700; cursor:pointer; font-size:14.5px; list-style:none; display:flex; align-items:center; gap:8px;}
+.footer-summary::-webkit-details-marker{display:none;}
+.footer-summary:before{content:"▸"; font-size:14px; color:var(--ink-dim);}
+.footer-box[open] .footer-summary:before{content:"▾";}
+.footer-content{padding:0 18px 18px;}
+.footer-content.footer-mono{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:14px; line-height:1.6; white-space:pre-wrap;}
+.footer-content.footer-sans{font-size:16px; line-height:1.65;}
+.footer-content.footer-sans h4{font-size:14.5px; margin:14px 0 4px;}
+#skriptBody{line-height:1.7;}
+.footer-content.footer-sans .regie{font-style:italic; color:var(--ink-dim); display:block; margin-top:2px;}
+.footer-content.footer-sans .step{margin-bottom:14px;}
 .footer-sig{font-size:14px; color:var(--ink-dim); margin-top:4px;}
 
 @media (min-width:901px){
-  .footer-triple{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;}
-  .footer-triple details{margin-bottom:0;}
+  .footer-details{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;}
+  .footer-details .footer-box{margin-bottom:0;}
 }
 
 /* ===== Beamer-Modus ===== */
@@ -312,10 +312,10 @@ html[data-beamer="1"] .footer, html[data-beamer="2"] .footer{display:none;}
 
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
-  <div class="footer-triple">
-    <details class="sys-box">
-      <summary>🔧 Systemprompt</summary>
-      <div class="fbody">Baue mir ein einzelnes HTML-Tool für eine Live-Demo am Beamer/iPad (Requirements-Training, Trainerin steuert, Teilnehmende schauen zu).
+  <div class="footer-details">
+    <details class="footer-box">
+      <summary class="footer-summary">🔧 Systemprompt</summary>
+      <div class="footer-content footer-mono">Baue mir ein einzelnes HTML-Tool für eine Live-Demo am Beamer/iPad (Requirements-Training, Trainerin steuert, Teilnehmende schauen zu).
 
 STRUKTUR
 - Bildschirm fest geteilt: links 40% (Board), rechts 60% (Dashboard)
@@ -346,9 +346,9 @@ NICHT TUN
 Hinweis: Dieser Prompt ist die rekonstruierte, wiederverwendbare Bauanleitung für dieses Tool — er kann in neuen Konversationen eingesetzt werden, um ähnlich strukturierte Klassifikations-Board-Tools zu bauen.</div>
     </details>
 
-    <details class="handbuch-box">
-      <summary>📖 Handbuch</summary>
-      <div class="fbody">
+    <details class="footer-box">
+      <summary class="footer-summary">📖 Handbuch</summary>
+      <div class="footer-content footer-sans">
         <h4>Framework</h4>
         RTF-Muster (Rolle · Task · Format), ergänzt um Kontext und Eingrenzung — die klassischen 5 PromptSchule-Dimensionen.
         <h4>5 Dimensionen</h4>
@@ -364,9 +364,9 @@ Hinweis: Dieser Prompt ist die rekonstruierte, wiederverwendbare Bauanleitung f�
       </div>
     </details>
 
-    <details class="skript-box">
-      <summary>🎤 Vortrags-Skript</summary>
-      <div class="fbody" id="skriptBody">
+    <details class="footer-box">
+      <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+      <div class="footer-content footer-sans" id="skriptBody">
         <div class="step"><b>1. Opener</b><span class="regie">(vor dem ersten Klick)</span><br>„Zwei Normen, die ständig verwechselt werden: ISO 25010 und ISO 27001. Die eine beschreibt ein Produkt, die andere ein Managementsystem. Wir sortieren das jetzt an 17 echten Anforderungen aus einem Kundenportal-Fall."</div>
         <div class="step"><b>2. Erste Karte — Login</b><span class="regie">(Klick auf „FA")</span><br>„Kundin loggt sich ein — reines Systemverhalten. Funktional. Kein Qualitätsmaß, keine Norm dahinter."</div>
         <div class="step"><b>3. Eine NFR-Karte — Performance</b><span class="regie">(zur Ladezeit-Karte navigieren, „NFR" klicken)</span><br>„Unter zwei Sekunden bei 5.000 Nutzerinnen — das ist eine Qualitätseigenschaft des Produkts. ISO 25010:2023, Performance Efficiency."</div>

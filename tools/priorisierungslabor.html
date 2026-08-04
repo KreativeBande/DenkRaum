@@ -162,12 +162,12 @@
   footer{padding:20px 18px 30px; color:#cbb89a; font-size:var(--sec-size); max-width:1040px; margin:0 auto;}
   html[data-beamer="1"] footer, html[data-beamer="2"] footer{display:none;}
   .footer-box{background:var(--panel); border:1px solid var(--line); border-radius:8px; margin-bottom:10px;}
-  @media(min-width:901px){ .footer-triple{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;} .footer-triple .footer-box{margin-bottom:0;} }
-  .footer-box summary{padding:12px 14px; cursor:pointer; font-weight:600; color:var(--gold2); font-size:var(--sec-size);}
-  .footer-box .fb-content{padding:0 14px 14px; line-height:1.6;}
-  .footer-box.systemprompt .fb-content{font-family:'Courier New',monospace; font-size:14px; white-space:pre-wrap; color:#d8c9ae;}
-  .footer-box.handbuch .fb-content, .footer-box.skript .fb-content{font-size:16px; color:var(--cream);}
-  .footer-box.skript .fb-content i{color:#b59c79;}
+  @media(min-width:901px){ .footer-details{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;} .footer-details .footer-box{margin-bottom:0;} }
+  .footer-summary{padding:12px 14px; cursor:pointer; font-weight:600; color:var(--gold2); font-size:var(--sec-size);}
+  .footer-content{padding:0 14px 14px; line-height:1.6;}
+  .footer-content.footer-mono{font-family:'Courier New',monospace; font-size:14px; white-space:pre-wrap; color:#d8c9ae;}
+  .footer-content.footer-sans{font-size:16px; color:var(--cream);}
+  .footer-content.footer-sans i{color:#b59c79;}
   .footer-sig{text-align:center; font-size:14px; color:#7c6c52; margin-top:10px;}
 </style>
 </head>
@@ -299,10 +299,10 @@
 </section>
 </main>
 <footer>
-  <div class="footer-triple">
-  <details class="footer-box systemprompt">
-    <summary>🔧 Systemprompt</summary>
-    <div class="fb-content">Rolle
+  <div class="footer-details">
+  <details class="footer-box">
+    <summary class="footer-summary">🔧 Systemprompt</summary>
+    <div class="footer-content footer-mono">Rolle
 
 Du bist eine Requirements-Engineering-Trainerin (IREB CPRE), die Priorisierungsmethoden für Workshop-Publikum erfahrbar macht.
 
@@ -328,9 +328,9 @@ Zentrales Prinzip, das sich durch alle Module zieht: Die Granularität der Prior
 
 Hinweis: Dieser Systemprompt ist eine anhand des fertigen Tools rekonstruierte Spezifikation, kein wortgetreues Original — er wurde bewusst so formuliert, dass ein interessierter Teilnehmer damit ein vergleichbares Werkzeug nachbauen könnte.</div>
   </details>
-  <details class="footer-box handbuch">
-    <summary>📖 Handbuch</summary>
-    <div class="fb-content">
+  <details class="footer-box">
+    <summary class="footer-summary">📖 Handbuch</summary>
+    <div class="footer-content footer-sans">
       <b>Framework:</b> RISEN (Role – Instructions – Steps – End goal – Narrowing)<br><br>
       <b>Rolle:</b> RE-Trainerin (IREB CPRE), die Priorisierungsmethoden für Workshop-Publikum erfahrbar macht.<br>
       <b>Aufgabe:</b> Acht Artefaktebenen (Business Case bis Gherkin) mit der jeweils passenden Priorisierungsmethode verknüpfen — spielerisch, mit sofortigem Feedback.<br>
@@ -341,9 +341,9 @@ Hinweis: Dieser Systemprompt ist eine anhand des fertigen Tools rekonstruierte S
       <b>Nachbau-Tipp:</b> Neue durchgängige Fälle lassen sich ergänzen, indem man dem <code>journeyCases</code>-Array ein weiteres Objekt mit acht <code>steps</code> hinzufügt — Struktur strikt beibehalten (level/rolle/artefakt/options/correct/why/applied).
     </div>
   </details>
-  <details class="footer-box skript">
-    <summary>🎤 Vortrags-Skript</summary>
-    <div class="fb-content">
+  <details class="footer-box">
+    <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+    <div class="footer-content footer-sans">
       <b>1. Einstieg</b> <i>(Tab „Durchgängige Fälle" offen)</i><br>
       „Wir nehmen eine einzige Anforderung und verfolgen sie durch acht Ebenen — vom Business Case bis zum Testkriterium. Auf jeder Ebene stellt sich dieselbe Frage: Welche Priorisierungsmethode passt hier eigentlich?"<br><br>
       <b>2. Fall wählen</b> <i>(auf eine Fallkarte tippen)</i><br>
