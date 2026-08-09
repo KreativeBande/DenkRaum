@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vom Prompt zum Agenten — Die vier Eskalationsstufen der KI-Steuerung</title>
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f4f6fa;
+  --paper:#ffffff;
+  --ink:#182233;
+  --ink-soft:#42536a;
+  --ink-dim:#65788a;
+  --line:#d9e2ec;
+  --orange:#b6470f; --orange-bg:#fdf1e7;
+  --teal:#0f6e63; --teal-bg:#e6f5f2;
+  --green:#1f7a4d; --green-bg:#e9f6ee;
+  --violet:#5f3a94; --violet-bg:#f1eafa;
+  --blue:#1f5f99; --blue-bg:#eaf2fa;
+  --darkred:#7a1a1a; --darkred-bg:#f9eaea;
+  --good-bg:#eef8f1; --good-line:#a9dcb9;
+  --bad-bg:#fdeeee; --bad-line:#eeb3b3;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.55}
+button{font:inherit;touch-action:manipulation;cursor:pointer}
+button:focus-visible{outline:3px solid rgba(31,95,153,.35);outline-offset:2px}
+h1,h2,h3,h4{font-family:inherit;margin:0}
+
+/* ===== Topbar / Zurück-Link / Signatur ===== */
+.topbar{background:var(--paper);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.topbar-right{padding-right:200px}
+.back-link{font-size:14px;font-weight:700;color:var(--blue);text-decoration:none}
+.back-link:hover{text-decoration:underline}
+.beamer-btn{background:transparent;border:1.5px solid var(--line);color:var(--ink-dim);font-size:15px;padding:10px 20px;border-radius:999px;min-height:44px}
+html.beamer .beamer-btn, html.beamer-xl .beamer-btn, html.beamer-xxl .beamer-btn{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.site-sig{position:fixed;top:14px;right:28px;z-index:500;font-size:14px;color:var(--ink-soft);text-align:right;line-height:1.4;background:rgba(255,255,255,.92);padding:5px 12px;border-radius:8px}
+.site-sig strong{display:block;color:var(--ink)}
+.site-sig a{color:var(--blue);text-decoration:none}
+.site-sig a:hover{text-decoration:underline}
+@media(max-width:900px){.site-sig{position:static;background:none;padding:0;text-align:right;margin:8px 20px 0}.topbar-right{padding-right:0}}
+
+/* ===== Hero ===== */
+.hero{max-width:1200px;margin:0 auto;padding:26px 20px 6px}
+.eyebrow{font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
+.hero h1{font-size:clamp(24px,3.2vw,36px);line-height:1.16;letter-spacing:-.01em;color:var(--ink)}
+.lead{margin-top:12px;font-size:16px;line-height:1.6;color:var(--ink-soft)}
+
+/* ===== Eskalationsleiter ===== */
+.ladder{max-width:1200px;margin:22px auto 0;padding:0 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.rung{border:1.5px solid var(--line);background:var(--paper);color:var(--ink-soft);border-radius:999px;padding:11px 18px;font-size:14.5px;font-weight:700;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center}
+.rung.active{background:var(--sc,var(--blue));border-color:var(--sc,var(--blue));color:#fff}
+.arrow{color:var(--ink-dim);font-weight:900;font-size:16px}
+.sep{color:var(--ink-dim);font-size:15px;padding:0 2px}
+.rung-5{border-style:dashed}
+
+/* ===== Stage-Panels ===== */
+main{max-width:1200px;margin:0 auto;padding:20px 20px 40px}
+.stage-panel{display:none}
+.stage-panel.active{display:block}
+.stage-head{margin-bottom:16px}
+.stage-kicker{font-size:14px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--sc,var(--blue))}
+.stage-h2{font-size:clamp(22px,2.6vw,32px);color:var(--ink);margin-top:4px}
+
+.split{display:grid;grid-template-columns:2fr 3fr;gap:16px;align-items:start}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+
+.def-box{background:var(--sc-bg,var(--blue-bg));border:1px solid var(--line);border-left:6px solid var(--sc,var(--blue));border-radius:14px;padding:18px 20px}
+.def-box h3{font-size:14px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--sc,var(--blue));margin-bottom:8px}
+.def-text{font-size:16px;line-height:1.6;color:var(--ink)}
+
+.baustein-box{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-top:14px}
+.baustein-box h3{font-size:14px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px}
+.baustein-list{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.baustein-list li{background:var(--sc-bg,var(--blue-bg));border-radius:8px;padding:9px 12px;font-size:15px;color:var(--ink);line-height:1.4}
+.baustein-list li b{color:var(--sc,var(--blue))}
+
+.right-col{display:grid;gap:14px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.card h3{font-size:14px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px}
+.card p{font-size:16px;line-height:1.6;color:var(--ink);margin:0}
+.card p+p{margin-top:8px}
+
+.norm-badge{display:inline-block;margin-top:10px;background:var(--darkred-bg);color:var(--darkred);border:1px solid #e2b3b3;border-radius:999px;padding:5px 12px;font-size:14px;font-weight:700}
+
+.vantera-box .case-tag{display:inline-block;font-size:14px;font-weight:700;color:var(--sc,var(--blue));background:var(--sc-bg,var(--blue-bg));border-radius:999px;padding:4px 10px;margin-bottom:8px}
+.persona-quote{margin-top:12px;border-left:4px solid var(--pc,var(--sc,var(--blue)));background:var(--bg);border-radius:0 10px 10px 0;padding:12px 14px}
+.persona-quote .p-name{font-size:14px;font-weight:800;color:var(--pc,var(--sc,var(--blue)));margin-bottom:4px}
+.persona-quote .p-line{font-size:16px;line-height:1.55;color:var(--ink);font-style:italic}
+
+.wj-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.wj-grid{grid-template-columns:1fr}}
+.wj-col{border-radius:12px;padding:14px 16px}
+.wj-col.ja{background:var(--good-bg);border:1px solid var(--good-line)}
+.wj-col.nein{background:var(--bad-bg);border:1px solid var(--bad-line)}
+.wj-col h4{font-size:14px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;margin-bottom:6px}
+.wj-col.ja h4{color:#1f7a4d}
+.wj-col.nein h4{color:#a53d3d}
+.wj-col p{font-size:15px;line-height:1.55;color:var(--ink);margin:0}
+
+/* ===== Stufe 5: Einordnung ===== */
+.grid2x2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.grid2x2{grid-template-columns:1fr}}
+.concept-card{background:var(--paper);border:1px solid var(--line);border-top:6px solid var(--cc);border-radius:14px;padding:20px}
+.concept-card .c-kicker{font-size:14px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--cc)}
+.concept-card h3{font-size:21px;margin-top:6px;color:var(--ink)}
+.concept-card .c-role{font-size:14px;font-weight:700;color:var(--ink-dim);margin-top:2px}
+.concept-card p{font-size:16px;line-height:1.6;color:var(--ink);margin-top:10px}
+.takeaway-box{margin-top:18px;background:var(--blue-bg);border:1px solid var(--line);border-left:6px solid var(--blue);border-radius:14px;padding:20px 22px}
+.takeaway-box h3{font-size:14px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
+.takeaway-box p{font-size:17px;line-height:1.6;color:var(--ink);margin:0}
+.takeaway-box .persona-quote{background:#fff}
+
+/* ===== Beamer-Modus (K18, vierstufig) ===== */
+html.beamer{ --ink-dim:#3D4A5C; }
+html.beamer .stage-h2{ font-size:44px; }
+html.beamer .def-text, html.beamer .baustein-list li, html.beamer .card p,
+html.beamer .persona-quote .p-line, html.beamer .wj-col p, html.beamer .lead,
+html.beamer .concept-card p, html.beamer .takeaway-box p{ font-size:22px; }
+html.beamer .stage-kicker, html.beamer .eyebrow, html.beamer .rung, html.beamer .norm-badge,
+html.beamer .card h3, html.beamer .def-box h3, html.beamer .baustein-box h3,
+html.beamer .wj-col h4, html.beamer .persona-quote .p-name, html.beamer .case-tag,
+html.beamer .c-kicker, html.beamer .c-role{ font-size:15px; }
+html.beamer .footer{ display:none; }
+
+html.beamer-xl .stage-h2{ font-size:54px; }
+html.beamer-xl .def-text, html.beamer-xl .baustein-list li, html.beamer-xl .card p,
+html.beamer-xl .persona-quote .p-line, html.beamer-xl .wj-col p, html.beamer-xl .lead,
+html.beamer-xl .concept-card p, html.beamer-xl .takeaway-box p{ font-size:28px; }
+html.beamer-xl .stage-kicker, html.beamer-xl .eyebrow, html.beamer-xl .rung, html.beamer-xl .norm-badge,
+html.beamer-xl .card h3, html.beamer-xl .def-box h3, html.beamer-xl .baustein-box h3,
+html.beamer-xl .wj-col h4, html.beamer-xl .persona-quote .p-name, html.beamer-xl .case-tag,
+html.beamer-xl .c-kicker, html.beamer-xl .c-role{ font-size:18px; }
+
+html.beamer-xxl .stage-h2{ font-size:64px; }
+html.beamer-xxl .def-text, html.beamer-xxl .baustein-list li, html.beamer-xxl .card p,
+html.beamer-xxl .persona-quote .p-line, html.beamer-xxl .wj-col p, html.beamer-xxl .lead,
+html.beamer-xxl .concept-card p, html.beamer-xxl .takeaway-box p{ font-size:34px; }
+html.beamer-xxl .stage-kicker, html.beamer-xxl .eyebrow, html.beamer-xxl .rung, html.beamer-xxl .norm-badge,
+html.beamer-xxl .card h3, html.beamer-xxl .def-box h3, html.beamer-xxl .baustein-box h3,
+html.beamer-xxl .wj-col h4, html.beamer-xxl .persona-quote .p-name, html.beamer-xxl .case-tag,
+html.beamer-xxl .c-kicker, html.beamer-xxl .c-role{ font-size:21px; }
+
+/* ===== Footer ===== */
+.footer{max-width:1200px;margin:24px auto 40px;padding:0 20px}
+.footer-sig{font-size:14px;color:var(--ink-dim);margin-bottom:14px;line-height:1.6}
+.footer-sig strong{color:var(--ink)}
+.footer-sig a{color:var(--blue);font-weight:700;text-decoration:none}
+.footer-sig a:hover{text-decoration:underline}
+.footer-sig .audit-line{display:block;margin-top:4px}
+.footer-details{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:901px){.footer-details{grid-template-columns:repeat(4,1fr)}}
+.footer-box{border:1px solid var(--line);border-radius:12px;background:var(--paper);overflow:hidden}
+.footer-summary{cursor:pointer;list-style:none;padding:14px 16px;font-size:16px;font-weight:700;color:var(--blue);display:flex;align-items:center;border-bottom:1px solid transparent}
+.footer-box[open] .footer-summary{border-bottom-color:var(--line)}
+.footer-summary::-webkit-details-marker{display:none}
+.footer-content{padding:14px 16px;color:var(--ink-soft)}
+.footer-mono{font-family:Consolas,"SF Mono",monospace;font-size:14px;line-height:1.6;color:var(--ink);background:#f6f8fa;white-space:pre-wrap}
+.footer-sans{font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6}
+.footer-sans .regie{color:var(--ink-dim);font-style:italic}
+.footer-sans .schritt{margin:0 0 14px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+.footer-sans .schritt:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.footer-sans .schritt strong{display:block;color:var(--blue);margin-bottom:4px}
+.footer-table{width:100%;border-collapse:collapse;font-size:14px}
+.footer-table th,.footer-table td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.footer-table th{background:var(--blue-bg);color:var(--blue)}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <div class="topbar-right">
+      <button class="beamer-btn" id="beamerBtn" type="button">☀ Beamer</button>
+    </div>
+  </div>
+</header>
+<span class="site-sig">
+  <strong>Michaela Kühn</strong>
+  <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a>
+</span>
+
+<div class="hero">
+  <p class="eyebrow">Vom Prompt zum Agenten</p>
+  <h1>Die vier Eskalationsstufen der KI-Steuerung — und was Requirements Engineering damit zu tun hat</h1>
+  <p class="lead">Jede Stufe löst eine Grenze der vorherigen: Ein Prompt reicht nicht mehr, sobald sich die Aufgabe wiederholt. Ein gut ausgestatteter Kontext reicht nicht mehr, sobald niemand mehr jedes Ergebnis einzeln prüfen soll. Ein einzelner Regelkreis reicht nicht mehr, sobald mehrere Rollen und eine Freigabe nötig sind. Mehr Klarheit entsteht nicht durch mehr Prompten, sondern durch mehr System um den Prompt herum.</p>
+</div>
+
+<nav class="ladder" aria-label="Eskalationsstufen" id="ladder">
+  <button class="rung" data-stage="1" style="--sc:#b6470f">1 Prompt Engineering</button>
+  <span class="arrow">→</span>
+  <button class="rung" data-stage="2" style="--sc:#0f6e63">2 Context Engineering</button>
+  <span class="arrow">→</span>
+  <button class="rung" data-stage="3" style="--sc:#1f7a4d">3 Loop Engineering</button>
+  <span class="arrow">→</span>
+  <button class="rung" data-stage="4" style="--sc:#5f3a94">4 Graph Engineering</button>
+  <span class="sep">·</span>
+  <button class="rung rung-5" data-stage="5" style="--sc:#1f5f99">5 Einordnung</button>
+</nav>
+
+<main id="stageHost">
+
+  <!-- ============ STUFE 1: PROMPT ENGINEERING ============ -->
+  <section class="stage-panel active" id="stage-1" style="--sc:#b6470f;--sc-bg:#fdf1e7">
+    <div class="stage-head">
+      <div class="stage-kicker">Stufe 1 von 4</div>
+      <h2 class="stage-h2">Prompt Engineering</h2>
+    </div>
+    <div class="split">
+      <div>
+        <div class="def-box">
+          <h3>Definition</h3>
+          <p class="def-text">Prompt Engineering ist die bewusste Formulierung einer einzelnen Anweisung an ein KI-System, sodass Rolle, Kontext, Aufgabe, Stil und Antwortformat für genau dieses eine Ergebnis eindeutig sind. Es ist die kleinste Eskalationsstufe: ein Prompt, eine Antwort, keine Wiederverwendung.</p>
+        </div>
+        <div class="baustein-box">
+          <h3>Bausteine (CO-STAR)</h3>
+          <ul class="baustein-list">
+            <li><b>Context</b> — welches Umfeld muss die KI kennen</li>
+            <li><b>Objective</b> — welche konkrete Aufgabe soll gelöst werden</li>
+            <li><b>Style</b> — in welcher Machart soll geantwortet werden</li>
+            <li><b>Tone</b> — mit welcher Tonalität</li>
+            <li><b>Audience</b> — für welche Zielgruppe</li>
+            <li><b>Response Format</b> — in welcher Struktur soll die Antwort erscheinen</li>
+          </ul>
+        </div>
+      </div>
+      <div class="right-col">
+        <div class="card">
+          <h3>RE/BA-Einordnung</h3>
+          <p><b>INVEST-Prinzip — Verifizierbarkeit (Testable):</b> Ein guter Prompt braucht wie eine gute User Story ein prüfbares Akzeptanzkriterium. Ohne erkennbares Kriterium für „gute Antwort" bleibt Promptqualität reine Geschmackssache statt nachvollziehbarer Anforderung.</p>
+        </div>
+        <div class="card vantera-box">
+          <h3>Vantera-Connect-Beispiel</h3>
+          <span class="case-tag">Fall: Vantera Systemtechnik</span>
+          <p>Sarah, Vertrieb, formuliert jeden Montag aufs Neue denselben Prompt, um ein individuelles Angebotsschreiben für Vantera Connect zu entwerfen — Rolle, Format und Tonalität tippt sie dabei jedes Mal von vorn.</p>
+          <div class="persona-quote persona-sarah" style="--pc:#b6470f">
+            <div class="p-name">Sarah, Vertrieb:</div>
+            <div class="p-line">„Ich habe erst gemerkt, dass ich jeden Montag denselben Prompt neu tippe, als ich ihn zum fünften Mal kopiert habe."</div>
+          </div>
+        </div>
+        <div class="wj-grid">
+          <div class="wj-col ja">
+            <h4>Wann ja</h4>
+            <p>Die Aufgabe ist einmalig und klar abgegrenzt — etwa ein einzelnes Anschreiben oder eine einmalige Zusammenfassung. Ein guter, einmalig formulierter Prompt reicht hierfür vollständig aus.</p>
+          </div>
+          <div class="wj-col nein">
+            <h4>Wann nein</h4>
+            <p>Die Aufgabe wiederholt sich regelmäßig im selben fachlichen Umfeld — dann muss das Umfeld selbst systematisiert werden, statt denselben Prompt immer wieder neu zu schreiben.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STUFE 2: CONTEXT ENGINEERING ============ -->
+  <section class="stage-panel" id="stage-2" style="--sc:#0f6e63;--sc-bg:#e6f5f2">
+    <div class="stage-head">
+      <div class="stage-kicker">Stufe 2 von 4</div>
+      <h2 class="stage-h2">Context Engineering</h2>
+    </div>
+    <div class="split">
+      <div>
+        <div class="def-box">
+          <h3>Definition</h3>
+          <p class="def-text">Context Engineering baut das Umfeld, aus dem ein KI-System schöpft, bevor der eigentliche Prompt überhaupt gestellt wird — Systemanweisung, Gedächtnis, Wissensquellen und Werkzeuge als dauerhaft verfügbare Infrastruktur statt als Einmal-Text.</p>
+        </div>
+        <div class="baustein-box">
+          <h3>Bausteine (10)</h3>
+          <ul class="baustein-list">
+            <li><b>1.</b> System-Prompt / Instruktionen</li>
+            <li><b>2.</b> Nutzer-Prompt / konkrete Aufgabe</li>
+            <li><b>3.</b> Kurzzeitgedächtnis (Chat-Verlauf)</li>
+            <li><b>4.</b> Langzeitgedächtnis (persistente Erinnerung)</li>
+            <li><b>5.</b> Retrieval / Wissensbasis (RAG)</li>
+            <li><b>6.</b> Werkzeugdefinitionen (Tools)</li>
+            <li><b>7.</b> Werkzeug-Ergebnisse (Observations)</li>
+            <li><b>8.</b> Strukturiertes Ausgabeformat (Schema)</li>
+            <li><b>9.</b> Globaler Zustand (State)</li>
+            <li><b>10.</b> Leitplanken (Guardrails)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="right-col">
+        <div class="card">
+          <h3>RE/BA-Einordnung</h3>
+          <p><b>IREB-Glossar — Kontextabgrenzung (System Context):</b> Wie ein Systemkontextdiagramm die Systemgrenze zu Nachbarsystemen zieht, legt Context Engineering fest, was innerhalb und außerhalb des Wissensraums der KI liegt.</p>
+        </div>
+        <div class="card vantera-box">
+          <h3>Vantera-Connect-Beispiel</h3>
+          <span class="case-tag">Fall: Vantera Systemtechnik</span>
+          <p>Knut, Entwicklung, baut für Vantera Connect einen Coding-Assistenten mit dauerhaftem Zugriff auf Architektur-Dokumentation, Coding-Standards und die letzten drei Sprints — statt bei jeder Anfrage neu erklärt zu werden.</p>
+          <div class="persona-quote persona-knut" style="--pc:#0f6e63">
+            <div class="p-name">Knut, Entwicklung:</div>
+            <div class="p-line">„Jetzt muss ich der KI nicht mehr erklären, wie unser Modul heißt — sie weiß es, weil der Kontext mitläuft."</div>
+          </div>
+        </div>
+        <div class="wj-grid">
+          <div class="wj-col ja">
+            <h4>Wann ja</h4>
+            <p>Die Aufgabe wiederholt sich regelmäßig im selben fachlichen Umfeld — Domänenwissen, Historie und Werkzeuge bleiben über viele Anfragen hinweg stabil.</p>
+          </div>
+          <div class="wj-col nein">
+            <h4>Wann nein</h4>
+            <p>Ergebnisse müssen weiterhin einzeln von einem Menschen freigegeben werden, bevor sie genutzt werden — dann ist es noch kein Regelkreis, sondern nur ein gut ausgestattetes Werkzeug.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STUFE 3: LOOP ENGINEERING ============ -->
+  <section class="stage-panel" id="stage-3" style="--sc:#1f7a4d;--sc-bg:#e9f6ee">
+    <div class="stage-head">
+      <div class="stage-kicker">Stufe 3 von 4</div>
+      <h2 class="stage-h2">Loop Engineering</h2>
+    </div>
+    <div class="split">
+      <div>
+        <div class="def-box">
+          <h3>Definition</h3>
+          <p class="def-text">Loop Engineering verbindet ein KI-System mit einem sich selbst kontrollierenden Regelkreis: Es agiert, prüft sein eigenes Ergebnis gegen ein Kriterium und wiederholt oder stoppt — ohne dass für jeden Zyklus ein Mensch eingreifen muss.</p>
+        </div>
+        <div class="baustein-box">
+          <h3>Bausteine</h3>
+          <ul class="baustein-list">
+            <li><b>Discover</b> — Kontext / Ist-Zustand erfassen</li>
+            <li><b>Plan</b> — Schritte ableiten</li>
+            <li><b>Execute</b> — Werkzeuge/Aktionen ausführen</li>
+            <li><b>Verify</b> — Ergebnis gegen Kriterium prüfen</li>
+            <li><b>Iterate</b> — bei Nichterfüllung erneut, sonst Stopp</li>
+          </ul>
+        </div>
+      </div>
+      <div class="right-col">
+        <div class="card">
+          <h3>RE/BA-Einordnung</h3>
+          <p><b>INVEST-Prinzip — Verifizierbarkeit (Testable), erneut:</b> Diesmal nicht als einmaliges Akzeptanzkriterium, sondern als Stopp-Kriterium des Regelkreises — ohne prüfbares Kriterium weiß der Loop nie, wann er fertig ist.</p>
+        </div>
+        <div class="card vantera-box">
+          <h3>Vantera-Connect-Beispiel</h3>
+          <span class="case-tag">Fall: Vantera Systemtechnik</span>
+          <p>Petra, QM, lässt einen Regelkreis Testberichte für Vantera Connect automatisiert gegen die Akzeptanzkriterien prüfen. Fehlgeschlagene Testläufe werden bis zu einer definierten Stopp-Regel (maximal drei Versuche) wiederholt, danach eskaliert der Loop an sie.</p>
+          <div class="persona-quote persona-petra" style="--pc:#1f7a4d">
+            <div class="p-name">Petra, QM:</div>
+            <div class="p-line">„Ich will nicht, dass er endlos weiterprobiert — nach drei Versuchen soll er mich holen, nicht mir vorgaukeln, dass es beim vierten schon klappt."</div>
+          </div>
+        </div>
+        <div class="wj-grid">
+          <div class="wj-col ja">
+            <h4>Wann ja</h4>
+            <p>Ergebnisse müssen nicht mehr einzeln von einem Menschen freigegeben werden, sondern können gegen ein Kriterium automatisiert geprüft und wiederholt werden — eine einzelne Instanz reicht dafür aus.</p>
+          </div>
+          <div class="wj-col nein">
+            <h4>Wann nein</h4>
+            <p>Es sind mehrere spezialisierte Rollen beteiligt, und eine Entscheidung mit Tragweite für Betroffene erfordert eine verbindliche menschliche Freigabe.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STUFE 4: GRAPH ENGINEERING ============ -->
+  <section class="stage-panel" id="stage-4" style="--sc:#5f3a94;--sc-bg:#f1eafa">
+    <div class="stage-head">
+      <div class="stage-kicker">Stufe 4 von 4</div>
+      <h2 class="stage-h2">Graph Engineering</h2>
+    </div>
+    <div class="split">
+      <div>
+        <div class="def-box">
+          <h3>Definition</h3>
+          <p class="def-text">Graph Engineering verknüpft mehrere spezialisierte KI-Rollen zu einem Netz mit klaren Übergaben, einer prüfenden Kontrollinstanz und einem verbindlichen menschlichen Freigabepunkt, bevor eine wirksame Entscheidung fällt.</p>
+        </div>
+        <div class="baustein-box">
+          <h3>Bausteine</h3>
+          <ul class="baustein-list">
+            <li><b>Worker-Agenten</b> — spezialisierte Ausführung</li>
+            <li><b>Orchestrator</b> — Verteilung und Reihenfolge</li>
+            <li><b>Invigilator</b> — prüfende Kontrollinstanz</li>
+            <li><b>Übergabeobjekte</b> — definierte Schnittstellen zwischen Rollen</li>
+            <li><b>Human-Review-Gate</b> — verbindlicher Freigabepunkt</li>
+          </ul>
+        </div>
+      </div>
+      <div class="right-col">
+        <div class="card">
+          <h3>RE/BA-Einordnung</h3>
+          <p><b>BABOK (IIBA) — Governance &amp; Stakeholder Engagement:</b> Rollen, Eskalationswege und Freigabepunkte sind im Business-Analysis-Governance-Modell exakt das, was hier als Graph aus Worker, Invigilator und Human-Review abgebildet wird.</p>
+        </div>
+        <div class="card vantera-box">
+          <h3>Vantera-Connect-Beispiel</h3>
+          <span class="case-tag">Fall: Vantera Systemtechnik</span>
+          <p>Herr Bachmeier, Geschäftsführung, muss vor dem Produktivgang einer KI-gestützten automatisierten Bonitätsvorprüfung für Neukunden in Vantera Connect eine menschliche Freigabe je Einzelfall sicherstellen — nicht als Kür, sondern weil es der Gesetzgeber verlangt.</p>
+          <div class="persona-quote persona-bachmeier" style="--pc:#7a1a1a">
+            <div class="p-name">Herr Bachmeier, Geschäftsführung:</div>
+            <div class="p-line">„Hier hört mein Gestaltungsspielraum auf — das ist keine Design-Entscheidung mehr, das schreibt der Gesetzgeber vor."</div>
+          </div>
+          <span class="norm-badge">⚖ Norm schreibt Mittel vor — EU AI Act Art. 14 (menschliche Aufsicht)</span>
+        </div>
+        <div class="wj-grid">
+          <div class="wj-col ja">
+            <h4>Wann ja</h4>
+            <p>Es sind mehrere spezialisierte Rollen beteiligt, und eine Entscheidung mit Tragweite für Betroffene erfordert eine verbindliche menschliche Freigabe — etwa Bonitätsprüfung oder Personalauswahl.</p>
+          </div>
+          <div class="wj-col nein">
+            <h4>Wann nein</h4>
+            <p>Bei geringer Tragweite und einer einzigen Rolle bleibt Stufe 3 (Loop Engineering) ausreichend — ein Graph ohne echten Freigabebedarf ist überdimensioniert.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STUFE 5: EINORDNUNG ============ -->
+  <section class="stage-panel" id="stage-5" style="--sc:#1f5f99;--sc-bg:#eaf2fa">
+    <div class="stage-head">
+      <div class="stage-kicker">Stufe 5</div>
+      <h2 class="stage-h2">Einordnung: LLM, RAG, Generative AI, Agentic AI</h2>
+    </div>
+    <div class="grid2x2">
+      <div class="concept-card" style="--cc:#1f5f99">
+        <div class="c-kicker">Das Modell</div>
+        <h3>LLM</h3>
+        <div class="c-role">Das Gehirn</div>
+        <p>Ein trainiertes Sprachmodell, das Text versteht und erzeugt. Ohne zusätzliche Infrastruktur kennt es nur sein Trainingswissen bis zum Wissensstichtag.</p>
+      </div>
+      <div class="concept-card" style="--cc:#0f6e63">
+        <div class="c-kicker">Die Erweiterung</div>
+        <h3>RAG</h3>
+        <div class="c-role">Das Gedächtnis</div>
+        <p>Retrieval-Augmented Generation ergänzt das LLM um aktuelle, firmenspezifische Information aus einer Wissensbasis — Stufe 2 (Context Engineering) in Aktion.</p>
+      </div>
+      <div class="concept-card" style="--cc:#b6470f">
+        <div class="c-kicker">Der Oberbegriff</div>
+        <h3>Generative AI</h3>
+        <div class="c-role">Der Ersteller</div>
+        <p>Oberbegriff für Systeme, die neue Inhalte — Text, Bild, Code — erzeugen. Ein LLM ist die Text-Ausprägung davon.</p>
+      </div>
+      <div class="concept-card" style="--cc:#5f3a94">
+        <div class="c-kicker">Das handelnde System</div>
+        <h3>Agentic AI</h3>
+        <div class="c-role">Der Ausführende</div>
+        <p>Ein System, das eigenständig plant, Werkzeuge nutzt und handelt — Stufen 3 und 4 (Loop + Graph Engineering) in Aktion.</p>
+      </div>
+    </div>
+    <div class="takeaway-box">
+      <h3>Takeaway</h3>
+      <p>LLM ist das Gehirn, RAG das Gedächtnis, Generative AI der Ersteller, Agentic AI der Ausführende. Die vier Eskalationsstufen davor sind der Bauplan, wie man dahin kommt.</p>
+      <div class="persona-quote persona-ela" style="--pc:#1f5f99">
+        <div class="p-name">Ela, Projektleitung:</div>
+        <div class="p-line">„Genau deshalb reicht es nicht, nur den Prompt zu verbessern — man muss wissen, auf welcher Stufe man eigentlich steht."</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-sig">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a><br>
+    Referenzrahmen im Tool: IREB-Glossar (Kontextabgrenzung), BABOK (IIBA) — Governance &amp; Stakeholder Engagement, INVEST-Prinzip, EU AI Act (VO (EU) 2024/1689), Art. 22 DSGVO, § 87 BetrVG.
+    <span class="audit-line">Zuletzt geprüft: 09.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+  </div>
+  <div class="footer-details">
+    <details class="footer-box">
+      <summary class="footer-summary">💬 Systemprompt</summary>
+      <div class="footer-content footer-mono">MASTER-BAU-PROMPT — Eskalationsstufen-Explorer
+(Prompt → Context → Loop → Graph Engineering + Einordnung LLM/RAG/GenAI/Agentic AI)
+
+STRUKTUR
+- Single-File HTML, offline, kein fetch(), kein Build-Prozess.
+- Kopfbereich: Titel + Untertitel + Beamer-Toggle-Button.
+- Eskalationsleiter: 5 Pill-Buttons (Stufe 1-4 als Kette mit Pfeilen,
+  Stufe 5 "Einordnung" separat/gestrichelt markiert).
+- Hauptbereich je Stufe: Split-Screen 40/60.
+  Links: Definition-Box (getönt in Stufenfarbe) + Bausteine-Liste.
+  Rechts: RE/BA-Einordnung-Box, Vantera-Beispiel + Persona-Reaktion,
+  zweispaltige Wann-ja/Wann-nein-Box.
+- Stufe 5 (Einordnung) bricht aus dem Split-Screen aus: 2x2-Grid mit
+  vier Karten (LLM/RAG/GenAI/Agentic AI) + abschließende Takeaway-Box.
+- Footer: vier Aufklapp-Boxen (Systemprompt/Handbuch/Vortrags-Skript/
+  Normen-Register), Signatur-Zeile mit Audit-Status.
+
+FARBCODE JE STUFE
+Stufe 1 Prompt = Orange · Stufe 2 Context = Teal · Stufe 3 Loop = Grün
+Stufe 4 Graph = Violett · Stufe 5 Einordnung = Blau.
+Personas: Ela=Blau, Knut=Teal, Sarah=Orange, Petra=Grün, Bachmeier=Dunkelrot.
+
+INHALT PRO STUFE (Pflichtfelder)
+1. Definition (2-3 Sätze, kein Fachjargon ohne Erklärung)
+2. Bausteine-Liste (aus Originalquelle übernommen, nicht erfunden)
+3. RE/BA-Transfer (Bezug zu IREB/BABOK/PMBOK/INVEST - Pflicht, siehe
+   Design-Standards Punkt "Pflicht-Referenzrahmen")
+4. Vantera-Connect-Beispiel mit konkreter Persona (feste Rollentabelle)
+5. Persona-Reaktionszeile (Farbcode, wörtliche Aussage in Rollen-Logik)
+6. Wann-ja/Wann-nein-Box (Grenze zur nächsten Stufe explizit benennen)
+7. Bei Graph Engineering zusätzlich: Badge "Norm schreibt Mittel vor"
+   mit EU-AI-Act-Status inkl. Datum (K8/K17 - vor Nutzung per Websuche
+   verifizieren, nicht aus Trainingswissen übernehmen).
+
+DESIGN-VORGABEN
+- Hintergrund immer Weiß, color-scheme:light auf html/body, kein Dark Mode.
+- Beamer-Tauglichkeit: Fließtext >=16px, Sekundärtext/Badges >=14px -
+  vollständiger Scan aller font-size-Werte vor Auslieferung.
+- Beamer-Modus-Toggle vierstufig (Normal/Beamer/Beamer XL/Beamer XXL),
+  kumulative html-Klassen, Footer ab Stufe 1 display:none.
+- Signatur oben rechts, position:fixed, Name + Website-Link.
+- Keine Sliding Panels - alle Kerninhalte der aktiven Stufe permanent
+  sichtbar (Split-Screen statt Ein-/Ausblenden).
+- Touch-Targets >=44px, keine HTML5-Drag-and-Drop-APIs.
+
+NICHT TUN
+- Keine generischen Platzhalterwerte (Zahlen/Fristen/Normen immer konkret
+  mit Quelle und - bei Regulatorik - Status + Datum).
+- Keine Persona außerhalb der festen Rollentabelle einführen.
+- Keine Vermischung der Vantera-Systemtechnik-Fiktion mit realen Firmen.
+- Kein eigenmächtiges Abweichen von den kanonischen Footer-CSS-Klassen.
+- Keine Norm-Referenz ohne vorherige Websuche zum aktuellen Stand.</div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">📘 Handbuch</summary>
+      <div class="footer-content footer-sans">
+        <p><strong>Didaktisches Modell:</strong> Kein einzelnes Prompt-Framework (RTF/CO-STAR/…), sondern ein Eskalationsmodell: Jede Stufe löst eine Grenze der vorherigen. Das ist bewusst an den Klarheits-Sprung angelehnt — mehr Klarheit entsteht nicht durch mehr Prompten, sondern durch mehr System um den Prompt herum.</p>
+        <p><strong>Konstruktionslogik je Stufe:</strong> Definition → Bausteine → RE/BA-Transfer → konkretes Beispiel → Persona-Reaktion → Wann-ja/Wann-nein-Grenze. Diese sechsteilige Abfolge ist bewusst identisch über alle vier Stufen gehalten, damit Teilnehmende die Eskalationslogik selbst erkennen, statt sie erklärt zu bekommen.</p>
+        <p><strong>Zentraler Lernhinweis:</strong> Prompt Engineering ist Requirements Engineering für KI-Systeme — aber nur für die kleinste Einheit. Je größer der Scope (Kontext → Regelkreis → vernetztes System), desto mehr braucht es klassische RE/BA-Disziplinen: Kontextabgrenzung, Akzeptanzkriterien, Stakeholder- und Eskalationsmodelle.</p>
+        <p><strong>Nachbau-Tipp:</strong> Bei eigenen Varianten die Sechser-Abfolge pro Stufe beibehalten und die Wann-nein-Box der Stufe n immer wortgleich als Übergang zur Wann-ja-Box der Stufe n+1 spiegeln — das macht die Eskalationslogik für Teilnehmende greifbar.</p>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+      <div class="footer-content footer-sans">
+        <div class="schritt"><strong>Einstieg</strong><span class="regie"> (vor Stufe 1)</span><br>„Wer hat schon mal denselben Prompt drei Mal am Tag geschrieben, weil die KI sich an nichts erinnert?" — kurze Pause, Zustimmung einsammeln. „Genau da fangen wir an: bei der kleinsten Einheit, dem einzelnen Prompt."</div>
+        <div class="schritt"><strong>Stufe 1</strong><span class="regie"> (Klick auf Stufe 1)</span><br>Bausteine zeigen, dann: „Ein Prompt ist ein Briefing, kein Wunsch." Sarah-Beispiel vorlesen. Übergang: „Das funktioniert — solange die Aufgabe einmalig ist. Aber was, wenn sie sich jeden Tag wiederholt?"</div>
+        <div class="schritt"><strong>Stufe 2</strong><span class="regie"> (Klick auf Stufe 2)</span><br>Die 10 Bausteine kurz überfliegen, nicht alle einzeln erklären. Knut-Beispiel vorlesen. Übergang: „Jetzt hat die KI das richtige Umfeld. Aber jemand muss trotzdem noch jedes Ergebnis prüfen."</div>
+        <div class="schritt"><strong>Stufe 3</strong><span class="regie"> (Klick auf Stufe 3)</span><br>Discover-Plan-Execute-Verify-Iterate an der Tafel/Flipchart mitskizzieren, falls vorhanden. Petra-Beispiel vorlesen, besonders die Stopp-Regel betonen. Übergang: „Ein Regelkreis reicht, solange eine Instanz genügt. Sobald mehrere Rollen und eine Freigabe nötig sind, wird daraus ein Netz."</div>
+        <div class="schritt"><strong>Stufe 4</strong><span class="regie"> (Klick auf Stufe 4)</span><br>Graph-Grafik zeigen, Worker/Invigilator/Human-Review benennen. Bachmeier-Zitat und Norm-Badge betonen: „Hier hört der Spielraum auf — das ist keine Design-Entscheidung, das schreibt der EU AI Act vor." Datum/Status kurz nennen.</div>
+        <div class="schritt"><strong>Stufe 5</strong><span class="regie"> (Klick auf Stufe 5)</span><br>Vier Karten zeigen, Takeaway-Satz laut vorlesen: „LLM ist das Gehirn, RAG das Gedächtnis, Generative AI der Ersteller, Agentic AI der Ausführende." Abschluss: „Die vier Stufen davor sind der Bauplan, wie man dahin kommt."</div>
+        <p class="regie">Regie-Hinweise: Gesamtdauer ca. 15–20 Minuten. Nicht mit Stufe 5/Agentic-AI-Hype beginnen — der Einstieg über den Prompt-Schmerzpunkt (Wiederholung) funktioniert deutlich besser für Einsteiger-Zielgruppen. Bei Führungskräften-Publikum: Stufe 4 (Governance/Norm-Badge) vorziehen, Stufen 1–3 kürzen.</p>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">📚 Normen-Register</summary>
+      <div class="footer-content footer-sans">
+        <table class="footer-table">
+          <tr><th>Norm/Framework</th><th>Bezug im Tool</th><th>Status</th></tr>
+          <tr><td>IREB-Glossar (CPRE)</td><td>Kontextabgrenzung, Stufe 2</td><td>Etablierter Referenzrahmen, laufend gepflegt</td></tr>
+          <tr><td>BABOK (IIBA), Governance &amp; Stakeholder Engagement</td><td>Eskalations-/Freigabemodell, Stufe 4</td><td>Etablierter Referenzrahmen</td></tr>
+          <tr><td>INVEST-Prinzip</td><td>Verifizierbarkeit, Stufen 1 &amp; 3</td><td>Community-Standard, keine formale Norm</td></tr>
+          <tr><td>EU AI Act — VO (EU) 2024/1689</td><td>Human-Review-Pflicht, Stufe 4</td><td>In Kraft seit 1.8.2024. Hochrisiko-Pflichten Annex III (u. a. Personalauswahl) per Digital Omnibus (7.5.2026) auf 2.12.2027 verschoben; Transparenz-/Durchsetzungspflichten ab 2.8.2026 wirksam. Stand: 09.08.2026.</td></tr>
+          <tr><td>Art. 22 DSGVO</td><td>Verbot ausschließlich automatisierter Entscheidungen, Stufe 4</td><td>In Kraft, unverändert</td></tr>
+          <tr><td>§ 87 BetrVG</td><td>Mitbestimmung bei technischen Überwachungseinrichtungen, Stufe 4</td><td>In Kraft, unverändert</td></tr>
+        </table>
+        <p style="margin-top:10px;font-size:14px;">Hinweis: Alle Norm-/Framework-Bezüge vor Einsatz in neuen Materialien auf aktuellen Stand prüfen (K17-Check).</p>
+      </div>
+    </details>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var byId=function(id){return document.getElementById(id);};
+
+  /* ===== Eskalationsleiter ===== */
+  var rungs=Array.prototype.slice.call(document.querySelectorAll('#ladder .rung'));
+  var panels=Array.prototype.slice.call(document.querySelectorAll('.stage-panel'));
+  function showStage(n){
+    panels.forEach(function(p){ p.classList.toggle('active', p.id==='stage-'+n); });
+    rungs.forEach(function(r){ r.classList.toggle('active', r.dataset.stage===String(n)); });
+  }
+  rungs.forEach(function(r){
+    r.addEventListener('click', function(){ showStage(r.dataset.stage); });
+  });
+  showStage(1);
+
+  /* ===== Beamer-Modus (K18, vierstufig) ===== */
+  var STORAGE_KEY='vpza_beamer';
+  var beamerLevel=0;
+  try{ var saved=localStorage.getItem(STORAGE_KEY); if(saved){ beamerLevel=parseInt(saved,10)||0; } }catch(e){}
+
+  var BEAMER_LEVELS=[
+    { classes: [],                                    label: '☀ Beamer' },
+    { classes: ['beamer'],                             label: '☀ Beamer XL' },
+    { classes: ['beamer', 'beamer-xl'],                label: '☀ Beamer XXL' },
+    { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: '☀ Normal' }
+  ];
+  function applyBeamerLevel(){
+    document.documentElement.classList.remove('beamer','beamer-xl','beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    byId('beamerBtn').textContent=BEAMER_LEVELS[beamerLevel].label;
+  }
+  applyBeamerLevel();
+  byId('beamerBtn').addEventListener('click', function(){
+    beamerLevel=(beamerLevel+1)%4;
+    applyBeamerLevel();
+    try{ localStorage.setItem(STORAGE_KEY, String(beamerLevel)); }catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
