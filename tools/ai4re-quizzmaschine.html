@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="light" />
+<title>AI4RE Quizzmaschine — prüfungssicher lernen</title>
+<style>
+:root{--bg:#f7faf8;--card:#ffffff;--ink:#17332b;--muted:#60756c;--green:#00b871;--green2:#dff8ec;--line:#dce8e2;--amber:#ffc857;--red:#ff6b6b;--blue:#6aa9ff;--violet:#8d7cf6;--shadow:0 18px 45px rgba(18,52,43,.12);--radius:24px}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:linear-gradient(135deg,#f7faf8 0%,#eef8f2 100%);color:var(--ink)}
+.app{display:grid;grid-template-columns:280px minmax(0,1fr);min-height:100vh}.side{background:#073b2c;color:#fff;padding:28px 20px;position:sticky;top:0;height:100vh;overflow:auto}.brand{font-size:27px;font-weight:850;letter-spacing:-.04em;line-height:1}.brand span{display:block;color:#54e49c;font-size:14px;letter-spacing:.04em;margin-top:8px}.source{margin:18px 0 24px;color:#b8e7d2;font-size:12px;line-height:1.45}.nav button{width:100%;text-align:left;border:0;background:transparent;color:#d9ffee;padding:12px 14px;border-radius:14px;cursor:pointer;font-weight:700;margin-bottom:7px}.nav button.active,.nav button:hover{background:rgba(255,255,255,.13);color:white}.main{padding:28px;overflow:hidden}.hero{background:linear-gradient(135deg,#073b2c,#00a968);color:white;border-radius:var(--radius);padding:30px;box-shadow:var(--shadow);display:grid;grid-template-columns:1.2fr .8fr;gap:20px}.hero h1{font-size:40px;line-height:1;margin:0 0 10px;letter-spacing:-.05em}.hero p{margin:0;color:#d8fff0;font-size:16px}.pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);padding:8px 12px;border-radius:999px;font-weight:800;font-size:12px;margin-bottom:14px}.scorebox{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:18px}.bigscore{font-size:52px;font-weight:900;letter-spacing:-.05em}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px;margin-top:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}.span4{grid-column:span 4}.span5{grid-column:span 5}.span7{grid-column:span 7}.span8{grid-column:span 8}.span12{grid-column:span 12}h2{margin:0 0 12px;font-size:25px;letter-spacing:-.04em;overflow-wrap:break-word}h3{margin:0 0 10px;font-size:17px}.muted{color:var(--muted);font-size:14px;line-height:1.45}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 12px;cursor:pointer;font-weight:800;color:var(--ink)}.tab.active{background:var(--green);color:white;border-color:var(--green)}.btn{border:0;background:var(--green);color:white;border-radius:14px;padding:12px 16px;font-weight:850;cursor:pointer;box-shadow:0 8px 18px rgba(0,184,113,.2)}.btn.secondary{background:#eef7f2;color:#073b2c;box-shadow:none;border:1px solid var(--line)}.btn.danger{background:#ff6b6b}.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.progress{height:11px;background:#e8f1ec;border-radius:99px;overflow:hidden}.bar{height:100%;background:linear-gradient(90deg,#00b871,#74e0aa);width:0%;transition:.4s}.question{font-size:24px;font-weight:850;letter-spacing:-.03em;line-height:1.2;margin:10px 0 18px}.answers{display:grid;gap:10px}.answer{border:1px solid var(--line);background:#fff;border-radius:16px;padding:14px;cursor:pointer;font-weight:750;line-height:1.35;font-size:16px}.answer:hover{border-color:#00b871;background:#f4fff9}.answer.selected{border-color:#00b871;background:#e9fff5}.answer.correct{border-color:#00b871;background:#dbf8ea}.answer.wrong{border-color:#ff6b6b;background:#fff1f1}.feedback{margin-top:16px;border-radius:18px;padding:16px;background:#f4faf7;border:1px solid var(--line);display:none}.feedback.show{display:block}.tag{display:inline-block;padding:5px 9px;border-radius:999px;font-size:14px;font-weight:900;margin-right:6px;background:#edf5f1;color:#315d4e}.tag.l1{background:#e7f0ff;color:#235a9f}.tag.l2{background:#fff2cf;color:#8a5f00}.tag.risk{background:#ffe5e5;color:#9b2b2b}.statrow{display:grid;gap:12px}.stat{display:grid;grid-template-columns:135px 1fr 48px;gap:10px;align-items:center;font-size:13px;font-weight:800}.mini{font-size:14px;color:var(--muted)}.modecard{border:1px solid var(--line);border-radius:18px;padding:16px;cursor:pointer;background:#fff}.modecard.active{border-color:var(--green);background:#f0fff7}.list{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff}.hidden{display:none}.examHeader{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.timer{font-size:22px;font-weight:900;background:#073b2c;color:white;border-radius:14px;padding:9px 12px}.result{font-size:38px;font-weight:900;letter-spacing:-.05em}.quote{font-style:italic;color:#d8fff0;margin-top:12px}.kbd{font-family:ui-monospace,Consolas,monospace;background:#f1f7f4;border:1px solid var(--line);padding:2px 6px;border-radius:7px}@media(max-width:980px){.app{grid-template-columns:1fr}.side{position:relative;height:auto}.hero{grid-template-columns:1fr}.span4,.span5,.span7,.span8,.span12{grid-column:span 12}.main{padding:16px}.hero h1{font-size:31px}}
+
+/* ============ Zurück-Link, Signatur, Beamer-Modus ============ */
+.topbar{margin-bottom:6px}
+.back-link{display:inline-block;font-size:14px;font-weight:700;color:var(--muted);text-decoration:none}
+.back-link:hover{color:var(--green)}
+.site-sig{position:fixed;top:14px;right:28px;z-index:500;font-size:14px;color:var(--muted);text-align:right;line-height:1.4;background:rgba(255,255,255,.92);padding:4px 10px;border-radius:8px}
+.site-sig strong{display:block;color:var(--ink)}
+.site-sig a{color:var(--green);font-weight:700;text-decoration:none}
+.site-sig a:hover{text-decoration:underline}
+@media(max-width:900px){.site-sig{position:static;background:none;padding:0;margin:0 0 10px;text-align:right}}
+.hero-top-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.beamer-btn{background:transparent;border:1.5px solid rgba(255,255,255,.5);color:#fff;font-size:15px;padding:10px 20px;border-radius:999px;cursor:pointer;font-family:inherit;min-height:40px}
+html.beamer .beamer-btn,html.beamer-xl .beamer-btn,html.beamer-xxl .beamer-btn{background:#fff;color:var(--ink);border-color:#fff}
+
+/* ============ Beamer-Modus (K18, vierstufig) ============ */
+html.beamer{--muted:#3D4A5C}
+html.beamer .question{font-size:30px}
+html.beamer .answer{font-size:22px}
+html.beamer h2{font-size:44px}
+html.beamer .hero h1{font-size:46px}
+html.beamer .hero p{font-size:20px}
+html.beamer .muted,html.beamer .mini,html.beamer .tag{font-size:15px}
+html.beamer .app-foot{display:none}
+
+html.beamer-xl .question{font-size:36px}
+html.beamer-xl .answer{font-size:28px}
+html.beamer-xl h2{font-size:54px}
+html.beamer-xl .hero h1{font-size:56px}
+html.beamer-xl .hero p{font-size:24px}
+html.beamer-xl .muted,html.beamer-xl .mini,html.beamer-xl .tag{font-size:18px}
+
+html.beamer-xxl .question{font-size:42px}
+html.beamer-xxl .answer{font-size:34px}
+html.beamer-xxl h2{font-size:64px}
+html.beamer-xxl .hero h1{font-size:66px}
+html.beamer-xxl .hero p{font-size:28px}
+html.beamer-xxl .muted,html.beamer-xxl .mini,html.beamer-xxl .tag{font-size:21px}
+
+/* ============ Footer: Systemprompt / Handbuch / Vortrags-Skript / Normen-Register ============ */
+.app-foot{margin-top:28px;border-top:2px solid var(--line);padding-top:18px}
+.footer-sig{font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+.footer-sig strong{color:var(--ink)}
+.footer-sig a{color:var(--green);font-weight:700;text-decoration:none}
+.footer-sig a:hover{text-decoration:underline}
+.footer-sig .audit-line{display:block;margin-top:4px;color:var(--muted)}
+.footer-details{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:901px){.footer-details{grid-template-columns:repeat(4,1fr)}}
+.footer-box{border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}
+.footer-summary{cursor:pointer;list-style:none;padding:14px 16px;font-size:16px;font-weight:800;color:var(--ink);min-height:44px;display:flex;align-items:center;border-bottom:1px solid transparent}
+.footer-box[open] .footer-summary{border-bottom-color:var(--line)}
+.footer-summary::-webkit-details-marker{display:none}
+.footer-content{padding:14px 16px;font-size:15px;color:var(--muted)}
+.footer-mono{font-family:ui-monospace,Consolas,monospace;font-size:14px;line-height:1.6;color:var(--ink);background:#f4f8f6;white-space:pre-wrap}
+.footer-sans{font-family:Inter,-apple-system,"Segoe UI",Arial,sans-serif;font-size:16px;line-height:1.6;color:var(--ink)}
+.footer-sans p{margin:0 0 10px}
+.footer-sans .regie{color:var(--muted);font-style:italic}
+.footer-sans .schritt{margin:0 0 14px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+.footer-sans .schritt:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.footer-sans .schritt strong{display:block;color:var(--green);margin-bottom:4px}
+.footer-table{width:100%;border-collapse:collapse;font-size:14px}
+.footer-table th,.footer-table td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.footer-table th{background:var(--green2);color:#073b2c}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="brand">AI4RE<br>Quizzmaschine<span>prüfungssicher lernen</span></div>
+  <div class="source">Lernsimulator zum AI4RE Micro-Credential Syllabus &amp; Study Guide. Fokus: L1/L2, Szenarien, Risiken, RE Use Cases.</div>
+  <div class="nav" id="nav"></div>
+</aside>
+<main class="main">
+<div class="topbar">
+  <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+</div>
+<span class="site-sig">
+  <strong>Michaela Kühn</strong>
+  <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a>
+</span>
+<section class="hero">
+ <div>
+  <div class="hero-top-row">
+   <div class="pill">IREB AI4RE · Study Mode · Exam Mode</div>
+   <button id="beamerBtn" class="beamer-btn" type="button">☀ Beamer</button>
+  </div>
+  <h1>Vom Wissen zur Prüfungssicherheit</h1><p>Trainiere Begriffe, Konzepte, Risiken und AI4RE-Anwendungsfälle. Jede Antwort erklärt, warum sie richtig oder falsch ist.</p><div class="quote">„Nicht auswendig lernen, sondern sicher unterscheiden können.“</div>
+ </div>
+ <div class="scorebox"><div class="mini">Gesamtfortschritt</div><div class="bigscore" id="overallScore">0%</div><div class="progress"><div class="bar" id="overallBar"></div></div><div class="mini" style="margin-top:10px" id="overallText">Noch keine Fragen beantwortet.</div></div>
+</section>
+<div id="content"></div>
+<footer class="app-foot">
+  <div class="footer-sig">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a> — PromptSchule · Training &amp; Consulting · Referenzrahmen: IREB AI4RE Micro-Credential Syllabus &amp; Study Guide
+    <span class="audit-line">Zuletzt geprüft: 09.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+  </div>
+
+  <div class="footer-details">
+    <details class="footer-box">
+      <summary class="footer-summary">🧭 Systemprompt</summary>
+      <div class="footer-content footer-mono">Baue mir ein einzelnes HTML-Tool als Lernsimulator zur Prüfungsvorbereitung auf das IREB AI4RE Micro-Credential (Study Guide/Syllabus): eine Quizzmaschine mit sechs Modi in einer linken Sidebar-Navigation (Cockpit, Lernmodus, Prüfungsmodus, Szenario-Trainer, Terminologie, Fehlerliste).
+
+STRUKTUR
+- Sidebar links (fix, dunkelgrün): Markenname, Kurzbeschreibung der Quelle, Navigationsbuttons zu den sechs Modi.
+- Hauptbereich rechts: Topbar (Zurück-Link zur Startseite links, 4-stufiger Beamer-Modus-Button rechts), fix positionierte Signatur (Name + Website-Link) oben rechts im Viewport, darunter ein Hero-Bereich (Gradient-Karte) mit Titel/Lead-Text links und einem live berechneten Gesamtfortschritts-Score-Widget rechts (bewusste zweispaltige Ausnahme, da echtes funktionales Widget), darunter der modusabhängige Inhaltsbereich, darunter der vierteilige Footer.
+- Footer mit vier Aufklapp-Boxen: Systemprompt (dieser Master-Bau-Prompt), Handbuch, Vortrags-Skript, Normen-Register.
+
+INHALT PRO MODUS
+- Cockpit: Fortschritt pro Wissensgebiet (Balken), Kacheln zu den drei Trainingsmodi, Prüfungsanker-Übersicht der sechs Kapitel, Reset-Button.
+- Lernmodus: eine zufällige Frage aus dem gesamten Fragenpool (36 Fragen, Multiple-Choice), sofortige Erklärung nach Antwortauswahl, "Neue Frage"-Button.
+- Prüfungsmodus: 20-Fragen/20-Minuten- oder 10-Fragen/10-Minuten-Simulation mit Live-Timer, Abschlussauswertung mit Prozentwert und Frage-für-Frage-Rückblick.
+- Szenario-Trainer: gefilterte Teilmenge der Fragen (Szenario-, Validierungs-, Verantwortungs- und Use-Case-Fragen).
+- Terminologie: zehn Begriffe als aufklappbare Merk-Karten (Klick zeigt/versteckt RE-Bezug).
+- Fehlerliste: chronologisch die zuletzt falsch beantworteten Fragen (max. 30) mit Erklärung, leerbar per Button.
+
+DESIGN-VORGABEN
+- Helles Grün-Weiß-Farbschema (Grün als Akzent, dunkelgrünes Sidebar/Header), Fließtext ≥16px, Panel-Überschriften/Sekundärtext nach der Beamer-Größentabelle.
+- Beamer-Modus rein additiv über kumulative CSS-Klassen auf &lt;html&gt; (beamer/beamer-xl/beamer-xxl), keine Inhaltsänderung, Footer ab Stufe 1 ausgeblendet, Level in localStorage persistiert.
+- Fortschritt (Gesamt- und Pro-Kapitel-Score, Fehlerliste) in localStorage persistiert, überlebt Neuladen.
+
+INHALTLICHE QUELLE
+- Alle Fragen, Erklärungen und Kapitelverweise sind an den sechs Kapiteln des AI4RE Study Guide ausgerichtet: AI Basics, LLMs, Prompt Engineering, Risiken &amp; Verantwortlichkeiten, RE Use Cases (Elicitation/Documentation/Validation/Management), Terminologie.
+
+NICHT TUN
+- Keine externe Bibliothek einbinden — single-file, offlinefähig, kein KI-API-Aufruf.
+- Keine Fragen ohne Erklärung ("why") und Kapitelreferenz ("ref") ausliefern.
+- Keinen Prüfungsmodus ohne Zeitlimit und ohne Abschlussauswertung anbieten.</div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">📘 Handbuch</summary>
+      <div class="footer-content footer-sans">
+        <p><strong>Framework:</strong> RTF-artiger Aufbau je Trainingsmodus — Rolle (Lernende:r in Prüfungsvorbereitung), Aufgabe (Frage beantworten/Zeit einhalten/Begriff erklären), Format (Multiple-Choice mit sofortiger Erklärung). Die sechs Sidebar-Modi bilden zusammen den vollständigen Lernzyklus: verstehen (Lernmodus) → prüfen (Prüfungsmodus) → anwenden (Szenario-Trainer) → nachschlagen (Terminologie) → nacharbeiten (Fehlerliste).</p>
+        <p><strong>5 Dimensionen der Konstruktion:</strong></p>
+        <table class="footer-table">
+          <tr><th>Dimension</th><th>Umsetzung im Tool</th><th>Warum</th></tr>
+          <tr><td>Rolle</td><td>Lernende:r mit Fortschrittscockpit statt anonymem Quiz</td><td>Sichtbarer Fortschritt pro Wissensgebiet motiviert gezieltes Nacharbeiten statt wahllosem Weiterklicken.</td></tr>
+          <tr><td>Aufgabe</td><td>36 Fragen mit L1/L2-Kennzeichnung</td><td>Trennt Wiedererkennen (L1) von Anwenden/Beurteilen (L2) — genau die zwei Lernzieltiefen der Prüfung.</td></tr>
+          <tr><td>Kontext</td><td>Jede Frage referenziert ein Study-Guide-Kapitel</td><td>Falsch beantwortete Fragen lassen sich direkt zur passenden Kapitelstelle zurückverfolgen.</td></tr>
+          <tr><td>Format</td><td>Sofort-Feedback mit Begründung statt nur richtig/falsch</td><td>Begründung verankert das WARUM, nicht nur das Ergebnis — entscheidend für Transferfragen in der Prüfung.</td></tr>
+          <tr><td>Eingrenzung</td><td>Prüfungsmodus mit hartem Zeitlimit (10/20 Minuten)</td><td>Simuliert echten Prüfungsdruck, damit Zeitmanagement schon vor der echten Prüfung geübt wird.</td></tr>
+        </table>
+        <p><strong>Zentraler Lernhinweis:</strong> L2-Fragen und Szenario-Fragen prüfen nie einen isolierten Begriff, sondern einen Zusammenhang (z. B. "welches Risiko liegt hier konkret vor?"). Wer nur Begriffe auswendig lernt, scheitert an genau diesen Fragen — deshalb ist der Szenario-Trainer ein eigener Modus, kein Anhang zum Lernmodus.</p>
+        <p><strong>Nachbau-Tipp:</strong> Wer einen ähnlichen Prüfungssimulator für ein anderes Micro-Credential bauen will, sollte mit einem einzigen <code>questions</code>-Array beginnen (Objekte mit <code>eu</code>/<code>level</code>/<code>q</code>/<code>a</code>/<code>correct</code>/<code>why</code>/<code>ref</code>). Cockpit, Lernmodus, Prüfungsmodus und Szenario-Trainer sind dann nur unterschiedliche Filter/Renderer über demselben Array — record()/save() aktualisieren einen gemeinsamen State, der Cockpit und Fehlerliste live speist.</p>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+      <div class="footer-content footer-sans">
+        <div class="schritt"><strong>Einstieg</strong><span class="regie">(Cockpit zeigen, noch kein Fortschritt)</span><br>„Diese Quizzmaschine begleitet euch durch die gesamte AI4RE-Prüfungsvorbereitung. Sie merkt sich, wo ihr steht — und zeigt euch ehrlich, wo noch Lücken sind, statt euch ein falsches Sicherheitsgefühl zu geben."</div>
+        <div class="schritt"><strong>Lernmodus zeigen</strong><span class="regie">(in den Lernmodus wechseln, eine Frage beantworten)</span><br>„Im Lernmodus bekommt ihr sofort eine Begründung — egal ob richtig oder falsch. Lest die Begründung auch bei richtigen Antworten, denn oft steckt dort der Zusammenhang, der in der Prüfung als Transferfrage wiederkommt."</div>
+        <div class="schritt"><strong>Prüfungsmodus starten</strong><span class="regie">(20-Fragen-Prüfung starten, Timer läuft sichtbar)</span><br>„Der Prüfungsmodus hat ein echtes Zeitlimit. Das ist Absicht: Zeitdruck gehört zur Prüfung dazu, und wer ihn vorher nie geübt hat, verliert in der echten Prüfung Punkte durch Hektik, nicht durch Unwissen."</div>
+        <div class="schritt"><strong>Szenario-Trainer hervorheben</strong><span class="regie">(eine Szenario-Frage öffnen)</span><br>„Achtet auf den Unterschied zu den anderen Modi: Hier wird kein Begriff abgefragt, sondern eine Situation beurteilt. Genau solche Fragen entscheiden in der echten Prüfung über Bestehen oder Nicht-Bestehen."</div>
+        <div class="schritt"><strong>Fehlerliste als Abschluss</strong><span class="regie">(in die Fehlerliste wechseln)</span><br>„Die Fehlerliste ist eure persönliche Lernspur. Wer in den letzten Tagen vor der Prüfung nur noch diese Liste durcharbeitet, deckt gezielt die eigenen Schwachstellen ab, statt Zeit mit bereits Sicherem zu verschwenden."</div>
+        <p class="regie">Allgemeine Regie-Hinweise: Nicht mit dem Prüfungsmodus einsteigen, bevor der Lernmodus einmal gezeigt wurde — sonst wirkt das Zeitlimit einschüchternd statt motivierend. Beamer-Modus vor Kursbeginn einmal durchklicken (Normal → Beamer → Beamer XL → Beamer XXL), damit die Stufe zur Raumgröße passt. Der Reset-Button im Cockpit eignet sich, um vor einer neuen Gruppe wieder bei 0 % zu starten.</p>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">📚 Normen-Register</summary>
+      <div class="footer-content footer-sans">
+        <table class="footer-table">
+          <tr><th>Framework/Quelle</th><th>Fassung/Status</th><th>Bezug im Tool</th></tr>
+          <tr><td>IREB AI4RE Micro-Credential Syllabus</td><td>aktuelle Fassung</td><td>Kapitelstruktur (1–6) und Prüfungsanker im Cockpit</td></tr>
+          <tr><td>AI4RE Study Guide</td><td>aktuelle Fassung</td><td>Fragen, Erklärungen und Kapitelverweise ("ref") je Frage</td></tr>
+        </table>
+        <p style="margin-top:10px;font-size:13px">Hinweis: IREB aktualisiert Syllabus und Study Guide regelmäßig — vor Einsatz in neuen Prüfungsvorbereitungen den aktuellen Stand auf ireb.org gegenprüfen.</p>
+      </div>
+    </details>
+  </div>
+</footer>
+</main></div>
+<script>
+const modules=[
+{id:'cockpit',name:'Cockpit'},
+{id:'learn',name:'Lernmodus'},
+{id:'exam',name:'Prüfungsmodus'},
+{id:'scenario',name:'Szenario-Trainer'},
+{id:'terminology',name:'Terminologie'},
+{id:'wrong',name:'Fehlerliste'}
+];
+const questions=[
+{eu:'AI Basics',level:'L1',type:'mc',q:'Welche Aussage passt am besten zum AI4RE-Grundverständnis?',a:['KI bedeutet im RE vor allem Chatbots.','KI umfasst verschiedene Technologien wie ML, Computer Vision, NLP, Robotics und Expert Systems.','LLMs ersetzen Requirements Engineers vollständig.','Expert Systems sind grundsätzlich probabilistisch.'],correct:1,why:'AI4RE betont, dass Chatbots nur ein Teil des AI-Werkzeugkastens sind. Verschiedene AI-Technologien eignen sich für unterschiedliche Aufgaben.',ref:'Kapitel 1.1'},
+{eu:'AI Basics',level:'L2',type:'mc',q:'Was ist der zentrale Unterschied zwischen RAG und Fine-Tuning?',a:['RAG trainiert das Modell neu, Fine-Tuning sucht in Dokumenten.','RAG nutzt externe Wissensquellen zur Laufzeit, Fine-Tuning integriert Wissen durch Training ins Modell.','Beides ist identisch, nur andere Anbieter verwenden andere Begriffe.','Fine-Tuning ist immer schneller und immer aktueller.'],correct:1,why:'RAG hält Wissen extern und auffindbar; Fine-Tuning verändert das Modell durch zusätzliches Training.',ref:'Kapitel 1.2'},
+{eu:'AI Basics',level:'L2',type:'mc',q:'Warum ist RAG für Requirements Engineering oft attraktiv?',a:['Weil Quellen nachvollziehbar und Inhalte schneller aktualisierbar sind.','Weil keine Qualitätsprüfung mehr nötig ist.','Weil RAG alle Halluzinationen garantiert verhindert.','Weil RAG immer ohne Suchlatenz arbeitet.'],correct:0,why:'RAG kann Aktualität und Nachvollziehbarkeit verbessern. Trotzdem hängt die Qualität stark vom Retrieval und den Quellen ab.',ref:'Kapitel 1.2'},
+{eu:'AI Basics',level:'L1',type:'mc',q:'Wie lautet die korrekte Reihenfolge der Chatbot-Pipeline?',a:['Input → Context Assembly → Pre-processing → Inference → Post-processing → Output','Input → Pre-processing → Context Assembly → Inference → Post-processing → Output','Input → Pre-processing → Inference → Context Assembly → Post-processing → Output','Input → Inference → Pre-processing → Context Assembly → Post-processing → Output'],correct:1,why:'Reihenfolge: Input, Pre-processing (Tokenisierung, Bereinigung, Normalisierung), Context Assembly (System- und User-Kontext werden zusammengeführt), Inference (Modell generiert die Ausgabe), Post-processing (Rückumwandlung der Tokens in Text/Format), Output.',ref:'Kapitel 1.2'},
+{eu:'AI Basics',level:'L2',type:'mc',q:'In welcher Pipeline-Stufe eines Chatbots werden System-Kontext und User-/Session-Kontext zu einem finalen Kontext zusammengeführt?',a:['Pre-processing','Context Assembly','Inference','Post-processing'],correct:1,why:'Context Assembly führt System Context (fix, aus Modell-Setup) und Session/User Context (dynamisch, aus dem Dialog) zusammen. Genau hier setzt auch RAG an, nicht bei der Inference.',ref:'Kapitel 1.2'},
+{eu:'AI Basics',level:'L2',type:'mc',q:'Was unterscheidet Expert Systems grundlegend von LLMs?',a:['Expert Systems sind neuronale Netze, LLMs sind regelbasiert.','Expert Systems liefern deterministische, auditierbare Antworten auf Basis expliziter Regeln; LLMs erzeugen probabilistisch das wahrscheinlichste nächste Token.','Beide arbeiten identisch, nur die Trainingsdaten unterscheiden sich.','Expert Systems verarbeiten ausschließlich Bilder, LLMs nur Text.'],correct:1,why:'Expert Systems kapseln menschliches Fachwissen als explizite Regeln und Ontologien und liefern deterministische, auditierbare Antworten. LLMs sind statistische Textvorhersagesysteme ohne echtes logisches Verständnis - sie berechnen für jedes mögliche nächste Token eine Wahrscheinlichkeit.',ref:'Kapitel 1.1'},
+{eu:'LLMs',level:'L1',type:'mc',q:'Welches mentale Modell empfiehlt sich für LLMs im RE?',a:['Fachlicher Domänenexperte','Deterministischer Rechner','Sehr leistungsfähiges Autocomplete','Regelbasierte Entscheidungsmaschine'],correct:2,why:'LLMs erzeugen Text probabilistisch Token für Token. Das Autocomplete-Bild hilft, Fähigkeiten und Grenzen realistisch einzuschätzen.',ref:'Kapitel 2.1'},
+{eu:'LLMs',level:'L2',type:'mc',q:'Warum können LLM-Ausgaben überzeugend und trotzdem falsch sein?',a:['Weil sie bewusst täuschen.','Weil sie statistisch plausible Fortsetzungen erzeugen, nicht zwingend geprüfte Fakten.','Weil sie ausschließlich zufällige Wörter verwenden.','Weil sie niemals Trainingsdaten nutzen.'],correct:1,why:'Die Oberfläche wirkt oft flüssig und korrekt. Die faktische Ebene muss jedoch geprüft werden.',ref:'Kapitel 2.1'},
+{eu:'LLMs',level:'L1',type:'mc',q:'Was steuert die Temperature typischerweise?',a:['Die Länge des Kontextfensters','Die Zufälligkeit beziehungsweise Varianz der Ausgabe','Die Anzahl der Quellen in RAG','Die Menge der Trainingsdaten'],correct:1,why:'Niedrige Temperature erzeugt konsistentere Ausgaben, höhere Temperature mehr Variation.',ref:'Kapitel 2.1 / Terminologie'},
+{eu:'Prompt Engineering',level:'L2',type:'mc',q:'Warum ist Kontext für AI4RE besonders wichtig?',a:['Er ersetzt die Validierung.','Er verengt den Lösungsraum und macht Ergebnisse domänennäher.','Er erhöht automatisch die Temperature.','Er verhindert Datenschutzrisiken vollständig.'],correct:1,why:'Guter Kontext hilft dem Modell, relevante Muster zu aktivieren und weniger generisch zu antworten.',ref:'Kapitel 3.1'},
+{eu:'Prompt Engineering',level:'L1',type:'mc',q:'Wofür steht das Prompting Pattern RTF?',a:['Risk, Task, Feedback','Role, Task, Format','Requirement, Test, Flow','Review, Trace, Fix'],correct:1,why:'RTF strukturiert Prompts über Rolle, Aufgabe und Ausgabeformat.',ref:'Kapitel 3.2'},
+{eu:'Prompt Engineering',level:'L1',type:'mc',q:'Was unterscheidet Prompting Patterns von Prompting Techniques?',a:['Patterns sind wiederverwendbare Strukturen; Techniques sind situative Formulierungsweisen.','Patterns sind immer schlecht, Techniques immer gut.','Techniques benötigen Fine-Tuning, Patterns nicht.','Es gibt keinen Unterschied.'],correct:0,why:'Patterns schaffen stabile Prompt-Strukturen, Techniques beeinflussen situativ, wie das Modell die Aufgabe interpretiert.',ref:'Kapitel 3.2'},
+{eu:'Prompt Engineering',level:'L1',type:'mc',q:'Was beschreibt Few-Shot Prompting?',a:['Eine Aufgabe ohne Beispiele','Eine Aufgabe mit wenigen Beispielen im Prompt','Ein Prompt mit niedriger Temperature','Ein Prompt, der ausschließlich Risiken analysiert'],correct:1,why:'Few-Shot gibt dem Modell Beispiele, an denen es Stil, Struktur und Muster erkennen kann.',ref:'Kapitel 3.2'},
+{eu:'Risks',level:'L1',type:'mc',q:'Was ist im AI4RE-Kontext eine Halluzination?',a:['Eine kreative Lösungsidee','Eine faktisch falsche oder nicht belegte Ausgabe, die plausibel klingt','Eine besonders lange Antwort','Eine Ausgabe mit Quellenangaben'],correct:1,why:'Halluzinationen sind im RE gefährlich, wenn erfundene Standards, Aussagen oder Systemverhalten als Anforderungen übernommen werden.',ref:'Kapitel 4.1'},
+{eu:'Risks',level:'L1',type:'mc',q:'Welche Aussage ist ein Beispiel für False Precision?',a:['„Die Anwendung soll nutzerfreundlich sein.“','„Die Systemantwortzeit soll exakt optimal sein.“','„Das System shall perform optimally at all times.“','„Das System darf personenbezogene Daten nicht verarbeiten.“'],correct:2,why:'Formal klingt es präzise, semantisch bleibt „optimally“ unklar und nicht testbar.',ref:'Kapitel 4.1'},
+{eu:'Risks',level:'L2',type:'mc',q:'Was ist die beste Gegenmaßnahme gegen Over-Reliance auf AI?',a:['AI-Ausgaben direkt in die Baseline übernehmen.','Human Review, Validierung und fachliche Ownership sicherstellen.','Nur längere Prompts schreiben.','Das Kontextfenster immer maximal füllen.'],correct:1,why:'AI4RE betont, dass AI unterstützt, aber Verantwortung und Validierung beim Requirements Engineer bleiben.',ref:'Kapitel 4.1 / 4.2'},
+{eu:'Responsibilities',level:'L2',type:'mc',q:'Wie verändert AI die Rolle des Requirements Engineer?',a:['Die Rolle entfällt.','Die Rolle wird stärker: Prozessdesign, Prompting, Review, Risiko, Compliance und Trust Building kommen hinzu.','Die Rolle wird rein technisch.','Die Rolle beschränkt sich auf Transkription.'],correct:1,why:'AI erweitert die RE-Rolle um Governance, Qualitätssicherung, Erklärbarkeit und Compliance.',ref:'Kapitel 4.2'},
+{eu:'Responsibilities',level:'L2',type:'mc',q:'Was bedeutet Stakeholder Communicator & Trust Builder im AI4RE-Kontext?',a:['AI-Ausgaben ohne Erklärung verteilen.','Transparent machen, wo AI genutzt wird, was erklärbar ist und wo Grenzen liegen.','Stakeholder vom Prozess ausschließen.','Nur technische Metriken berichten.'],correct:1,why:'Vertrauen entsteht durch transparente Kommunikation über AI-Nutzung, Grenzen, Erklärbarkeit und Verantwortung.',ref:'Kapitel 4.2'},
+{eu:'Use Cases',level:'L1',type:'mc',q:'Welche vier Kernaktivitäten des RE unterstützt AI laut Study Guide?',a:['Planung, Coding, Deployment, Betrieb','Elicitation, Documentation, Validation, Management','Marketing, Vertrieb, Support, Controlling','Vision, Budget, Vertrag, Einkauf'],correct:1,why:'Kapitel 5 strukturiert AI4RE entlang der RE-Aktivitäten Elicitation, Documentation, Validation und Management.',ref:'Kapitel 5'},
+{eu:'Elicitation',level:'L2',type:'mc',q:'Welche drei Bereiche der Elicitation werden besonders genannt?',a:['Exploration, Transcription, Extraction','Coding, Testing, Release','Budgeting, Recruiting, Contracting','Modeling, Deployment, Monitoring'],correct:0,why:'AI kann in der Elicitation bei Domänenexploration, Transkription und Extraktion unterstützen.',ref:'Kapitel 5.1'},
+{eu:'Documentation',level:'L2',type:'mc',q:'Was ist ein typischer AI-Beitrag bei der Dokumentation?',a:['Anforderungen ohne Review final freigeben','Informelle Stakeholder-Aussagen in strukturierte Requirements oder User Stories überführen','Stakeholderziele ersetzen','Projektumfang automatisch erweitern'],correct:1,why:'AI kann Formulierung, Templates, User Stories, Akzeptanzkriterien und Glossare unterstützen. Review bleibt Pflicht.',ref:'Kapitel 5.2'},
+{eu:'Validation',level:'L2',type:'mc',q:'Worauf muss der Requirements Engineer bei AI-generierten Anforderungen besonders achten?',a:['Ob sie formal schön aussehen','Ob sie value-oriented, angemessen, notwendig, testbar und im richtigen Abstraktionsgrad sind','Ob sie möglichst lang sind','Ob sie viele Fachbegriffe enthalten'],correct:1,why:'Kapitel 5.3 betont Konsistenz, Wertorientierung, Notwendigkeit, Angemessenheit und Abstraktionsebene.',ref:'Kapitel 5.3'},
+{eu:'Management',level:'L2',type:'mc',q:'Wie kann AI im Requirements Management unterstützen?',a:['Attribute vorschlagen und Priorisierung vorbereiten','Alle Priorisierungsentscheidungen autonom treffen','Stakeholderentscheidung ersetzen','Regulatorische Prüfung überflüssig machen'],correct:0,why:'AI kann Metadaten vorschlagen und Priorisierung unterstützen. Entscheidungen brauchen Kontext und Stakeholderurteil.',ref:'Kapitel 5.4'},
+{eu:'Terminology',level:'L1',type:'mc',q:'Was sind Embeddings?',a:['Prompts mit Beispielen','Numerische Vektorrepräsentationen von Text, die semantische Ähnlichkeit unterstützen','Eine Form von Datenschutzprüfung','Ein Ersatz für Requirements Reviews'],correct:1,why:'Embeddings ermöglichen semantische Suche, Clustering, Duplicate Detection und Traceability.',ref:'Kapitel 6'},
+{eu:'Terminology',level:'L1',type:'mc',q:'Was ist ein Token?',a:['Ein ganzer Absatz','Eine Einheit von Text, etwa Wort, Wortteil oder Satzzeichen','Ein Prüfungszertifikat','Eine Datenbankquelle'],correct:1,why:'LLMs verarbeiten Text in Tokens. Tokenanzahl beeinflusst Kontextgrenzen, Kosten und Verarbeitung.',ref:'Kapitel 6'},
+{eu:'Terminology',level:'L1',type:'mc',q:'Was ist ein Transformer?',a:['Ein RE-Template','Eine neuronale Architektur mit Attention-Mechanismus hinter vielen LLMs','Ein Datenschutzverfahren','Ein Projektmanagement-Board'],correct:1,why:'Transformer nutzen Attention, um relevante Beziehungen im Kontext zu berücksichtigen.',ref:'Kapitel 6'},
+{eu:'Terminology',level:'L1',type:'mc',q:'Was beschreibt das Kontextfenster?',a:['Maximale Menge an Tokens, die ein Modell zugleich berücksichtigen kann','Zeit bis zur Antwort','Anzahl der Trainingsläufe','Anzahl der Stakeholder im Projekt'],correct:0,why:'Das Kontextfenster begrenzt, wie viel Prompt, Verlauf und Output zusammen verarbeitet werden können.',ref:'Kapitel 6'},
+{eu:'Risk Scenario',level:'L2',type:'mc',q:'Ein Team lädt vollständige Interviewtranskripte mit personenbezogenen Daten in einen externen AI-Dienst. Welches Risiko steht im Vordergrund?',a:['Bias Amplification','Data Leakage / Datenschutzverletzung','Temperature Drift','Few-Shot Learning'],correct:1,why:'Sensible Daten können offengelegt werden. Im RE müssen Datenminimierung, Pseudonymisierung und passende Verarbeitung geprüft werden.',ref:'Kapitel 4.1'},
+{eu:'Risk Scenario',level:'L2',type:'mc',q:'Eine AI schlägt Anforderungen für eine Desktop-Version vor, obwohl nur eine mobile App vereinbart wurde. Was ist das?',a:['Scope Misalignment','Embeddings','Fine-Tuning','Expert System'],correct:0,why:'AI kann bei vagen Prompts Inhalte außerhalb des Projektumfangs erzeugen.',ref:'Kapitel 4.1'},
+{eu:'Risk Scenario',level:'L2',type:'mc',q:'Eine AI priorisiert Anforderungen, kann aber keine nachvollziehbare Begründung liefern. Welches Risiko ist besonders betroffen?',a:['Opacity','Robotics','Zero-Shot','NLP'],correct:0,why:'Black-Box-Verhalten erschwert Nachvollziehbarkeit, Stakeholdervertrauen und Validierung.',ref:'Kapitel 4.1'},
+{eu:'Prompt Scenario',level:'L2',type:'mc',q:'Welcher Prompt ist prüfungsnah am besten strukturiert?',a:['Mach Anforderungen.','Schreib was zur App.','Du bist Requirements Engineer. Formuliere aus den Notizen testbare User Stories mit Akzeptanzkriterien im Given-When-Then-Format.','Kannst du helfen?'],correct:2,why:'Dieser Prompt enthält Rolle, Aufgabe, Qualitätskriterium und Format.',ref:'Kapitel 3.1 / 3.2'},
+{eu:'Use Case Scenario',level:'L2',type:'mc',q:'Eine AI analysiert Workshop-Notizen und findet mögliche funktionale Anforderungen, Qualitätsanforderungen und Constraints. Zu welchem Use Case passt das?',a:['Extraction','Temperature Control','Robotics','Fine-Tuning'],correct:0,why:'Extraction bedeutet, Anforderungen aus Quellen wie Notizen, E-Mails oder Transkripten zu identifizieren und zu klassifizieren.',ref:'Kapitel 5.1.3'},
+{eu:'Use Case Scenario',level:'L2',type:'mc',q:'Eine AI erstellt aus Anforderungen ein BPMN-Modell. Welche Aktivität ist das?',a:['Transformation','Data Leakage','Model Drift','Prompt Pattern'],correct:0,why:'Transformation überführt Anforderungen in andere Repräsentationen, etwa UML, BPMN oder Prototypen.',ref:'Kapitel 5.2.2'},
+{eu:'Validation Scenario',level:'L2',type:'mc',q:'Eine AI-generierte Anforderung sieht formal korrekt aus, ist aber nicht auf ein Stakeholderziel rückführbar. Was ist die passende Bewertung?',a:['Sie ist automatisch gültig.','Sie muss wegen fehlender Wertorientierung und Quelle kritisch validiert werden.','Sie ist wegen schöner Formulierung besser.','Sie gehört direkt in den Sprint.'],correct:1,why:'AI-Ausgaben müssen an Stakeholderbedürfnissen, Quellen, Business Value und Projektziel geprüft werden.',ref:'Kapitel 5.3'},
+{eu:'Environmental',level:'L2',type:'mc',q:'Was ist ein AI4RE-Beispiel für verantwortungsvollen Umgang mit Umweltwirkung?',a:['Ein LLM dauerhaft ohne Nutzen im Hintergrund laufen lassen.','Batch-Verarbeitung wählen, wenn Real-Time-Analyse keinen Mehrwert bringt.','Alle Anforderungen stündlich neu klassifizieren.','Möglichst große Modelle für jede Kleinigkeit einsetzen.'],correct:1,why:'Kapitel 4.2 nennt Umweltwirkung als Verantwortungsaspekt. Ressourcenschonende Nutzung ist Teil von Governance.',ref:'Kapitel 4.2'}
+];
+const terms=[
+['RAG','Retrieval-Augmented Generation: Externe Wissensquellen werden gesucht und in die Antwort einbezogen. RE-Bezug: Quellenbasierung und Traceability.'],
+['Fine-Tuning','Anpassung eines vortrainierten Modells durch weiteres Training. RE-Bezug: Domänensprache und Standards können integriert werden, aber mit Aufwand und Aktualitätsrisiko.'],
+['Halluzination','Plausibel klingende, aber falsche oder unbelegte Ausgabe. RE-Bezug: Keine AI-Ausgabe ungeprüft in die Baseline.'],
+['Embedding','Numerische Vektorrepräsentation von Text. RE-Bezug: semantische Suche, Clustering, Duplicate Detection.'],
+['Context Window','Maximale Tokenmenge, die ein Modell in einer Interaktion berücksichtigen kann. RE-Bezug: lange Spezifikationen strukturieren.'],
+['Temperature','Regelt Varianz der Ausgabe. RE-Bezug: niedrig für konsistente Requirements, höher für Ideengenerierung.'],
+['Prompt Pattern','Wiederverwendbare Promptstruktur, z. B. Role-Task-Format oder CRISPE.'],
+['Zero-Shot','Aufgabe ohne Beispiele im Prompt. Gut für einfache Klassifikation, riskanter bei spezifischem Format.'],
+['Few-Shot','Prompt mit wenigen Beispielen. Hilft bei Stil, Struktur und Qualitätsniveau.'],
+['Transformer','Architektur vieler LLMs mit Attention-Mechanismus.']
+];
+let state=JSON.parse(localStorage.getItem('ai4reQuizState')||'{"answered":0,"correct":0,"wrong":[],"byEU":{}}');
+let currentModule='cockpit';let currentQ=null;let selected=null;let exam={active:false,items:[],idx:0,correct:0,answers:[],end:0,timer:null};
+function save(){localStorage.setItem('ai4reQuizState',JSON.stringify(state));updateOverall()}
+function updateOverall(){let pct=state.answered?Math.round(state.correct/state.answered*100):0;document.getElementById('overallScore').textContent=pct+'%';document.getElementById('overallBar').style.width=pct+'%';document.getElementById('overallText').textContent=state.answered?`${state.correct} von ${state.answered} beantworteten Fragen korrekt.`:'Noch keine Fragen beantwortet.'}
+function renderNav(){nav.innerHTML=modules.map(m=>`<button class="${m.id===currentModule?'active':''}" onclick="go('${m.id}')">${m.name}</button>`).join('')}
+function go(id){currentModule=id;renderNav();render();window.scrollTo(0,0)}
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function euStats(){const eus=[...new Set(questions.map(q=>q.eu))];return eus.map(e=>{let s=state.byEU[e]||{a:0,c:0};return {e,a:s.a,c:s.c,p:s.a?Math.round(s.c/s.a*100):0}})}
+function record(q,ok){state.answered++;state.correct+=ok?1:0;state.byEU[q.eu]=state.byEU[q.eu]||{a:0,c:0};state.byEU[q.eu].a++;state.byEU[q.eu].c+=ok?1:0;if(!ok)state.wrong.unshift({...q,date:new Date().toLocaleString()});state.wrong=state.wrong.slice(0,30);save()}
+function render(){if(currentModule==='cockpit')renderCockpit();if(currentModule==='learn')renderLearn();if(currentModule==='exam')renderExamHome();if(currentModule==='scenario')renderScenario();if(currentModule==='terminology')renderTerms();if(currentModule==='wrong')renderWrong();}
+function renderCockpit(){let stats=euStats();content.innerHTML=`<div class="grid"><div class="card span8"><h2>Lerncockpit</h2><p class="muted">Die Quizzmaschine prüft die Lernziele L1 und L2: Begriffe wiedererkennen, Konzepte erklären, Risiken unterscheiden und AI4RE-Situationen beurteilen.</p><div class="statrow">${stats.map(s=>`<div class="stat"><span>${s.e}</span><div class="progress"><div class="bar" style="width:${s.p}%"></div></div><span>${s.p}%</span></div>`).join('')}</div></div><div class="card span4"><h2>Trainingsmodi</h2><div class="list"><div class="modecard" onclick="go('learn')"><h3>Lernmodus</h3><p class="muted">Fragen mit sofortiger Erklärung.</p></div><div class="modecard" onclick="go('exam')"><h3>Prüfungsmodus</h3><p class="muted">Zeitlimit, zufällige Auswahl, Auswertung.</p></div><div class="modecard" onclick="go('scenario')"><h3>Szenario-Trainer</h3><p class="muted">RE-nahe Situationen üben.</p></div></div><div class="btnrow"><button class="btn danger" onclick="resetState()">Fortschritt zurücksetzen</button></div></div><div class="card span12"><h2>Prüfungsanker</h2><div class="grid" style="margin-top:0"><div class="item span4"><b>1. AI Basics</b><p class="muted">AI-Technologien, Chatbot-Pipeline, RAG vs. Fine-Tuning.</p></div><div class="item span4"><b>2. LLMs</b><p class="muted">Prediction, Tokens, Temperature, Halluzination.</p></div><div class="item span4"><b>3. Prompting</b><p class="muted">Kontext, RTF, CRISPE, Zero/Few-Shot, Templates.</p></div><div class="item span4"><b>4. Risiken</b><p class="muted">Halluzination, Bias, Datenschutz, Scope, Opacity, Over-Reliance.</p></div><div class="item span4"><b>5. Use Cases</b><p class="muted">Elicitation, Documentation, Validation, Management.</p></div><div class="item span4"><b>6. Terminologie</b><p class="muted">RAG, Embeddings, Transformer, Context Window und mehr.</p></div></div></div></div>`}
+function resetState(){if(confirm('Fortschritt wirklich löschen?')){state={answered:0,correct:0,wrong:[],byEU:{}};save();render()}}
+function renderLearn(){currentQ=shuffle(questions)[0];renderQuestion('Lernmodus',currentQ,false)}
+function renderQuestion(title,q,isExam){selected=null;content.innerHTML=`<div class="grid"><div class="card span8"><div class="examHeader"><h2>${title}</h2><div><span class="tag ${q.level.toLowerCase()}">${q.level}</span><span class="tag">${q.eu}</span></div></div><div class="question">${q.q}</div><div class="answers">${q.a.map((x,i)=>`<button class="answer" onclick="selectAnswer(${i},${isExam})">${x}</button>`).join('')}</div><div id="feedback" class="feedback"></div><div class="btnrow"><button class="btn secondary" onclick="${isExam?'nextExam()':'renderLearn()'}">${isExam?'Weiter':'Neue Frage'}</button></div></div><div class="card span4"><h2>Prüfungsstrategie</h2><p class="muted">Achte auf Signalwörter: <span class="kbd">describe</span>, <span class="kbd">explain</span>, <span class="kbd">compare</span>. Bei L2-Fragen wird nicht nur ein Begriff abgefragt, sondern ein Zusammenhang.</p><div class="item"><b>Kapitelbezug</b><p class="muted">${q.ref}</p></div></div></div>`}
+function selectAnswer(i,isExam){if(selected!==null)return;selected=i;let q=isExam?exam.items[exam.idx]:currentQ;let ok=i===q.correct;document.querySelectorAll('.answer').forEach((b,idx)=>{if(idx===q.correct)b.classList.add('correct'); if(idx===i&&idx!==q.correct)b.classList.add('wrong');});let fb=document.getElementById('feedback');fb.className='feedback show';fb.innerHTML=`<b>${ok?'Richtig.':'Noch nicht.'}</b><p>${q.why}</p><p class="mini">Referenz: ${q.ref}</p>`;if(isExam){exam.answers.push({q,ok,selected:i});exam.correct+=ok?1:0}else record(q,ok)}
+function renderExamHome(){clearInterval(exam.timer);content.innerHTML=`<div class="grid"><div class="card span7"><h2>Prüfungsmodus</h2><p class="muted">Simuliert eine konzentrierte Prüfungssituation. Du bekommst 20 zufällige Fragen aus allen Bereichen mit Schwerpunkt L2 und Szenarien.</p><div class="btnrow"><button class="btn" onclick="startExam(20,20)">20 Fragen · 20 Minuten starten</button><button class="btn secondary" onclick="startExam(10,10)">Kurzprüfung · 10 Minuten</button></div></div><div class="card span5"><h2>Bewertung</h2><div class="item"><b>Empfehlung</b><p class="muted">Zielwert: mindestens 80 %. Darunter: Fehlerliste durcharbeiten und Szenario-Trainer wiederholen.</p></div></div></div>`}
+function startExam(n,min){exam={active:true,items:shuffle(questions).slice(0,n),idx:0,correct:0,answers:[],end:Date.now()+min*60000,timer:null};showExamQ();exam.timer=setInterval(()=>{let left=Math.max(0,exam.end-Date.now());let m=Math.floor(left/60000),s=Math.floor((left%60000)/1000);let t=document.getElementById('timer');if(t)t.textContent=`${m}:${String(s).padStart(2,'0')}`;if(left<=0){finishExam()}},500)}
+function showExamQ(){let q=exam.items[exam.idx];content.innerHTML=`<div class="grid"><div class="card span12"><div class="examHeader"><h2>Prüfung ${exam.idx+1}/${exam.items.length}</h2><div class="timer" id="timer">--:--</div></div><div class="progress"><div class="bar" style="width:${Math.round(exam.idx/exam.items.length*100)}%"></div></div></div></div>`;renderQuestion(`Prüfung ${exam.idx+1}/${exam.items.length}`,q,true)}
+function nextExam(){if(selected===null){alert('Bitte zuerst eine Antwort auswählen.');return}exam.idx++;if(exam.idx>=exam.items.length)finishExam();else showExamQ()}
+function finishExam(){clearInterval(exam.timer);let pct=Math.round(exam.correct/exam.items.length*100);exam.answers.forEach(x=>record(x.q,x.ok));content.innerHTML=`<div class="grid"><div class="card span12"><h2>Prüfung beendet</h2><div class="result">${pct}%</div><p class="muted">${exam.correct} von ${exam.items.length} Fragen korrekt.</p><div class="progress"><div class="bar" style="width:${pct}%"></div></div><div class="btnrow"><button class="btn" onclick="renderExamHome()">Neue Prüfung</button><button class="btn secondary" onclick="go('wrong')">Fehlerliste ansehen</button></div></div><div class="card span12"><h2>Auswertung</h2><div class="list">${exam.answers.map((x,i)=>`<div class="item"><b>${i+1}. ${x.ok?'✓':'✕'} ${x.q.eu}</b><p>${x.q.q}</p><p class="muted">${x.q.why}</p></div>`).join('')}</div></div></div>`}
+function renderScenario(){let qs=questions.filter(q=>q.eu.includes('Scenario')||q.eu==='Validation'||q.eu==='Responsibilities'||q.eu==='Use Cases');currentQ=shuffle(qs)[0];renderQuestion('Szenario-Trainer',currentQ,false)}
+function renderTerms(){content.innerHTML=`<div class="grid"><div class="card span12"><h2>Terminologie-Memory</h2><p class="muted">Klicke eine Karte an. Erst Begriff erkennen, dann RE-Bezug erklären.</p></div>${terms.map((t,i)=>`<div class="card span4" onclick="flip(${i})" style="cursor:pointer;min-height:150px"><h2 id="term${i}">${t[0]}</h2><p class="muted hidden" id="def${i}">${t[1]}</p></div>`).join('')}</div>`}
+function flip(i){document.getElementById('def'+i).classList.toggle('hidden')}
+function renderWrong(){content.innerHTML=`<div class="grid"><div class="card span12"><h2>Fehlerliste</h2><p class="muted">Hier landen falsch beantwortete Fragen. Nutze sie als persönliche Lernspur.</p><div class="btnrow"><button class="btn secondary" onclick="state.wrong=[];save();renderWrong()">Fehlerliste leeren</button></div></div><div class="card span12"><div class="list">${state.wrong.length?state.wrong.map(w=>`<div class="item"><span class="tag">${w.eu}</span><span class="tag ${w.level.toLowerCase()}">${w.level}</span><h3>${w.q}</h3><p class="muted">${w.why}</p><p class="mini">${w.ref} · ${w.date}</p></div>`).join(''):'<div class="item">Noch keine Fehler gespeichert.</div>'}</div></div></div>`}
+renderNav();updateOverall();render();
+
+/* ===== Beamer-Modus (K18, vierstufig) ===== */
+const BEAMER_LEVELS=[
+  {classes:[],label:'☀ Beamer'},
+  {classes:['beamer'],label:'☀ Beamer XL'},
+  {classes:['beamer','beamer-xl'],label:'☀ Beamer XXL'},
+  {classes:['beamer','beamer-xl','beamer-xxl'],label:'☀ Normal'}
+];
+const BEAMER_STORAGE_KEY='ai4reQuizBeamerLevel';
+let beamerLevel=0;
+try{
+  const saved=JSON.parse(localStorage.getItem(BEAMER_STORAGE_KEY)||'null');
+  if(saved&&typeof saved.beamerLevel==='number')beamerLevel=saved.beamerLevel;
+}catch(e){}
+function applyBeamerLevel(){
+  document.documentElement.classList.remove('beamer','beamer-xl','beamer-xxl');
+  BEAMER_LEVELS[beamerLevel].classes.forEach(c=>document.documentElement.classList.add(c));
+  document.getElementById('beamerBtn').textContent=BEAMER_LEVELS[beamerLevel].label;
+}
+applyBeamerLevel();
+document.getElementById('beamerBtn').addEventListener('click',function(){
+  beamerLevel=(beamerLevel+1)%4;
+  applyBeamerLevel();
+  try{localStorage.setItem(BEAMER_STORAGE_KEY,JSON.stringify({beamerLevel:beamerLevel}));}catch(e){}
+});
+</script>
+</body>
+</html>
