@@ -20,6 +20,13 @@ selbst; alles davor und danach läuft eigenständig.
 Repo-Konventionen (Back-Link, Signatur-Link, Beamer-Modus-Pattern, Anführungszeichen-Falle) stehen in
 `CLAUDE.md` im Repo-Root — hier nicht duplizieren, dort nachschlagen.
 
+Der vollständige K1–K19-Prüfkatalog (Muss-/Kann-Kriterien, Prüfmethoden, ISO-25010-Mapping) liegt als
+synchronisierte Arbeitskopie unter `references/qualitaetskriterien-checkliste.md`, der zugehörige
+Master-Prompt unter `references/master-prompt-zusammenarbeit.md`, die Normen-/Framework-Referenz unter
+`references/standards.md`. Kanonisch bleibt Notion (`391d6937-ee08-8183-9966-fd0e2e963de9` bzw.
+`391d6937-ee08-8169-bd01-fdbf76d9d42c`) — bei größeren Audits oder Unsicherheit dort frisch abrufen,
+diese Dateien sind nur die Arbeitskopie und können nachlaufen.
+
 ## 0. Bevor es losgeht
 
 - Repo: `KreativeBande/DenkRaum` (GitHub MCP-Tools, `owner=KreativeBande`, `repo=DenkRaum`).
