@@ -225,6 +225,27 @@
   .persona-role{font-size:14px;color:var(--muted);}
   .persona-quote{font-size:16px;line-height:1.5;margin:0;font-style:italic;}
 
+  .vertiefung{
+    border:1px solid var(--ext);
+    border-left:5px solid var(--ext);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:18px;
+    background:#f7f7f9;
+  }
+  .vertiefung-head{
+    font-size:14px;
+    font-weight:700;
+    color:var(--ext);
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+    margin-bottom:8px;
+  }
+  .vertiefung ul{margin:0;padding-left:20px;}
+  .vertiefung li{font-size:16px;line-height:1.5;margin-bottom:6px;}
+  .vertiefung li:last-child{margin-bottom:0;}
+  .vertiefung li .ref{color:var(--ext);font-weight:600;}
+
   .badge{
     display:inline-block;
     font-size:14px;
@@ -316,29 +337,32 @@
   /* Beamer mode: cumulative scaling, footer hidden */
   html.beamer .subtitle, html.beamer .card p, html.beamer .persona-quote,
   html.beamer .leitfrage, html.beamer .step-title, html.beamer table.rolltable td,
-  html.beamer table.rolltable th, html.beamer .pill, html.beamer .persona-name{
+  html.beamer table.rolltable th, html.beamer .pill, html.beamer .persona-name,
+  html.beamer .vertiefung li{
     font-size:20px;
   }
   html.beamer h1{font-size:26px;}
-  html.beamer .step-sub, html.beamer .badge, html.beamer .persona-role{font-size:16px;}
+  html.beamer .step-sub, html.beamer .badge, html.beamer .persona-role, html.beamer .vertiefung-head{font-size:16px;}
   html.beamer footer{display:none;}
   html.beamer .step-num{width:36px;height:36px;font-size:16px;}
 
   html.beamer-xl .subtitle, html.beamer-xl .card p, html.beamer-xl .persona-quote,
   html.beamer-xl .leitfrage, html.beamer-xl .step-title, html.beamer-xl table.rolltable td,
-  html.beamer-xl table.rolltable th, html.beamer-xl .pill, html.beamer-xl .persona-name{
+  html.beamer-xl table.rolltable th, html.beamer-xl .pill, html.beamer-xl .persona-name,
+  html.beamer-xl .vertiefung li{
     font-size:23px;
   }
   html.beamer-xl h1{font-size:30px;}
-  html.beamer-xl .step-sub, html.beamer-xl .badge, html.beamer-xl .persona-role{font-size:18px;}
+  html.beamer-xl .step-sub, html.beamer-xl .badge, html.beamer-xl .persona-role, html.beamer-xl .vertiefung-head{font-size:18px;}
 
   html.beamer-xxl .subtitle, html.beamer-xxl .card p, html.beamer-xxl .persona-quote,
   html.beamer-xxl .leitfrage, html.beamer-xxl .step-title, html.beamer-xxl table.rolltable td,
-  html.beamer-xxl table.rolltable th, html.beamer-xxl .pill, html.beamer-xxl .persona-name{
+  html.beamer-xxl table.rolltable th, html.beamer-xxl .pill, html.beamer-xxl .persona-name,
+  html.beamer-xxl .vertiefung li{
     font-size:26px;
   }
   html.beamer-xxl h1{font-size:34px;}
-  html.beamer-xxl .step-sub, html.beamer-xxl .badge, html.beamer-xxl .persona-role{font-size:20px;}
+  html.beamer-xxl .step-sub, html.beamer-xxl .badge, html.beamer-xxl .persona-role, html.beamer-xxl .vertiefung-head{font-size:20px;}
   html.beamer-xxl .step, html.beamer-xxl .pill{min-height:56px;}
 </style>
 </head>
@@ -356,6 +380,7 @@
   <h1>Vom Anforderungssammler zum Value Architect</h1>
   <p class="subtitle">Die neue Rolle des Business Analysts nach IREB &amp; IIBA (2026) — erkundet am Fallbeispiel Talent Match AI / Vantera Systemtechnik GmbH.</p>
   <p class="sourcebar">Quellen: IIBA, The Corner, „Reframing and Reshaping Business Analysis" (Teil 1 &amp; 2, Jan./Feb. 2026) · IREB RE Magazine, „Integrating User-Centric Design in Business Analysis" (Nastassia Shahun, 18.03.2025)</p>
+  <p class="sourcebar">Jede Stufe vertieft zusätzlich mit realen Artefakten aus dem internen RE/BA-Trainingsprojekt „TalentMatch AI" (Confluence-Space TMAI, Jira-Projekt TMAI: Business Case, Stakeholder-/Risikoregister, RACI, Anforderungsdokumentation, Ist-/Soll-Prozessmodell, Epics TMAI-2–TMAI-5, Grundrechte-Folgenabschätzung, Betriebsvereinbarung-Entwurf, Kommunikationsleitfaden).</p>
   <div class="toolbar">
     <button class="pill" id="btnStep0" data-target="0">Rollentabelle</button>
     <button class="pill active" id="btnStep1" data-target="1">6-Stufen-Modell</button>
@@ -397,17 +422,34 @@ STRUKTUR (Split-Screen 40/60)
     vs. Neuer BA (8 Zeilen, aus IIBA-Serie + IREB-Artikel abgeleitet).
   · Stufen 1-6: Leitfrage (hervorgehoben), Zwei-Spalten-Vergleich
     (Klassischer BA / Neuer BA) als Cards, Persona-Reaktion im
-    Talent-Match-AI-Szenario (Vantera Systemtechnik GmbH), Quellen-Badge.
+    Talent-Match-AI-Szenario (Vantera Systemtechnik GmbH), Quellen-Badge,
+    plus Vertiefungsbox "Aus dem echten TalentMatch-AI-Projekt" mit 2-3
+    verifizierten Fakten aus dem realen Confluence-/Jira-Projekt (TMAI).
 
 INHALT PRO STUFE
 1. WARUM (Value Architect) - Herr Bachmeier (Geschäftsführung)
-2. WARUM GENAU (Context & Stakeholder Architect) - Frau Yildiz (HR-Leitung,
+2. WARUM GENAU (Context & Stakeholder Architect) - Léa Fontaine (HR-Leitung,
    szenariointerne Rolle) + Bezug Art. 22 DSGVO
 3. WAS (Requirements & Quality Architect) - Petra (QM)
 4. WIE (Solution Challenger) - Knut (Entwicklung)
 5. STÖRUNGEN (Governance & Risk Guardian) - Petra (QM) + Betriebsrat
    (szenariointern) + Bezug EU AI Act Annex III, § 87 Abs.1 Nr.6 BetrVG
 6. WIRKUNG (Value Validator) - Ela (Projektleitung) + Herr Bachmeier
+
+VERTIEFUNGSBOXEN (real project grounding)
+Jede der 6 Stufen bekommt zusätzlich 2-3 Stichpunkte aus einem echten,
+selbst gepflegten RE/BA-Projekt (Confluence-Space TMAI, Jira-Projekt TMAI:
+Business Case, Stakeholder-/Risikoregister, RACI-Matrix, Anforderungs-
+dokumentation FA/NFA/RB, Ist-/Soll-Prozessmodell, Epics TMAI-2 bis TMAI-5,
+Grundrechte-Folgenabschätzung, Betriebsvereinbarung-Entwurf, Kommunikations-
+leitfaden). Jeder Stichpunkt trägt eine Artefakt-Referenz (z. B. "FA-08",
+"Risikoregister"). Stufe 5 macht dabei transparent, dass das reale Projekt
+selbst noch eine veraltete EU-AI-Act-Frist (Aug. 2026 statt der korrekten,
+per Websuche verifizierten Frist 02.12.2027 nach Omnibus-Verlängerung 2026)
+führt — bewusst als Beispiel für gelebte Normen-Aktualität (K17) stehen
+gelassen, nicht stillschweigend geglättet. Stufe 6 zeigt ebenso ehrlich,
+dass das reale Projekt noch VOR Go-Live steht und eine Wirkungsmessung
+entsprechend fehlt, statt eine erfundene Erfolgsmeldung unterzuschieben.
 
 DESIGN-VORGABEN
 - Hintergrund durchgehend Weiß, color-scheme:light, kein Dark Mode.
@@ -431,7 +473,15 @@ NICHT-TUN
 - Keine Persona außerhalb der festen Rollentabelle sprechen lassen, ohne
   sie als szenariointerne Zusatzrolle zu kennzeichnen.
 - Keine Sliding-Panels: Stepper und Detailbereich bleiben permanent
-  sichtbar (Split-Screen), keine Kerninfo nur per Animation erreichbar.</div>
+  sichtbar (Split-Screen), keine Kerninfo nur per Animation erreichbar.
+- Keine unbelegten Zahlen/Fakten aus dem TMAI-Projekt erfinden — nur was
+  tatsächlich in Confluence/Jira dokumentiert ist übernehmen; bei
+  Unsicherheit lieber weglassen als schätzen.
+- Keine Live-Links auf das private Atlassian-Instance-URL-Schema im Tool
+  (Publikum hat keinen Zugriff) — nur Artefakt-Namen/IDs als Textreferenz.
+- Keine geschönte Erfolgsdarstellung, wenn das reale Projekt eine Lücke
+  zeigt (z. B. fehlende Wirkungsmessung vor Go-Live in Stufe 6) — die
+  Lücke selbst ist der Lerninhalt.</div>
     </details>
 
     <details class="footer-box">
@@ -477,6 +527,18 @@ NICHT-TUN
         Owner, Requirements Engineer) einfach die sechs Leitfragen und
         Persona-Reaktionen austauschen — Stepper-Logik, Beamer-Toggle und
         Footer-Struktur bleiben unverändert wiederverwendbar.</p>
+
+        <h4>Vertiefungsboxen: vom fiktiven Beispiel zum echten Projekt</h4>
+        <p>Ergänzend zu den generischen Persona-Zitaten zieht jede Stufe
+        zusätzlich 2-3 verifizierte Fakten aus einem real gepflegten RE/BA-
+        Projekt (Confluence-Space TMAI, Jira-Projekt TMAI) heran — mit
+        Business Case, Stakeholder-/Risikoregister, RACI-Matrix, vollständiger
+        Anforderungsdokumentation und Traceability bis zur User Story. Das
+        macht sichtbar, dass die neue BA-Rolle keine Behauptung bleibt,
+        sondern an einem echten Artefakt-Set nachvollziehbar ist —
+        einschließlich der ehrlichen Lücken (veraltete Normen-Angabe in
+        Stufe 5, fehlende Wirkungsmessung in Stufe 6), die genau die
+        Kompetenzen zeigen, die der neue BA einfordern müsste.</p>
       </div>
     </details>
 
@@ -535,7 +597,7 @@ NICHT-TUN
           <tr><td>DSGVO Art. 22</td><td>In Kraft</td><td>Szenario Talent Match AI, Stufe 2 &amp; 5 (automatisierte Entscheidung)</td></tr>
           <tr><td>BetrVG § 87 Abs. 1 Nr. 6</td><td>In Kraft</td><td>Szenario Talent Match AI, Stufe 5 (Mitbestimmung)</td></tr>
         </table>
-        <p style="font-size:14px;color:var(--muted);margin-top:10px;">Stand vor Einsatz in neuen Materialien prüfen — insbesondere Fristen zum EU AI Act können sich durch weitere Omnibus-Anpassungen verschieben.</p>
+        <p style="font-size:14px;color:var(--muted);margin-top:10px;">Stand vor Einsatz in neuen Materialien prüfen — insbesondere Fristen zum EU AI Act können sich durch weitere Omnibus-Anpassungen verschieben. Hinweis: Das zugrunde liegende TMAI-Projekt (Confluence/Jira) führt in seinem eigenen Business Case und Normen-Register noch den älteren Stand „volle Pflichten seit 2. August 2026" — dieses Tool verwendet bewusst den korrigierten, per Websuche verifizierten Stand (02.12.2027); die Aktualisierung im TMAI-Projekt selbst steht noch aus.</p>
       </div>
     </details>
   </div>
@@ -577,16 +639,24 @@ NICHT-TUN
       neu:'Fragt nach, welches Geschäftsproblem dahintersteckt, bevor irgendeine Funktion spezifiziert wird.',
       personaName:'Herr Bachmeier', personaRole:'Geschäftsführung', personaColor:'var(--bach)',
       quote:'"Wir verlieren gute Kandidat*innen, weil unser Auswahlprozess sechs Wochen dauert. Das kostet uns Marktanteile im Fachkräftemarkt."',
-      badge:'IIBA, Reframing and Reshaping Business Analysis, Teil 1 (Jan. 2026)'
+      badge:'IIBA, Reframing and Reshaping Business Analysis, Teil 1 (Jan. 2026)',
+      vertiefung:[
+        {ref:'Business Case', text:'Vantera Systemtechnik GmbH (Maschinen- und Anlagenbau, 340 Mitarbeitende) hatte den KI-Prototyp „TalentMatch AI" acht Wochen im Einsatz, bevor überhaupt ein Business Case dafür geschrieben wurde.'},
+        {ref:'Business Case, Abschnitt 3', text:'Der Business Case stützt sich auf zwei Säulen: Risikovermeidung (Bußgeld-/Reputationsrisiko bei nicht-konformem Weiterbetrieb) und strategischer Nutzen — mit konkretem Ziel: −50 % Sichtungszeit.'}
+      ]
     },
     {
       num:'2', key:'WARUM GENAU', title:'Context &amp; Stakeholder Architect',
       leitfrage:'Wer ist betroffen? Welche Bedürfnisse, Interessen und Nutzungskontexte existieren?',
       old:'Befragt primär die HR-Abteilung als einzige Stakeholderin und übernimmt deren Sicht unhinterfragt.',
       neu:'Bildet Personas und Journeys für Bewerbende, HR-Sachbearbeitung und Betriebsrat ab — inklusive Betroffenenrechten.',
-      personaName:'Frau Yildiz', personaRole:'HR-Leitung (szenariointerne Rolle)', personaColor:'var(--sarah)',
+      personaName:'Léa Fontaine', personaRole:'HR-Leitung (szenariointerne Rolle)', personaColor:'var(--sarah)',
       quote:'"Bewerbende haben laut Art. 22 DSGVO ein Recht darauf, nicht ausschließlich automatisiert bewertet zu werden — das müssen wir von Anfang an mitdenken, nicht nachträglich."',
-      badge:'IREB RE Magazine, Integrating User-Centric Design in Business Analysis (18.03.2025)'
+      badge:'IREB RE Magazine, Integrating User-Centric Design in Business Analysis (18.03.2025)',
+      vertiefung:[
+        {ref:'Stakeholder-Register', text:'Betriebsrat und Bewerbende sind mit hohem Einfluss/Interesse eingestuft; Handlungsempfehlung: „frühzeitig informieren, Mitbestimmung ernst nehmen, kein Vorpreschen ohne Abstimmung."'},
+        {ref:'RACI-Matrix', text:'Bei der Betriebsvereinbarung tragen bewusst sowohl Herr Bachmeier als auch der Betriebsrat gemeinsam A/R — im RACI-Modell unüblich, spiegelt aber die paritätische Natur der Mitbestimmung.'}
+      ]
     },
     {
       num:'3', key:'WAS', title:'Requirements &amp; Quality Architect',
@@ -595,7 +665,11 @@ NICHT-TUN
       neu:'Behandelt Wert, Funktion, Qualität und Risiko von Anfang an als untrennbares Anforderungsbündel.',
       personaName:'Petra', personaRole:'QM', personaColor:'var(--petra)',
       quote:'"Eine Anforderung wie \'das System soll fair entscheiden\' ist nicht testbar. Ich brauche ein konkretes Fairness-Kriterium mit Messmethode, bevor wir das abnehmen."',
-      badge:'IIBA, Reframing and Reshaping Business Analysis, Teil 1 (Jan. 2026)'
+      badge:'IIBA, Reframing and Reshaping Business Analysis, Teil 1 (Jan. 2026)',
+      vertiefung:[
+        {ref:'Anforderungsdokumentation (IREB CPRE)', text:'FA-01 bis FA-08, NFA-01 bis NFA-06 und RB-01 bis RB-03 — jede Anforderung per Traceability-Matrix rückverfolgbar bis zum Business-Case-Ziel „−50 % Sichtungszeit".'},
+        {ref:'FA-08', text:'„Entwurf der Betriebsvereinbarung dokumentieren und zur Unterschrift vorlegen" ist selbst eine Must-Anforderung mit Betriebsrat und Geschäftsführung als Betroffene — nicht nur Systemverhalten wird spezifiziert.'}
+      ]
     },
     {
       num:'4', key:'WIE', title:'Solution Challenger',
@@ -604,7 +678,11 @@ NICHT-TUN
       neu:'Stellt die Lösungsoption selbst infrage: Braucht es einen autonomen KI-Agenten oder reicht Entscheidungsunterstützung mit Human-in-the-Loop?',
       personaName:'Knut', personaRole:'Entwicklung', personaColor:'var(--knut)',
       quote:'"Technisch könnten wir das Ranking vollautomatisch laufen lassen. Aber die Frage ist, ob wir das wollen — oder ob ein Vorschlag mit menschlicher Freigabe nicht das bessere Zielbild ist."',
-      badge:'IIBA, Reframing and Reshaping Business Analysis, Teil 2 (Feb. 2026)'
+      badge:'IIBA, Reframing and Reshaping Business Analysis, Teil 2 (Feb. 2026)',
+      vertiefung:[
+        {ref:'Ist-/Soll-Prozessmodell', text:'Im Soll-Prozess schlägt TalentMatch AI bei niedrigem Score nur eine Ablehnung vor — die Fachbereichsleitung bestätigt oder widerspricht. Kein vollautomatischer Ablehnungsbescheid.'},
+        {ref:'Schnittstellenspezifikation', text:'Auch die technische Anbindung ans bestehende Bewerbermanagementsystem (Statusrückmeldung inkl. Ablehnungsvorschlag) wurde eigens spezifiziert, nicht einfach vom Prototyp übernommen.'}
+      ]
     },
     {
       num:'5', key:'STÖRUNGEN', title:'Governance &amp; Risk Guardian',
@@ -613,7 +691,12 @@ NICHT-TUN
       neu:'Bringt Governance-Anforderungen direkt in Backlog und Definition of Done ein — inklusive Mitbestimmung.',
       personaName:'Petra', personaRole:'QM · mit Bezug zum Betriebsrat (szenariointern)', personaColor:'var(--petra)',
       quote:'"Der Betriebsrat hat nach § 87 Abs. 1 Nr. 6 BetrVG ein Mitbestimmungsrecht, weil Talent Match AI eine Verhaltens- und Leistungskontrolle ermöglicht. Ohne Betriebsvereinbarung geht hier nichts live."',
-      badge:'EU AI Act Annex III Nr. 4 (Hochrisiko-Einstufung) · BetrVG § 87 Abs. 1 Nr. 6'
+      badge:'EU AI Act Annex III Nr. 4 (Hochrisiko-Einstufung) · BetrVG § 87 Abs. 1 Nr. 6',
+      vertiefung:[
+        {ref:'Risikoregister', text:'R-01 „Verstoß gegen EU AI Act Anhang III Nr. 4 bei Weiterbetrieb ohne Nachrüstung" (Score 9) und R-02 „Fehlende Betriebsrat-Zustimmung verzögert Produktivsetzung" (Score 6), beide Ela als Verantwortliche zugeordnet.'},
+        {ref:'Normen-Aktualität', text:'Das TMAI-Projekt selbst führt noch „volle Pflichten seit 2. August 2026"; nach Prüfung gilt inzwischen der 2. Dezember 2027 (EU-Omnibus-Verlängerung 2026) — im projekteigenen Normen-Register noch nachzuziehen. Ein reales Beispiel für K17 (Normen-Aktualität) aus der eigenen Praxis.'},
+        {ref:'Grundrechte-Folgenabschätzung', text:'Nach Art. 27 EU AI Act, Status „Entwurf — zur Prüfung durch Datenschutzbeauftragte:n vor Go-Live", Fazit: grundrechtskonforme Nutzung möglich unter Umsetzung der dort genannten Maßnahmen.'}
+      ]
     },
     {
       num:'6', key:'WIRKUNG', title:'Value Validator',
@@ -622,7 +705,11 @@ NICHT-TUN
       neu:'Prüft nach Go-Live systematisch, ob Time-to-Hire wirklich gesunken ist — und schließt den Kreis zurück zum WARUM.',
       personaName:'Ela', personaRole:'Projektleitung', personaColor:'var(--ela)',
       quote:'"Drei Monate nach Go-Live: Time-to-Hire ist von sechs auf vier Wochen gesunken. Herr Bachmeier, damit haben wir Ihr ursprüngliches WARUM tatsächlich beantwortet — nicht nur das System ausgeliefert."',
-      badge:'IIBA, Reframing and Reshaping Business Analysis, Teil 2 — Benefits Realization (Feb. 2026)'
+      badge:'IIBA, Reframing and Reshaping Business Analysis, Teil 2 — Benefits Realization (Feb. 2026)',
+      vertiefung:[
+        {ref:'Ehrlicher Befund', text:'Im echten TMAI-Projekt existiert bislang keine Wirkungsmessung — Betriebsvereinbarung und Grundrechte-Folgenabschätzung sind beide noch „Entwurf", das Projekt steht vor Go-Live, nicht danach.'},
+        {ref:'Business Case', text:'Das Ziel „−50 % Sichtungszeit" ist definiert, aber unvalidiert. Genau das müsste Ela nach Go-Live aktiv einfordern — sonst bleibt Benefits Realization die eine Lücke im sonst durchgängigen Artefakt-Set.'}
+      ]
     }
   ];
 
@@ -670,6 +757,13 @@ NICHT-TUN
               '<span class="persona-role">· '+s.personaRole+'</span></div>'+
               '<p class="persona-quote">'+s.quote+'</p>'+
             '</div>';
+    if(s.vertiefung && s.vertiefung.length){
+      html += '<div class="vertiefung"><div class="vertiefung-head">🔗 Vertiefung aus dem echten TalentMatch-AI-Projekt (Confluence/Jira)</div><ul>';
+      s.vertiefung.forEach(function(v){
+        html += '<li><span class="ref">'+v.ref+':</span> '+v.text+'</li>';
+      });
+      html += '</ul></div>';
+    }
     el.innerHTML = html;
   }
 
