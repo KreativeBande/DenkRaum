@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KI-Einsatzmuster-Explorer | Michaela Kühn</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#ffffff;
+    --panel:#f7f6f3;
+    --line:#e2ded6;
+    --text:#20201d;
+    --muted:#5c574d;
+    --faint:#8a8478;
+    --accent:#a34a28;
+    --accent-soft:#f3e2d8;
+    --good:#3d6b4f;
+    --good-soft:#e2ede4;
+    --warn:#8a6d1f;
+    --warn-soft:#f3ecd6;
+  }
+  html,body{
+    color-scheme: light;
+    background:var(--bg);
+    margin:0;
+    height:100%;
+    overflow-x:hidden;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    color:var(--text);
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+  }
+  button{touch-action:manipulation; font-family:inherit; cursor:pointer;}
+
+  /* Signatur */
+  .signature{
+    position:fixed; top:14px; right:28px; z-index:50;
+    text-align:right; font-size:14px; line-height:1.3;
+  }
+  .signature strong{display:block; font-size:15px;}
+  .signature a{color:var(--accent); text-decoration:none;}
+  @media (max-width:900px){
+    .signature{position:static; text-align:right; padding:10px 16px 0 0;}
+  }
+
+  header{
+    padding:22px 28px 16px 28px;
+    border-bottom:1px solid var(--line);
+  }
+  .topbar{margin-bottom:10px;}
+  .back-link{
+    display:inline-block;
+    font-size:14px;
+    font-weight:600;
+    color:var(--muted);
+    text-decoration:none;
+  }
+  .back-link:hover{color:var(--accent);}
+  header h1{
+    margin:0 0 4px 0;
+    font-size:24px;
+    max-width:78%;
+  }
+  header p.sub{
+    margin:0 0 16px 0;
+    color:var(--muted);
+    font-size:16px;
+    max-width:70ch;
+  }
+  .filterbar{
+    display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+  }
+  .pill{
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:999px;
+    padding:8px 16px;
+    font-size:14px;
+    color:var(--muted);
+    min-height:36px;
+    min-width:44px;
+  }
+  .pill.active{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+    font-weight:600;
+  }
+  #beamerBtn{
+    margin-left:auto;
+    border:1px solid var(--accent);
+    background:#fff;
+    color:var(--accent);
+    border-radius:999px;
+    padding:8px 16px;
+    font-size:14px;
+    font-weight:600;
+    min-height:44px;
+  }
+
+  main{
+    flex:1;
+    display:flex;
+    min-height:0;
+  }
+  .col-list{
+    width:38%;
+    min-width:280px;
+    border-right:1px solid var(--line);
+    overflow-y:auto;
+    padding:14px;
+  }
+  .col-detail{
+    width:62%;
+    overflow-y:auto;
+    padding:24px 32px 60px 32px;
+  }
+  @media (max-width:900px){
+    html,body{height:auto;}
+    main{flex-direction:column; flex:none;}
+    .col-list, .col-detail{width:100%;}
+    .col-list{border-right:none; border-bottom:1px solid var(--line); max-height:44vh;}
+    .col-detail{overflow-y:visible;}
+  }
+
+  .team-row{
+    width:100%;
+    text-align:left;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    padding:12px 14px;
+    margin-bottom:8px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+    min-height:44px;
+  }
+  .team-row:hover{border-color:var(--accent);}
+  .team-row.selected{
+    border-color:var(--accent);
+    background:var(--accent-soft);
+  }
+  .team-row .row-top{
+    display:flex; justify-content:space-between; align-items:center; gap:8px;
+  }
+  .team-row .name{font-weight:600; font-size:16px;}
+  .badge{
+    display:inline-block;
+    font-size:14px;
+    padding:3px 10px;
+    border-radius:999px;
+    background:var(--panel);
+    color:var(--muted);
+    border:1px solid var(--line);
+    white-space:nowrap;
+  }
+  .badge.zone-sammeln{background:#e4ecf3; color:#2a5578; border-color:#c7d8e6;}
+  .badge.zone-strukturieren{background:var(--warn-soft); color:var(--warn); border-color:#e6d9a8;}
+  .badge.zone-spezifizieren{background:var(--good-soft); color:var(--good); border-color:#c3d9c9;}
+  .badge.zone-mehrere{background:var(--accent-soft); color:var(--accent); border-color:#e3c3ae;}
+
+  .dots{display:flex; gap:4px; align-items:center;}
+  .dot{width:8px; height:8px; border-radius:50%; background:var(--line);}
+  .dot.on{background:var(--accent);}
+
+  /* Detailpanel */
+  .detail-head h2{margin:0 0 6px 0; font-size:22px;}
+  .detail-head .badges{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
+  .section{margin-bottom:22px;}
+  .section h3{
+    font-size:14px; text-transform:uppercase; letter-spacing:.04em;
+    color:var(--faint); margin:0 0 8px 0;
+  }
+  .section p{margin:0; font-size:16px; line-height:1.55;}
+  .summary-box{
+    border:1px dashed var(--line);
+    border-radius:12px;
+    padding:16px 18px;
+    background:var(--panel);
+  }
+  .tip-box{
+    border-left:4px solid var(--accent);
+    background:var(--accent-soft);
+    border-radius:0 10px 10px 0;
+    padding:14px 18px;
+    font-size:16px;
+  }
+  .norm-chip{
+    display:inline-block;
+    font-size:14px;
+    padding:4px 10px;
+    border-radius:8px;
+    background:#fff;
+    border:1px solid var(--line);
+    color:var(--muted);
+    margin-right:6px;
+  }
+
+  /* Footer */
+  footer{border-top:1px solid var(--line); padding:20px 28px 40px 28px;}
+  .footer-sig{font-size:14px; color:var(--muted); margin-bottom:14px; line-height:1.6;}
+  .footer-sig strong{color:var(--text);}
+  .footer-details{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
+  @media (max-width:900px){.footer-details{grid-template-columns:1fr;}}
+  .footer-box{
+    border:1px solid var(--line);
+    border-radius:12px;
+    overflow:hidden;
+    background:#fff;
+  }
+  .footer-summary{
+    padding:12px 16px;
+    font-weight:600;
+    font-size:16px;
+    cursor:pointer;
+    background:var(--panel);
+  }
+  .footer-content{padding:16px 18px; font-size:16px; line-height:1.55;}
+  .footer-mono{
+    font-family:"SFMono-Regular", Consolas, monospace;
+    font-size:14px;
+    white-space:pre-wrap;
+    background:#fbfaf7;
+    padding:14px;
+    border-radius:8px;
+    border:1px solid var(--line);
+  }
+  .footer-sans{font-size:16px;}
+  .footer-table{width:100%; border-collapse:collapse; font-size:14px;}
+  .footer-table th, .footer-table td{
+    border-bottom:1px solid var(--line);
+    text-align:left; padding:8px 6px; vertical-align:top;
+  }
+  .footer-table th{color:var(--faint); font-weight:600; font-size:14px;}
+
+  /* Beamer-Modus (K18, vierstufig kumulativ) */
+  html.beamer header h1{font-size:32px;}
+  html.beamer header p.sub{font-size:22px;}
+  html.beamer .pill{font-size:17px; padding:10px 20px;}
+  html.beamer .team-row .name{font-size:22px;}
+  html.beamer .badge, html.beamer .norm-chip{font-size:15px;}
+  html.beamer .section h3{font-size:15px;}
+  html.beamer .detail-head h2{font-size:30px;}
+  html.beamer .section p, html.beamer .summary-box, html.beamer .tip-box{font-size:22px;}
+  html.beamer footer{display:none;}
+
+  html.beamer-xl header h1{font-size:38px;}
+  html.beamer-xl header p.sub{font-size:28px;}
+  html.beamer-xl .team-row .name{font-size:28px;}
+  html.beamer-xl .section p, html.beamer-xl .summary-box, html.beamer-xl .tip-box{font-size:28px;}
+  html.beamer-xl .badge, html.beamer-xl .norm-chip{font-size:18px; padding:5px 14px;}
+  html.beamer-xl .section h3{font-size:18px;}
+  html.beamer-xl .detail-head h2{font-size:36px;}
+
+  html.beamer-xxl header h1{font-size:44px;}
+  html.beamer-xxl header p.sub{font-size:34px;}
+  html.beamer-xxl .team-row .name{font-size:34px;}
+  html.beamer-xxl .section p, html.beamer-xxl .summary-box, html.beamer-xxl .tip-box{font-size:34px;}
+  html.beamer-xxl .badge, html.beamer-xxl .norm-chip{font-size:21px;}
+  html.beamer-xxl .section h3{font-size:21px;}
+  html.beamer-xxl .detail-head h2{font-size:42px;}
+</style>
+</head>
+<body>
+
+<div class="signature">
+  <strong>Michaela Kühn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<header>
+  <div class="topbar">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+  </div>
+  <h1>KI-Einsatzmuster-Explorer</h1>
+  <p class="sub">10 interne Anthropic-Teams im Vergleich – übersetzt in Denkraum-Zonen, Autonomiegrad und RE/BA/PM-Transfer nach IREB, BABOK und PMBOK.</p>
+  <div class="filterbar" id="filterbar">
+    <button class="pill active" data-zone="alle">Alle Zonen</button>
+    <button class="pill" data-zone="sammeln">Sammeln</button>
+    <button class="pill" data-zone="strukturieren">Strukturieren</button>
+    <button class="pill" data-zone="spezifizieren">Spezifizieren</button>
+    <button class="pill" data-zone="mehrere">Mehrere Zonen</button>
+    <button id="beamerBtn">Beamer-Modus: Normal</button>
+  </div>
+</header>
+
+<main>
+  <aside class="col-list" id="colList"></aside>
+  <section class="col-detail" id="colDetail"></section>
+</main>
+
+<footer>
+  <div class="footer-sig">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" style="color:var(--accent);">www.michaela-kuehn.com</a><br>
+    Bezugsrahmen: IREB CPRE · BABOK Guide v3 (IIBA) · PMBOK Guide, 8. Edition (PMI, Nov. 2025) · ISO/IEC 25010:2023<br>
+    Zuletzt geprüft: 11.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll
+  </div>
+  <div class="footer-details">
+    <details class="footer-box">
+      <summary class="footer-summary">🧩 Systemprompt</summary>
+      <div class="footer-content footer-mono" id="footerSystemprompt"></div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary">📘 Handbuch</summary>
+      <div class="footer-content footer-sans" id="footerHandbuch"></div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+      <div class="footer-content footer-sans" id="footerSkript"></div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary">📚 Normen-Register</summary>
+      <div class="footer-content" id="footerNormen"></div>
+    </details>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var ZONE_LABEL = {
+    sammeln: "Sammeln",
+    strukturieren: "Strukturieren",
+    spezifizieren: "Spezifizieren",
+    mehrere: "Mehrere Zonen"
+  };
+
+  var TEAMS = [
+    {
+      id:"data-infra",
+      name:"Data Infrastructure",
+      zone:"spezifizieren",
+      autonomie:4,
+      norm:"BABOK v3 – Requirements Life Cycle Management",
+      pattern:"Das Team lässt Claude Code komplexe Infrastrukturprobleme anhand von Dashboard-Screenshots eigenständig diagnostizieren und pflegt gleichzeitig Claude.md-Dateien als laufend aktualisierte Arbeitsdokumentation für Kolleg:innen ohne Vorwissen.",
+      transfer:"Claude.md-Dateien funktionieren wie eine lebende Spezifikation: Je präziser die Dokumentation gepflegt wird, desto autonomer kann später darauf aufgesetzt werden. Ein direktes Argument für konsequente Anforderungsdokumentation über den gesamten Projektverlauf – nicht nur zu Projektbeginn.",
+      tip:"Guter Fallanker für ein Modul zu Anforderungsdokumentation: zeigt konkret, was „lebende Spezifikation“ in der Praxis bedeutet, statt es nur zu behaupten."
+    },
+    {
+      id:"product-dev",
+      name:"Product Development",
+      zone:"strukturieren",
+      autonomie:3,
+      norm:"PMBOK Guide, 8. Edition – Performance Domain Risiko",
+      pattern:"Das Claude-Code-Team selbst unterscheidet bewusst zwischen Aufgaben, die autonom im Auto-Accept-Modus laufen dürfen (periphere Features, Prototyping), und geschäftskritischer Kernlogik, die synchron und engmaschig begleitet wird.",
+      transfer:"Die Trennlinie zwischen „peripher“ und „geschäftskritisch“ ist selbst eine Anforderungsentscheidung. Ein Beispiel dafür, dass Priorisierung nach Risiko und Auswirkung erfolgen sollte – nicht nach Aufwand oder Reihenfolge im Backlog.",
+      tip:"Passt zur CPMAI-Domäne „Requirements“: Kritikalitäts-Einstufung als bewusster Entscheidungsfilter, bevor überhaupt Umsetzungstiefe festgelegt wird."
+    },
+    {
+      id:"security",
+      name:"Security Engineering",
+      zone:"spezifizieren",
+      autonomie:2,
+      norm:"ISO/IEC 25010:2023 – Qualitätsmerkmal Security",
+      pattern:"Vor jeder sicherheitsrelevanten Freigabe lässt das Team Infrastruktur-Änderungen (Terraform-Pläne) von Claude Code auf Konsequenzen prüfen, statt manuell jede Zeile zu lesen. Die KI liefert die Analyse, die Freigabeentscheidung bleibt beim Menschen.",
+      transfer:"Zeigt, wie eine nicht-funktionale Anforderung – hier Sicherheit – durch schnelle Auswirkungsanalyse vor der Umsetzung sichtbar gemacht wird. Klassische Prävention statt nachträglicher Fehlerbehebung.",
+      tip:"Guter Case für das ISO-25010-Modul in S5078: Security als NFR, die früh geprüft statt spät gefixt wird."
+    },
+    {
+      id:"inference",
+      name:"Inference",
+      zone:"sammeln",
+      autonomie:2,
+      norm:"IREB CPRE – gemeinsames Verständnis herstellen",
+      pattern:"Teammitglieder ohne Machine-Learning-Hintergrund nutzen Claude Code, um sich Systemarchitektur und Fachkonzepte selbst zu erschließen, statt Kolleg:innen zu unterbrechen. Recherchezeit für Konzeptverständnis sinkt spürbar.",
+      transfer:"Ein Muster für Wissenstransfer bei fachfremden Stakeholdern: KI als Übersetzer zwischen Fachsprache und Domänenwissen, bevor überhaupt Anforderungen formuliert werden können.",
+      tip:"Passt zum Nebel-Typ „Stakeholder“ im Klarheits-Sprung-Modell: Verständnislücken werden vor der eigentlichen Anforderungsaufnahme geschlossen."
+    },
+    {
+      id:"data-science",
+      name:"Data Science & Visualization",
+      zone:"strukturieren",
+      autonomie:4,
+      norm:"BABOK v3 – Solution Evaluation",
+      pattern:"Statt einmaliger Auswertungen entstehen dauerhafte, mit Claude Code gebaute Analyse-Dashboards, die über mehrere Modell-Evaluationen hinweg wiederverwendet werden.",
+      transfer:"Verdeutlicht den Unterschied zwischen einmaliger Analyse und wiederverwendbarem Lösungsartefakt – eine Reifegradfrage, die sich direkt auf Kennzahlen-Dashboards in RE/BA-Projekten übertragen lässt.",
+      tip:"Beispiel für die KI-Reifegrad-Stufe „vom Experiment zum Produktivsystem“ – passend zum KI-Reifegrad-Explorer."
+    },
+    {
+      id:"api",
+      name:"API Knowledge",
+      zone:"sammeln",
+      autonomie:3,
+      norm:"IREB CPRE – Kontext abgrenzen",
+      pattern:"Claude Code ist die erste Anlaufstelle vor jeder Aufgabe: Es identifiziert relevante Dateien und baut Kontext auf, bevor die eigentliche Bug-Analyse oder Feature-Arbeit beginnt.",
+      transfer:"Zeigt Scoping als eigenen, vorgelagerten Arbeitsschritt – genau das, was in der Denkraum-Zone „Sammeln“ häufig übersprungen wird, weil zu schnell ins Spezifizieren gesprungen wird.",
+      tip:"Guter Beleg dafür, warum Kontextabgrenzung vor der Anforderungsaufnahme steht, nicht danach oder parallel dazu."
+    },
+    {
+      id:"growth",
+      name:"Growth Marketing",
+      zone:"mehrere",
+      autonomie:5,
+      norm:"BABOK v3 – Business Analysis Planning and Monitoring",
+      pattern:"Eine einzelne, fachfremde Person baut mit Claude Code komplette automatisierte Workflows inklusive eigener MCP-Anbindung an Werbeplattformen – von der Auswertung bis zur Kreativproduktion.",
+      transfer:"Extremfall von Citizen Development: Der Fachbereich wird selbst zur Anforderungs- UND Lösungsinstanz. Die klassische BA-Rolle verschiebt sich von „Anforderungen aufnehmen“ zu „Leitplanken und Qualität sichern“.",
+      tip:"Zentraler Fall für den BA-Rollenwandel-Explorer: Fachbereich als eigenständiger Lösungsbauer, nicht mehr nur Anforderungsgeber."
+    },
+    {
+      id:"design",
+      name:"Product Design",
+      zone:"spezifizieren",
+      autonomie:4,
+      norm:"PMBOK Guide, 8. Edition – Performance Domain Stakeholder",
+      pattern:"Designer:innen implementieren visuelle Anpassungen und State-Management-Änderungen direkt im Code, statt sie über Spezifikationsdokumente an die Entwicklung zu übergeben.",
+      transfer:"Weniger Übersetzungsverluste zwischen Fachbereich und Entwicklung, weil die Spezifikation direkt ausführbar wird. Ein Argument gegen lange Lastenheft/Pflichtenheft-Ketten bei kleinteiligen Änderungen.",
+      tip:"Guter Kontrastfall zum klassischen Lastenheft/Pflichtenheft-Übergabemodell – zeigt, wo direkte Umsetzung schneller ist als Dokumentation."
+    },
+    {
+      id:"rl",
+      name:"RL Engineering",
+      zone:"spezifizieren",
+      autonomie:3,
+      norm:"PMBOK Guide, 8. Edition – Performance Domain Delivery (Time-boxing)",
+      pattern:"Nach dem Prinzip „Zustand sichern, laufen lassen, akzeptieren oder verwerfen“ arbeitet das Team bei unklaren Teilproblemen bewusst experimentell statt vorab durchzuplanen.",
+      transfer:"Explorative Spikes bei unklaren nicht-funktionalen Anforderungen: Nicht jede Unsicherheit lässt sich vorab spezifizieren – manche muss zeitlich begrenzt ausprobiert werden.",
+      tip:"Illustriert, warum der Nebel-Typ „Lösung“ im Klarheits-Sprung-Modell manchmal nur durch Time-boxing statt durch mehr Analyse aufgelöst wird."
+    },
+    {
+      id:"legal",
+      name:"Legal",
+      zone:"strukturieren",
+      autonomie:4,
+      norm:"BABOK v3 – Technik Prototyping",
+      pattern:"Fachfremde Jurist:innen bauen mit Claude Code funktionierende Prototypen, um Ideen vor Domänenexpert:innen zu validieren, bevor Ressourcen in eine vollständige Umsetzung investiert werden.",
+      transfer:"Bestätigt Prototyping als vollwertige Validierungstechnik nach BABOK – nicht nur für Entwicklungsteams, sondern für jede Fachrolle mit einer ungetesteten Idee.",
+      tip:"Passt zur PromptSchule-These: erst grob planen (Claude.ai), dann ausführen (Claude Code) – zweistufiges Prompting als Übertragung auf jede Fachrolle."
+    }
+  ];
+
+  var currentZone = "alle";
+  var currentId = TEAMS[0].id;
+
+  function zoneClass(zone){ return "zone-" + zone; }
+
+  function renderList(){
+    var col = document.getElementById("colList");
+    col.innerHTML = "";
+    var visible = TEAMS.filter(function(t){
+      return currentZone === "alle" || t.zone === currentZone;
+    });
+    visible.forEach(function(t){
+      var row = document.createElement("button");
+      row.className = "team-row" + (t.id === currentId ? " selected" : "");
+      row.setAttribute("data-id", t.id);
+
+      var top = document.createElement("div");
+      top.className = "row-top";
+      var name = document.createElement("span");
+      name.className = "name";
+      name.textContent = t.name;
+      var badge = document.createElement("span");
+      badge.className = "badge " + zoneClass(t.zone);
+      badge.textContent = ZONE_LABEL[t.zone];
+      top.appendChild(name);
+      top.appendChild(badge);
+
+      var dots = document.createElement("div");
+      dots.className = "dots";
+      for(var i=1;i<=5;i++){
+        var d = document.createElement("span");
+        d.className = "dot" + (i <= t.autonomie ? " on" : "");
+        dots.appendChild(d);
+      }
+      var dotsLabel = document.createElement("span");
+      dotsLabel.style.fontSize = "14px";
+      dotsLabel.style.color = "var(--faint)";
+      dotsLabel.textContent = " Autonomiegrad " + t.autonomie + "/5";
+      dots.appendChild(dotsLabel);
+
+      row.appendChild(top);
+      row.appendChild(dots);
+      row.addEventListener("pointerup", function(){
+        currentId = t.id;
+        renderList();
+        renderDetail();
+      });
+      col.appendChild(row);
+    });
+
+    if(!visible.some(function(t){return t.id === currentId;}) && visible.length){
+      currentId = visible[0].id;
+      renderDetail();
+    }
+  }
+
+  function renderDetail(){
+    var t = TEAMS.filter(function(x){return x.id === currentId;})[0];
+    var col = document.getElementById("colDetail");
+    if(!t){ col.innerHTML = ""; return; }
+
+    col.innerHTML =
+      '<div class="detail-head">' +
+        '<h2>' + t.name + '</h2>' +
+        '<div class="badges">' +
+          '<span class="badge ' + zoneClass(t.zone) + '">Denkraum-Zone: ' + ZONE_LABEL[t.zone] + '</span>' +
+          '<span class="badge">Autonomiegrad ' + t.autonomie + '/5</span>' +
+          '<span class="norm-chip">' + t.norm + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="section">' +
+        '<h3>Kernmuster</h3>' +
+        '<div class="summary-box"><p>' + t.pattern + '</p></div>' +
+      '</div>' +
+      '<div class="section">' +
+        '<h3>RE/BA/PM-Transfer</h3>' +
+        '<p>' + t.transfer + '</p>' +
+      '</div>' +
+      '<div class="section">' +
+        '<h3>Für dein Training</h3>' +
+        '<div class="tip-box">' + t.tip + '</div>' +
+      '</div>';
+  }
+
+  document.querySelectorAll("#filterbar .pill[data-zone]").forEach(function(btn){
+    btn.addEventListener("pointerup", function(){
+      currentZone = btn.getAttribute("data-zone");
+      document.querySelectorAll("#filterbar .pill[data-zone]").forEach(function(b){
+        b.classList.toggle("active", b === btn);
+      });
+      renderList();
+    });
+  });
+
+  // Beamer-Modus-Toggle (K18, vierstufig, kumulativ)
+  var beamerLevel = 0;
+  var BEAMER_LEVELS = [
+    {cls:"", label:"Beamer-Modus: Normal"},
+    {cls:"beamer", label:"Beamer-Modus: Beamer"},
+    {cls:"beamer beamer-xl", label:"Beamer-Modus: Beamer XL"},
+    {cls:"beamer beamer-xl beamer-xxl", label:"Beamer-Modus: Beamer XXL"}
+  ];
+  var beamerBtn = document.getElementById("beamerBtn");
+  beamerBtn.addEventListener("pointerup", function(){
+    beamerLevel = (beamerLevel + 1) % BEAMER_LEVELS.length;
+    document.documentElement.className = BEAMER_LEVELS[beamerLevel].cls;
+    beamerBtn.textContent = BEAMER_LEVELS[beamerLevel].label;
+  });
+
+  // Footer-Inhalte
+  document.getElementById("footerSystemprompt").textContent =
+"MASTER-BAU-PROMPT – KI-Einsatzmuster-Explorer\n\n" +
+"ZIEL\n" +
+"Single-File-HTML-Tool, das 10 dokumentierte KI-Einsatzfälle (Teams eines Unternehmens) mit einem RE/BA/PM-Vokabular verknüpft: Denkraum-Zone (Sammeln/Strukturieren/Spezifizieren), Autonomiegrad (1-5), Norm-Bezug (IREB/BABOK/PMBOK/ISO 25010) und einem konkreten Transfer-Satz.\n\n" +
+"STRUKTUR\n" +
+"- Split-Screen 38/62: links klickbare Liste aller Fälle (Name, Zonen-Badge, Autonomiegrad als Punktreihe), rechts Detailpanel.\n" +
+"- Filterleiste oben: Zonen-Pills (Alle/Sammeln/Strukturieren/Spezifizieren/Mehrere Zonen).\n" +
+"- Detailpanel-Aufbau je Fall: Kernmuster (eigene Formulierung, keine Zitate) -> RE/BA/PM-Transfer-Satz -> 'Für dein Training'-Hinweis (Anschluss an bestehende Module/Tools).\n\n" +
+"DATENMODELL PRO FALL\n" +
+"id, name, zone, autonomie (1-5), norm (Framework + konkreter Bezugspunkt), pattern, transfer, tip.\n\n" +
+"DESIGN-VORGABEN\n" +
+"Split-Screen statt Sliding Panels, Pill-Buttons für Filter, gestrichelte Zusammenfassungs-Box für Kernmuster, farbcodierte Zonen-Badges, Signatur oben rechts fixed, Beamer-Toggle vierstufig kumulativ, Footer mit vier Pflichtboxen. Kein Dark Mode, color-scheme: light Pflicht.\n\n" +
+"NICHT TUN\n" +
+"- Keine wörtlichen Zitate aus der Ursprungsquelle übernehmen, alles in eigenen Worten neu formulieren.\n" +
+"- Keine Norm-Version ohne vorherige Aktualitäts-Websuche referenzieren.\n" +
+"- Keine HTML5-Drag-and-Drop-APIs, kein fetch(), kein Dark Theme.\n" +
+"- Keine generischen Platzhalterwerte bei Normbezügen (immer konkrete Knowledge Area / Performance Domain / Qualitätsmerkmal nennen).";
+
+  document.getElementById("footerHandbuch").innerHTML =
+"<p><strong>Framework:</strong> RISEN (Role, Instructions, Steps, End Goal, Narrowing) – passend, weil der Bau in klar abgegrenzten Schritten mit einem definierten Endziel (10 vergleichbare Fälle, konsistent strukturiert) erfolgt.</p>" +
+"<p><strong>Rolle:</strong> Erfahrene RE/BA-Trainerin, die ein branchenfremdes Quellendokument in ihr eigenes didaktisches Vokabular übersetzt.</p>" +
+"<p><strong>Aufgabe:</strong> 10 interne Anwendungsfälle so aufbereiten, dass jeder Fall in maximal drei Sätzen an ein bestehendes RE/BA/PM-Konzept andockt – nicht als Zitatsammlung, sondern als Transferleistung.</p>" +
+"<p><strong>Kontext:</strong> Die Quelle beschreibt technische Teams; die Zielgruppe sind RE/BA/PM-Fachkräfte ohne Entwicklungshintergrund. Die Übersetzungsleistung liegt genau in dieser Lücke.</p>" +
+"<p><strong>Format:</strong> Splitscreen-Explorer statt linearer Text, damit Vergleich zwischen Fällen möglich ist (Filter nach Denkraum-Zone).</p>" +
+"<p><strong>Eingrenzung:</strong> Bewusst auf drei Attribute pro Fall reduziert (Zone, Autonomiegrad, Norm-Bezug) statt aller möglichen Metadaten – Reduktion erzeugt Vergleichbarkeit.</p>" +
+"<p><strong>Zentraler Lernhinweis:</strong> Fremde Fallbeispiele werden erst durch ein eigenes Analyseraster nutzbar. Ohne die Zonen-/Autonomiegrad-/Norm-Zuordnung wäre das Ausgangsmaterial nur eine Liste von Anekdoten.</p>" +
+"<p><strong>Nachbau-Tipp:</strong> Das gleiche Muster funktioniert für jede externe Fallsammlung: Attribute definieren, die zum eigenen Referenzrahmen passen, dann jeden Fall konsequent gegen dieselben Attribute prüfen statt frei zu paraphrasieren.</p>";
+
+  document.getElementById("footerSkript").innerHTML =
+"<p><em>(Einstieg, Filter auf „Alle Zonen“)</em> „Was Sie hier sehen, sind zehn Teams eines Unternehmens – nicht aus der RE/BA-Welt, sondern aus Softwareentwicklung, Sicherheit, Marketing, sogar Rechtsabteilung. Jedes Team hat für sich herausgefunden, wie es mit einem KI-Coding-Assistenten arbeitet. Die Frage, die uns interessiert: Was davon lässt sich auf unsere Arbeit übertragen?“</p>" +
+"<p><em>(Klick auf „Growth Marketing“)</em> „Schauen wir uns diesen Fall an. Eine einzelne Person, kein Entwicklungshintergrund, baut komplette automatisierte Workflows. Autonomiegrad 5 von 5. Das ist der Extremfall von Citizen Development – und genau die Verschiebung, die wir im BA-Rollenwandel-Explorer diskutiert haben.“</p>" +
+"<p><em>(Filter auf „Sammeln“)</em> „Filtern wir auf die Zone Sammeln. Zwei Fälle bleiben übrig – beide haben gemeinsam, dass die KI zuerst Kontext aufbaut, bevor überhaupt irgendetwas spezifiziert wird. Das ist der Punkt, den viele in der Praxis überspringen.“</p>" +
+"<p><em>(Klick auf „Security Engineering“)</em> „Hier sehen wir Autonomiegrad 2 von 5 – bewusst niedrig. Die KI liefert die Analyse, die Freigabeentscheidung bleibt beim Menschen. Nicht jeder hohe Autonomiegrad ist erstrebenswert – es kommt auf die Tragweite der Entscheidung an.“</p>" +
+"<p><em>Regie-Hinweise:</em> Nicht mit dem Fall mit dem höchsten Autonomiegrad einsteigen – das erzeugt falsche Erwartungen. Erst niedrige/mittlere Autonomiegrade zeigen, dann steigern. Zeitbudget: pro Fall max. 2 Minuten, sonst wird der Vergleichscharakter des Tools nicht sichtbar.</p>";
+
+  document.getElementById("footerNormen").innerHTML =
+'<table class="footer-table"><thead><tr><th>Norm/Framework</th><th>Status</th><th>Geprüft am</th></tr></thead><tbody>' +
+'<tr><td>IREB CPRE (Certified Professional for Requirements Engineering)</td><td>In Kraft</td><td>11.08.2026</td></tr>' +
+'<tr><td>BABOK Guide v3 (IIBA)</td><td>In Kraft, aktuellste Hauptversion (seit 2015)</td><td>11.08.2026</td></tr>' +
+'<tr><td>PMBOK Guide, 8. Edition (PMI)</td><td>In Kraft (veröffentlicht November 2025)</td><td>11.08.2026</td></tr>' +
+'<tr><td>ISO/IEC 25010:2023</td><td>In Kraft</td><td>11.08.2026</td></tr>' +
+'</tbody></table>';
+
+  renderList();
+  renderDetail();
+})();
+</script>
+</body>
+</html>
