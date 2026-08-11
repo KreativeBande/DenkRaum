@@ -14,6 +14,16 @@ Beamer-Zuständen.
 
 ## Änderungshistorie in diesem Audit-Zyklus
 
+**11.08.2026, Nachtrag:** Michaela fragte nach dem Sinn des vierten Seiten-Elements
+„INVEST-Stapel" im Beispiel-Backlog und entschied auf Rückfrage, es ganz zu entfernen — anders
+als Notizbuch (zeigt die Formel) und Leitfragen-Stickies (zeigen die Frage) verriet das
+INVEST-Kärtchen vor dem Klick nichts über seinen Inhalt (nur das nackte Akronym), was didaktisch
+dünner war als die übrigen Elemente. Entfernt: Side-Card, CSS-Klassen `.invest-stack`/
+`.invest-badge`, `EXPLANATIONS.invest`, alle Erwähnungen in Systemprompt/Handbuch/Vortrags-Skript
+und in der Sprecher-Skript-Companion-Datei. Das Beispiel-Backlog hat jetzt drei statt vier
+Seiten-Elemente (9 statt 10 Hotspots); INVEST als Kriterium bleibt über Level 2 des Puzzles
+selbst sowie das Normen-Register weiterhin im Tool vertreten.
+
 **11.08.2026:** Header/Signatur auf das kanonische Muster migriert — Signatur war bislang
 **nicht** `position:fixed`, sondern normaler Fluss-Inhalt in einer vertikal gestapelten
 `.header-right`-Spalte zusammen mit Beamer-Button und Fortschritts-Sternen (Ursache für
@@ -95,8 +105,9 @@ Alle Muss-Kriterien (K1–K10 (K10 n/a), K15, K17, K18, K19) bestanden. Alle Kan
 Ausgeführt lokal gegen `file://.../tools/user-story-puzzle.html`, Chromium headless
 (`/opt/pw-browsers/chromium`).
 
-1. Alle 10 Hotspot-Topics (`rolle`, `ziel`, `nutzen`, `ak`, `template`, `wer`, `was`, `warum`,
-   `invest`, `quality`) aktualisieren `#explainPanel` korrekt mit Titel + Text.
+1. Alle 9 Hotspot-Topics (`rolle`, `ziel`, `nutzen`, `ak`, `template`, `wer`, `was`, `warum`,
+   `quality` — `invest` am 11.08.2026 auf Wunsch entfernt, siehe Nachtrag oben) aktualisieren
+   `#explainPanel` korrekt mit Titel + Text.
 2. Beamer-4-Stufen-Zyklus bestanden (siehe K18 oben), inkl. Kollisions-Bugfix vor Auslieferung.
 3. `getComputedStyle`-Sweep über alle sichtbaren Textknoten (inkl. geöffneter Footer-Boxen) in
    allen vier Beamer-Zuständen: kleinster Wert durchgehend 14.04px, keine Regression.
