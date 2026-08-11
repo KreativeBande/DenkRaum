@@ -27,8 +27,6 @@
   * { box-sizing: border-box; }
 
   html { font-size: 18px; }
-  html[data-beamer="1"]{zoom:1.35}
-  html[data-beamer="2"]{zoom:1.75}
 
   body {
     margin: 0;
@@ -123,8 +121,50 @@
     background: var(--amber);
     color: #fff;
   }
-  html[data-beamer="1"] .back-link, html[data-beamer="2"] .back-link { display: none; }
-  html[data-beamer="1"] .app-footer, html[data-beamer="2"] .app-footer { display: none; }
+
+  /* ---------- Beamer-Modus (vierstufig, kumulativ) ---------- */
+  html.beamer{ --ink-dim:#3D4A5C; }
+  html.beamer .back-link{ display:none; }
+  html.beamer .app-footer{ display:none; }
+
+  html.beamer .scenario-text, html.beamer .story-text, html.beamer .ak-block,
+  html.beamer .piece, html.beamer .feedback, html.beamer .learning-note,
+  html.beamer .model-solution, html.beamer .hint-box, html.beamer .subtitle,
+  html.beamer .formula, html.beamer .quote-bubble, html.beamer .explain-panel p
+  { font-size: 22px; }
+  html.beamer h1, html.beamer .completion-card h2, html.beamer .backlog-explorer-title
+  { font-size: 44px; }
+  html.beamer .persona-tag, html.beamer .slot-label, html.beamer .column-label,
+  html.beamer .puzzle-progress, html.beamer .eyebrow, html.beamer .stars-mini,
+  html.beamer .story-id, html.beamer .story-persona, html.beamer .board-heading,
+  html.beamer .side-card-label, html.beamer .explain-placeholder
+  { font-size: 15px; color: var(--ink-dim); }
+
+  html.beamer-xl .scenario-text, html.beamer-xl .story-text, html.beamer-xl .ak-block,
+  html.beamer-xl .piece, html.beamer-xl .feedback, html.beamer-xl .learning-note,
+  html.beamer-xl .model-solution, html.beamer-xl .hint-box, html.beamer-xl .subtitle,
+  html.beamer-xl .formula, html.beamer-xl .quote-bubble, html.beamer-xl .explain-panel p
+  { font-size: 28px; }
+  html.beamer-xl h1, html.beamer-xl .completion-card h2, html.beamer-xl .backlog-explorer-title
+  { font-size: 54px; }
+  html.beamer-xl .persona-tag, html.beamer-xl .slot-label, html.beamer-xl .column-label,
+  html.beamer-xl .puzzle-progress, html.beamer-xl .eyebrow, html.beamer-xl .stars-mini,
+  html.beamer-xl .story-id, html.beamer-xl .story-persona, html.beamer-xl .board-heading,
+  html.beamer-xl .side-card-label, html.beamer-xl .explain-placeholder
+  { font-size: 18px; }
+
+  html.beamer-xxl .scenario-text, html.beamer-xxl .story-text, html.beamer-xxl .ak-block,
+  html.beamer-xxl .piece, html.beamer-xxl .feedback, html.beamer-xxl .learning-note,
+  html.beamer-xxl .model-solution, html.beamer-xxl .hint-box, html.beamer-xxl .subtitle,
+  html.beamer-xxl .formula, html.beamer-xxl .quote-bubble, html.beamer-xxl .explain-panel p
+  { font-size: 34px; }
+  html.beamer-xxl h1, html.beamer-xxl .completion-card h2, html.beamer-xxl .backlog-explorer-title
+  { font-size: 64px; }
+  html.beamer-xxl .persona-tag, html.beamer-xxl .slot-label, html.beamer-xxl .column-label,
+  html.beamer-xxl .puzzle-progress, html.beamer-xxl .eyebrow, html.beamer-xxl .stars-mini,
+  html.beamer-xxl .story-id, html.beamer-xxl .story-persona, html.beamer-xxl .board-heading,
+  html.beamer-xxl .side-card-label, html.beamer-xxl .explain-placeholder
+  { font-size: 21px; }
 
   /* ---------- Level Nav ---------- */
   .level-nav {
@@ -151,6 +191,200 @@
   .level-btn .stars-mini { color: var(--amber); letter-spacing: 1px; font-size: 0.9rem; }
   .level-btn.active { border-color: var(--blue); background: var(--blue-soft); }
   .level-btn.done::after { content: "✓"; color: var(--green); font-weight: 800; margin-left: 2px; }
+
+  /* ---------- Beispiel-Backlog Explorer ---------- */
+  .backlog-explorer { margin-bottom: 28px; }
+  .backlog-explorer-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin: 0 0 6px;
+  }
+  .backlog-explorer-intro {
+    margin: 0 0 16px;
+    color: var(--ink-soft);
+    font-size: 0.98rem;
+  }
+  .backlog-board {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  @media (max-width: 760px) {
+    .backlog-board { grid-template-columns: 1fr; }
+  }
+  .board-main {
+    background: #FCFCFD;
+    border: 2px solid var(--ink);
+    border-radius: 16px;
+    padding: 18px 20px 20px;
+  }
+  .board-heading {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 0 0 14px;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 8px;
+  }
+  .story-card {
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    background: #fff;
+  }
+  .story-card:last-child { margin-bottom: 0; }
+  .story-card-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .story-id {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--blue);
+    background: var(--blue-soft);
+    border-radius: 6px;
+    padding: 2px 8px;
+  }
+  .story-persona {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .story-text {
+    margin: 0 0 12px;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Hotspots */
+  .hs {
+    font: inherit;
+    border: none;
+    cursor: pointer;
+    padding: 1px 4px;
+    border-radius: 5px;
+    background: transparent;
+    text-decoration: underline dotted;
+    text-underline-offset: 3px;
+    min-height: 0;
+  }
+  .hs:hover, .hs:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+  .hs.active { outline: 3px solid var(--ink); outline-offset: 1px; }
+  .hs-role { color: var(--blue); background: var(--blue-soft); font-weight: 700; }
+  .hs-goal { color: var(--amber); background: var(--amber-soft); font-weight: 700; }
+  .hs-benefit { color: var(--green); background: var(--green-soft); font-weight: 700; }
+
+  .ak-block {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    background: var(--green-soft);
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    text-decoration: none;
+  }
+  .ak-label { font-weight: 800; color: var(--green); flex-shrink: 0; }
+  .ak-lines { display: flex; flex-direction: column; gap: 2px; color: var(--ink); }
+  .ak-lines b { color: var(--green); }
+  .ak-check { margin-left: auto; color: var(--green); font-weight: 800; flex-shrink: 0; }
+
+  .board-side { display: flex; flex-direction: column; gap: 14px; }
+  .side-card {
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    background: #fff;
+  }
+  .side-card-label {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    margin: 0 0 8px;
+  }
+  .formula {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.7;
+    background: transparent;
+  }
+  .formula-slot { color: var(--blue); font-weight: 700; font-style: normal; }
+  .stickies { display: flex; flex-wrap: wrap; gap: 10px; }
+  .sticky {
+    flex: 1 1 80px;
+    border-radius: 4px;
+    padding: 14px 10px;
+    font-weight: 800;
+    font-size: 0.95rem;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .sticky-blue { background: var(--blue-soft); color: var(--blue); }
+  .sticky-yellow { background: var(--amber-soft); color: var(--amber); }
+  .sticky-green { background: var(--green-soft); color: var(--green); }
+
+  .invest-stack {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 18px 10px;
+    background: linear-gradient(180deg, var(--amber-soft), #fff);
+    border: 2px dashed var(--amber);
+    border-radius: 10px;
+  }
+  .invest-badge {
+    font-family: var(--font-mono);
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    color: var(--amber);
+  }
+
+  .quote-bubble {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.5;
+    background: var(--blue-soft);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+
+  .explain-panel {
+    margin-top: 16px;
+    border: 2px solid var(--blue);
+    border-radius: 12px;
+    padding: 16px 20px;
+    background: var(--blue-soft);
+    min-height: 60px;
+  }
+  .explain-panel h3 { margin: 0 0 6px; font-size: 1.05rem; }
+  .explain-panel p { margin: 0; font-size: 0.98rem; line-height: 1.55; }
+  .explain-placeholder { margin: 0; color: var(--ink-soft); font-size: 0.95rem; }
 
   /* ---------- Scenario ---------- */
   .scenario-card {
@@ -479,6 +713,72 @@
   <h1>User Story Puzzle</h1>
   <p class="subtitle">Baue aus einzelnen Bausteinen korrekte User Stories – von der Grundformel bis zur vollständigen Spezifikation mit Akzeptanzkriterium, Business Value und Priorität.</p>
 
+  <section class="backlog-explorer" id="backlogExplorer">
+    <h2 class="backlog-explorer-title">Beispiel-Backlog erkunden</h2>
+    <p class="backlog-explorer-intro">Klicke auf die markierten Begriffe im Backlog – jeder Klick zeigt im Panel darunter, was diese Komponente einer guten User Story ausmacht.</p>
+    <div class="backlog-board">
+      <div class="board-main">
+        <p class="board-heading">Backlog – User Stories</p>
+
+        <article class="story-card">
+          <div class="story-card-head"><span class="story-id">US-001</span><span class="story-persona">Studierende</span></div>
+          <p class="story-text">Als <button class="hs hs-role" data-topic="rolle" type="button">Studierende</button> möchte ich mich <button class="hs hs-goal" data-topic="ziel" type="button">mit meinen Hochschul-Login-Daten anmelden können</button>, damit ich <button class="hs hs-benefit" data-topic="nutzen" type="button">schnell und sicher auf mein Konto zugreifen kann</button>.</p>
+          <button class="hs hs-ak ak-block" data-topic="ak" type="button">
+            <span class="ak-label">AK</span>
+            <span class="ak-lines"><span><b>Given</b> ein gültiges Hochschul-Konto</span><span><b>When</b> ich mich anmelde</span><span><b>Then</b> bin ich im System angemeldet</span></span>
+            <span class="ak-check">✓</span>
+          </button>
+        </article>
+
+        <article class="story-card">
+          <div class="story-card-head"><span class="story-id">US-002</span><span class="story-persona">Mitarbeitende</span></div>
+          <p class="story-text">Als <button class="hs hs-role" data-topic="rolle" type="button">Mitarbeitende</button> möchte ich <button class="hs hs-goal" data-topic="ziel" type="button">Dokumente hochladen</button>, damit ich <button class="hs hs-benefit" data-topic="nutzen" type="button">Informationen zentral ablegen kann</button>.</p>
+          <button class="hs hs-ak ak-block" data-topic="ak" type="button">
+            <span class="ak-label">AK</span>
+            <span class="ak-lines"><span><b>Given</b> ich bin angemeldet</span><span><b>When</b> ich ein Dokument hochlade</span><span><b>Then</b> ist es im richtigen Bereich gespeichert</span></span>
+            <span class="ak-check">✓</span>
+          </button>
+        </article>
+
+        <article class="story-card">
+          <div class="story-card-head"><span class="story-id">US-003</span><span class="story-persona">Prüfende</span></div>
+          <p class="story-text">Als <button class="hs hs-role" data-topic="rolle" type="button">Prüfende</button> möchte ich <button class="hs hs-goal" data-topic="ziel" type="button">Unterlagen suchen und finden</button>, damit ich <button class="hs hs-benefit" data-topic="nutzen" type="button">effizient bearbeiten kann</button>.</p>
+          <button class="hs hs-ak ak-block" data-topic="ak" type="button">
+            <span class="ak-label">AK</span>
+            <span class="ak-lines"><span><b>Given</b> ich suche nach einem Dokument</span><span><b>When</b> ich einen Suchbegriff eingebe</span><span><b>Then</b> erhalte ich passende Ergebnisse</span></span>
+            <span class="ak-check">✓</span>
+          </button>
+        </article>
+      </div>
+
+      <div class="board-side">
+        <div class="side-card">
+          <p class="side-card-label">📓 Notizbuch</p>
+          <button class="hs formula" data-topic="template" type="button">Als <span class="formula-slot">[ROLLE]</span> möchte ich <span class="formula-slot">[ZIEL]</span><br>damit <span class="formula-slot">[NUTZEN]</span></button>
+        </div>
+        <div class="side-card">
+          <p class="side-card-label">Leitfragen</p>
+          <div class="stickies">
+            <button class="hs sticky sticky-blue" data-topic="wer" type="button">WER?</button>
+            <button class="hs sticky sticky-yellow" data-topic="was" type="button">WAS?</button>
+            <button class="hs sticky sticky-green" data-topic="warum" type="button">WARUM?</button>
+          </div>
+        </div>
+        <div class="side-card">
+          <p class="side-card-label">📚 INVEST-Stapel</p>
+          <button class="hs invest-stack" data-topic="invest" type="button"><span class="invest-badge">INVEST</span></button>
+        </div>
+        <div class="side-card">
+          <button class="hs quote-bubble" data-topic="quality" type="button">„Gute User Stories sind klar, wertvoll und testbar."</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="explain-panel" id="explainPanel" aria-live="polite">
+      <p class="explain-placeholder" id="explainPlaceholder">Wähle einen markierten Punkt im Backlog, um die Erklärung hier zu lesen.</p>
+    </div>
+  </section>
+
   <nav class="level-nav" id="levelNav"></nav>
 
   <main id="puzzleStage">
@@ -522,12 +822,14 @@
         <summary class="footer-summary">Systemprompt</summary>
         <div class="footer-content footer-mono">
           <p>Dieses Tool trainiert die didaktische Kernthese ‚Requirements Engineering für User Stories': Eine gute Story entsteht nicht durch freies Formulieren, sondern durch das bewusste Erkennen und Ausschließen typischer Fehlformen – falsche Rolle, Lösung statt Bedarf, mehrere Anforderungen in einer Story, unklarer Nutzen, nicht belastbarer Business Value, willkürliche Priorisierung. Jede Distraktor-Option ist keine beliebige Verwechslung, sondern verkörpert einen realen, in Trainings wiederkehrenden Fehlertyp nach IREB, INVEST, BABOK v3 und MoSCoW. Die Progression über fünf Level folgt bewusst der Reihenfolge, in der Requirements-Engineering-Artefakte in der Praxis wachsen: Grundformel → präzise, INVEST-konforme Formulierung → Testbarkeit (Akzeptanzkriterium) → Wertbegründung (Business Value) → Entscheidung (Priorität).</p>
+          <p>Vor dem Puzzle steht die Sektion ‚Beispiel-Backlog erkunden': ein nachgebautes Backlog-Board mit drei vollständigen User Stories (US-001 bis US-003, je mit farblich hervorgehobener Rolle/Ziel/Nutzen und Akzeptanzkriterium im Given/When/Then-Block) sowie vier Seiten-Elementen (Notizbuch mit der Grundformel „Als [ROLLE] möchte ich [ZIEL] damit [NUTZEN]", drei Sticky Notes „WER? WAS? WARUM?", ein INVEST-Kartenstapel, ein Zitat „klar, wertvoll, testbar"). Jedes dieser Elemente ist ein `&lt;button class="hs" data-topic="..."&gt;`; ein Klick markiert den Hotspot (Rahmen) und schreibt Titel + Erklärungstext aus einem zentralen `EXPLANATIONS`-Objekt (Topic-Key → {title, text}) in ein einzelnes, immer sichtbares `#explainPanel` – bewusst kein Tooltip und kein eingebettetes Rasterbild, damit die Erklärung auch auf Touch-Geräten und beim Beamer-Einsatz aus der Distanz lesbar bleibt (K1/K3/K5). Design: gleiche Farbcodierung wie im restlichen Tool – Rolle = Blau, Ziel = Amber, Nutzen = Grün, Akzeptanzkriterium = Grün mit Häkchen. Nicht-tun: keine zweite Interaktionslogik parallel zum Puzzle-Mechanismus aufbauen (kein Drag&amp;Drop, kein Scoring in dieser Sektion); keine neuen Normen-Referenzen einführen, die nicht auch im Puzzle selbst oder im Normen-Register belegt sind; kein Rasterbild/Cartoon einbetten, auch nicht nachträglich, ohne erneute K1-Offline- und K5-Beamer-Prüfung.</p>
         </div>
       </details>
       <details class="footer-box">
         <summary class="footer-summary">Handbuch</summary>
         <div class="footer-content footer-sans">
-          <p><strong>Bedienung:</strong> Baustein antippen und ziehen – oder antippen zum Auswählen, dann die Ziel-Lücke antippen. Ein zweites Antippen eines ausgewählten Bausteins hebt die Auswahl wieder auf. Bereits platzierte Bausteine lassen sich erneut antippen, um sie zu verschieben oder zurück in den Pool zu legen.</p>
+          <p><strong>Beispiel-Backlog:</strong> Vor dem eigentlichen Puzzle steht ein anklickbares Backlog mit drei fertigen User Stories. Klick auf einen markierten Begriff (Rolle/Ziel/Nutzen je Story, das Akzeptanzkriterium, die Grundformel im Notizbuch, die drei WER/WAS/WARUM-Stickies, den INVEST-Stapel oder das Zitat) zeigt die Erklärung im Panel darunter – erneuter Klick auf einen anderen Punkt ersetzt den Inhalt, das Panel selbst bleibt sichtbar stehen. Gut geeignet, um vor dem Puzzle gemeinsam die Grundbegriffe durchzugehen, bevor die Teilnehmenden selbst bauen.</p>
+          <p><strong>Bedienung (Puzzle):</strong> Baustein antippen und ziehen – oder antippen zum Auswählen, dann die Ziel-Lücke antippen. Ein zweites Antippen eines ausgewählten Bausteins hebt die Auswahl wieder auf. Bereits platzierte Bausteine lassen sich erneut antippen, um sie zu verschieben oder zurück in den Pool zu legen.</p>
           <p><strong>Prüfen:</strong> Der Button ‚Prüfen' markiert jede Lücke grün (korrekt) oder rot (falsch/leer) und liefert bei falschen Bausteinen eine fachliche Begründung. Mehrere Versuche sind möglich. ‚Zurücksetzen' leert die aktuelle Aufgabe wieder in den Pool.</p>
           <p><strong>Level:</strong> Alle fünf Level sind frei zugänglich – ideal, um im Workshop gezielt auf ein bestimmtes Level zu springen. Jedes Level enthält zwei Aufgaben; ein Häkchen in der Navigation zeigt abgeschlossene Level.</p>
         </div>
@@ -535,9 +837,10 @@
       <details class="footer-box">
         <summary class="footer-summary">Vortrags-Skript</summary>
         <div class="footer-content footer-sans">
-          <p><strong>Einsatzdauer:</strong> ca. 15–20 Minuten als Übungsblock, z. B. nach der Einführung der Grundformel ‚Als … möchte ich … damit …'.</p>
-          <p><strong>Ablauf:</strong> (1) Level 1 gemeinsam am Beamer lösen – laut denken, warum jeder Distraktor falsch ist. (2) Level 2–3 in Kleingruppen oder Einzelarbeit auf eigenen Geräten. (3) Level 4–5 als Transfer-Diskussion: Warum reicht ‚weil die Chefin es will' nicht als Business Value? Wann ist etwas wirklich Must-have?</p>
+          <p><strong>Einsatzdauer:</strong> ca. 20–25 Minuten als Übungsblock (5 Minuten Beispiel-Backlog + 15–20 Minuten Puzzle), z. B. nach der Einführung der Grundformel ‚Als … möchte ich … damit …'.</p>
+          <p><strong>Ablauf:</strong> (1) <em>(Klick auf die Rolle in US-001, dann auf Ziel, dann auf Nutzen)</em> „Bevor wir puzzeln, schauen wir uns ein fertiges Backlog an. Ich klicke auf die einzelnen Begriffe – ihr seht sofort, was Rolle, Ziel und Nutzen unterscheidet." <em>(Klick auf den AK-Block)</em> „Und hier, das Akzeptanzkriterium im Given-When-Then-Format, macht die Story überhaupt erst testbar." <em>(optional: Klick auf INVEST-Stapel und Notizbuch)</em> „Das sind die beiden Leitplanken, die wir gleich im Puzzle brauchen." Damit ist der Übergang zum Puzzle gesetzt. (2) Level 1 gemeinsam am Beamer lösen – laut denken, warum jeder Distraktor falsch ist. (3) Level 2–3 in Kleingruppen oder Einzelarbeit auf eigenen Geräten. (4) Level 4–5 als Transfer-Diskussion: Warum reicht ‚weil die Chefin es will' nicht als Business Value? Wann ist etwas wirklich Must-have?</p>
           <p><strong>Debrief-Fragen:</strong> Welcher Distraktor hat euch am meisten überrascht? Wo formuliert ihr in eurem Alltag manchmal schon eine Lösung statt eines Bedarfs? Wie begründet ihr Business Value in eurem Team aktuell – nachvollziehbar oder eher gefühlt?</p>
+          <p><strong>Regie-Hinweis:</strong> Das Beispiel-Backlog nicht komplett durchklicken, bevor die Gruppe eigene Gedanken äußern konnte – erst nach einer kurzen Zuruf-Runde („Was fällt euch an dieser Story auf?") die Hotspots als Bestätigung/Vertiefung nutzen, nicht als Vortrag im Alleingang.</p>
         </div>
       </details>
       <details class="footer-box">
@@ -562,6 +865,38 @@
 <script>
 (function () {
   "use strict";
+
+  // ---------------------------------------------------------------
+  // Beispiel-Backlog: Hotspot-Erklärungen
+  // ---------------------------------------------------------------
+  const EXPLANATIONS = {
+    rolle: { title: "Rolle · „Als …”", text: "Die Rolle ist die reale Person oder Nutzergruppe mit dem Bedarf – niemals eine System-Komponente oder Abteilung im Abstrakten. Test: Kannst du dir eine konkrete Person vorstellen, die diesen Satz sagt? (IREB CPRE: Stakeholder-Perspektive)" },
+    ziel: { title: "Ziel · „möchte ich …”", text: "Das Ziel beschreibt, WAS die Rolle tun will – als Bedarf, nicht als technische Lösung. Wer schon die Lösung formuliert (z. B. „ich möchte ein neues Datenbankschema”), begeht den IREB-Nebeltyp „Lösung statt Bedarf”." },
+    nutzen: { title: "Nutzen · „damit …”", text: "Der Nutzen ist der Test für echten Business Value: Warum lohnt sich das Ziel? Ohne ein tragfähiges „damit” bleibt eine Story eine reine Funktionsliste ohne erkennbaren Wert (BABOK v3: Value Assessment)." },
+    ak: { title: "Akzeptanzkriterium (Given/When/Then)", text: "Macht die Story testbar (IREB-Qualitätskriterium „testbar”). Given = Ausgangslage, When = auslösendes Ereignis, Then = erwartetes, prüfbares Ergebnis – das Gherkin/BDD-Format." },
+    template: { title: "Grundformel", text: "„Als [ROLLE] möchte ich [ZIEL] damit [NUTZEN]” verbindet die drei W-Fragen zu einem Satz. Fehlt eine Komponente, ist die Story unvollständig – das ist der erste Check beim Schreiben." },
+    wer: { title: "WER? → Rolle", text: "Die erste Leitfrage hinter der Grundformel: Wer genau hat diesen Bedarf? Eine unscharfe Antwort wie „die Nutzer” ist ein Warnsignal – je konkreter die Rolle, desto testbarer die Story." },
+    was: { title: "WAS? → Ziel", text: "Die zweite Leitfrage: Was will die Rolle konkret tun können? Wichtig: WAS beschreibt den Bedarf, nicht schon das WIE – die technische Umsetzung gehört nicht in die Story." },
+    warum: { title: "WARUM? → Nutzen", text: "Die dritte Leitfrage erzwingt eine Wertbegründung – ohne sie bleibt unklar, ob sich die Story überhaupt lohnt und wie sie priorisiert werden sollte." },
+    invest: { title: "INVEST-Kriterien", text: "Independent, Negotiable, Valuable, Estimable, Small, Testable (Bill Wake, 2003). Eine gute Story erfüllt alle sechs – sie bündelt z. B. nicht mehrere Anforderungen (Small) und liefert erkennbaren Wert (Valuable)." },
+    quality: { title: "Klar, wertvoll, testbar", text: "Die Kurzformel für eine gute User Story: klar formuliert (IREB: eindeutig), wertvoll (Business Value erkennbar) und testbar (Akzeptanzkriterium vorhanden). Fehlt eine der drei Eigenschaften, lohnt sich ein zweiter Blick." }
+  };
+
+  (function () {
+    const board = document.getElementById("backlogExplorer");
+    const panel = document.getElementById("explainPanel");
+    if (!board || !panel) return;
+    board.addEventListener("click", function (e) {
+      const hs = e.target.closest(".hs");
+      if (!hs || !board.contains(hs)) return;
+      const topic = hs.dataset.topic;
+      const data = EXPLANATIONS[topic];
+      if (!data) return;
+      board.querySelectorAll(".hs.active").forEach(function (el) { el.classList.remove("active"); });
+      hs.classList.add("active");
+      panel.innerHTML = "<h3>" + data.title + "</h3><p>" + data.text + "</p>";
+    });
+  })();
 
   // ---------------------------------------------------------------
   // Puzzle-Daten
@@ -1225,22 +1560,28 @@
   }
 
   // ---------------------------------------------------------------
-  // Beamer-Modus
+  // Beamer-Modus (vierstufig, kumulativ)
   // ---------------------------------------------------------------
-  const BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
+  const BEAMER_LEVELS = [
+    { classes: [],                                    label: "🔍 Beamer-Modus" },
+    { classes: ["beamer"],                             label: "🔍 Beamer XL" },
+    { classes: ["beamer", "beamer-xl"],                label: "🔍 Beamer XXL" },
+    { classes: ["beamer", "beamer-xl", "beamer-xxl"],  label: "🔍 Normal" }
+  ];
   (function () {
     let level = 0;
     try { level = Number(localStorage.getItem("userStoryPuzzle_beamer")) || 0; } catch (e) {}
-    if (!(level >= 0 && level <= 2)) level = 0;
+    if (!(level >= 0 && level <= 3)) level = 0;
+    const btn = document.getElementById("beamerToggle");
     function applyBeamerLevel(l) {
-      document.documentElement.setAttribute("data-beamer", String(l));
-      const btn = document.getElementById("beamerToggle");
-      btn.textContent = BEAMER_LABELS[l];
+      document.documentElement.classList.remove("beamer", "beamer-xl", "beamer-xxl");
+      BEAMER_LEVELS[l].classes.forEach(function (c) { document.documentElement.classList.add(c); });
+      btn.textContent = BEAMER_LEVELS[l].label;
       btn.classList.toggle("active", l > 0);
     }
     applyBeamerLevel(level);
-    document.getElementById("beamerToggle").addEventListener("click", function () {
-      level = (level + 1) % BEAMER_LABELS.length;
+    btn.addEventListener("click", function () {
+      level = (level + 1) % BEAMER_LEVELS.length;
       try { localStorage.setItem("userStoryPuzzle_beamer", String(level)); } catch (e) {}
       applyBeamerLevel(level);
     });
