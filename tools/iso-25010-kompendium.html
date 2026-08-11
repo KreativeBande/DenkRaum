@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>ISO/IEC 25010:2023 Kompendium · Michaela Kühn</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#f6f8fc; --panel:#ffffff; --ink:#1f2937; --ink-dim:#6b7280; --line:#d9e1ea;
+    --accent:#b91c1c; --accent-soft:#fee2e2;
+    --blue:#1d4ed8; --blue-soft:#dbeafe;
+    --violet:#4f46e5; --violet-soft:#e8e6fb;
+    --green:#15803d; --green-soft:#e9f7ee;
+    --amber:#92400e; --amber-soft:#fef3c7;
+    --teal:#0f766e; --teal-soft:#ccfbf1;
+    --card:#f7f8f9;
+    --mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --shadow:0 16px 34px rgba(15,23,42,.08);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);color-scheme:light;}
+  body{font-family:var(--sans);font-size:16px;line-height:1.55;
+    background:
+      radial-gradient(circle at top left, #fff7f7 0%, transparent 22%),
+      radial-gradient(circle at top right, #eef4ff 0%, transparent 20%),
+      linear-gradient(180deg,#fbfcff 0%,#f4f6fa 100%);
+  }
+  button{touch-action:manipulation;-webkit-user-select:none;user-select:none;font-family:var(--sans);}
+  .app{max-width:1180px;margin:0 auto;padding:20px 24px 56px;}
+
+  /* ---------- Topbar & Signatur ---------- */
+  /* Beamer-Button steht bewusst links neben dem Zurück-Link statt rechts, damit er nicht mit der
+     fix positionierten Signatur (oben rechts) kollidiert. */
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:6px;}
+  .back-link{display:inline-block;font-size:14px;font-weight:700;color:var(--ink-dim);text-decoration:none;}
+  .back-link:hover{color:var(--accent);}
+  .signature{
+    position:fixed;top:14px;right:28px;z-index:30;
+    background:rgba(255,255,255,.92);padding:5px 10px;border-radius:10px;
+    font-size:13px;font-weight:700;color:var(--ink);text-align:right;text-decoration:none;line-height:1.4;white-space:nowrap;
+  }
+  .signature span{display:block;font-weight:500;color:var(--ink-dim);font-size:11.5px;}
+  .signature:hover, .signature:hover span{color:var(--accent);}
+  .beamer-btn{
+    background:transparent;border:1.5px solid var(--line);color:var(--ink-dim);
+    font-size:14px;font-weight:700;padding:9px 18px;border-radius:999px;cursor:pointer;min-height:40px;
+  }
+  .beamer-btn:hover{border-color:var(--accent);color:var(--ink);}
+  html.beamer .beamer-btn, html.beamer-xl .beamer-btn, html.beamer-xxl .beamer-btn{
+    background:var(--ink);color:#fff;border-color:var(--ink);
+  }
+  @media(max-width:900px){
+    .signature{position:static;display:block;background:none;padding:0;text-align:right;margin-bottom:6px;}
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;
+    box-shadow:var(--shadow);padding:32px 34px 28px;margin:16px 0 26px;
+  }
+  .eyebrow{display:block;font-size:13px;letter-spacing:.12em;font-weight:700;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+  .hero h1{margin:0 0 10px;font-size:clamp(26px,3.6vw,38px);line-height:1.1;
+    background:linear-gradient(100deg,var(--ink) 55%,var(--accent) 120%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero p.lead{margin:0;color:var(--ink-dim);font-size:17px;line-height:1.6;}
+
+  /* ---------- Grundlagen-Karten ---------- */
+  h2.section-title{font-size:22px;margin:34px 0 6px;}
+  p.section-sub{color:var(--ink-dim);margin:0 0 18px;font-size:15px;line-height:1.6;}
+  .basics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;}
+  .basics-card{border:1px solid var(--line);border-radius:16px;background:#fff;padding:18px 20px;box-shadow:0 6px 16px rgba(15,23,42,.03);}
+  .basics-card h3{margin:0 0 8px;font-size:15.5px;color:var(--ink);}
+  .basics-card p{margin:0 0 8px;font-size:14px;color:var(--ink-dim);line-height:1.55;}
+  .basics-card p:last-child{margin-bottom:0;}
+  .basics-card .example{background:var(--card);border-radius:8px;padding:8px 10px;font-size:13.5px;color:var(--ink);font-family:var(--mono);}
+
+  /* ---------- FA-Auswahl ---------- */
+  .fa-picker{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
+  .fa-chip{
+    background:#fff;border:2px solid var(--line);border-radius:12px;padding:11px 16px;
+    font-size:14.5px;font-weight:700;color:var(--ink);cursor:pointer;text-align:left;min-height:44px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .fa-chip:hover{border-color:var(--accent);}
+  .fa-chip.active{border-color:var(--accent);background:var(--accent-soft);}
+  .fa-display{
+    border-left:6px solid var(--accent);background:var(--card);border-radius:4px;
+    padding:16px 20px;margin-bottom:26px;
+  }
+  .fa-display .tag{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+  .fa-display p{margin:0;font-size:16px;font-weight:600;line-height:1.5;}
+
+  /* ---------- 9-Merkmale-Grid ---------- */
+  .char-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:22px;}
+  .char-card{
+    position:relative;text-align:left;border:2px solid var(--line);border-radius:16px;background:#fff;
+    padding:14px 16px 14px 16px;cursor:pointer;min-height:96px;
+    transition:border-color .15s ease, box-shadow .15s ease, transform .1s ease;
+  }
+  .char-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+  .char-card.selected{border-color:var(--accent);box-shadow:0 8px 20px rgba(185,28,28,.14);}
+  .char-num{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:700;color:#fff;background:var(--ink);
+    border-radius:999px;width:22px;height:22px;line-height:22px;text-align:center;margin-bottom:6px;}
+  .char-card.selected .char-num{background:var(--accent);}
+  .char-de{margin:0 0 2px;font-size:15px;font-weight:700;color:var(--ink);}
+  .char-en{margin:0 0 8px;font-size:12.5px;color:var(--ink-dim);font-style:italic;}
+  .char-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;letter-spacing:.02em;}
+  .char-badge.unchanged{background:var(--card);color:var(--ink-dim);}
+  .char-badge.renamed{background:var(--amber-soft);color:var(--amber);}
+  .char-badge.new{background:var(--green-soft);color:var(--green);}
+
+  /* ---------- Detail-Panel (Split, kein Sliding) ---------- */
+  .detail-panel{border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:0 10px 26px rgba(15,23,42,.05);overflow:hidden;margin-bottom:26px;}
+  .detail-head{background:var(--ink);color:#fff;padding:18px 24px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .detail-head .p-name{margin:0;font-size:22px;font-weight:800;}
+  .detail-head .p-en{font-size:14px;color:#cbd5e1;font-style:italic;}
+  .detail-body{padding:22px 24px;}
+  .detail-def{font-size:15.5px;line-height:1.65;color:var(--ink);margin:0 0 18px;}
+  .sub-list{list-style:none;margin:0 0 20px;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px;}
+  .sub-list li{background:var(--card);border-radius:10px;padding:9px 12px;font-size:13.5px;line-height:1.5;}
+  .sub-name{font-weight:700;color:var(--ink);display:block;margin-bottom:2px;font-size:14px;}
+
+  .demo-split{display:grid;grid-template-columns:1fr 1fr;gap:16px;border-top:1px dashed var(--line);padding-top:18px;}
+  @media(max-width:760px){ .demo-split{grid-template-columns:1fr;} }
+  .demo-box{background:var(--card);border-radius:14px;padding:16px 18px;}
+  .demo-box .tag{display:block;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);margin-bottom:8px;}
+  .demo-box.us .tag{color:var(--blue);}
+  .nfa-text{font-size:14.5px;line-height:1.6;color:var(--ink);margin:0;}
+  .story-text{font-size:14.5px;line-height:1.55;color:var(--ink);margin:0 0 10px;font-style:italic;}
+  .ac-block{font-family:var(--mono);font-size:13px;line-height:1.75;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 12px;}
+  .ac-block b{color:var(--blue);}
+
+  /* ---------- 2011→2023 Tabelle ---------- */
+  .compare-table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px;}
+  .compare-table th, .compare-table td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top;}
+  .compare-table th{background:var(--ink);color:#fff;font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;}
+  .compare-table tr:nth-child(even) td{background:var(--card);}
+  .compare-table-wrap{overflow-x:auto;border-radius:12px;}
+
+  .crosslink{margin-top:20px;font-size:14px;color:var(--ink-dim);}
+  .crosslink a{color:var(--accent);font-weight:700;text-decoration:none;}
+  .crosslink a:hover{text-decoration:underline;}
+  .crosslink ul{margin:8px 0 0;padding-left:20px;}
+  .crosslink li{margin-bottom:4px;}
+
+  /* ---------- Footer ---------- */
+  .app-footer{margin-top:44px;border-top:3px solid var(--ink);padding-top:18px;}
+  .footer-details{display:flex;flex-direction:column;}
+  .footer-box{border-bottom:1px solid var(--line);padding:10px 0;}
+  .footer-summary{cursor:pointer;font-weight:700;font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:.04em;color:var(--blue);min-height:44px;display:flex;align-items:center;}
+  .footer-content{padding:6px 0 14px;}
+  .footer-content p, .footer-content li{font-size:14px;color:var(--ink-dim);line-height:1.6;}
+  .footer-content ul{padding-left:20px;margin:8px 0;}
+  .footer-mono{font-family:var(--mono);}
+  .footer-mono p{font-size:13.5px;}
+  .footer-sans{font-family:var(--sans);}
+  .footer-table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:6px;}
+  .footer-table th, .footer-table td{border:1px solid var(--line);padding:7px 10px;text-align:left;}
+  .footer-table th{background:var(--card);font-weight:700;}
+  .footer-sig{margin-top:16px;font-size:13px;color:var(--ink-dim);line-height:1.6;}
+  .footer-sig strong{color:var(--ink);}
+
+  @media(max-width:640px){
+    .app{padding:16px}
+    .hero{padding:24px 20px 20px}
+    .topbar{flex-direction:column}
+  }
+
+  /* ================= BEAMER-MODUS (vierstufig, kumulativ) ================= */
+  html.beamer{ --ink-dim:#3D4A5C; }
+  html.beamer .app-footer{ display:none; }
+  html.beamer .back-link, html.beamer .signature{ display:none; }
+
+  html.beamer .hero p.lead, html.beamer .basics-card p, html.beamer .detail-def,
+  html.beamer .sub-list li, html.beamer .nfa-text, html.beamer .story-text,
+  html.beamer .ac-block, html.beamer .fa-display p, html.beamer p.section-sub,
+  html.beamer .compare-table, html.beamer .fa-chip, html.beamer .char-de{ font-size:22px; }
+  html.beamer .hero h1{ font-size:44px; }
+  html.beamer .detail-head .p-name{ font-size:44px; }
+  html.beamer .char-en, html.beamer .detail-head .p-en, html.beamer .sub-name{ font-size:26px; }
+  html.beamer .eyebrow, html.beamer .char-badge, html.beamer .char-num,
+  html.beamer .demo-box .tag, html.beamer .fa-display .tag{ font-size:15px; }
+
+  html.beamer-xl .hero p.lead, html.beamer-xl .basics-card p, html.beamer-xl .detail-def,
+  html.beamer-xl .sub-list li, html.beamer-xl .nfa-text, html.beamer-xl .story-text,
+  html.beamer-xl .ac-block, html.beamer-xl .fa-display p, html.beamer-xl p.section-sub,
+  html.beamer-xl .compare-table, html.beamer-xl .fa-chip, html.beamer-xl .char-de{ font-size:28px; }
+  html.beamer-xl .hero h1{ font-size:54px; }
+  html.beamer-xl .detail-head .p-name{ font-size:54px; }
+  html.beamer-xl .char-en, html.beamer-xl .detail-head .p-en, html.beamer-xl .sub-name{ font-size:32px; }
+  html.beamer-xl .eyebrow, html.beamer-xl .char-badge, html.beamer-xl .char-num,
+  html.beamer-xl .demo-box .tag, html.beamer-xl .fa-display .tag{ font-size:18px; }
+
+  html.beamer-xxl .hero p.lead, html.beamer-xxl .basics-card p, html.beamer-xxl .detail-def,
+  html.beamer-xxl .sub-list li, html.beamer-xxl .nfa-text, html.beamer-xxl .story-text,
+  html.beamer-xxl .ac-block, html.beamer-xxl .fa-display p, html.beamer-xxl p.section-sub,
+  html.beamer-xxl .compare-table, html.beamer-xxl .fa-chip, html.beamer-xxl .char-de{ font-size:34px; }
+  html.beamer-xxl .hero h1{ font-size:64px; }
+  html.beamer-xxl .detail-head .p-name{ font-size:64px; }
+  html.beamer-xxl .char-en, html.beamer-xxl .detail-head .p-en, html.beamer-xxl .sub-name{ font-size:38px; }
+  html.beamer-xxl .eyebrow, html.beamer-xxl .char-badge, html.beamer-xxl .char-num,
+  html.beamer-xxl .demo-box .tag, html.beamer-xxl .fa-display .tag{ font-size:21px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <button class="beamer-btn" id="beamerBtn" type="button" title="Vergrößert die Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">☀ Beamer</button>
+  </header>
+  <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer"><strong>Michaela Kühn</strong><span>www.michaela-kuehn.com</span></a>
+
+  <section class="hero">
+    <span class="eyebrow">RE-Norm-Kompendium</span>
+    <h1>ISO/IEC 25010:2023 — Kompendium der Softwarequalität</h1>
+    <p class="lead">Ein Nachschlagewerk zu allen neun Qualitätsmerkmalen der Edition 2023 (SQuaRE) — und gleichzeitig ein Demonstrator: Wähle eine funktionale Anforderung (FA), klicke dich durch die neun Merkmale und sieh live, wie daraus konkrete nicht-funktionale Anforderungen (NFAs) und testbare User Stories mit Akzeptanzkriterium entstehen.</p>
+  </section>
+
+  <h2 class="section-title">Grundlagen in 90 Sekunden</h2>
+  <p class="section-sub">Drei Begriffe, die dieses Kompendium ständig gegenüberstellt — als kurze Auffrischung vor dem eigentlichen Nachschlagewerk.</p>
+  <div class="basics-grid">
+    <div class="basics-card">
+      <h3>📐 ISO/IEC 25010 — was ist das?</h3>
+      <p>Teil der ISO/IEC-25000-Normenreihe (SQuaRE — Systems and Software Quality Requirements and Evaluation). Definiert ein Produktqualitätsmodell mit Hauptmerkmalen und Untermerkmalen, gegen die sich Softwarequalität systematisch beschreiben lässt.</p>
+      <p><strong>Edition 2023</strong> ersetzt die Fassung von 2011: aus 8 wurden 9 Hauptmerkmale (siehe Vergleichstabelle unten). Ältere Trainingsunterlagen mit „Usability" statt „Interaction Capability" oder ohne „Safety" zitieren noch 2011.</p>
+    </div>
+    <div class="basics-card">
+      <h3>🔀 Funktional (FA) vs. nicht-funktional (NFA)</h3>
+      <p>Eine <strong>FA</strong> beschreibt, <em>was</em> ein System tun soll (eine Funktion, ein Verhalten). Eine <strong>NFA</strong> beschreibt, <em>wie gut</em> es das tun muss — Qualitätsanforderungen, meist entlang der neun ISO-25010-Merkmale.</p>
+      <div class="example">FA: „Nutzer:in kann sich anmelden."<br>NFA: „… in ≤800ms (P95) bei 200 gleichzeitigen Logins."</div>
+    </div>
+    <div class="basics-card">
+      <h3>📝 User Story &amp; Akzeptanzkriterium</h3>
+      <p>Eine User Story übersetzt eine Anforderung in die Formel <strong>„Als … möchte ich … damit …"</strong>. Das Akzeptanzkriterium macht sie im Gherkin-Format testbar: <strong>Given</strong> (Ausgangszustand) — <strong>When</strong> (Aktion) — <strong>Then</strong> (erwartetes Ergebnis).</p>
+      <p>Im Demonstrator unten bekommt jede NFA genau eine solche User Story mit Akzeptanzkriterium zur Seite gestellt.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Demonstrator: Eine FA, neun Spuren</h2>
+  <p class="section-sub">Wähle eine Ausgangs-FA, dann ein Qualitätsmerkmal — das Panel darunter zeigt Definition, Untermerkmale und die daraus abgeleitete NFA samt User Story.</p>
+
+  <div class="fa-picker" id="faPicker"></div>
+  <div class="fa-display">
+    <span class="tag">Ausgangs-FA</span>
+    <p id="faText">—</p>
+  </div>
+
+  <div class="char-grid" id="charGrid"></div>
+
+  <div class="detail-panel">
+    <div class="detail-head">
+      <span class="p-name" id="detailName">—</span>
+      <span class="p-en" id="detailEn"></span>
+    </div>
+    <div class="detail-body">
+      <p class="detail-def" id="detailDef"></p>
+      <ul class="sub-list" id="detailSubs"></ul>
+      <div class="demo-split">
+        <div class="demo-box nfa">
+          <span class="tag">→ Abgeleitete NFA</span>
+          <p class="nfa-text" id="detailNfa"></p>
+        </div>
+        <div class="demo-box us">
+          <span class="tag">→ User Story mit Akzeptanzkriterium</span>
+          <p class="story-text" id="detailStory"></p>
+          <div class="ac-block" id="detailAc"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">2011 → 2023: Was hat sich geändert?</h2>
+  <p class="section-sub">Von 8 auf 9 Hauptmerkmale — zwei Umbenennungen, ein völlig neues Merkmal, mehrere neue Untermerkmale.</p>
+  <div class="compare-table-wrap">
+    <table class="compare-table">
+      <thead><tr><th>Merkmal 2023</th><th>Merkmal 2011</th><th>Was ist neu?</th></tr></thead>
+      <tbody>
+        <tr><td>Functional Suitability</td><td>Functional Suitability</td><td>unverändert</td></tr>
+        <tr><td>Performance Efficiency</td><td>Performance Efficiency</td><td>unverändert</td></tr>
+        <tr><td>Compatibility</td><td>Compatibility</td><td>unverändert</td></tr>
+        <tr><td>Interaction Capability</td><td>Usability</td><td>umbenannt; + User Engagement, Inclusivity, Self-Descriptiveness</td></tr>
+        <tr><td>Reliability</td><td>Reliability</td><td>Untermerkmal „Maturity" → „Faultlessness"</td></tr>
+        <tr><td>Security</td><td>Security</td><td>+ Resistance</td></tr>
+        <tr><td>Maintainability</td><td>Maintainability</td><td>unverändert</td></tr>
+        <tr><td>Flexibility</td><td>Portability</td><td>umbenannt; + Scalability</td></tr>
+        <tr><td>Safety</td><td><em>(existierte nicht)</em></td><td>komplett neu in Edition 2023</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="crosslink">
+    Verwandte Denkraum-Tools zu diesem Thema:
+    <ul>
+      <li><a href="./re-waschmaschine.html">RE-Waschmaschine</a> — leitet aus einer einzelnen FA live NFAs und ISO/IEC-27001-Sicherheitsmaßnahmen ab.</li>
+      <li><a href="./anforderungsboard-iso.html">Anforderungs-Board · ISO 25010 &amp; ISO 27001</a> — klassifiziert 17 Anforderungskarten eines Kundenportal-Falls per Drag-and-Drop.</li>
+      <li><a href="./fa-nfa-rollen-spuren.html">FA → NFA / Rollen: Die Spuren einer Anforderung</a> — zerlegt eine FA über sechs Rechts- und Qualitätsspuren, mit Rollen-Perspektive.</li>
+      <li><a href="./user-story-puzzle.html">User Story Puzzle</a> — vertieft die User-Story-Formel und INVEST-Kriterien als eigenständiges Übungstool.</li>
+    </ul>
+  </p>
+
+  <footer class="app-footer">
+    <div class="footer-details">
+      <details class="footer-box" open>
+        <summary class="footer-summary">Systemprompt</summary>
+        <div class="footer-content footer-mono">
+          <p>Baue ein einzelnes HTML-Trainingstool „ISO/IEC 25010:2023 Kompendium", das zwei Funktionen in einem Werkzeug vereint: (1) ein vollständiges Nachschlagewerk zu allen neun Hauptmerkmalen des ISO/IEC-25010-Produktqualitätsmodells (Edition 2023, SQuaRE-Reihe) inklusive Untermerkmalen und Änderungen gegenüber der Fassung 2011, und (2) einen Live-Demonstrator, der zeigt, wie aus ein und derselben funktionalen Anforderung (FA) neun unterschiedliche nicht-funktionale Anforderungen (NFAs) — eine pro Qualitätsmerkmal — sowie dazu passende User Stories mit Gherkin-Akzeptanzkriterium abgeleitet werden.</p>
+          <p><strong>Struktur:</strong> Topbar (Zurück-Link, Signatur oben rechts fix, vierstufiger Beamer-Button) → Hero (Eyebrow, H1, Lead-Absatz) → drei „Grundlagen"-Karten (ISO 25010 im Überblick, FA vs. NFA, User Story &amp; Akzeptanzkriterium) → FA-Auswahl (3 Chips mit domänenneutralen Kundenportal-Szenarien: Login, Rechnung als PDF, Support-Anfrage) → hervorgehobene Anzeige der gewählten FA → 9er-Grid der Qualitätsmerkmale (klickbare Karten mit Nummer, DE/EN-Name, Änderungs-Badge unverändert/umbenannt/neu) → Detail-Panel darunter (kein Sliding-Panel, immer sichtbarer fester Bereich, der bei Auswahl aktualisiert wird): Merkmalsname DE/EN, Definition, Untermerkmale-Liste mit Kurzerklärung, dann zweispaltig NFA-Box und User-Story-Box mit Akzeptanzkriterium für die aktuelle Kombination aus FA × Merkmal → Vergleichstabelle 2011→2023 → Crosslink-Liste zu verwandten Denkraum-Tools → Footer mit vier Boxen.</p>
+          <p><strong>Inhalt pro Spur:</strong> Für jede der drei FA-Szenarien und jedes der neun Merkmale existiert eine eigene, konkrete NFA (mit Zahl/Schwellenwert/Norm-Bezug statt „angemessen" oder „ausreichend") plus eine dazu passende User Story im Format „Als … möchte ich … damit …" mit dreizeiligem Given/When/Then-Akzeptanzkriterium. Bei rein technischen NFAs ohne direkten Endnutzen (z. B. Maintainability, Flexibility) wird die Story als Enabler-Story aus Team-/Betriebssicht formuliert, nicht künstlich auf eine Endnutzerin umgebogen.</p>
+          <p><strong>Design-Vorgaben:</strong> Gleiche Design-Sprache wie die übrigen Denkraum-Tools (Radial-Gradient-Hintergrund, abgerundete Karten, Akzentfarbe Rot #b91c1c für Hervorhebungen, Blau für User-Story-Boxen, Teal für NFA-Boxen). Kein Drag-and-Drop, keine Sliding-Panels — die Detailansicht ist ein permanent sichtbarer Bereich, der per Klick aktualisiert wird (K6). Vierstufiger Beamer-Modus nach kanonischem Muster (Normal → Beamer → Beamer XL → Beamer XXL), Footer ab Stufe 1 ausgeblendet.</p>
+          <p><strong>Persona-Bezug:</strong> Bewusst kein fester Denkraum-Personencast (Ela/Knut/Sarah/Petra/Herr Bachmeier) — die drei FA-Szenarien nutzen domänenneutrale Rollen („Kundin", „Entwicklerteam", „Support-Team", „Produktteam"), damit das Kompendium als eigenständiges Nachschlagewerk unabhängig von einem bestimmten Firmenkontext funktioniert, analog zum Beispiel-Backlog im User Story Puzzle.</p>
+          <p><strong>Nicht-tun:</strong> Keine zusätzliche vierte oder fünfte FA einführen, ohne für alle neun Merkmale ebenso konkrete NFAs und Stories zu ergänzen — lieber wenige FAs vollständig als viele FAs lückenhaft. Keine generischen NFA-Formulierungen ohne Zahl/Schwellenwert (K8). Keine Vermischung der drei FA-Szenarien innerhalb einer einzelnen NFA/Story. Kein Ersatz der Vergleichstabelle 2011→2023 durch reinen Fließtext — die Tabellenform ist hier bewusst gewählt, weil sie Nachschlagen erleichtert.</p>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary">Handbuch</summary>
+        <div class="footer-content footer-sans">
+          <p><strong>Framework:</strong> RTF (Rolle – Aufgabe – Format), kombiniert mit einem klassischen Nachschlagewerk-Aufbau (Definition → Gliederung → Beispiel).</p>
+          <table class="footer-table">
+            <thead><tr><th>Dimension</th><th>Ausprägung in diesem Tool</th></tr></thead>
+            <tbody>
+              <tr><td>Rolle</td><td>Norm-Nachschlagewerk <em>und</em> RE-Trainerin, die live vorführt, wie eine Norm auf ein konkretes Beispiel wirkt.</td></tr>
+              <tr><td>Aufgabe</td><td>Alle neun ISO/IEC-25010:2023-Merkmale erklären und an einer FA in NFA + User Story übersetzen.</td></tr>
+              <tr><td>Kontext</td><td>Drei stellvertretende Kundenportal-FAs (Login, Rechnungs-PDF, Support-Formular) als durchgängige Beispielbasis.</td></tr>
+              <tr><td>Format</td><td>9er-Grid + festes Detail-Panel (kein Sliding), FA-Chips, Vergleichstabelle 2011→2023.</td></tr>
+              <tr><td>Eingrenzung</td><td>Nur die neun Hauptmerkmale der Edition 2023, keine vollständige Untermerkmal-Messmethodik nach ISO/IEC 25023.</td></tr>
+            </tbody>
+          </table>
+          <p><strong>Zentraler Lernhinweis:</strong> Dieselbe FA erzeugt neun völlig unterschiedliche NFAs — Qualität ist kein einzelnes Häkchen „getestet", sondern neun unabhängige Dimensionen, die alle geprüft werden müssen.</p>
+          <p><strong>Nachbau-Tipp:</strong> Erst die neun Merkmale mit Definition/Untermerkmalen sauber recherchieren (K17 — aktuelle Norm, nicht aus dem Gedächtnis), dann für eine einzige FA alle neun NFAs mit konkreten Zahlen durchspielen, bevor eine zweite FA ergänzt wird.</p>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary">Vortrags-Skript</summary>
+        <div class="footer-content footer-sans">
+          <p><strong>Einsatzdauer:</strong> ca. 15–20 Minuten als Norm-Einführung, z. B. zu Beginn eines RE-Trainingsblocks zu nicht-funktionalen Anforderungen.</p>
+          <p><strong>Ablauf:</strong></p>
+          <p>(1) <em>(Hero vorlesen, dann auf die drei Grundlagen-Karten zeigen)</em> „Bevor wir über neun Qualitätsmerkmale sprechen, kurz drei Begriffe: eine funktionale Anforderung sagt, was ein System tun soll. Eine nicht-funktionale sagt, wie gut. Und eine User Story macht beides für ein Team greifbar — mit einem Akzeptanzkriterium, das man tatsächlich testen kann." Damit ist die Brücke zum eigentlichen Kompendium gesetzt.</p>
+          <p>(2) <em>(Klick auf den FA-Chip „Login")</em> „Nehmen wir eine ganz gewöhnliche FA: Nutzer:in kann sich anmelden. Jetzt gehen wir gemeinsam durch alle neun Merkmale und schauen, was diese eine FA jeweils an Qualität verlangt." <em>(Klick auf Merkmal 1 „Functional Suitability")</em> „Zuerst: Funktioniert das Login überhaupt korrekt? Hier steht die NFA mit einer konkreten Prozentzahl, keine vage Formulierung."</p>
+          <p>(3) <em>(Nacheinander durch mehrere weitere Merkmale klicken, z. B. Performance Efficiency, Security, Safety)</em> „Schaut euch an, wie unterschiedlich diese neun NFAs sind — von Millisekunden über Verschlüsselung bis zur Frage, was passiert, wenn jemand versehentlich ausgesperrt wird. Das ist der Kern von ISO 25010: Qualität ist nicht ein Häkchen, sondern neun getrennte Fragen."</p>
+          <p>(4) <em>(Zweite oder dritte FA wählen, kurz ein Merkmal wiederholen)</em> „Und wenn wir die FA wechseln — sagen wir, Rechnung als PDF herunterladen — verändert sich jede einzelne NFA wieder, weil die Qualitätsfrage vom Kontext abhängt."</p>
+          <p>(5) <em>(Auf die Vergleichstabelle 2011→2023 scrollen)</em> „Ein Praxishinweis: Falls euch noch Unterlagen mit ‚Usability' statt ‚Interaction Capability' begegnen, oder ganz ohne ‚Safety' — das ist die alte 2011er-Fassung. Seit November 2023 gilt die Edition mit neun statt acht Merkmalen."</p>
+          <p><strong>Regie-Hinweise:</strong> Nicht mit der Vergleichstabelle 2011→2023 beginnen — sie ist ein Zusatznutzen für Fortgeschrittene, kein Einstieg. Nicht alle neun Merkmale im Vortrag einzeln vorlesen; drei bis vier exemplarisch reichen, den Rest zum Selbst-Erkunden freigeben. Timing: für einen 15-Minuten-Slot maximal 4 Merkmale live vorführen, den Rest im Nachgang zur Verfügung stellen.</p>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary">Normen-Register</summary>
+        <div class="footer-content footer-sans">
+          <table class="footer-table">
+            <thead><tr><th>Framework / Quelle</th><th>Fassung / Status</th><th>Bezug im Tool</th></tr></thead>
+            <tbody>
+              <tr><td>ISO/IEC 25010</td><td>Edition 2 (2023-11), in Kraft — ersetzt Edition 2011</td><td>Zentrales Nachschlagewerk: alle neun Hauptmerkmale + Untermerkmale + Demonstrator</td></tr>
+              <tr><td>ISO/IEC 25000-Reihe (SQuaRE)</td><td>laufend gepflegte Normenfamilie</td><td>Einordnung von ISO 25010 als Teilnorm der SQuaRE-Reihe (Grundlagen-Karte)</td></tr>
+              <tr><td>Gherkin / BDD</td><td>De-facto-Standard, keine ISO-Norm</td><td>Given/When/Then-Format der Akzeptanzkriterien im Demonstrator</td></tr>
+              <tr><td>§14 UStG</td><td>geltendes Recht (Umsatzsteuergesetz)</td><td>Pflichtangaben-Beispiel in der NFA zum Szenario „Rechnung als PDF"</td></tr>
+            </tbody>
+          </table>
+          <p>Stand vor Einsatz in neuen Trainingsmaterialien prüfen (K17) — insbesondere, ob zwischenzeitlich eine neue ISO/IEC-25010-Fassung oder Änderungen an §14 UStG veröffentlicht wurden.</p>
+        </div>
+      </details>
+    </div>
+    <p class="footer-sig"><strong>Michaela Kühn</strong> · www.michaela-kuehn.com · ISO/IEC 25010:2023 · Gherkin/BDD · §14 UStG<br>Zuletzt geprüft: 11.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</p>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ================= Daten ================= */
+  var CHARACTERISTICS = [
+    { id:"fs", num:1, de:"Funktionale Angemessenheit", en:"Functional Suitability", badge:"unchanged", badgeLabel:"unverändert",
+      def:"Ausmaß, in dem ein Produkt Funktionen bereitstellt, die die angegebenen und impliziten Bedürfnisse bei Nutzung unter festgelegten Bedingungen erfüllen.",
+      subs:[
+        {name:"Completeness (Vollständigkeit)", text:"Der Funktionsumfang deckt alle spezifizierten Aufgaben und Nutzerziele ab."},
+        {name:"Correctness (Korrektheit)", text:"Ergebnisse sind mit dem erforderlichen Genauigkeitsgrad richtig."},
+        {name:"Appropriateness (Angemessenheit)", text:"Die Funktionen erleichtern die vorgesehenen Aufgaben und Ziele."}
+      ]},
+    { id:"pe", num:2, de:"Leistungseffizienz", en:"Performance Efficiency", badge:"unchanged", badgeLabel:"unverändert",
+      def:"Leistung im Verhältnis zur Menge der eingesetzten Ressourcen unter festgelegten Bedingungen.",
+      subs:[
+        {name:"Time Behaviour (Zeitverhalten)", text:"Antwort-, Verarbeitungszeiten und Durchsatzraten bei der Aufgabenerfüllung."},
+        {name:"Resource Utilisation (Ressourcennutzung)", text:"Art und Menge genutzter Ressourcen wie CPU, Speicher, Netzwerk."},
+        {name:"Capacity (Kapazität)", text:"Maximale Grenzwerte eines Parameters, die eingehalten werden."}
+      ]},
+    { id:"co", num:3, de:"Kompatibilität", en:"Compatibility", badge:"unchanged", badgeLabel:"unverändert",
+      def:"Ausmaß, in dem ein Produkt Informationen mit anderen Produkten austauschen und/oder seine Funktionen erfüllen kann, während es dieselbe Hardware- oder Softwareumgebung nutzt.",
+      subs:[
+        {name:"Co-existence (Koexistenz)", text:"Kann seine Funktionen erfüllen, ohne andere Produkte in derselben Umgebung negativ zu beeinträchtigen."},
+        {name:"Interoperability (Interoperabilität)", text:"Kann mit anderen Produkten Informationen austauschen und diese nutzen."}
+      ]},
+    { id:"ic", num:4, de:"Interaktionsfähigkeit", en:"Interaction Capability", badge:"renamed", badgeLabel:"umbenannt von Usability",
+      def:"Ausmaß, in dem ein Produkt von festgelegten Nutzenden effektiv, effizient und zufriedenstellend genutzt werden kann.",
+      subs:[
+        {name:"Appropriateness Recognisability", text:"Nutzende erkennen sofort, ob das Produkt für ihre Zwecke geeignet ist."},
+        {name:"Learnability (Erlernbarkeit)", text:"Wie leicht lernen Nutzende die Bedienung."},
+        {name:"Operability (Bedienbarkeit)", text:"Eigenschaften, die die Bedienung erleichtern."},
+        {name:"User Error Protection", text:"Schutz vor Fehlbedienung durch Nutzende."},
+        {name:"Accessibility (Zugänglichkeit)", text:"Nutzbarkeit für Menschen mit unterschiedlichsten Fähigkeiten."},
+        {name:"User Engagement (neu)", text:"Gestaltet die Oberfläche einladend und motivierend zur Nutzung."},
+        {name:"Inclusivity (neu)", text:"Berücksichtigt unterschiedliche Bevölkerungsgruppen gleichermaßen."},
+        {name:"Self-Descriptiveness (neu)", text:"Das Produkt erklärt seinen Zweck ohne zusätzliche Anleitung."}
+      ]},
+    { id:"re", num:5, de:"Zuverlässigkeit", en:"Reliability", badge:"renamed", badgeLabel:"Untermerkmal umbenannt",
+      def:"Ausmaß, in dem ein System, Produkt oder eine Komponente festgelegte Funktionen unter festgelegten Bedingungen für einen festgelegten Zeitraum erfüllt.",
+      subs:[
+        {name:"Faultlessness (vormals Maturity)", text:"Das System erfüllt seine Funktionen unter normalem Betrieb fehlerfrei."},
+        {name:"Availability (Verfügbarkeit)", text:"Ist zum vorgesehenen Zeitpunkt betriebs- und zugriffsbereit."},
+        {name:"Fault Tolerance (Fehlertoleranz)", text:"Funktioniert trotz Hardware- oder Softwarefehlern weiter."},
+        {name:"Recoverability (Wiederherstellbarkeit)", text:"Kann nach einer Unterbrechung Daten und Zustand wiederherstellen."}
+      ]},
+    { id:"se", num:6, de:"Sicherheit (Security)", en:"Security", badge:"new-sub", badgeLabel:"+ Resistance",
+      def:"Ausmaß, in dem ein Produkt Informationen und Daten so schützt, dass Personen oder andere Produkte den ihrer Berechtigungsart angemessenen Zugriffsgrad haben.",
+      subs:[
+        {name:"Confidentiality (Vertraulichkeit)", text:"Daten sind nur autorisierten Personen zugänglich."},
+        {name:"Integrity (Integrität)", text:"Unautorisierte Änderung von Daten wird verhindert."},
+        {name:"Non-repudiation (Nichtabstreitbarkeit)", text:"Handlungen können nachträglich zweifelsfrei nachgewiesen werden."},
+        {name:"Authenticity (Authentizität)", text:"Die Identität eines Subjekts/einer Ressource kann nachgewiesen werden."},
+        {name:"Accountability (Nachvollziehbarkeit)", text:"Aktionen einer Entität lassen sich eindeutig zurückverfolgen."},
+        {name:"Resistance (neu)", text:"Widerstandsfähigkeit gegen Angriffe, die die Sicherheit gefährden."}
+      ]},
+    { id:"ma", num:7, de:"Wartbarkeit", en:"Maintainability", badge:"unchanged", badgeLabel:"unverändert",
+      def:"Ausmaß der Effektivität und Effizienz, mit der ein Produkt durch die vorgesehenen Wartenden geändert werden kann.",
+      subs:[
+        {name:"Modularity (Modularität)", text:"Änderungen an einer Komponente wirken sich minimal auf andere aus."},
+        {name:"Reusability (Wiederverwendbarkeit)", text:"Bestandteile lassen sich in mehr als einem System nutzen."},
+        {name:"Analysability (Analysierbarkeit)", text:"Auswirkungen einer geplanten Änderung lassen sich einschätzen."},
+        {name:"Modifiability (Modifizierbarkeit)", text:"Änderungen sind ohne neue Fehler oder Qualitätsverlust möglich."},
+        {name:"Testability (Testbarkeit)", text:"Testkriterien lassen sich festlegen und Tests durchführen."}
+      ]},
+    { id:"fl", num:8, de:"Flexibilität", en:"Flexibility", badge:"renamed", badgeLabel:"umbenannt von Portability",
+      def:"Ausmaß, in dem ein Produkt an veränderte Anforderungen, Kontexte oder Umgebungen angepasst werden kann.",
+      subs:[
+        {name:"Adaptability (Anpassungsfähigkeit)", text:"Anpassung an unterschiedliche Umgebungen ohne Codeänderung."},
+        {name:"Scalability (Skalierbarkeit, neu)", text:"Anpassung an wachsende oder schwankende Nutzungsanforderungen."},
+        {name:"Installability (Installierbarkeit)", text:"Kann in der vorgesehenen Umgebung installiert/deinstalliert werden."},
+        {name:"Replaceability (Austauschbarkeit)", text:"Kann eine andere Software für denselben Zweck ersetzen."}
+      ]},
+    { id:"sa", num:9, de:"Safety", en:"Safety", badge:"new", badgeLabel:"komplett neu 2023",
+      def:"Ausmaß, in dem ein Produkt unter definierten Bedingungen Zustände vermeidet, in denen Menschen, Wirtschaft, Software, Eigentum oder Umwelt gefährdet werden.",
+      subs:[
+        {name:"Operational Constraint", text:"Begrenzt den Betrieb auf sichere Bedingungen und Grenzwerte."},
+        {name:"Risk Identification", text:"Erkennt riskante Zustände oder Bedienfolgen frühzeitig."},
+        {name:"Fail Safe", text:"Geht bei einem Fehler in einen sicheren Zustand über, statt unkontrolliert zu versagen."},
+        {name:"Hazard Warning", text:"Warnt rechtzeitig vor Gefahren, bevor sie eintreten."},
+        {name:"Safe Integration", text:"Bleibt sicher, auch wenn es mit anderen Komponenten zusammenwirkt."}
+      ]}
+  ];
+
+  var SCENARIOS = [
+    { id:"login", label:"Login", fa:"Nutzer:in kann sich mit Benutzername und Passwort im Kundenportal anmelden.",
+      data:{
+        fs:{nfa:"Das Login-Formular akzeptiert Benutzername (E-Mail) und Passwort und meldet bei korrekten Zugangsdaten in 100 % der Testfälle erfolgreich an; bei falschen Zugangsdaten wird in 100 % der Fälle eine Fehlermeldung ohne Preisgabe, welches Feld falsch war, angezeigt (Schutz vor User-Enumeration).",
+          story:"Als Kundin möchte ich mich mit meinen Zugangsdaten anmelden, damit ich auf mein Konto zugreifen kann.",
+          ac:["Given gültige Zugangsdaten","When ich mich anmelde","Then bin ich im Kundenportal angemeldet"]},
+        pe:{nfa:"Der Login-Vorgang liefert bei 95 % der Anfragen eine Rückmeldung (Erfolg oder Fehler) innerhalb von 800 ms bei einer Serverlast von bis zu 200 gleichzeitigen Anmeldungen.",
+          story:"Als Kundin möchte ich nach Eingabe meiner Zugangsdaten sofort eine Rückmeldung erhalten, damit ich nicht unsicher bin, ob mein Klick registriert wurde.",
+          ac:["Given 200 gleichzeitige Login-Versuche","When ich mich anmelde","Then erhalte ich in ≤800ms (P95) eine Rückmeldung"]},
+        co:{nfa:"Das Login-Formular funktioniert fehlerfrei in den zwei aktuellen Hauptversionen von Chrome, Firefox, Safari und Edge sowie parallel zu einem bestehenden Single-Sign-On-Modul, ohne dessen Session-Cookies zu überschreiben.",
+          story:"Als Kundin, die bereits in einem anderen Portal der Unternehmensgruppe per SSO angemeldet ist, möchte ich mich auch hier ohne Konflikt anmelden können, damit ich nicht ausgeloggt werde.",
+          ac:["Given aktive SSO-Session in einem Partnerportal","When ich das Kundenportal aufrufe","Then bleibt die SSO-Session erhalten und das Login gelingt parallel"]},
+        ic:{nfa:"Das Login-Formular ist WCAG 2.2 AA-konform bedienbar (u. a. vollständige Tastaturnavigation, sichtbarer Fokus-Indikator, Label-Zuordnung) und eine neue Nutzerin benötigt im Usability-Test max. 2 Versuche für eine erfolgreiche Anmeldung ohne Hilfe.",
+          story:"Als Kundin mit Screenreader möchte ich das Login-Formular vollständig per Tastatur bedienen können, damit ich mich unabhängig von einer Maus anmelden kann.",
+          ac:["Given Tastaturnavigation ohne Maus","When ich durch das Formular tabbe","Then ist jedes Feld erreichbar und der Fokus sichtbar markiert"]},
+        re:{nfa:"Der Login-Dienst ist zu 99,5 % der Zeit im Monat verfügbar (max. ≈3,6 Std. Ausfall/Monat); fällt einer von zwei Auth-Servern aus, übernimmt der zweite innerhalb von 10 Sekunden ohne Verlust laufender Sessions.",
+          story:"Als Kundin möchte ich mich auch bei einem Teilausfall der Systeme noch anmelden können, damit ein einzelner Serverausfall meinen Zugriff nicht blockiert.",
+          ac:["Given Ausfall von Auth-Server 1","When ich mich anmelde","Then übernimmt Auth-Server 2 innerhalb von 10s ohne sichtbaren Fehler"]},
+        se:{nfa:"Passwörter werden ausschließlich gehasht (bcrypt, Kostenfaktor ≥12) gespeichert, die Übertragung erfolgt nur per TLS 1.2+, und nach 5 fehlgeschlagenen Login-Versuchen wird das Konto für 15 Minuten gesperrt (Brute-Force-Schutz).",
+          story:"Als Kundin möchte ich, dass mein Konto nach mehreren falschen Versuchen automatisch gesperrt wird, damit ein Angreifer mein Passwort nicht einfach durchprobieren kann.",
+          ac:["Given 5 fehlgeschlagene Login-Versuche in Folge","When ein 6. Versuch erfolgt","Then wird das Konto für 15 Minuten gesperrt und die Kundin informiert"]},
+        ma:{nfa:"Die Login-Logik ist als eigenständiges, testbares Modul mit ≥85 % Testabdeckung (Unit-Tests) implementiert, sodass ein Wechsel des Auth-Providers ohne Änderung am restlichen Portal-Code möglich ist.",
+          story:"Als Entwicklerteam möchten wir die Login-Logik isoliert testen können, damit ein Fehler dort nicht das gesamte Portal gefährdet.",
+          ac:["Given eine neue Unit-Test-Suite","When die Login-Tests laufen","Then liegt die Testabdeckung des Login-Moduls bei ≥85 %"]},
+        fl:{nfa:"Der Login-Dienst skaliert horizontal und verarbeitet bei einer Verdreifachung der Nutzerzahl (von 5.000 auf 15.000 aktive Nutzer:innen) ohne Codeänderung, nur durch zusätzliche Server-Instanzen, dieselbe P95-Antwortzeit von ≤800 ms.",
+          story:"Als Betriebsteam möchten wir bei steigender Nutzerzahl einfach weitere Instanzen starten können, damit wir den Login-Dienst nicht neu entwickeln müssen.",
+          ac:["Given eine Verdreifachung der aktiven Nutzer:innen","When zusätzliche Instanzen gestartet werden","Then bleibt die P95-Antwortzeit ≤800 ms"]},
+        sa:{nfa:"Eine Kontosperrung nach fehlgeschlagenen Login-Versuchen darf nie dauerhaft ohne Selbstentsperrung sein: Die Kundin erhält automatisch einen Entsperr-Link per E-Mail, sodass eine Fehlbedienung nicht zum dauerhaften Ausschluss vom eigenen Konto führt.",
+          story:"Als Kundin, deren Konto versehentlich gesperrt wurde, möchte ich mich selbst wieder entsperren können, damit ich nicht auf den Support angewiesen bin.",
+          ac:["Given ein gesperrtes Konto","When ich auf ‚Konto entsperren' klicke","Then erhalte ich einen 30 Minuten gültigen Entsperr-Link per E-Mail"]}
+      }},
+    { id:"invoice", label:"Rechnung als PDF", fa:"Nutzer:in kann eine Rechnung im Kundenportal als PDF herunterladen.",
+      data:{
+        fs:{nfa:"Der PDF-Export enthält alle Pflichtangaben einer Rechnung nach §14 UStG (Rechnungsnummer, Steuernummer, Leistungsdatum, Umsatzsteuerbetrag) und stimmt bei 100 % der Stichproben mit den Werten im Buchhaltungssystem überein.",
+          story:"Als Kundin möchte ich meine Rechnung als PDF herunterladen, damit ich sie für die eigene Buchhaltung ablegen kann.",
+          ac:["Given eine bezahlte Rechnung","When ich ‚Als PDF herunterladen' klicke","Then enthält die Datei alle Pflichtangaben nach §14 UStG"]},
+        pe:{nfa:"Der PDF-Export einer Einzelrechnung wird bei 95 % der Anfragen innerhalb von 2 Sekunden erzeugt, auch bei Rechnungen mit bis zu 200 Rechnungspositionen.",
+          story:"Als Kundin möchte ich die PDF-Datei ohne spürbare Wartezeit erhalten, damit der Download meinen Arbeitsfluss nicht unterbricht.",
+          ac:["Given eine Rechnung mit 200 Positionen","When ich den Export starte","Then liegt die PDF innerhalb von 2s (P95) vor"]},
+        co:{nfa:"Die erzeugte PDF-Datei entspricht PDF/A-2b und lässt sich in den drei größten Buchhaltungsprogrammen (DATEV, Lexoffice, sevDesk) ohne Formatfehler importieren.",
+          story:"Als Kundin, die DATEV nutzt, möchte ich die Rechnung direkt importieren können, damit ich sie nicht manuell nacherfassen muss.",
+          ac:["Given eine exportierte PDF/A-2b-Rechnung","When sie in DATEV importiert wird","Then werden alle Rechnungsfelder korrekt erkannt"]},
+        ic:{nfa:"Der Download-Button trägt ein eindeutiges Label (‚Rechnung als PDF herunterladen'), ist per Tastatur erreichbar und löst eine sichtbare Ladeanimation aus, damit Nutzer:innen den Vorgang nicht doppelt auslösen.",
+          story:"Als Kundin auf dem Smartphone möchte ich erkennen, ob mein Download läuft, damit ich nicht mehrfach tippe.",
+          ac:["Given ich tippe auf ‚Herunterladen'","When der Export läuft","Then zeigt eine Ladeanzeige den Fortschritt und der Button ist deaktiviert"]},
+        re:{nfa:"Der PDF-Exportdienst hat eine Fehlerrate von unter 0,1 % über alle Exportanfragen eines Monats und liefert bei einem fehlgeschlagenen Export automatisch einen Retry innerhalb von 3 Sekunden.",
+          story:"Als Kundin möchte ich mich darauf verlassen können, dass der Download beim ersten Versuch klappt, damit ich nicht wiederholt klicken muss.",
+          ac:["Given ein fehlgeschlagener Export","When der automatische Retry greift","Then liegt die PDF innerhalb von 3s doch noch vor"]},
+        se:{nfa:"Der Download-Link ist nutzerindividuell signiert und 5 Minuten gültig; ein Zugriff mit fremder Nutzer-ID auf eine nicht eigene Rechnung wird in 100 % der Fälle mit HTTP 403 abgelehnt.",
+          story:"Als Kundin möchte ich sicher sein, dass niemand sonst über einen erratenen Link meine Rechnung herunterladen kann.",
+          ac:["Given ein fremder Zugriffsversuch auf meinen Rechnungslink","When der Link nach 5 Minuten oder mit falscher Nutzer-ID aufgerufen wird","Then wird der Zugriff mit 403 abgelehnt"]},
+        ma:{nfa:"Die PDF-Generierung ist von der Rechnungslogik getrennt (eigenes Rendering-Modul), sodass ein Layout-Wechsel ohne Änderung an der Rechnungsberechnung möglich ist und in unter 4 Personentagen umsetzbar bleibt.",
+          story:"Als Entwicklerteam möchten wir das PDF-Layout unabhängig von der Rechnungslogik ändern können, damit ein Design-Update nicht die Berechnung gefährdet.",
+          ac:["Given ein neues PDF-Layout","When es eingebaut wird","Then bleiben alle Berechnungs-Tests der Rechnungslogik unverändert grün"]},
+        fl:{nfa:"Der Exportdienst unterstützt das Hinzufügen weiterer Ausgabeformate (z. B. XRechnung/ZUGFeRD) über eine definierte Schnittstelle, ohne die bestehende PDF-Erzeugung zu verändern.",
+          story:"Als Produktteam möchten wir künftig auch XRechnung anbieten können, damit wir E-Rechnungspflichten erfüllen, ohne den bestehenden PDF-Export neu zu bauen.",
+          ac:["Given die definierte Export-Schnittstelle","When ein neues Format (XRechnung) angebunden wird","Then bleibt der bestehende PDF-Export unverändert lauffähig"]},
+        sa:{nfa:"Ein fehlerhafter Exportversuch darf nie eine unvollständige oder falsch berechnete PDF-Datei ausliefern — bei einem Fehler wird kein Dokument oder ein klar als ‚fehlerhaft, bitte erneut versuchen' markiertes Dokument angezeigt, nie ein stiller Betragsfehler.",
+          story:"Als Kundin möchte ich niemals eine Rechnung mit falschem Betrag erhalten, ohne dass ich es merke, damit ich nicht versehentlich falsche Zahlen weiterverwende.",
+          ac:["Given ein Renderingfehler während des Exports","When die PDF nicht vollständig erzeugt werden kann","Then wird kein Dokument ausgeliefert, sondern eine Fehlermeldung mit Hinweis auf erneuten Versuch"]}
+      }},
+    { id:"support", label:"Support-Anfrage", fa:"Nutzer:in kann eine Support-Anfrage über ein Formular im Kundenportal einreichen.",
+      data:{
+        fs:{nfa:"Das Formular erfasst Pflichtfelder (Betreff, Kategorie, Beschreibung, optional Anhang) und erzeugt bei jeder gültigen Einreichung ein Ticket mit eindeutiger Ticket-ID, die sofort angezeigt wird.",
+          story:"Als Kundin möchte ich eine Support-Anfrage stellen und eine Ticket-ID erhalten, damit ich meine Anfrage später nachverfolgen kann.",
+          ac:["Given ein vollständig ausgefülltes Formular","When ich absende","Then erhalte ich sofort eine Ticket-ID zur Bestätigung"]},
+        pe:{nfa:"Die Formular-Einreichung inklusive Anhang (bis 10 MB) wird bei 90 % der Anfragen in unter 4 Sekunden verarbeitet und bestätigt.",
+          story:"Als Kundin mit einem Screenshot als Anhang möchte ich nicht lange auf die Bestätigung warten müssen.",
+          ac:["Given ein Anhang von 8 MB","When ich das Formular absende","Then erhalte ich in unter 4s (P90) die Bestätigung"]},
+        co:{nfa:"Das erzeugte Ticket wird automatisch über die offizielle REST-API in das bestehende Ticketsystem (Zendesk) übernommen, mit allen Formularfeldern korrekt zugeordnet.",
+          story:"Als Support-Team möchten wir Tickets aus dem Portal direkt in Zendesk sehen, damit wir nicht zwei Systeme parallel prüfen müssen.",
+          ac:["Given ein neu eingereichtes Formular","When es verarbeitet wird","Then erscheint innerhalb von 1 Minute ein passendes Ticket in Zendesk"]},
+        ic:{nfa:"Pflichtfelder werden bei fehlender Eingabe direkt am Feld mit einer konkreten Fehlermeldung markiert, und die Kategorie-Auswahl ist per Tastatur (Pfeiltasten) bedienbar.",
+          story:"Als Kundin, die ein Pflichtfeld übersehen hat, möchte ich sofort sehen, welches Feld fehlt, damit ich nicht das ganze Formular durchsuchen muss.",
+          ac:["Given ein leeres Pflichtfeld ‚Betreff'","When ich absenden möchte","Then wird direkt am Feld ‚Betreff' eine Fehlermeldung angezeigt"]},
+        re:{nfa:"Bereits eingegebener Formulartext bleibt bei einem Verbindungsabbruch während der Einreichung im Browser erhalten (Zwischenspeicherung), sodass in 100 % der Testfälle kein Textverlust auftritt.",
+          story:"Als Kundin, deren WLAN kurz aussetzt, möchte ich meinen bereits geschriebenen Text nicht verlieren.",
+          ac:["Given ein Verbindungsabbruch nach Texteingabe","When die Verbindung wiederhergestellt ist","Then ist mein eingegebener Text noch vorhanden"]},
+        se:{nfa:"Hochgeladene Anhänge werden vor der Annahme automatisiert auf Schadsoftware geprüft (Virenscan); infizierte Dateien werden in 100 % der Fälle abgelehnt und nicht gespeichert.",
+          story:"Als Support-Team möchten wir sicher sein, dass keine infizierten Anhänge im System landen.",
+          ac:["Given ein Anhang mit bekannter Testsignatur (EICAR)","When er hochgeladen wird","Then wird die Datei abgelehnt und nicht gespeichert"]},
+        ma:{nfa:"Die Liste der Formular-Kategorien ist über eine zentrale Konfigurationsdatei pflegbar, sodass eine neue Kategorie ohne Code-Deployment, nur durch Konfigurationswechsel, ergänzt werden kann.",
+          story:"Als Produktteam möchten wir neue Anfrage-Kategorien ergänzen können, ohne einen Release-Zyklus abzuwarten.",
+          ac:["Given eine neue Kategorie in der Konfiguration","When die Konfiguration aktualisiert wird","Then erscheint die Kategorie im Formular ohne Code-Deployment"]},
+        fl:{nfa:"Das Formular-Framework unterstützt das Hinzufügen weiterer Portale (z. B. ein zweites Länder-Portal) über dieselbe Formular-Engine, ohne die bestehende Feldlogik zu duplizieren.",
+          story:"Als Produktteam möchten wir das Support-Formular auch im neuen Länder-Portal einsetzen, ohne es komplett neu zu bauen.",
+          ac:["Given die bestehende Formular-Engine","When ein zweites Portal angebunden wird","Then läuft dasselbe Formular dort ohne Code-Duplizierung"]},
+        sa:{nfa:"Ein Formular-Absturz während der Verarbeitung darf nie zu einem doppelt angelegten Ticket führen — ein serverseitiger Idempotenz-Schlüssel verhindert Dubletten in 100 % der Testfälle, auch bei mehrfachem Klick auf ‚Absenden'.",
+          story:"Als Kundin, die versehentlich zweimal auf ‚Absenden' klickt, möchte ich nicht zwei identische Tickets erzeugen, damit das Support-Team nicht doppelt arbeitet.",
+          ac:["Given ein Doppelklick auf ‚Absenden'","When beide Anfragen beim Server ankommen","Then wird nur ein Ticket angelegt"]}
+      }}
+  ];
+
+  var state = { scenario: "login", char: "fs" };
+
+  /* ================= Render ================= */
+  var faPicker = document.getElementById("faPicker");
+  var faText = document.getElementById("faText");
+  var charGrid = document.getElementById("charGrid");
+  var detailName = document.getElementById("detailName");
+  var detailEn = document.getElementById("detailEn");
+  var detailDef = document.getElementById("detailDef");
+  var detailSubs = document.getElementById("detailSubs");
+  var detailNfa = document.getElementById("detailNfa");
+  var detailStory = document.getElementById("detailStory");
+  var detailAc = document.getElementById("detailAc");
+
+  SCENARIOS.forEach(function(sc){
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "fa-chip";
+    btn.dataset.id = sc.id;
+    btn.textContent = sc.label;
+    btn.addEventListener("click", function(){
+      state.scenario = sc.id;
+      render();
+    });
+    faPicker.appendChild(btn);
+  });
+
+  CHARACTERISTICS.forEach(function(ch){
+    var card = document.createElement("button");
+    card.type = "button";
+    card.className = "char-card";
+    card.dataset.id = ch.id;
+    card.innerHTML =
+      '<span class="char-num">' + ch.num + '</span>' +
+      '<p class="char-de">' + ch.de + '</p>' +
+      '<span class="char-en">' + ch.en + '</span><br>' +
+      '<span class="char-badge ' + (ch.badge === "unchanged" ? "unchanged" : (ch.badge === "new" ? "new" : "renamed")) + '">' + ch.badgeLabel + '</span>';
+    card.addEventListener("click", function(){
+      state.char = ch.id;
+      render();
+    });
+    charGrid.appendChild(card);
+  });
+
+  function render(){
+    var scenario = SCENARIOS.filter(function(s){ return s.id === state.scenario; })[0];
+    var ch = CHARACTERISTICS.filter(function(c){ return c.id === state.char; })[0];
+
+    Array.prototype.forEach.call(faPicker.children, function(btn){
+      btn.classList.toggle("active", btn.dataset.id === state.scenario);
+    });
+    Array.prototype.forEach.call(charGrid.children, function(card){
+      card.classList.toggle("selected", card.dataset.id === state.char);
+    });
+
+    faText.textContent = scenario.fa;
+
+    detailName.textContent = ch.num + ". " + ch.de;
+    detailEn.textContent = ch.en;
+    detailDef.textContent = ch.def;
+
+    detailSubs.innerHTML = "";
+    ch.subs.forEach(function(sub){
+      var li = document.createElement("li");
+      li.innerHTML = '<span class="sub-name">' + sub.name + '</span>' + sub.text;
+      detailSubs.appendChild(li);
+    });
+
+    var d = scenario.data[ch.id];
+    detailNfa.textContent = d.nfa;
+    detailStory.textContent = d.story;
+    detailAc.innerHTML = d.ac.map(function(line){
+      var parts = line.split(" ");
+      var keyword = parts.shift();
+      return "<div><b>" + keyword + "</b> " + parts.join(" ") + "</div>";
+    }).join("");
+  }
+
+  render();
+
+  /* ================= BEAMER-MODUS ================= */
+  var BEAMER_LEVELS = [
+    { classes: [],                                    label: "☀ Beamer" },
+    { classes: ["beamer"],                             label: "☀ Beamer XL" },
+    { classes: ["beamer", "beamer-xl"],                label: "☀ Beamer XXL" },
+    { classes: ["beamer", "beamer-xl", "beamer-xxl"],  label: "☀ Normal" }
+  ];
+  var beamerLevel = 0;
+  try {
+    var savedLevel = parseInt(sessionStorage.getItem("iso25010KompendiumBeamer"), 10);
+    if(!isNaN(savedLevel) && savedLevel >= 0 && savedLevel < BEAMER_LEVELS.length){ beamerLevel = savedLevel; }
+  } catch(e){}
+
+  var beamerBtn = document.getElementById("beamerBtn");
+  function applyBeamerLevel(){
+    document.documentElement.classList.remove("beamer", "beamer-xl", "beamer-xxl");
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    beamerBtn.textContent = BEAMER_LEVELS[beamerLevel].label;
+  }
+  beamerBtn.addEventListener("click", function(){
+    beamerLevel = (beamerLevel + 1) % 4;
+    document.documentElement.classList.remove("beamer", "beamer-xl", "beamer-xxl");
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    beamerBtn.textContent = BEAMER_LEVELS[beamerLevel].label;
+    try { sessionStorage.setItem("iso25010KompendiumBeamer", String(beamerLevel)); } catch(e){}
+  });
+  applyBeamerLevel();
+
+})();
+</script>
+
+</body>
+</html>
