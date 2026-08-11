@@ -53,6 +53,13 @@
     padding-bottom: 18px;
     margin-bottom: 20px;
   }
+  #beamerToggle {
+    /* rückt unter die fix positionierte Signatur (top:14px, ~53px hoch), damit sich beide nicht überlappen */
+    margin-top: 52px;
+  }
+  @media (max-width: 900px) {
+    #beamerToggle { margin-top: 0; }
+  }
   .back-link {
     display: inline-block;
     margin-bottom: 10px;
@@ -82,28 +89,51 @@
     color: var(--ink-soft);
     font-size: 1rem;
   }
-  .header-right {
-    text-align: right;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 10px;
-  }
   .stars {
     font-size: 1.5rem;
     letter-spacing: 2px;
     color: var(--amber);
   }
-  .signature {
-    margin: 0;
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 1rem;
+  .progress-line {
+    margin: 0 0 14px;
+    font-size: 0.9rem;
     color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .signature {
+    position: fixed;
+    top: 14px;
+    right: 28px;
+    z-index: 20;
+    background: rgba(255,255,255,.92);
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    text-align: right;
     text-decoration: none;
   }
-  .signature:hover { color: var(--blue); }
+  .signature small {
+    display: block;
+    font-weight: 500;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+  }
+  .signature:hover, .signature:hover small { color: var(--blue); }
+  @media (max-width: 900px) {
+    .signature {
+      position: static;
+      display: inline-block;
+      background: none;
+      padding: 0;
+      margin-bottom: 8px;
+      text-align: right;
+    }
+  }
   .beamer-btn {
     font-family: var(--font-body);
     font-size: 0.85rem;
@@ -693,8 +723,6 @@
 
   @media (max-width: 640px) {
     h1 { font-size: 1.7rem; }
-    .app-header { flex-direction: column; }
-    .header-right { text-align: left; align-items: flex-start; }
   }
 </style>
 </head>
@@ -703,12 +731,9 @@
 
   <header class="app-header">
     <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
-    <div class="header-right">
-      <button class="beamer-btn" id="beamerToggle" type="button" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
-      <div class="stars" id="overallStars">☆☆☆☆☆</div>
-      <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn</a>
-    </div>
+    <button class="beamer-btn" id="beamerToggle" type="button" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
   </header>
+  <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer"><strong>Michaela Kühn</strong><small>www.michaela-kuehn.com</small></a>
   <p class="eyebrow">RE &amp; BA Trainingstool · Denkraum-Reihe</p>
   <h1>User Story Puzzle</h1>
   <p class="subtitle">Baue aus einzelnen Bausteinen korrekte User Stories – von der Grundformel bis zur vollständigen Spezifikation mit Akzeptanzkriterium, Business Value und Priorität.</p>
@@ -779,6 +804,7 @@
     </div>
   </section>
 
+  <p class="progress-line">Fortschritt: <span class="stars" id="overallStars">☆☆☆☆☆</span></p>
   <nav class="level-nav" id="levelNav"></nav>
 
   <main id="puzzleStage">
@@ -822,7 +848,7 @@
         <summary class="footer-summary">Systemprompt</summary>
         <div class="footer-content footer-mono">
           <p>Dieses Tool trainiert die didaktische Kernthese ‚Requirements Engineering für User Stories': Eine gute Story entsteht nicht durch freies Formulieren, sondern durch das bewusste Erkennen und Ausschließen typischer Fehlformen – falsche Rolle, Lösung statt Bedarf, mehrere Anforderungen in einer Story, unklarer Nutzen, nicht belastbarer Business Value, willkürliche Priorisierung. Jede Distraktor-Option ist keine beliebige Verwechslung, sondern verkörpert einen realen, in Trainings wiederkehrenden Fehlertyp nach IREB, INVEST, BABOK v3 und MoSCoW. Die Progression über fünf Level folgt bewusst der Reihenfolge, in der Requirements-Engineering-Artefakte in der Praxis wachsen: Grundformel → präzise, INVEST-konforme Formulierung → Testbarkeit (Akzeptanzkriterium) → Wertbegründung (Business Value) → Entscheidung (Priorität).</p>
-          <p>Vor dem Puzzle steht die Sektion ‚Beispiel-Backlog erkunden': ein nachgebautes Backlog-Board mit drei vollständigen User Stories (US-001 bis US-003, je mit farblich hervorgehobener Rolle/Ziel/Nutzen und Akzeptanzkriterium im Given/When/Then-Block) sowie vier Seiten-Elementen (Notizbuch mit der Grundformel „Als [ROLLE] möchte ich [ZIEL] damit [NUTZEN]", drei Sticky Notes „WER? WAS? WARUM?", ein INVEST-Kartenstapel, ein Zitat „klar, wertvoll, testbar"). Jedes dieser Elemente ist ein `&lt;button class="hs" data-topic="..."&gt;`; ein Klick markiert den Hotspot (Rahmen) und schreibt Titel + Erklärungstext aus einem zentralen `EXPLANATIONS`-Objekt (Topic-Key → {title, text}) in ein einzelnes, immer sichtbares `#explainPanel` – bewusst kein Tooltip und kein eingebettetes Rasterbild, damit die Erklärung auch auf Touch-Geräten und beim Beamer-Einsatz aus der Distanz lesbar bleibt (K1/K3/K5). Design: gleiche Farbcodierung wie im restlichen Tool – Rolle = Blau, Ziel = Amber, Nutzen = Grün, Akzeptanzkriterium = Grün mit Häkchen. Nicht-tun: keine zweite Interaktionslogik parallel zum Puzzle-Mechanismus aufbauen (kein Drag&amp;Drop, kein Scoring in dieser Sektion); keine neuen Normen-Referenzen einführen, die nicht auch im Puzzle selbst oder im Normen-Register belegt sind; kein Rasterbild/Cartoon einbetten, auch nicht nachträglich, ohne erneute K1-Offline- und K5-Beamer-Prüfung.</p>
+          <p>Vor dem Puzzle steht die Sektion ‚Beispiel-Backlog erkunden': ein nachgebautes Backlog-Board mit drei vollständigen User Stories (US-001 bis US-003, je mit farblich hervorgehobener Rolle/Ziel/Nutzen und Akzeptanzkriterium im Given/When/Then-Block) sowie vier Seiten-Elementen (Notizbuch mit der Grundformel „Als [ROLLE] möchte ich [ZIEL] damit [NUTZEN]", drei Sticky Notes „WER? WAS? WARUM?", ein INVEST-Kartenstapel, ein Zitat „klar, wertvoll, testbar"). Jedes dieser Elemente ist ein `&lt;button class="hs" data-topic="..."&gt;`; ein Klick markiert den Hotspot (Rahmen) und schreibt Titel + Erklärungstext aus einem zentralen `EXPLANATIONS`-Objekt (Topic-Key → {title, text}) in ein einzelnes, immer sichtbares `#explainPanel` – bewusst kein Tooltip und kein eingebettetes Rasterbild, damit die Erklärung auch auf Touch-Geräten und beim Beamer-Einsatz aus der Distanz lesbar bleibt (K1/K3/K5). Design: gleiche Farbcodierung wie im restlichen Tool – Rolle = Blau, Ziel = Amber, Nutzen = Grün, Akzeptanzkriterium = Grün mit Häkchen. Persona-Hinweis: Die drei Beispiel-Stories nutzen bewusst NICHT den festen Denkraum-Cast (Sarah/Ela/Petra/Herr Bachmeier), sondern domänenneutrale Rollen (Studierende, Mitarbeitende, Prüfende) – dies ist ein eigenständiges, in sich konsistentes Lehrbuch-Beispiel ohne Bezug zum fiktiven Vertriebs-/Projekt-Unternehmen der Puzzle-Aufgaben, absichtlich so gewählt, damit es unabhängig vom Firmenkontext sofort verständlich ist. Beim Fortbau: diese Trennung beibehalten, nicht heimlich vermischen (z. B. Sarah in einer AK-Zeile des Beispiel-Backlogs auftauchen lassen). Nicht-tun: keine zweite Interaktionslogik parallel zum Puzzle-Mechanismus aufbauen (kein Drag&amp;Drop, kein Scoring in dieser Sektion); keine neuen Normen-Referenzen einführen, die nicht auch im Puzzle selbst oder im Normen-Register belegt sind; kein Rasterbild/Cartoon einbetten, auch nicht nachträglich, ohne erneute K1-Offline- und K5-Beamer-Prüfung.</p>
         </div>
       </details>
       <details class="footer-box">
@@ -857,7 +883,7 @@
         </div>
       </details>
     </div>
-    <p class="footer-sig">Michaela Kühn · PromptSchule / Haufe Akademie · User Story Puzzle · Pilotversion</p>
+    <p class="footer-sig">Michaela Kühn · PromptSchule / Haufe Akademie · User Story Puzzle · Pilotversion<br>Zuletzt geprüft: 11.08.2026 · Status: ⭐ Zertifiziert mit Auszeichnung · Details siehe Audit-Protokoll</p>
   </footer>
 
 </div>
