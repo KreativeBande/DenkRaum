@@ -19,7 +19,19 @@ Team greifbar – mit einem Akzeptanzkriterium, das man tatsächlich testen kann
 
 Übergang: Damit ist die Brücke zum eigentlichen Kompendium gesetzt.
 
-**(2) Erste FA** *(Klick auf den FA-Chip „Login")*
+**(2) SQuaRE-Reihe** *(Auf die SQuaRE-Fundament-Box zeigen, dann auf die vier Fluss-Karten)*
+
+„ISO 25010 steht nicht allein – es ist Teil einer ganzen Normenfamilie, SQuaRE genannt. Eine Division
+hält das gemeinsame Fundament, vier weitere bilden eine Kette: was ist Qualität, wie misst man sie,
+welche Anforderung folgt daraus, und wie wird am Ende abgenommen."
+
+*(auf die Rücksprung-Links in den Divisions-Karten 2501n/2502n zeigen)*
+
+„Und genau diese ersten beiden Schritte sehen wir gleich im Kompendium ganz konkret."
+
+Übergang: Damit ist der Rahmen gesetzt, jetzt wird es konkret.
+
+**(3) Erste FA** *(Klick auf den FA-Chip „Login")*
 
 „Nehmen wir eine ganz gewöhnliche FA: Nutzer:in kann sich anmelden. Jetzt gehen wir gemeinsam durch alle
 neun Merkmale und schauen, was diese eine FA jeweils an Qualität verlangt."
@@ -29,19 +41,19 @@ neun Merkmale und schauen, was diese eine FA jeweils an Qualität verlangt."
 „Zuerst: Funktioniert das Login überhaupt korrekt? Hier steht die NFA mit einer konkreten Prozentzahl,
 keine vage Formulierung."
 
-**(3) Weitere Merkmale** *(Nacheinander durch mehrere weitere Merkmale klicken, z. B. Performance
+**(4) Weitere Merkmale** *(Nacheinander durch mehrere weitere Merkmale klicken, z. B. Performance
 Efficiency, Security, Safety)*
 
 „Schaut euch an, wie unterschiedlich diese neun NFAs sind – von Millisekunden über Verschlüsselung bis
 zur Frage, was passiert, wenn jemand versehentlich ausgesperrt wird. Das ist der Kern von ISO 25010:
 Qualität ist nicht ein Häkchen, sondern neun getrennte Fragen."
 
-**(4) FA wechseln** *(Zweite oder dritte FA wählen, kurz ein Merkmal wiederholen)*
+**(5) FA wechseln** *(Zweite oder dritte FA wählen, kurz ein Merkmal wiederholen)*
 
 „Und wenn wir die FA wechseln – sagen wir, Rechnung als PDF herunterladen – verändert sich jede einzelne
 NFA wieder, weil die Qualitätsfrage vom Kontext abhängt."
 
-**(5) Edition 2011 → 2023** *(Auf die Vergleichstabelle scrollen)*
+**(6) Edition 2011 → 2023** *(Auf die Vergleichstabelle scrollen)*
 
 „Ein Praxishinweis: Falls euch noch Unterlagen mit ‚Usability' statt ‚Interaction Capability' begegnen,
 oder ganz ohne ‚Safety' – das ist die alte 2011er-Fassung. Seit November 2023 gilt die Edition mit neun
@@ -50,6 +62,8 @@ statt acht Merkmalen."
 ## Regie-Hinweise
 
 Nicht mit der Vergleichstabelle 2011→2023 beginnen – sie ist ein Zusatznutzen für Fortgeschrittene, kein
-Einstieg. Nicht alle neun Merkmale im Vortrag einzeln vorlesen; drei bis vier exemplarisch reichen, den
-Rest zum Selbst-Erkunden freigeben. Timing: für einen 15-Minuten-Slot maximal 4 Merkmale live vorführen,
-den Rest im Nachgang zur Verfügung stellen.
+Einstieg. Die SQuaRE-Sektion bewusst knapp halten (max. 2–3 Minuten) – sie ist Landkarte, nicht
+Hauptinhalt; wer zu lange bei den fünf Divisionen verweilt, verliert die Gruppe vor dem eigentlichen
+Demonstrator. Nicht alle neun Merkmale im Vortrag einzeln vorlesen; drei bis vier exemplarisch reichen,
+den Rest zum Selbst-Erkunden freigeben. Timing: für einen 15-Minuten-Slot maximal 4 Merkmale live
+vorführen, den Rest im Nachgang zur Verfügung stellen.
