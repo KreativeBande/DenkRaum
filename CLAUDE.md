@@ -101,6 +101,33 @@ Ausnahme nur bei einer bewussten, im Tool erkennbaren Layout-Entscheidung mit ec
 
 Das `new-badge`-Element markiert ausschließlich Tools, die am selben Tag gebaut oder gemergt wurden — keine wochen- oder projektbezogene Interpretation. Bei jedem neuen Tool-Merge: zuerst bestehende `NEU`-Badges auf Kacheln entfernen, die nicht mehr vom aktuellen Tag stammen, dann den Badge für das neue Tool setzen. Badges bleiben nie über den Bau-Tag hinaus stehen.
 
+### Crosslink-Block "Verwandte Tools" (optional, Format entschieden, Rollout offen)
+
+Referenzimplementierung: `tools/iso-25010-kompendium.html`. Ein kurzer, klar begrenzter Absatz mit Liste, direkt **vor** dem `<footer>` (nicht darin, nicht in einer `<details>`-Box) — bleibt also ohne Aufklappen sichtbar:
+
+```html
+<div class="crosslink">
+  Verwandte Denkraum-Tools zu diesem Thema:
+  <ul>
+    <li><a href="./anderes-tool.html">Tool-Name</a> — ein Satz, was das andere Tool zeigt und wie es sich vom aktuellen Tool unterscheidet.</li>
+  </ul>
+</div>
+```
+
+**`<div>`, nicht `<p>`:** Ein `<ul>` ist Block-Inhalt — steckt es in einem `<p>`, schließt der Browser das `<p>` beim Parsen automatisch vor dem `<ul>` (HTML5 end-tag-omission-Regel). Die Liste landet dann als Geschwisterelement außerhalb von `.crosslink`, `.crosslink a`/`.crosslink li` greifen nicht mehr — sichtbar bricht nichts, aber Verlinkungsfarbe und Listenabstand fallen lautlos auf Browser-Default zurück. Betrifft nur diese listenbasierte Variante; der ältere einzeilige `.crosslink`-Stil ohne `<ul>` (z. B. `tools/steckbrief.html`, `tools/eu-ai-act-framework.html`) bleibt als `<p>` unverändert korrekt.
+
+```css
+.crosslink{margin-top:20px;font-size:14px;color:var(--ink-dim);}
+.crosslink a{color:var(--accent);font-weight:700;text-decoration:none;}
+.crosslink a:hover{text-decoration:underline;}
+.crosslink ul{margin:8px 0 0;padding-left:20px;}
+.crosslink li{margin-bottom:4px;}
+```
+
+**Kuratieren, nicht auflisten:** Nur Tools verlinken, zu denen eine echte inhaltliche Verwandtschaft besteht (gleiche Norm, gleiches Artefakt, gleicher Fall) — kein generisches „siehe auch alle Tools". Üblich sind 2–5 Einträge. Jeder Eintrag bekommt einen Differenzierungssatz, der sagt, *was am verlinkten Tool anders ist* (Umfang, Tiefe, Blickwinkel), nicht nur eine Wiederholung der Kachel-Beschreibung von `index.html` — sonst bleibt unklar, warum man wechseln sollte. Pfade relativ zu `tools/` (ggf. `../` bei einer Ebene tiefer wie `klarheits-sprint/`).
+
+**Status:** Format und Platzierung sind entschieden. Rollout ist **kein** K-Kriterium und **kein** Pflichtbaustein für jedes neue oder bestehende Tool — Einführung pro Tool im Einzelfall, wo eine echte Verwandtschaft besteht. Bei einem neuen Tool aus einem thematischen Cluster (z. B. FA/NFA/User-Story/ISO-Tools) mitdenken, ob es sich anbietet, ohne den gesamten Bestand automatisch nachzuziehen.
+
 ## Footer-Standard
 
 Jedes Tool bekommt im Footer vier strikt inhaltlich getrennte Aufklapp-Boxen (`<details>`), kein Impressum:
