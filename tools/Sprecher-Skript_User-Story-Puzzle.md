@@ -20,9 +20,9 @@ ihr seht sofort, was Rolle, Ziel und Nutzen unterscheidet."
 
 „Und hier, das Akzeptanzkriterium im Given-When-Then-Format, macht die Story überhaupt erst testbar."
 
-*(optional: Klick auf INVEST-Stapel und Notizbuch)*
+*(optional: Klick auf das Notizbuch)*
 
-„Das sind die beiden Leitplanken, die wir gleich im Puzzle brauchen."
+„Das ist die Leitplanke, die wir gleich im Puzzle brauchen."
 
 Übergang: Damit ist der Sprung zum Puzzle gesetzt.
 
