@@ -256,6 +256,7 @@
         <button data-m="anhang"><span class="mnum">★</span>Strukturbefehle</button>
         <button data-m="megaprompts"><span class="mnum">★</span>Megaprompt-Bibliothek</button>
         <button data-m="frameworks"><span class="mnum">★</span>Framework-Bibliothek</button>
+        <button data-m="praxismuster"><span class="mnum">★</span>Prompt-Muster aus der Praxis</button>
         <button data-m="checkliste"><span class="mnum">★</span>Checkliste</button>
         <button data-m="glossar"><span class="mnum">★</span>Glossar</button>
         <button data-m="fahrplan"><span class="mnum">★</span>Fahrplan</button>
@@ -621,6 +622,39 @@
         </div>
       </section>
 
+      <!-- ANHANG: PRAXIS-MUSTER -->
+      <section class="mission-panel" id="praxismuster">
+        <h2 class="mod-title">Anhang · Prompt-Muster aus der Praxis</h2>
+        <p class="mod-sub">Sechs Muster aus Anthropics eigener Claude-Code-Prompt-Bibliothek – keine neue Theorie, sondern der externe Beleg für die fünf Dimensionen aus Mission 2.</p>
+        <div class="auftrag">
+          <span class="tag">Quelle: code.claude.com/docs/en/prompt-library</span>
+          <p>Anthropic veröffentlicht dort ~50 Copy-paste-Prompts für Software-Engineering-Workflows, kuratiert aus internen Team-Praktiken. Auffällig: Keines der Muster erfindet ein neues Framework.</p>
+          <p>Alle sechs sind bekannte Requirements-Engineering-Prinzipien – nur auf Prompts angewendet statt auf Lastenhefte. Das bestätigt von außen, was diese Academy von Mission 1 an vertritt.</p>
+        </div>
+        <div class="chip-row" id="praxismusterChips">
+          <button class="chip" data-key="ergebnis">Ergebnis statt Weg</button>
+          <button class="chip" data-key="pruefauftrag">Prüfauftrag einbauen</button>
+          <button class="chip" data-key="referenz">Auf Referenz zeigen</button>
+          <button class="chip" data-key="messziel">Messbares Ziel</button>
+          <button class="chip" data-key="artefakt">Artefakt mitgeben</button>
+          <button class="chip" data-key="format">Antwortformat festlegen</button>
+        </div>
+        <div class="reveal-box" id="praxismusterOut">—</div>
+
+        <h2 class="mod-title" style="margin-top:28px;">Zuordnung: Welche Dimension steckt in welchem Muster?</h2>
+        <div class="table-scroll">
+        <table class="compare-table">
+          <tr><th>Praxis-Muster</th><th>Dimension (Mission 2)</th><th>Entspricht in der RE/BA-Welt</th></tr>
+          <tr><td>Ergebnis statt Weg</td><td>Aufgabe</td><td>Lösungsnebel vermeiden</td></tr>
+          <tr><td>Prüfauftrag einbauen</td><td>Aufgabe + Eingrenzung</td><td>Akzeptanzkriterium (Given/When/Then)</td></tr>
+          <tr><td>Auf Referenz zeigen</td><td>Kontext</td><td>Traceability</td></tr>
+          <tr><td>Messbares Ziel</td><td>Eingrenzung</td><td>NFR nach ISO 25010</td></tr>
+          <tr><td>Artefakt mitgeben</td><td>Kontext</td><td>Evidenz mit Zitat &amp; Fundstelle</td></tr>
+          <tr><td>Antwortformat festlegen</td><td>Format</td><td>Ergebnisformat im Pflichtenheft</td></tr>
+        </table>
+        </div>
+      </section>
+
       <!-- ANHANG: CHECKLISTE -->
       <section class="mission-panel" id="checkliste">
         <h2 class="mod-title">Anhang · Checkliste für gutes Prompt Engineering</h2>
@@ -692,7 +726,7 @@
           <tr><td>14:30–14:45</td><td>Pause</td></tr>
           <tr><td>14:45–15:30</td><td>Mission 6 – Leitplanken setzen</td></tr>
           <tr><td>15:30–16:15</td><td>Mission 7 – Kontext aufbauen</td></tr>
-          <tr><td>16:15–17:00</td><td>Mission 8 – Frameworks + Anhang Megaprompt-Bibliothek</td></tr>
+          <tr><td>16:15–17:00</td><td>Mission 8 – Frameworks + Anhang Megaprompt-Bibliothek &amp; Praxis-Muster</td></tr>
           <tr><td colspan="2" style="background:var(--card);font-weight:800;">TAG 2</td></tr>
           <tr><td>09:00–09:15</td><td>Rückblick Tag 1 (Checkliste kurz durchgehen)</td></tr>
           <tr><td>09:15–10:15</td><td>Mission 9 – Projektartefakte + Custom GPT</td></tr>
@@ -759,7 +793,7 @@
   <footer class="footer">
     <div class="footer-sig">
       <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn</a> · www.michaela-kuehn.com — Referenzrahmen: IREB, ISO/IEC 25010:2023, EU AI Act Art. 4 (Verordnung (EU) 2024/1689, anwendbar seit 02.02.2025), BABOK, PMBOK
-      <span class="audit-line">Zuletzt geprüft: 19.07.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+      <span class="audit-line">Zuletzt geprüft: 11.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
     </div>
     <div class="footer-details">
       <details class="footer-box">
@@ -769,7 +803,8 @@
 STRUKTUR
 - Kopfzeile: Zurück-Link zur Startseite, Eyebrow + H1 ("Prompt Engineering Academy" / "12 Missionen"), rechts Signatur-Link (Name + Link) und ein Beamer-Modus-Button (3 Stufen: normal → 1.35x → 1.75x per Klick durchzyklen, Zustand via data-beamer-Attribut auf &lt;html&gt;, per zoom umgesetzt, localStorage-persistiert).
 - Darunter ein Szenario-Umschalter mit 3 Pill-Buttons (austauschbare Unternehmensszenarien), der ALLE Inhalte der Missionen und des Auftrags neu befüllt und den Fortschritt zurücksetzt.
-- Zwei-Spalten-Layout (280px Navigation | 1fr Inhalt, unter 900px gestapelt): links eine Missions-Navigation mit 12 nummerierten Buttons plus einem einklappbaren "Anhang"-Bereich (Akkordeon) mit 8 weiteren Karten (Strukturbefehle, Megaprompt-Bibliothek, Framework-Bibliothek, Checkliste, Glossar, Fahrplan, Nebelarten &amp; Klarheits-Sprung, Engineering nach Standards).
+- Zwei-Spalten-Layout (280px Navigation | 1fr Inhalt, unter 900px gestapelt): links eine Missions-Navigation mit 12 nummerierten Buttons plus einem einklappbaren "Anhang"-Bereich (Akkordeon) mit 9 weiteren Karten (Strukturbefehle, Megaprompt-Bibliothek, Framework-Bibliothek, Prompt-Muster aus der Praxis, Checkliste, Glossar, Fahrplan, Nebelarten &amp; Klarheits-Sprung, Engineering nach Standards).
+- Anhang-Karte "Prompt-Muster aus der Praxis": 6 klickbare Muster-Chips (Ergebnis statt Weg, Prüfauftrag einbauen, Auf Referenz zeigen, Messbares Ziel, Artefakt mitgeben, Antwortformat festlegen), abgeleitet aus Anthropics öffentlicher Claude-Code-Prompt-Bibliothek — jedes Muster mit englischem Original-Beispiel, Zuordnung zur passenden Dimension aus Mission 2 und RE/BA-Pendant (Klarheits-Sprung, ISO 25010, Traceability, Pflichtenheft), plus abschließender Zuordnungstabelle Muster → Dimension → RE/BA-Entsprechung. Bestätigt von externer Quelle, dass die 5-Dimensionen-Didaktik dieser Academy kein akademisches Konstrukt ist, sondern sich mit realer Engineering-Praxis deckt.
 - Rechts genau ein aktives Missions-Panel zur Zeit (Klasse "active", Rest display:none).
 - Fortschrittsanzeige oben ("X / 12 Missionen besucht"), zählt nur die 12 Kernmissionen, nicht den Anhang.
 
@@ -822,6 +857,7 @@ NICHT TUN
           </table>
           <p><strong>Das eine Prinzip, das hier zählt:</strong> Ein guter Prompt ist kein Geistesblitz, sondern das Ergebnis von fünf einzeln benennbaren, einzeln prüfbaren Entscheidungen. Mission 12 macht genau das messbar: Erst wenn "Antwort ohne Engineering" und "Antwort mit Engineering-Prompt" nebeneinander gesehen wurden, erscheint der Merksatz — der Unterschied soll erlebt, nicht behauptet werden.</p>
           <p><strong>Nachbau-Tipp:</strong> Wer ein ähnliches Tool für ein anderes Thema bauen will, sollte mit dem Datenmodell anfangen, nicht mit dem Layout: ein einziges Objekt pro austauschbarem Szenario, aus dem alle Panels ihre Texte ziehen (siehe <code>SCENARIOS</code> + <code>S()</code>-Helper hier). Erst wenn das Datenmodell für 2-3 Szenarien vollständig ist, lohnt sich die UI-Arbeit — sonst baut man die Oberfläche für ein Szenario, das später nicht mehr zum zweiten passt.</p>
+          <p><strong>Externe Triangulation (Anhang · Prompt-Muster aus der Praxis):</strong> Diese Karte übersetzt keine Theorie, sondern eine fremde Quelle — Anthropics eigene Sammlung von Engineering-Prompts — in die 5-Dimensionen-Sprache dieser Academy. Didaktisch wichtig: Die sechs Muster wurden nicht erfunden, um zur Academy zu passen, sondern bestehen unabhängig davon und lassen sich trotzdem lückenlos auf Rolle/Kontext/Aufgabe/Format/Eingrenzung zurückführen — mit einer Ausnahme (Prüfauftrag), die bewusst als Kombination aus zwei Dimensionen stehen bleibt, statt eine sechste Dimension zu erzwingen. Das ist der eigentliche Lernpunkt: Ein gutes Modell muss an fremdem Material bestehen, nicht nur am eigenen.</p>
         </div>
       </details>
 
@@ -1108,6 +1144,7 @@ NICHT TUN
   });
 
   /* ================= NAVIGATION + FORTSCHRITT ================= */
+  const CORE_MISSIONS = new Set(["m1","m2","m3","m4","m5","m6","m7","m8","m9","m10","m11","m12"]);
   const visited = new Set(["m1"]);
   function updateProgress(){
     document.getElementById("progressLine").innerText = visited.size + " / 12 Missionen besucht";
@@ -1119,7 +1156,7 @@ NICHT TUN
       document.querySelectorAll(".mission-panel").forEach(p=>p.classList.remove("active"));
       btn.classList.add("active");
       document.getElementById(target).classList.add("active");
-      if(target !== "anhang"){
+      if(CORE_MISSIONS.has(target)){
         visited.add(target);
         btn.classList.add("visited");
         updateProgress();
@@ -1417,6 +1454,23 @@ NICHT TUN
     });
   });
 
+  /* ================= ANHANG: PRAXIS-MUSTER ================= */
+  const PRAXIS_MUSTER = {
+    ergebnis: "MUSTER: Ergebnis nennen, nicht den Lösungsweg\n\nBEISPIEL AUS DER PRAXIS (Anthropic Claude-Code-Prompt-Bibliothek):\n„add rate limiting to the public API and make sure existing tests still pass“\n\nWELCHE DIMENSION DAS STÄRKT: Aufgabe – beschreibt das WAS, nicht das WIE. Die KI findet die betroffenen Dateien selbst, statt dass man ihr den Lösungsweg vorschreibt.\n\nRE/BA-PENDANT: Genau die Falle, die der Klarheits-Sprung „Lösungsnebel“ nennt (siehe Anhang · Nebelarten & Klarheits-Sprung). Wer zu früh die Lösung vorgibt – „Wir brauchen eine App“ statt „Mitarbeitende sollen offene Fristen erkennen“ –, verengt den Möglichkeitsraum, bevor das eigentliche Problem geklärt ist.\n\nTRANSFER-FRAGE: Beschreibe ich in meinem Prompt das gewünschte Ergebnis – oder schreibe ich der KI bereits vor, wie sie dorthin kommen soll?",
+    pruefauftrag: "MUSTER: Der KI einen eigenen Prüfauftrag mitgeben\n\nBEISPIEL AUS DER PRAXIS:\n„write the migration, run it against the dev database, and confirm the schema matches“\n\nWELCHE DIMENSION DAS STÄRKT: Eine Kombination aus Aufgabe und Eingrenzung – keine der fünf PromptSchule-Dimensionen deckt das allein ab. Deshalb lohnt sich „Prüfauftrag“ als eigenständige Zusatztechnik, nicht als bloßer Unterpunkt von Aufgabe.\n\nRE/BA-PENDANT: Nichts anderes als ein Akzeptanzkriterium direkt im Prompt: „Given/When/Then“ zwingt zur Prüfung, bevor ein Ergebnis als fertig gilt. Ohne eingebauten Prüfauftrag liefert die KI nach dem ersten Versuch – auch wenn er falsch ist.\n\nTRANSFER-FRAGE: Sage ich der KI, woran sie ihr eigenes Ergebnis selbst prüft – oder verlasse ich mich darauf, den Fehler hinterher selbst zu finden?",
+    referenz: "MUSTER: Auf ein bestehendes Beispiel zeigen statt es zu beschreiben\n\nBEISPIEL AUS DER PRAXIS:\n„add a settings page that follows the same layout as the profile page“\n\nWELCHE DIMENSION DAS STÄRKT: Kontext.\n\nRE/BA-PENDANT: Traceability im Kleinen – statt ein Muster in eigenen Worten neu zu beschreiben (mit allen Verlusten, die dabei entstehen), wird auf ein bestehendes, bereits akzeptiertes Artefakt verwiesen. Dasselbe Prinzip wie in Mission 9, wenn Custom-GPT-Instructions direkt aus dem fertigen Pflichtenheft abgeleitet werden.\n\nTRANSFER-FRAGE: Gibt es in meinem Fall ein bestehendes Beispiel, auf das ich verweisen kann, statt es neu zu beschreiben?",
+    messziel: "MUSTER: Ein messbares Ziel statt eines Adjektivs\n\nBEISPIEL AUS DER PRAXIS:\n„get the bundle size under 200KB and show me what you removed“\n\nWELCHE DIMENSION DAS STÄRKT: Eingrenzung.\n\nRE/BA-PENDANT: „Schnell“, „sicher“, „gut bedienbar“ sind nach ISO/IEC 25010 keine Anforderungen, sondern Nebel – genauer: Qualitätsnebel (siehe Anhang · Nebelarten, Chip „Qualitätsnebel“). Erst eine Zahl mit Einheit macht daraus ein prüfbares NFR: nicht „schnell“, sondern „unter 200 ms bei 300 gleichzeitigen Anfragen“.\n\nTRANSFER-FRAGE: Steckt in meinem Prompt eine Zahl mit Einheit – oder nur ein Adjektiv, das jede:r anders auslegt?",
+    artefakt: "MUSTER: Das Artefakt selbst mitgeben, nicht die eigene Beschreibung davon\n\nBEISPIEL AUS DER PRAXIS:\n„why is the build failing? @build.log“\n\nWELCHE DIMENSION DAS STÄRKT: Kontext.\n\nRE/BA-PENDANT: Evidenzbasiertes Arbeiten wie im Pflichtenheft-Generator: Dort wird jede abgeleitete Anforderung mit Zitat und Fundstelle aus der Original-Ausschreibung belegt, nicht mit einer Zusammenfassung aus dem Gedächtnis. Zwischen Quelle und Interpretation geht immer Information verloren – wer die Quelle mitgibt, spart der KI den Umweg über die eigene, möglicherweise lückenhafte Wiedergabe.\n\nTRANSFER-FRAGE: Füge ich die Originalquelle bei (Fehlermeldung, Dokument, Screenshot) – oder beschreibe ich sie nur aus dem Gedächtnis?",
+    format: "MUSTER: Sagen, wie die Antwort aussehen soll\n\nBEISPIEL AUS DER PRAXIS:\n„explain how the payment retry logic works as an HTML page with a diagram, then open it in my browser“\n\nWELCHE DIMENSION DAS STÄRKT: Format.\n\nRE/BA-PENDANT: Das Ergebnisformat ist Teil der Anforderung, nicht Zugabe hinterher – wie der Abschnitt „Ergebnisformat“ im Pflichtenheft. Zwei fachlich identische Antworten unterscheiden sich massiv in ihrem Nutzen, je nachdem ob sie als Fließtext, Tabelle oder strukturierte Vorlage vorliegen.\n\nTRANSFER-FRAGE: Habe ich festgelegt, in welcher Form ich die Antwort brauche – oder überlasse ich das dem Zufall?"
+  };
+  document.querySelectorAll("#praxismusterChips .chip").forEach(chip=>{
+    chip.addEventListener("click", ()=>{
+      document.querySelectorAll("#praxismusterChips .chip").forEach(c=>c.classList.remove("selected"));
+      chip.classList.add("selected");
+      reveal(document.getElementById("praxismusterOut"), PRAXIS_MUSTER[chip.dataset.key]);
+    });
+  });
+
   /* ================= ANHANG: CHECKLISTE ================= */
   function updatePeCounter(){
     const total = document.querySelectorAll("#peChecklist .pe-item").length;
@@ -1565,6 +1619,8 @@ NICHT TUN
     document.getElementById("megapromptOut").innerText = "—";
     document.querySelectorAll("#frameworkChips .chip").forEach(c=>c.classList.remove("selected"));
     document.getElementById("frameworkOut").innerText = "—";
+    document.querySelectorAll("#praxismusterChips .chip").forEach(c=>c.classList.remove("selected"));
+    document.getElementById("praxismusterOut").innerText = "—";
     document.querySelectorAll("#nebelChips .chip").forEach(c=>c.classList.remove("selected"));
     document.getElementById("nebelOut").innerText = "—";
     document.querySelectorAll("#mechanismenChips .chip").forEach(c=>c.classList.remove("selected"));
