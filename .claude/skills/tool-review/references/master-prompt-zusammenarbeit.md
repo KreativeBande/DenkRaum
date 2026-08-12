@@ -2,6 +2,8 @@
 
 *Synchronisierte Arbeitskopie der kanonischen Notion-Seite (ID `391d6937-ee08-8169-bd01-fdbf76d9d42c`). Bei Diskrepanz gilt Notion — vor größeren Audits dort frisch abrufen statt sich allein auf diese Datei zu verlassen.*
 
+*Stand 11.08.2026: Diese Datei liegt der Notion-Seite gerade voraus — der Footer-Vier-Boxen-Fix (Normen-Register, eigentlich schon seit 03.08.2026 gelebte Praxis) und die neue Crosslink-Block-Konvention wurden hier nachgetragen, der Notion-Schreibzugriff war zum Zeitpunkt dieser Änderung blockiert („requires approval", keine Live-Freigabe möglich). Bei Gelegenheit in Notion nachziehen, damit beide Quellen wieder übereinstimmen.*
+
 Diesen Prompt als Grundlage für neue Konversationen zur Tool-Entwicklung verwenden.
 
 ---
@@ -64,7 +66,7 @@ Szenariointerne Kontextrollen (z. B. Sarah als Bürgerin, Bachmeier als IT-Leite
 - Klickbare Track-Rows mit Detail-Panel
 - **Signatur oben rechts (Pflicht, alle Tools)**: Name + Website-Link fix positioniert oben rechts im Viewport (`position:fixed; top:14px; right:28px;`), unabhängig von Modus/Scroll-Zustand der Live-Ansicht. Name fett, Link darunter in Akzentfarbe. Positionierung muss Kollisionen mit dynamischen Panel-Titeln ausschließen (z. B. oberhalb der `padding-top`-Zone des Panel-Kopfs platzieren). Unter 900px Breite: Fallback auf `position:static`, rechtsbündig.
 
-### Footer-Standard (drei Aufklapp-Boxen, `<details>`)
+### Footer-Standard (vier Aufklapp-Boxen, `<details>`)
 
 Standard für jedes Tool ab sofort:
 
@@ -73,16 +75,25 @@ Standard für jedes Tool ab sofort:
 | 🔧 **Systemprompt** | Enthält **immer den wiederverwendbaren Master-Bau-Prompt für dieses Tool**: Struktur (Layout/Split-Screen-Aufteilung), Inhalt pro Spur/Modus, Design-Vorgaben, Persona-Bezug und eine explizite Nicht-tun-Liste — geschrieben so, dass eine interessierte Person damit ein vergleichbares Tool selbst entwickeln könnte. Nicht mehr nur Dokumentation/Beleg des tatsächlich verwendeten Prompts, sondern eine eigenständige, kopierbare Bauanleitung. Falls das Tool zusätzlich einen echten Laufzeit-Prompt verwendet (z. B. im Online-Modus tatsächlich an eine KI geschickt), wird dieser als separater, klar gekennzeichneter Abschnitt ergänzt — er ersetzt den Master-Bau-Prompt nicht. Keine ausführliche didaktische Aufbereitung (das leistet die Handbuch-Box) — reine Bauanleitung. | Monospace, ≥14px |
 | 📖 **Handbuch** | Didaktische Erklärung, wie und warum der Prompt so aufgebaut ist. Struktur folgt der PromptSchule-Methodik (Prompt-Werkstatt): Framework identifizieren (RTF/CO-STAR/RISEN/TRACE/PACT/APE, je nach Prompt), Analyse entlang der 5 Dimensionen Rolle/Aufgabe/Kontext/Format/Eingrenzung mit Begründung je Design-Entscheidung, ein zentraler Lernhinweis („das eine Prinzip, das hier zählt") und ein Nachbau-Tipp für alle, die selbst ein ähnliches Tool bauen wollen. Zielgruppe: Trainerin als Tool-*Entwicklerin* — Konstruktionslogik, nicht Vortrag. | Sans-Serif, ≥16px |
 | 🎤 **Vortrags-Skript** | Der Sprechtext für den Live-Vortrag, Schritt für Schritt entlang der Slides/States des Tools. Enthält je Schritt: Klick-/Regieanweisung, wörtlichen (oder nah-wörtlichen) Sprechtext, und wo relevant einen Übergangssatz zum nächsten Schritt. Zweck: schnelles Wiedereinlesen vor einem Auftritt, wenn das Tool nicht regelmäßig genutzt wurde — keine Konstruktionslogik, sondern reiner Performance-Text. Am Ende der Box: kurze allgemeine Regie-Hinweise (z. B. Timing bei Animationen, was NICHT zuerst gesagt werden soll — etwa Framework-Abkürzungen vor der Analogie). | Sans-Serif, ≥16px, Klick-Hinweise kursiv/eingeklammert |
+| 📚 **Normen-Register** | Tabelle der im Tool tatsächlich referenzierten Normen/Frameworks/Quellen (Spalten: Framework/Quelle, Fassung/Status, Bezug im Tool), plus ein kurzer Hinweis, den Stand vor Einsatz in neuen Materialien zu prüfen (K17-Bezug). Ergänzt die einzeilige Kurzfassung in `.footer-sig`, ersetzt sie nicht. War bereits vor dieser Dokumentation in mehreren Tools gelebte Praxis (u. a. `tools/cpmai-prozess-board.html`); hier nachträglich als verbindlicher vierter Baustein festgehalten (Korrektur 03.08.2026). | Sans-Serif, ≥16px |
 
-Alle drei Boxen bleiben strikt getrennt (Systemprompt = Beleg/Bauanleitung, Handbuch = didaktische Konstruktionslogik, Vortrags-Skript = Performance-Text). Kein Impressum im Footer — bewusst nicht Teil des Standard-Bausteins.
+Alle vier Boxen bleiben strikt getrennt (Systemprompt = Beleg/Bauanleitung, Handbuch = didaktische Konstruktionslogik, Vortrags-Skript = Performance-Text, Normen-Register = tabellarischer Normen-Nachweis). Kein Impressum im Footer — bewusst nicht Teil des Standard-Bausteins.
 
-**Kanonische CSS-Klassennamen (verbindlich für alle Tools):** `.footer-sig`, `.footer-details`, `.footer-box`, `.footer-summary`, `.footer-content`, `.footer-mono` (Systemprompt-Box), `.footer-sans` (Handbuch/Vortrags-Skript), `.footer-table` (tabellarische Inhalte). Anordnung der drei Boxen in `.footer-details` ist Tool-Entscheidung — nebeneinander (`flex-direction:row`) oder gestapelt (`flex-direction:column`); Pflicht-Fallback unter 900px Breite: immer gestapelt.
+**Kanonische CSS-Klassennamen (verbindlich für alle Tools):** `.footer-sig`, `.footer-details`, `.footer-box`, `.footer-summary`, `.footer-content`, `.footer-mono` (Systemprompt-Box), `.footer-sans` (Handbuch/Vortrags-Skript/Normen-Register), `.footer-table` (Tabellen in Handbuch/Normen-Register). Anordnung der vier Boxen in `.footer-details` ist Tool-Entscheidung — nebeneinander (`flex-direction:row`) oder gestapelt (`flex-direction:column`); Pflicht-Fallback unter 900px Breite: immer gestapelt.
 
 **`.footer-sig`-Pflichtinhalt:** beginnt mit Name + Website-Link der Trainerin (`<strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>`), gefolgt von den im Tool tatsächlich referenzierten Normen/Standards, dann optional die Audit-Status-Zeile (siehe unten).
 
 ### Companion-Datei Sprecher-Skript
 
 Bei jeder Erstellung oder inhaltlichen Änderung der Vortrags-Skript-Box wird automatisch — ohne separate Aufforderung — zusätzlich eine eigenständige Datei `Sprecher-Skript_<Toolname>.md` mit demselben Inhalt ausgeliefert (Markdown, identische Schritt-Gliederung inkl. Klick-Hinweisen und allgemeinen Regie-Hinweisen am Ende). Zweck: Wiedereinlesen vor dem Auftritt ohne das HTML-Tool öffnen zu müssen (z. B. auf dem Handy oder ausgedruckt). Bei Diskrepanz zwischen Footer-Box und `.md` gilt die Footer-Box im Tool als Quelle; die `.md` wird bei der nächsten Änderung synchronisiert.
+
+### Crosslink-Block „Verwandte Tools" (optional, Format entschieden, Rollout offen)
+
+Referenzimplementierung: `tools/iso-25010-kompendium.html`. Ein kurzer, klar begrenzter Absatz mit Liste, direkt **vor** dem `<footer>` (nicht darin, nicht in einer `<details>`-Box). Als `<div class="crosslink">`, nicht `<p>` — ein `<ul>` ist Block-Inhalt und wird vom Browser beim Parsen sonst automatisch aus einem offenen `<p>` herausgelöst (HTML5 end-tag-omission-Regel), wodurch Listenabstand und Linkfarbe lautlos auf Browser-Default zurückfallen.
+
+**Kuratieren, nicht auflisten:** Nur Tools verlinken, zu denen eine echte inhaltliche Verwandtschaft besteht (gleiche Norm, gleiches Artefakt, gleicher Fall) — kein generisches „siehe auch alle Tools". Üblich sind 2–5 Einträge, jeder mit einem Differenzierungssatz (was ist am verlinkten Tool anders — Umfang, Tiefe, Blickwinkel), nicht nur eine Wiederholung der `index.html`-Kachelbeschreibung.
+
+**Status:** Format und Platzierung sind entschieden. Rollout ist **kein** K-Kriterium und **kein** Pflichtbaustein für jedes Tool — Einführung pro Tool im Einzelfall, wo eine echte Verwandtschaft besteht.
 
 ### Audit-Status-Zeile in der Footer-Signatur
 
@@ -127,6 +138,7 @@ Bei einem Audit gilt: **prüfe zuerst die Notion-Seite** (ID `391d6937-ee08-8183
 
 ---
 
+*Version 7 — August 2026 (lokal, noch nicht in Notion nachgezogen, siehe Hinweis oben). Änderungen ggü. v6: Footer-Standard korrigiert von drei auf vier Boxen — Normen-Register als vierter Pflichtbaustein nachgetragen (war bereits seit 03.08.2026 gelebte Praxis in mehreren Tools, hier nur nachdokumentiert, kein neues Kriterium). Neue Sektion „Crosslink-Block „Verwandte Tools"" ergänzt (optional, kein K-Kriterium, Referenz `tools/iso-25010-kompendium.html`).*
 *Version 6 — Juli 2026 (Stand Notion, synchronisiert 30.07.2026). Änderungen ggü. v5: Systemprompt-Box-Regel erneut verschärft — enthält jetzt immer den wiederverwendbaren Master-Bau-Prompt (Struktur/Inhalt/Design/Nicht-tun), nicht mehr nur einen minimalen Rahmensatz bei technischen Prompts. K19 dadurch von Kann- zu Muss-Kriterium hochgestuft und nach Abschnitt A verschoben (Qualitätskriterien-Checkliste jetzt Version 1.7).*
 *Änderungen ggü. v4: Persona-Tabelle als eigener Abschnitt ergänzt (Sarah = Vertrieb explizit). Beamer-Modus-Toggle neu aufgenommen — vierstufig (Normal → Beamer → Beamer XL → Beamer XXL, reine Größensteigerung), mit kanonischem CSS/JS-Muster und Größentabelle, Prüfkriterium K18 (Abschnitt A der Checkliste, Muss-Kriterium). Qualitätskriterien-Checkliste dadurch auf Version 1.6 (K1–K19); zusätzlich K17 „Aktualität referenzierter Normen/Frameworks" aufgenommen (Abschnitt B, Muss-Kriterium).*
 *Änderungen ggü. v3: `color-scheme: light` als technische Pflichtregel ergänzt; Design-System um verbindliche „Signatur oben rechts" (Name + Link, Pflicht für alle Tools) erweitert; `.footer-sig`-Pflichtinhalt und kanonische CSS-Klassennamen für den gesamten Footer festgeschrieben; Footer-Box-Anordnung als Tool-Entscheidung mit Pflicht-Mobile-Fallback präzisiert; Grenze der jsdom-Validierung ergänzt.*
