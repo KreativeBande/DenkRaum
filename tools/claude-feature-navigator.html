@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Claude-Feature-Navigator | PromptSchule</title>
+<style>
+  html, body { color-scheme: light; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+  html, body {
+    margin: 0; padding: 0; background: #ffffff; overflow-x: hidden;
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: #1c1c1e;
+  }
+  :root {
+    --ink: #1c1c1e;
+    --accent: #b5541c;
+    --accent-dark: #7c3a12;
+    --muted: #6b6b70;
+    --faint: #9a9a9e;
+    --bg-card: #faf7f3;
+    --border: #e4ddd3;
+    --accent2: #3d6b6b;
+    --accent2-dark: #274a4a;
+    --bg-card2: #f2f7f7;
+  }
+
+  /* ---------- Signatur oben rechts (Pflicht, fixed, unabhängig vom Scroll) ---------- */
+  .signature {
+    position: fixed; top: 14px; right: 28px; z-index: 500;
+    text-align: right; line-height: 1.3; font-size: 14px;
+    background: rgba(255,255,255,0.92); padding: 4px 10px; border-radius: 8px;
+  }
+  .signature strong { display: block; font-size: 15px; }
+  .signature a { color: var(--accent); text-decoration: none; }
+  @media (max-width: 900px) {
+    .signature { position: static; text-align: right; margin: 10px 16px 0 auto; width: fit-content; }
+  }
+
+  /* ---------- Topbar: Zurück-Link + Beamer-Toggle ---------- */
+  .topbar {
+    max-width: 1100px; margin: 0 auto; padding: 80px 24px 0;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  }
+  .back-link { font-size: 14px; font-weight: 700; color: var(--accent); text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
+  .beamer-btn {
+    background: transparent; border: 1.5px solid var(--border);
+    color: var(--muted); font-size: 15px; padding: 10px 20px;
+    border-radius: 999px; cursor: pointer; font-family: inherit; min-height: 44px;
+  }
+  html.beamer .beamer-btn,
+  html.beamer-xl .beamer-btn,
+  html.beamer-xxl .beamer-btn { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  header {
+    padding: 20px 24px 12px; max-width: 1100px; margin: 0 auto;
+  }
+  h1 { font-size: 26px; margin: 0 0 6px; color: var(--accent-dark); }
+  header p.sub { font-size: 16px; color: var(--muted); margin: 0 0 18px; }
+
+  /* ---------- Sektions-Umschalter (Feature-Navigator / Begriffslexikon) ---------- */
+  .section-switch {
+    display: flex; gap: 8px; max-width: 1100px; margin: 0 auto 6px; padding: 0 24px;
+  }
+  .section-switch button {
+    flex: 1; border: 2px solid var(--border); background: #fff; border-radius: 12px;
+    padding: 12px 16px; font-size: 16px; font-weight: 700; cursor: pointer;
+    min-height: 44px; color: var(--muted);
+  }
+  .section-switch button.active.nav-mode { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .section-switch button.active.lex-mode { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+  .view { display: none; }
+  .view.show { display: block; }
+
+  /* ---------- Pill Nav ---------- */
+  .pill-nav {
+    display: flex; flex-wrap: wrap; gap: 8px; max-width: 1100px; margin: 0 auto 16px;
+    padding: 0 24px;
+  }
+  .pill {
+    border: 2px solid var(--border); background: #fff; border-radius: 999px;
+    padding: 10px 16px; font-size: 15px; cursor: pointer; min-height: 44px;
+    min-width: 44px; color: #1c1c1e; font-weight: 600;
+  }
+  .pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* ---------- Split-Screen 40/60 ---------- */
+  .layout {
+    display: flex; gap: 20px; max-width: 1100px; margin: 0 auto 24px; padding: 0 24px;
+    align-items: flex-start;
+  }
+  .col-left { flex: 40; min-width: 260px; }
+  .col-right { flex: 60; min-width: 300px; }
+  @media (max-width: 800px) {
+    .layout { flex-direction: column; }
+    .col-left, .col-right { flex: 100%; width: 100%; }
+  }
+
+  .feature-list { display: flex; flex-direction: column; gap: 10px; }
+  .feature-item {
+    border: 2px solid var(--border); border-radius: 12px; background: var(--bg-card);
+    padding: 14px 16px; cursor: pointer; min-height: 44px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .feature-item.active { border-color: var(--accent); background: #fdeee1; }
+  .feature-item .icon { font-size: 22px; }
+  .feature-item .name { font-size: 16px; font-weight: 700; }
+  .feature-item .tag { font-size: 14px; color: var(--muted); display: block; }
+
+  .detail-card {
+    border: 2px solid var(--border); border-radius: 14px; padding: 22px;
+    background: #ffffff;
+  }
+  .detail-card h2 { margin: 0 0 4px; font-size: 22px; color: var(--accent-dark); }
+  .detail-card .badge {
+    display: inline-block; background: #fdeee1; color: var(--accent-dark);
+    font-size: 14px; padding: 3px 10px; border-radius: 8px; margin-bottom: 14px;
+  }
+  .block { margin-bottom: 16px; }
+  .block h3 {
+    font-size: 15px; text-transform: uppercase; letter-spacing: .03em;
+    color: var(--muted); margin: 0 0 6px;
+  }
+  .block p { font-size: 16px; line-height: 1.5; margin: 0; }
+  .block.mistake { background: #fff4f1; border-left: 4px solid #c65a3a; padding: 10px 14px; border-radius: 6px; }
+  .block.mistake p { font-size: 16px; }
+  .block.re-ba { background: #f0f5ee; border-left: 4px solid #5c7a4a; padding: 10px 14px; border-radius: 6px; }
+
+  /* ---------- Szenario-Finder ---------- */
+  .finder {
+    max-width: 1100px; margin: 0 auto 40px; padding: 0 24px;
+  }
+  .finder h2 { font-size: 20px; color: var(--accent-dark); margin-bottom: 6px; }
+  .finder p.hint { font-size: 15px; color: var(--muted); margin: 0 0 14px; }
+  .finder-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 10px; }
+  .finder-btn {
+    border: 2px solid var(--border); background: var(--bg-card); border-radius: 12px;
+    padding: 14px; text-align: left; cursor: pointer; font-size: 15px; min-height: 44px;
+  }
+  .finder-btn strong { display: block; font-size: 16px; margin-bottom: 2px; }
+  .finder-result {
+    margin-top: 14px; padding: 14px 16px; border-radius: 10px; background: #fdeee1;
+    border: 2px solid var(--accent); font-size: 16px; display: none;
+  }
+  .finder-result.show { display: block; }
+
+  /* ---------- Begriffslexikon ---------- */
+  .lex-wrap { max-width: 1100px; margin: 0 auto 40px; padding: 0 24px; }
+  .lex-intro h2 { font-size: 20px; color: var(--accent2-dark); margin: 0 0 6px; }
+  .lex-intro p { font-size: 15px; color: var(--muted); margin: 0 0 16px; max-width: 760px; }
+  .lex-controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; align-items: center; }
+  .lex-search {
+    flex: 1; min-width: 220px; border: 2px solid var(--border); border-radius: 10px;
+    padding: 12px 14px; font-size: 16px; min-height: 44px; font-family: inherit; color: #1c1c1e;
+  }
+  .lex-cat-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .lex-cat-pill {
+    border: 2px solid var(--border); background: #fff; border-radius: 999px;
+    padding: 9px 15px; font-size: 14px; cursor: pointer; min-height: 44px; font-weight: 600;
+    color: var(--accent2-dark);
+  }
+  .lex-cat-pill.active { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+  .lex-count { font-size: 14px; color: var(--faint); margin-bottom: 10px; }
+  .lex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 12px; }
+  .lex-card {
+    border: 2px solid var(--border); border-radius: 12px; padding: 16px; background: var(--bg-card2);
+  }
+  .lex-card h3 { font-size: 17px; margin: 0 0 6px; color: var(--accent2-dark); }
+  .lex-card .lex-cat-label {
+    display: inline-block; font-size: 14px; color: var(--muted); margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: .03em;
+  }
+  .lex-card p { font-size: 15px; line-height: 1.5; margin: 0 0 10px; color: #1c1c1e; }
+  .lex-card .lex-link {
+    display: inline-block; font-size: 14px; font-weight: 700; color: var(--accent);
+    background: #fdeee1; border-radius: 8px; padding: 6px 10px; cursor: pointer;
+    border: none; min-height: 32px;
+  }
+  .lex-empty { font-size: 16px; color: var(--muted); padding: 20px 0; }
+
+  /* ---------- Crosslink "Verwandte Tools" ---------- */
+  .crosslink { max-width: 1100px; margin: 0 auto; padding: 0 24px; font-size: 14px; color: var(--muted); }
+  .crosslink a { color: var(--accent); font-weight: 700; text-decoration: none; }
+  .crosslink a:hover { text-decoration: underline; }
+  .crosslink ul { margin: 8px 0 0; padding-left: 20px; }
+  .crosslink li { margin-bottom: 4px; }
+
+  /* ---------- Footer (vier Pflicht-Boxen) ---------- */
+  footer { max-width: 1100px; margin: 24px auto 0; padding: 0 24px 60px; }
+  .footer-details { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+  .footer-summary {
+    cursor: pointer; padding: 14px 16px; font-size: 16px; font-weight: 700;
+    background: var(--bg-card); list-style: none; min-height: 44px; display: flex; align-items: center;
+  }
+  .footer-summary::-webkit-details-marker { display: none; }
+  .footer-summary::before { content: "▸ "; color: var(--accent); }
+  details[open] > .footer-summary::before { content: "▾ "; }
+  .footer-content { padding: 16px; border-top: 1px solid var(--border); }
+  .footer-box.footer-mono .footer-content { font-family: "SFMono-Regular", Menlo, Consolas, monospace; font-size: 14px; white-space: pre-wrap; line-height: 1.5; }
+  .footer-box.footer-sans .footer-content { font-family: inherit; font-size: 16px; line-height: 1.6; }
+  .footer-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .footer-table th, .footer-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  .footer-sig { font-size: 14px; color: var(--muted); padding: 14px 24px; max-width: 1100px; margin: 0 auto; }
+  .footer-sig strong { color: #1c1c1e; }
+  .footer-sig a { color: var(--accent); }
+  .audit-line { display: block; margin-top: 4px; font-size: 14px; color: var(--faint); }
+
+  /* ---------- Beamer-Modus (K18, vierstufig, kumulativ) ---------- */
+  html.beamer, html.beamer-xl, html.beamer-xxl { --muted: #3D4A5C; --faint: #3D4A5C; }
+
+  html.beamer h1 { font-size: 32px; }
+  html.beamer header p.sub { font-size: 22px; }
+  html.beamer .section-switch button { font-size: 18px; }
+  html.beamer .pill { font-size: 18px; padding: 14px 22px; }
+  html.beamer .feature-item .name { font-size: 19px; }
+  html.beamer .feature-item .tag { font-size: 16px; }
+  html.beamer .detail-card h2 { font-size: 27px; }
+  html.beamer .detail-card .badge { font-size: 15px; }
+  html.beamer .block h3 { font-size: 17px; }
+  html.beamer .block p { font-size: 22px; }
+  html.beamer .finder h2 { font-size: 24px; }
+  html.beamer .finder p.hint { font-size: 15px; }
+  html.beamer .finder-btn { font-size: 18px; }
+  html.beamer .finder-btn strong { font-size: 19px; }
+  html.beamer .finder-result { font-size: 22px; }
+  html.beamer .lex-intro h2 { font-size: 24px; }
+  html.beamer .lex-intro p { font-size: 22px; }
+  html.beamer .lex-search { font-size: 18px; }
+  html.beamer .lex-cat-pill { font-size: 17px; }
+  html.beamer .lex-count { font-size: 17px; }
+  html.beamer .lex-card h3 { font-size: 20px; }
+  html.beamer .lex-card .lex-cat-label { font-size: 15px; }
+  html.beamer .lex-card p { font-size: 22px; }
+  html.beamer .lex-card .lex-link { font-size: 16px; }
+  html.beamer .lex-empty { font-size: 18px; }
+  html.beamer .crosslink { font-size: 15px; }
+  html.beamer footer { display: none; }
+  html.beamer .footer-sig { display: none; }
+
+  html.beamer-xl h1 { font-size: 40px; }
+  html.beamer-xl header p.sub { font-size: 28px; }
+  html.beamer-xl .section-switch button { font-size: 20px; }
+  html.beamer-xl .pill { font-size: 21px; padding: 16px 26px; }
+  html.beamer-xl .feature-item .name { font-size: 22px; }
+  html.beamer-xl .feature-item .tag { font-size: 18px; }
+  html.beamer-xl .detail-card h2 { font-size: 32px; }
+  html.beamer-xl .detail-card .badge { font-size: 18px; }
+  html.beamer-xl .block h3 { font-size: 19px; }
+  html.beamer-xl .block p { font-size: 28px; }
+  html.beamer-xl .finder h2 { font-size: 28px; }
+  html.beamer-xl .finder p.hint { font-size: 18px; }
+  html.beamer-xl .finder-btn { font-size: 21px; }
+  html.beamer-xl .finder-btn strong { font-size: 22px; }
+  html.beamer-xl .finder-result { font-size: 28px; }
+  html.beamer-xl .lex-intro h2 { font-size: 28px; }
+  html.beamer-xl .lex-intro p { font-size: 28px; }
+  html.beamer-xl .lex-search { font-size: 21px; }
+  html.beamer-xl .lex-cat-pill { font-size: 19px; }
+  html.beamer-xl .lex-count { font-size: 18px; }
+  html.beamer-xl .lex-card h3 { font-size: 23px; }
+  html.beamer-xl .lex-card .lex-cat-label { font-size: 18px; }
+  html.beamer-xl .lex-card p { font-size: 28px; }
+  html.beamer-xl .lex-card .lex-link { font-size: 18px; }
+  html.beamer-xl .lex-empty { font-size: 21px; }
+  html.beamer-xl .crosslink { font-size: 18px; }
+
+  html.beamer-xxl h1 { font-size: 48px; }
+  html.beamer-xxl header p.sub { font-size: 34px; }
+  html.beamer-xxl .section-switch button { font-size: 23px; }
+  html.beamer-xxl .pill { font-size: 24px; padding: 18px 30px; }
+  html.beamer-xxl .feature-item .name { font-size: 26px; }
+  html.beamer-xxl .feature-item .tag { font-size: 21px; }
+  html.beamer-xxl .detail-card h2 { font-size: 38px; }
+  html.beamer-xxl .detail-card .badge { font-size: 21px; }
+  html.beamer-xxl .block h3 { font-size: 22px; }
+  html.beamer-xxl .block p { font-size: 34px; }
+  html.beamer-xxl .finder h2 { font-size: 32px; }
+  html.beamer-xxl .finder p.hint { font-size: 21px; }
+  html.beamer-xxl .finder-btn { font-size: 24px; }
+  html.beamer-xxl .finder-btn strong { font-size: 25px; }
+  html.beamer-xxl .finder-result { font-size: 34px; }
+  html.beamer-xxl .lex-intro h2 { font-size: 32px; }
+  html.beamer-xxl .lex-intro p { font-size: 34px; }
+  html.beamer-xxl .lex-search { font-size: 24px; }
+  html.beamer-xxl .lex-cat-pill { font-size: 22px; }
+  html.beamer-xxl .lex-count { font-size: 21px; }
+  html.beamer-xxl .lex-card h3 { font-size: 27px; }
+  html.beamer-xxl .lex-card .lex-cat-label { font-size: 21px; }
+  html.beamer-xxl .lex-card p { font-size: 34px; }
+  html.beamer-xxl .lex-card .lex-link { font-size: 21px; }
+  html.beamer-xxl .lex-empty { font-size: 24px; }
+  html.beamer-xxl .crosslink { font-size: 21px; }
+</style>
+</head>
+<body>
+
+<div class="signature">
+  <strong>Michaela Kühn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<div class="topbar">
+  <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+  <button class="beamer-btn" id="beamerBtn" type="button">☀ Beamer</button>
+</div>
+
+<header>
+  <h1>Claude-Feature-Navigator</h1>
+  <p class="sub">Sechs Bausteine des Claude-Ökosystems – erklärt in Alltagssprache, mit Analogie, typischem Einsatz, häufigem Fehler und Bezug zu RE/BA-Arbeit. Dazu ein Begriffslexikon mit 40 Fachbegriffen rund um Claude, agentische KI und MCP. Kein Produkt-Auswendiglernen, sondern ein Denkraster: <strong>Was brauche ich gerade – und welcher Baustein oder Begriff liefert das?</strong></p>
+</header>
+
+<div class="section-switch">
+  <button id="btnNavMode" class="active nav-mode" onclick="showView('nav')">🧭 Feature-Navigator</button>
+  <button id="btnLexMode" class="lex-mode" onclick="showView('lex')">📖 Begriffslexikon</button>
+</div>
+
+<div class="view show" id="viewNav">
+  <nav class="pill-nav" id="pillNav"></nav>
+
+  <div class="layout">
+    <div class="col-left">
+      <div class="feature-list" id="featureList"></div>
+    </div>
+    <div class="col-right">
+      <div class="detail-card" id="detailCard"></div>
+    </div>
+  </div>
+
+  <section class="finder">
+    <h2>Szenario-Finder</h2>
+    <p class="hint">Wähle, was du gerade brauchst – der passende Baustein wird markiert.</p>
+    <div class="finder-grid" id="finderGrid"></div>
+    <div class="finder-result" id="finderResult"></div>
+  </section>
+</div>
+
+<div class="view" id="viewLex">
+  <div class="lex-wrap">
+    <div class="lex-intro">
+      <h2>Begriffslexikon – 40 Claude-Begriffe erklärt</h2>
+      <p>Von "Prompt" bis "MCP Server": kompakte Erklärungen der wichtigsten Begriffe rund um Claude, agentische KI und Claude Code – in Alltagssprache, ohne Versionsnummern (die veralten zu schnell). Nach Kategorie filtern oder Begriff direkt suchen. Begriffe mit Verweis "→ Baustein" führen zurück in den Feature-Navigator.</p>
+    </div>
+    <div class="lex-controls">
+      <input type="text" class="lex-search" id="lexSearch" placeholder="Begriff suchen … z. B. 'Hook' oder 'Kontext'" oninput="renderLexGrid()">
+    </div>
+    <div class="lex-cat-nav" id="lexCatNav"></div>
+    <div class="lex-count" id="lexCount"></div>
+    <div class="lex-grid" id="lexGrid"></div>
+  </div>
+</div>
+
+<div class="crosslink">
+  Verwandte Denkraum-Tools zu diesem Thema:
+  <ul>
+    <li><a href="./chatbox-workflow-opener.html">Von der Chatbox zum Workflow · Opener</a> — derselbe Denkraum-Bausteine-Gedanke als Workshop-Einstieg mit sechs Workflow-Stationen (Denken, Erinnern, Verbinden, Recherchieren, Bauen, Ausführen), ohne eigenständiges Begriffslexikon.</li>
+    <li><a href="./vom-tool-chaos-zum-mcp-handshake.html">Vom Tool-Chaos zum MCP-Handshake</a> — vertieft genau den MCP-Begriff aus dem Lexikon hier: Server, Client, Resources/Tools/Prompts und den Handshake-Ablauf Schritt für Schritt.</li>
+    <li><a href="./vom-prompt-zum-agenten.html">Vom Prompt zum Agenten</a> — vertieft die agentischen Konzepte aus dem Lexikon (Loop, Delegation, Orchestrierung) als vierstufige Eskalationsleiter mit RE/BA-Transfer.</li>
+    <li><a href="./ki-einsatzmuster-explorer.html">KI-Einsatzmuster-Explorer</a> — wechselt die Perspektive von Bausteinen/Begriffen zu zehn realen Einsatzmustern mit Autonomiegrad und Transfer-Satz.</li>
+  </ul>
+</div>
+
+<footer>
+  <details class="footer-details footer-box footer-mono">
+    <summary class="footer-summary">Systemprompt (Master-Bau-Prompt)</summary>
+    <div class="footer-content">Baue ein einzelnes offlinefähiges HTML-Trainingstool "Claude-Feature-Navigator" für PromptSchule (Zielgruppe: Fach-/Führungskräfte ohne KI-Vorwissen, Einsatz auch als Beamer-Vortrag).
+
+STRUKTUR (Modul 1: Feature-Navigator)
+- Split-Screen 40/60: links Feature-Liste (6 Einträge) als klickbare Kacheln, rechts Detail-Panel.
+- Pill-Button-Navigation oberhalb, synchron zur Feature-Liste.
+- Darunter: eigenständiger "Szenario-Finder"-Block mit 6 Bedarfs-Buttons ("Ich brauche..."), die auf das passende Feature verweisen und es in Liste + Detail-Panel hervorheben.
+
+INHALT PRO FEATURE (6x: Claude Chat, Projects, Artifacts, Skills, Claude Code, Cowork)
+- Kurzerklärung in einem Satz, ohne Fachjargon.
+- Analogie aus dem Alltag (kein technisches Bild).
+- "Wann nutzen" – ein bis zwei konkrete Situationen.
+- "Typischer Fehler" – ein konkreter Anfänger-Fehler, farblich abgesetzt.
+- "RE/BA-Bezug" – Verknüpfung zu IREB/BABOK/PMBOK-Arbeitspraxis, farblich abgesetzt.
+
+STRUKTUR (Modul 2: Begriffslexikon – Erweiterung)
+- Umschalter oberhalb ("Feature-Navigator" / "Begriffslexikon"), zweite eigenständige Ansicht.
+- 40 Fachbegriffe rund um Claude/Claude Code/agentische KI, in 7 Themen-Cluster gruppiert: Grundlagen, Agentische Konzepte, MCP & Tools, Skills & Erweiterungen, Orchestrierung, Modi & Kontrolle sowie Kontext & Session.
+- Jede Begriffs-Karte: Begriff, Kategorie-Label, ein bis zwei Sätze Erklärung in eigenen Worten (nicht aus Quellgrafik übernommen), optional Verweis-Button zurück auf den passenden Baustein im Feature-Navigator.
+- Suchfeld (Volltextfilter über Begriff + Erklärung) und Kategorie-Pillen als Filter, kombinierbar.
+- Kein Begriff mit konkreter Versionsnummer, Preis oder produktspezifischem Datum – Konzeptebene, analog Modul 1.
+
+DESIGN-VORGABEN (für beide Module gemeinsam)
+- Weißer Hintergrund, color-scheme: light, kein Dark Mode.
+- Zurück-Link zur Startseite und Signatur "Michaela Kühn" + Website-Link in eigener Topbar-Zeile oberhalb des Hero-Bereichs; Signatur zusätzlich position:fixed oben rechts, Fallback static unter 900px.
+- Footer: vier Aufklapp-Boxen (Systemprompt/Handbuch/Vortrags-Skript/Normen-Register), kanonische Klassennamen (.footer-sig, .footer-details, .footer-box, .footer-summary, .footer-content, .footer-mono, .footer-sans, .footer-table).
+- Beamer-Modus-Toggle, vierstufig kumulativ (Normal→Beamer→Beamer XL→Beamer XXL→Normal), Footer ab Stufe 1 ausgeblendet, beide Module in allen Stufen geprüft.
+- Schriftgrößen: Fließtext/Hauptinhalt ≥16/22/28/34px, Sekundärtext ≥14/15/18/21px über alle vier Stufen, in allen Stufen geprüft.
+- Pointer Events statt HTML5-Drag&Drop, keine Storage-API, kein fetch() auf externe Quellen.
+
+NICHT TUN
+- Keine konkreten Versionsnummern/Preise für Claude-Produkte nennen (veralten schnell) – Beschreibung bewusst produktversions-agnostisch halten.
+- Keine erfundenen Kennzahlen ("X Stunden gespart" o.ä.).
+- Keine UI-Klick-Schritte, die sich mit jedem Produkt-Update ändern können – stattdessen Konzept/Zweck in den Vordergrund stellen.
+- Begriffslexikon nicht wörtlich aus einer Fremdquelle/Infografik übernehmen – Erklärungen eigenständig formulieren.
+
+Referenzrahmen: IREB, BABOK (IIBA), PMBOK – bei jedem Feature mindestens einen Bezug herstellen.</div>
+  </details>
+
+  <details class="footer-details footer-box footer-sans">
+    <summary class="footer-summary">Handbuch</summary>
+    <div class="footer-content">
+      <p><strong>Didaktische Konstruktion.</strong> Das Tool folgt keinem klassischen Prompt-Framework (RTF/CO-STAR/...), weil hier kein Prompt analysiert, sondern ein Produktökosystem erklärt wird. Modul 1 (Feature-Navigator) nutzt ein fünfteiliges Erklärraster je Baustein: <em>Kurzerklärung → Analogie → Wann nutzen → Typischer Fehler → RE/BA-Bezug</em>. Dieses Raster entspricht dem PromptSchule-Prinzip „Analogie vor Fachbegriff" und dem Lerntrichter Bewusstsein → Erleben → Verstehen → Anwenden.</p>
+      <p><strong>Warum ein zweites Modul (Begriffslexikon)?</strong> Der Feature-Navigator beantwortet „Was brauche ich – welcher Baustein liefert das?" auf Ebene von sechs großen Bausteinen. Im Workshop-Alltag tauchen aber laufend kleinere Fachbegriffe auf (Hook, Subagent, Context Window, MCP …), die innerhalb dieser Bausteine leben, aber dort zu granular für die Hauptnavigation wären. Das Begriffslexikon ergänzt deshalb als zweite, eigenständige Ansicht statt als separates Tool – eine Karteikarte pro Begriff, mit Rückverweis auf den zugehörigen Baustein, wo sinnvoll. So bleibt ein Werkzeug statt zwei zu pflegender Tools, und Teilnehmende können während des Vortrags nahtlos zwischen „großem Baustein" und „kleinem Begriff" wechseln.</p>
+      <p><strong>Auswahl und Clusterung der 40 Begriffe.</strong> Die Begriffe stammen aus dem aktuellen Sprachgebrauch rund um Claude, Claude Code und agentische KI-Systeme allgemein (Agent, Agentic Loop, Orchestrierung, MCP …) und wurden in sieben Cluster sortiert: Grundlagen, Agentische Konzepte, MCP & Tools, Skills & Erweiterungen, Orchestrierung, Modi & Kontrolle sowie Kontext & Session. Erklärungen sind eigenständig formuliert, nicht aus einer Fremdquelle übernommen.</p>
+      <p><strong>Bewusste Auslassung von Produktdetails.</strong> Versionsnummern, Preise und Modellnamen wandeln sich häufig und schnell (vgl. K17 „Normen-Aktualität" – dasselbe Prinzip gilt für Produktfakten). Beide Module bleiben deshalb auf Konzeptebene: Was ist der Begriff/Baustein grundsätzlich, nicht welche Zahl/welcher Preis gerade gilt. Vor jedem Workshop-Einsatz: aktuellen Stand kurz gegen docs.claude.com / support.claude.com prüfen.</p>
+      <p><strong>Nachbau-Tipp.</strong> Für ein Analogon in einem anderen Themenfeld: Liste der Bausteine → für jeden eine Alltagsanalogie finden, die ohne Fachbegriff funktioniert → erst danach den Fachbegriff einführen → Szenario-Finder als aktive Anwendungsebene ergänzen. Für ein Glossar-Modul: Begriffe sammeln → in 5–7 thematische Cluster sortieren → je Begriff maximal zwei Sätze eigene Erklärung → wo möglich Rückverweis auf ein größeres Konzept aus Modul 1 setzen.</p>
+    </div>
+  </details>
+
+  <details class="footer-details footer-box footer-sans">
+    <summary class="footer-summary">Vortrags-Skript</summary>
+    <div class="footer-content">
+      <p><em>(Einstieg)</em> „Die meisten von Ihnen kennen Claude als Chatfenster: Frage rein, Antwort raus. Das ist aber nur einer von sechs Bausteinen. Wenn wir die anderen fünf nicht kennen, arbeiten wir mit einem Sechstel des Werkzeugs."</p>
+      <p><em>(Klick auf „Claude Chat")</em> „Fangen wir bei dem an, was Sie kennen. Chat ist das Gespräch ohne Vorlauf – gut für spontane Fragen, aber: jedes Mal bei null. Genau das lösen die nächsten Bausteine."</p>
+      <p><em>(Klick auf „Projects")</em> „Projects ist der Aktenordner, den Sie einmal befüllen. Stellen Sie sich vor, Sie müssten bei jedem Gespräch neu erklären, welches Glossar Ihr Team benutzt – Projects nimmt Ihnen das ab."</p>
+      <p><em>(Klick auf „Artifacts")</em> „Artifacts sind die Werkstücke neben dem Gespräch – genau das, was diese Tool-Bibliothek hier ausmacht."</p>
+      <p><em>(Klick auf „Skills")</em> „Skills sind Rezepte, keine einmaligen Briefings. Genau das Prinzip, mit dem meine eigene Qualitätscheckliste als Skill läuft."</p>
+      <p><em>(Klick auf „Claude Code")</em> „Hier verlassen wir das reine Beraten – Claude legt selbst Hand an, liest und schreibt Dateien direkt im Projekt."</p>
+      <p><em>(Klick auf „Cowork")</em> „Und Cowork ist die Assistenzebene für mehrstufige Büroarbeit, ohne dass Sie selbst Code schreiben müssen."</p>
+      <p><em>(Überleitung zum Szenario-Finder)</em> „Statt sich sechs Definitionen zu merken, reicht eine Frage: Was brauche ich gerade? Probieren wir das gemeinsam aus." <em>(Teilnehmende klicken selbst durch den Szenario-Finder)</em></p>
+      <p><em>(Überleitung zum Begriffslexikon)</em> „Jetzt haben Sie die sechs großen Bausteine. Aber wenn Sie mit Kolleginnen über Claude sprechen, fallen ständig kleinere Begriffe: Hook, Subagent, Kontextfenster. Damit Sie nicht verloren gehen, wechseln wir jetzt ins Begriffslexikon." <em>(Klick auf „Begriffslexikon"-Umschalter)</em> „Tippen Sie einfach einen Begriff ein, den Sie schon mal gehört, aber nie ganz verstanden haben – zum Beispiel 'Hook' oder 'Kontext'." <em>(Teilnehmende suchen selbst, kurzer Austausch in Kleingruppen)</em></p>
+      <p><strong>Regie-Hinweise:</strong> Nicht mit Produktversionen oder Preisen einsteigen – das lenkt vom Konzept ab und veraltet ohnehin am schnellsten. Timing: ca. 90 Sekunden pro Baustein, 3 Minuten für den Szenario-Finder als Gruppenübung, 5–8 Minuten für die Begriffslexikon-Erkundung je nach Vorwissen der Gruppe.</p>
+    </div>
+  </details>
+
+  <details class="footer-details footer-box footer-sans">
+    <summary class="footer-summary">Normen-Register</summary>
+    <div class="footer-content">
+      <table class="footer-table">
+        <tr><th>Referenz</th><th>Bezug im Tool</th><th>Status/Hinweis</th></tr>
+        <tr><td>IREB CPRE</td><td>Projects/Skills als Wissens- bzw. Verfahrensbasis für Anforderungsarbeit</td><td>Stabiler Standard, keine versionsabhängige Aussage getroffen</td></tr>
+        <tr><td>BABOK v3 (IIBA)</td><td>Cowork/Artifacts als Unterstützung für Analyse-Deliverables</td><td>Stabiler Standard</td></tr>
+        <tr><td>PMBOK (PMI)</td><td>Claude Code als Umsetzungsschritt nach Planung/Analyse</td><td>Stabiler Standard</td></tr>
+        <tr><td>Anthropic Produktökosystem (Chat, Projects, Artifacts, Skills, Claude Code, Cowork)</td><td>Kerninhalt aller sechs Kacheln in Modul 1</td><td>Konzeptebene, bewusst ohne Versionsnummern/Preise – Stand August 2026, vor Workshop-Einsatz gegen docs.claude.com / support.claude.com prüfen</td></tr>
+        <tr><td>Claude-/Claude-Code-Fachbegriffe (MCP, Hook, Subagent, Plan Mode, Context Window u. a.)</td><td>40 Karten in Modul 2 (Begriffslexikon)</td><td>Konzeptebene, eigenständig formuliert, keine Versions-/Preisangaben – Stand August 2026, vor Workshop-Einsatz gegen docs.claude.com prüfen, da sich Funktionsnamen im agentischen KI-Bereich schnell weiterentwickeln</td></tr>
+      </table>
+    </div>
+  </details>
+</footer>
+
+<div class="footer-sig">
+  <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a> · Bezug: IREB, BABOK, PMBOK
+  <span class="audit-line">Zuletzt geprüft: 19.08.2026 · Status: noch nicht gegen K1–K19 zertifiziert · Details siehe Audit-Protokoll</span>
+</div>
+
+<script>
+  var FEATURES = [
+    {
+      id: "chat", icon: "💬", name: "Claude Chat", tag: "Der Einstieg – ohne Vorlauf",
+      kurz: "Direkter Dialog im Browser oder in der App: Sie schreiben, Claude antwortet – ohne Einrichtung.",
+      analogie: "Ein spontanes Gespräch mit einer sehr belesenen Kollegin oder einem sehr belesenen Kollegen – schnell erreichbar, aber ohne automatischen Zugriff auf Ihre Unterlagen, wenn Sie sie nicht hochladen.",
+      wann: "Spontane Fragen, erstes Brainstorming, einmalige Textentwürfe – alles, was keine Wiederholung mit gleichbleibendem Kontext braucht.",
+      fehler: "Für jede neue Frage einen neuen Chat starten. Innerhalb eines laufenden Gesprächs wird Claude präziser, weil der Kontext erhalten bleibt – ständige Neustarts kosten diesen Vorteil.",
+      reba: "Guter Einstieg für schnelle Anforderungs-Skizzen oder Stakeholder-Fragen – aber keine dauerhafte Wissensbasis. Für wiederkehrende Projektarbeit: Projects nutzen."
+    },
+    {
+      id: "projects", icon: "📁", name: "Projects", tag: "Der Aktenordner mit Gedächtnis",
+      kurz: "Ein Arbeitsbereich mit eigenen Referenzdateien und Anweisungen, der über mehrere Gespräche hinweg erhalten bleibt.",
+      analogie: "Ein Aktenordner, den Sie einmal befüllen – Corporate-Wording, Vorlagen, Glossar – und den Claude bei jedem neuen Gespräch in diesem Projekt automatisch kennt.",
+      wann: "Wiederkehrende Themen mit stabilem Kontext: ein Kundenprojekt, ein Curriculum, eine Normreihe, die Sie über Wochen bearbeiten.",
+      fehler: "Dateien ohne Anweisung hochladen. Die Datei allein macht noch keinen Kontext – erst die begleitende Instruktion, wofür sie steht und wie sie genutzt werden soll, macht sie wirksam.",
+      reba: "IREB-Glossar, Lastenheft-Referenzen oder eine Stakeholder-Liste als dauerhaftes Projektwissen ablegen, statt sie in jedem Gespräch neu einzufügen."
+    },
+    {
+      id: "artifacts", icon: "🧩", name: "Artifacts", tag: "Das Werkstück neben dem Gespräch",
+      kurz: "Eigenständige Ergebnisse – Code, Dokumente, Diagramme, kleine Tools – die neben dem Chat entstehen und weiterbearbeitet werden können.",
+      analogie: "Ein separates Werkstück auf dem Tisch, während das Gespräch weiterläuft: Sie reden weiter mit Claude, während das Werkstück sichtbar bleibt und wächst.",
+      wann: "Immer, wenn ein Ergebnis über die reine Chat-Antwort hinaus als Datei oder Tool gebraucht wird – genau das, was diese Trainingstool-Bibliothek ausmacht.",
+      fehler: "Ergebnisse nur als Text im Chatverlauf stehen lassen, obwohl ein eigenständiges, wiederverwendbares Artefakt sinnvoller wäre und sich leichter teilen oder weiterbearbeiten lässt.",
+      reba: "Wardley Maps, Story-Mapping-Boards, Business-Case-Tools – alles, was als eigenständiges Analyse- oder Trainingsartefakt in der BA-Arbeit gebraucht wird."
+    },
+    {
+      id: "skills", icon: "📋", name: "Skills", tag: "Das Rezept statt des Briefings",
+      kurz: "Eine wiederverwendbare Arbeitsanleitung, die Claude bei einer bestimmten wiederkehrenden Aufgabe konsistent gleich arbeiten lässt.",
+      analogie: "Kein einmaliges Briefing, sondern ein Rezept: einmal aufgeschrieben, jedes Mal exakt gleich befolgt – unabhängig davon, wer die Aufgabe später auslöst.",
+      wann: "Aufgaben, bei denen Qualität und Konsistenz über viele Wiederholungen zählen, etwa das Prüfen eines Tools gegen eine feste Kriterienliste.",
+      fehler: "Skills mit Projects verwechseln. Projects geben Wissen – „das ist unser Kontext“. Skills geben Verfahren – „so wird diese Aufgabe erledigt“. Beides zu vermischen führt zu unklaren, schwer wartbaren Anweisungen.",
+      reba: "Entspricht dem Prinzip hinter einer eigenen Qualitätschecklisten-Skill: einmal die Prüflogik definieren, danach bei jedem neuen Tool automatisch konsistent anwenden."
+    },
+    {
+      id: "code", icon: "🛠️", name: "Claude Code", tag: "Selbst Hand anlegen",
+      kurz: "Eine technische Umgebung, in der Claude Projektdateien liest, erstellt und ändert, Befehle ausführt und Ergebnisse direkt im Projektverzeichnis ablegt.",
+      analogie: "Nicht mehr nur beraten, sondern selbst Hand anlegen – wie eine Entwicklerin, die direkt im Projektordner arbeitet, statt nur Vorschläge auf Zuruf zu liefern.",
+      wann: "Wenn ein Tool nicht nur entworfen, sondern tatsächlich gebaut, getestet und veröffentlicht werden soll – etwa ein Deployment auf eine Projektseite.",
+      fehler: "Den Bauprozess mikromanagen: einzelne CSS-Regeln oder Befehle vorgeben, statt das gewünschte Ergebnis zu beschreiben. Die Umsetzung ist bewusst Aufgabe des Werkzeugs, nicht der Bedienperson.",
+      reba: "Der Schritt nach Analyse und Konzeption: aus einem in Projects/Artifacts erarbeiteten Konzept ein lauffähiges, veröffentlichtes Tool machen."
+    },
+    {
+      id: "cowork", icon: "🗂️", name: "Cowork", tag: "Die Assistenz für mehrstufige Büroarbeit",
+      kurz: "Eine Umgebung für mehrstufige Wissensarbeit über mehrere Dateien, Ordner und angebundene Werkzeuge hinweg, ohne selbst zu programmieren.",
+      analogie: "Eine Assistenz, die selbstständig mehrere Dateien kombiniert und ein fertiges Ergebnis zurückliefert – Sie beschreiben das Ziel, nicht die Einzelschritte.",
+      wann: "Wiederkehrende, mehrschrittige Büroaufgaben: mehrere Dokumente zu einer Auswertung zusammenführen, Dateien nach festem Muster aufbereiten.",
+      fehler: "Einzelschritte statt Ziele beschreiben – „öffne Datei A, kopiere Spalte B“ statt „führe die Daten aus diesen drei Dateien zu einer Übersicht zusammen“. Das Wie überlässt man dem Werkzeug.",
+      reba: "Relevant für dokumentationslastige Aufgaben, etwa das Zusammenführen von Workshop-Ergebnissen aus mehreren Quellen zu einer strukturierten Übersicht."
+    }
+  ];
+
+  var SCENARIOS = [
+    { need: "Ich habe eine spontane Frage", target: "chat" },
+    { need: "Ich will Wissen dauerhaft hinterlegen", target: "projects" },
+    { need: "Ich brauche ein fertiges Werkstück/Tool", target: "artifacts" },
+    { need: "Ich will ein Verfahren wiederholbar machen", target: "skills" },
+    { need: "Ich will echten Code bauen & veröffentlichen", target: "code" },
+    { need: "Ich habe mehrstufige Büroarbeit über mehrere Dateien", target: "cowork" }
+  ];
+
+  /* ---------- Begriffslexikon: 40 Begriffe, 7 Cluster ---------- */
+  var LEX_CATS = [
+    "Grundlagen",
+    "Agentische Konzepte",
+    "MCP & Tools",
+    "Skills & Erweiterungen",
+    "Orchestrierung",
+    "Modi & Kontrolle",
+    "Kontext & Session"
+  ];
+
+  var LEXIKON = [
+    { term: "Claude", cat: "Grundlagen", def: "Anthropics KI-Assistent für Schreiben, Recherche, Programmierung und weitere Wissensarbeit – die Basis, auf der alle anderen Bausteine hier aufsetzen.", link: "chat" },
+    { term: "Claude Code", cat: "Grundlagen", def: "Die Umgebung, in der Claude Software-Projekte direkt bearbeitet: Dateien lesen, erstellen, ändern, Befehle ausführen.", link: "code" },
+    { term: "Claude Cowork", cat: "Grundlagen", def: "Ein Arbeitsbereich, in dem Claude mehrstufige Büro- und Recherche-Aufgaben über mehrere Dateien und angebundene Werkzeuge hinweg erledigt.", link: "cowork" },
+    { term: "Prompt", cat: "Grundlagen", def: "Die Anweisung oder Frage, die Sie Claude geben – der Ausgangspunkt jeder Antwort.", link: "chat" },
+    { term: "System Prompt", cat: "Grundlagen", def: "Übergeordnete Rahmenanweisungen, die festlegen, wie sich ein KI-Assistent grundsätzlich verhalten soll – meist vor den eigentlichen Nutzeranweisungen gesetzt.", link: null },
+    { term: "Session", cat: "Kontext & Session", def: "Ein zusammenhängendes Arbeitsgespräch mit Claude, von Beginn bis Ende einer Konversation.", link: "chat" },
+    { term: "CLI", cat: "Grundlagen", def: "Command Line Interface – eine textbasierte Bedienoberfläche, über die Claude Code gesteuert werden kann.", link: "code" },
+    { term: "Claude Agent SDK", cat: "Grundlagen", def: "Ein Entwicklungswerkzeug, mit dem sich eigene, Claude-gestützte Agenten programmieren lassen.", link: null },
+
+    { term: "AI Agent", cat: "Agentische Konzepte", def: "Eine KI, die selbstständig Handlungen ausführt und Aufgaben für Sie abschließt – nicht nur antwortet, sondern tätig wird.", link: "cowork" },
+    { term: "Agentic AI", cat: "Agentische Konzepte", def: "KI, die einen Plan entwirft und mehrere Schritte selbstständig auf ein Ziel hin ausführt.", link: "cowork" },
+    { term: "Agentic Loop", cat: "Agentische Konzepte", def: "Der Kreislauf, in dem eine KI denkt, handelt, das Ergebnis prüft und auf Basis dessen weitermacht – die Grundschleife hinter agentischem Arbeiten.", link: null },
+    { term: "Routine", cat: "Agentische Konzepte", def: "Eine wiederverwendbare Automatisierung, die für eine wiederkehrende Aufgabe fest eingerichtet wird.", link: null },
+    { term: "Workflow", cat: "Agentische Konzepte", def: "Eine Abfolge miteinander verbundener Schritte, die zusammen eine Aufgabe abschließen.", link: "cowork" },
+    { term: "Scheduled Task", cat: "Agentische Konzepte", def: "Eine Aufgabe, die Claude automatisch zu einem festgelegten Zeitpunkt oder in festen Abständen ausführt.", link: null },
+
+    { term: "MCP", cat: "MCP & Tools", def: "Model Context Protocol – ein offener Standard, über den KI-Systeme wie Claude an externe Werkzeuge und Datenquellen angebunden werden.", link: "cowork" },
+    { term: "MCP Server", cat: "MCP & Tools", def: "Ein System, das Claude Zugriff auf bestimmte Werkzeuge, Apps oder Informationen über MCP bereitstellt.", link: "cowork" },
+    { term: "MCP Tool", cat: "MCP & Tools", def: "Eine einzelne konkrete Aktion, die Claude über einen MCP-Server ausführen kann.", link: "cowork" },
+    { term: "Connector", cat: "MCP & Tools", def: "Die Verbindung zwischen Claude und einer anderen App oder einem anderen Dienst – die Anbindung selbst, nicht die einzelne Aktion darin.", link: "cowork" },
+    { term: "Tool Calling", cat: "MCP & Tools", def: "Der Moment, in dem Claude ein verfügbares Werkzeug auswählt und einsetzt, um eine Aufgabe zu erledigen.", link: "cowork" },
+
+    { term: "Skill", cat: "Skills & Erweiterungen", def: "Eine wiederverwendbare Arbeitsanleitung, die Claude beibringt, eine bestimmte Aufgabe konsistent auf immer dieselbe Weise auszuführen.", link: "skills" },
+    { term: "SKILL.md", cat: "Skills & Erweiterungen", def: "Die Datei, in der die Anleitung für einen Skill hinterlegt ist.", link: "skills" },
+    { term: "CLAUDE.md", cat: "Skills & Erweiterungen", def: "Eine Datei mit dauerhaften Anweisungen für ein bestimmtes Projekt, die Claude bei jeder Arbeit daran automatisch berücksichtigt.", link: "code" },
+    { term: "Plugin", cat: "Skills & Erweiterungen", def: "Ein Paket, das Claude Code um zusätzliche Fähigkeiten erweitert – etwa neue Skills, Befehle oder Anbindungen.", link: "code" },
+    { term: "Hook", cat: "Skills & Erweiterungen", def: "Eine automatische Aktion, die in Claude Code ausgelöst wird, sobald ein bestimmtes Ereignis eintritt.", link: "code" },
+
+    { term: "Subagent", cat: "Orchestrierung", def: "Ein spezialisierter KI-Agent, dem ein einzelner Teilausschnitt einer größeren Aufgabe zugewiesen wird.", link: "cowork" },
+    { term: "Agent Team", cat: "Orchestrierung", def: "Mehrere Claude-Agenten, die gemeinsam an einem Projekt arbeiten, jeweils mit eigenem Teilauftrag.", link: "cowork" },
+    { term: "Orchestrierung", cat: "Orchestrierung", def: "Das Koordinieren mehrerer Agenten, Werkzeuge und Aufgaben, damit sie sinnvoll zusammenwirken.", link: "cowork" },
+    { term: "Delegation", cat: "Orchestrierung", def: "Einen Teil einer Aufgabe an einen anderen Agenten abgeben, statt ihn selbst zu erledigen.", link: "cowork" },
+    { term: "Parallel Agents", cat: "Orchestrierung", def: "Mehrere Agenten, die gleichzeitig an getrennten Teilaufgaben desselben Vorhabens arbeiten.", link: "cowork" },
+
+    { term: "Plan Mode", cat: "Modi & Kontrolle", def: "Ein Modus, in dem Claude eine Aufgabe zunächst durchdenkt und einen Plan vorlegt, bevor es Änderungen tatsächlich vornimmt.", link: "code" },
+    { term: "Permission Mode", cat: "Modi & Kontrolle", def: "Legt fest, welche Aktionen Claude ohne vorherige Rückfrage ausführen darf.", link: "code" },
+    { term: "Checkpoint", cat: "Modi & Kontrolle", def: "Ein gespeicherter Zwischenstand, zu dem später zurückgekehrt werden kann.", link: "code" },
+    { term: "Worktree", cat: "Modi & Kontrolle", def: "Eine separate Arbeitskopie eines Code-Projekts, in der ein anderer Agent gefahrlos parallel arbeiten kann, ohne den Hauptstand zu stören.", link: "code" },
+    { term: "Checkpoint-Rückkehr", cat: "Modi & Kontrolle", def: "Ein Befehl in Claude Code, um gezielt zu einem früher gespeicherten Checkpoint zurückzuspringen.", link: "code" },
+    { term: "Slash Command", cat: "Modi & Kontrolle", def: "Ein mit einem Schrägstrich eingeleiteter Kurzbefehl in Claude Code, der eine feste Aktion sofort auslöst, etwa eine Checkpoint-Rückkehr oder das Wiederholen einer Routine.", link: "code" },
+
+    { term: "Context", cat: "Kontext & Session", def: "Die Informationen, die Claude während der Arbeit gerade zur Verfügung stehen.", link: "chat" },
+    { term: "Context Window", cat: "Kontext & Session", def: "Die Menge an Information, die Claude zu einem Zeitpunkt gleichzeitig verarbeiten kann.", link: null },
+    { term: "Context Management", cat: "Kontext & Session", def: "Die bewusste Auswahl, welche Information während einer längeren Aufgabe im verfügbaren Kontext gehalten wird.", link: null },
+    { term: "Memory", cat: "Kontext & Session", def: "Information, die Claude über eine einzelne Sitzung hinaus behält und in künftiger Arbeit wieder nutzen kann.", link: "projects" },
+    { term: "Prompt Caching", cat: "Kontext & Session", def: "Bereits verarbeitete Information wiederverwenden, um Zeit und Rechenaufwand bei wiederkehrenden Anfragen zu sparen.", link: null }
+  ];
+
+  var current = "chat";
+  var activeLexCat = "Alle";
+  var currentView = "nav";
+
+  function showView(v) {
+    currentView = v;
+    document.getElementById("viewNav").className = "view" + (v === "nav" ? " show" : "");
+    document.getElementById("viewLex").className = "view" + (v === "lex" ? " show" : "");
+    document.getElementById("btnNavMode").className = "nav-mode" + (v === "nav" ? " active" : "");
+    document.getElementById("btnLexMode").className = "lex-mode" + (v === "lex" ? " active" : "");
+  }
+
+  function renderNav() {
+    var nav = document.getElementById("pillNav");
+    nav.innerHTML = "";
+    FEATURES.forEach(function(f) {
+      var b = document.createElement("button");
+      b.className = "pill" + (f.id === current ? " active" : "");
+      b.textContent = f.icon + " " + f.name;
+      b.addEventListener("pointerup", function() { select(f.id); });
+      nav.appendChild(b);
+    });
+  }
+
+  function renderList() {
+    var list = document.getElementById("featureList");
+    list.innerHTML = "";
+    FEATURES.forEach(function(f) {
+      var div = document.createElement("div");
+      div.className = "feature-item" + (f.id === current ? " active" : "");
+      div.innerHTML = '<span class="icon">' + f.icon + '</span><span><span class="name">' + f.name + '</span><span class="tag">' + f.tag + '</span></span>';
+      div.addEventListener("pointerup", function() { select(f.id); });
+      list.appendChild(div);
+    });
+  }
+
+  function renderDetail() {
+    var f = FEATURES.find(function(x) { return x.id === current; });
+    var card = document.getElementById("detailCard");
+    card.innerHTML =
+      '<h2>' + f.icon + ' ' + f.name + '</h2>' +
+      '<span class="badge">' + f.tag + '</span>' +
+      '<div class="block"><h3>Kurzerklärung</h3><p>' + f.kurz + '</p></div>' +
+      '<div class="block"><h3>Analogie</h3><p>' + f.analogie + '</p></div>' +
+      '<div class="block"><h3>Wann nutzen</h3><p>' + f.wann + '</p></div>' +
+      '<div class="block mistake"><h3>Typischer Fehler</h3><p>' + f.fehler + '</p></div>' +
+      '<div class="block re-ba"><h3>RE/BA-Bezug</h3><p>' + f.reba + '</p></div>';
+  }
+
+  function select(id) {
+    current = id;
+    if (currentView !== "nav") { showView("nav"); }
+    renderNav();
+    renderList();
+    renderDetail();
+  }
+
+  function renderFinder() {
+    var grid = document.getElementById("finderGrid");
+    grid.innerHTML = "";
+    SCENARIOS.forEach(function(s) {
+      var b = document.createElement("button");
+      b.className = "finder-btn";
+      b.innerHTML = "<strong>" + s.need + "</strong>";
+      b.addEventListener("pointerup", function() {
+        select(s.target);
+        var f = FEATURES.find(function(x) { return x.id === s.target; });
+        var res = document.getElementById("finderResult");
+        res.textContent = "→ Passender Baustein: " + f.icon + " " + f.name + " (" + f.tag + ")";
+        res.className = "finder-result show";
+        card_scroll();
+      });
+      grid.appendChild(b);
+    });
+  }
+
+  function card_scroll() {
+    var card = document.getElementById("detailCard");
+    if (card && card.scrollIntoView) { card.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
+  }
+
+  function renderLexCatNav() {
+    var nav = document.getElementById("lexCatNav");
+    nav.innerHTML = "";
+    var all = ["Alle"].concat(LEX_CATS);
+    all.forEach(function(c) {
+      var b = document.createElement("button");
+      b.className = "lex-cat-pill" + (c === activeLexCat ? " active" : "");
+      b.textContent = c;
+      b.addEventListener("pointerup", function() { activeLexCat = c; renderLexCatNav(); renderLexGrid(); });
+      nav.appendChild(b);
+    });
+  }
+
+  function renderLexGrid() {
+    var grid = document.getElementById("lexGrid");
+    var countEl = document.getElementById("lexCount");
+    var q = document.getElementById("lexSearch").value.trim().toLowerCase();
+    var items = LEXIKON.filter(function(e) {
+      var matchCat = (activeLexCat === "Alle" || e.cat === activeLexCat);
+      var matchQ = (q === "" || e.term.toLowerCase().indexOf(q) !== -1 || e.def.toLowerCase().indexOf(q) !== -1);
+      return matchCat && matchQ;
+    });
+    countEl.textContent = items.length + " von " + LEXIKON.length + " Begriffen";
+    grid.innerHTML = "";
+    if (items.length === 0) {
+      var empty = document.createElement("div");
+      empty.className = "lex-empty";
+      empty.textContent = "Kein Begriff gefunden. Suche anpassen oder Kategorie wechseln.";
+      grid.appendChild(empty);
+      return;
+    }
+    items.forEach(function(e) {
+      var card = document.createElement("div");
+      card.className = "lex-card";
+      var linkHtml = "";
+      if (e.link) {
+        var target = FEATURES.find(function(x) { return x.id === e.link; });
+        if (target) {
+          linkHtml = '<button class="lex-link" data-target="' + e.link + '">→ Baustein: ' + target.icon + ' ' + target.name + '</button>';
+        }
+      }
+      card.innerHTML =
+        '<span class="lex-cat-label">' + e.cat + '</span>' +
+        '<h3>' + e.term + '</h3>' +
+        '<p>' + e.def + '</p>' +
+        linkHtml;
+      if (e.link) {
+        card.querySelector(".lex-link").addEventListener("pointerup", function() { select(e.link); });
+      }
+      grid.appendChild(card);
+    });
+  }
+
+  var BEAMER_LEVELS = [
+    { classes: [],                                    label: '☀ Beamer' },
+    { classes: ['beamer'],                             label: '☀ Beamer XL' },
+    { classes: ['beamer', 'beamer-xl'],                label: '☀ Beamer XXL' },
+    { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: '☀ Normal' }
+  ];
+  var beamerLevel = 0;
+  document.getElementById('beamerBtn').addEventListener('click', function(){
+    beamerLevel = (beamerLevel + 1) % 4;
+    document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    this.textContent = BEAMER_LEVELS[beamerLevel].label;
+  });
+
+  renderNav();
+  renderList();
+  renderDetail();
+  renderFinder();
+  renderLexCatNav();
+  renderLexGrid();
+</script>
+</body>
+</html>
