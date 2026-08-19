@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KI-Risiko-Klassifikationsraum · Denkraum-Tool</title>
+<style>
+  :root{
+    color-scheme: light;
+    --white:#ffffff;
+    --ink:#1a1d23;
+    --muted:#5b6270;
+    --faint:#8790a0;
+    --line:#e3e6ec;
+    --panel:#f6f7f9;
+    --accent:#2563eb;
+    --ok:#15803d;
+    --ok-bg:#eafaf0;
+    --bad:#b91c1c;
+    --bad-bg:#fdecec;
+    --warn:#92400e;
+
+    /* Risikokategorien */
+    --cat-daten:#1e3a8a;      --cat-daten-bg:#eaf0fd;
+    --cat-modell:#15803d;     --cat-modell-bg:#e9f7ee;
+    --cat-agent:#c2410c;      --cat-agent-bg:#fdf1e7;
+    --cat-security:#b91c1c;   --cat-security-bg:#fdecec;
+    --cat-governance:#6d28d9; --cat-governance-bg:#f2ecfd;
+
+    /* Personas (kanonisch, siehe Handbuch: Hex-Werte vorläufig -
+       Cross-Tool-Abgleich K11 im Governance-Backlog noch offen) */
+    --p-ela:#0f766e;      --p-ela-bg:#e6f5f3;
+    --p-knut:#9a5b12;     --p-knut-bg:#faf1e3;
+    --p-sarah:#a3195b;    --p-sarah-bg:#fbe9f1;
+    --p-petra:#1d4ed8;    --p-petra-bg:#e9eefd;
+    --p-bach:#52525b;     --p-bach-bg:#eeeef0;
+  }
+  html,body{
+    background:var(--white); color:var(--ink);
+    color-scheme: light;
+    margin:0; padding:0;
+    height:100%;
+    overflow-y:auto;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:18px;
+    line-height:1.5;
+    -webkit-tap-highlight-color:transparent;
+  }
+  *{box-sizing:border-box;}
+  button{font-family:inherit;}
+
+  /* ===== Signatur oben rechts ===== */
+  .sig{
+    position:fixed; top:14px; right:28px; z-index:500;
+    text-align:right; font-size:14px; line-height:1.35;
+    background:rgba(255,255,255,.92); padding:4px 8px; border-radius:8px;
+  }
+  .sig strong{display:block; font-size:15px;}
+  .sig a{color:var(--accent); text-decoration:none;}
+  @media (max-width:900px){
+    .sig{position:static; text-align:right; padding:8px 20px 0;}
+  }
+
+  /* ===== Topbar: Zurück-Link + Beamer-Toggle ===== */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    padding:14px 28px 0;
+  }
+  @media (min-width:901px){
+    .topbar{padding-top:64px;}
+  }
+  .back-link{font-size:14px; font-weight:700; color:var(--accent); text-decoration:none;}
+  .back-link:hover{text-decoration:underline;}
+  .beamer-btn{
+    background:transparent; border:1.5px solid var(--line);
+    color:var(--muted); font-size:15px; padding:10px 20px;
+    border-radius:999px; cursor:pointer; font-family:inherit; min-height:44px;
+  }
+  html.beamer .beamer-btn,
+  html.beamer-xl .beamer-btn,
+  html.beamer-xxl .beamer-btn{ background:var(--ink); color:#fff; border-color:var(--ink); }
+
+  /* ===== Header / Phasen-Navigation ===== */
+  header{
+    padding:14px 28px 14px;
+  }
+  h1{font-size:26px; margin:0 0 4px;}
+  .subtitle{color:var(--muted); font-size:15px; margin:0 0 14px;}
+  .phase-nav{display:flex; gap:10px; flex-wrap:wrap;}
+  .pill{
+    border:2px solid var(--line); background:var(--white); color:var(--muted);
+    border-radius:999px; padding:10px 18px; font-size:15px; font-weight:600;
+    cursor:pointer; min-height:44px; display:inline-flex; align-items:center; gap:8px;
+  }
+  .pill.active{border-color:var(--accent); color:var(--accent); background:#eef3ff;}
+  .pill .num{
+    width:24px; height:24px; border-radius:50%; background:var(--line); color:var(--white);
+    display:inline-flex; align-items:center; justify-content:center; font-size:14px;
+  }
+  .pill.active .num{background:var(--accent);}
+
+  /* ===== Split-Screen Layout ===== */
+  .stage{display:flex; min-height:calc(100vh - 140px);}
+  .side{
+    flex:0 0 30%; background:var(--panel); border-right:1px solid var(--line);
+    padding:22px 24px; overflow-y:auto;
+  }
+  .main{flex:1; padding:22px 26px; overflow-y:auto;}
+  @media (max-width:900px){
+    .stage{flex-direction:column;}
+    .side{flex:none; border-right:none; border-bottom:1px solid var(--line);}
+  }
+
+  .side h2{font-size:18px; margin-top:0;}
+  .side p{font-size:15px; color:var(--muted);}
+  .legend-row{display:flex; align-items:center; gap:10px; margin:10px 0; font-size:15px;}
+  .legend-dot{width:16px; height:16px; border-radius:5px; flex:0 0 auto;}
+  .score-box{
+    margin-top:18px; padding:14px; background:var(--white); border:1px solid var(--line); border-radius:10px;
+    font-size:15px;
+  }
+  .score-box .num-big{font-size:28px; font-weight:700; color:var(--accent);}
+
+  /* ===== Phase 1: Sammeln (Klassifizierung) ===== */
+  .scenario-card{
+    background:var(--white); border:1px solid var(--line); border-radius:14px; padding:20px;
+    margin-bottom:18px;
+  }
+  .persona-tag{
+    display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:14px;
+    padding:5px 12px; border-radius:999px; margin-bottom:10px;
+  }
+  .persona-dot{width:10px; height:10px; border-radius:50%;}
+  .scenario-text{font-size:18px; margin:0 0 16px;}
+  .choice-row{display:flex; flex-wrap:wrap; gap:10px;}
+  .choice-btn{
+    border:2px solid var(--line); background:var(--white); border-radius:10px;
+    padding:12px 16px; font-size:15px; font-weight:600; cursor:pointer; min-height:44px;
+    color:var(--ink); flex:1 1 150px; text-align:center;
+  }
+  .choice-btn:disabled{cursor:default;}
+  .choice-btn.correct{background:var(--ok-bg); border-color:var(--ok); color:var(--ok);}
+  .choice-btn.wrong{background:var(--bad-bg); border-color:var(--bad); color:var(--bad);}
+  .choice-btn.reveal{border-color:var(--ok); color:var(--ok); background:var(--ok-bg);}
+  .feedback{
+    margin-top:14px; padding:14px 16px; border-radius:10px; font-size:15px; display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback .norm-line{font-size:14px; color:var(--muted); margin-top:8px;}
+  .nav-btns{display:flex; gap:10px; margin-top:18px;}
+  .nav-btns button{
+    border:2px solid var(--line); background:var(--white); border-radius:10px; padding:12px 18px;
+    font-size:15px; font-weight:600; cursor:pointer; min-height:44px;
+  }
+  .nav-btns button.primary{background:var(--accent); border-color:var(--accent); color:var(--white);}
+  .nav-btns button:disabled{opacity:.4; cursor:default;}
+
+  /* ===== Phase 2: Strukturieren (Periodensystem) ===== */
+  .filter-row{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;}
+  .filter-chip{
+    border:2px solid var(--line); background:var(--white); border-radius:999px;
+    padding:8px 14px; font-size:14px; font-weight:600; cursor:pointer; min-height:38px;
+  }
+  .filter-chip.on{color:var(--white); border-color:transparent;}
+  .cat-block{margin-bottom:18px;}
+  .cat-title{
+    display:flex; align-items:center; gap:10px; font-size:16px; font-weight:700; margin-bottom:8px;
+  }
+  .cat-swatch{width:16px; height:16px; border-radius:5px;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(92px,1fr)); gap:8px;}
+  .risk-tile{
+    border:2px solid var(--line); border-radius:10px; padding:9px 8px; cursor:pointer;
+    background:var(--white); min-height:72px; text-align:left;
+  }
+  .risk-tile .code{font-size:16px; font-weight:800;}
+  .risk-tile .title{font-size:14px; color:var(--muted); margin-top:2px; line-height:1.2;}
+  .risk-tile.selected{border-width:3px;}
+  .detail-panel{
+    margin-top:14px; border:2px solid var(--line); border-radius:14px; padding:16px; display:none;
+    background:var(--white);
+  }
+  .detail-panel.show{display:block;}
+  .detail-panel .dp-code{font-size:26px; font-weight:800;}
+  .detail-panel .dp-title{font-size:16px; font-weight:700; margin:2px 0 8px;}
+  .detail-panel .dp-desc{font-size:16px; margin-bottom:10px;}
+  .norm-card{
+    background:var(--panel); border-radius:10px; padding:10px 12px; font-size:14px;
+  }
+  .norm-card .fw{font-weight:700;}
+  .badge-norm{
+    display:inline-block; margin-top:8px; font-size:14px; font-weight:700;
+    background:#fff6de; color:#8a6400; border:1px solid #e8cf8a; border-radius:8px; padding:4px 10px;
+  }
+  .detail-hint{font-size:14px; color:var(--muted); margin-top:14px;}
+
+  /* ===== Phase 3: Spezifizieren ===== */
+  .case-box{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:20px;
+  }
+  .case-box h3{margin-top:0;}
+  .cat-select-row{display:flex; flex-wrap:wrap; gap:10px; margin:14px 0;}
+  .cat-select-btn{
+    border:2px solid var(--line); border-radius:10px; padding:12px 16px; font-size:15px; font-weight:700;
+    cursor:pointer; min-height:44px; background:var(--white);
+  }
+  .cat-select-btn.on{color:var(--white);}
+  .selected-summary{margin-top:16px;}
+  .risk-mini{
+    border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:10px; font-size:15px;
+  }
+  .persona-reaction{
+    display:flex; gap:12px; align-items:flex-start; background:var(--white); border:1px solid var(--line);
+    border-radius:10px; padding:14px; margin-top:14px;
+  }
+  .persona-avatar{
+    width:38px; height:38px; border-radius:50%; flex:0 0 auto; display:flex; align-items:center;
+    justify-content:center; color:var(--white); font-weight:800; font-size:15px;
+  }
+  textarea#specNote{
+    width:100%; min-height:90px; border:2px solid var(--line); border-radius:10px; padding:12px;
+    font-size:16px; font-family:inherit; margin-top:10px;
+  }
+  .save-msg{font-size:14px; color:var(--ok); margin-top:8px; display:none;}
+  .save-msg.show{display:block;}
+
+  /* ===== Footer ===== */
+  .crosslink{max-width:900px; margin:30px 28px 0; padding:16px 18px; background:var(--panel);
+    border-radius:12px; font-size:15px; color:var(--muted);}
+  .crosslink strong{color:var(--ink);}
+  .crosslink a{color:var(--accent); font-weight:700; text-decoration:none;}
+  .crosslink a:hover{text-decoration:underline;}
+  .crosslink ul{margin:8px 0 0; padding-left:20px;}
+  .crosslink li{margin-bottom:4px;}
+
+  footer{padding:20px 28px 40px;}
+  .footer-details{display:flex; gap:16px; flex-wrap:wrap;}
+  .footer-box{flex:1 1 260px; border:1px solid var(--line); border-radius:12px; background:var(--panel);}
+  .footer-summary{
+    cursor:pointer; padding:14px 16px; font-weight:700; font-size:15px; list-style:none;
+  }
+  .footer-summary::-webkit-details-marker{display:none;}
+  .footer-content{padding:0 16px 16px; font-size:14px;}
+  .footer-content.footer-sans{font-size:15px; line-height:1.55;}
+  .footer-mono{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:14px; white-space:pre-wrap;
+    background:var(--white); border-radius:8px; padding:12px; line-height:1.5;
+  }
+  .footer-table{width:100%; border-collapse:collapse; font-size:14px; margin-top:8px;}
+  .footer-table th,.footer-table td{border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top;}
+  .footer-sig{margin-top:22px; font-size:14px; color:var(--muted);}
+  .footer-sig strong{color:var(--ink);}
+  .footer-meta{margin-top:8px; font-size:14px; color:var(--muted); line-height:1.6;}
+  @media (max-width:900px){ .footer-details{flex-direction:column;} }
+
+  /* ===== Beamer-Modus (vierstufig, reine Größensteigerung) ===== */
+  html.beamer .sig, html.beamer footer, html.beamer .crosslink{display:none !important;}
+  html.beamer{ --muted:#3D4A5C; }
+
+  html.beamer h1{font-size:34px;}
+  html.beamer .subtitle{font-size:15px;}
+  html.beamer .pill{font-size:18px; padding:12px 22px;}
+  html.beamer .scenario-text{font-size:22px;}
+  html.beamer .choice-btn, html.beamer .cat-select-btn, html.beamer .nav-btns button,
+  html.beamer .risk-mini{font-size:15px;}
+  html.beamer .risk-tile .code{font-size:24px;}
+  html.beamer .risk-tile .title{font-size:15px;}
+  html.beamer .dp-desc, html.beamer #specNote, html.beamer .pr-text{font-size:22px;}
+  html.beamer .dp-code{font-size:44px;}
+  html.beamer .persona-tag, html.beamer .norm-line, html.beamer .norm-card, html.beamer .filter-chip,
+  html.beamer .badge-norm, html.beamer .detail-hint, html.beamer .cat-title{font-size:15px;}
+
+  html.beamer-xl h1{font-size:40px;}
+  html.beamer-xl .subtitle{font-size:18px;}
+  html.beamer-xl .pill{font-size:21px; padding:13px 24px;}
+  html.beamer-xl .scenario-text{font-size:28px;}
+  html.beamer-xl .choice-btn, html.beamer-xl .cat-select-btn, html.beamer-xl .nav-btns button,
+  html.beamer-xl .risk-mini{font-size:18px;}
+  html.beamer-xl .risk-tile .code{font-size:28px;}
+  html.beamer-xl .risk-tile .title{font-size:18px;}
+  html.beamer-xl .dp-desc, html.beamer-xl #specNote, html.beamer-xl .pr-text{font-size:28px;}
+  html.beamer-xl .dp-code{font-size:54px;}
+  html.beamer-xl .persona-tag, html.beamer-xl .norm-line, html.beamer-xl .norm-card, html.beamer-xl .filter-chip,
+  html.beamer-xl .badge-norm, html.beamer-xl .detail-hint, html.beamer-xl .cat-title{font-size:18px;}
+
+  html.beamer-xxl h1{font-size:46px;}
+  html.beamer-xxl .subtitle{font-size:21px;}
+  html.beamer-xxl .pill{font-size:24px; padding:14px 26px;}
+  html.beamer-xxl .scenario-text{font-size:34px;}
+  html.beamer-xxl .choice-btn, html.beamer-xxl .cat-select-btn, html.beamer-xxl .nav-btns button,
+  html.beamer-xxl .risk-mini{font-size:21px;}
+  html.beamer-xxl .risk-tile .code{font-size:32px;}
+  html.beamer-xxl .risk-tile .title{font-size:21px;}
+  html.beamer-xxl .dp-desc, html.beamer-xxl #specNote, html.beamer-xxl .pr-text{font-size:34px;}
+  html.beamer-xxl .dp-code{font-size:64px;}
+  html.beamer-xxl .persona-tag, html.beamer-xxl .norm-line, html.beamer-xxl .norm-card, html.beamer-xxl .filter-chip,
+  html.beamer-xxl .badge-norm, html.beamer-xxl .detail-hint, html.beamer-xxl .cat-title{font-size:21px;}
+</style>
+</head>
+<body>
+
+<div class="sig">
+  <strong>Michaela Kühn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<div class="topbar">
+  <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+  <button class="beamer-btn" id="beamerBtn" type="button">☀ Beamer</button>
+</div>
+
+<header>
+  <h1>KI-Risiko-Klassifikationsraum</h1>
+  <p class="subtitle">Denkraum-Tool · Sammeln → Strukturieren → Spezifizieren · 28 KI-Risikofelder, normbasiert eingeordnet</p>
+  <div class="phase-nav">
+    <button class="pill active" data-phase="1"><span class="num">1</span> Sammeln</button>
+    <button class="pill" data-phase="2"><span class="num">2</span> Strukturieren</button>
+    <button class="pill" data-phase="3"><span class="num">3</span> Spezifizieren</button>
+  </div>
+</header>
+
+<div class="stage">
+  <aside class="side" id="sideContent"></aside>
+  <main class="main" id="mainContent"></main>
+</div>
+
+<div class="crosslink">
+  <strong>Verwandte Tools</strong>
+  <ul>
+    <li><a href="./vom-prompt-zum-agenten.html">Vom Prompt zum Agenten – Eskalationsstufen der KI-Steuerung</a> — fokussiert auf die fünf Steuerungsstufen (Prompt Engineering bis Agentic AI); dieses Tool ordnet die dabei entstehenden Risiken normbasiert in eine Gesamtlandkarte ein, statt die Eskalationslogik selbst zu behandeln.</li>
+  </ul>
+</div>
+
+<footer>
+  <div class="footer-details">
+
+    <details class="footer-box">
+      <summary class="footer-summary">📜 Systemprompt</summary>
+      <div class="footer-content footer-mono" id="systemPromptBox"></div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">📘 Handbuch</summary>
+      <div class="footer-content footer-sans" id="handbuchBox"></div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+      <div class="footer-content footer-sans" id="skriptBox"></div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">⚖ Normen-Register</summary>
+      <div class="footer-content footer-sans" id="normRegisterBox"></div>
+    </details>
+
+  </div>
+
+  <div class="footer-sig">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+  </div>
+  <div class="footer-meta" id="footerMeta"></div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   DATEN: 28 kuratierte KI-Risikofelder, 5 Kategorien
+   Jede Norm-Referenz trägt Status + Datum (K8-Pflicht).
+   ============================================================ */
+var CATS = [
+  {key:'daten',       label:'Daten-Risiken',        color:'var(--cat-daten)',       bg:'var(--cat-daten-bg)'},
+  {key:'modell',       label:'Modell-Risiken',       color:'var(--cat-modell)',      bg:'var(--cat-modell-bg)'},
+  {key:'agent',        label:'Agenten-Risiken',      color:'var(--cat-agent)',       bg:'var(--cat-agent-bg)'},
+  {key:'security',     label:'Sicherheits- & Betriebsrisiken', color:'var(--cat-security)', bg:'var(--cat-security-bg)'},
+  {key:'governance',   label:'Governance-Risiken',   color:'var(--cat-governance)',  bg:'var(--cat-governance-bg)'}
+];
+
+var RISKS = [
+  // ---- Daten ----
+  {code:'BV', cat:'daten', title:'Bias / Verzerrung',
+    desc:'Trainings- oder Promptdaten führen zu systematisch verzerrten Ausgaben.',
+    norm:{fw:'EU AI Act (VO (EU) 2024/1689), Art. 10 Datenqualität/-governance', status:'Pflichten für Hochrisiko-KI (Anhang III) verschoben auf 2. Dezember 2027', date:'Digital Omnibus, 7.5.2026'}, badge:true},
+  {code:'DS', cat:'daten', title:'Datenschutzverletzung',
+    desc:'Personenbezogene Daten werden verarbeitet, offengelegt oder unzureichend geschützt.',
+    norm:{fw:'DSGVO Art. 5, 25, 32', status:'in Kraft', date:'seit 25.5.2018'}},
+  {code:'SL', cat:'daten', title:'Sensible-Daten-Leck',
+    desc:'Vertrauliche Informationen gelangen über Modell-Ausgaben nach außen.',
+    norm:{fw:'OWASP Top 10 for LLM Applications, LLM02:2025 Sensitive Information Disclosure', status:'v2.0, aktuell', date:'veröffentlicht 18.11.2024'}},
+  {code:'DH', cat:'daten', title:'Datenherkunft unklar',
+    desc:'Herkunft und Verarbeitungsweg von Trainings- oder Kontextdaten sind nicht nachvollziehbar.',
+    norm:{fw:'EU AI Act, Art. 10 Abs. 2 lit. c', status:'Hochrisiko-Pflicht ab 2. Dezember 2027', date:'Digital Omnibus, 7.5.2026'}},
+  {code:'TV', cat:'daten', title:'Trainingsdaten-Vergiftung',
+    desc:'Trainings-, Fine-Tuning- oder Retrieval-Daten werden manipuliert, um das Modellverhalten zu beeinflussen.',
+    norm:{fw:'OWASP LLM04:2025 Data and Model Poisoning', status:'v2.0, aktuell', date:'veröffentlicht 18.11.2024'}},
+  {code:'GP', cat:'daten', title:'Geheimnisse im Prompt',
+    desc:'Zugangsdaten oder interne Informationen gelangen unbeabsichtigt in System-Prompts oder Kontext.',
+    norm:{fw:'OWASP LLM07:2025 System Prompt Leakage', status:'v2.0, aktuell', date:'veröffentlicht 18.11.2024'}},
+
+  // ---- Modell ----
+  {code:'HA', cat:'modell', title:'Halluzination',
+    desc:'Das Modell erzeugt plausibel klingende, aber sachlich falsche Aussagen.',
+    norm:{fw:'OWASP LLM09:2025 Misinformation', status:'v2.0, aktuell', date:'veröffentlicht 18.11.2024'}},
+  {code:'TR', cat:'modell', title:'Transparenzlücke',
+    desc:'Modellentscheidungen sind für Nutzende nicht nachvollziehbar.',
+    norm:{fw:'EU AI Act, Art. 13 Transparenz und Information', status:'Hochrisiko-Pflicht ab 2. Dezember 2027', date:'Digital Omnibus, 7.5.2026'}, badge:true},
+  {code:'MD', cat:'modell', title:'Modell-Drift',
+    desc:'Modellverhalten verändert sich im Betrieb schleichend gegenüber dem geprüften Ausgangszustand.',
+    norm:{fw:'ISO/IEC 42001:2023, Kap. 8/9 (KI-Managementsystem, Monitoring)', status:'in Kraft', date:'seit Dezember 2023'}},
+  {code:'RO', cat:'modell', title:'Robustheitsmangel',
+    desc:'Das System versagt bei geringfügig veränderten oder gezielt adversen Eingaben.',
+    norm:{fw:'EU AI Act, Art. 15 Genauigkeit, Robustheit, Cybersicherheit', status:'Hochrisiko-Pflicht ab 2. Dezember 2027', date:'Digital Omnibus, 7.5.2026'}, badge:true},
+  {code:'VL', cat:'modell', title:'Validierungslücke',
+    desc:'Fehlende oder unzureichende Prüfmethodik zur funktionalen Korrektheit.',
+    norm:{fw:'ISO/IEC 25010:2023, Functional Suitability (Functional Correctness)', status:'in Kraft, Edition 2', date:'2023'}},
+  {code:'EB', cat:'modell', title:'Evaluationsschwäche',
+    desc:'Kein systematisches, wiederkehrendes Risikomanagement- oder Bewertungsverfahren etabliert.',
+    norm:{fw:'EU AI Act, Art. 9 Risikomanagementsystem', status:'Hochrisiko-Pflicht ab 2. Dezember 2027', date:'Digital Omnibus, 7.5.2026'}, badge:true},
+
+  // ---- Agent ----
+  {code:'AR', cat:'agent', title:'Autonomierisiko',
+    desc:'Dem Agenten stehen mehr Funktionen, Rechte oder Handlungsfreiheit zur Verfügung als für die Aufgabe nötig.',
+    norm:{fw:'OWASP LLM06:2025 Excessive Agency', status:'v2.0, aktuell', date:'veröffentlicht 18.11.2024'}},
+  {code:'TM', cat:'agent', title:'Tool-Missbrauch',
+    desc:'Werkzeuge oder APIs werden vom Agenten nicht wie vorgesehen oder autorisiert verwendet.',
+    norm:{fw:'OWASP Top 10 for Agentic Applications, ASI02:2026 Tool Misuse & Exploitation', status:'aktuell', date:'veröffentlicht 9.12.2025'}},
+  {code:'ZH', cat:'agent', title:'Ziel-Hijacking',
+    desc:'Externe Inhalte (z. B. E-Mails, Dokumente) lenken den Agenten auf ein fremdes Ziel um.',
+    norm:{fw:'OWASP ASI01:2026 Agent Goal Hijack', status:'aktuell', date:'veröffentlicht 9.12.2025'}},
+  {code:'IP', cat:'agent', title:'Identitäts-/Rechte-Missbrauch',
+    desc:'Agenten-Identität oder zugewiesene Berechtigungen werden missbraucht oder eskaliert.',
+    norm:{fw:'OWASP ASI03:2026 Identity & Privilege Abuse', status:'aktuell', date:'veröffentlicht 9.12.2025'}},
+  {code:'SK', cat:'agent', title:'Speicher-/Kontext-Vergiftung',
+    desc:'Persistenter Agenten-Speicher wird manipuliert, um künftige Entscheidungen zu verfälschen.',
+    norm:{fw:'OWASP ASI06:2026 Memory & Context Poisoning', status:'aktuell', date:'veröffentlicht 9.12.2025'}},
+  {code:'DK', cat:'agent', title:'Unsichere Agenten-Kommunikation',
+    desc:'Nachrichten zwischen Agenten sind ungesichert, wiederholbar oder fälschbar.',
+    norm:{fw:'OWASP ASI07:2026 Insecure Inter-Agent Communication', status:'aktuell', date:'veröffentlicht 9.12.2025'}},
+
+  // ---- Security ----
+  {code:'SW', cat:'security', title:'Schwachstelle',
+    desc:'Ausnutzbare Sicherheitslücke in System oder Integration.',
+    norm:{fw:'ISO/IEC 27001:2022, Anhang A.8.8 Schwachstellenmanagement', status:'in Kraft', date:'2022'}},
+  {code:'CB', cat:'security', title:'Cyber-Bedrohung',
+    desc:'Externer Angriff auf KI-gestützte Systeme oder deren Infrastruktur.',
+    norm:{fw:'NIS2-Richtlinie (EU) 2022/2555', status:'in Kraft; NIS2UmsuCG in Kraft seit Dezember 2025', date:'Richtlinie seit Januar 2023'}},
+  {code:'AM', cat:'security', title:'API-Missbrauch',
+    desc:'Schnittstellen werden überlastet, fehlgenutzt oder unautorisiert angesprochen.',
+    norm:{fw:'ISO/IEC 27001:2022, Anhang A.8.16 Überwachungsaktivitäten', status:'in Kraft', date:'2022'}},
+  {code:'DX', cat:'security', title:'Datenexfiltration',
+    desc:'Daten werden gezielt aus dem System herausgeschleust.',
+    norm:{fw:'DSGVO Art. 33 Meldepflicht bei Datenschutzverletzung', status:'in Kraft', date:'seit 25.5.2018'}, badge:true},
+  {code:'BR', cat:'security', title:'Bereitstellungsrisiko',
+    desc:'Unsichere oder instabile Produktivsetzung des KI-Systems.',
+    norm:{fw:'EU AI Act, Art. 17 Qualitätsmanagementsystem', status:'Hochrisiko-Pflicht ab 2. Dezember 2027', date:'Digital Omnibus, 7.5.2026'}, badge:true},
+
+  // ---- Governance ----
+  {code:'MA', cat:'governance', title:'Fehlende menschliche Aufsicht',
+    desc:'Kein wirksamer Mechanismus für menschliches Eingreifen bei kritischen Entscheidungen.',
+    norm:{fw:'EU AI Act, Art. 14 Human Oversight', status:'Hochrisiko-Pflicht ab 2. Dezember 2027', date:'Digital Omnibus, 7.5.2026'}, badge:true},
+  {code:'NV', cat:'governance', title:'Rückverfolgbarkeitslücke',
+    desc:'Entscheidungen oder Anforderungen sind nicht bis zur Quelle nachverfolgbar.',
+    norm:{fw:'IEEE 29148:2018, Requirements Traceability', status:'in Kraft', date:'2018'}},
+  {code:'CR', cat:'governance', title:'Compliance-Risiko',
+    desc:'Regulatorische Pflichten für Anbieter oder Betreiber werden nicht erfüllt.',
+    norm:{fw:'EU AI Act, Art. 16 Pflichten der Anbieter', status:'Hochrisiko-Pflicht ab 2. Dezember 2027', date:'Digital Omnibus, 7.5.2026'}},
+  {code:'AL', cat:'governance', title:'Audit-Lücke',
+    desc:'Kein internes Audit- oder Kontrollverfahren etabliert oder dokumentiert.',
+    norm:{fw:'ISO/IEC 27001:2022, Kap. 9.2 Internes Audit', status:'in Kraft', date:'2022'}},
+  {code:'RR', cat:'governance', title:'Regulatorisches Risiko',
+    desc:'Verstoß gegen geltende oder gestaffelt in Kraft tretende KI-spezifische Rechtsvorschriften.',
+    norm:{fw:'EU AI Act, Verordnung (EU) 2024/1689 (gesamt)', status:'in Kraft seit 1.8.2024, gestaffelte Anwendbarkeit: Transparenzpflichten seit 2.8.2026, Hochrisiko-Pflichten ab 2.12.2027', date:'Digital Omnibus, 7.5.2026'}}
+];
+
+function riskByCode(c){ for(var i=0;i<RISKS.length;i++){ if(RISKS[i].code===c) return RISKS[i]; } return null; }
+function catMeta(k){ for(var i=0;i<CATS.length;i++){ if(CATS[i].key===k) return CATS[i]; } return null; }
+
+/* ============================================================
+   Klassifizierungs-Szenarien (Phase 1 – Sammeln)
+   ============================================================ */
+var SCENARIOS = [
+  {persona:'knut', text:'Knut integriert einen KI-Agenten, der bei Rückfragen automatisch E-Mails an Kunden verschicken darf – auch ohne dass jemand die Antwort vorher liest.', cat:'agent', code:'AR'},
+  {persona:'sarah', text:'Sarah fragt den Chatbot nach dem Rabatt für einen bestimmten Kunden – die Antwort enthält Formulierungen, die wortwörtlich aus dem internen System-Prompt stammen.', cat:'daten', code:'GP'},
+  {persona:'petra', text:'Petra bemerkt, dass ein Freigabe-Assistent seit dem letzten Update in 15 % der Fälle andere Ergebnisse liefert als noch vor vier Wochen – obwohl sich an den Eingaben nichts geändert hat.', cat:'modell', code:'MD'},
+  {persona:'ela', text:'Ela stellt fest, dass niemand im Projekt dokumentieren kann, warum eine bestimmte Anforderung so und nicht anders im Pflichtenheft steht.', cat:'governance', code:'NV'},
+  {persona:'bach', text:'Herr Bachmeier erfährt aus der Presse, dass ein Wettbewerber wegen fehlender Meldung eines KI-bedingten Datenabflusses ein Bußgeld zahlen musste – er lässt prüfen, ob das eigene Unternehmen vorbereitet ist.', cat:'security', code:'DX'},
+  {persona:'knut', text:'Knut lässt zwei Agenten miteinander kommunizieren, um eine Bestellung zu bearbeiten – die Nachrichten zwischen beiden sind nicht signiert oder authentifiziert.', cat:'agent', code:'DK'},
+  {persona:'petra', text:'Petra prüft eine KI-gestützte Vorauswahl von Bewerbungen und stellt fest, dass Bewerberinnen aus bestimmten Postleitzahlgebieten systematisch schlechter bewertet werden.', cat:'daten', code:'BV'},
+  {persona:'sarah', text:'Sarah bekommt vom KI-Assistenten eine überzeugend klingende Produktzahl genannt, die es in dieser Form gar nicht gibt.', cat:'modell', code:'HA'},
+  {persona:'ela', text:'Ela merkt, dass der KI-Agent im Freigabeprozess Aufgaben eskalieren kann, ohne dass jemals ein Mensch eingreifen muss – selbst bei Zahlungen über 50.000 €.', cat:'governance', code:'MA'},
+  {persona:'bach', text:'Herr Bachmeier erfährt, dass die Schnittstelle des KI-Systems zum ERP-System ungewöhnlich viele Anfragen pro Minute registriert – deutlich mehr, als die reguläre Nutzung erklären würde.', cat:'security', code:'AM'}
+];
+
+var PERSONAS = {
+  ela:{name:'Ela', role:'Projektleitung', color:'var(--p-ela)', bg:'var(--p-ela-bg)'},
+  knut:{name:'Knut', role:'Entwicklung', color:'var(--p-knut)', bg:'var(--p-knut-bg)'},
+  sarah:{name:'Sarah', role:'Vertrieb', color:'var(--p-sarah)', bg:'var(--p-sarah-bg)'},
+  petra:{name:'Petra', role:'QM', color:'var(--p-petra)', bg:'var(--p-petra-bg)'},
+  bach:{name:'Herr Bachmeier', role:'Geschäftsführung', color:'var(--p-bach)', bg:'var(--p-bach-bg)'}
+};
+
+/* Persona-Reaktionen je Kategorie für Phase 3 */
+var CAT_REACTIONS = {
+  daten:{persona:'petra', text:'„Wenn wir Daten nicht sauber dokumentieren, prüfe ich am Ende etwas, dessen Herkunft ich nicht erklären kann.“'},
+  modell:{persona:'knut', text:'„Ein Modell, das ich nicht regelmäßig gegen den Ausgangszustand teste, verändert sich unter mir weg – ohne dass ich es merke.“'},
+  agent:{persona:'knut', text:'„Sobald der Agent selbst Aktionen auslöst, reicht Code-Review allein nicht mehr – ich brauche Grenzen zur Laufzeit.“'},
+  security:{persona:'bach', text:'„Für mich zählt am Ende, ob wir im Ernstfall nachweisen können, dass wir vorbereitet waren.“'},
+  governance:{persona:'ela', text:'„Ohne klare Verantwortlichkeiten und Nachvollziehbarkeit kann ich das Projekt gegenüber niemandem vertreten.“'}
+};
+
+var CASE_TEXT = 'Ein KI-gestützter Kundenservice-Agent soll eingeführt werden. Er soll Anfragen selbstständig beantworten und dafür auf Bestell-, Zahlungs- und E-Mail-Systeme zugreifen können.';
+
+/* ============================================================
+   State
+   ============================================================ */
+var state = {
+  phase:1,
+  s1Index:0, s1Score:0, s1Answered:false,
+  s2Selected:null, s2Filter:null,
+  s3Selected:[]
+};
+
+function safeGet(key){ try{ var v = sessionStorage.getItem(key); return v; }catch(e){ return null; } }
+function safeSet(key,val){ try{ sessionStorage.setItem(key,val); }catch(e){} }
+
+/* ============================================================
+   Render
+   ============================================================ */
+var sideEl = document.getElementById('sideContent');
+var mainEl = document.getElementById('mainContent');
+
+function setPhase(p){
+  state.phase = p;
+  document.querySelectorAll('.pill[data-phase]').forEach(function(btn){
+    btn.classList.toggle('active', parseInt(btn.getAttribute('data-phase'),10)===p);
+  });
+  render();
+}
+
+function render(){
+  if(state.phase===1) renderPhase1();
+  else if(state.phase===2) renderPhase2();
+  else renderPhase3();
+}
+
+/* ---------- Phase 1: Sammeln ---------- */
+function renderPhase1(){
+  sideEl.innerHTML =
+    '<h2>Zone: Sammeln</h2>' +
+    '<p>Ordnet konkrete Praxis-Situationen aus dem Projektalltag den fünf Risikokategorien zu. Direktes Feedback mit Normbezug nach jeder Antwort.</p>' +
+    CATS.map(function(c){
+      return '<div class="legend-row"><span class="legend-dot" style="background:'+c.color+'"></span>'+c.label+'</div>';
+    }).join('') +
+    '<div class="score-box">Fortschritt: <span class="num-big">'+state.s1Index+'</span> / '+SCENARIOS.length+'<br>Richtig: <span class="num-big">'+state.s1Score+'</span></div>';
+
+  var sc = SCENARIOS[state.s1Index];
+  if(!sc){
+    mainEl.innerHTML =
+      '<div class="scenario-card">' +
+      '<h2>Sammeln abgeschlossen</h2>' +
+      '<p style="font-size:17px;">Ihr habt '+state.s1Score+' von '+SCENARIOS.length+' Situationen richtig zugeordnet.</p>' +
+      '<p style="font-size:15px; color:var(--muted);">Weiter zu Zone 2: Strukturieren – dort seht ihr alle 28 Risikofelder als Referenz-Übersicht mit Normbezug.</p>' +
+      '<div class="nav-btns"><button class="primary" id="toPhase2">Weiter zu Strukturieren →</button></div>' +
+      '</div>';
+    document.getElementById('toPhase2').addEventListener('pointerup', function(){ setPhase(2); });
+    return;
+  }
+  var p = PERSONAS[sc.persona];
+  var html = '<div class="scenario-card">' +
+    '<span class="persona-tag" style="background:'+p.bg+'; color:'+p.color+'"><span class="persona-dot" style="background:'+p.color+'"></span>'+p.name+' · '+p.role+'</span>' +
+    '<p class="scenario-text">'+sc.text+'</p>' +
+    '<div class="choice-row" id="choiceRow">' +
+    CATS.map(function(c){
+      return '<button class="choice-btn" data-cat="'+c.key+'">'+c.label+'</button>';
+    }).join('') +
+    '</div>' +
+    '<div class="feedback" id="fb1"></div>' +
+    '<div class="nav-btns"><button id="nextS1" disabled>Weiter →</button></div>' +
+    '</div>';
+  mainEl.innerHTML = html;
+  state.s1Answered = false;
+
+  document.querySelectorAll('#choiceRow .choice-btn').forEach(function(btn){
+    btn.addEventListener('pointerup', function(){
+      if(state.s1Answered) return;
+      state.s1Answered = true;
+      var chosen = btn.getAttribute('data-cat');
+      var correct = chosen === sc.cat;
+      if(correct) state.s1Score++;
+      document.querySelectorAll('#choiceRow .choice-btn').forEach(function(b2){
+        b2.disabled = true;
+        if(b2.getAttribute('data-cat') === sc.cat) b2.classList.add('reveal');
+        else if(b2 === btn) b2.classList.add('wrong');
+      });
+      var risk = riskByCode(sc.code);
+      var fb = document.getElementById('fb1');
+      fb.className = 'feedback show';
+      fb.style.background = correct ? 'var(--ok-bg)' : 'var(--bad-bg)';
+      fb.innerHTML =
+        '<strong>'+(correct?'✓ Richtig':'✗ Nicht ganz')+':</strong> Das ist Risikofeld <strong>'+risk.code+' · '+risk.title+'</strong> ('+catMeta(sc.cat).label+'). ' + risk.desc +
+        '<div class="norm-line"><strong>Norm:</strong> '+risk.norm.fw+' — '+risk.norm.status+' ('+risk.norm.date+')</div>';
+      document.getElementById('nextS1').disabled = false;
+      document.getElementById('nextS1').addEventListener('pointerup', function(){
+        state.s1Index++;
+        renderPhase1();
+      }, {once:true});
+    });
+  });
+}
+
+/* ---------- Phase 2: Strukturieren ---------- */
+function renderPhase2(){
+  sideEl.innerHTML =
+    '<h2>Zone: Strukturieren</h2>' +
+    '<p>Alle 28 kuratierten Risikofelder als normbasierte Referenz-Übersicht. Oben filtern, Kachel anklicken für Details.</p>' +
+    CATS.map(function(c){
+      return '<div class="legend-row"><span class="legend-dot" style="background:'+c.color+'"></span>'+c.label+'</div>';
+    }).join('') +
+    '<p style="font-size:14px; color:var(--muted); margin-top:16px;">⚖ = Norm schreibt das Mittel (nicht nur das Ziel) vor.</p>';
+
+  var activeCat = state.s2Filter; // null = alle
+
+  var html = '<div class="filter-row" id="filterRow">' +
+    '<button class="filter-chip'+(activeCat===null?' on':'')+'" data-filter="alle" style="'+(activeCat===null?'background:var(--ink);':'')+'">Alle (28)</button>' +
+    CATS.map(function(c){
+      var count = RISKS.filter(function(r){ return r.cat===c.key; }).length;
+      var on = activeCat===c.key;
+      return '<button class="filter-chip'+(on?' on':'')+'" data-filter="'+c.key+'" style="'+(on?('background:'+c.color+';'):'')+'">'+c.label+' ('+count+')</button>';
+    }).join('') +
+    '</div>';
+
+  html += '<div class="detail-panel" id="detailPanel"></div>';
+
+  var catsToShow = activeCat ? CATS.filter(function(c){ return c.key===activeCat; }) : CATS;
+  html += catsToShow.map(function(c){
+    var items = RISKS.filter(function(r){ return r.cat === c.key; });
+    return '<div class="cat-block">' +
+      '<div class="cat-title"><span class="cat-swatch" style="background:'+c.color+'"></span>'+c.label+'</div>' +
+      '<div class="grid">' +
+      items.map(function(r){
+        return '<button class="risk-tile'+(state.s2Selected===r.code?' selected':'')+'" data-code="'+r.code+'" style="border-color:'+(state.s2Selected===r.code?c.color:'var(--line)')+'">' +
+          '<div class="code" style="color:'+c.color+'">'+r.code+(r.badge?' ⚖':'')+'</div>' +
+          '<div class="title">'+r.title+'</div>' +
+          '</button>';
+      }).join('') +
+      '</div></div>';
+  }).join('');
+
+  if(!state.s2Selected){
+    html = html.replace('<div class="detail-panel" id="detailPanel"></div>',
+      '<div class="detail-panel" id="detailPanel"></div><p class="detail-hint">Kachel anklicken, um Details ohne Scrollen direkt oben angezeigt zu bekommen.</p>');
+  }
+
+  mainEl.innerHTML = html;
+
+  document.querySelectorAll('#filterRow .filter-chip').forEach(function(chip){
+    chip.addEventListener('pointerup', function(){
+      var f = chip.getAttribute('data-filter');
+      state.s2Filter = (f==='alle') ? null : f;
+      renderPhase2();
+    });
+  });
+
+  document.querySelectorAll('.risk-tile').forEach(function(tile){
+    tile.addEventListener('pointerup', function(){
+      var code = tile.getAttribute('data-code');
+      state.s2Selected = code;
+      showDetail(code);
+      document.querySelectorAll('.risk-tile').forEach(function(t){ t.classList.remove('selected'); });
+      tile.classList.add('selected');
+    });
+  });
+
+  if(state.s2Selected) showDetail(state.s2Selected);
+}
+
+function showDetail(code){
+  var r = riskByCode(code);
+  var c = catMeta(r.cat);
+  var panel = document.getElementById('detailPanel');
+  panel.className = 'detail-panel show';
+  panel.style.borderColor = c.color;
+  panel.innerHTML =
+    '<div class="dp-code" style="color:'+c.color+'">'+r.code+'</div>' +
+    '<div class="dp-title">'+r.title+' <span style="font-size:14px; color:var(--muted); font-weight:400;">— '+c.label+'</span></div>' +
+    '<div class="dp-desc">'+r.desc+'</div>' +
+    '<div class="norm-card"><span class="fw">Norm/Quelle:</span> '+r.norm.fw+'<br>' +
+    '<span class="fw">Status:</span> '+r.norm.status+'<br>' +
+    '<span class="fw">Datum:</span> '+r.norm.date+'</div>' +
+    (r.badge ? '<div class="badge-norm">⚖ Norm schreibt das Mittel vor</div>' : '');
+  if(typeof panel.scrollIntoView === 'function'){
+    try{ panel.scrollIntoView({behavior:'smooth', block:'nearest'}); }catch(e){}
+  }
+}
+
+/* ---------- Phase 3: Spezifizieren ---------- */
+function renderPhase3(){
+  sideEl.innerHTML =
+    '<h2>Zone: Spezifizieren</h2>' +
+    '<p>Übertragt die Klassifikation auf ein konkretes Projektszenario. Wählt die Kategorien mit dem höchsten Risiko und haltet eine Maßnahme fest.</p>' +
+    '<div class="case-box" style="margin-top:14px;"><strong>Szenario</strong><p style="font-size:14px; margin-bottom:0;">' + CASE_TEXT + '</p></div>';
+
+  var html = '<div class="case-box">' +
+    '<h3>Welche Risikokategorien wiegen hier am schwersten?</h3>' +
+    '<p style="font-size:14px; color:var(--muted);">Bis zu 3 auswählen.</p>' +
+    '<div class="cat-select-row" id="catSelectRow">' +
+    CATS.map(function(c){
+      var on = state.s3Selected.indexOf(c.key) > -1;
+      return '<button class="cat-select-btn'+(on?' on':'')+'" data-cat="'+c.key+'" style="'+(on?('background:'+c.color+'; border-color:'+c.color):'')+'">'+c.label+'</button>';
+    }).join('') +
+    '</div>' +
+    '<div class="selected-summary" id="selSummary"></div>' +
+    '</div>' +
+    '<div class="case-box">' +
+    '<h3>Notiz für den Maßnahmenplan</h3>' +
+    '<textarea id="specNote" placeholder="Welche konkrete Maßnahme leitet ihr aus der gewählten Norm ab?"></textarea>' +
+    '<div class="nav-btns"><button class="primary" id="saveSpec">Notiz speichern</button></div>' +
+    '<div class="save-msg" id="saveMsg">Gespeichert (nur für diese Sitzung).</div>' +
+    '</div>';
+  mainEl.innerHTML = html;
+
+  var savedNote = safeGet('krp_specNote');
+  if(savedNote) document.getElementById('specNote').value = savedNote;
+
+  document.querySelectorAll('#catSelectRow .cat-select-btn').forEach(function(btn){
+    btn.addEventListener('pointerup', function(){
+      var key = btn.getAttribute('data-cat');
+      var idx = state.s3Selected.indexOf(key);
+      if(idx > -1){ state.s3Selected.splice(idx,1); }
+      else {
+        if(state.s3Selected.length >= 3){ return; }
+        state.s3Selected.push(key);
+      }
+      renderPhase3();
+    });
+  });
+
+  document.getElementById('saveSpec').addEventListener('pointerup', function(){
+    safeSet('krp_specNote', document.getElementById('specNote').value);
+    var msg = document.getElementById('saveMsg');
+    msg.className = 'save-msg show';
+  });
+
+  renderSelSummary();
+}
+
+function renderSelSummary(){
+  var box = document.getElementById('selSummary');
+  if(!box) return;
+  if(state.s3Selected.length === 0){ box.innerHTML = ''; return; }
+  var html = '';
+  state.s3Selected.forEach(function(key){
+    var c = catMeta(key);
+    var items = RISKS.filter(function(r){ return r.cat === key; }).slice(0,3);
+    var reaction = CAT_REACTIONS[key];
+    var p = PERSONAS[reaction.persona];
+    html += '<div style="margin-top:16px;">' +
+      '<div class="cat-title"><span class="cat-swatch" style="background:'+c.color+'"></span>'+c.label+'</div>';
+    items.forEach(function(r){
+      html += '<div class="risk-mini"><strong>'+r.code+' · '+r.title+'</strong><br><span style="color:var(--muted); font-size:14px;">'+r.norm.fw+' — '+r.norm.status+'</span></div>';
+    });
+    html += '<div class="persona-reaction">' +
+      '<div class="persona-avatar" style="background:'+p.color+'">'+p.name.charAt(0)+'</div>' +
+      '<div><strong>'+p.name+' ('+p.role+')</strong><div class="pr-text">'+reaction.text+'</div></div>' +
+      '</div></div>';
+  });
+  box.innerHTML = html;
+}
+
+/* ============================================================
+   Beamer-Modus (vierstufig, kumulative Klassen)
+   ============================================================ */
+var BEAMER_LEVELS = [
+  { classes: [],                                    label: '☀ Beamer' },
+  { classes: ['beamer'],                             label: '☀ Beamer XL' },
+  { classes: ['beamer', 'beamer-xl'],                label: '☀ Beamer XXL' },
+  { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: '☀ Normal' }
+];
+var beamerLevel = 0;
+var beamerBtn = document.getElementById('beamerBtn');
+
+(function initBeamer(){
+  var saved = safeGet('krp_beamer');
+  if(saved !== null){ beamerLevel = parseInt(saved,10) || 0; }
+  applyBeamerLevel();
+})();
+
+function applyBeamerLevel(){
+  document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+  BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+  beamerBtn.textContent = BEAMER_LEVELS[beamerLevel].label;
+}
+
+beamerBtn.addEventListener('pointerup', function(){
+  beamerLevel = (beamerLevel + 1) % BEAMER_LEVELS.length;
+  applyBeamerLevel();
+  safeSet('krp_beamer', String(beamerLevel));
+});
+
+/* ============================================================
+   Phasen-Navigation
+   ============================================================ */
+document.querySelectorAll('.pill[data-phase]').forEach(function(btn){
+  btn.addEventListener('pointerup', function(){
+    setPhase(parseInt(btn.getAttribute('data-phase'),10));
+  });
+});
+
+/* Pfeiltasten-Navigation zwischen Phasen */
+document.addEventListener('keydown', function(e){
+  if(e.key === 'ArrowRight' && state.phase < 3) setPhase(state.phase+1);
+  if(e.key === 'ArrowLeft' && state.phase > 1) setPhase(state.phase-1);
+});
+
+/* ============================================================
+   Footer-Inhalte
+   ============================================================ */
+document.getElementById('systemPromptBox').textContent =
+"MASTER-BAU-PROMPT: KI-Risiko-Klassifikationsraum (Denkraum-Tool)\n\n" +
+"ROLLE\n" +
+"Interaktives HTML-Trainingstool für Live-Workshops (Beamer/iPad), Requirements-Engineering- und AI-Literacy-Publikum. Thema: Klassifikation von KI-Risiken entlang 5 Kategorien (Daten, Modell, Agent, Sicherheit/Betrieb, Governance), normbasiert.\n\n" +
+"STRUKTUR (3 Denkraum-Zonen, per Pill-Nav umschaltbar)\n" +
+"1. Sammeln: 10 konkrete Persona-Situationen einzeln anzeigen. Nutzer wählt aus 5 Kategorie-Buttons. Sofort-Feedback: richtig/falsch, korrektes Risikofeld inkl. Titel, Kurzbeschreibung, Norm+Status+Datum. Score mitzählen.\n" +
+"2. Strukturieren: alle Risikofelder als Kacheln, gruppiert nach 5 Kategorien (Farbcode je Kategorie). Klick öffnet Detailpanel mit Code, Titel, Beschreibung, Norm-Karte (Framework/Status/Datum), ggf. Badge '⚖ Norm schreibt Mittel vor'.\n" +
+"3. Spezifizieren: ein konkretes Projektszenario (Kundenservice-Agent mit System-Zugriff) vorgeben. Nutzer wählt bis zu 3 Risikokategorien als 'am schwersten wiegend'. Für jede gewählte Kategorie: 2-3 zugehörige Risikofelder + Norm anzeigen, plus eine Persona-Reaktion (Ela/Knut/Sarah/Petra/Bachmeier je nach Kategorie). Freitext-Notizfeld mit sessionStorage-Speicherung (try/catch).\n\n" +
+"DESIGN-VORGABEN\n" +
+"- 30/70 Split-Screen: linke Spalte = Zonen-Erklärung + Legende + Fortschritt, rechte Spalte = Hauptinteraktion.\n" +
+"- 5 Risikokategorie-Farben, klar getrennt von den 5 Persona-Farben (keine Kollision).\n" +
+"- Weißer Hintergrund, color-scheme:light, 18px Fließtext / 14px Sekundärtext, WCAG-AA-Kontrast.\n" +
+"- Touch-Interaktion ausschließlich über pointerup, 44px Mindesthöhe bei Buttons.\n" +
+"- Vierstufiger Beamer-Toggle (Normal→Beamer→Beamer XL→Beamer XXL) als eigene Topbar-Zeile über dem Header, kumulative Klassen auf <html>, Label zeigt immer die nächste Aktion, Footer/Signatur ab Stufe 1 ausgeblendet, Persistenz über sessionStorage.\n" +
+"- Zurück-Link zur Startseite und Signatur oben rechts fix positioniert, unter 900px static; Topbar rückt bei ≥901px per padding-top unter die fixe Signatur.\n" +
+"- Footer mit 4 Pflicht-Boxen (Systemprompt/Handbuch/Vortrags-Skript/Normen-Register), darunter .footer-meta mit Normen-Referenzliste + Audit-Status-Zeile.\n\n" +
+"PERSONA-BEZUG\n" +
+"Feste Persona-Cast (Ela/Knut/Sarah/Petra/Herr Bachmeier) trägt die 10 Sammeln-Szenarien und die 5 Spezifizieren-Reaktionen. Keine Abweichung von Rollen/Kanon.\n\n" +
+"NICHT-TUN-LISTE\n" +
+"- Keine externen Bibliotheken/CDNs, keine fetch()-Aufrufe.\n" +
+"- Keine generischen Platzhalterwerte bei Normverweisen – immer Framework+Status+Datum.\n" +
+"- Kein HTML5-Drag-and-Drop.\n" +
+"- Keine Vermischung von Kategorie- und Persona-Farbpalette.\n" +
+"- Keine Übernahme von Layout/Wortlaut einer bestehenden urheberrechtlich geschützten Vorlage – eigenständige Kachel-/Detailpanel-Optik statt 1:1-Nachbau eines 'Periodensystems'.";
+
+document.getElementById('handbuchBox').innerHTML =
+"<p><strong>Framework:</strong> RTF (Rolle–Task–Format) für den Bau-Prompt, kombiniert mit dem Denkraum-Modell (Sammeln–Strukturieren–Spezifizieren) als didaktischem Rahmen.</p>" +
+"<p><strong>Rolle:</strong> Requirements-Engineering-Trainerin, die ein normbasiertes Referenz- und Übungstool für KI-Risikoklassifikation braucht – nicht nur eine Liste, sondern eine Lernprogression vom konkreten Fall zur Struktur.</p>" +
+"<p><strong>Task:</strong> Drei klar getrennte Interaktionsformen statt einer einzigen Darstellungsart: Klassifizierungsübung (Sammeln) erzeugt aktives Engagement vor der Referenzübersicht (Strukturieren), die Anwendung auf ein Szenario (Spezifizieren) schließt den Bogen zur Praxis – analog zum Klarheits-Sprung-Prinzip 'vom Nebel zur Konkretisierung'.</p>" +
+"<p><strong>Format:</strong> 30/70-Split, Kachel-Raster für die Referenzansicht (28 Elemente sind zu viel für eine lineare Liste, aber zu wenig für ein volles Periodensystem mit 50 Feldern – daher kuratierte Auswahl statt 1:1-Kopie der Inspirationsvorlage).</p>" +
+"<p><strong>Eingrenzung:</strong> Bewusst 28 statt 50 Risikofelder – jedes muss einen konkreten, aktuell geprüften Normbezug tragen (K8/K17). Für die verbleibenden ~22 Felder der Inspirationsquelle fehlte zum Bauzeitpunkt eine belastbare 1:1-Normzuordnung; sie wurden nicht erfunden, sondern bewusst weggelassen.</p>" +
+"<p><strong>Der eine Punkt, der hier zählt:</strong> Eine Risikotaxonomie ohne Normbezug ist Meinung. Jedes Feld in diesem Tool trägt Framework, Status und Datum – das unterscheidet ein RE-taugliches Klassifikationstool von einer hübschen Grafik.</p>" +
+"<p><strong>Nachbau-Tipp:</strong> Wer ein ähnliches Tool baut, sollte die Normzuordnung zuerst recherchieren (inkl. Status/Datum-Check, K17) und erst danach die Kategorien/Kacheln entwerfen – nicht umgekehrt.</p>";
+
+document.getElementById('skriptBox').innerHTML =
+"<p><em>(Vor Beginn: Beamer-Modus prüfen, ggf. auf Stufe 1 stellen.)</em></p>" +
+"<p><em>(Zone 1 öffnen)</em> „Wir starten nicht mit einer Liste, sondern mit zehn Situationen aus dem Projektalltag. Ordnet jede Situation einer der fünf Kategorien zu – Daten, Modell, Agent, Sicherheit, Governance.“</p>" +
+"<p><em>(Nach jeder Antwort kurz pausieren)</em> „Seht ihr die Norm-Zeile unten? Jedes Risikofeld hier ist nicht nur benannt, sondern mit einer echten Quelle belegt – Framework, Status, Datum.“</p>" +
+"<p><em>(Nach Abschluss von Zone 1, Übergang)</em> „Jetzt, wo wir zehn konkrete Fälle einsortiert haben, schauen wir uns die vollständige Landkarte an.“</p>" +
+"<p><em>(Zone 2 öffnen)</em> „28 Risikofelder, fünf Kategorien. Klickt eine Kachel an – Details erscheinen unten. Das ⚖-Symbol markiert Felder, bei denen die Norm nicht nur das Ziel, sondern auch das Mittel vorschreibt.“</p>" +
+"<p><em>(Übergang zu Zone 3)</em> „Zuletzt: ein konkretes Projekt. Ein Kundenservice-Agent mit Zugriff auf Bestell-, Zahlungs- und E-Mail-Systeme. Welche Kategorien wiegen hier am schwersten?“</p>" +
+"<p><em>(Nach Auswahl)</em> „Schaut euch die Persona-Reaktion an – jede Rolle im Projekt sieht das Risiko aus einem anderen Blickwinkel.“</p>" +
+"<p style=\"margin-top:14px; color:var(--muted); font-size:14px;\"><strong>Regie-Hinweise:</strong> Nicht mit den OWASP-/ASI-Kürzeln einsteigen – zuerst die Persona-Situation wirken lassen, danach den Normbezug nennen. Bei Zeitdruck kann Zone 1 auf 5 Szenarien gekürzt werden (Pfeiltaste rechts führt direkt zu Zone 2).</p>";
+
+document.getElementById('normRegisterBox').innerHTML =
+"<table class='footer-table'>" +
+"<tr><th>Framework/Quelle</th><th>Fassung/Status</th><th>Bezug im Tool</th></tr>" +
+"<tr><td>EU AI Act (VO (EU) 2024/1689)</td><td>in Kraft seit 1.8.2024; Transparenzpflichten seit 2.8.2026; Hochrisiko-Pflichten ab 2.12.2027 (Digital Omnibus, 7.5.2026)</td><td>Zone 2: BV, TR, DH, RO, EB, BR, MA, CR, RR</td></tr>" +
+"<tr><td>OWASP Top 10 for LLM Applications</td><td>v2.0 (LLM01–LLM10:2025), veröffentlicht 18.11.2024</td><td>Zone 2: SL, TV, GP, HA, AR</td></tr>" +
+"<tr><td>OWASP Top 10 for Agentic Applications</td><td>ASI01–ASI10:2026, veröffentlicht 9.12.2025</td><td>Zone 2: TM, ZH, IP, SK, DK</td></tr>" +
+"<tr><td>DSGVO</td><td>in Kraft seit 25.5.2018</td><td>Zone 2: DS, DX</td></tr>" +
+"<tr><td>ISO/IEC 27001:2022</td><td>in Kraft</td><td>Zone 2: SW, AM, AL</td></tr>" +
+"<tr><td>ISO/IEC 42001:2023</td><td>in Kraft seit Dezember 2023</td><td>Zone 2: MD</td></tr>" +
+"<tr><td>ISO/IEC 25010:2023 (Edition 2)</td><td>in Kraft</td><td>Zone 2: VL</td></tr>" +
+"<tr><td>NIS2-Richtlinie (EU) 2022/2555 / NIS2UmsuCG</td><td>Richtlinie in Kraft seit Januar 2023; Umsetzungsgesetz in Kraft seit Dezember 2025</td><td>Zone 2: CB</td></tr>" +
+"<tr><td>IEEE 29148:2018</td><td>in Kraft</td><td>Zone 2: NV</td></tr>" +
+"</table>" +
+"<p style='margin-top:10px; font-size:14px; color:var(--muted);'>Stand vor Einsatz in neuen Materialien prüfen (K17) – insbesondere EU AI Act-Fristen und NIS2UmsuCG-Umsetzungsstand können sich ändern.</p>";
+
+document.getElementById('footerMeta').innerHTML =
+"Normen-Referenzliste: EU AI Act (VO (EU) 2024/1689) · OWASP LLM Top 10 (v2.0, 2025) · OWASP Agentic Top 10 (2026) · DSGVO · ISO/IEC 27001:2022 · ISO/IEC 42001:2023 · ISO/IEC 25010:2023 · NIS2 (2022/2555) / NIS2UmsuCG · IEEE 29148:2018<br>" +
+"Zuletzt geprüft: 19.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll<br>" +
+"<span style='font-size:14px;'>Hinweis (K11, offen): Persona-Hex-Werte in diesem Tool sind konsistent zur bestehenden Namenskonvention (Ela=Teal, Knut=Braun-Orange, Sarah=Magenta, Petra=Blau, Bachmeier=Grau) gewählt, aber noch nicht gegen die exakten Hex-Codes der übrigen Tools im Repository abgeglichen – siehe offenes Governance-Item K11.</span>";
+
+/* Initial render */
+render();
+
+})();
+</script>
+</body>
+</html>
