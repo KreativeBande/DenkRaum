@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>PromptSchule — Trainingsleitfaden · Michaela Kühn</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#f6f8fc; --panel:#ffffff; --ink:#1f2937; --ink-dim:#6b7280; --line:#d9e1ea;
+    --accent:#4338CA; --accent-soft:#EEF0FF;
+    --good:#15803d; --good-soft:#e9f7ee; --warn:#92400e; --warn-soft:#fef3c7;
+    --card:#f7f8f9;
+    --mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --shadow:0 16px 34px rgba(15,23,42,.08);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);color-scheme:light;}
+  body{font-family:var(--sans);font-size:16px;line-height:1.55;
+    background:
+      radial-gradient(circle at top left, #f6f5ff 0%, transparent 22%),
+      radial-gradient(circle at top right, #eef4ff 0%, transparent 20%),
+      linear-gradient(180deg,#fbfcff 0%,#f4f6fa 100%);
+  }
+  button{touch-action:manipulation;-webkit-user-select:none;user-select:none;font-family:var(--sans);}
+  .app{max-width:1180px;margin:0 auto;padding:20px 24px 56px;}
+
+  /* ---------- Topbar & Signatur ---------- */
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:6px;}
+  .back-link{display:inline-block;font-size:14px;font-weight:700;color:var(--ink-dim);text-decoration:none;}
+  .back-link:hover{color:var(--accent);}
+  .signature{
+    position:fixed;top:14px;right:28px;z-index:30;
+    background:rgba(255,255,255,.92);padding:5px 10px;border-radius:10px;
+    font-size:14px;font-weight:700;color:var(--ink);text-align:right;text-decoration:none;line-height:1.4;white-space:nowrap;
+  }
+  .signature span{display:block;font-weight:500;color:var(--ink-dim);font-size:14px;}
+  .signature:hover, .signature:hover span{color:var(--accent);}
+  .beamer-btn{
+    background:transparent;border:1.5px solid var(--line);color:var(--ink-dim);
+    font-size:14px;font-weight:700;padding:9px 18px;border-radius:999px;cursor:pointer;min-height:40px;
+  }
+  .beamer-btn:hover{border-color:var(--accent);color:var(--ink);}
+  html.beamer .beamer-btn, html.beamer-xl .beamer-btn, html.beamer-xxl .beamer-btn{
+    background:var(--ink);color:#fff;border-color:var(--ink);
+  }
+  @media(max-width:900px){
+    .signature{position:static;display:block;background:none;padding:0;text-align:right;margin-bottom:6px;}
+  }
+
+  /* ---------- Tab-Navigation ---------- */
+  .tabbar{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 22px;padding:8px;background:rgba(255,255,255,.85);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);}
+  .tab-btn{flex:1 1 150px;background:transparent;border:none;border-radius:12px;padding:12px 14px;font-size:15px;font-weight:700;color:var(--ink-dim);cursor:pointer;min-height:48px;text-align:center;transition:background .15s ease,color .15s ease;}
+  .tab-btn:hover{background:var(--card);color:var(--ink);}
+  .tab-btn.active{background:var(--accent);color:#fff;}
+  @media(max-width:640px){ .tab-btn{flex:1 1 45%;font-size:14px;} }
+
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;animation:fadein .18s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ---------- Hero (Start-Tab) ---------- */
+  .hero{
+    background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;
+    box-shadow:var(--shadow);padding:32px 34px 28px;margin:0 0 26px;
+  }
+  .eyebrow{display:block;font-size:14px;letter-spacing:.12em;font-weight:700;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+  .hero h1{margin:0 0 10px;font-size:clamp(28px,4vw,42px);line-height:1.08;
+    background:linear-gradient(100deg,var(--ink) 55%,var(--accent) 120%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero p.lead{margin:0;color:var(--ink-dim);font-size:17px;line-height:1.6;}
+
+  .welcome-box{background:var(--accent-soft);border:1px solid var(--line);border-radius:20px;padding:24px 28px;margin-bottom:30px;}
+  .welcome-box .tag{display:block;font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+  .welcome-box p{margin:0 0 10px;font-size:16.5px;line-height:1.65;color:var(--ink);}
+  .welcome-box p:last-child{margin-bottom:0;}
+
+  h2.section-title{font-size:22px;margin:34px 0 6px;}
+  p.section-sub{color:var(--ink-dim);margin:0 0 18px;font-size:15px;line-height:1.6;}
+
+  /* ---------- Modul-Kacheln (Start) ---------- */
+  .module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:8px;}
+  .module-card{text-align:left;border:1px solid var(--line);border-radius:18px;background:#fff;padding:20px 22px;box-shadow:0 6px 16px rgba(15,23,42,.03);cursor:pointer;min-height:150px;transition:border-color .15s ease,transform .1s ease,box-shadow .15s ease;}
+  .module-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 10px 22px rgba(67,56,202,.14);}
+  .module-card .icon{font-size:26px;display:block;margin-bottom:8px;}
+  .module-card h3{margin:0 0 8px;font-size:16px;color:var(--ink);}
+  .module-card p{margin:0 0 10px;font-size:14px;color:var(--ink-dim);line-height:1.55;}
+  .module-card .cta{font-size:14px;font-weight:700;color:var(--accent);}
+
+  /* ---------- Lernpfad ---------- */
+  .lernpfad{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px;}
+  .lp-step{background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px 16px;font-size:14.5px;font-weight:700;color:var(--ink);cursor:pointer;min-height:48px;flex:1 1 170px;text-align:center;transition:border-color .15s ease,background .15s ease;}
+  .lp-step:hover{border-color:var(--accent);background:var(--accent-soft);}
+  .lp-arrow{font-size:20px;color:var(--ink-dim);flex:0 0 auto;}
+  @media(max-width:900px){ .lp-arrow{display:none;} }
+
+  /* ---------- Vergleichstabelle ---------- */
+  .compare-table{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:8px;}
+  .compare-table th, .compare-table td{border:1px solid var(--line);padding:10px 14px;text-align:left;vertical-align:top;}
+  .compare-table th{background:var(--ink);color:#fff;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.03em;}
+  .compare-table tr:nth-child(even) td{background:var(--card);}
+  .table-wrap{overflow-x:auto;border-radius:12px;margin-bottom:22px;}
+
+  /* ---------- Analogie-Karte (Librarian) ---------- */
+  .analogy-card{background:var(--card);border:2px solid var(--ink);border-radius:20px;padding:26px 28px;margin:22px 0 28px;}
+  .analogy-card .tag{display:block;font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+  .analogy-card p{margin:0 0 12px;font-size:16px;line-height:1.7;color:var(--ink);}
+  .analogy-card p:last-child{margin-bottom:0;}
+  .analogy-card strong{color:var(--accent);}
+
+  /* ---------- Mythos-Karten ---------- */
+  .myth-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:14px 0 8px;}
+  .myth-card{border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden;box-shadow:0 6px 16px rgba(15,23,42,.03);}
+  .myth-head{padding:14px 18px;font-size:15.5px;font-weight:700;background:var(--warn-soft);color:var(--warn);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:48px;}
+  .myth-head .chevron{transition:transform .15s ease;font-size:14px;}
+  .myth-card.open .myth-head .chevron{transform:rotate(90deg);}
+  .myth-body{display:none;padding:16px 18px;font-size:14.5px;line-height:1.6;color:var(--ink);border-top:1px solid var(--line);}
+  .myth-card.open .myth-body{display:block;}
+  .myth-body strong{color:var(--good);}
+
+  /* ---------- Framework-Auswahl ---------- */
+  .fw-picker{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
+  .fw-chip{
+    background:#fff;border:2px solid var(--line);border-radius:12px;padding:12px 18px;
+    font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;min-height:48px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .fw-chip:hover{border-color:var(--accent);}
+  .fw-chip.active{border-color:var(--accent);background:var(--accent-soft);}
+  .fw-detail{border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:var(--shadow);overflow:hidden;margin-bottom:22px;}
+  .fw-detail-head{background:var(--ink);color:#fff;padding:18px 24px;}
+  .fw-detail-head .p-name{margin:0;font-size:22px;font-weight:800;}
+  .fw-detail-head .p-full{font-size:14px;color:#cbd5e1;}
+  .fw-detail-body{padding:22px 24px;}
+  .fw-when{background:var(--accent-soft);border-radius:10px;padding:12px 16px;font-size:14.5px;color:var(--ink);margin:0 0 18px;}
+  .fw-field-table{width:100%;border-collapse:collapse;font-size:14.5px;margin-bottom:18px;}
+  .fw-field-table th,.fw-field-table td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top;}
+  .fw-field-table th{background:var(--card);font-weight:700;font-size:14px;width:110px;}
+  .fw-field-table .ex{color:var(--ink-dim);font-style:italic;}
+  .fw-sw{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:640px){ .fw-sw{grid-template-columns:1fr;} }
+  .fw-sw-box{border-radius:10px;padding:12px 14px;font-size:14px;line-height:1.55;}
+  .fw-sw-box.strength{background:var(--good-soft);color:#0f5132;}
+  .fw-sw-box.weakness{background:var(--warn-soft);color:#5c4419;}
+  .fw-sw-box .lbl{display:block;font-weight:700;margin-bottom:4px;font-size:14px;text-transform:uppercase;letter-spacing:.04em;}
+
+  /* ---------- Übungen ---------- */
+  .ex-list{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+  .ex-card{border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden;}
+  .ex-head{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;min-height:52px;}
+  .ex-num{flex:0 0 30px;height:30px;border-radius:50%;background:var(--card);color:var(--ink-dim);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .ex-card.open .ex-num{background:var(--accent);color:#fff;}
+  .ex-title{flex:1;font-size:15.5px;font-weight:700;color:var(--ink);}
+  .ex-level{font-size:14px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;}
+  .ex-level.anfaenger{background:var(--good-soft);color:var(--good);}
+  .ex-level.fortgeschritten{background:var(--warn-soft);color:var(--warn);}
+  .ex-level.profi{background:var(--accent-soft);color:var(--accent);}
+  .ex-chevron{font-size:14px;color:var(--ink-dim);transition:transform .15s ease;}
+  .ex-card.open .ex-chevron{transform:rotate(90deg);}
+  .ex-body{display:none;padding:0 18px 18px;border-top:1px solid var(--line);}
+  .ex-card.open .ex-body{display:block;}
+  .ex-task{font-size:15px;line-height:1.6;color:var(--ink);margin:14px 0;}
+  .ex-task strong{color:var(--accent);}
+  .reveal-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:11px 18px;font-size:14px;font-weight:700;cursor:pointer;min-height:44px;}
+  .reveal-btn:hover{background:#362da3;}
+  .ex-solution{display:none;margin-top:14px;background:var(--card);border-radius:10px;padding:14px 16px;}
+  .ex-solution.show{display:block;}
+  .ex-solution .sol-tag{display:block;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+  .ex-solution p{margin:0 0 10px;font-size:14.5px;line-height:1.6;color:var(--ink);}
+  .ex-solution .hint{font-style:italic;color:var(--ink-dim);margin-bottom:0;}
+  .ex-solution .hint strong{color:var(--ink);font-style:normal;}
+
+  /* ---------- Tipps & Tricks ---------- */
+  .rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-bottom:8px;}
+  .rule-card{border:2px solid var(--ink);border-radius:18px;background:var(--card);padding:18px 20px;}
+  .rule-num{display:inline-block;font-family:var(--mono);font-size:14px;font-weight:700;color:#fff;background:var(--accent);border-radius:999px;width:28px;height:28px;line-height:28px;text-align:center;margin-bottom:8px;}
+  .rule-card h3{margin:0 0 6px;font-size:15.5px;}
+  .rule-card p{margin:0;font-size:14px;color:var(--ink-dim);line-height:1.55;}
+
+  .dodont-table{width:100%;border-collapse:collapse;font-size:14.5px;margin:14px 0 22px;}
+  .dodont-table th,.dodont-table td{border:1px solid var(--line);padding:10px 14px;text-align:left;vertical-align:top;}
+  .dodont-table th{font-weight:700;font-size:14px;}
+  .dodont-table th.do-h{background:var(--good-soft);color:var(--good);}
+  .dodont-table th.dont-h{background:var(--warn-soft);color:var(--warn);}
+
+  .fehler-list{margin:0 0 8px;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;}
+  .fehler-list li{background:#fff;border:1px solid var(--line);border-left:5px solid var(--warn);border-radius:6px;padding:12px 16px;font-size:14.5px;line-height:1.55;}
+
+  /* ---------- Prompt-Bibliothek ---------- */
+  .lib-cat-title{font-size:16px;font-weight:800;color:var(--accent);margin:26px 0 10px;}
+  .lib-cat-title:first-of-type{margin-top:0;}
+  .lib-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:6px;}
+  .lib-card{border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden;display:flex;flex-direction:column;}
+  .lib-card h4{margin:0;padding:12px 16px;font-size:14.5px;background:var(--card);border-bottom:1px solid var(--line);}
+  .lib-prompt{flex:1;margin:0;padding:14px 16px;font-family:var(--mono);font-size:14.5px;line-height:1.6;white-space:pre-wrap;color:var(--ink);}
+  .lib-copy-btn{margin:0 16px 14px;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 14px;font-size:14px;font-weight:700;cursor:pointer;min-height:44px;align-self:flex-start;}
+  .lib-copy-btn:hover{background:#362da3;}
+  .lib-copy-btn:disabled{background:var(--good);cursor:default;}
+
+  /* ---------- Crosslink & Footer ---------- */
+  .crosslink{margin-top:20px;font-size:14px;color:var(--ink-dim);}
+  .crosslink a{color:var(--accent);font-weight:700;text-decoration:none;}
+  .crosslink a:hover{text-decoration:underline;}
+  .crosslink ul{margin:8px 0 0;padding-left:20px;}
+  .crosslink li{margin-bottom:4px;}
+
+  .app-footer{margin-top:44px;border-top:3px solid var(--ink);padding-top:18px;}
+  .footer-details{display:flex;flex-direction:column;}
+  .footer-box{border-bottom:1px solid var(--line);padding:10px 0;}
+  .footer-summary{cursor:pointer;font-weight:700;font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:.04em;color:var(--accent);min-height:44px;display:flex;align-items:center;}
+  .footer-content{padding:6px 0 14px;}
+  .footer-content p, .footer-content li{font-size:14px;color:var(--ink-dim);line-height:1.6;}
+  .footer-content ul{padding-left:20px;margin:8px 0;}
+  .footer-mono{font-family:var(--mono);}
+  .footer-mono p{font-size:14px;}
+  .footer-sans{font-family:var(--sans);}
+  .footer-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px;}
+  .footer-table th, .footer-table td{border:1px solid var(--line);padding:7px 10px;text-align:left;}
+  .footer-table th{background:var(--card);font-weight:700;}
+  .footer-sig{margin-top:16px;font-size:14px;color:var(--ink-dim);line-height:1.6;}
+  .footer-sig strong{color:var(--ink);}
+  .footer-sig .audit-line{display:block;margin-top:4px;}
+
+  @media(max-width:640px){
+    .app{padding:16px}
+    .hero{padding:24px 20px 20px}
+  }
+
+  /* ================= BEAMER-MODUS (vierstufig, kumulativ) ================= */
+  html.beamer{ --ink-dim:#3D4A5C; }
+  html.beamer .app-footer{ display:none; }
+  html.beamer .back-link, html.beamer .signature{ display:none; }
+
+  html.beamer .hero p.lead, html.beamer .welcome-box p, html.beamer .module-card p,
+  html.beamer .lp-step, html.beamer p.section-sub, html.beamer .analogy-card p,
+  html.beamer .myth-head, html.beamer .myth-body, html.beamer .fw-when,
+  html.beamer .fw-field-table, html.beamer .fw-sw-box, html.beamer .ex-title,
+  html.beamer .ex-task, html.beamer .ex-solution p, html.beamer .rule-card p,
+  html.beamer .dodont-table, html.beamer .fehler-list li, html.beamer .lib-prompt,
+  html.beamer .compare-table, html.beamer .tab-btn{ font-size:22px; }
+  html.beamer .hero h1{ font-size:44px; }
+  html.beamer .fw-detail-head .p-name{ font-size:44px; }
+  html.beamer .eyebrow, html.beamer .welcome-box .tag, html.beamer .ex-level,
+  html.beamer .rule-num, html.beamer .lib-cat-title, html.beamer .fw-detail-head .p-full,
+  html.beamer .fw-sw-box .lbl, html.beamer .ex-solution .sol-tag, html.beamer .module-card .cta,
+  html.beamer .lib-copy-btn{ font-size:15px; }
+
+  html.beamer-xl .hero p.lead, html.beamer-xl .welcome-box p, html.beamer-xl .module-card p,
+  html.beamer-xl .lp-step, html.beamer-xl p.section-sub, html.beamer-xl .analogy-card p,
+  html.beamer-xl .myth-head, html.beamer-xl .myth-body, html.beamer-xl .fw-when,
+  html.beamer-xl .fw-field-table, html.beamer-xl .fw-sw-box, html.beamer-xl .ex-title,
+  html.beamer-xl .ex-task, html.beamer-xl .ex-solution p, html.beamer-xl .rule-card p,
+  html.beamer-xl .dodont-table, html.beamer-xl .fehler-list li, html.beamer-xl .lib-prompt,
+  html.beamer-xl .compare-table, html.beamer-xl .tab-btn{ font-size:28px; }
+  html.beamer-xl .hero h1{ font-size:54px; }
+  html.beamer-xl .fw-detail-head .p-name{ font-size:54px; }
+  html.beamer-xl .eyebrow, html.beamer-xl .welcome-box .tag, html.beamer-xl .ex-level,
+  html.beamer-xl .rule-num, html.beamer-xl .lib-cat-title, html.beamer-xl .fw-detail-head .p-full,
+  html.beamer-xl .fw-sw-box .lbl, html.beamer-xl .ex-solution .sol-tag, html.beamer-xl .module-card .cta,
+  html.beamer-xl .lib-copy-btn{ font-size:18px; }
+
+  html.beamer-xxl .hero p.lead, html.beamer-xxl .welcome-box p, html.beamer-xxl .module-card p,
+  html.beamer-xxl .lp-step, html.beamer-xxl p.section-sub, html.beamer-xxl .analogy-card p,
+  html.beamer-xxl .myth-head, html.beamer-xxl .myth-body, html.beamer-xxl .fw-when,
+  html.beamer-xxl .fw-field-table, html.beamer-xxl .fw-sw-box, html.beamer-xxl .ex-title,
+  html.beamer-xxl .ex-task, html.beamer-xxl .ex-solution p, html.beamer-xxl .rule-card p,
+  html.beamer-xxl .dodont-table, html.beamer-xxl .fehler-list li, html.beamer-xxl .lib-prompt,
+  html.beamer-xxl .compare-table, html.beamer-xxl .tab-btn{ font-size:34px; }
+  html.beamer-xxl .hero h1{ font-size:64px; }
+  html.beamer-xxl .fw-detail-head .p-name{ font-size:64px; }
+  html.beamer-xxl .eyebrow, html.beamer-xxl .welcome-box .tag, html.beamer-xxl .ex-level,
+  html.beamer-xxl .rule-num, html.beamer-xxl .lib-cat-title, html.beamer-xxl .fw-detail-head .p-full,
+  html.beamer-xxl .fw-sw-box .lbl, html.beamer-xxl .ex-solution .sol-tag, html.beamer-xxl .module-card .cta,
+  html.beamer-xxl .lib-copy-btn{ font-size:21px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <button class="beamer-btn" id="beamerBtn" type="button" title="Vergrößert die Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">☀ Beamer</button>
+  </header>
+  <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer"><strong>Michaela Kühn</strong><span>www.michaela-kuehn.com</span></a>
+
+  <nav class="tabbar" id="tabbar" role="tablist" aria-label="PromptSchule Module">
+    <button class="tab-btn active" data-tab="start" role="tab" aria-selected="true">🏠 Start</button>
+    <button class="tab-btn" data-tab="grundlagen" role="tab" aria-selected="false">🧠 KI-Grundlagen</button>
+    <button class="tab-btn" data-tab="frameworks" role="tab" aria-selected="false">🏗️ Prompt-Frameworks</button>
+    <button class="tab-btn" data-tab="uebungen" role="tab" aria-selected="false">✏️ Übungen</button>
+    <button class="tab-btn" data-tab="tipps" role="tab" aria-selected="false">💡 Tipps &amp; Tricks</button>
+    <button class="tab-btn" data-tab="bibliothek" role="tab" aria-selected="false">📚 Prompt-Bibliothek</button>
+  </nav>
+
+  <main id="tabContent">
+
+    <!-- ================= START ================= -->
+    <section class="tab-panel active" id="tab-start">
+      <section class="hero">
+        <span class="eyebrow">🎓 Trainingsleitfaden v1.0</span>
+        <h1>Deine Prompt-Schule</h1>
+        <p class="lead">Von Null zum Profi — spielerisch, strukturiert, mit echten Beispielen. Lerne, wie du KI wirklich zum Arbeiten bringst.</p>
+      </section>
+
+      <div class="welcome-box">
+        <span class="tag">🧑‍🏫 Willkommen in deiner Prompt-Schule!</span>
+        <p>Hier lernst du nicht nur, was KI ist — sondern wie du sie so ansprichst, dass sie wirklich nützlich wird.</p>
+        <p>Stell dir vor: Du sprichst mit einem neuen Kollegen, der unglaublich viel weiß, aber noch nie bei dir gearbeitet hat. Je klarer du erklärst, was du brauchst, desto besser das Ergebnis.</p>
+      </div>
+
+      <h2 class="section-title">Die 5 Module</h2>
+      <p class="section-sub">Klicke auf eine Kachel, um direkt in das Modul zu springen.</p>
+      <div class="module-grid" id="moduleGrid">
+        <button class="module-card" data-jump="grundlagen">
+          <span class="icon">🧠</span>
+          <h3>Modul 1: KI-Grundlagen</h3>
+          <p>Was ist KI? Was ist ein Sprachmodell? Ohne Technik-Chinesisch erklärt — mit Metaphern, die kleben.</p>
+          <span class="cta">Modul öffnen →</span>
+        </button>
+        <button class="module-card" data-jump="frameworks">
+          <span class="icon">🏗️</span>
+          <h3>Modul 2: Prompt-Frameworks</h3>
+          <p>RTF, CO-STAR, RISEN — die Baupläne für gute Prompts. Du lernst, wann welches Framework passt.</p>
+          <span class="cta">Modul öffnen →</span>
+        </button>
+        <button class="module-card" data-jump="uebungen">
+          <span class="icon">✏️</span>
+          <h3>Modul 3: Übungen &amp; Lösungen</h3>
+          <p>10 progressive Übungen — von „Hallo KI" bis zum professionellen Fachanfragen-Prompt.</p>
+          <span class="cta">Modul öffnen →</span>
+        </button>
+        <button class="module-card" data-jump="tipps">
+          <span class="icon">💡</span>
+          <h3>Modul 4: Tipps &amp; Tricks</h3>
+          <p>Dos &amp; Don'ts, häufige Fehler und die 5 Goldregeln des Prompting — kompakt und merkbar.</p>
+          <span class="cta">Modul öffnen →</span>
+        </button>
+        <button class="module-card" data-jump="bibliothek">
+          <span class="icon">📚</span>
+          <h3>Modul 5: Prompt-Bibliothek</h3>
+          <p>15 fertige Prompt-Vorlagen für den Arbeitsalltag — sofort verwendbar, anpassbar.</p>
+          <span class="cta">Modul öffnen →</span>
+        </button>
+      </div>
+
+      <h2 class="section-title">🗺️ Lernpfad für Einsteiger</h2>
+      <p class="section-sub">Empfohlene Reihenfolge — aber jedes Modul ist auch einzeln nutzbar. Klicke auf einen Schritt, um direkt dorthin zu springen.</p>
+      <div class="lernpfad" id="lernpfad">
+        <button class="lp-step" data-jump="grundlagen">1️⃣ KI-Grundlagen</button>
+        <span class="lp-arrow">→</span>
+        <button class="lp-step" data-jump="frameworks">2️⃣ Frameworks kennen</button>
+        <span class="lp-arrow">→</span>
+        <button class="lp-step" data-jump="uebungen">3️⃣ Erste Übungen</button>
+        <span class="lp-arrow">→</span>
+        <button class="lp-step" data-jump="tipps">4️⃣ Tipps verinnerlichen</button>
+        <span class="lp-arrow">→</span>
+        <button class="lp-step" data-jump="bibliothek">5️⃣ Bibliothek nutzen</button>
+      </div>
+    </section>
+
+    <!-- ================= KI-GRUNDLAGEN ================= -->
+    <section class="tab-panel" id="tab-grundlagen">
+      <h2 class="section-title" style="margin-top:0;">🧠 Modul 1 — KI-Grundlagen</h2>
+      <p class="section-sub">Was ist KI? Was ist ein Sprachmodell? Ohne Technik-Chinesisch — mit Metaphern, die kleben.</p>
+
+      <div class="table-wrap">
+        <table class="compare-table">
+          <tr><th>Klassische Software</th><th>Generative KI (z. B. ChatGPT, Claude)</th></tr>
+          <tr><td>Folgt festen, programmierten Regeln</td><td>Sagt das wahrscheinlichste nächste Wort voraus</td></tr>
+          <tr><td>Gleiche Eingabe → immer exakt gleiche Ausgabe</td><td>Gleiche Eingabe → ähnliche, aber nicht identische Ausgabe</td></tr>
+          <tr><td>Scheitert bei unbekannten Fällen mit einer Fehlermeldung</td><td>Erzeugt auch bei unbekannten Fällen eine plausible Antwort — nicht automatisch eine richtige</td></tr>
+        </table>
+      </div>
+
+      <div class="analogy-card">
+        <span class="tag">Die Bibliothekar-Metapher</span>
+        <p>Stell dir eine unglaublich belesene Bibliothekarin vor. Sie hat praktisch jedes Buch gelesen, das du dir vorstellen kannst — aber nur bis zu einem bestimmten Stichtag, und sie erinnert sich an keine einzige Seite wörtlich. Stattdessen hat sie aus Millionen Texten ein extrem feines Gespür dafür entwickelt, welche Wörter typischerweise aufeinander folgen.</p>
+        <p>Fragst du sie etwas, blättert sie nicht in einem Buch nach — sie <strong>generiert</strong> die wahrscheinlichste, plausible Antwort aus diesem Gespür heraus. Das erklärt zugleich ihre Stärke (enormes, breites Wissen, blitzschnell abrufbar) und ihre Schwäche (kein eingebauter Wahrheitsabgleich, keine echte Gewissheit — nur Wahrscheinlichkeit).</p>
+        <p>Genau wie ein neuer Kollege, der unglaublich viel weiß, aber noch nie bei dir gearbeitet hat: Je klarer du erklärst, was du brauchst, desto treffsicherer die Antwort.</p>
+      </div>
+
+      <h2 class="section-title">Wie „denkt" ein Sprachmodell?</h2>
+      <p class="section-sub">Text wird in kleine Bausteine (Token) zerlegt — ein Token ist oft ein Wortteil, manchmal ein ganzes kurzes Wort. Das Modell sagt Token für Token das wahrscheinlichste nächste vorher, basierend auf Mustern aus riesigen Trainingsdaten. Es gibt keine Datenbank-Abfrage und kein Nachschlagen einer „Wahrheit" — nur eine sehr gut trainierte Vorhersage.</p>
+      <p class="section-sub"><strong style="color:var(--ink);">Warum halluziniert KI manchmal?</strong> Weil sie <em>immer</em> eine plausible Fortsetzung liefert, auch wenn ihr die Fakten fehlen — es gibt keinen eingebauten Zweifel-Modus, der sagt „das weiß ich nicht sicher". Deshalb gilt: prüfen, nicht blind vertrauen.</p>
+
+      <h2 class="section-title">Häufige Missverständnisse</h2>
+      <p class="section-sub">Klicke auf eine Aussage, um zu sehen, was tatsächlich dahintersteckt.</p>
+      <div class="myth-grid" id="mythGrid"></div>
+
+      <div class="lernpfad" style="margin-top:30px;">
+        <button class="lp-step" data-jump="frameworks" style="flex:0 1 320px;">Weiter zu Modul 2: Prompt-Frameworks →</button>
+      </div>
+    </section>
+
+    <!-- ================= PROMPT-FRAMEWORKS ================= -->
+    <section class="tab-panel" id="tab-frameworks">
+      <h2 class="section-title" style="margin-top:0;">🏗️ Modul 2 — Prompt-Frameworks</h2>
+      <p class="section-sub">RTF, CO-STAR, RISEN — die Baupläne für gute Prompts. Wähle ein Framework, um Felder, Beispiel, Stärken und Schwächen zu sehen.</p>
+
+      <div class="fw-picker" id="fwPicker"></div>
+      <div class="fw-detail" id="fwDetail"></div>
+
+      <h2 class="section-title">Welches Framework wann?</h2>
+      <div class="table-wrap">
+        <table class="compare-table">
+          <tr><th>Situation</th><th>Empfehlung</th></tr>
+          <tr><td>Schnell, einfach, Einsteiger</td><td>RTF</td></tr>
+          <tr><td>Zielgruppe und Ton entscheidend</td><td>CO-STAR</td></tr>
+          <tr><td>Mehrstufiger Prozess mit klarem Endziel</td><td>RISEN</td></tr>
+          <tr><td>Muster durch ein Beispiel setzen</td><td>TRACE</td></tr>
+          <tr><td>Kommunikationsaufgabe, Zweck klar</td><td>PACT</td></tr>
+          <tr><td>Schnelle, direkte Aufgabe für Profis</td><td>APE</td></tr>
+        </table>
+      </div>
+
+      <div class="lernpfad" style="margin-top:10px;">
+        <button class="lp-step" data-jump="uebungen" style="flex:0 1 320px;">Weiter zu Modul 3: Übungen →</button>
+      </div>
+    </section>
+
+    <!-- ================= ÜBUNGEN ================= -->
+    <section class="tab-panel" id="tab-uebungen">
+      <h2 class="section-title" style="margin-top:0;">✏️ Modul 3 — Übungen &amp; Lösungen</h2>
+      <p class="section-sub">10 progressive Übungen — von „Hallo KI" bis zum professionellen Fachanfragen-Prompt. Klicke eine Übung auf, probiere sie in deinem KI-Tool aus und deck danach den Lösungsvorschlag auf.</p>
+      <div class="ex-list" id="exList"></div>
+
+      <div class="lernpfad" style="margin-top:20px;">
+        <button class="lp-step" data-jump="tipps" style="flex:0 1 320px;">Weiter zu Modul 4: Tipps &amp; Tricks →</button>
+      </div>
+    </section>
+
+    <!-- ================= TIPPS & TRICKS ================= -->
+    <section class="tab-panel" id="tab-tipps">
+      <h2 class="section-title" style="margin-top:0;">💡 Modul 4 — Tipps &amp; Tricks</h2>
+      <p class="section-sub">Dos &amp; Don'ts, häufige Fehler und die 5 Goldregeln des Prompting — kompakt und merkbar.</p>
+
+      <h2 class="section-title" style="margin-top:0;">Die 5 Goldregeln des Prompting</h2>
+      <div class="rules-grid" id="rulesGrid"></div>
+
+      <h2 class="section-title">Dos &amp; Don'ts</h2>
+      <div class="table-wrap">
+        <table class="dodont-table">
+          <tr><th class="do-h">✅ Do</th><th class="dont-h">❌ Don't</th></tr>
+          <tr><td>Konkrete Beispiele nennen</td><td>Nur abstrakt beschreiben</td></tr>
+          <tr><td>Format explizit vorgeben</td><td>„Mach es einfach gut" sagen</td></tr>
+          <tr><td>Nachfragen und iterieren</td><td>Die erste Antwort blind übernehmen</td></tr>
+          <tr><td>Sensible Daten anonymisieren</td><td>Kundendaten oder Namen ungeprüft einfügen</td></tr>
+          <tr><td>Rolle &amp; Kontext mitgeben</td><td>Ohne Hintergrundinfo fragen</td></tr>
+        </table>
+      </div>
+
+      <h2 class="section-title">Häufige Fehler</h2>
+      <ul class="fehler-list">
+        <li>Zu vage Aufgabenstellung — „Schreib mal was Gutes" statt einer konkreten Aufgabe.</li>
+        <li>Fehlendes Format — die KI liefert dann irgendeine Struktur, meist nicht die, die du brauchst.</li>
+        <li>Keine Eingrenzung gesetzt — die Antwort wird länger und ausschweifender, als sie sein müsste.</li>
+        <li>Ergebnis ungeprüft übernehmen — gerade bei Zahlen, Fakten und Namen besonders riskant.</li>
+        <li>Ein Prompt für alles — statt zu iterieren, bei der ersten unbefriedigenden Antwort aufgeben.</li>
+      </ul>
+
+      <div class="lernpfad" style="margin-top:10px;">
+        <button class="lp-step" data-jump="bibliothek" style="flex:0 1 320px;">Weiter zu Modul 5: Prompt-Bibliothek →</button>
+      </div>
+    </section>
+
+    <!-- ================= PROMPT-BIBLIOTHEK ================= -->
+    <section class="tab-panel" id="tab-bibliothek">
+      <h2 class="section-title" style="margin-top:0;">📚 Modul 5 — Prompt-Bibliothek</h2>
+      <p class="section-sub">15 fertige Prompt-Vorlagen für den Arbeitsalltag — sofort verwendbar, anpassbar. Ersetze die Platzhalter in eckigen Klammern durch deine eigenen Inhalte.</p>
+      <div id="libraryContainer"></div>
+    </section>
+
+  </main>
+
+  <div class="crosslink">
+    Verwandte Denkraum-Tools zu diesem Thema:
+    <ul>
+      <li><a href="./prompt-builder.html">Prompt-Builder</a> — baut einen einzelnen Systemprompt live als Fünf-Bausteine-Wizard, statt einen kompletten Grundkurs zu durchlaufen.</li>
+      <li><a href="./prompt-engineering-academy.html">Prompt Engineering Academy · 12 Missionen</a> — vertieft dieselben Grundlagen als vollständigen 2-Tages-Kurs mit KI-Live-Anbindung, Anhang und drei Unternehmensszenarien.</li>
+      <li><a href="./ki-prompt-blackbox-simulator.html">Prompt-Black-Box-Simulator</a> — zeigt live, wie ein einzelner Prompt Tokenisierung und Wahrscheinlichkeiten durchläuft — die Technik hinter Modul 1 dieses Leitfadens.</li>
+      <li><a href="./zettelkasten-prompt-engineering-re.html">Zettelkasten: Prompt Engineering ist Requirements Engineering</a> — verknüpft die Frameworks aus Modul 2 mit den Prinzipien des Requirements Engineering.</li>
+    </ul>
+  </div>
+
+  <footer class="app-footer">
+    <div class="footer-details">
+      <details class="footer-box" open>
+        <summary class="footer-summary">Systemprompt</summary>
+        <div class="footer-content footer-mono">
+          <p>Baue ein einzelnes HTML-Trainingstool „PromptSchule — Trainingsleitfaden", das als Tab-basierte Einsteiger-Lernstrecke zum Thema KI-Prompting funktioniert: sechs Tabs (Start, KI-Grundlagen, Prompt-Frameworks, Übungen, Tipps &amp; Tricks, Prompt-Bibliothek), zwischen denen sowohl über die Tab-Leiste als auch über anklickbare Verweise innerhalb der Inhalte (Modul-Kacheln auf der Startseite, Lernpfad-Schritte, „Weiter zu Modul X"-Buttons am Ende jedes Moduls) gewechselt werden kann.</p>
+          <p><strong>Struktur:</strong> Topbar (Zurück-Link, Signatur oben rechts fix, vierstufiger Beamer-Button) → horizontale Tab-Leiste mit sechs Buttons (🏠🧠🏗️✏️💡📚) → sechs Tab-Panels, von denen jeweils genau eines sichtbar ist (kein Sliding, reines Show/Hide per CSS-Klasse `.active`) → Crosslink-Liste → Footer mit vier Boxen. Der Start-Tab enthält: Hero (Eyebrow „🎓 Trainingsleitfaden v1.0", H1 „Deine Prompt-Schule", Lead-Absatz), eine hervorgehobene Willkommensbox, ein 5er-Grid klickbarer Modul-Kacheln (jede Kachel = Sprungmarke in das jeweilige Modul, `data-jump`-Attribut steuert `switchTab()`), und eine Lernpfad-Leiste mit fünf nummerierten, ebenfalls klickbaren Schritten.</p>
+          <p><strong>Inhalt Modul 1 (KI-Grundlagen):</strong> Vergleichstabelle „klassische Software vs. generative KI", eine ausführliche Bibliothekar-Analogie-Karte (KI als belesene, aber nicht wörtlich erinnernde Bibliothekarin — erklärt Stärke und Schwäche generativer Modelle in einem Bild), eine kurze Token-/Wahrscheinlichkeits-Erklärung ohne Fachjargon, eine Erklärung, warum KI halluziniert, und vier aufklappbare Mythos-Karten (KI denkt / KI versteht mich / KI lügt mich an / KI weiß alles), die jeweils die verbreitete Aussage der tatsächlichen Funktionsweise gegenüberstellen.</p>
+          <p><strong>Inhalt Modul 2 (Prompt-Frameworks):</strong> Sechs Framework-Chips (RTF, CO-STAR, RISEN, TRACE, PACT, APE), Klick auf einen Chip aktualisiert ein festes Detail-Panel (Name, Vollname, Wann-Einsatz-Box, Felder-Tabelle mit Bedeutung + Beispiel je Feld, Stärke/Schwäche-Boxen). Am Ende eine Auswahllogik-Tabelle „Welches Framework wann?" mit sechs typischen Situationen.</p>
+          <p><strong>Inhalt Modul 3 (Übungen):</strong> Zehn progressive, aufklappbare Übungs-Karten mit Nummer, Titel und Niveau-Badge (Anfänger 1–4, Fortgeschritten 5–8, Profi 9–10): 1. Hallo KI (erster Kontakt ohne Vorbereitung), 2. Aufgabe ohne Rolle stellen, 3. Rolle hinzufügen (RTF), 4. Format festlegen (RTF), 5. Kontext ergänzen (CO-STAR), 6. Zielgruppe &amp; Ton (CO-STAR), 7. Mehrstufigen Workflow bauen (RISEN), 8. Mit Beispiel arbeiten (TRACE/Few-Shot), 9. Eingrenzung/Constraints setzen, 10. Der professionelle Fachanfragen-Prompt (Kombination aller fünf Dimensionen). Jede Karte hat einen Aufgabentext plus einen Button „Lösungsvorschlag anzeigen", der einen Lösungsvorschlag und einen Lernhinweis einblendet (kein automatisches Aufdecken).</p>
+          <p><strong>Inhalt Modul 4 (Tipps &amp; Tricks):</strong> Fünf Goldregeln-Karten (nummeriert, prägnant formuliert), eine Dos-&amp;-Don'ts-Tabelle mit fünf Gegenüberstellungen, eine Liste mit fünf häufigen Fehlern.</p>
+          <p><strong>Inhalt Modul 5 (Prompt-Bibliothek):</strong> 15 fertige, in fünf Kategorien gruppierte Prompt-Vorlagen (je 3 pro Kategorie: E-Mail &amp; Kommunikation, Analyse &amp; Zusammenfassung, Planung &amp; Struktur, Kreativ &amp; Formulierung, Fachliche RE/BA-Anwendungen) mit Platzhaltern in eckigen Klammern, jede mit einem „📋 Kopieren"-Button (Clipboard-API mit `document.execCommand('copy')`-Fallback für ältere Browser, Button zeigt kurz „✓ Kopiert" als Bestätigung).</p>
+          <p><strong>Design-Vorgaben:</strong> Gleiche Design-Sprache wie die übrigen Denkraum-Tools (heller Radial-Gradient-Hintergrund, abgerundete Karten, Akzentfarbe Indigo #4338CA). Vierstufiger Beamer-Modus nach kanonischem Muster, Footer ab Stufe 1 ausgeblendet. Alle Interaktionen (Tab-Wechsel, Modul-Kacheln, Mythos-Karten, Framework-Chips, Übungs-Akkordeon, Kopier-Buttons) sind reines Vanilla-JS ohne Frameworks, ohne externe Abhängigkeiten (K1, Offlinefähigkeit).</p>
+          <p><strong>Persona-Bezug:</strong> Kein fester Denkraum-Personencast — bewusst generische Alltagsbeispiele (E-Mail ans Team, Meeting-Protokoll, LinkedIn-Beitrag), damit der Leitfaden branchenunabhängig als eigenständiger Einsteiger-Grundkurs funktioniert.</p>
+          <p><strong>Nicht-tun:</strong> Keine echte KI-API-Anbindung (kein Live-Prompting gegen ein Sprachmodell) — alle Beispiele und Lösungsvorschläge sind statisch vorbereitet, das Tool bleibt vollständig offlinefähig. Keine der zehn Übungen ohne Lösungsvorschlag und Lernhinweis belassen. Kein Framework aus Modul 2 ohne vollständige Felder-Tabelle und mindestens ein konkretes Beispiel pro Feld zeigen. Die Prompt-Bibliothek nicht auf reine RE/BA-Fachprompts verengen — mindestens zwei Drittel der 15 Vorlagen müssen für ein branchenunabhängiges Publikum ohne Vorwissen sofort nutzbar sein.</p>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary">Handbuch</summary>
+        <div class="footer-content footer-sans">
+          <p><strong>Framework:</strong> RTF (Rolle – Aufgabe – Format) für den Aufbau des gesamten Leitfadens, kombiniert mit dem klassischen PromptSchule-Lerntrichter Bewusstsein → Erleben → Verstehen → Anwenden über die fünf Module hinweg.</p>
+          <table class="footer-table">
+            <thead><tr><th>Dimension</th><th>Ausprägung in diesem Tool</th></tr></thead>
+            <tbody>
+              <tr><td>Rolle</td><td>Freundliche, geduldige Prompt-Lehrerin, die Fachbegriffe erst nach der Analogie einführt, nie umgekehrt.</td></tr>
+              <tr><td>Aufgabe</td><td>Absolute KI-Einsteiger:innen von „was ist KI überhaupt" bis zu einem selbst formulierten, professionellen Fachanfragen-Prompt führen.</td></tr>
+              <tr><td>Kontext</td><td>Firmen- und branchenunabhängiger Arbeitsalltag (E-Mails, Meetings, Präsentationen) statt eines einzelnen Fallbeispiels.</td></tr>
+              <tr><td>Format</td><td>Sechs Tabs mit gemischten Interaktionsformen: Vergleichstabelle, Analogie-Karte, aufklappbare Mythos-Karten, Framework-Chips mit festem Detail-Panel, Übungs-Akkordeon, Kopier-fähige Prompt-Bibliothek.</td></tr>
+              <tr><td>Eingrenzung</td><td>Nur sechs etablierte Community-Frameworks (RTF, CO-STAR, RISEN, TRACE, PACT, APE), keine Live-KI-Anbindung, keine Bewertungs- oder Scoring-Funktion.</td></tr>
+            </tbody>
+          </table>
+          <p><strong>Zentraler Lernhinweis:</strong> Ein Prompt ist wie ein Auftrag an eine neue Kollegin — sie kann fast alles, kennt aber deinen Kontext nicht. Rolle, Kontext, Aufgabe, Format und Eingrenzung sind die fünf Stellschrauben, mit denen du das ausgleichst.</p>
+          <p><strong>Nachbau-Tipp:</strong> Erst die Tab-Infrastruktur bauen (eine `switchTab()`-Funktion, die sowohl von der Tab-Leiste als auch von beliebigen `data-jump`-Buttons im Inhalt aufgerufen werden kann), dann Modul für Modul befüllen. Die Übungen zuletzt schreiben — sie funktionieren nur gut, wenn Grundlagen und Frameworks vorher inhaltlich feststehen, damit die Lösungsvorschläge konsistent auf sie referenzieren.</p>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary">Vortrags-Skript</summary>
+        <div class="footer-content footer-sans">
+          <p><strong>Einsatzdauer:</strong> ca. 60–90 Minuten als vollständiger Einsteiger-Workshop-Baustein, oder einzelne Module à 10–15 Minuten als Auffrischung.</p>
+          <p><strong>Ablauf:</strong></p>
+          <p>(1) <em>(Start-Tab zeigen, Hero und Willkommenstext vorlesen)</em> „Willkommen in eurer Prompt-Schule. Wir gehen heute fünf Module durch — aber ihr müsst euch nichts merken, alles bleibt hier zum Nachschlagen." <em>(auf die Modul-Kacheln zeigen)</em> „Fünf Themen, ein Lernpfad — ich empfehle die Reihenfolge, aber jedes Modul funktioniert auch für sich."</p>
+          <p>(2) <em>(Klick auf Kachel „Modul 1: KI-Grundlagen")</em> „Bevor wir prompten, kurz die Basis: Was ist KI eigentlich?" <em>(Vergleichstabelle zeigen)</em> „Der wichtigste Unterschied zu normaler Software: Es gibt keine feste Regel, sondern eine Wahrscheinlichkeitsvorhersage." <em>(auf die Bibliothekar-Analogie-Karte scrollen)</em> „Stellt euch eine Bibliothekarin vor, die fast alles gelesen hat, sich aber an keine Seite wörtlich erinnert — sie rät die wahrscheinlichste Antwort, sehr gut, aber nicht unfehlbar." Übergang: Und genau deshalb hilft es, Klarheit statt Höflichkeit zu liefern.</p>
+          <p>(3) <em>(Auf ein bis zwei Mythos-Karten klicken, z. B. „KI denkt")</em> „Klickt das ruhig selbst durch — die häufigsten Missverständnisse sind hier aufgelöst." Übergang: Damit ist die Basis gelegt, jetzt zu den Werkzeugen.</p>
+          <p>(4) <em>(Sprung zu Modul 2, Klick auf Chip „RTF")</em> „Das einfachste Framework: Rolle, Aufgabe, Format. Drei Felder, sofort einsetzbar." <em>(Klick auf „CO-STAR")</em> „Für komplexere Aufgaben mit klarer Zielgruppe reicht RTF nicht mehr — hier kommt CO-STAR ins Spiel." <em>(auf die Auswahllogik-Tabelle unten zeigen)</em> „Diese Tabelle beantwortet: welches Framework passt zu meiner aktuellen Aufgabe?"</p>
+          <p>(5) <em>(Sprung zu Modul 3, erste Übung öffnen)</em> „Jetzt wird es praktisch. Übung 1 ist bewusst ohne jede Vorbereitung — einfach mal fragen. Übung 10 ist der komplette Ernstfall: euer eigener Fachanfragen-Prompt." <em>(eine mittlere Übung öffnen, z. B. Übung 5, Lösung aufdecken)</em> „Probiert selbst aus, bevor ihr die Lösung aufdeckt — der Aha-Moment entsteht beim eigenen Versuch, nicht beim Lesen."</p>
+          <p>(6) <em>(Sprung zu Modul 4, Goldregeln zeigen)</em> „Fünf Regeln, die ihr euch tatsächlich merken solltet." <em>(Dos-&amp;-Don'ts-Tabelle zeigen)</em> „Und falls mal Zweifel aufkommen: diese Tabelle als Faustregel."</p>
+          <p>(7) <em>(Sprung zu Modul 5, zwei bis drei Prompts zeigen, einen kopieren)</em> „Zum Schluss: 15 fertige Vorlagen, direkt aus eurem Alltag. Kopiert euch die passenden heraus — Platzhalter in eckigen Klammern einfach ersetzen." <em>(Klick auf „📋 Kopieren")</em> „Fertig, direkt einsatzbereit."</p>
+          <p><strong>Regie-Hinweise:</strong> Nicht mit dem Beamer-Modus-Button beginnen — das lenkt vom eigentlichen Thema ab. Nicht alle zehn Übungen im Plenum vorführen; drei bis vier reichen, den Rest zur Selbstbearbeitung freigeben. Bei knapper Zeit: Module 1, 2 und 5 priorisieren, Modul 3 als Hausaufgabe mitgeben. Modul 4 (Goldregeln) eignet sich auch gut als eigenständiger 5-Minuten-Slot am Ende eines längeren KI-Vortrags.</p>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary">Normen-Register</summary>
+        <div class="footer-content footer-sans">
+          <table class="footer-table">
+            <thead><tr><th>Framework / Quelle</th><th>Fassung / Status</th><th>Bezug im Tool</th></tr></thead>
+            <tbody>
+              <tr><td>RTF (Role · Task · Format)</td><td>etabliertes Community-Framework, keine ISO-Norm</td><td>Modul 2, Grundgerüst für Modul 3 (Übungen 1–4)</td></tr>
+              <tr><td>CO-STAR (Context · Objective · Style · Tone · Audience · Response)</td><td>etabliertes Community-Framework</td><td>Modul 2, Übungen 5–6</td></tr>
+              <tr><td>RISEN (Role · Instructions · Steps · End Goal · Narrowing)</td><td>etabliertes Community-Framework</td><td>Modul 2, Übung 7</td></tr>
+              <tr><td>TRACE (Task · Request · Action · Context · Example)</td><td>etabliertes Community-Framework</td><td>Modul 2, Übung 8</td></tr>
+              <tr><td>PACT (Purpose · Action · Context · Tone)</td><td>etabliertes Community-Framework</td><td>Modul 2</td></tr>
+              <tr><td>APE (Action · Purpose · Expectation)</td><td>etabliertes Community-Framework</td><td>Modul 2</td></tr>
+              <tr><td>Art. 4 KI-VO (Verordnung (EU) 2024/1689)</td><td>anwendbar seit 2. Februar 2025</td><td>Thematischer Rahmen: Nachweispflicht zur KI-Kompetenz, die dieser Leitfaden als Grundkurs adressiert</td></tr>
+              <tr><td>Gherkin / Given-When-Then</td><td>De-facto-Standard, keine ISO-Norm</td><td>Prompt-Bibliothek, Vorlage „User Story schreiben"</td></tr>
+            </tbody>
+          </table>
+          <p>Stand vor Einsatz in neuen Trainingsmaterialien prüfen (K17) — insbesondere, ob sich an der Einordnung der Prompt-Frameworks oder an Art. 4 KI-VO zwischenzeitlich etwas geändert hat.</p>
+        </div>
+      </details>
+    </div>
+    <p class="footer-sig">
+      <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a> · Frameworks: RTF, CO-STAR, RISEN, TRACE, PACT, APE · Art. 4 KI-VO (EU 2024/1689)
+      <span class="audit-line">Zuletzt geprüft: 19.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+    </p>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Beamer-Modus (vierstufig) ---------- */
+  var BEAMER_LEVELS = [
+    { classes: [],                                    label: '☀ Beamer' },
+    { classes: ['beamer'],                             label: '☀ Beamer XL' },
+    { classes: ['beamer', 'beamer-xl'],                label: '☀ Beamer XXL' },
+    { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: '☀ Normal' }
+  ];
+  var beamerLevel = 0;
+  document.getElementById('beamerBtn').addEventListener('click', function(){
+    beamerLevel = (beamerLevel + 1) % 4;
+    document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    this.textContent = BEAMER_LEVELS[beamerLevel].label;
+  });
+
+  /* ---------- sessionStorage safe helpers ---------- */
+  function safeGet(key){
+    try{ return sessionStorage.getItem(key); }catch(e){ return null; }
+  }
+  function safeSet(key, val){
+    try{ sessionStorage.setItem(key, val); }catch(e){}
+  }
+
+  /* ---------- Tab-Wechsel ---------- */
+  var TABS = ['start','grundlagen','frameworks','uebungen','tipps','bibliothek'];
+  function switchTab(name){
+    if(TABS.indexOf(name) === -1) return;
+    TABS.forEach(function(t){
+      var panel = document.getElementById('tab-' + t);
+      var btn = document.querySelector('.tab-btn[data-tab="' + t + '"]');
+      if(t === name){
+        panel.classList.add('active');
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected','true');
+      } else {
+        panel.classList.remove('active');
+        btn.classList.remove('active');
+        btn.setAttribute('aria-selected','false');
+      }
+    });
+    safeSet('promptschule-tab', name);
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){ switchTab(btn.getAttribute('data-tab')); });
+  });
+  document.querySelectorAll('[data-jump]').forEach(function(el){
+    el.addEventListener('click', function(){ switchTab(el.getAttribute('data-jump')); });
+  });
+  var savedTab = safeGet('promptschule-tab');
+  if(savedTab && TABS.indexOf(savedTab) !== -1){ switchTab(savedTab); }
+
+  /* ---------- KI-Grundlagen: Mythen ---------- */
+  var MYTHS = [
+    { myth: '„Die KI denkt."', reality: '<strong>Realität:</strong> Kein Bewusstsein, keine Absicht. Was wie Denken wirkt, ist hochentwickelte Mustererkennung und Wahrscheinlichkeitsvorhersage — beeindruckend, aber kategorisch etwas anderes als menschliches Denken.' },
+    { myth: '„Die KI versteht mich."', reality: '<strong>Realität:</strong> Kein Verständnis im menschlichen Sinn — aber oft überraschend treffende Sprachmuster, weil das Modell aus riesigen Textmengen gelernt hat, wie Menschen typischerweise formulieren und worauf sie sich beziehen.' },
+    { myth: '„Die KI lügt mich an."', reality: '<strong>Realität:</strong> Kein Vorsatz. Eine Halluzination ist ein Nebeneffekt der Funktionsweise — das Modell liefert immer eine plausible Fortsetzung, auch ohne gesicherte Fakten. Kein bewusster Betrug, aber trotzdem ein Grund, Ergebnisse zu prüfen.' },
+    { myth: '„Die KI weiß alles."', reality: '<strong>Realität:</strong> Wissen ist auf die Trainingsdaten begrenzt — mit einem Stichtag, teils unvollständig und mitunter veraltet. Aktuelle Ereignisse oder internes Firmenwissen kennt sie ohne zusätzlichen Kontext nicht.' }
+  ];
+  var mythGrid = document.getElementById('mythGrid');
+  MYTHS.forEach(function(m, i){
+    var card = document.createElement('div');
+    card.className = 'myth-card';
+    card.innerHTML =
+      '<div class="myth-head"><span>' + m.myth + '</span><span class="chevron">▸</span></div>' +
+      '<div class="myth-body">' + m.reality + '</div>';
+    card.querySelector('.myth-head').addEventListener('click', function(){
+      card.classList.toggle('open');
+    });
+    mythGrid.appendChild(card);
+  });
+
+  /* ---------- Prompt-Frameworks ---------- */
+  var FRAMEWORKS = [
+    {
+      key:'rtf', name:'RTF', full:'Role · Task · Format',
+      when:'Schnelle, klare Aufgaben. Das beste Einsteiger-Framework.',
+      fields:[
+        {label:'Role', de:'Welche Perspektive soll die KI einnehmen?', ex:'„Du bist eine erfahrene Projektleiterin."'},
+        {label:'Task', de:'Was genau soll passieren?', ex:'„Schreibe eine Statusmeldung zum aktuellen Projektstand."'},
+        {label:'Format', de:'Wie soll das Ergebnis aussehen?', ex:'„3 Bulletpoints, max. 80 Wörter, freundlicher Ton."'}
+      ],
+      strength:'Einfach zu lernen, sofort anwendbar, deckt die häufigsten Schwächen ab (fehlende Rolle, unklares Format).',
+      weakness:'Kein Platz für Zielgruppe, Ton oder Kontext — bei komplexeren Aufgaben zu eng.'
+    },
+    {
+      key:'costar', name:'CO-STAR', full:'Context · Objective · Style · Tone · Audience · Response',
+      when:'Komplexe Aufgaben mit klarer Zielgruppe. Kommunikationsaufgaben, wenn Ton und Stil entscheiden.',
+      fields:[
+        {label:'Context', de:'Was ist die Ausgangssituation?', ex:'„Wir führen eine neue Schulungsreihe für Führungskräfte ein."'},
+        {label:'Objective', de:'Was genau soll erreicht werden?', ex:'„Ankündigungs-E-Mail, die Neugier weckt, ohne Druck aufzubauen."'},
+        {label:'Style', de:'Schreibstil / Struktur', ex:'„Klar, professionell, keine Buzzword-Sprache."'},
+        {label:'Tone', de:'Emotionaler Ton', ex:'„Einladend, respektvoll, leicht enthusiastisch."'},
+        {label:'Audience', de:'Wer liest / nutzt das Ergebnis?', ex:'„Abteilungsleiter, 45+, skeptisch gegenüber KI, wenig Zeit."'},
+        {label:'Response', de:'Erwartetes Output-Format', ex:'„E-Mail, max. 200 Wörter, Betreff inklusive."'}
+      ],
+      strength:'Sehr vollständig, deckt auch emotionale Qualität ab. Ideal für Kommunikationsaufgaben.',
+      weakness:'Relativ lang — für einfache Aufgaben Overkill.'
+    },
+    {
+      key:'risen', name:'RISEN', full:'Role · Instructions · Steps · End Goal · Narrowing',
+      when:'Mehrstufige Workflows mit klarem Endziel. Wenn die Reihenfolge wichtig ist.',
+      fields:[
+        {label:'Role', de:'Expertenperspektive der KI', ex:'„Du bist eine erfahrene Business-Analystin."'},
+        {label:'Instructions', de:'Genaue Anweisungen', ex:'„Analysiere die folgende Anforderung auf Vollständigkeit."'},
+        {label:'Steps', de:'Schrittfolge', ex:'„1. Lücken identifizieren. 2. Fragen formulieren. 3. Verbesserungsvorschlag schreiben."'},
+        {label:'End Goal', de:'Was am Ende vorliegen soll', ex:'„Eine vollständige, überarbeitete Anforderung mit Begründung."'},
+        {label:'Narrowing', de:'Einschränkungen', ex:'„Keine neuen Anforderungen erfinden. Unsicherheiten kennzeichnen."'}
+      ],
+      strength:'Sehr präzise, ideal für KI-gestützte Analyse-Workflows mit mehreren Schritten.',
+      weakness:'Schreibaufwand hoch — nicht für schnelle Aufgaben geeignet.'
+    },
+    {
+      key:'trace', name:'TRACE', full:'Task · Request · Action · Context · Example',
+      when:'Wenn ein Beispiel den entscheidenden Unterschied macht — für Few-Shot-ähnliche Führung.',
+      fields:[
+        {label:'Task', de:'Was ist das übergeordnete Ziel?', ex:'„Kundenanfragen einheitlich beantworten."'},
+        {label:'Request', de:'Was genau wird gefragt?', ex:'„Formuliere eine Antwort auf diese Reklamation."'},
+        {label:'Action', de:'Was soll die KI konkret tun?', ex:'„Entschuldigung, Lösung, nächster Schritt — in dieser Reihenfolge."'},
+        {label:'Context', de:'Hintergrundinformation', ex:'„Kundin ist Bestandskundin seit 5 Jahren, erste Reklamation."'},
+        {label:'Example', de:'Ein Beispiel, das das Muster zeigt', ex:'„So haben wir letzte Woche geantwortet: [Beispieltext]."'}
+      ],
+      strength:'Durch das Beispiel wird das gewünschte Muster sehr präzise kommuniziert.',
+      weakness:'Erfordert, dass man selbst schon ein gutes Beispiel parat hat.'
+    },
+    {
+      key:'pact', name:'PACT', full:'Purpose · Action · Context · Tone',
+      when:'Kommunikationsaufgaben, wenn Zweck und Ton entscheidend sind — ein kompakteres CO-STAR.',
+      fields:[
+        {label:'Purpose', de:'Warum wird die Kommunikation gesendet?', ex:'„Um über eine Terminverschiebung zu informieren."'},
+        {label:'Action', de:'Was soll der Empfänger tun?', ex:'„Den neuen Termin im Kalender bestätigen."'},
+        {label:'Context', de:'Situation und Hintergrund', ex:'„Verschiebung wegen Krankheit eines Kernteammitglieds."'},
+        {label:'Tone', de:'Emotionaler und formaler Ton', ex:'„Verständnisvoll, aber sachlich, nicht entschuldigend-überschwänglich."'}
+      ],
+      strength:'Kompakt und schnell, deckt die wichtigsten Kommunikationsfragen ab.',
+      weakness:'Kein eigenes Format-Feld — Struktur der Antwort bleibt offen.'
+    },
+    {
+      key:'ape', name:'APE', full:'Action · Purpose · Expectation',
+      when:'Schnelle, direkte Aufträge. Wenn man nur das Nötigste braucht.',
+      fields:[
+        {label:'Action', de:'Was soll die KI tun?', ex:'„Fasse dieses Protokoll zusammen."'},
+        {label:'Purpose', de:'Wozu? Welches Ziel?', ex:'„Damit ich es in 2 Minuten überfliegen kann."'},
+        {label:'Expectation', de:'Wie soll das Ergebnis aussehen?', ex:'„5 Bulletpoints, offene To-Dos gesondert markiert."'}
+      ],
+      strength:'Minimal, schnell, klar — ideal für erfahrene Nutzer:innen mit Routineaufgaben.',
+      weakness:'Zu wenig Kontext für komplexe oder unklare Aufgaben.'
+    }
+  ];
+
+  var fwPicker = document.getElementById('fwPicker');
+  var fwDetail = document.getElementById('fwDetail');
+  function renderFramework(key){
+    var fw = FRAMEWORKS.filter(function(f){ return f.key === key; })[0];
+    if(!fw) return;
+    document.querySelectorAll('.fw-chip').forEach(function(chip){
+      chip.classList.toggle('active', chip.getAttribute('data-fw') === key);
+    });
+    var fieldsHtml = fw.fields.map(function(f){
+      return '<tr><th>' + f.label + '</th><td>' + f.de + '<br><span class="ex">' + f.ex + '</span></td></tr>';
+    }).join('');
+    fwDetail.innerHTML =
+      '<div class="fw-detail-head"><p class="p-name">' + fw.name + '</p><p class="p-full">' + fw.full + '</p></div>' +
+      '<div class="fw-detail-body">' +
+        '<p class="fw-when"><strong>Wann einsetzen?</strong> ' + fw.when + '</p>' +
+        '<table class="fw-field-table">' + fieldsHtml + '</table>' +
+        '<div class="fw-sw">' +
+          '<div class="fw-sw-box strength"><span class="lbl">Stärke</span>' + fw.strength + '</div>' +
+          '<div class="fw-sw-box weakness"><span class="lbl">Schwäche</span>' + fw.weakness + '</div>' +
+        '</div>' +
+      '</div>';
+  }
+  FRAMEWORKS.forEach(function(fw, i){
+    var chip = document.createElement('button');
+    chip.className = 'fw-chip' + (i === 0 ? ' active' : '');
+    chip.setAttribute('data-fw', fw.key);
+    chip.textContent = fw.name;
+    chip.addEventListener('click', function(){ renderFramework(fw.key); });
+    fwPicker.appendChild(chip);
+  });
+  renderFramework('rtf');
+
+  /* ---------- Übungen ---------- */
+  var EXERCISES = [
+    { level:'anfaenger', title:'1 · Hallo KI — der erste Kontakt',
+      task:'Öffne ein KI-Tool deiner Wahl (ChatGPT, Claude, Copilot …) und stelle eine einzige Frage zu deinem Arbeitsalltag — ganz ohne Vorbereitung.',
+      solution:'Es gibt hier keine „richtige" Lösung — das Ziel ist, die erste Hemmschwelle zu nehmen.',
+      hint:'<strong>Lernhinweis:</strong> Jede gute Prompt-Fähigkeit beginnt mit einfachem Ausprobieren, nicht mit Theorie.' },
+    { level:'anfaenger', title:'2 · Eine Aufgabe ohne Rolle stellen',
+      task:'Probiere genau diesen Satz aus: „Schreibe eine E-Mail an mein Team."',
+      solution:'Beobachte das Ergebnis: Die KI muss raten — welches Team, worüber, welcher Ton? Das Ergebnis bleibt meist generisch und austauschbar.',
+      hint:'<strong>Lernhinweis:</strong> Ohne Kontext füllt die KI die Lücken mit Wahrscheinlichkeiten, nicht mit deinem Wissen.' },
+    { level:'anfaenger', title:'3 · Rolle hinzufügen (RTF: Role)',
+      task:'Erweitere den Prompt: „Du bist eine erfahrene Projektleiterin. Schreibe eine E-Mail an mein Team."',
+      solution:'Die Antwort wird zielgerichteter und nutzt eher passendes Fachvokabular — allein durch die Rollenzuweisung.',
+      hint:'<strong>Lernhinweis:</strong> Eine Rolle ist mehr als ein Etikett — sie aktiviert Fachvokabular und eine passende Perspektive.' },
+    { level:'anfaenger', title:'4 · Format festlegen (RTF: Format)',
+      task:'Ergänze: „Du bist eine erfahrene Projektleiterin. Schreibe eine E-Mail an mein Team zum neuen Projektstart. Format: max. 150 Wörter, 3 Bulletpoints, freundlicher Ton."',
+      solution:'Das Ergebnis ist jetzt direkt verwendbar, statt erst umformatiert werden zu müssen.',
+      hint:'<strong>Lernhinweis:</strong> Format-Vorgaben sparen Nacharbeit — die KI liefert direkt verwendbare Struktur statt freien Fließtext.' },
+    { level:'fortgeschritten', title:'5 · Kontext ergänzen (CO-STAR: Context)',
+      task:'Ergänze Hintergrundinfos: „Kontext: Das Projekt heißt \'Kundenportal 2.0\', Kick-off ist am Montag, drei Kolleg:innen sind neu im Team."',
+      solution:'Die E-Mail wird konkret statt austauschbar — Projektname, Termin und Begrüßung der neuen Kolleg:innen fließen automatisch ein.',
+      hint:'<strong>Lernhinweis:</strong> Kontext ist der Unterschied zwischen einer generischen und einer maßgeschneiderten Antwort.' },
+    { level:'fortgeschritten', title:'6 · Zielgruppe &amp; Ton festlegen (CO-STAR: Audience, Tone)',
+      task:'Formuliere zwei Versionen derselben Nachricht — einmal für die Geschäftsführung, einmal fürs Team. Was ändert sich?',
+      solution:'Für die Geschäftsführung: kürzer, ergebnisorientiert, Zahlen zuerst. Fürs Team: ausführlicher, motivierend, Details zur Umsetzung.',
+      hint:'<strong>Lernhinweis:</strong> Gleicher Inhalt, andere Formulierung — die Zielgruppe entscheidet über Wortwahl und Tiefe.' },
+    { level:'fortgeschritten', title:'7 · Mehrstufigen Workflow bauen (RISEN: Steps)',
+      task:'Bitte die KI, in drei nummerierten Schritten vorzugehen: 1. Anforderungen sammeln, 2. Priorisieren, 3. Ergebnis zusammenfassen.',
+      solution:'Die KI arbeitet die Schritte sichtbar nacheinander ab, statt alles vermischt in einem Absatz auszugeben.',
+      hint:'<strong>Lernhinweis:</strong> Schrittfolgen zwingen die KI, strukturiert statt sprunghaft zu arbeiten — besonders wichtig bei mehrstufigen Aufgaben.' },
+    { level:'fortgeschritten', title:'8 · Mit Beispiel arbeiten (TRACE / Few-Shot)',
+      task:'Gib ein Beispiel vor, wie das Ergebnis aussehen soll, und lass die KI das Muster für einen neuen Fall fortsetzen.',
+      solution:'Die KI übernimmt Struktur, Länge und Ton des Beispiels sehr genau — oft präziser als bei einer reinen Beschreibung.',
+      hint:'<strong>Lernhinweis:</strong> Ein gutes Beispiel sagt mehr als zehn Sätze Beschreibung.' },
+    { level:'profi', title:'9 · Eingrenzung setzen (Narrowing / Constraints)',
+      task:'Ergänze bewusste Einschränkungen: „Nenne keine Preise. Verwende keine Anglizismen. Antworte in maximal 5 Sätzen."',
+      solution:'Die Antwort wird disziplinierter und bleibt innerhalb der gesetzten Grenzen, statt abzuschweifen.',
+      hint:'<strong>Lernhinweis:</strong> Grenzen sind kein Nachteil — sie verhindern, dass die KI über das eigentliche Ziel hinausschießt.' },
+    { level:'profi', title:'10 · Der professionelle Fachanfragen-Prompt',
+      task:'Kombiniere alles: Rolle + Kontext + Aufgabe + Format + Eingrenzung, für eine echte fachliche Anfrage aus deinem Arbeitsalltag (z. B. eine Anforderungsanalyse, ein Angebot, eine Stakeholder-Kommunikation).',
+      solution:'Beispiel nach RISEN: „Du bist IREB-zertifizierter Requirements Engineer (Role). Analysiere die folgende Anforderung auf Vollständigkeit und Testbarkeit (Instructions). Gehe so vor: 1. Lücken benennen, 2. offene Fragen formulieren, 3. verbesserte Version vorschlagen (Steps). Am Ende soll eine testbare, IREB-konforme Anforderung mit Begründung vorliegen (End Goal). Erfinde keine neuen Fakten, kennzeichne alle Annahmen explizit (Narrowing). Anforderung: [Text einfügen]."',
+      hint:'<strong>Lernhinweis:</strong> Das ist die eigentliche Kompetenz dieses Kurses — alle fünf Dimensionen gleichzeitig bewusst zu steuern, statt nur einzelne Bausteine zu nutzen.' }
+  ];
+  var LEVEL_LABEL = { anfaenger:'Anfänger', fortgeschritten:'Fortgeschritten', profi:'Profi' };
+  var exList = document.getElementById('exList');
+  EXERCISES.forEach(function(ex, i){
+    var card = document.createElement('div');
+    card.className = 'ex-card';
+    card.innerHTML =
+      '<div class="ex-head">' +
+        '<span class="ex-num">' + (i+1) + '</span>' +
+        '<span class="ex-title">' + ex.title.replace(/^\d+\s*·\s*/, '') + '</span>' +
+        '<span class="ex-level ' + ex.level + '">' + LEVEL_LABEL[ex.level] + '</span>' +
+        '<span class="ex-chevron">▸</span>' +
+      '</div>' +
+      '<div class="ex-body">' +
+        '<p class="ex-task"><strong>Aufgabe:</strong> ' + ex.task + '</p>' +
+        '<button class="reveal-btn" type="button">Lösungsvorschlag anzeigen</button>' +
+        '<div class="ex-solution">' +
+          '<span class="sol-tag">Lösungsvorschlag</span>' +
+          '<p>' + ex.solution + '</p>' +
+          '<p class="hint">' + ex.hint + '</p>' +
+        '</div>' +
+      '</div>';
+    card.querySelector('.ex-head').addEventListener('click', function(){
+      card.classList.toggle('open');
+    });
+    var revealBtn = card.querySelector('.reveal-btn');
+    revealBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var sol = card.querySelector('.ex-solution');
+      sol.classList.add('show');
+      revealBtn.style.display = 'none';
+    });
+    exList.appendChild(card);
+  });
+
+  /* ---------- Tipps & Tricks: Goldregeln ---------- */
+  var RULES = [
+    { title:'Sei konkret, nicht höflich-vage', text:'„Bitte hilf mir irgendwie" bringt nichts — eine klare, spezifische Aufgabe schon.' },
+    { title:'Gib der KI eine Rolle', text:'Eine passende Rolle aktiviert Fachwissen und die richtige Perspektive.' },
+    { title:'Sag, was du NICHT willst', text:'Eingrenzung verhindert ausufernde, zu lange oder unpassende Antworten.' },
+    { title:'Definiere das Format zuerst', text:'Wer das Format vorgibt, spart sich das Nachformatieren.' },
+    { title:'Prüfe das Ergebnis immer', text:'KI liefert Vorschläge, keine garantierten Wahrheiten — besonders bei Zahlen und Fakten.' }
+  ];
+  var rulesGrid = document.getElementById('rulesGrid');
+  RULES.forEach(function(r, i){
+    var card = document.createElement('div');
+    card.className = 'rule-card';
+    card.innerHTML = '<span class="rule-num">' + (i+1) + '</span><h3>' + r.title + '</h3><p>' + r.text + '</p>';
+    rulesGrid.appendChild(card);
+  });
+
+  /* ---------- Prompt-Bibliothek ---------- */
+  var LIBRARY = [
+    { cat:'E-Mail &amp; Kommunikation', items:[
+      { title:'E-Mail-Kette zusammenfassen', prompt:'Du bist meine Assistenz. Fasse folgende E-Mail-Kette in 5 Bulletpoints zusammen und markiere offene To-Dos gesondert:\n\n[E-Mail-Kette einfügen]' },
+      { title:'Freundliche Absage formulieren', prompt:'Du bist eine erfahrene Kommunikationsprofi. Formuliere eine freundliche, aber klare Absage für folgende Anfrage: [Anfrage einfügen]. Format: max. 100 Wörter, professioneller, aber warmer Ton.' },
+      { title:'Meeting-Einladung schreiben', prompt:'Schreibe eine Meeting-Einladung zum Thema [Thema] für [Datum/Uhrzeit]. Nenne Ziel, maximal 4 Agenda-Punkte und benötigte Vorbereitung. Format: E-Mail, max. 120 Wörter.' }
+    ]},
+    { cat:'Analyse &amp; Zusammenfassung', items:[
+      { title:'Protokoll strukturieren', prompt:'Du bist Protokollführer:in. Strukturiere folgende Meeting-Notizen in: Teilnehmende, Themen, Entscheidungen, offene Punkte mit Verantwortlichkeit:\n\n[Notizen einfügen]' },
+      { title:'Text in drei Stufen zusammenfassen', prompt:'Fasse den folgenden Text in drei Stufen zusammen: 1. Ein Satz, 2. Fünf Bulletpoints, 3. Ein Absatz für Fachpublikum.\n\nText: [Text einfügen]' },
+      { title:'Pro/Contra-Analyse erstellen', prompt:'Du bist neutrale:r Berater:in. Erstelle eine Pro/Contra-Tabelle zu folgender Entscheidung: [Entscheidung einfügen]. Nenne je 3 Argumente und gewichte sie nach Relevanz.' }
+    ]},
+    { cat:'Planung &amp; Struktur', items:[
+      { title:'Wochenplan strukturieren', prompt:'Du bist Projektassistenz. Erstelle einen Wochenplan aus folgenden Aufgaben, sortiert nach Priorität und Aufwand: [Aufgabenliste einfügen]. Format: Tabelle mit Tag, Aufgabe, geschätzter Dauer.' },
+      { title:'Präsentationsgliederung erstellen', prompt:'Du bist erfahrene:r Trainer:in. Erstelle eine Gliederung für einen 20-minütigen Vortrag zum Thema [Thema] für die Zielgruppe [Zielgruppe]. Format: 5 Abschnitte mit je einem Kernsatz.' },
+      { title:'Entscheidungsvorlage erstellen', prompt:'Erstelle eine Entscheidungsvorlage zu [Thema] mit: Ausgangslage, 3 Optionen, Empfehlung mit Begründung, nächste Schritte. Format: max. 1 Seite, Bulletpoints.' }
+    ]},
+    { cat:'Kreativ &amp; Formulierung', items:[
+      { title:'Ton eines Textes anpassen', prompt:'Formuliere folgenden Text in einem [freundlichen / formellen / direkten] Ton um, ohne den Inhalt zu verändern:\n\n[Text einfügen]' },
+      { title:'Konstruktives Feedback formulieren', prompt:'Du bist erfahrene Führungskraft. Formuliere konstruktives Feedback zu folgender Situation nach dem Muster Beobachtung → Wirkung → Wunsch: [Situation einfügen]' },
+      { title:'LinkedIn-Beitrag schreiben', prompt:'Du bist Social-Media-Expertin. Schreibe einen LinkedIn-Beitrag zu [Thema] für eine Fachzielgruppe. Format: max. 150 Wörter, ein Aufhänger-Satz, 3 Kernaussagen, ein Call-to-Action.' }
+    ]},
+    { cat:'Fachliche RE/BA-Anwendungen', items:[
+      { title:'Anforderung präzisieren', prompt:'Du bist IREB-zertifizierter Requirements Engineer. Analysiere folgende Anforderung nach den 5 Dimensionen Rolle, Kontext, Aufgabe, Format, Eingrenzung und schlage eine präzisere Version vor:\n\n[Anforderung einfügen]' },
+      { title:'User Story mit Akzeptanzkriterium', prompt:'Formuliere folgende Anforderung als User Story im Format „Als … möchte ich … damit …" inklusive einem Akzeptanzkriterium im Gherkin-Format (Given/When/Then):\n\n[Anforderung einfügen]' },
+      { title:'Stakeholder-Kommunikation übersetzen', prompt:'Übersetze folgende technische Information in eine für [Zielgruppe, z. B. Geschäftsführung] verständliche Zusammenfassung, ohne Fachjargon. Format: max. 5 Sätze.\n\nInformation: [Text einfügen]' }
+    ]}
+  ];
+
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+  }
+  function copyPrompt(btn, text){
+    var orig = btn.textContent;
+    function done(){
+      btn.textContent = '✓ Kopiert';
+      btn.disabled = true;
+      setTimeout(function(){ btn.textContent = orig; btn.disabled = false; }, 1600);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+    } else {
+      fallbackCopy(text); done();
+    }
+  }
+
+  var libContainer = document.getElementById('libraryContainer');
+  LIBRARY.forEach(function(group){
+    var h = document.createElement('h3');
+    h.className = 'lib-cat-title';
+    h.innerHTML = group.cat;
+    libContainer.appendChild(h);
+
+    var grid = document.createElement('div');
+    grid.className = 'lib-grid';
+    group.items.forEach(function(item){
+      var card = document.createElement('div');
+      card.className = 'lib-card';
+      var h4 = document.createElement('h4');
+      h4.textContent = item.title;
+      var pre = document.createElement('p');
+      pre.className = 'lib-prompt';
+      pre.textContent = item.prompt;
+      var btn = document.createElement('button');
+      btn.className = 'lib-copy-btn';
+      btn.type = 'button';
+      btn.textContent = '📋 Kopieren';
+      btn.addEventListener('click', function(){ copyPrompt(btn, item.prompt); });
+      card.appendChild(h4);
+      card.appendChild(pre);
+      card.appendChild(btn);
+      grid.appendChild(card);
+    });
+    libContainer.appendChild(grid);
+  });
+
+})();
+</script>
+</body>
+</html>
