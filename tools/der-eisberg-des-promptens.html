@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Der Eisberg des Promptens — Drei Ebenen der KI-Steuerung</title>
+<style>
+  :root{
+    --ink:#1a2332;
+    --muted:#5b6472;
+    --line:#d9dee6;
+    --paper:#ffffff;
+    --panel:#f4f6f9;
+    --accent:#2f6fed;
+    --e1-bg:#fff7e6; --e1-line:#b45309; --e1-text:#7c3d05;
+    --e2-bg:#e6f6f4; --e2-line:#0f766e; --e2-text:#0b4f49;
+    --e3-bg:#eceafd; --e3-line:#4338ca; --e3-text:#312a8f;
+    --ok:#166534;
+  }
+  html,body{ color-scheme: light; background:var(--paper); margin:0; padding:0; overflow-y:auto; }
+  *{ box-sizing:border-box; }
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); font-size:16px; line-height:1.5; background:var(--paper);
+  }
+  .signature{
+    position:fixed; top:14px; right:28px; text-align:right; z-index:50;
+    font-size:14px; line-height:1.3; background:rgba(255,255,255,.92);
+    padding:4px 8px; border-radius:6px;
+  }
+  .signature strong{ display:block; font-size:14px; }
+  .signature a{ color:var(--accent); text-decoration:none; font-size:14px; }
+  @media (max-width:900px){
+    .signature{ position:static; text-align:right; margin:10px 28px 0 auto; width:fit-content; }
+  }
+
+  .topbar{ padding:16px 32px 0 32px; }
+  .back-link{ display:inline-block; font-size:14px; font-weight:600; color:var(--muted); text-decoration:none; }
+  .back-link:hover{ color:var(--accent); }
+
+  header.top{
+    padding:14px 32px 18px 32px; border-bottom:1px solid var(--line);
+  }
+  header.top h1{ margin:0 0 6px 0; font-size:28px; }
+  header.top p.sub{ margin:0; color:var(--muted); font-size:16px; }
+  #beamerBtn{
+    margin-top:14px; font-size:14px; padding:8px 14px; border-radius:20px;
+    border:1px solid var(--accent); background:var(--paper); color:var(--accent);
+    cursor:pointer; min-height:44px;
+  }
+
+  .stage{ display:flex; gap:0; align-items:stretch; }
+  @media (max-width:900px){ .stage{ flex-direction:column; } }
+
+  .iceberg-col{
+    flex:0 0 34%; padding:24px 22px; background:var(--panel);
+    border-right:1px solid var(--line); position:relative;
+  }
+  @media (max-width:900px){ .iceberg-col{ flex:none; border-right:none; border-bottom:1px solid var(--line); } }
+
+  .waterline{
+    display:flex; align-items:center; gap:10px; margin:6px 0 6px 0;
+    font-size:14px; color:var(--muted);
+  }
+  .waterline::before, .waterline::after{ content:""; flex:1; height:2px; background:repeating-linear-gradient(90deg,#8fb8e8 0 8px, transparent 8px 14px); }
+
+  .tier{
+    display:block; width:100%; text-align:left; border:none; cursor:pointer;
+    border-radius:14px; padding:18px 18px; margin:10px 0; min-height:44px;
+    font:inherit; color:inherit; position:relative;
+  }
+  .tier:focus-visible{ outline:3px solid var(--accent); outline-offset:2px; }
+  .tier h3{ margin:0 0 4px 0; font-size:18px; }
+  .tier p{ margin:0; font-size:14px; color:var(--muted); }
+  .tier .badge{
+    display:inline-block; font-size:14px; font-weight:700; padding:2px 9px;
+    border-radius:999px; margin-bottom:8px;
+  }
+
+  .tier.e1{ background:var(--e1-bg); border:2px solid var(--e1-line); }
+  .tier.e1 .badge{ background:var(--e1-line); color:#fff; }
+  .tier.e2{ background:var(--e2-bg); border:2px solid var(--e2-line); }
+  .tier.e2 .badge{ background:var(--e2-line); color:#fff; }
+  .tier.e3{ background:var(--e3-bg); border:2px solid var(--e3-line); }
+  .tier.e3 .badge{ background:var(--e3-line); color:#fff; }
+
+  .tier.active{ box-shadow:0 0 0 4px rgba(47,111,237,.35); }
+  .tier[aria-pressed="true"]::after{
+    content:"▶ ausgewählt"; position:absolute; top:16px; right:16px;
+    font-size:14px; font-weight:700; color:var(--accent);
+  }
+
+  .detail-col{ flex:1; padding:26px 34px; min-width:0; }
+
+  .detail-head{ display:flex; align-items:center; gap:12px; margin-bottom:6px; }
+  .detail-head .dot{ width:16px; height:16px; border-radius:50%; flex:0 0 auto; }
+  .detail-head h2{ margin:0; font-size:24px; }
+  .detail-lede{ color:var(--muted); font-size:16px; margin:0 0 20px 0; max-width:760px; }
+
+  .cols{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:20px; }
+  @media (max-width:700px){ .cols{ grid-template-columns:1fr; } }
+  .card{ border:1px solid var(--line); border-radius:12px; padding:16px 18px; background:var(--paper); }
+  .card h4{ margin:0 0 10px 0; font-size:16px; }
+  .card ul{ margin:0; padding-left:20px; font-size:16px; }
+  .card li{ margin-bottom:7px; }
+  .card.sichtbar{ border-top:4px solid var(--muted); }
+  .card.tiefe{ border-top:4px solid var(--accent); }
+
+  .ireb-box{
+    background:#eef3ff; border:1px solid #c7d7fb; border-radius:12px;
+    padding:16px 18px; font-size:16px; margin-bottom:16px;
+  }
+  .ireb-box strong{ color:#1d4ed8; }
+  .ireb-box .tag{
+    display:inline-block; font-size:14px; font-weight:700; color:#1d4ed8;
+    background:#dbe6ff; padding:2px 9px; border-radius:999px; margin-bottom:8px;
+  }
+
+  .crosslink{
+    font-size:14px; color:var(--muted); border-top:1px dashed var(--line); padding-top:12px; margin-top:6px;
+  }
+  .crosslink strong{ color:var(--ink); }
+
+  .banner{
+    margin:0 32px 26px 32px; padding:16px 20px; border-radius:12px;
+    background:#111827; color:#fff; font-size:18px; text-align:center;
+  }
+  .banner b{ color:#93c5fd; }
+
+  .related{
+    margin:0 32px 26px 32px; padding-top:16px; border-top:1px dashed var(--line);
+    font-size:14px; color:var(--muted);
+  }
+  .related strong{ color:var(--ink); }
+  .related ul{ margin:8px 0 0; padding-left:20px; }
+  .related li{ margin-bottom:4px; }
+  .related a{ color:var(--accent); font-weight:700; text-decoration:none; }
+  .related a:hover{ text-decoration:underline; }
+
+  /* Footer */
+  footer{ border-top:1px solid var(--line); padding:20px 32px 40px 32px; }
+  .footer-sig{ font-size:14px; color:var(--muted); margin-bottom:16px; }
+  .footer-sig strong{ color:var(--ink); }
+  .footer-sig a{ color:var(--accent); }
+  .footer-details{ display:flex; flex-wrap:wrap; gap:16px; }
+  @media (max-width:900px){ .footer-details{ flex-direction:column; } }
+  .footer-box{
+    flex:1 1 260px; border:1px solid var(--line); border-radius:10px; background:var(--panel);
+  }
+  .footer-summary{
+    cursor:pointer; padding:12px 16px; font-size:14px; font-weight:700; list-style:none; min-height:44px; display:flex; align-items:center;
+  }
+  .footer-summary::-webkit-details-marker{ display:none; }
+  .footer-summary::before{ content:"▸ "; }
+  details[open] > .footer-summary::before{ content:"▾ "; }
+  .footer-content{ padding:0 16px 16px 16px; }
+  .footer-mono{ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:14px; white-space:pre-wrap; }
+  .footer-sans{ font-size:16px; }
+  .footer-table{ width:100%; border-collapse:collapse; font-size:14px; }
+  .footer-table th,.footer-table td{ border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
+
+  /* Beamer-Modus: reine Größensteigerung, Footer ab Stufe 1 ausgeblendet */
+  html.beamer footer{ display:none; }
+  html.beamer .signature{ display:none; }
+  html.beamer .topbar{ display:none; }
+  html.beamer header.top h1{ font-size:36px; }
+  html.beamer header.top p.sub{ font-size:22px; }
+  html.beamer .tier h3{ font-size:22px; }
+  html.beamer .tier p, html.beamer .tier .badge{ font-size:16px; }
+  html.beamer .waterline, html.beamer .ireb-box .tag{ font-size:15px; }
+  html.beamer .detail-head h2{ font-size:44px; }
+  html.beamer .detail-lede, html.beamer .card ul, html.beamer .card h4, html.beamer .ireb-box{ font-size:22px; }
+  html.beamer .banner{ font-size:22px; }
+
+  html.beamer.beamer-xl header.top h1{ font-size:44px; }
+  html.beamer.beamer-xl header.top p.sub{ font-size:28px; }
+  html.beamer.beamer-xl .tier h3{ font-size:28px; }
+  html.beamer.beamer-xl .tier p, html.beamer.beamer-xl .tier .badge{ font-size:18px; }
+  html.beamer.beamer-xl .waterline, html.beamer.beamer-xl .ireb-box .tag{ font-size:18px; }
+  html.beamer.beamer-xl .detail-head h2{ font-size:54px; }
+  html.beamer.beamer-xl .detail-lede, html.beamer.beamer-xl .card ul, html.beamer.beamer-xl .card h4, html.beamer.beamer-xl .ireb-box{ font-size:28px; }
+  html.beamer.beamer-xl .banner{ font-size:28px; }
+
+  html.beamer.beamer-xl.beamer-xxl header.top h1{ font-size:54px; }
+  html.beamer.beamer-xl.beamer-xxl header.top p.sub{ font-size:34px; }
+  html.beamer.beamer-xl.beamer-xxl .tier h3{ font-size:34px; }
+  html.beamer.beamer-xl.beamer-xxl .tier p, html.beamer.beamer-xl.beamer-xxl .tier .badge{ font-size:21px; }
+  html.beamer.beamer-xl.beamer-xxl .waterline, html.beamer.beamer-xl.beamer-xxl .ireb-box .tag{ font-size:21px; }
+  html.beamer.beamer-xl.beamer-xxl .detail-head h2{ font-size:64px; }
+  html.beamer.beamer-xl.beamer-xxl .detail-lede, html.beamer.beamer-xl.beamer-xxl .card ul, html.beamer.beamer-xl.beamer-xxl .card h4, html.beamer.beamer-xl.beamer-xxl .ireb-box{ font-size:34px; }
+  html.beamer.beamer-xl.beamer-xxl .banner{ font-size:34px; }
+</style>
+</head>
+<body>
+
+<div class="signature">
+  <strong>Michaela Kühn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<div class="topbar">
+  <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+</div>
+
+<header class="top">
+  <h1>Der Eisberg des Promptens</h1>
+  <p class="sub">Drei Ebenen der KI-Steuerung — vom kurzen Zufallstreffer zum wiederholbaren Ergebnis. Ein Opener für „Prompt-Schule — KI für Einsteiger" (Modul 2/3: Wie kommuniziere ich mit KI? / Frameworks).</p>
+  <button id="beamerBtn" type="button">🖥️ Beamer-Modus</button>
+</header>
+
+<div class="stage">
+  <div class="iceberg-col" role="tablist" aria-label="Drei Ebenen wählen">
+
+    <button class="tier e1" id="tier-1" data-level="1" role="tab" aria-pressed="false">
+      <span class="badge">Ebene 1</span>
+      <h3>Die Oberfläche</h3>
+      <p>Sichtbar für jede:n — keine Einrichtung nötig.</p>
+    </button>
+
+    <div class="waterline">Wasserlinie</div>
+
+    <button class="tier e2" id="tier-2" data-level="2" role="tab" aria-pressed="false">
+      <span class="badge">Ebene 2</span>
+      <h3>Knapp unter der Oberfläche</h3>
+      <p>Hier entsteht der eigentliche Unterschied.</p>
+    </button>
+
+    <button class="tier e3" id="tier-3" data-level="3" role="tab" aria-pressed="false">
+      <span class="badge">Ebene 3</span>
+      <h3>Der Tiefenkörper</h3>
+      <p>Wo Ergebnisse wiederholbar werden.</p>
+    </button>
+
+  </div>
+
+  <div class="detail-col" id="detailCol" role="tabpanel" aria-live="polite">
+    <!-- wird per JS befüllt -->
+  </div>
+</div>
+
+<div class="banner" id="banner">Die meisten bleiben auf <b>Ebene 1</b> stehen. Der Unterschied entsteht auf <b>Ebene 2</b> — <b>Ebene 3</b> macht ihn wiederholbar.</div>
+
+<div class="related">
+  <strong>Verwandte Denkraum-Tools zu diesem Thema:</strong>
+  <ul>
+    <li><a href="./prompt-builder.html">Prompt-Builder</a> — führt genau den Ebene-2-Baustein (Rolle → Kontext → Aufgabe → Format → Kriterien) als eigenständigen Wizard mit wachsender Prompt-Blaupause fort.</li>
+    <li><a href="./vom-prompt-zum-agenten.html">Vom Prompt zum Agenten — Die vier Eskalationsstufen</a> — vertieft Ebene 3 mit konkreten Eskalationsstufen (Prompt, Context, Loop, Graph Engineering) für Fortgeschrittene.</li>
+  </ul>
+</div>
+
+<footer>
+  <div class="footer-sig">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+    · Bezug: IREB CPRE (Anforderungsqualität), BABOK v3 (Anforderungsermittlung)
+    · Zuletzt geprüft: 20.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll
+  </div>
+
+  <div class="footer-details">
+    <details class="footer-box">
+      <summary class="footer-summary">🧩 Systemprompt</summary>
+      <div class="footer-content footer-mono">Master-Bau-Prompt für dieses Tool (Eisberg-Opener, 3-Ebenen-Modell)
+
+ROLLE: Du baust einen Denkraum-konformen Opener-Baustein für Einsteiger:innen
+im Prompt-Engineering, der die Metapher "Eisberg" nutzt, um zu zeigen, dass
+sichtbarer Prompting-Aufwand (Ebene 1) und tatsächliche Ergebnisqualität
+(Ebene 2/3) auseinanderfallen.
+
+STRUKTUR:
+- Split-Screen: links vertikale Ebenen-Auswahl (3 Tier-Buttons + Wasserlinie
+  zwischen Ebene 1 und 2), rechts Detail-Panel für die gewählte Ebene.
+- Kein Slide-Wechsel: Auswahl ändert nur das rechte Panel, linke Spalte bleibt
+  fix sichtbar (K6).
+
+INHALT PRO EBENE:
+- Ebene 1 (Oberfläche): Was ohne Einrichtung sichtbar ist (Frage tippen,
+  ein Beispiel als Stilvorgabe, Liste generieren). Kein IREB-Bezug zu
+  Qualitätsmerkmalen -> Anforderung bleibt unscharf.
+- Ebene 2 (unter der Wasserlinie): Rolle, exakte Aufgabe, Kontext (wer liest/
+  was zählt/was nicht), Format, Referenzbeispiel, feste Regeln. Direkter
+  Bezug zu IREB-Qualitätsmerkmalen für Anforderungen (eindeutig, vollständig,
+  nachprüfbar) UND zum eigenen Prompt-Builder-Tool (Rolle->Kontext->Aufgabe->
+  Format->Kriterien) als Crosslink.
+- Ebene 3 (Tiefenkörper): Wiederverwendbare, governte Prozesse statt
+  Einzelfall-Prompts (Modellwahl, Denkschritt vor Antwort, Plan vor
+  Ausführung, dauerhafte Regeln, wiederkehrende Abläufe automatisieren,
+  Projekt-Kontext anheften, externe Werkzeuge anschließen). Explizit als
+  "für Fortgeschrittene" markiert, Crosslink zum Tool "Vom Prompt zum
+  Agenten — Die vier Eskalationsstufen".
+
+DESIGN-VORGABEN:
+- Farbcodierung: Ebene 1 Amber, Ebene 2 Teal, Ebene 3 Indigo (dunkle
+  Textfarbe auf hellem Badge-Hintergrund, WCAG AA).
+- Karten "Was sichtbar ist" vs. "Wo der Aufwand wirklich liegt" pro Ebene
+  nebeneinander (2-Spalten-Grid, ab 700px).
+- IREB-Box pro Ebene mit eigenem Tag, blauer Rahmen, getrennt von den
+  beiden Aufwand-Karten.
+- Eigene Topbar-Zeile mit Zurück-Link, Signatur oben rechts fix, vierteiliger
+  Footer, vierstufiger Beamer-Toggle wie in allen DenkRaum-Tools — inkl.
+  Größentabelle für Panel-Überschriften/Hauptinhalt/Sekundärtext je Stufe.
+
+NICHT TUN:
+- Keine Level-3-Detailtechnik erfinden (keine konkreten Befehle/Syntax für
+  Skills/Plan Mode/MCP) — nur konzeptionell benennen, Einsteiger-Zielgruppe.
+- Keine Personas (Ela/Knut/Sarah/Petra/Bachmeier) erzwingen — dieses Tool ist
+  ein konzeptioneller Erklär-Baustein ohne Szenario, analog zu den MCP/RAG-
+  Explainer-Tools im Bestand.
+- Keine Inhalte aus der Ursprungs-Infografik ("AI For Leaders.com")
+  wortwörtlich übernehmen — nur die Grundidee (Eisberg, 3 Ebenen), komplett
+  neu formuliert und mit IREB/BABOK verankert.</div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">📘 Handbuch</summary>
+      <div class="footer-content footer-sans">
+        <p><strong>Framework:</strong> CO-STAR-nah (Context/Objective/Style/Tone/Audience/Response), didaktisch reduziert auf die drei Ebenen des Eisbergs.</p>
+        <table class="footer-table">
+          <tr><th>Dimension</th><th>Design-Entscheidung</th></tr>
+          <tr><td>Rolle</td><td>Bewusst kein Charakter/Persona — Zielgruppe sind Einsteiger:innen, die zunächst das Prinzip verstehen sollen, nicht ein Szenario.</td></tr>
+          <tr><td>Aufgabe</td><td>Drei anklickbare Ebenen statt linearem Scroll — Teilnehmende können live zwischen „was man sieht" und „was wirklich zählt" springen.</td></tr>
+          <tr><td>Kontext</td><td>Jede Ebene direkt an ein IREB-Qualitätsmerkmal für Anforderungen gekoppelt — macht den Sprung von Prompt-Qualität zu RE-Qualität explizit, statt ihn nur zu behaupten.</td></tr>
+          <tr><td>Format</td><td>Zwei-Spalten-Karten (Sichtbar/Aufwand) statt Fließtext — schneller Kontrast, beamer-tauglich aus 3m Entfernung.</td></tr>
+          <tr><td>Eingrenzung</td><td>Ebene 3 bewusst knapp gehalten (kein Technik-Tutorial) — Vertiefung liegt im separaten Eskalationsstufen-Tool, keine Duplikation.</td></tr>
+        </table>
+        <p><strong>Der eine Lernhinweis, der hier zählt:</strong> Der Eisberg zeigt nicht „mehr Aufwand = besser", sondern dass unsichtbarer Aufwand (Kontext, Rolle, Kriterien) den Unterschied zwischen Zufallstreffer und steuerbarem Ergebnis macht — exakt das Prinzip, das IREB an Anforderungen stellt.</p>
+        <p><strong>Nachbau-Tipp:</strong> Bei eigenen Ebenen-Modellen immer eine harte Grenze ziehen, ab wann eine Ebene „für Fortgeschrittene" wird — sonst überfordert Ebene 3 die Einsteiger-Zielgruppe und untergräbt Ebene 1/2.</p>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+      <div class="footer-content footer-sans">
+        <p><em>(Tool öffnen, noch keine Ebene angeklickt)</em> „Die meisten von Ihnen prompten schon — Sie tippen eine Frage, bekommen eine Antwort. Das ist die Oberfläche eines Eisbergs. Aber der Teil, der über Erfolg oder Zufallstreffer entscheidet, liegt darunter."</p>
+        <p><em>(Ebene 1 anklicken)</em> „Auf Ebene 1 passiert das, was jede:r sofort tut: eine Frage tippen, vielleicht ein Beispiel zum Nachahmen geben. Kein Setup — aber auch keine Qualitätsgarantie. In unserer RE-Sprache: eine unscharfe, nicht ermittelte Anforderung."</p>
+        <p><em>(Ebene 2 anklicken)</em> „Jetzt gehen wir unter die Wasserlinie. Hier stecken Rolle, exakte Aufgabe, Kontext, Format und feste Regeln — genau die Dimensionen, die IREB von einer guten Anforderung verlangt: eindeutig, vollständig, nachprüfbar. Das ist auch die Logik unseres Prompt-Builders."</p>
+        <p><em>(Ebene 3 anklicken)</em> „Ganz unten liegt der Tiefenkörper — wo aus Einzelprompts wiederholbare, governte Prozesse werden. Das ist Stoff für Fortgeschrittene, dazu haben wir ein eigenes Tool: Vom Prompt zum Agenten."</p>
+        <p><em>(auf Banner zeigen)</em> „Die meisten bleiben auf Ebene 1. Der Unterschied entsteht auf Ebene 2 — und Ebene 3 macht ihn wiederholbar."</p>
+        <p><strong>Regie-Hinweise:</strong> Nicht mit Fachbegriffen wie „CO-STAR" oder „IREB-Qualitätsmerkmal" einsteigen — erst die Eisberg-Analogie wirken lassen, Fachbegriffe erst bei Ebene 2 nachliefern. Beamer-Modus vor dem Auftritt einmal durchklicken (Footer verschwindet ab Stufe 1 — das ist gewollt).</p>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">📚 Normen-Register</summary>
+      <div class="footer-content footer-sans">
+        <table class="footer-table">
+          <tr><th>Framework/Quelle</th><th>Fassung/Status</th><th>Bezug im Tool</th></tr>
+          <tr><td>IREB CPRE</td><td>aktueller Lehrplan-Stand, in Kraft</td><td>Qualitätsmerkmale für Anforderungen (eindeutig/vollständig/nachprüfbar) als Brücke zu Ebene 2</td></tr>
+          <tr><td>BABOK v3 (IIBA)</td><td>in Kraft</td><td>Anforderungsermittlung/Elicitation als Parallele zu Ebene 2 (Kontext/Stakeholder/Zielkriterium)</td></tr>
+        </table>
+        <p>Hinweis: Vor Einsatz in neuen Materialien Stand der Frameworks prüfen (K17).</p>
+      </div>
+    </details>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var LEVELS = {
+    1: {
+      color: "#b45309", label: "Ebene 1 — Die Oberfläche",
+      lede: "Was jede:r sofort kann, ohne jede Einrichtung — und warum genau das die Ergebnisqualität begrenzt.",
+      sichtbar: [
+        "Direkt eine Frage tippen und sofort eine Antwort bekommen",
+        "Ein einzelnes Beispiel geben: „schreib es in diesem Stil\"",
+        "Um eine Liste bitten und daraus die beste Option wählen",
+        "Kurze Ad-hoc-Aufgaben: umformulieren, kürzen, übersetzen"
+      ],
+      tiefe: [
+        "Keine Rolle, kein Kontext, keine Erfolgskriterien definiert",
+        "Ergebnisqualität hängt vom Zufall der Formulierung ab",
+        "Bei Wiederholung entsteht jedes Mal ein neues, uneinheitliches Ergebnis",
+        "Fehlerursache bleibt unklar — es gibt nichts, woran man justieren könnte"
+      ],
+      ireb: "Das entspricht einer <strong>unscharfen, nicht ermittelten Anforderung</strong> — „mach mal etwas Gutes\". Es fehlen genau die Merkmale, die IREB an eine geprüfte Anforderung stellt: eindeutig, vollständig, nachprüfbar. Ohne sie bleibt jedes Ergebnis Zufallstreffer statt steuerbare Lieferung.",
+      crosslink: "Weiterführend: Modul 2 der Prompt-Schule zeigt, warum „einfach fragen\" für einmalige Kleinigkeiten reicht — aber nicht für wiederkehrende Aufgaben."
+    },
+    2: {
+      color: "#0f766e", label: "Ebene 2 — Knapp unter der Oberfläche",
+      lede: "Hier liegt der eigentliche Hebel: nicht mehr Worte, sondern die richtigen Bausteine.",
+      sichtbar: [
+        "Der KI eine Rolle geben: wer sie sein soll, wie sie klingen soll",
+        "Die exakte Aufgabe benennen — statt „schreib was\" eine konkrete Vorgabe",
+        "Den vollen Kontext liefern: wer liest es, was zählt, was nicht",
+        "Format vorgeben: Stichpunkte, Tabelle oder Fließtext",
+        "Ein fertiges Beispiel als Referenz mitgeben: „so soll das Ergebnis aussehen\"",
+        "Feste Regeln setzen: „nie X, immer Y, bei Unsicherheit nachfragen\""
+      ],
+      tiefe: [
+        "Fuzzy formulierte Bitten liefern zwangsläufig fuzzy Antworten",
+        "Der Unterschied zwischen brauchbar und exzellent entsteht fast immer hier",
+        "Aufwand ist einmalig — der Prompt lässt sich für ähnliche Aufgaben wiederverwenden"
+      ],
+      ireb: "Das ist klassische <strong>Anforderungsermittlung</strong>: Stakeholder (wer liest/nutzt), Zielkriterium (was zählt), Abgrenzung (was nicht). Rolle+Kontext+Aufgabe+Format+Kriterien ist exakt der Fünf-Bausteine-Aufbau unseres Prompt-Builder-Tools — Requirements Engineering für den eigenen Prompt.",
+      crosslink: "Direkter Bezug: Tool „Prompt-Builder\" (Rolle → Kontext → Aufgabe → Format → Kriterien) führt diese Ebene als eigenständigen Wizard fort."
+    },
+    3: {
+      color: "#4338ca", label: "Ebene 3 — Der Tiefenkörper",
+      lede: "Für Fortgeschrittene: wo aus gutem Einzelprompt ein wiederholbarer, geführter Prozess wird.",
+      sichtbar: [
+        "Das passende Modell für die Aufgabe wählen — schnell/günstig oder langsam/gründlich",
+        "Die KI vor der Antwort erst „nachdenken\" lassen, statt sofort zu antworten",
+        "Bei komplexen Aufgaben zuerst einen Plan freigeben, bevor er ausgeführt wird",
+        "Feste Spielregeln einmal dauerhaft hinterlegen, statt sie jedes Mal neu zu erklären",
+        "Wiederkehrende Abläufe einmal beschreiben und danach automatisch ausführen lassen",
+        "Projekt-Kontext dauerhaft anheften, statt bei jeder Sitzung neu zu erklären",
+        "Externe Werkzeuge und Datenquellen direkt anschließen, statt Ergebnisse manuell zu kopieren"
+      ],
+      tiefe: [
+        "Aufwand liegt in der Einrichtung, nicht mehr in der einzelnen Anfrage",
+        "Ergebnisse werden über viele Wiederholungen konsistent statt einmalig gut",
+        "Governance-Frage wird relevant: wer darf was freigeben, was läuft automatisch?"
+      ],
+      ireb: "Das ist der Übergang von der <strong>Einzelanforderung zur Systemarchitektur</strong> — wiederverwendbare, governte Prozesse statt Einzelfall-Lösungen. Parallel zu BABOK's Prozess- und Governance-Sicht auf Anforderungen.",
+      crosslink: "Vertiefung: Tool „Vom Prompt zum Agenten — Die vier Eskalationsstufen der KI-Steuerung\" (Prompt → Context → Loop → Graph Engineering)."
+    }
+  };
+
+  var current = null;
+  var detailCol = document.getElementById("detailCol");
+  var tiers = [
+    document.getElementById("tier-1"),
+    document.getElementById("tier-2"),
+    document.getElementById("tier-3")
+  ];
+
+  function render(level){
+    current = level;
+    var d = LEVELS[level];
+    var html = "";
+    html += '<div class="detail-head"><span class="dot" style="background:' + d.color + '"></span><h2>' + d.label + '</h2></div>';
+    html += '<p class="detail-lede">' + d.lede + '</p>';
+    html += '<div class="cols">';
+    html += '<div class="card sichtbar"><h4>Was sichtbar ist</h4><ul>' + d.sichtbar.map(function(s){ return '<li>' + s + '</li>'; }).join('') + '</ul></div>';
+    html += '<div class="card tiefe"><h4>Wo der Aufwand wirklich liegt</h4><ul>' + d.tiefe.map(function(s){ return '<li>' + s + '</li>'; }).join('') + '</ul></div>';
+    html += '</div>';
+    html += '<div class="ireb-box"><span class="tag">IREB/BABOK-Bezug</span><br>' + d.ireb + '</div>';
+    html += '<p class="crosslink">' + d.crosslink + '</p>';
+    detailCol.innerHTML = html;
+
+    tiers.forEach(function(btn){
+      var isActive = parseInt(btn.getAttribute("data-level"), 10) === level;
+      btn.classList.toggle("active", isActive);
+      btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+    });
+  }
+
+  tiers.forEach(function(btn){
+    btn.addEventListener("pointerup", function(){
+      render(parseInt(btn.getAttribute("data-level"), 10));
+    });
+  });
+
+  render(1);
+
+  // Beamer-Modus-Toggle (K18): vierstufig, reine Größensteigerung
+  var BEAMER_LEVELS = ["", "beamer", "beamer beamer-xl", "beamer beamer-xl beamer-xxl"];
+  var beamerIndex = 0;
+  var beamerBtn = document.getElementById("beamerBtn");
+  beamerBtn.addEventListener("pointerup", function(){
+    beamerIndex = (beamerIndex + 1) % BEAMER_LEVELS.length;
+    document.documentElement.className = BEAMER_LEVELS[beamerIndex];
+  });
+
+})();
+</script>
+
+</body>
+</html>
