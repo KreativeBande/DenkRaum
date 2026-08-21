@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Begriffslexikon: KI-Architektur für RE/BA</title>
+<style>
+  html, body { color-scheme: light; }
+  :root{
+    --bg:#ffffff; --ink:#1a1f2b; --muted:#5b6472; --faint:#8a93a3;
+    --line:#e2e6ec; --panel:#f6f7fa; --accent:#0d6efd;
+    --ela:#8a3ffc; --ela-bg:#f2ecfd;
+    --knut:#0072ce; --knut-bg:#e3f0fb;
+    --sarah:#d94f70; --sarah-bg:#fbe9ed;
+    --petra:#1a8a5f; --petra-bg:#e3f5ec;
+    --bach:#b5560c; --bach-bg:#fbeade;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink); -webkit-tap-highlight-color:transparent;
+  }
+  header{
+    padding:22px 28px 16px; border-bottom:1px solid var(--line);
+  }
+  .topbar{ margin-bottom:8px; }
+  .back-link{ font-size:14px; font-weight:600; color:var(--muted); text-decoration:none; }
+  .back-link:hover{ color:var(--accent); }
+  h1{ font-size:26px; margin:0 0 4px; letter-spacing:-0.01em; }
+  .sub{ font-size:16px; color:var(--muted); margin:0 0 14px; }
+  .toolbar{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .hint{ font-size:14px; color:var(--faint); margin:0; }
+  .beamer-btn{
+    font-size:15px; padding:9px 16px; border-radius:999px; border:1.5px solid var(--accent);
+    background:#fff; color:var(--accent); cursor:pointer; font-weight:600; min-height:44px;
+    touch-action:manipulation;
+  }
+  .beamer-btn:active{ background:var(--accent); color:#fff; }
+
+  .signature{
+    position:fixed; top:14px; right:28px; text-align:right; z-index:50; line-height:1.3;
+    background:rgba(255,255,255,0.92); padding:2px 6px; border-radius:6px;
+  }
+  .signature strong{ font-size:15px; display:block; }
+  .signature a{ font-size:14px; color:var(--accent); text-decoration:none; }
+  @media (max-width:900px){
+    .signature{ position:static; text-align:right; padding:8px 28px 0; }
+  }
+
+  main{ display:flex; gap:0; min-height:60vh; }
+  .list-pane{
+    width:38%; border-right:1px solid var(--line); padding:14px; background:var(--panel);
+  }
+  .term-btn{
+    display:flex; align-items:center; gap:12px; width:100%; text-align:left;
+    padding:14px 14px; margin-bottom:8px; border-radius:12px; border:1.5px solid var(--line);
+    background:#fff; cursor:pointer; min-height:44px; font-size:16px; color:var(--ink);
+    touch-action:manipulation;
+  }
+  .term-btn .num{
+    font-weight:700; font-size:14px; width:26px; height:26px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    background:var(--panel); color:var(--muted); border:1px solid var(--line);
+  }
+  .term-btn.active{ border-color:var(--accent); background:#eef4ff; }
+  .term-btn.active .num{ background:var(--accent); color:#fff; border-color:var(--accent); }
+  .term-btn .tname{ font-weight:600; }
+  .term-btn .torig{ display:block; font-size:14px; color:var(--faint); font-weight:400; margin-top:2px; }
+
+  .detail-pane{ width:62%; padding:26px 32px; }
+  .badge-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+  .badge{
+    font-size:14px; padding:5px 12px; border-radius:999px; font-weight:600; border:1px solid transparent;
+  }
+  .badge.norm{ background:#fff4e0; color:#8a5a00; border-color:#f2d8a0; }
+  .detail-pane h2{ font-size:24px; margin:0 0 4px; }
+  .orig-line{ font-size:16px; color:var(--muted); font-style:italic; margin:0 0 18px; }
+  .block{ margin-bottom:20px; }
+  .block h3{ font-size:15px; text-transform:uppercase; letter-spacing:.04em; color:var(--faint); margin:0 0 8px; }
+  .block p{ font-size:17px; line-height:1.55; margin:0; }
+  .quote-box{
+    border-radius:14px; padding:16px 18px; border-left:5px solid var(--persona-color,var(--accent));
+    background:var(--persona-bg,var(--panel));
+  }
+  .quote-box .who{ font-weight:700; font-size:15px; margin-bottom:4px; }
+  .quote-box p{ font-size:17px; line-height:1.5; margin:0; font-style:italic; }
+  .norm-note{ font-size:15px; color:var(--muted); margin-top:6px; }
+
+  @media (max-width:900px){
+    main{ flex-direction:column; }
+    .list-pane, .detail-pane{ width:100%; }
+  }
+
+  /* Beamer-Modus (K18): vierstufig, reine Größensteigerung */
+  html.beamer h1{ font-size:32px; }
+  html.beamer .sub{ font-size:22px; }
+  html.beamer .hint{ font-size:15px; }
+  html.beamer .term-btn{ font-size:22px; padding:18px; min-height:56px; }
+  html.beamer .term-btn .num{ width:32px; height:32px; font-size:15px; }
+  html.beamer .term-btn .torig{ font-size:15px; }
+  html.beamer .detail-pane h2{ font-size:44px; }
+  html.beamer .orig-line{ font-size:22px; }
+  html.beamer .block h3{ font-size:16px; }
+  html.beamer .block p, html.beamer .quote-box p{ font-size:22px; }
+  html.beamer .quote-box .who{ font-size:15px; }
+  html.beamer .badge{ font-size:15px; padding:7px 14px; }
+  html.beamer footer{ display:none; }
+
+  html.beamer-xl h1{ font-size:38px; }
+  html.beamer-xl .sub{ font-size:28px; }
+  html.beamer-xl .hint{ font-size:18px; }
+  html.beamer-xl .term-btn{ font-size:28px; padding:22px; min-height:64px; }
+  html.beamer-xl .term-btn .num{ width:38px; height:38px; font-size:18px; }
+  html.beamer-xl .term-btn .torig{ font-size:18px; }
+  html.beamer-xl .detail-pane h2{ font-size:54px; }
+  html.beamer-xl .orig-line{ font-size:28px; }
+  html.beamer-xl .block h3{ font-size:18px; }
+  html.beamer-xl .block p, html.beamer-xl .quote-box p{ font-size:28px; }
+  html.beamer-xl .quote-box .who{ font-size:18px; }
+  html.beamer-xl .badge{ font-size:18px; padding:8px 16px; }
+
+  html.beamer-xxl h1{ font-size:46px; }
+  html.beamer-xxl .sub{ font-size:34px; }
+  html.beamer-xxl .hint{ font-size:21px; }
+  html.beamer-xxl .term-btn{ font-size:34px; padding:26px; min-height:72px; }
+  html.beamer-xxl .term-btn .num{ width:44px; height:44px; font-size:21px; }
+  html.beamer-xxl .term-btn .torig{ font-size:21px; }
+  html.beamer-xxl .detail-pane h2{ font-size:64px; }
+  html.beamer-xxl .orig-line{ font-size:34px; }
+  html.beamer-xxl .block h3{ font-size:20px; }
+  html.beamer-xxl .block p, html.beamer-xxl .quote-box p{ font-size:34px; }
+  html.beamer-xxl .quote-box .who{ font-size:21px; }
+  html.beamer-xxl .badge{ font-size:21px; padding:9px 18px; }
+
+  footer{ border-top:1px solid var(--line); padding:20px 28px 32px; background:var(--panel); }
+  .footer-sig{ font-size:15px; color:var(--muted); margin-bottom:16px; line-height:1.5; }
+  .footer-sig strong{ color:var(--ink); }
+  .footer-sig a{ color:var(--accent); text-decoration:none; }
+  .footer-sig .status-line{ display:block; font-size:14px; color:var(--muted); margin-top:4px; }
+  .footer-grid{ display:flex; gap:14px; flex-wrap:wrap; }
+  .footer-box{ flex:1 1 260px; border:1px solid var(--line); border-radius:12px; background:#fff; }
+  .footer-box summary{
+    cursor:pointer; padding:14px 16px; font-weight:700; font-size:16px; list-style:none;
+    display:flex; justify-content:space-between; align-items:center; min-height:44px;
+  }
+  .footer-box summary::-webkit-details-marker{ display:none; }
+  .footer-box summary::after{ content:"+"; color:var(--faint); font-weight:400; font-size:20px; }
+  .footer-box[open] summary::after{ content:"–"; }
+  .footer-content{ padding:0 16px 18px; }
+  .footer-mono{ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:14px; line-height:1.6; white-space:pre-wrap; color:#2b2f38; }
+  .footer-sans{ font-size:16px; line-height:1.6; color:var(--ink); }
+  .footer-table{ width:100%; border-collapse:collapse; font-size:15px; }
+  .footer-table th, .footer-table td{ text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); }
+  .footer-table th{ color:var(--faint); font-weight:600; }
+
+  .crosslink{ margin:0 28px 20px; font-size:14px; color:var(--muted); }
+  .crosslink a{ color:var(--accent); font-weight:700; text-decoration:none; }
+  .crosslink a:hover{ text-decoration:underline; }
+  .crosslink ul{ margin:8px 0 0; padding-left:20px; }
+  .crosslink li{ margin-bottom:4px; }
+</style>
+</head>
+<body>
+
+<div class="signature">
+  <strong>Michaela Kühn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<header>
+  <div class="topbar">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+  </div>
+  <h1>Begriffslexikon: KI-Architektur für RE/BA</h1>
+  <p class="sub">10 LLM-Grundkonzepte übersetzt in Anforderungs- und Business-Analyse-Sprache — am Fallbeispiel TalentMatch&nbsp;AI</p>
+  <div class="toolbar">
+    <p class="hint">Klick auf einen Begriff links öffnet die RE/BA-Übersetzung rechts</p>
+    <button class="beamer-btn" id="beamerBtn" type="button">🖥️ Beamer-Modus: Normal</button>
+  </div>
+</header>
+
+<main>
+  <nav class="list-pane" id="listPane" aria-label="Begriffsliste"></nav>
+  <section class="detail-pane" id="detailPane" aria-live="polite"></section>
+</main>
+
+<div class="crosslink">
+  Verwandte Denkraum-Tools zu diesem Thema:
+  <ul>
+    <li><a href="./ba-rollenwandel-explorer.html">BA-Rollenwandel-Explorer</a> — dasselbe Fallbeispiel (TalentMatch AI / Vantera Systemtechnik GmbH) und dieselben Personas, aber als 6-Stufen-Rollenmodell statt als Klick-Lexikon: zeigt, wie sich die BA-Rolle selbst wandelt, statt technische KI-Begriffe zu übersetzen.</li>
+    <li><a href="./vom-rateversuch-zur-belegten-antwort.html">Vom Rateversuch zur belegten Antwort · RAG im Denkraum-Modell</a> — vertieft einen einzelnen Begriff aus diesem Lexikon (RAG/Retrieval) als eigenen fünfstufigen Zyklus, statt ihn wie hier neben neun weiteren kurz zu erklären.</li>
+    <li><a href="./re-ba/knowledge-zoom-navigator-re-ba.html">Knowledge Zoom Navigator · RE &amp; BA</a> — allgemeines RE/BA-Nachschlagewerk mit 32 Wissenszetteln, kein KI-Architektur-Fokus wie dieses Glossar.</li>
+  </ul>
+</div>
+
+<footer>
+  <div class="footer-sig">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a><br>
+    Bezug: IREB CPRE Glossar · BABOK v3 (IIBA) · EU AI Act (Annex III Nr. 4, Art. 13/15) · DSGVO Art. 22, Art. 5 Abs. 1 lit. e · ISO/IEC 25010 · § 87 Abs. 1 Nr. 6 BetrVG
+    <span class="status-line">Zuletzt geprüft: 21.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+  </div>
+
+  <div class="footer-grid">
+    <details class="footer-box">
+      <summary>📋 Systemprompt</summary>
+      <div class="footer-content footer-mono">MASTER-BAU-PROMPT — Begriffslexikon: KI-Architektur für RE/BA
+
+STRUKTUR
+- Split-Screen 38/62 (Liste links, Detail rechts), fixe Layouts, kein Sliding Panel
+- Topbar (eigene Zeile oberhalb der Überschrift): Zurück-Link links, Beamer-Toggle
+  rechts. Signatur fixed oben rechts im Viewport, unabhaengig von der Topbar.
+- Linke Spalte: 10 nummerierte Begriffs-Buttons (technischer Terminus + Original-
+  Kernsatz klein darunter)
+- Rechte Spalte pro Begriff: Badge-Zeile (Normbezug) -> Titel -> Original-Kernsatz
+  kursiv -> Block "Technisch" -> Block "RE/BA-Übersetzung" -> Persona-Zitat-Box
+  (farbcodiert)
+
+INHALT PRO BEGRIFF (fest, 10x)
+1. Technischer Begriff (dt. + engl. Originalterm)
+2. Ein-Satz-Kernaussage (Original-Analogie erhalten, nicht neu erfunden)
+3. Technische Kurzerklärung (2-3 Sätze, allgemeinverständlich)
+4. RE/BA-Übersetzung: was bedeutet das für Anforderungen an ein KI-System,
+   bezogen auf das TalentMatch-AI-Fallbeispiel (High-Risk-KI, EU AI Act Annex III Nr.4)
+5. Persona-Zitat: eine der fünf festen Personas (Ela/Knut/Sarah/Petra/Bachmeier),
+   Aussage im jeweiligen Rollenkontext, keine Bäckerei-Bezüge außer bei Bachmeier
+   im Marmorkuchen-Kontext (hier nicht einschlägig)
+6. Normbezug-Badge (IREB/BABOK/AI-Act-Artikel/DSGVO-Artikel/ISO 25010), Status+Datum
+   falls Regulatorik (insbesondere EU-AI-Act-Fristen laufen per Omnibus-Verordnung
+   2026 auseinander von der reinen Einstufung — beides getrennt ausweisen)
+
+DESIGN
+- Hintergrund immer Weiß, color-scheme:light, kein Dark Mode
+- Signatur oben rechts fixed, Name + Website-Link
+- Persona-Farbcodierung konsistent zum Schwester-Tool ba-rollenwandel-explorer.html
+  (gleiches Fallbeispiel/gleiche Personas): Ela=Violett #8a3ffc, Knut=Blau #0072ce,
+  Sarah=Rosé #d94f70, Petra=Grün #1a8a5f, Bachmeier=Orange #b5560c (via CSS-Custom-
+  Properties pro Karte gesetzt)
+- Beamer-Toggle vierstufig (Normal->Beamer->Beamer XL->Beamer XXL), reine
+  Größensteigerung, Footer ab Stufe 1 ausgeblendet
+- Pointer Events für alle Klicks (keine reinen click-Handler, kein Drag&Drop)
+- Alle font-size Werte >=16px Fließtext / >=14px Sekundärtext (Normal), Beamer-
+  Stufen folgen der Denkraum-Größentabelle (Fließtext >=22/28/34px, Panel-
+  Überschrift >=44/54/64px, Sekundärtext >=15/18/21px)
+
+NICHT TUN
+- Keine technischen Begriffe unübersetzt stehen lassen ohne RE/BA-Bezug
+- Keine Persona außerhalb ihrer festen Rolle sprechen lassen
+- Keine Normen ohne Statusprüfung übernehmen (insb. EU AI Act, DSGVO-Auslegung) —
+  Einstufung (Annex III) und Pflichten-Anwendungsfrist (Art. 8-15) getrennt halten
+- Kein Fetch auf externe Quellen, keine CDN-Einbindung</div>
+    </details>
+
+    <details class="footer-box">
+      <summary>📖 Handbuch</summary>
+      <div class="footer-content footer-sans">
+        <strong>Framework:</strong> RTF (Rolle–Task–Format), didaktisch erweitert um Analogie-Transfer.<br><br>
+        <strong>Rolle:</strong> Trainerin/Instructional Designer, die technisches KI-Vokabular für ein
+        RE/BA/PM-Publikum ohne Entwicklungshintergrund zugänglich macht.<br>
+        <strong>Aufgabe:</strong> Jeden der 10 Begriffe nicht nur erklären, sondern in eine konkrete
+        Anforderungsfrage übersetzen — "was bedeutet das für mein Requirements-Dokument, meinen Business Case,
+        meine Abnahmekriterien?"<br>
+        <strong>Kontext:</strong> TalentMatch-AI-Fallbeispiel (Vantera Systemtechnik GmbH) als durchgängiger
+        roter Faden, damit die Begriffe nicht abstrakt bleiben, sondern an einem High-Risk-KI-System (Annex III
+        Nr. 4 EU AI Act) verankert sind.<br>
+        <strong>Format:</strong> Klick-Lexikon statt Fließtext-Liste — fördert aktives Erkunden statt passives
+        Lesen, besonders im Workshop-Einsatz.<br>
+        <strong>Eingrenzung:</strong> Bewusst nur 10 Begriffe (nicht erschöpfend) — Fokus auf die Konzepte, die
+        in Diskussionen über KI-Anforderungen am häufigsten unerklärt auftauchen.<br><br>
+        <strong>Zentraler Lernhinweis:</strong> Technisches Vokabular wird erst nützlich, wenn es an eine
+        Anforderung andockt. "Ich kenne den Begriff" ist kein Lernziel — "ich weiß, welche Anforderung sich
+        daraus ergibt" ist das Lernziel.<br>
+        <strong>Nachbau-Tipp:</strong> Struktur ist auf jedes weitere technische Glossar übertragbar — Begriff,
+        Technik-Erklärung, Fach-Übersetzung, Persona-Stimme, Norm-Anker.
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary>🎤 Vortrags-Skript</summary>
+      <div class="footer-content footer-sans">
+        <em>(Öffnen: Tool zeigt Begriff 1 „Embeddings" als Startzustand)</em><br><br>
+        „Wenn wir über KI-Systeme wie TalentMatch AI sprechen, fallen ständig Begriffe wie Embedding,
+        Retrieval, Kontextfenster. Die meisten von Ihnen müssen diese Begriffe nicht selbst implementieren —
+        aber Sie müssen verstehen, welche Anforderung sich dahinter verbirgt."<br><br>
+        <em>(Klick auf Begriff 1 — falls noch nicht offen)</em><br>
+        „Embeddings: Text wird in einen Bedeutungsvektor übersetzt. Knut würde sagen — hören wir rein:
+        [Zitat vorlesen]. Das ist der Kern: Ohne Erklärbarkeit keine nachvollziehbare Ablehnung."<br><br>
+        <em>(Klick durch 2–3 weitere Begriffe je nach Zeitbudget, z. B. Guardrails und Evals — hoher
+        Bezug zu Abnahme und Monitoring)</em><br>
+        „Guardrails sind im Grunde eine funktionale Anforderung: das System MUSS bestimmte Ausgaben
+        blockieren. Petra würde das direkt als Prüfkriterium in die Abnahme schreiben."<br><br>
+        <em>Übergang:</em> „Nehmen Sie aus diesem Lexikon eine Sache mit: Jeder technische Begriff ist
+        eine potenzielle Anforderung — Sie müssen sie nur finden."<br><br>
+        <strong>Regie-Hinweise:</strong> Nicht alle 10 Begriffe im Vortrag durchklicken — 3–4 mit Bezug zum
+        jeweiligen Publikum wählen (PM-Publikum: Context Window, Token Cost, Evals; QM-Publikum: Guardrails,
+        Semantic Cache, Vector Search). Nicht mit dem technischsten Begriff (Vector Search) eröffnen —
+        Einstieg immer über Embeddings, da anschlussfähigste Analogie.
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary>📐 Normen-Register</summary>
+      <div class="footer-content">
+        <table class="footer-table">
+          <tr><th>Norm/Rahmenwerk</th><th>Bezug im Tool</th><th>Status</th></tr>
+          <tr><td>EU AI Act, Annex III Nr. 4</td><td>TalentMatch AI als High-Risk-KI-System</td><td>Einstufung in Kraft (seit Aug. 2024)</td></tr>
+          <tr><td>EU AI Act, Art. 13</td><td>Transparenzpflicht (Embeddings, RAG)</td><td>Pflicht in Kraft; Anwendungsfrist für Hochrisiko-Systeme laut Omnibus-Verordnung (EU) 2026/1744 verschoben auf 02.12.2027</td></tr>
+          <tr><td>EU AI Act, Art. 15</td><td>Genauigkeit/Robustheit (Evals)</td><td>dito — Anwendungsfrist 02.12.2027</td></tr>
+          <tr><td>DSGVO Art. 22</td><td>Automatisierte Einzelfallentscheidung (Vector Search)</td><td>in Kraft</td></tr>
+          <tr><td>DSGVO Art. 5 Abs. 1 lit. e</td><td>Speicherbegrenzung (Semantic Cache)</td><td>in Kraft</td></tr>
+          <tr><td>§ 87 Abs. 1 Nr. 6 BetrVG</td><td>Mitbestimmung bei KI-gestützter Personalauswahl</td><td>in Kraft</td></tr>
+          <tr><td>ISO/IEC 25010</td><td>Efficiency/Usability (Streaming)</td><td>aktuell (2023er-Reihe)</td></tr>
+          <tr><td>IREB CPRE Glossar</td><td>Traceability (Chunking)</td><td>aktuell</td></tr>
+          <tr><td>BABOK v3 (IIBA)</td><td>Wirtschaftlichkeitsbetrachtung (Token Cost)</td><td>aktuell (v3 weiterhin Referenzstandard)</td></tr>
+        </table>
+        <p style="font-size:14px;color:var(--muted);margin-top:10px;">
+          Stand der Norm-Angaben: Erstellung dieses Tools (21.08.2026). Die Digital-Omnibus-Verordnung
+          (EU) 2026/1744 (in Kraft seit 27.07.2026) hat die Anwendungsfrist für die Pflichten von
+          Hochrisiko-KI-Systemen nach Annex III von 02.08.2026 auf 02.12.2027 verschoben — die
+          Einstufung selbst bleibt unverändert in Kraft. Vor Wiederverwendung in neuen Materialien
+          Aktualität der EU-AI-Act- und DSGVO-Bezüge gezielt neu prüfen (sich entwickelnde Regulatorik).
+        </p>
+      </div>
+    </details>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var TERMS = [
+    {
+      id:1, name:"Embeddings", orig:"Embeddings",
+      kernsatz:"Text wird zu einem Bedeutungsvektor.",
+      technik:"Ein Encoder wandelt Wörter oder Sätze in eine Liste von Zahlen (einen Vektor) um, die die Bedeutung des Textes im mathematischen Raum abbildet. Ähnliche Bedeutungen liegen im Vektorraum nah beieinander.",
+      reba:"Für TalentMatch AI heißt das: Das System „versteht“ Bewerberprofile nicht wörtlich, sondern über Bedeutungsnähe. Für Requirements Engineering entscheidend: Eine Anforderung an Nachvollziehbarkeit (Art. 13 EU AI Act) muss verlangen, dass Ablehnungsgründe nicht nur „das Modell hat es so berechnet“, sondern in nachvollziehbaren Kriterien beschrieben werden können.",
+      persona:"knut", who:"Knut · Entwicklung",
+      quote:"„Wenn ein Bewerber abgelehnt wird, kann ich nicht sagen: das Wort hat nicht gepasst. Ich muss erklären können, welche Bedeutungsnähe das Modell gesehen hat — und die Anforderung dazu muss ich vorher bekommen, nicht hinterher.“",
+      norm:"EU AI Act Art. 13"
+    },
+    {
+      id:2, name:"Vector Search", orig:"Vector Search (Ähnlichkeitssuche)",
+      kernsatz:"Finde die nächste Bedeutung, nicht das Wort.",
+      technik:"Statt exakter Stichwortsuche wird im Vektorraum nach den Einträgen gesucht, die dem Suchvektor am ähnlichsten sind (z. B. über einen ANN-Index). Es „gewinnt“, was semantisch am nächsten liegt.",
+      reba:"Bewerberprofile werden nicht nach exakten Keywords gefiltert, sondern nach semantischer Nähe zum Anforderungsprofil. Das ist eine funktionale Anforderung mit hohem Diskriminierungsrisiko: „ähnliche“ Profile können systembedingt bestimmten Mustern folgen (mittelbare Diskriminierung, Art. 22 DSGVO). Eine RE-Anforderung muss die Kriterien der Ähnlichkeit prüfbar machen.",
+      persona:"petra", who:"Petra · Qualitätsmanagement",
+      quote:"„‚Ähnlich' ist für mich kein Prüfkriterium. Ich brauche eine Anforderung, die sagt: ähnlich bezüglich welcher Merkmale — und welche Merkmale dürfen es explizit nicht sein.“",
+      norm:"DSGVO Art. 22"
+    },
+    {
+      id:3, name:"Chunking", orig:"Chunking (Segmentierung)",
+      kernsatz:"Dokumente werden zerteilt, damit die Suche präzise bleibt.",
+      technik:"Lange Dokumente (z. B. ein PDF) werden in kleinere Abschnitte („Chunks“) zerlegt, damit das System gezielt die relevanten Teile abrufen kann, statt immer das gesamte Dokument zu verarbeiten.",
+      reba:"Wenn ein Lebenslauf in Chunks zerlegt wird, kann Kontext verloren gehen — z. B. wird „5 Jahre Berufserfahrung“ vom zugehörigen Arbeitgeber getrennt. Für Requirements Engineering ist das ein klassisches Traceability-Problem: Die Anforderung muss sicherstellen, dass Kontext-Zusammenhänge über Chunk-Grenzen hinweg erhalten bleiben.",
+      persona:"ela", who:"Ela · Projektleitung",
+      quote:"„Bevor wir das System live schalten, will ich einen Test sehen: reißt die Zerlegung sinnzusammenhängende Angaben auseinander? Das ist keine technische Petitesse, das ist eine Anforderung.“",
+      norm:"IREB CPRE Glossar"
+    },
+    {
+      id:4, name:"RAG", orig:"RAG (Retrieval-Augmented Generation)",
+      kernsatz:"Erst abrufen, dann antworten lassen.",
+      technik:"Das System sucht zunächst relevante Informationen in einer Wissensquelle (z. B. einer Vektordatenbank) und gibt diese zusammen mit der Frage an das Sprachmodell weiter, das darauf basierend antwortet — statt frei aus dem Training zu „raten“.",
+      reba:"Für TalentMatch AI zentral: Antworten des Systems sollen auf geprüften internen Quellen (Stellenprofile, Kompetenzkataloge) basieren, nicht nur auf allgemeinem Trainingswissen. Konkrete Anforderung: „Das System MUSS jede Antwort mit einem Quellenbezug zur internen Datenbasis versehen.“ — direkt anschlussfähig an Nachvollziehbarkeitspflichten.",
+      persona:"sarah", who:"Sarah · Vertrieb",
+      quote:"„Wenn ich Kandidat:innen etwas über den Matching-Prozess erzähle, will ich mich auf echte Kriterien berufen können — nicht auf etwas, das sich das System gerade ausgedacht hat.“",
+      norm:"EU AI Act Art. 13"
+    },
+    {
+      id:5, name:"Context Window", orig:"Context Window (Kontextfenster)",
+      kernsatz:"Alles muss in einen Prompt passen.",
+      technik:"Ein Sprachmodell kann nur eine begrenzte Menge Text gleichzeitig „im Blick“ behalten — System-Anweisung, Verlauf und Dokumente zusammen. Was nicht hineinpasst, fällt aus dem aktiven Kontext heraus.",
+      reba:"Wie viel Bewerbungshistorie oder Gesprächsverlauf „passt“ in ein Kontextfenster, bevor ältere Informationen verloren gehen? Für Vollständigkeits-Anforderungen (IEEE 29148) relevant: Eine Spezifikation muss festlegen, was passiert, wenn Kontext nicht mehr vollständig verfügbar ist — stille Auslassung ist keine akzeptable Lösung.",
+      persona:"ela", who:"Ela · Projektleitung",
+      quote:"„Ich will in der Spezifikation eine klare Aussage: was tut das System, wenn der Kontext nicht mehr reinpasst? ‚Es vergisst halt' ist keine Antwort, mit der ich vor den Betriebsrat gehen kann.“",
+      norm:"IEEE 29148"
+    },
+    {
+      id:6, name:"Streaming", orig:"Streaming",
+      kernsatz:"Tokens kommen einzeln an — wirkt sofort.",
+      technik:"Statt auf die vollständige Antwort zu warten, sendet das System Wort für Wort (Token für Token), sobald sie erzeugt werden. Das erzeugt für Nutzende den Eindruck einer sofortigen Reaktion, auch wenn die Gesamtantwort noch nicht fertig ist.",
+      reba:"Reine UX-Anforderung (ISO/IEC 25010: Efficiency, Usability) — aber nicht folgenlos: Wenn Nutzende Teilantworten lesen, bevor Guardrails die vollständige Antwort geprüft haben, entsteht ein Zeitfenster für problematische Zwischenausgaben. Die Anforderung muss festlegen, ob Streaming vor oder erst nach der Guardrail-Prüfung erfolgt.",
+      persona:"sarah", who:"Sarah · Vertrieb",
+      quote:"„Kandidat:innen mögen eine sofortige Reaktion vom Chatbot — aber wenn deswegen eine ungeprüfte Zwischenantwort rausgeht, ist das schlechter als eine Sekunde Wartezeit.“",
+      norm:"ISO/IEC 25010"
+    },
+    {
+      id:7, name:"Semantic Cache", orig:"Semantic Cache",
+      kernsatz:"Gleiche Frage zweimal — nicht doppelt zahlen.",
+      technik:"Wird eine sinngemäß bereits beantwortete Frage erneut gestellt, liefert das System die zwischengespeicherte Antwort, statt sie erneut vom Sprachmodell berechnen zu lassen. Spart Kosten und Zeit.",
+      reba:"Kosteneffizienz-Anforderung — aber bei personenbezogenen Anfragen (Bewerberdaten) muss die Caching-Anforderung mit dem Datenschutz abgeglichen werden: Speicherbegrenzung (Art. 5 Abs. 1 lit. e DSGVO) verlangt eine definierte Löschfrist auch für Cache-Einträge, nicht nur für die „echten“ Datensätze.",
+      persona:"petra", who:"Petra · Qualitätsmanagement",
+      quote:"„Ein Cache ist auch eine Speicherung personenbezogener Daten. Ich will in der Anforderung eine Löschfrist für den Cache sehen — nicht nur für die Bewerberakte.“",
+      norm:"DSGVO Art. 5 Abs. 1 lit. e"
+    },
+    {
+      id:8, name:"Guardrails", orig:"Guardrails (Leitplanken)",
+      kernsatz:"Filter für das, was rein- und rausgeht.",
+      technik:"Ein- und Ausgaben des Systems werden gegen Regeln geprüft (z. B. diskriminierende, unsichere oder unerwünschte Inhalte) und bei Verstoß blockiert oder angepasst, bevor sie das Sprachmodell erreichen oder den Nutzer erreichen.",
+      reba:"Für High-Risk-KI zentral: eine konkrete funktionale Anforderung wie „Das System MUSS diskriminierende Ausgaben erkennen und blockieren“ ist direkt prüfbar und abnahmefähig — anders als eine vage Absichtserklärung. Guardrails sind der Ort, an dem Requirements Engineering und Compliance sich am direktesten treffen.",
+      persona:"petra", who:"Petra · Qualitätsmanagement",
+      quote:"„Guardrails sind für mich kein Nice-to-have, sondern ein Abnahmekriterium. Ich will einen Testfall sehen, der beweist: die Leitplanke greift auch wirklich.“",
+      norm:"EU AI Act Annex III Nr. 4"
+    },
+    {
+      id:9, name:"Evals", orig:"Evals (Evaluierung)",
+      kernsatz:"Output bewerten, Score vergeben.",
+      technik:"Systematische Tests prüfen die Qualität der Modellausgaben — oft mit einem „Judge“-Modell oder festen Kriterien — und vergeben einen Score, der Regressionen oder Qualitätsprobleme sichtbar macht.",
+      reba:"Direkt verknüpft mit Art. 15 EU AI Act (Genauigkeit, Robustheit, Cybersicherheit): Die Anforderung darf sich nicht auf eine einmalige Abnahme beschränken, sondern muss kontinuierliches Monitoring über den Betrieb hinweg vorsehen — inklusive Eskalationsschwellen, ab wann ein sinkender Score Handlungsbedarf auslöst.",
+      persona:"bachmeier", who:"Herr Bachmeier · Geschäftsführung",
+      quote:"„Eine einmalige Abnahme reicht mir nicht. Ich will regelmäßige Nachweise sehen — und wissen, bei welchem Score-Wert wir eingreifen müssen, bevor es ein Problem wird.“",
+      norm:"EU AI Act Art. 15"
+    },
+    {
+      id:10, name:"Token Cost", orig:"Token Cost (Token-Kosten)",
+      kernsatz:"Input ist billig, Output ist teuer.",
+      technik:"Sprachmodelle werden nach der Anzahl verarbeiteter Tokens abgerechnet — Eingabe- und Ausgabe-Tokens meist zu unterschiedlichen Preisen, wobei erzeugter Text in der Regel teurer ist als eingelesener.",
+      reba:"Business-Case-relevant: Bei der Wirtschaftlichkeitsbetrachtung für TalentMatch AI dürfen nicht nur Entwicklungskosten budgetiert werden, sondern die laufenden Betriebskosten pro Bewerbungsvorgang — eine typische Lücke in frühen Business Cases, die BABOK-konform als Kosten-Nutzen-Analyse über den gesamten Lebenszyklus verlangt wird.",
+      persona:"bachmeier", who:"Herr Bachmeier · Geschäftsführung",
+      quote:"„Mich interessiert nicht der Preis der Entwicklung. Mich interessiert: was kostet uns jede einzelne Bewerbung, die durch dieses System läuft — und skaliert das, wenn wir auf 10.000 Bewerbungen im Jahr kommen?“",
+      norm:"BABOK v3 (IIBA)"
+    }
+  ];
+
+  var PERSONA_COLOR = {
+    ela:"var(--ela)", knut:"var(--knut)", sarah:"var(--sarah)", petra:"var(--petra)", bachmeier:"var(--bach)"
+  };
+  var PERSONA_BG = {
+    ela:"var(--ela-bg)", knut:"var(--knut-bg)", sarah:"var(--sarah-bg)", petra:"var(--petra-bg)", bachmeier:"var(--bach-bg)"
+  };
+
+  var listPane = document.getElementById("listPane");
+  var detailPane = document.getElementById("detailPane");
+  var activeId = 1;
+
+  function renderList(){
+    listPane.innerHTML = "";
+    TERMS.forEach(function(t){
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "term-btn" + (t.id === activeId ? " active" : "");
+      btn.setAttribute("data-id", t.id);
+      btn.innerHTML =
+        '<span class="num">' + t.id + '</span>' +
+        '<span><span class="tname">' + t.name + '</span>' +
+        '<span class="torig">' + t.kernsatz + '</span></span>';
+      btn.addEventListener("pointerup", function(){ selectTerm(t.id); });
+      listPane.appendChild(btn);
+    });
+  }
+
+  function renderDetail(){
+    var t = TERMS.find(function(x){ return x.id === activeId; });
+    if(!t) return;
+    detailPane.style.setProperty("--persona-color", PERSONA_COLOR[t.persona]);
+    detailPane.style.setProperty("--persona-bg", PERSONA_BG[t.persona]);
+    detailPane.innerHTML =
+      '<div class="badge-row"><span class="badge norm">📐 ' + t.norm + '</span></div>' +
+      '<h2>' + t.name + '</h2>' +
+      '<p class="orig-line">„' + t.kernsatz + '"</p>' +
+      '<div class="block"><h3>Technisch</h3><p>' + t.technik + '</p></div>' +
+      '<div class="block"><h3>RE/BA-Übersetzung</h3><p>' + t.reba + '</p></div>' +
+      '<div class="block quote-box"><div class="who">' + t.who + '</div><p>' + t.quote + '</p></div>';
+  }
+
+  function selectTerm(id){
+    activeId = id;
+    renderList();
+    renderDetail();
+  }
+
+  renderList();
+  renderDetail();
+
+  // Beamer-Modus: vierstufig, kumulativ
+  var LEVELS = ["", "beamer", "beamer beamer-xl", "beamer beamer-xl beamer-xxl"];
+  var LABELS = ["Normal", "Beamer", "Beamer XL", "Beamer XXL"];
+  var level = 0;
+  var beamerBtn = document.getElementById("beamerBtn");
+  beamerBtn.addEventListener("pointerup", function(){
+    level = (level + 1) % LEVELS.length;
+    document.documentElement.className = LEVELS[level];
+    beamerBtn.textContent = "🖥️ Beamer-Modus: " + LABELS[level];
+  });
+
+})();
+</script>
+</body>
+</html>
