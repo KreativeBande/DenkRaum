@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="de" style="color-scheme: light;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wie kommt die Antwort in den Chat? – Die RAG-Reise</title>
+<style>
+  :root{
+    --ink:#1b1f24; --muted:#5b6472; --faint:#8a93a1;
+    --line:#e2e6ec; --paper:#ffffff; --panel:#f7f8fb;
+    --orange:#e8722c; --orange-dk:#b5551a; --orange-bg:#fdeee2;
+    --blue:#2f6fed; --blue-bg:#eaf1ff;
+    --green:#1f9d64; --green-bg:#e7f7ee;
+    --amber:#b8860b; --amber-bg:#fff6df;
+    --purple:#7a4fd1; --purple-bg:#f1eaff;
+    --red:#c0392b; --red-bg:#fdeceb;
+    --teal:#0f8a8a; --teal-bg:#e4f7f7;
+  }
+  html,body{color-scheme: light; background:var(--paper); margin:0; padding:0; overflow-y:auto; overflow-x:hidden;}
+  *{box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); background:var(--paper);}
+
+  /* ===== Signatur oben rechts ===== */
+  .signature{position:fixed; top:14px; right:28px; z-index:500; text-align:right;
+    font-size:14px; line-height:1.35; background:rgba(255,255,255,.92);
+    padding:4px 10px; border-radius:8px;}
+  .signature strong{display:block; font-size:14px; color:var(--ink);}
+  .signature a{color:var(--orange-dk); text-decoration:none; font-weight:600;}
+  @media (max-width:900px){ .signature{position:static; text-align:right; margin:8px 20px 0 0;} }
+
+  /* ===== Header ===== */
+  header{padding:20px 24px 14px; border-bottom:3px solid var(--orange);
+    background:linear-gradient(180deg,#fffaf5,#ffffff);}
+  .eyebrow{font-size:14px; letter-spacing:.04em; text-transform:uppercase;
+    color:var(--orange-dk); font-weight:700; margin:0 0 4px;}
+  h1{margin:0 0 6px; font-size:30px; line-height:1.15; color:var(--ink); max-width:900px;}
+  .sub{margin:0; font-size:17px; color:var(--muted); max-width:760px;}
+
+  .toolbar{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-top:14px;}
+  .back-link{font-size:15px; font-weight:700; color:var(--muted); text-decoration:none;}
+  .back-link:hover{color:var(--orange-dk); text-decoration:underline;}
+  .modebtn{border:2px solid var(--orange); background:#fff; color:var(--orange-dk);
+    font-weight:700; font-size:15px; padding:9px 16px; border-radius:999px; cursor:pointer;}
+  .modebtn:hover{background:var(--orange-bg);}
+  #beamerBtn{border-color:var(--blue); color:var(--blue);}
+  #beamerBtn:hover{background:var(--blue-bg);}
+  html.beamer #beamerBtn, html.beamer-xl #beamerBtn, html.beamer-xxl #beamerBtn{
+    background:var(--blue); color:#fff; border-color:var(--blue);
+  }
+
+  /* ===== Intro-Maus ===== */
+  .intro{display:flex; gap:16px; align-items:flex-start; margin:18px 24px 6px;
+    background:var(--orange-bg); border:1px solid #f3caa0; border-radius:14px; padding:16px 18px;}
+  .mouse-badge{flex:0 0 auto; width:54px; height:54px; border-radius:50%;
+    background:var(--orange); display:flex; align-items:center; justify-content:center;
+    font-size:26px;}
+  .intro p{margin:0; font-size:16px; line-height:1.5; color:var(--ink);}
+  .intro strong{color:var(--orange-dk);}
+
+  /* ===== Layout: Track (links) + Detail (rechts), Split-Screen, immer sichtbar ===== */
+  .layout{display:grid; grid-template-columns:340px 1fr; gap:0; min-height:60vh;
+    border-top:1px solid var(--line); margin-top:16px;}
+  @media (max-width:900px){ .layout{grid-template-columns:1fr;} }
+
+  .track{background:var(--panel); border-right:1px solid var(--line); padding:16px 14px;}
+  .track h2{font-size:16px; margin:2px 6px 12px; color:var(--muted); text-transform:uppercase;
+    letter-spacing:.03em;}
+  .phase-label{font-size:14px; font-weight:700; color:var(--faint); margin:14px 8px 6px;
+    text-transform:uppercase; letter-spacing:.03em;}
+
+  .station{display:flex; align-items:center; gap:12px; width:100%; text-align:left;
+    background:#fff; border:2px solid var(--line); border-radius:12px; padding:11px 13px;
+    margin-bottom:8px; cursor:pointer; font-family:inherit;}
+  .station .num{flex:0 0 auto; width:30px; height:30px; border-radius:50%; background:var(--panel);
+    border:2px solid var(--line); display:flex; align-items:center; justify-content:center;
+    font-size:15px; font-weight:700; color:var(--muted);}
+  .station .txt{flex:1;}
+  .station .ttl{font-size:16px; font-weight:700; color:var(--ink); display:block;}
+  .station .stg{font-size:14px; color:var(--faint); display:block; margin-top:1px;}
+  .station.active{border-color:var(--orange); background:var(--orange-bg);}
+  .station.active .num{background:var(--orange); border-color:var(--orange); color:#fff;}
+  .station.active .ttl{color:var(--orange-dk);}
+
+  /* ===== Detailpanel ===== */
+  .detail{padding:22px 26px 40px;}
+  .d-head{display:flex; align-items:center; gap:14px; margin-bottom:6px; flex-wrap:wrap;}
+  .d-icon{width:50px; height:50px; border-radius:14px; display:flex; align-items:center;
+    justify-content:center; font-size:24px; flex:0 0 auto;}
+  .d-title{font-size:24px; font-weight:800; margin:0; color:var(--ink);}
+  .d-phase{display:inline-block; font-size:14px; font-weight:700; padding:3px 10px;
+    border-radius:999px; margin-left:2px;}
+  .d-lead{font-size:16px; color:var(--muted); margin:8px 0 20px; max-width:800px; line-height:1.5;}
+
+  .box{border-radius:14px; padding:16px 18px; margin-bottom:16px; border:1px solid var(--line);}
+  .box h3{margin:0 0 8px; font-size:16px; display:flex; align-items:center; gap:8px;}
+  .box p, .box li{font-size:16px; line-height:1.55; color:var(--ink); margin:0 0 6px;}
+  .box ul{margin:6px 0 0; padding-left:20px;}
+
+  .box.maus{background:var(--orange-bg); border-color:#f3caa0;}
+  .box.maus h3{color:var(--orange-dk);}
+  .box.fach{background:var(--blue-bg); border-color:#c7d9fb;}
+  .box.fach h3{color:#1c4fc4;}
+  .box.re{background:var(--teal-bg); border-color:#bfe7e7;}
+  .box.re h3{color:#0b6969;}
+
+  .chiprow{display:flex; flex-wrap:wrap; gap:8px; margin:2px 0 18px;}
+  .chip{font-size:14px; font-weight:700; padding:5px 12px; border-radius:999px;
+    background:var(--panel); border:1px solid var(--line); color:var(--muted);}
+
+  .navbtns{display:flex; justify-content:space-between; margin-top:22px; gap:10px;}
+  .navbtn{border:2px solid var(--line); background:#fff; color:var(--ink); font-weight:700;
+    font-size:15px; padding:10px 18px; border-radius:12px; cursor:pointer;}
+  .navbtn:hover{border-color:var(--orange); color:var(--orange-dk);}
+  .navbtn:disabled{opacity:.35; cursor:default;}
+  .navbtn:disabled:hover{border-color:var(--line); color:var(--ink);}
+
+  /* Phase color helpers */
+  .ph-offline{background:var(--green-bg); color:#15794c;}
+  .ph-online{background:var(--purple-bg); color:#5b32ad;}
+  .ph-core{background:var(--amber-bg); color:#8a660a;}
+  .ph-ops{background:var(--red-bg); color:#9c2c1f;}
+
+  /* ===== Crosslink ===== */
+  .crosslink{margin:20px 24px 0; font-size:14px; color:var(--muted);}
+  .crosslink a{color:var(--orange-dk); font-weight:700; text-decoration:none;}
+  .crosslink a:hover{text-decoration:underline;}
+  .crosslink ul{margin:8px 0 0; padding-left:20px;}
+  .crosslink li{margin-bottom:4px;}
+
+  /* ===== Footer ===== */
+  footer{border-top:3px solid var(--line); margin-top:20px; padding:22px 24px 60px; background:var(--panel);}
+  .footer-sig{font-size:14px; color:var(--muted); margin-bottom:16px; line-height:1.6;}
+  .footer-sig strong{color:var(--ink);}
+  .footer-sig a{color:var(--orange-dk); text-decoration:none; font-weight:600;}
+  .footer-details{border:1px solid var(--line); border-radius:12px; background:#fff;
+    margin-bottom:12px; overflow:hidden;}
+  .footer-summary{cursor:pointer; padding:13px 16px; font-size:16px; font-weight:700;
+    color:var(--ink); list-style:none; display:flex; align-items:center; gap:8px;}
+  .footer-summary::-webkit-details-marker{display:none;}
+  .footer-summary::before{content:"▸"; color:var(--orange); font-size:14px;}
+  details[open] > .footer-summary::before{content:"▾";}
+  .footer-content{padding:4px 18px 18px;}
+  .footer-box{margin:0;}
+  .footer-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:14px;
+    line-height:1.6; white-space:pre-wrap; background:#fbfbfc; border:1px solid var(--line);
+    border-radius:10px; padding:14px; color:#222;}
+  .footer-sans{font-family:inherit; font-size:16px; line-height:1.6; color:var(--ink);}
+  .footer-sans h4{font-size:16px; margin:14px 0 4px; color:var(--orange-dk);}
+  .footer-sans p, .footer-sans li{margin:0 0 8px;}
+  .footer-table{width:100%; border-collapse:collapse; font-size:14px; margin-top:8px;}
+  .footer-table th, .footer-table td{border:1px solid var(--line); padding:7px 9px; text-align:left; font-size:14px;}
+  .footer-table th{background:var(--panel);}
+
+  /* ===== Beamer-Modus (kumulativ) ===== */
+  html.beamer .signature, html.beamer footer{display:none;}
+  html.beamer h1{font-size:38px;}
+  html.beamer .eyebrow{font-size:16px;}
+  html.beamer .back-link{font-size:18px;}
+  html.beamer .modebtn{font-size:18px; padding:11px 22px;}
+  html.beamer .sub, html.beamer .intro p{font-size:23px;}
+  html.beamer .track h2{font-size:16px;}
+  html.beamer .phase-label{font-size:16px;}
+  html.beamer .station .ttl{font-size:26px;}
+  html.beamer .station .stg{font-size:16px;}
+  html.beamer .station .num{font-size:18px;}
+  html.beamer .station{padding:16px 15px; min-height:56px;}
+  html.beamer .d-title{font-size:44px;}
+  html.beamer .d-phase{font-size:16px;}
+  html.beamer .d-lead{font-size:23px;}
+  html.beamer .box h3{font-size:23px;}
+  html.beamer .box p, html.beamer .box li{font-size:23px;}
+  html.beamer .chip{font-size:16px; padding:7px 15px;}
+  html.beamer .navbtn{font-size:20px; padding:14px 24px;}
+  html.beamer .layout{grid-template-columns:400px 1fr;}
+
+  html.beamer.beamer-xl h1{font-size:46px;}
+  html.beamer.beamer-xl .eyebrow{font-size:19px;}
+  html.beamer.beamer-xl .back-link{font-size:21px;}
+  html.beamer.beamer-xl .modebtn{font-size:20px; padding:12px 24px;}
+  html.beamer.beamer-xl .sub, html.beamer.beamer-xl .intro p{font-size:29px;}
+  html.beamer.beamer-xl .track h2{font-size:19px;}
+  html.beamer.beamer-xl .phase-label{font-size:19px;}
+  html.beamer.beamer-xl .station .ttl{font-size:32px;}
+  html.beamer.beamer-xl .station .stg{font-size:19px;}
+  html.beamer.beamer-xl .station .num{font-size:21px;}
+  html.beamer.beamer-xl .station{padding:19px 16px; min-height:64px;}
+  html.beamer.beamer-xl .d-title{font-size:54px;}
+  html.beamer.beamer-xl .d-phase{font-size:19px;}
+  html.beamer.beamer-xl .d-lead{font-size:29px;}
+  html.beamer.beamer-xl .box h3{font-size:29px;}
+  html.beamer.beamer-xl .box p, html.beamer.beamer-xl .box li{font-size:29px;}
+  html.beamer.beamer-xl .chip{font-size:19px; padding:8px 16px;}
+  html.beamer.beamer-xl .navbtn{font-size:24px; padding:16px 28px;}
+  html.beamer.beamer-xl .layout{grid-template-columns:460px 1fr;}
+
+  html.beamer.beamer-xl.beamer-xxl h1{font-size:54px;}
+  html.beamer.beamer-xl.beamer-xxl .eyebrow{font-size:22px;}
+  html.beamer.beamer-xl.beamer-xxl .back-link{font-size:24px;}
+  html.beamer.beamer-xl.beamer-xxl .modebtn{font-size:23px; padding:13px 26px;}
+  html.beamer.beamer-xl.beamer-xxl .sub, html.beamer.beamer-xl.beamer-xxl .intro p{font-size:35px;}
+  html.beamer.beamer-xl.beamer-xxl .track h2{font-size:22px;}
+  html.beamer.beamer-xl.beamer-xxl .phase-label{font-size:22px;}
+  html.beamer.beamer-xl.beamer-xxl .station .ttl{font-size:38px;}
+  html.beamer.beamer-xl.beamer-xxl .station .stg{font-size:22px;}
+  html.beamer.beamer-xl.beamer-xxl .station .num{font-size:24px;}
+  html.beamer.beamer-xl.beamer-xxl .station{padding:23px 18px; min-height:74px;}
+  html.beamer.beamer-xl.beamer-xxl .d-title{font-size:64px;}
+  html.beamer.beamer-xl.beamer-xxl .d-phase{font-size:22px;}
+  html.beamer.beamer-xl.beamer-xxl .d-lead{font-size:35px;}
+  html.beamer.beamer-xl.beamer-xxl .box h3{font-size:35px;}
+  html.beamer.beamer-xl.beamer-xxl .box p, html.beamer.beamer-xl.beamer-xxl .box li{font-size:35px;}
+  html.beamer.beamer-xl.beamer-xxl .chip{font-size:22px; padding:9px 18px;}
+  html.beamer.beamer-xl.beamer-xxl .navbtn{font-size:28px; padding:18px 32px;}
+  html.beamer.beamer-xl.beamer-xxl .layout{grid-template-columns:520px 1fr;}
+</style>
+</head>
+<body>
+
+<div class="signature">
+  <strong>Michaela Kühn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<header>
+  <p class="eyebrow">🐭 Wie funktioniert das eigentlich?</p>
+  <h1>Wie kommt die Antwort in den Chat? – Die Reise einer Frage durch RAG</h1>
+  <p class="sub">Bevor eine KI mit Firmenwissen antwortet, macht deine Frage eine Reise durch acht Stationen. Klick dich Schritt für Schritt durch – einmal einfach erklärt, einmal fachlich korrekt.</p>
+  <div class="toolbar">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <button class="modebtn" id="beamerBtn" onclick="cycleBeamer()">🖥️ Beamer</button>
+  </div>
+</header>
+
+<div class="intro">
+  <div class="mouse-badge">🐭</div>
+  <p><strong>Stell dir vor:</strong> Du fragst einen Chatbot etwas über deine Firma. Der Chatbot weiß das nicht auswendig – er muss erst nachschauen, so wie du in einem Buch nachschlägst. Diese Nachschlage-Reise heißt <strong>RAG</strong> (Retrieval-Augmented Generation, zu Deutsch etwa: "Antwort erzeugen mit angereichertem Nachschlage-Wissen"). Acht Stationen sorgen dafür, dass am Ende eine richtige, sichere und belegbare Antwort rauskommt.</p>
+</div>
+
+<div class="layout">
+  <nav class="track" id="track">
+    <h2>Die 8 Stationen</h2>
+    <!-- injected by JS -->
+  </nav>
+  <div class="detail" id="detail">
+    <!-- injected by JS -->
+  </div>
+</div>
+
+<div class="crosslink">
+  Verwandte Denkraum-Tools zu diesem Thema:
+  <ul>
+    <li><a href="./vom-rateversuch-zur-belegten-antwort.html">Vom Rateversuch zur belegten Antwort · RAG im Denkraum-Modell</a> — führt in RAG über das Denkraum-Modell ein (Retriever als Bibliothekar, Chunking/Embedding, fünfstufiger RAG-Zyklus); dieses Tool hier geht eine Ebene tiefer in die Production-Architektur (Indexing/Query-Pipeline, Observability, Safety & Operations).</li>
+    <li><a href="./ki-einsatzmuster-explorer.html">KI-Einsatzmuster-Explorer</a> — ordnet RAG als eines von mehreren KI-Einsatzmustern in die größere Landkarte ein, statt die RAG-Architektur selbst im Detail zu zeigen.</li>
+  </ul>
+</div>
+
+<footer>
+  <div class="footer-sig">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a><br>
+    Bezug: IREB CPRE Glossar (Requirements Engineering für KI-Komponenten), BABOK v3 (IIBA) – Datenanforderungen, ISO/IEC 25010:2023 (Softwarequalitätsmerkmale), ISO/IEC 42001:2023 (KI-Managementsystem, seit 13.03.2026 auch als EN ISO/IEC 42001:2026 europäische Norm)<br>
+    Zuletzt geprüft: 21.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll
+  </div>
+
+  <details class="footer-details">
+    <summary class="footer-summary">Systemprompt (Master-Bau-Prompt)</summary>
+    <div class="footer-content">
+<div class="footer-mono">ROLLE
+Du baust ein einzelnes, offline lauffähiges HTML-Erklärtool im
+"Sendung mit der Maus"-Stil, das die Architektur "RAG in Production"
+(Retrieval-Augmented Generation) für RE/BA/PM-Zielgruppen zugänglich macht.
+
+STRUKTUR (Split-Screen, permanent sichtbar, kein Sliding-Panel)
+- Linke Spalte (Track, ca. 340px): 8 klickbare Stationen als Pill-Liste,
+  gruppiert nach Phase (Offline/Indexing, Online/Query, Kern-Qualität,
+  Betrieb/Sicherheit). Aktive Station optisch hervorgehoben.
+- Rechte Spalte (Detail): pro Station ein Titel, ein Phasen-Badge,
+  ein Lead-Satz, drei Boxen ("Einfach erklärt" / "Fachlich korrekt" /
+  RE-BA-Bezug), Sub-Item-Chips, Vor-/Zurück-Navigation.
+
+INHALT PRO STATION (8x)
+1. Indexing Pipeline (Offline) – Sources→Parse→Chunk→Embed→Store
+2. Query Pipeline (Online) – Rewrite→Retrieve→Rerank→Assemble→Generate
+3. Knowledge Store – Vector DB, Metadata, Doc Store, Freshness
+4. Retrieval Quality – Hybrid Search, Filters, Top-k, Reranker
+5. Answer Quality – Grounded Prompt, Citations, Structured Output, Fallback
+6. State/Data-Layer – Postgres, Redis, S3/Blob, Vector DB
+7. Observability & Evals – Latency, Recall, Answer Quality, Hallucination, Cost
+8. Safety & Operations – Access Control, PII Redaction, Prompt Defense,
+   Caching, Feedback Loop
+
+Jede Station: "Einfach erklärt" nutzt Alltagsbild (Bibliothek, Nachschlagen,
+Notizzettel), KEINE Fachbegriffe ohne Erklärung. "Fachlich korrekt" nennt
+die technischen Begriffe aus der Vorlagen-Infografik 1:1. RE-BA-Bezug
+verknüpft die Station explizit mit IREB/BABOK/ISO-25010-Konzepten
+(z.B. Retrieval Quality = nicht-funktionale Anforderung an Precision/Recall).
+
+DESIGN-VORGABEN
+- Hintergrund durchgehend Weiß, color-scheme:light auf html/body.
+- Fließtext ≥16px, Sekundärtext/Badges ≥14px (Beamer-Lesbarkeit).
+- Signatur "Michaela Kühn" + Website-Link fix oben rechts (position:fixed).
+- Vierstufiger Beamer-Toggle (Normal→Beamer→Beamer XL→Beamer XXL→Normal),
+  className von <html> kumulativ, Footer ab Stufe 1 display:none, Button-Label
+  zeigt immer die nächste Aktion.
+- Footer: vier Pflicht-Boxen (Systemprompt/Handbuch/Vortrags-Skript/
+  Normen-Register) mit kanonischen Klassen .footer-sig/.footer-details/
+  .footer-box/.footer-summary/.footer-content/.footer-mono/.footer-sans/
+  .footer-table.
+- Interaktion ausschließlich über click/pointer-Events, kein HTML5-DnD.
+- Farbschema: Orange (#e8722c) als Leitfarbe für die "Maus"-Ebene,
+  Blau für die "Fachlich"-Ebene, Teal für RE-BA-Bezug, je eigene
+  Phasenfarben (Grün=Offline, Lila=Online, Amber=Kern, Rot=Betrieb).
+
+NICHT-TUN
+- Keine externen fetch()-Aufrufe, keine CDN-Einbindungen.
+- Keine copyright-geschützte Maus-Bildmarke reproduzieren – nur ein
+  generisches Maus-Emoji/eigene Formsprache verwenden.
+- Keine generischen Platzhalterwerte; jede Normnennung mit Status/Datum.
+- Kein Dark Mode, auch nicht als Option.
+- Keine Persona-Szenariofiguren (Ela/Knut/...) einführen – dieses Tool
+  ist szenariofrei, konzeptionell, nicht an Vantera/TalentMatch gebunden.</div>
+    </div>
+  </details>
+
+  <details class="footer-details">
+    <summary class="footer-summary">Handbuch</summary>
+    <div class="footer-content footer-sans">
+      <p><strong>Didaktisches Prinzip:</strong> Zwei-Ebenen-Erklärung, angelehnt an das "Sendung mit der Maus"-Format: Jede Station wird zuerst über ein Alltagsbild zugänglich gemacht (Bibliothek, Notizzettel, Türsteher), danach folgt sofort die fachlich präzise Ebene mit den Originalbegriffen aus der Referenz-Infografik. Das verhindert zwei typische Fehler: reine Kindersprache ohne Anschluss an Fachvokabular, oder reine Fachsprache ohne Zugänglichkeit.</p>
+      <h4>Frameworks im Hintergrund</h4>
+      <p>Kein klassisches Prompt-Framework (RTF/CO-STAR/...), da es sich um ein reines Erklär- und Navigationstool handelt, nicht um eine Prompt-Konstruktionsaufgabe. Stattdessen strukturgebend: das Prinzip "Konzept → Alltagsbild → Fachbegriff → RE/BA-Anschluss", das sich direkt auf Michaelas These "Prompt Engineering ist Requirements Engineering für KI-Systeme" bezieht.</p>
+      <h4>RE/BA-Anschlussstellen je Station (Kurzübersicht)</h4>
+      <ul>
+        <li><strong>Retrieval Quality</strong> = nicht-funktionale Anforderung (Precision/Recall als messbare Qualitätsmerkmale, vgl. ISO/IEC 25010:2023, Merkmal Functional Suitability/Accuracy).</li>
+        <li><strong>Answer Quality</strong> = Akzeptanzkriterium: "Antwort muss Quellenbeleg enthalten" ist ein prüfbares, IREB-konformes Kriterium (nicht vage wie "gute Antwort").</li>
+        <li><strong>Observability & Evals</strong> = Monitoring-Anforderung im Betrieb, analog zu Qualitätssicherung/Testkriterien in BABOK (IIBA), Wissensgebiet "Solution Evaluation".</li>
+        <li><strong>Safety & Operations</strong> = nicht-funktionale Anforderung an Datenschutz/Sicherheit, anschlussfähig an ISO/IEC 42001:2023 (KI-Managementsystem, Annex-A-Kontrollen zu Datengovernance und Systemüberwachung).</li>
+      </ul>
+      <h4>Nachbau-Tipp</h4>
+      <p>Für ein Analogtool zu einem anderen Architektur-Thema (z.B. "Wie funktioniert CI/CD?" oder "Wie funktioniert ein Data Warehouse?") die gleiche Struktur wiederverwenden: Stationenliste aus einer Referenzquelle extrahieren, pro Station Alltagsbild + Fachbegriff + Anschluss an eine Norm/ein Framework aus dem eigenen Fachgebiet formulieren.</p>
+    </div>
+  </details>
+
+  <details class="footer-details">
+    <summary class="footer-summary">Vortrags-Skript</summary>
+    <div class="footer-content footer-sans">
+      <p><em>(Einstieg, vor dem ersten Klick)</em> "Wenn wir mit einer KI über unsere eigenen Firmendaten sprechen, passiert im Hintergrund mehr als ein einzelner Chat-Aufruf. Ich zeige Ihnen die Reise einer Frage durch acht Stationen – im Stil 'Wie funktioniert das eigentlich?'. Jede Station hat zwei Ebenen: einfach erklärt, und fachlich korrekt."</p>
+
+      <p><em>(Klick: Station 1 – Indexing Pipeline)</em> "Bevor überhaupt eine Frage gestellt wird, muss das Wissen erstmal einsortiert werden – offline, im Voraus. Stellen Sie sich eine Bibliothekarin vor, die neue Bücher einsortiert, bevor der erste Leser kommt." <em>Übergang:</em> "Jetzt kommt die eigentliche Frage ins Spiel."</p>
+
+      <p><em>(Klick: Station 2 – Query Pipeline)</em> "Das ist der Moment, wenn Sie tippen und Enter drücken. Fünf Schritte, in Sekundenbruchteilen." <em>Übergang:</em> "Aber wo genau wird eigentlich nachgeschaut?"</p>
+
+      <p><em>(Klick: Station 3 – Knowledge Store)</em> "Das ist das Regal, in dem alles steht." <em>Übergang:</em> "Ein volles Regal reicht aber nicht – es muss auch gut gesucht werden."</p>
+
+      <p><em>(Klick: Station 4 – Retrieval Quality)</em> "Hier entscheidet sich, ob die Suche wirklich die relevanten Stellen findet – das ist reinste nicht-funktionale Anforderung, im RE-Jargon gesprochen." <em>Übergang:</em> "Gefunden ist nicht gleich beantwortet."</p>
+
+      <p><em>(Klick: Station 5 – Answer Quality)</em> "Jetzt schreibt die KI die Antwort – und hier hakt es in der Praxis am häufigsten: Halluzination." <em>Übergang:</em> "Das alles braucht eine technische Grundlage im Hintergrund."</p>
+
+      <p><em>(Klick: Station 6 – State/Data-Layer)</em> "Das ist der Maschinenraum – für die Teilnehmenden meist unsichtbar, aber entscheidend für Performance." <em>Übergang:</em> "Woher weiß man eigentlich, ob das System gut funktioniert?"</p>
+
+      <p><em>(Klick: Station 7 – Observability & Evals)</em> "Messen statt Hoffen – genau mein Motto." <em>Übergang:</em> "Und zuletzt: Sicherheit und Kontrolle."</p>
+
+      <p><em>(Klick: Station 8 – Safety & Operations)</em> "Wer darf was sehen, was wird geschwärzt, was wird abgewehrt." <em>Abschluss:</em> "Acht Stationen, eine Frage – und jetzt wissen Sie, was zwischen Ihrer Eingabe und der Antwort wirklich passiert."</p>
+
+      <p><strong>Regie-Hinweise:</strong> Nicht mit der Fachbegriff-Ebene beginnen – immer zuerst das Alltagsbild sprechen, dann erst die Fachbox aufrufen. Pro Station 60–90 Sekunden einplanen, bei Zeitdruck Stationen 6–7 zusammenfassen. Beamer-Modus vor Vortragsbeginn einmal testen (Stufe "Beamer" reicht meist ab 4–6 m Entfernung).</p>
+    </div>
+  </details>
+
+  <details class="footer-details">
+    <summary class="footer-summary">Normen-Register</summary>
+    <div class="footer-content">
+      <table class="footer-table footer-sans">
+        <tr><th>Norm/Framework</th><th>Status</th><th>Datum</th><th>Bezug im Tool</th></tr>
+        <tr><td>ISO/IEC 25010:2023</td><td>Aktiv</td><td>2023</td><td>Answer/Retrieval Quality als messbare Qualitätsmerkmale</td></tr>
+        <tr><td>ISO/IEC 42001:2023</td><td>Aktiv (als EN ISO/IEC 42001:2026 seit 13.03.2026 europäische Norm)</td><td>Erstausgabe 12/2023, EN-Ratifizierung 13.03.2026</td><td>Safety & Operations, KI-Governance</td></tr>
+        <tr><td>IREB CPRE Glossar</td><td>Aktiv</td><td>laufend gepflegt</td><td>Anforderungslogik "Einfach vs. Fachlich"</td></tr>
+        <tr><td>BABOK v3 (IIBA)</td><td>Aktiv</td><td>2015 (laufende Guides/Extensions)</td><td>Solution Evaluation → Observability & Evals</td></tr>
+      </table>
+      <p style="font-size:14px;color:var(--muted);margin-top:10px;">Quelle Referenz-Infografik: "RAG in Production" (hackproduct). Stationen und Fachbegriffe wurden inhaltlich aus dieser Vorlage übernommen und für die Zielgruppe RE/BA/PM didaktisch aufbereitet.</p>
+    </div>
+  </details>
+</footer>
+
+<script>
+const STATIONS = [
+  {
+    phase:"offline", phaseLabel:"Offline (Build Time)", icon:"📚", num:1,
+    title:"Indexing Pipeline",
+    stage:"Sources → Parse → Chunk → Embed → Store",
+    lead:"Bevor überhaupt jemand eine Frage stellt, wird das gesamte Wissen im Vorfeld einsortiert – so wie eine Bibliothek Bücher katalogisiert, bevor der erste Leser kommt.",
+    maus:"Stell dir vor, jemand bringt einen riesigen Stapel Bücher, PDFs und Datenbank-Auszüge in eine Bibliothek. Die Bibliothekarin liest jedes Buch, zerschneidet es in überschaubare Abschnitte, schreibt für jeden Abschnitt eine Kurzzusammenfassung als 'Duftmarke' und stellt alles ins Regal – sortiert nach Thema, nicht nach Titel.",
+    fach:"Fünf Schritte offline (Build Time): <strong>Sources</strong> (Docs, PDFs, DB) werden <strong>geparst</strong>, in <strong>Chunks</strong> zerlegt, per Embedding-Modell in Vektoren umgewandelt (<strong>Embed</strong>) und in einer Datenbank inkl. Metadaten <strong>gespeichert</strong> (Store). Dieser Schritt läuft asynchron und wiederholt sich bei jedem Datenupdate.",
+    re:"Die Chunk-Größe ist eine klassische nicht-funktionale Anforderung mit Zielkonflikt (Trade-off): zu klein → Kontext fehlt; zu groß → Rauschen. Ein sauberes Requirement würde den Trade-off explizit benennen, statt 'sinnvolle Chunk-Größe' zu fordern (K8-Prinzip: keine generischen Werte).",
+    chips:["Sources","Parse","Chunk","Embed","Store"]
+  },
+  {
+    phase:"online", phaseLabel:"Online (Query Time)", icon:"💬", num:2,
+    title:"Query Pipeline",
+    stage:"Rewrite → Retrieve → Rerank → Assemble → Generate",
+    lead:"Das ist der Moment, in dem du tippst und Enter drückst. In Sekundenbruchteilen durchläuft deine Frage fünf Stationen.",
+    maus:"Du fragst etwas – aber vielleicht ungenau. Deshalb schreibt ein Helfer deine Frage erstmal klarer um. Dann geht er ins Regal und holt die passendsten Abschnitte raus, sortiert sie nach Wichtigkeit, packt die besten in eine Mappe und reicht sie an den Vorleser weiter, der daraus die Antwort formuliert.",
+    fach:"<strong>Rewrite</strong> (Query verstehen/umformulieren), <strong>Retrieve</strong> (Hybrid-Suche im Knowledge Store), <strong>Rerank</strong> (Treffer neu sortieren/filtern), <strong>Assemble</strong> (Context Builder baut den Prompt), <strong>Generate</strong> (LLM erzeugt die finale Antwort). Läuft synchron bei jeder Nutzeranfrage – hier zählt Latenz.",
+    re:"Diese Pipeline ist der funktionale Kern des Systems (IREB: Funktionale Anforderung 'Das System MUSS aus einer Nutzerfrage eine belegte Antwort erzeugen'). Jede Teilstation liefert dabei ein eigenes, separat testbares Akzeptanzkriterium – klassische Zerlegung einer groben Anforderung in prüfbare Teilanforderungen.",
+    chips:["Rewrite","Retrieve","Rerank","Assemble","Generate"]
+  },
+  {
+    phase:"core", phaseLabel:"Kern-Baustein", icon:"🗄️", num:3,
+    title:"Knowledge Store",
+    stage:"Vector DB · Metadata · Doc Store · Freshness",
+    lead:"Das Regal selbst, in dem alles Wissen steht – mit Beschriftung, Herkunftsnachweis und Verfallsdatum.",
+    maus:"Ein Regal, in dem jeder Zettel nicht nur den Text trägt, sondern auch einen kleinen Steckbrief: Wer darf das lesen? Wann wurde es zuletzt aktualisiert? Und ein Duft-Etikett, damit man thematisch Ähnliches schnell wiederfindet, auch ohne die exakten Wörter zu kennen.",
+    fach:"<strong>Vector DB</strong> (Embeddings für semantische Ähnlichkeitssuche), <strong>Metadata</strong> (Tags, ACLs, Schemas), <strong>Doc Store</strong> (Rohdokumente/Quellen für Zitate), <strong>Freshness</strong> (Versionierung, TTL – verhindert veraltete Antworten).",
+    re:"Freshness/TTL ist eine konkrete, prüfbare nicht-funktionale Anforderung an Datenaktualität – vergleichbar mit einer Gültigkeitsfrist in einem Lastenheft. Ohne definierte TTL bleibt 'aktuelle Informationen' eine vage, nicht abnahmefähige Formulierung (Verstoß gegen IREB-Qualitätskriterium 'eindeutig').",
+    chips:["Vector DB","Metadata","Doc Store","Freshness"]
+  },
+  {
+    phase:"core", phaseLabel:"Kern-Baustein", icon:"🎯", num:4,
+    title:"Retrieval Quality",
+    stage:"Hybrid Search · Filters · Top-k · Reranker",
+    lead:"Hier entscheidet sich, ob wirklich die relevanten Abschnitte gefunden werden – bevor überhaupt eine Antwort geschrieben wird.",
+    maus:"Ein guter Sucher fragt nicht nur nach den exakten Wörtern deiner Frage, sondern auch nach ähnlichen Bedeutungen. Er lässt nur passende Abschnitte durch die Tür (Filter nach Datum, Berechtigung), nimmt sich nur die besten Treffer mit (nicht Hunderte) und ordnet sie am Ende nochmal nach echter Relevanz.",
+    fach:"<strong>Hybrid Search</strong> (Vektor- + BM25-Volltextsuche kombiniert), <strong>Filters</strong> (ACL, Datum, Tags), <strong>Top-k</strong> (Anzahl/Schwellenwerte tunen), <strong>Reranker</strong> (verbessert die finale Sortierung der Kandidaten).",
+    re:"Klassische nicht-funktionale Anforderung mit messbaren Zielwerten: Precision@k und Recall@k sind konkrete, prüfbare Metriken (ISO/IEC 25010:2023, Merkmal Functional Suitability/Accuracy) – im Gegensatz zu einer vagen Anforderung wie 'die Suche soll gut funktionieren'.",
+    chips:["Hybrid Search","Filters","Top-k","Reranker"]
+  },
+  {
+    phase:"core", phaseLabel:"Kern-Baustein", icon:"🛡️", num:5,
+    title:"Answer Quality",
+    stage:"Grounded Prompt · Citations · Structured Output · Fallback",
+    lead:"Gefunden ist nicht gleich beantwortet: Jetzt muss aus den Fundstellen eine korrekte, belegbare Antwort werden – ohne zu erfinden.",
+    maus:"Der Vorleser darf nur das vorlesen, was tatsächlich in der Mappe liegt – nicht dazu erfinden. Zu jeder Aussage zeigt er mit dem Finger auf die Quelle. Wenn nichts Passendes in der Mappe liegt, sagt er ehrlich 'Das weiß ich nicht', statt sich etwas auszudenken.",
+    fach:"<strong>Grounded Prompt</strong> (Antwort MUSS auf abgerufenem Kontext basieren), <strong>Citations</strong> (Quellenlinks), <strong>Structured Output</strong> (JSON/Schema für Weiterverarbeitung), <strong>Fallback</strong> (Rückfrage oder sichere Antwort statt Halluzination).",
+    re:"Das ist ein Musterbeispiel für ein prüfbares Akzeptanzkriterium: 'Jede Antwort MUSS mindestens eine Quellenangabe enthalten' ist testbar und eindeutig (IREB-Qualitätskriterium), im Gegensatz zu 'die Antwort soll vertrauenswürdig sein'. Fallback-Verhalten ist zugleich eine Anforderung an Safety (ISO/IEC 25010:2023, neues Merkmal 'Safety').",
+    chips:["Grounded Prompt","Citations","Structured Output","Fallback"]
+  },
+  {
+    phase:"data", phaseLabel:"Betrieb", icon:"🧱", num:6,
+    title:"State / Data-Layer",
+    stage:"Postgres · Redis · S3/Blob · Vector DB",
+    lead:"Der Maschinenraum im Hintergrund – für Nutzer:innen unsichtbar, aber entscheidend für Geschwindigkeit und Verlässlichkeit.",
+    maus:"Hinter den Kulissen gibt es verschiedene Schubladen: eine für die Anwendungsdaten, eine schnelle für kurzfristig gebrauchte Dinge (wie ein Zwischenspeicher auf dem Schreibtisch), eine für große Dateien im Keller, und das Regal mit den Duft-Etiketten von vorhin.",
+    fach:"<strong>Postgres</strong> (strukturierte App-Daten), <strong>Redis</strong> (Cache/Sessions – niedrige Latenz), <strong>S3/Blob</strong> (Dateien, Dokumente, Backups), <strong>Vector DB</strong> (Embeddings-Index, wie in Station 3).",
+    re:"Diese Systeme selbst sind Lösungsentscheidungen, keine Anforderungen – ein häufiger Verwechslungsfehler in Lastenheften. Sauber formuliert wäre die Anforderung 'Antwortzeit MUSS unter X Sekunden liegen', während 'Redis MUSS verwendet werden' nur zulässig ist, wenn eine Norm/Policy dies explizit vorschreibt (Badge 'Norm schreibt Mittel vor').",
+    chips:["Postgres","Redis","S3/Blob","Vector DB"]
+  },
+  {
+    phase:"ops", phaseLabel:"Betrieb", icon:"📊", num:7,
+    title:"Observability & Evals",
+    stage:"Latency · Recall · Answer Quality · Hallucination · Cost",
+    lead:"Woher weiß man eigentlich, ob das System gut funktioniert? Messen statt hoffen.",
+    maus:"Ein System braucht einen Prüfer, der ständig mitschreibt: Wie lange dauert die Antwort? Wurden wirklich die richtigen Abschnitte gefunden? War die Antwort korrekt? Hat sich das System etwas ausgedacht? Und was hat das Ganze gekostet?",
+    fach:"<strong>Latency</strong> (End-to-End-Antwortzeit), <strong>Recall</strong> (% relevanter gefundener Dokumente), <strong>Answer Quality</strong> (Korrektheit, Hilfreichkeit), <strong>Hallucination</strong> (Grounding-Genauigkeit), <strong>Cost</strong> (Tokens, Infrastruktur).",
+    re:"Direkter Anschluss an BABOK (IIBA), Wissensgebiet 'Solution Evaluation': Metriken sind keine nachträgliche Kür, sondern Teil der Abnahmekriterien einer Lösung. Ohne definierte Recall-/Hallucination-Schwellenwerte lässt sich 'funktioniert gut' nicht objektiv abnehmen.",
+    chips:["Latency","Recall","Answer Quality","Hallucination","Cost"]
+  },
+  {
+    phase:"ops", phaseLabel:"Betrieb", icon:"🔒", num:8,
+    title:"Safety & Operations",
+    stage:"Access Control · PII Redaction · Prompt Defense · Caching · Feedback Loop",
+    lead:"Zum Schluss: Wer darf was sehen, was wird geschwärzt, was wird abgewehrt – und wie lernt das System dazu?",
+    maus:"Ein Türsteher prüft, wer welchen Abschnitt überhaupt lesen darf. Ein Redakteur schwärzt persönliche Daten, bevor sie rausgehen. Ein Wachdienst blockt Versuche ab, das System auszutricksen. Und ein Notizbuch sammelt Rückmeldungen, damit alles nach und nach besser wird.",
+    fach:"<strong>Access Control</strong> (RBAC, ACLs), <strong>PII Redaction</strong> (Erkennen & Maskieren personenbezogener Daten), <strong>Prompt Defense</strong> (Schutz vor Injections/Jailbreaks), <strong>Caching</strong> (Query-/Response-Cache), <strong>Feedback Loop</strong> (Nutzer-Feedback, menschliche Prüfung).",
+    re:"Direkt anschlussfähig an ISO/IEC 42001:2023 (KI-Managementsystem): Access Control und PII Redaction entsprechen den Annex-A-Kontrollobjektiven zu Datengovernance; Prompt Defense ist eine Sicherheitsanforderung, die bei personenbezogenen Daten zusätzlich Art. 32 DSGVO (Sicherheit der Verarbeitung) berührt.",
+    chips:["Access Control","PII Redaction","Prompt Defense","Caching","Feedback Loop"]
+  }
+];
+
+const PHASE_META = {
+  offline:{cls:"ph-offline"}, online:{cls:"ph-online"},
+  core:{cls:"ph-core"}, data:{cls:"ph-core"}, ops:{cls:"ph-ops"}
+};
+
+let current = 0;
+
+function renderTrack(){
+  const el = document.getElementById('track');
+  let html = '<h2>Die 8 Stationen</h2>';
+  let lastPhase = null;
+  STATIONS.forEach((s, i) => {
+    if (s.phaseLabel !== lastPhase){
+      html += '<div class="phase-label">' + s.phaseLabel + '</div>';
+      lastPhase = s.phaseLabel;
+    }
+    html += '<button class="station' + (i===current ? ' active' : '') + '" data-idx="' + i + '">' +
+      '<span class="num">' + s.num + '</span>' +
+      '<span class="txt"><span class="ttl">' + s.icon + '  ' + s.title + '</span>' +
+      '<span class="stg">' + s.stage + '</span></span>' +
+      '</button>';
+  });
+  el.innerHTML = html;
+  el.querySelectorAll('.station').forEach(btn=>{
+    btn.addEventListener('click', function(){ goTo(parseInt(this.getAttribute('data-idx'),10)); });
+  });
+}
+
+function renderDetail(){
+  const s = STATIONS[current];
+  const pm = PHASE_META[s.phase] || PHASE_META.core;
+  const el = document.getElementById('detail');
+  el.innerHTML =
+    '<div class="d-head">' +
+      '<div class="d-icon" style="background:var(--orange-bg);">' + s.icon + '</div>' +
+      '<h2 class="d-title">' + s.title + '</h2>' +
+      '<span class="d-phase ' + pm.cls + '">' + s.phaseLabel + '</span>' +
+    '</div>' +
+    '<p class="d-lead">' + s.lead + '</p>' +
+    '<div class="chiprow">' + s.chips.map(c => '<span class="chip">' + c + '</span>').join('') + '</div>' +
+    '<div class="box maus"><h3>🐭 Einfach erklärt</h3><p>' + s.maus + '</p></div>' +
+    '<div class="box fach"><h3>🎓 Fachlich korrekt</h3><p>' + s.fach + '</p></div>' +
+    '<div class="box re"><h3>📐 RE/BA-Bezug</h3><p>' + s.re + '</p></div>' +
+    '<div class="navbtns">' +
+      '<button class="navbtn" id="prevBtn" ' + (current===0 ? 'disabled' : '') + '>← Zurück</button>' +
+      '<button class="navbtn" id="nextBtn" ' + (current===STATIONS.length-1 ? 'disabled' : '') + '>Weiter →</button>' +
+    '</div>';
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  if (prevBtn) prevBtn.addEventListener('click', function(){ if(current>0) goTo(current-1); });
+  if (nextBtn) nextBtn.addEventListener('click', function(){ if(current<STATIONS.length-1) goTo(current+1); });
+}
+
+function goTo(idx){
+  current = idx;
+  renderTrack();
+  renderDetail();
+}
+
+renderTrack();
+renderDetail();
+
+/* ===== Beamer-Modus (vierstufig, kumulativ, Label zeigt nächste Aktion) ===== */
+const BEAMER_LEVELS = ['', 'beamer', 'beamer beamer-xl', 'beamer beamer-xl beamer-xxl'];
+const BEAMER_LABELS = ['🖥️ Beamer', '🖥️ Beamer XL', '🖥️ Beamer XXL', '🖥️ Normal'];
+let beamerIdx = 0;
+function cycleBeamer(){
+  beamerIdx = (beamerIdx + 1) % BEAMER_LEVELS.length;
+  document.documentElement.className = BEAMER_LEVELS[beamerIdx];
+  document.getElementById('beamerBtn').textContent = BEAMER_LABELS[beamerIdx];
+}
+</script>
+</body>
+</html>
