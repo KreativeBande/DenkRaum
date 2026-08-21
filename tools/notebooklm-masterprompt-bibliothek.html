@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>NotebookLM-Masterprompt-Bibliothek</title>
+<style>
+  :root{
+    --ink:#1a2233;
+    --muted:#5a6472;
+    --faint:#8a93a0;
+    --accent:#1b5e63;
+    --accent-dark:#123f43;
+    --line:#dde2e7;
+    --bg-card:#f7f9fa;
+    --bg-badge-cat:#e4eeee;
+    --bg-badge-fw:#eef1e4;
+    --fw-text:#4a5a2a;
+    --cat-text:#0f3a3d;
+    --good:#1b5e63;
+  }
+  html,body{
+    color-scheme: light;
+    background:#ffffff;
+    margin:0;
+    padding:0;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color:var(--ink);
+    font-size:16px;
+    line-height:1.5;
+    background:#ffffff;
+    overflow-x:hidden;
+  }
+  a{color:var(--accent);}
+  a:hover{color:var(--accent-dark);}
+
+  header.site-header{
+    padding:16px 28px 14px 28px;
+    border-bottom:1px solid var(--line);
+    background:#ffffff;
+  }
+  .topbar{
+    margin-bottom:14px;
+  }
+  .back-link{
+    display:inline-block;
+    font-size:14px;
+    font-weight:600;
+    color:var(--muted);
+    text-decoration:none;
+  }
+  .back-link:hover{color:var(--accent);}
+  .header-top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  h1{
+    font-size:24px;
+    margin:0 0 4px 0;
+    color:var(--ink);
+  }
+  .subtitle{
+    font-size:16px;
+    color:var(--muted);
+    margin:0;
+  }
+  .signature{
+    position:fixed;
+    top:14px;
+    right:28px;
+    text-align:right;
+    z-index:50;
+    background:rgba(255,255,255,0.94);
+    padding:4px 8px;
+    border-radius:6px;
+  }
+  .signature strong{
+    display:block;
+    font-size:15px;
+    color:var(--ink);
+  }
+  .signature a{
+    display:block;
+    font-size:14px;
+    color:var(--accent);
+    text-decoration:none;
+  }
+  @media (max-width:900px){
+    .signature{
+      position:static;
+      text-align:right;
+      float:right;
+      background:none;
+      padding:0;
+    }
+  }
+
+  .controls{
+    position:sticky;
+    top:0;
+    z-index:40;
+    background:#ffffff;
+    border-bottom:1px solid var(--line);
+    padding:12px 28px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+  }
+  .search-wrap{
+    flex:1 1 240px;
+    min-width:200px;
+  }
+  #searchInput{
+    width:100%;
+    padding:10px 14px;
+    font-size:16px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    color:var(--ink);
+    background:#ffffff;
+  }
+  #searchInput:focus{
+    outline:2px solid var(--accent);
+    outline-offset:1px;
+  }
+  .pill-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .pill{
+    border:1px solid var(--line);
+    background:#ffffff;
+    color:var(--ink);
+    padding:8px 14px;
+    border-radius:999px;
+    font-size:14px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .pill:hover{border-color:var(--accent);}
+  .pill.active{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#ffffff;
+  }
+  #beamerBtn{
+    border:1px solid var(--accent);
+    background:#ffffff;
+    color:var(--accent-dark);
+    padding:8px 14px;
+    border-radius:8px;
+    font-size:14px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  #beamerBtn:hover{background:var(--bg-badge-cat);}
+
+  main{
+    padding:20px 28px 40px 28px;
+  }
+  .cat-section{
+    margin-bottom:36px;
+  }
+  .cat-heading{
+    font-size:20px;
+    margin:0 0 4px 0;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .cat-count{
+    font-size:14px;
+    color:var(--faint);
+    font-weight:normal;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));
+    gap:16px;
+    margin-top:14px;
+  }
+  .card{
+    background:var(--bg-card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .card-head{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .badge{
+    font-size:14px;
+    padding:3px 9px;
+    border-radius:999px;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .badge-cat{
+    background:var(--bg-badge-cat);
+    color:var(--cat-text);
+  }
+  .badge-fw{
+    background:var(--bg-badge-fw);
+    color:var(--fw-text);
+  }
+  .card h3{
+    font-size:17px;
+    margin:0;
+    color:var(--ink);
+  }
+  .usecase{
+    font-size:15px;
+    color:var(--muted);
+    margin:0;
+  }
+  .prompt-box{
+    background:#ffffff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:12px;
+    font-size:15px;
+    color:var(--ink);
+    white-space:pre-wrap;
+    max-height:none;
+    overflow:visible;
+  }
+  .card-foot{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:auto;
+  }
+  .copy-btn{
+    background:var(--accent);
+    color:#ffffff;
+    border:none;
+    padding:9px 14px;
+    border-radius:7px;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .copy-btn:hover{background:var(--accent-dark);}
+  .copy-btn.copied{background:var(--good);}
+  .source{
+    font-size:14px;
+    color:var(--faint);
+  }
+  .no-results{
+    color:var(--muted);
+    font-size:16px;
+    padding:20px 0;
+  }
+  .crosslink{
+    margin:0 28px 24px 28px;
+    font-size:14px;
+    color:var(--muted);
+  }
+  .crosslink a{color:var(--accent);font-weight:700;text-decoration:none;}
+  .crosslink a:hover{text-decoration:underline;}
+  .crosslink ul{margin:8px 0 0;padding-left:20px;}
+  .crosslink li{margin-bottom:4px;}
+
+  /* Footer */
+  footer.site-footer{
+    border-top:1px solid var(--line);
+    padding:20px 28px 40px 28px;
+    background:#ffffff;
+  }
+  .footer-sig{
+    font-size:14px;
+    color:var(--muted);
+    margin-bottom:14px;
+    line-height:1.6;
+  }
+  .footer-sig strong{color:var(--ink);}
+  .footer-details{
+    border:1px solid var(--line);
+    border-radius:8px;
+    margin-bottom:10px;
+  }
+  .footer-summary{
+    padding:12px 16px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .footer-box{
+    padding:0 16px 16px 16px;
+  }
+  .footer-content{
+    font-size:16px;
+    line-height:1.6;
+  }
+  .footer-mono{
+    font-family:"SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size:14px;
+    white-space:pre-wrap;
+    background:#f4f6f7;
+    padding:12px;
+    border-radius:6px;
+    line-height:1.55;
+  }
+  .footer-sans{
+    font-size:16px;
+    white-space:pre-wrap;
+    line-height:1.6;
+  }
+  .footer-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:15px;
+    margin-top:8px;
+  }
+  .footer-table th, .footer-table td{
+    text-align:left;
+    padding:8px 10px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  .footer-table th{
+    color:var(--muted);
+    font-size:14px;
+  }
+
+  /* Beamer mode: pure size scaling, no content change. Footer hidden from stage 1 on. */
+  html[class*="beamer"] .site-footer{display:none;}
+
+  html.beamer{ --muted:#3D4A5C; --faint:#3D4A5C; }
+  html.beamer #beamerBtn,
+  html.beamer-xl #beamerBtn,
+  html.beamer-xxl #beamerBtn{ background:var(--accent); color:#fff; border-color:var(--accent); }
+
+  html.beamer body{font-size:22px;}
+  html.beamer h1{font-size:36px;}
+  html.beamer .subtitle{font-size:20px;}
+  html.beamer .cat-heading{font-size:44px;}
+  html.beamer .card h3{font-size:26px;}
+  html.beamer .usecase{font-size:22px;}
+  html.beamer .prompt-box{font-size:22px;}
+  html.beamer .badge{font-size:15px;padding:4px 11px;}
+  html.beamer .source, html.beamer .cat-count{font-size:15px;}
+  html.beamer .copy-btn{font-size:16px;padding:11px 16px;}
+  html.beamer .pill{font-size:15px;padding:10px 16px;}
+  html.beamer #searchInput{font-size:18px;padding:12px 16px;}
+
+  html.beamer-xl body{font-size:28px;}
+  html.beamer-xl h1{font-size:44px;}
+  html.beamer-xl .subtitle{font-size:22px;}
+  html.beamer-xl .cat-heading{font-size:54px;}
+  html.beamer-xl .card h3{font-size:32px;}
+  html.beamer-xl .usecase{font-size:28px;}
+  html.beamer-xl .prompt-box{font-size:28px;}
+  html.beamer-xl .badge{font-size:18px;padding:5px 12px;}
+  html.beamer-xl .source, html.beamer-xl .cat-count{font-size:18px;}
+  html.beamer-xl .copy-btn{font-size:18px;padding:12px 18px;}
+  html.beamer-xl .pill{font-size:16px;padding:11px 18px;}
+  html.beamer-xl #searchInput{font-size:20px;padding:13px 18px;}
+
+  html.beamer-xxl body{font-size:34px;}
+  html.beamer-xxl h1{font-size:52px;}
+  html.beamer-xxl .subtitle{font-size:26px;}
+  html.beamer-xxl .cat-heading{font-size:64px;}
+  html.beamer-xxl .card h3{font-size:38px;}
+  html.beamer-xxl .usecase{font-size:34px;}
+  html.beamer-xxl .prompt-box{font-size:34px;}
+  html.beamer-xxl .badge{font-size:21px;padding:6px 13px;}
+  html.beamer-xxl .source, html.beamer-xxl .cat-count{font-size:21px;}
+  html.beamer-xxl .copy-btn{font-size:20px;padding:14px 20px;}
+  html.beamer-xxl .pill{font-size:18px;padding:12px 20px;}
+  html.beamer-xxl #searchInput{font-size:22px;padding:15px 20px;}
+</style>
+</head>
+<body>
+
+<div class="signature">
+  <strong>Michaela Kühn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<header class="site-header">
+  <div class="topbar">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+  </div>
+  <div class="header-top">
+    <div>
+      <h1>NotebookLM-Masterprompt-Bibliothek</h1>
+      <p class="subtitle">Rund 60 einsatzbereite Masterprompts für NotebookLM – kuratiert aus mehreren Quellen, plus eine eigene Kategorie für Requirements Engineering, Business Analyse und Projektmanagement.</p>
+    </div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="Suche nach Titel, Framework oder Stichwort …" autocomplete="off">
+  </div>
+  <div class="pill-row" id="pillRow"></div>
+  <button id="beamerBtn" type="button" title="Vergrößert die gesamte Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">☀ Beamer</button>
+</div>
+
+<main id="main">
+  <div id="grid"></div>
+</main>
+
+<div class="crosslink">
+  Verwandte Denkraum-Tools zu diesem Thema:
+  <ul>
+    <li><a href="./promptschule-trainingsleitfaden.html">PromptSchule · Trainingsleitfaden</a> — vermittelt die sechs Frameworks (RTF, CO-STAR, RISEN, TRACE, PACT, APE) selbst als Einsteigerkurs mit Übungen; diese Bibliothek setzt das Framework-Wissen voraus und liefert stattdessen rund 60 sofort einsatzbereite Prompts speziell für NotebookLM.</li>
+    <li><a href="./prompt-builder.html">Prompt-Builder</a> — baut einen eigenen Prompt Baustein für Baustein von Grund auf; hier werden stattdessen fertige, bereits erprobte Prompts durchsucht und direkt kopiert.</li>
+    <li><a href="./zettelkasten-prompt-engineering-re.html">Zettelkasten: Prompt Engineering ist Requirements Engineering für KI-Systeme</a> — zeigt die konzeptionelle Brücke zwischen RE und Prompt Engineering; die RE/BA/PM-Extra-Kategorie hier übersetzt diese Brücke in neun konkret einsetzbare Prompts (IREB-Gap-Analyse, INVEST-Check u.a.).</li>
+  </ul>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-sig">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a><br>
+    Referenzierte Rahmenwerke: IREB (CPRE Foundation Level), BABOK Guide (IIBA), PMBOK Guide (PMI), ISO/IEC/IEEE 29148, ISO/IEC 25010, INVEST-Kriterien — Details siehe Normen-Register unten.<br>
+    Zuletzt geprüft: 21.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll
+  </div>
+
+  <details class="footer-details">
+    <summary class="footer-summary">Systemprompt (Master-Bau-Prompt)</summary>
+    <div class="footer-box">
+      <div class="footer-content footer-mono" id="systemPromptBox"></div>
+    </div>
+  </details>
+
+  <details class="footer-details">
+    <summary class="footer-summary">Handbuch</summary>
+    <div class="footer-box">
+      <div class="footer-content footer-sans" id="handbuchBox"></div>
+    </div>
+  </details>
+
+  <details class="footer-details">
+    <summary class="footer-summary">Vortrags-Skript</summary>
+    <div class="footer-box">
+      <div class="footer-content footer-sans" id="vortragsBox"></div>
+    </div>
+  </details>
+
+  <details class="footer-details">
+    <summary class="footer-summary">Normen-Register</summary>
+    <div class="footer-box">
+      <table class="footer-table" id="normenTable">
+        <thead><tr><th>Norm / Rahmenwerk</th><th>Version / Stand</th><th>Status</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </details>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var CATEGORIES = [
+    {key:'overview', label:'Erster Überblick', icon:'🔍'},
+    {key:'studium', label:'Studium & Lernen', icon:'📚'},
+    {key:'recherche', label:'Recherche & Synthese', icon:'🔬'},
+    {key:'dokqa', label:'Dokumenten-Q&A', icon:'📄'},
+    {key:'zusammenfassung', label:'Zusammenfassungen & Entscheidung', icon:'🗂️'},
+    {key:'content', label:'Content-Repurposing', icon:'🎙️'},
+    {key:'persona', label:'Persona & kritisches Denken', icon:'🎭'},
+    {key:'reba', label:'RE/BA/PM-Extra', icon:'🧩'}
+  ];
+
+  var PROMPTS = [
+    {id:1, cat:'overview', title:'Master-Index aller Quellen', framework:'RTF',
+      usecase:'Erster Schritt in jedem neuen Notebook — 30-Sekunden-Überblick über den gesamten Korpus.',
+      prompt:`Liste jede Quelle in diesem Notebook auf. Nenne für jede Quelle: Titel, Hauptthema, drei zentrale Punkte, die sie abdeckt, und wie sie sich zu den anderen Quellen verhält.`,
+      source:'makeuseof.com', url:'https://www.makeuseof.com/notebooklm-prompt-overview-all-sources/'},
+    {id:2, cat:'overview', title:'5 Kernfragen mit Beleg', framework:'RISEN',
+      usecase:'Struktur eines neuen Notebooks erfassen, Kernaussage aller Quellen zusammen destillieren.',
+      prompt:`Analysiere alle in diesem Notebook hochgeladenen Quellen und formuliere 5 zentrale Fragen, deren Beantwortung die Kernaussage aller Quellen zusammen erfasst. Für jede Frage:
+1) Formuliere offen, nie mit Ja/Nein beantwortbar.
+2) Gib eine synthetisierende Antwort (max. 80 Wörter), die Belege aus verschiedenen Quellen verbindet.
+3) Zitiere wörtlich mindestens einen Schlüsselsatz aus einer der Quellen inkl. Autor und Seiten-/Zeitangabe.
+4) Gib an, ob die Antwort über alle Quellen konsistent ist oder ob es Abweichungen gibt.
+Erstelle danach eine Prioritätenkarte: Welche der 5 Fragen ist am wichtigsten, um den gesamten Korpus zu verstehen, und warum? Stil: sachlich, akademisch, kein Marketing-Ton.`,
+      source:'pasqualepillitteri.it', url:'https://pasqualepillitteri.it/en/news/1506/notebooklm-prompts-senior-researcher-workflow'},
+    {id:3, cat:'overview', title:'Quellenabdeckung prüfen', framework:'RISEN',
+      usecase:'Vor der eigentlichen Arbeit prüfen, ob das Notebook „vollständig genug" ist.',
+      prompt:`Ich verfolge mit diesem Notebook das Rechercheziel: [RECHERCHEZIEL]. Prüfe, ob die aktuell hochgeladenen Quellen ausreichen, um dieses Ziel zu beantworten. Zeige:
+1) Welche Teilfragen bereits gut abgedeckt sind (mit Quellenangabe).
+2) Welche Lücken bestehen — thematisch, methodisch oder zeitlich.
+3) Welche Quellen redundant sind und ohne Informationsverlust entfernt werden könnten.
+4) Eine priorisierte Liste von 3-5 zusätzlichen Quellentypen, die ich noch hochladen sollte.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:4, cat:'overview', title:'Begriffe vereinheitlichen', framework:'APE',
+      usecase:'Vor Synthese-Arbeit, wenn mehrere Quellen denselben Begriff unterschiedlich nutzen.',
+      prompt:`Prüfe alle hochgeladenen Quellen auf uneinheitliche Terminologie für [BEGRIFF/KONZEPT]. Zeige für jede abweichende Verwendung: die Quelle, den genauen Wortlaut und die implizite Bedeutung. Schlage danach eine einheitliche Arbeitsdefinition vor, die ich für meine eigene Auswertung verwenden kann.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:5, cat:'overview', title:'Geführter Fragenpfad', framework:'RISEN',
+      usecase:'Strukturierten Lern- oder Rechercheweg durch ein neues Themengebiet anlegen.',
+      prompt:`Erzeuge 8-10 aufeinander aufbauende Fragen zum Thema [THEMA], beginnend bei grundlegendem Verständnis und aufsteigend bis zu fortgeschrittener, kritischer Analyse. Gib zu jeder Frage an, in welcher Quelle (Titel + ungefährer Abschnitt) die Antwort vermutlich zu finden ist. Ich werde die Fragen der Reihe nach an dich stellen.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:6, cat:'overview', title:'Zitate-Fundus', framework:'APE',
+      usecase:'Vorarbeit für Artikel, Vorträge oder Berichte, in denen wörtliche Belege gebraucht werden.',
+      prompt:`Sammle 10-15 wörtliche, zitierfähige Passagen zum Thema [THEMA] aus allen Quellen. Ordne sie nach Unterthema. Gib zu jedem Zitat Quelle, Autor, Seiten-/Zeitangabe sowie einen kurzen Hinweis, wofür sich das Zitat eignet (z. B. Beleg, Gegenposition, Einstiegssatz).`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+
+    {id:7, cat:'studium', title:'5 Leitfragen zum Verständnis', framework:'RISEN',
+      usecase:'Lern- oder Vorlesungsstoff auf den Punkt bringen.',
+      prompt:`Gehe alle meine hochgeladenen Materialien durch und identifiziere die 5 wichtigsten Fragen, die jemand beantworten können muss, um dieses Thema wirklich zu verstehen. Diese Fragen sollen zusammen den Kerngehalt der Quellen abbilden. Berücksichtige dabei: die zentralen Themen und Definitionen, die Kernideen, die wiederholt betont werden, wie sich verschiedene Konzepte zueinander verhalten, wo und wie die Ideen in der Praxis angewendet werden.`,
+      source:'Analytics Vidhya', url:'https://www.analyticsvidhya.com/blog/2026/01/notebooklm-super-prompts-for-pro-level-productivity/'},
+    {id:8, cat:'studium', title:'Concept Map mit Querverbindungen', framework:'TRACE',
+      usecase:'Zusammenhänge zwischen Vorlesungsinhalten sichtbar machen.',
+      prompt:`Erstelle aus meinen Vorlesungsnotizen in diesem Notebook eine Concept Map mit Querverbindungen: liste zunächst die zentralen Konzepte, dann die Querverbindungen zwischen den Teilthemen, jeweils mit einem kurzen Grund, warum die beiden Konzepte zusammenhängen.`,
+      source:'learnwithmeai.com', url:'https://www.learnwithmeai.com/p/notebooklm-prompts-for-studying'},
+    {id:9, cat:'studium', title:'ELI-10-Erklärung', framework:'CO-STAR',
+      usecase:'Komplexe Konzepte in verständliche Bausteine zerlegen.',
+      prompt:`Erkläre [KONZEPT aus meinen Quellen] so, als wäre ich 10 Jahre alt. Beginne mit einer Analogie aus dem Alltag. Führe danach EINEN Fachbegriff nach dem anderen ein, jeweils mit einer kurzen, einfachen Erklärung, bevor der nächste folgt.`,
+      source:'learnwithmeai.com', url:'https://www.learnwithmeai.com/p/notebooklm-prompts-for-studying'},
+    {id:10, cat:'studium', title:'Karteikarten mit vier Kartentypen', framework:'TRACE',
+      usecase:'Über reine Begriffsdefinitionen hinaus prüfungsrelevant lernen.',
+      prompt:`Wandle die Kerninhalte meiner Quellen in Karteikarten für die Prüfungsvorbereitung um. Mische dabei vier Kartentypen: Definitionskarten, Ursache-Wirkungs-Karten, Vergleichskarten, Anwendungskarten. Gib pro Karte Vorderseite (Frage) und Rückseite (Antwort inkl. Quellenbezug) an.`,
+      source:'learnwithmeai.com', url:'https://www.learnwithmeai.com/p/notebooklm-prompts-for-studying'},
+    {id:11, cat:'studium', title:'Widerspruchs-Detektor für Lernmaterial', framework:'RISEN',
+      usecase:'Uneinigkeiten zwischen Lehrbuch, Skript und Zusatzliteratur aufdecken.',
+      prompt:`Finde Widersprüche zwischen meinen hochgeladenen Quellen zum Thema [THEMA]. Gib für jeden Widerspruch an: die genaue Behauptung, welche Quelle welche Seite vertritt, und wie stark die jeweilige Evidenz ist.`,
+      source:'learnwithmeai.com', url:'https://www.learnwithmeai.com/p/notebooklm-prompts-for-studying'},
+    {id:12, cat:'studium', title:'Prüfung im Stil meines Dozenten', framework:'Few-Shot',
+      usecase:'Realistische Prüfungssimulation statt generischer Fragen.',
+      prompt:`Erstelle eine Übungsklausur aus meinen Kursmaterialien, die dem Stil meines Dozenten/meiner Dozentin entspricht: [BESCHREIBUNG DES TYPISCHEN FRAGENMIXES, z. B. 60% Multiple Choice, 40% offene Fragen]. Halte den oben beschriebenen Fragentyp-Mix ein und gewichte die Fragen stärker in Richtung der im Material besonders betonten Themen.`,
+      source:'learnwithmeai.com', url:'https://www.learnwithmeai.com/p/notebooklm-prompts-for-studying'},
+    {id:13, cat:'studium', title:'Schwachstellen-Analyse', framework:'RISEN',
+      usecase:'Lernzeit gezielt auf echte Lücken lenken statt auf bereits Bekanntes.',
+      prompt:`Nutze folgende Signale aus meinen eigenen Notizen, um meine Schwachstellen einzuschätzen: [z. B. Themen, die in meinen Notizen im Vergleich zur Quelle kaum vorkommen, Themen, zu denen ich in der Vergangenheit falsche Antworten gegeben habe]. Erstelle daraus ein Ranking der Themen von größter zu kleinster Schwäche, jeweils mit Begründung und einer konkreten nächsten Lernaktion.`,
+      source:'learnwithmeai.com', url:'https://www.learnwithmeai.com/p/notebooklm-prompts-for-studying'},
+    {id:14, cat:'studium', title:'Feynman-Rollentausch', framework:'Chain-of-Thought',
+      usecase:'Eigenes Verständnis durch Erklären testen (Feynman-Technik).',
+      prompt:`Tausche unsere Rollen. Du bist jetzt die/der Studierende, ich bin die Lehrperson. Ich erkläre dir [KONZEPT] in eigenen Worten. Wenn ich fertig bin, übernimm die Rolle der/des Studierenden, die ich gerade beschrieben habe: stelle mir 3 Rückfragen, an denen sich zeigt, ob meine Erklärung wirklich trägt — auch dort, wo ich es mir zu einfach gemacht habe.`,
+      source:'learnwithmeai.com', url:'https://www.learnwithmeai.com/p/notebooklm-prompts-for-studying'},
+    {id:15, cat:'studium', title:'7-Tage-Lernplan', framework:'RISEN',
+      usecase:'Prüfungsvorbereitung mit klarer zeitlicher Struktur.',
+      prompt:`Erstelle mir aus dem Material dieses Notebooks einen 7-Tage-Lernplan bis zu meiner Prüfung am [DATUM]. Strukturiere den Plan Tag für Tag. Lege die schwierigsten Themen in meine leistungsstärksten Zeitfenster: [MEINE HOCHLEISTUNGSZEITEN]. Plane 2-3 Tage vor der Prüfung eine vollständige Probeklausur ein.`,
+      source:'learnwithmeai.com', url:'https://www.learnwithmeai.com/p/notebooklm-prompts-for-studying'},
+    {id:16, cat:'studium', title:'Persönliche Tutor-Persona', framework:'CO-STAR',
+      usecase:'Motivierende, konsistente Lernbegleitung über mehrere Sitzungen hinweg.',
+      prompt:`Verhalte dich wie [NAME EINER LEHRPERSON/EINES VORBILDS] beim Erklären dieses Materials: geduldig, wenn ich etwas nicht verstehe, begeistert vom Thema, stellt mir selbst Fragen zurück, statt nur Antworten zu liefern. Bleibe während des gesamten Gesprächs in dieser Rolle.`,
+      source:'learnwithmeai.com', url:'https://www.learnwithmeai.com/p/notebooklm-prompts-for-studying'},
+    {id:17, cat:'studium', title:'Prüfungsreifer Study Guide', framework:'TRACE',
+      usecase:'Fokussiertes Lernmaterial statt vollständiger Kapitelzusammenfassung.',
+      prompt:`Erstelle einen prüfungsreifen Study Guide aus meinen Quellen zum Thema [THEMA/KURS]: liste die prüfungsrelevanten Konzepte mit Definition, einem durchgerechneten Beispiel aus den Quellen und 1-2 Selbsttest-Fragen je Konzept. Ordne nach Prüfungsrelevanz, nicht nach Kapitelreihenfolge.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+
+    {id:18, cat:'recherche', title:'Überraschende Erkenntnisse', framework:'RISEN',
+      usecase:'Frische Perspektiven für Artikel oder Vorträge finden.',
+      prompt:`Ich recherchiere und schreibe über [THEMA]. Identifiziere aus allen hochgeladenen Quellen die überraschendsten, unerwartetsten oder besonders interessanten Fakten, Ideen oder Erkenntnisse zu diesem Thema. Gib für jede Erkenntnis an: warum sie überraschend oder bemerkenswert ist, und füge wörtliche Zitate aus den Quellen als Beleg hinzu. Fokussiere dich speziell auf [SPEZIFISCHEN ASPEKT] und betone [ANDERE ASPEKTE] nur, wenn unbedingt nötig.`,
+      source:'Analytics Vidhya', url:'https://www.analyticsvidhya.com/blog/2026/01/notebooklm-super-prompts-for-pro-level-productivity/'},
+    {id:19, cat:'recherche', title:'Überraschungsfaktor (Steven-Johnson-Methode)', framework:'RISEN',
+      usecase:'Nicht-offensichtliche redaktionelle Blickwinkel in großen Quellensammlungen finden.',
+      prompt:`Was sind die überraschendsten, kontraintuitivsten oder unerwartetsten Fakten, Daten oder Erzählungen in diesen Quellen? Gib für jedes überraschende Element an:
+1) ein wörtliches Zitat aus der Quelle (max. 3 Zeilen) mit Autor und Fundstelle (Seite/Zeitmarke/Absatz).
+2) in 2 Zeilen, warum es überraschend ist: widerspricht es gängigem Alltagswissen? Legt es ein verborgenes Detail offen? Stellt es eine offizielle Erzählung infrage?
+3) den Überraschungsgrad auf einer Skala von 1 (interessant) bis 5 (revolutionär) mit Begründung.
+4) einen Vorschlag, wie sich dieses Datum in einem Artikel, einer Präsentation oder einer Entscheidung wiederverwenden lässt.
+Liefere mindestens 8 Elemente, absteigend nach Überraschungsgrad sortiert. Ignoriere vorhersehbare Daten und bereits bekannte Hintergrundstatistiken. Ton: neugierig wie investigativer Journalismus, nie reißerisch.`,
+      source:'pasqualepillitteri.it', url:'https://pasqualepillitteri.it/en/news/1506/notebooklm-prompts-senior-researcher-workflow'},
+    {id:20, cat:'recherche', title:'Blinde-Flecken-Analyse (Source-Gap)', framework:'RISEN',
+      usecase:'Strategiepapiere, Marktanalysen, vorausschauende Recherche.',
+      prompt:`Sichte alle hochgeladenen Dokumente gemeinsam und identifiziere, was fehlt — nicht, was bereits abgedeckt ist. Ich möchte verborgene Lücken aufdecken, gemessen an aktuellen Branchenstandards für [THEMA], besonders im Kontext der Marktrealität 2026. Konkret:
+1) Zeige kritische Daten, Perspektiven oder Diskussionen, die vorhanden sein sollten, aber fehlen.
+2) Markiere, wo Quellen Annahmen ohne klare Evidenz treffen.
+3) Bilde Widersprüche klar ab, indem du zeigst, wo Quelle A Quelle B widerspricht (mit wörtlichem Zitat).
+4) Schlage 5 präzise Anschluss-Rechercheziele vor, die ich im Deep-Research-Modus verfolgen sollte, um diese Lücken zu schließen.
+Vermeide generische Zusammenfassungen. Belege jeden Widerspruch mit direktem Zitat.`,
+      source:'Analytics Vidhya', url:'https://www.analyticsvidhya.com/blog/2026/01/notebooklm-super-prompts-for-pro-level-productivity/'},
+    {id:21, cat:'recherche', title:'Widersprüche zwischen Studien', framework:'RISEN',
+      usecase:'Literaturreviews, Forschungsmemos, Investment-Analysen.',
+      prompt:`Identifiziere über alle hochgeladenen Papers zu [THEMA] hinweg die größten Widersprüche oder gegensätzlichen Befunde. Gib für jeden Widerspruch an: die konkrete Behauptung jeder Seite (mit Zitat), warum sie vermutlich uneinig sind (Unterschiede in Methode, Stichprobe, Zeitraum, Definition oder Kontext), und welche Evidenz nötig wäre, um den Widerspruch aufzulösen. Fasse die Papers nicht zusammen. Konzentriere dich nur auf Konflikte, die die Schlussfolgerung oder Entscheidung verändern.`,
+      source:'Analytics Vidhya', url:'https://www.analyticsvidhya.com/blog/2026/01/notebooklm-super-prompts-for-pro-level-productivity/'},
+    {id:22, cat:'recherche', title:'Verborgene Verbindungen', framework:'RISEN',
+      usecase:'Originäres Schreiben, Ideenfindung, Framework-Entwicklung.',
+      prompt:`Erkunde und synthetisiere die — auch abstrakte — Verbindung zwischen [THEMA 1] und [THEMA 2] anhand aller hochgeladenen Quellen. Zitiere für jede relevante Quelle die zentrale Evidenz, die sich auf eines der Themen bezieht, verbinde sie mit anderen relevanten Informationen aus dem Material, weise auf widersprüchliche Sichtweisen oder Spannungen hin, hebe unerwartete Kombinationen von Ideen hervor. Erstelle danach eine klare Zusammenfassung, die sich nur darauf konzentriert, wie diese beiden Themen zusammenhängen. Verankere jede Erkenntnis in wörtlichen Zitaten. Benenne Lücken klar, wo die Quellen die Verbindung nicht stark stützen.`,
+      source:'Analytics Vidhya', url:'https://www.analyticsvidhya.com/blog/2026/01/notebooklm-super-prompts-for-pro-level-productivity/'},
+    {id:23, cat:'recherche', title:'Literatur-Synthese über Quellen hinweg', framework:'RISEN',
+      usecase:'Literaturreviews mit mehreren Papers.',
+      prompt:`Fasse den Forschungsstand zu [THEMA] aus allen Quellen zusammen: Wo besteht Konsens, wo gibt es Uneinigkeit, wo klaffen Lücken? Gib bei jeder Aussage an, welche Quellen sie stützen und welche ihr widersprechen.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:24, cat:'recherche', title:'Methodenvergleichstabelle', framework:'TRACE',
+      usecase:'Schnellvergleich mehrerer empirischer Studien.',
+      prompt:`Erstelle eine Tabelle, die die Studiendesigns aller hochgeladenen Studien nebeneinanderstellt: Stichprobengröße, Methode, Variablen, zentrale Befunde, Limitationen. Eine Zeile pro Studie.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:25, cat:'recherche', title:'Pro-/Contra-Evidenz zu einer These', framework:'RISEN',
+      usecase:'These vor Veröffentlichung oder Entscheidung prüfen.',
+      prompt:`These: [THESE]. Trenne die Evidenz aus meinen Quellen in zwei Spalten: unterstützende Evidenz und widersprechende Evidenz. Gewichte danach beide Seiten anhand der Stärke des Belegmaterials und gib eine Einschätzung, wie gut die These insgesamt gestützt ist.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:26, cat:'recherche', title:'Wichtigste Befunde extrahieren', framework:'RTF',
+      usecase:'Kernaussagen aus umfangreichem Material destillieren.',
+      prompt:`Extrahiere die 5-7 wirkungsvollsten Befunde aus meinen Quellen zu [THEMA] in einfacher Sprache. Gib pro Befund, sofern vorhanden, Effektgröße und Quellenangabe an.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:27, cat:'recherche', title:'Empfohlene Lesereihenfolge', framework:'APE',
+      usecase:'Effizient in ein neues Themengebiet einsteigen.',
+      prompt:`Ordne meine hochgeladenen Quellen zu [THEMA] in eine effiziente Lesereihenfolge. Gib zu jeder Quelle an, was sie gegenüber den vorherigen zusätzlich beiträgt, und markiere redundantes Material.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:28, cat:'recherche', title:'Fokussiertes Themen-Briefing', framework:'CO-STAR',
+      usecase:'Redaktionelle Arbeit mit klarer These und Zielgruppe.',
+      prompt:`Ich bereite [ARTIKEL/PRÄSENTATION/ARBEIT] zum Thema [SPEZIFISCHES THEMA] vor. Die Zielgruppe ist [ZIELGRUPPE]. Meine vorläufige These lautet: [THESE IN EINEM SATZ]. Fokussiere dich AUSSCHLIESSLICH auf [ASPEKT 1] und [ASPEKT 2]. Behandle NICHT [AUSZUSCHLIESSENDE ASPEKTE]. Extrahiere aus den Quellen:
+1) die 5-7 überraschendsten Datenpunkte oder Perspektiven zum Thema, mit wörtlichem Zitat und Fundstelle.
+2) die 3 stärksten Einwände, die die Quellen gegen meine vorläufige These vorbringen, mit Begründung.
+3) die 3 solidesten Belege, die meine These stützen könnten, mit Zitaten.
+4) die 2-3 im Korpus am häufigsten zitierten Expert*innen zum Thema, mit Zusammenfassung ihrer Position.
+5) einen Gliederungsvorschlag mit 5 Punkten, nur basierend auf dem, was die Quellen tatsächlich hergeben.
+Wenn die Quellen meiner These widersprechen, sag das klar in Abschnitt 2: besser die These anpassen, als etwas Unhaltbares zu veröffentlichen.`,
+      source:'pasqualepillitteri.it', url:'https://pasqualepillitteri.it/en/news/1506/notebooklm-prompts-senior-researcher-workflow'},
+    {id:29, cat:'recherche', title:'Wissenschaftliche Gutachter-Persona', framework:'CO-STAR',
+      usecase:'Akademische Papers, Studien und Metaanalysen methodisch prüfen.',
+      prompt:`Verhalte dich wie eine erfahrene wissenschaftliche Forschungsassistenz. Ton: sachlich, formal, präzise, nie euphorisch. Setze voraus, dass ich Fortgeschrittenenwissen in [FACHGEBIET] habe, definiere daher keine Standardterminologie. Fokussiere auf Methodik, Datenintegrität und widersprüchliche Evidenz. Gewichte Stichprobengröße, Studiendesign und statistische Signifikanz stärker als die Schlussfolgerungen im Abstract. Erstelle für jede hochgeladene Quelle eine strukturierte Analyse mit den Abschnitten:
+ZENTRALE ERGEBNISSE (3-5 Hauptbefunde mit Effektgröße, Konfidenzintervall und p-Wert, falls verfügbar; fehlende Angaben markieren)
+METHODISCHE STÄRKEN (Stichprobenziehung, Randomisierung, Kontrollen, Verblindung, Präregistrierung, Replizierbarkeit)
+METHODISCHE SCHWÄCHEN (zu kleine Stichprobe, Verdacht auf p-Hacking, Interessenkonflikte, nachträglich selektierte Daten, fehlende Korrektur für multiples Testen)
+WIDERSPRÜCHE (was in den Quellen die Schlussfolgerungen der Autor*innen einschränkt oder widerlegt, wörtlich zitiert)
+GENERALISIERBARKEIT (für welche Populationen/Kontexte das Ergebnis tatsächlich gilt und für welche nicht)`,
+      source:'pasqualepillitteri.it', url:'https://pasqualepillitteri.it/en/news/1506/notebooklm-prompts-senior-researcher-workflow'},
+
+    {id:30, cat:'dokqa', title:'Präzise Antwort mit Zitat', framework:'RTF',
+      usecase:'Schnelle, belegte Antworten ohne Interpretationsspielraum.',
+      prompt:`Beantworte folgende Frage ausschließlich auf Basis der hochgeladenen Quellen in 2-3 Sätzen: [FRAGE]. Belege die Antwort mit einem wörtlichen Zitat inkl. Quellenangabe. Wenn die Quellen die Frage nicht beantworten, sag das explizit statt zu spekulieren.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:31, cat:'dokqa', title:'Jede Erwähnung finden', framework:'RTF',
+      usecase:'Semantische Volltextsuche über den ganzen Quellenbestand.',
+      prompt:`Finde jede Stelle in meinen Quellen, an der [BEGRIFF/NAME/KLAUSEL] vorkommt. Gib zu jedem Fund die Quelle, die Fundstelle und den unmittelbaren Kontext (1-2 Sätze davor/danach) an.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:32, cat:'dokqa', title:'Vertrags-/Dokumentenprüfung nach Rolle', framework:'PACT',
+      usecase:'Verträge oder Dokumente aus einer bestimmten Interessenperspektive lesen.',
+      prompt:`Prüfe das hochgeladene Dokument aus der Perspektive von [ROLLE, z. B. Käufer/Auftragnehmer/Arbeitnehmer]. Zeige die für diese Rolle relevanten Klauseln, Pflichten, ungewöhnlichen Bedingungen und fehlenden Regelungen. Kennzeichne besonders risikoreiche Passagen.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:33, cat:'dokqa', title:'Widersprüchliche Dokumentversionen abgleichen', framework:'RISEN',
+      usecase:'Versionsstände, Vertragsentwürfe oder Richtlinien gegeneinander prüfen.',
+      prompt:`Vergleiche [DOKUMENT A] und [DOKUMENT B] aus meinen Quellen. Zeige jede Stelle, an der sie sich widersprechen, mit wörtlichem Zitat aus beiden Versionen, und erkläre die praktische Konsequenz jeder Abweichung.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:34, cat:'dokqa', title:'Unstrukturierte Daten in Tabelle überführen', framework:'TRACE',
+      usecase:'Unstrukturierte Dokumente in strukturierte Daten überführen.',
+      prompt:`Extrahiere aus meinen Quellen alle Datensätze zu [GEGENSTAND] in eine Tabelle mit den Spalten: [FELD 1], [FELD 2], [FELD 3] … Markiere Datensätze, bei denen ein Feld in der Quelle nicht eindeutig angegeben ist, statt es zu erfinden.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+
+    {id:35, cat:'zusammenfassung', title:'Zusammenfassung in drei Längen', framework:'RTF',
+      usecase:'Gleicher Inhalt für unterschiedliche Lesegeschwindigkeiten oder Adressat*innen.',
+      prompt:`Fasse den Inhalt dieses Notebooks zu [THEMA] in drei Längen zusammen: 1) ein Satz, 2) ein Absatz, 3) eine Seite. Achte darauf, dass sich die drei Ebenen inhaltlich nicht widersprechen, sondern ineinander verschachtelt sind.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:36, cat:'zusammenfassung', title:'Entscheidungsvorlage / Briefing', framework:'PACT',
+      usecase:'Entscheidungsreife Aufbereitung für Management oder Steuerungsgremien.',
+      prompt:`Erstelle aus meinen Quellen ein einseitiges Entscheidungs-Briefing zu [ENTSCHEIDUNG]. Struktur: Hintergrund (3-4 Sätze), zentrale Fakten (Bulletpoints mit Quellenangabe), Optionen mit jeweiligem Vor-/Nachteil, offene Fragen, die vor der Entscheidung geklärt werden müssen.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:37, cat:'zusammenfassung', title:'Zeitleiste aus den Quellen', framework:'TRACE',
+      usecase:'Ereignisabfolgen aus verstreutem Material rekonstruieren.',
+      prompt:`Erstelle aus meinen Quellen eine chronologische Zeitleiste der Ereignisse rund um [THEMA]. Gib zu jedem Ereignis Datum, kurze Beschreibung, Quelle und — falls erkennbar — die Ursache-Wirkungs-Beziehung zum vorherigen Ereignis an. Markiere Lücken, an denen die Chronologie unklar bleibt.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:38, cat:'zusammenfassung', title:'FAQ aus dem Material', framework:'RTF',
+      usecase:'Häufige Fragen aus Rohmaterial ableiten, z. B. für Onboarding oder Schulung.',
+      prompt:`Erzeuge 10 FAQ-Fragen, die [ZIELGRUPPE] zum Thema [THEMA] typischerweise stellen würde, mit jeweils 2-4 Sätzen Antwort auf Basis der Quellen. Liste am Ende Fragen, die die Quellen nicht beantworten können.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:39, cat:'zusammenfassung', title:'Glossar der Schlüsselbegriffe', framework:'RTF',
+      usecase:'Einheitliches Vokabular für Team oder Training schaffen.',
+      prompt:`Erstelle ein Glossar mit 15-25 Schlüsselbegriffen aus meinen Quellen zu [THEMA]. Gruppiere die Begriffe thematisch, gib zu jedem eine knappe Definition und die Quelle an. Kennzeichne Begriffe, die in verschiedenen Quellen unterschiedlich definiert werden.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:40, cat:'zusammenfassung', title:'Abschluss-Briefing nach Kurs/Vortrag', framework:'RISEN',
+      usecase:'Strukturierte didaktische Zusammenfassung nach Kursen, Konferenzen, Leseserien.',
+      prompt:`Sichte das gesamte in diesem Notebook hochgeladene Material und erstelle ein Abschluss-Briefing in 4 Abschnitten:
+A) GRUNDDEFINITIONEN — die 10 Schlüsselbegriffe des Korpus mit Ein-Satz-Definition und Quellenangabe.
+B) HAUPTKONZEPTE — die 5-7 zentralen Konzepte mit 3-4 Zeilen Erklärung, einem konkreten Beispiel aus den Quellen und einer Gewichtung (zentral/unterstützend).
+C) BEZIEHUNGEN ZWISCHEN DEN KONZEPTEN — zeichne im Textformat (mit Pfeilen/Klammern) die Beziehungskarte der Konzepte aus Abschnitt B; markiere kausale, hierarchische und gegensätzliche Beziehungen.
+D) PRAXISANWENDUNGEN — die 3-5 in den Quellen genannten Praxisanwendungen, mit mindestens einem wörtlichen Zitat je Anwendung und Angabe des Sektors.
+Schließe mit 5 aufsteigend schwierigen Verständnisfragen samt Musterantwort ab. Ton: didaktisch, präzise, darauf ausgerichtet, das Material an andere weiterzugeben.`,
+      source:'pasqualepillitteri.it', url:'https://pasqualepillitteri.it/en/news/1506/notebooklm-prompts-senior-researcher-workflow'},
+    {id:41, cat:'zusammenfassung', title:'Produktmanagement-Entscheidungsmemo', framework:'CO-STAR',
+      usecase:'Interne Dokumentation und User-Research in eine entscheidungsreife Vorlage überführen.',
+      prompt:`Verhalte dich wie eine Senior Product Managerin mit 12 Jahren Erfahrung, die interne Dokumentation für ein Entscheidungsmemo sichtet. Suche präzise nach handlungsrelevanten Erkenntnissen, ignoriere Überflüssiges. Fasse das Material im DECISION-MEMO-Format in 4 Abschnitten zusammen:
+USER EVIDENCE (wörtliche Zitate, max. 4 Zeilen, die reale Nutzerprobleme belegen, mit Quelle/Datum/Segment)
+FEASIBILITY CHECKS (technische, budgetäre oder team-übergreifende Einschränkungen; harte Blocker vs. verhandelbare Hürden unterscheiden)
+ENTSCHEIDUNGSOPTIONEN (max. 3 Optionen, je mit Kurzbeschreibung, geschätztem Aufwand niedrig/mittel/hoch, erwarteter Wirkung auf die Haupt-Kennzahl, Hauptrisiko)
+BLIND SPOTS (was im Material fehlt, um gut zu entscheiden)
+Wenn meine Frage vage ist ("ist das eine gute Idee?"), fordere mich auf, sie zu konkretisieren, bevor du antwortest.`,
+      source:'pasqualepillitteri.it / Analytics Vidhya', url:'https://pasqualepillitteri.it/en/news/1506/notebooklm-prompts-senior-researcher-workflow'},
+
+    {id:42, cat:'content', title:'Audio-Overview gezielt steuern', framework:'CO-STAR',
+      usecase:'Den generierten Podcast gezielt statt zufällig ausrichten.',
+      prompt:`Bevor du den Audio-Overview/Deep-Dive-Podcast erzeugst: Zielgruppe ist [ZIELGRUPPE]. Setze den Schwerpunkt auf [THEMENSCHWERPUNKT] und lass [AUSZUSCHLIESSENDER ASPEKT] weitgehend außen vor. Ton: [TON, z. B. locker-informativ / sachlich-kompakt]. Zieldauer: [DAUER] Minuten.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:43, cat:'content', title:'Zwei-Stimmen-Quiz für Audio Overview', framework:'CO-STAR',
+      usecase:'Didaktischer Audio-Content für Prüfungsvorbereitung, Firmenschulung, Onboarding.',
+      prompt:`Erzeuge einen Deep Dive im Zwei-Stimmen-Quiz-Format mit 15-20 Minuten Dauer, ausschließlich basierend auf den hochgeladenen Quellen. Struktur: Stimme A ist die „Lehrperson": kennt den Stoff genau und stellt die Fragen. Stimme B ist die „Lernende": bereitet Antworten vor, liegt aber bewusst bei 3 von 10 Fragen falsch. Wenn Stimme B falsch liegt, korrigiert Stimme A sanft mit der richtigen Antwort UND dem genauen Zitat aus der Quelle. Bei richtiger Antwort hakt Stimme A mit einer vertiefenden Rückfrage nach.
+Fragenzusammensetzung: 4 Multiple-Choice-Fragen (3 Optionen), 4 Wahr/Falsch-Fragen mit Begründungspflicht, 2 offene Abschlussfragen zur Synthese. Steigender Schwierigkeitsgrad: von Faktenwissen zu konzeptioneller Verknüpfung.
+Eröffnung: beide Stimmen stellen sich vor, nennen das Thema und die Gesamtzahl der Fragen. Abschluss: Endpunktzahl für Stimme B, Rückblick auf die 3 lehrreichsten Fehler, eine Reflexionsfrage für die Zuhörenden. Ton: freundlich, zügiges Tempo, nie herablassend.`,
+      source:'pasqualepillitteri.it', url:'https://pasqualepillitteri.it/en/news/1506/notebooklm-prompts-senior-researcher-workflow'},
+    {id:44, cat:'content', title:'Quiz- oder Debattenformat', framework:'CO-STAR',
+      usecase:'Revision, Gruppendiskussionen, Podcasts, Workshops.',
+      prompt:`Erstelle eine interaktive Diskussion basierend auf den hochgeladenen Quellen zu [THEMA]. Nutze eines der beiden Formate:
+Option 1 Quiz — zwei Stimmen, eine Stimme prüft die andere zu [THEMA] mit 10 Fragen (Multiple-Choice und Wahr/Falsch gemischt), die geprüfte Stimme soll einige Antworten falsch geben, Korrekturen mit kurzer, quellenbasierter Erklärung, am Ende die Gesamtpunktzahl.
+Option 2 Debatte — zwei Stimmen mit gegensätzlichen Standpunkten zu [THEMA]: Stimme 1 vertritt [POSITION A], Stimme 2 vertritt [POSITION B]; beide fordern sich mit Evidenz aus den Quellen heraus; das Publikum soll entscheiden können, wer die stärkeren Argumente hatte.
+Stütze alle Fragen, Antworten und Argumente auf das hochgeladene Material.`,
+      source:'Analytics Vidhya', url:'https://www.analyticsvidhya.com/blog/2026/01/notebooklm-super-prompts-for-pro-level-productivity/'},
+    {id:45, cat:'content', title:'Mehrsprachiger Podcast', framework:'RTF',
+      usecase:'Regionale Podcasts, muttersprachliche Erklärungen, Sprachlernen.',
+      prompt:`Erstelle einen Deep-Dive basierend auf den hochgeladenen Quellen, vollständig in [ZIELSPRACHE]. Verwende ausschließlich [ZIELSPRACHE], außer wenn ein Fachbegriff sich nicht sauber übersetzen lässt und kurz erklärt werden muss. Halte den Ton natürlich und gesprächig, wie in einem echten Podcast.`,
+      source:'Analytics Vidhya', url:'https://www.analyticsvidhya.com/blog/2026/01/notebooklm-super-prompts-for-pro-level-productivity/'},
+    {id:46, cat:'content', title:'Internationale Spezialfolge in einer Fremdsprache', framework:'PACT',
+      usecase:'Fremdsprachige Audio-Inhalte aus deutsch- oder anderssprachigen Quellen erzeugen.',
+      prompt:`Dies ist eine internationale Sonderfolge, die vollständig auf [ZIELSPRACHE] produziert wird. Verbindliche Vorgaben für beide Stimmen:
+1) Nur [ZIELSPRACHE] für die gesamte Folge, vom ersten bis zum letzten Wort.
+2) Andere Sprachen sind nicht erlaubt, außer bei Eigennamen, international gebräuchlichen Fachbegriffen und unbedingt nötigen wörtlichen Zitaten.
+3) Fremdsprachige Fachbegriffe beim ersten Vorkommen kurz übersetzen oder erklären, danach in [ZIELSPRACHE] weiterverwenden.
+4) Natürlicher Sprachfluss: Pausen, korrekte Betonung, klare Aussprache.
+Zielumfang: 22-28 Minuten. Struktur: Eröffnung (1 Min., Begrüßung, Themeneinführung, Vorschau auf die 3 überraschendsten Punkte), Hauptteil (18-22 Min., thematische Vertiefung mit exakten Quellenzitaten), Abschluss (3-5 Min., die 3 praktischen Konsequenzen für die Zuhörenden, eine offene Abschlussfrage). Ton: zwei Fachkolleg*innen im Gespräch, gehobenes Register, gelegentliche Pointen, kein Marketing-Ton.`,
+      source:'pasqualepillitteri.it', url:'https://pasqualepillitteri.it/en/news/1506/notebooklm-prompts-senior-researcher-workflow'},
+    {id:47, cat:'content', title:'Blogartikel aus den Quellen', framework:'RTF',
+      usecase:'Rohstoff aus Recherche in einen lesbaren Artikel überführen.',
+      prompt:`Verfasse einen Blogartikel zu [THEMA] ausschließlich auf Basis meiner Quellen: ein einprägsamer Einstieg (Hook), 3-4 inhaltliche Abschnitte mit je einem Kernpunkt, ein Fazit. Erfinde keine Fakten, Zahlen oder Zitate, die nicht in den Quellen stehen.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:48, cat:'content', title:'Social-Media-Thread', framework:'RTF',
+      usecase:'Recherche in Social-Media-Content umwandeln.',
+      prompt:`Erstelle aus den Kernideen meiner Quellen zu [THEMA] einen Thread für [PLATTFORM, z. B. LinkedIn/X] mit 6-9 Beiträgen. Jeder Beitrag transportiert eine eigenständige Idee, plattformgerechte Länge, ohne Fakten zu erfinden.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:49, cat:'content', title:'Foliengliederung aus dem Material', framework:'RTF',
+      usecase:'Vortragsstruktur direkt aus dem Recherchematerial ableiten.',
+      prompt:`Erstelle eine Foliengliederung aus meinen Quellen zu [THEMA]: pro Folie Titel, 3-4 Bulletpoints, ggf. ein Datenpunkt, sowie Sprechernotizen mit einer möglichen Rückfrage aus dem Publikum.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+    {id:50, cat:'content', title:'E-Mail-Digest aus Updates', framework:'RTF',
+      usecase:'Berichte oder Meeting-Notizen in eine schnell lesbare E-Mail umwandeln.',
+      prompt:`Fasse die hochgeladenen Berichte/Protokolle als scanbaren E-Mail-Digest zusammen: Betreffzeile, Bulletpoints je Thema, und eine klar markierte Zeile „Entscheidung nötig", wo zutreffend.`,
+      source:'techpresso academy', url:'https://academy.techpresso.co/prompts/notebooklm-prompts'},
+
+    {id:51, cat:'persona', title:'Advocatus Diaboli', framework:'RISEN',
+      usecase:'Kritische Prüfung vor öffentlicher Nutzung, Belastbarkeitstest vor strategischen Entscheidungen.',
+      prompt:`Verhalte dich wie ein Advocatus Diaboli. Deine einzige Aufgabe ist es, die hochgeladenen Quellen auseinanderzunehmen, nicht sie zusammenzufassen. Behandle jede Behauptung so, als müsstest du sie vor einer skeptischen Jury widerlegen. Erstelle einen kritischen Bericht in 6 Abschnitten:
+INTERNE WIDERSPRÜCHE (Stellen, an denen sich Quellen widersprechen oder eine Quelle sich zwischen Prämisse und Schlussfolgerung selbst widerspricht, beide Stellen wörtlich zitiert)
+AUSWAHL-BIAS (was aus dem Korpus ausgeschlossen wurde, das nötig gewesen wäre; welche Stimmen, Regionen, Zeiträume, Segmente fehlen)
+INTERESSENKONFLIKTE (für jede Quelle: gibt es finanzielle, politische oder ideologische Interessen, die die Botschaft verzerren könnten? Falls nicht aus den Quellen selbst ersichtlich: „extern zu prüfen" markieren)
+UNBELEGTE BEHAUPTUNGEN (die 5 stärksten Aussagen im Material, die auf schwacher Evidenz, Anekdoten, Zitaten aus zweiter Hand oder Autoritätsargumenten beruhen)
+GEGENARGUMENTE (baue für die Hauptthese des Korpus das bestmögliche Gegenargument, nur mit Elementen aus den Quellen selbst)
+URTEIL (eine Abschlussbewertung in 3 Stufen: TRAGFÄHIG / MUSS GESTÄRKT WERDEN / NICHT VERTRETBAR, mit Begründung und Angabe, welche zusätzlichen Quellen die Lücken schließen würden)
+Sei kompromisslos.`,
+      source:'pasqualepillitteri.it', url:'https://pasqualepillitteri.it/en/news/1506/notebooklm-prompts-senior-researcher-workflow'},
+    {id:52, cat:'persona', title:'Selbstverbesserung durch Quellenabgleich', framework:'RISEN',
+      usecase:'Skill-Aufbau, Projektreflexion, aus eigenen Fehlversuchen lernen.',
+      prompt:`Ich habe etwas versucht, und es hat nicht wie erwartet funktioniert. Analysiere meinen Versuch im direkten Abgleich mit dem hochgeladenen Material. Details: Vorhaben: [WAS ICH VERSUCHT HABE]. Mein Vorgehen: [SCHRITTE, DIE ICH UNTERNOMMEN HABE]. Ergebnis: [WAS TATSÄCHLICH PASSIERT IST]. Erwartetes Ergebnis: [WAS ICH ERWARTET HATTE]. Gleiche nun mein Vorgehen mit den Quellen ab und identifiziere: Methoden/Schritte, die ich nicht befolgt habe (wörtlich aus den Quellen zitiert), wichtige Konzepte, die ich komplett übersehen habe, Grundlagen, die ich übersprungen habe. Gib die Ausgabe im Format: „Lücke bei [KONZEPT]: Du hast [SCHRITT] übersehen, aber [QUELLE, Seite X] sagt: [WÖRTLICHES ZITAT]." Fokus auf Lernen, nicht auf Schuldzuweisung.`,
+      source:'Analytics Vidhya', url:'https://www.analyticsvidhya.com/blog/2026/01/notebooklm-super-prompts-for-pro-level-productivity/'},
+    {id:53, cat:'persona', title:'Schulunterricht-Persona', framework:'CO-STAR',
+      usecase:'Technisches oder akademisches Material für Laien, Azubis oder allgemeines Publikum zugänglich machen.',
+      prompt:`Verhalte dich wie eine begeisterte Lehrperson (8. Klasse, 12-13 Jahre), die gut erklären kann. Übersetze das dichte Material in diesem Notebook in eine Sprache, die ein 13-Jähriger versteht, ohne die Inhalte zu verfälschen. Strukturiere jede Antwort immer so:
+TL;DR (ein Satz, max. 25 Wörter, einfache Sprache, kein Fachjargon, beantwortet die Hauptfrage)
+ANALOGIE (eine Metapher oder ein Alltagsbeispiel, das das Konzept greifbar macht; bevorzuge Alltagsbeispiele wie Kochen, Sport, Schule, Familie gegenüber abstrakten Analogien)
+WICHTIGSTES VOKABULAR (3 schwierige Wörter aus dem Material, je mit Ein-Satz-Definition auf Schulniveau)
+KONTROLLFRAGE (eine Abschlussfrage, die nach dem Lesen beantwortbar sein sollte, mit Musterantwort in 2 Zeilen)
+Für besonders dichte Absätze: in Wahr/Falsch-Format mit Begründung zerlegen. Ton: warm, geduldig, nie herablassend.`,
+      source:'pasqualepillitteri.it', url:'https://pasqualepillitteri.it/en/news/1506/notebooklm-prompts-senior-researcher-workflow'},
+
+    {id:54, cat:'reba', title:'Anforderungs-Gap-Analyse (IREB-Vollständigkeit)', framework:'RISEN',
+      usecase:'Vor dem nächsten Workshop prüfen, was im bisherigen Anforderungsmaterial fehlt.',
+      prompt:`Sichte alle in diesem Notebook hochgeladenen Anforderungsquellen (Interviews, Lastenheft-Entwurf, Protokolle) gemeinsam und identifiziere, was fehlt — nicht, was bereits dokumentiert ist. Prüfe insbesondere gegen das IREB-Vollständigkeitskriterium (CPRE Foundation Level Syllabus, aktuelle Fassung):
+1) Welche Stakeholdergruppen kommen in den Quellen nicht zu Wort?
+2) Welche nicht-funktionalen Anforderungskategorien (z. B. nach ISO/IEC 25010) werden nirgends adressiert?
+3) Wo treffen die Quellen Annahmen über Lösungen, ohne das zugrunde liegende Problem/Ziel zu benennen?
+4) Schlage 5 konkrete Rückfragen vor, die ich in der nächsten Stakeholder-Runde stellen sollte, um diese Lücken zu schließen.
+Belege jeden Punkt mit einem wörtlichen Zitat aus den Quellen.`,
+      source:'Adaption für RE/BA/PM (Michaela Kühn, PromptSchule) — Basis: Analytics Vidhya „Source Gap Prompt"', url:''},
+    {id:55, cat:'reba', title:'Stakeholder-Widerspruchs-Detektor', framework:'RISEN',
+      usecase:'Konflikte zwischen Interessengruppen vor der Priorisierung sichtbar machen.',
+      prompt:`Vergleiche die hochgeladenen Stakeholder-Interviews/Protokolle (z. B. Ela — Projektleitung, Sarah — Vertrieb, Petra — QM, Knut — Entwicklung, Herr Bachmeier — Geschäftsführung) zu [THEMA/ANFORDERUNGSBEREICH]. Zeige für jeden Widerspruch: die konkrete Aussage jeder Person mit wörtlichem Zitat, die vermutliche Ursache des Widerspruchs (unterschiedliche Interessen, unterschiedlicher Kenntnisstand, unterschiedliche Priorität), und einen Vorschlag, wie der Widerspruch im nächsten Abstimmungstermin aufgelöst werden könnte. Fasse die Interviews nicht zusammen — konzentriere dich ausschließlich auf entscheidungsrelevante Konflikte.`,
+      source:'Adaption für RE/BA/PM (Michaela Kühn, PromptSchule) — Basis: Analytics Vidhya „Contradictions Prompt"', url:''},
+    {id:56, cat:'reba', title:'IREB-Qualitätscheck für Anforderungen', framework:'RISEN',
+      usecase:'Anforderungsdokument vor der Freigabe auf handwerkliche Qualität prüfen.',
+      prompt:`Prüfe jede in den hochgeladenen Quellen formulierte Anforderung einzeln gegen die IREB-Qualitätskriterien für Einzelanforderungen (CPRE Foundation Level, aktuelle Syllabus-Fassung): eindeutig, notwendig, umsetzbar/machbar, verifizierbar/testbar, atomar (genau eine Anforderung pro Satz). Gib pro Anforderung eine Tabelle aus: Anforderungstext (Original) → verletztes Kriterium (falls vorhanden) → konkreter Verbesserungsvorschlag. Kennzeichne Anforderungen, die eigentlich eine Lösung statt eines Ziels beschreiben, separat mit dem Hinweis „Problem/Lösung prüfen".`,
+      source:'Adaption für RE/BA/PM (Michaela Kühn, PromptSchule) — Bezug: IREB CPRE Foundation Level', url:''},
+    {id:57, cat:'reba', title:'INVEST-Check für User Stories', framework:'Few-Shot',
+      usecase:'Product-Backlog-Pflege, User Stories vor dem Sprint-Planning prüfen.',
+      prompt:`Prüfe jede hochgeladene User Story gegen die INVEST-Kriterien (Independent, Negotiable, Valuable, Estimable, Small, Testable). Beispielformat für die Prüfung einer Story: „Als [Rolle] möchte ich [Ziel], um [Nutzen]" → I: ✅/❌ mit Begründung, N: ✅/❌, V: ✅/❌, E: ✅/❌, S: ✅/❌, T: ✅/❌. Formuliere für jede Story mit mindestens einem ❌ einen konkreten Verbesserungsvorschlag.`,
+      source:'Adaption für RE/BA/PM (Michaela Kühn, PromptSchule) — Bezug: INVEST-Kriterien (Bill Wake)', url:''},
+    {id:58, cat:'reba', title:'Akzeptanzkriterien-Generator (Given-When-Then)', framework:'TRACE',
+      usecase:'Anforderungen testbar/verifizierbar machen.',
+      prompt:`Formuliere für jede hochgeladene Anforderung/User Story mindestens 2 Akzeptanzkriterien im Given-When-Then-Format. Leite die Kriterien ausschließlich aus dem in den Quellen beschriebenen Verhalten ab, erfinde keine zusätzlichen Regeln. Kennzeichne Fälle, in denen die Quelle nicht genug Information für ein testbares Kriterium liefert, statt eine Annahme zu erfinden.`,
+      source:'Adaption für RE/BA/PM (Michaela Kühn, PromptSchule) — Bezug: IREB-Qualitätsmerkmal „verifizierbar"', url:''},
+    {id:59, cat:'reba', title:'Traceability-Matrix-Entwurf', framework:'TRACE',
+      usecase:'Rückverfolgbarkeit gemäß ISO/IEC/IEEE 29148 vorbereiten.',
+      prompt:`Erstelle aus den hochgeladenen Quellen einen Entwurf einer Traceability-Matrix mit den Spalten: Anforderungs-ID (fortlaufend vergeben), Anforderungstext (kurz), Quelle/Stakeholder, betroffenes Modul/Feature (falls erkennbar), zugehöriges Testkriterium (falls in den Quellen vorhanden, sonst „offen"). Markiere Anforderungen ohne erkennbaren Quellenbezug als „Herkunft unklar — klären".`,
+      source:'Adaption für RE/BA/PM (Michaela Kühn, PromptSchule) — Bezug: ISO/IEC/IEEE 29148', url:''},
+    {id:60, cat:'reba', title:'Lastenheft-Pflichtenheft-Abgleich', framework:'RISEN',
+      usecase:'Lastenheft/Pflichtenheft-Konsistenz vor Vertragsschluss oder Freigabe prüfen.',
+      prompt:`Vergleiche das hochgeladene Lastenheft mit dem hochgeladenen Pflichtenheft. Zeige für jede Anforderung im Lastenheft, ob und wie sie im Pflichtenheft aufgegriffen wird, wo die Lösung über die ursprüngliche Anforderung hinausgeht (Scope-Erweiterung) und wo eine Anforderung aus dem Lastenheft im Pflichtenheft fehlt. Kennzeichne Fälle, in denen das Pflichtenheft eine Lösung vorwegnimmt, ohne dass eine Norm dies vorschreibt, mit dem Hinweis „Lösungsraum prüfen".`,
+      source:'Adaption für RE/BA/PM (Michaela Kühn, PromptSchule) — Bezug: Problem-Requirement-Solution-Prinzip', url:''},
+    {id:61, cat:'reba', title:'BABOK-Business-Case-Kurzfassung', framework:'PACT',
+      usecase:'Business Case für Entscheidungsvorlage oder Sponsor-Gespräch strukturieren.',
+      prompt:`Fasse aus den hochgeladenen Quellen den Business Case zu [VORHABEN] entlang der BABOK-Guide-Wissensbereiche „Strategy Analysis" und „Business Analysis Planning and Monitoring" zusammen (IIBA, BABOK Guide v3): aktueller Zustand, gewünschter Zukunftszustand, Lücke/Bedarf, Lösungsoptionen mit grober Aufwands-/Nutzenschätzung, Risiken, Stakeholder mit Entscheidungsbefugnis. Kennzeichne jede Aussage, die nicht direkt aus den Quellen belegbar ist, als Annahme.`,
+      source:'Adaption für RE/BA/PM (Michaela Kühn, PromptSchule) — Bezug: BABOK Guide v3 (IIBA)', url:''},
+    {id:62, cat:'reba', title:'Sponsor-Entscheidungsmemo', framework:'CO-STAR',
+      usecase:'PM/BA-Entscheidungsvorlage für Steering Committees.',
+      prompt:`Verhalte dich wie eine erfahrene Business-Analystin, die ein Entscheidungsmemo für die Geschäftsführung (z. B. für ein Sponsor-Gespräch mit Herrn Bachmeier) vorbereitet. Fasse die hochgeladene Dokumentation in 4 Abschnitten zusammen: NUTZEN FÜR DAS UNTERNEHMEN (mit Zahlen/Belegen aus den Quellen, keine generischen Formulierungen wie „deutliche Verbesserung"), MACHBARKEIT (technische, organisatorische, budgetäre Einschränkungen laut Quellen; harte vs. verhandelbare Hürden trennen), ENTSCHEIDUNGSOPTIONEN (max. 3, je mit Aufwand, Nutzen, Risiko), OFFENE FRAGEN AN DIE GESCHÄFTSFÜHRUNG. Wenn Zahlen oder Fristen in den Quellen fehlen, schreibe „nicht belegt" statt einen plausiblen Wert zu erfinden.`,
+      source:'Adaption für RE/BA/PM (Michaela Kühn, PromptSchule) — Bezug: PMBOK Guide (PMI), Governance-Perspektive', url:''}
+  ];
+
+  var NORMEN = [
+    ['IREB CPRE Foundation Level Syllabus', 'Version 3.3.0 (Stand 01.04.2026)', 'in Kraft'],
+    ['BABOK Guide (IIBA)', 'Version 3', 'in Kraft — keine Nachfolgeversion zum Stand 21.08.2026 bekannt'],
+    ['PMBOK Guide (PMI)', '8. Ausgabe, angekündigt für Januar 2026 (Vorgänger: 7. Ausgabe, 2021)', 'Ankündigung nur über Sekundärquellen bestätigt — vor Zitat in Kundendokumenten gegen pmi.org prüfen'],
+    ['ISO/IEC/IEEE 29148', '2018-Ausgabe', 'in Kraft — 2. Ausgabe laut ISO-Normkatalog im Entwurfsstadium (DIS), noch nicht veröffentlicht'],
+    ['ISO/IEC 25010', '2023-Ausgabe', 'in Kraft (referenziert im Audit-Anhang D dieses Tools)'],
+    ['INVEST-Kriterien', 'Bill Wake, 2003', 'kein formaler Normstatus — etabliertes Community-Kriterium']
+  ];
+
+  var SYSTEM_PROMPT = `Baue ein einzelnes, vollständig offlinefähiges HTML-Tool namens "NotebookLM-Masterprompt-Bibliothek" für Michaela Kühns RE/BA/PM-Trainingsuniversum.
+
+STRUKTUR
+- Fixed Signatur oben rechts (Name + Website-Link, position:fixed).
+- Header mit Titel/Untertitel, darunter sticky Filter-/Suchleiste mit Pill-Buttons für 8 Kategorien und Text-Suchfeld, plus Beamer-Modus-Button.
+- Main-Bereich: pro Kategorie eine Sektion mit Karten-Grid (responsive, auto-fill minmax 320px). Jede Karte zeigt vollständig, ohne Slide-/Akkordeon-Versteck: Kategorie-Badge, Framework-Badge (RTF/CO-STAR/RISEN/TRACE/PACT/APE/Chain-of-Thought/Few-Shot), Titel, Einsatzzweck, vollständigen Prompt-Text mit [PLATZHALTERN] in eckigen Klammern, "In Zwischenablage kopieren"-Button, Quellenangabe mit Link.
+- Footer mit vier <details>-Boxen (kanonische Klassen .footer-sig/.footer-details/.footer-box/.footer-summary/.footer-content/.footer-mono/.footer-sans/.footer-table): Systemprompt (dieser Master-Bau-Prompt), Handbuch (Framework-Legende + didaktische Einordnung), Vortrags-Skript, Normen-Register.
+
+DATENMODELL
+- JS-Array PROMPTS: {id, cat, title, framework, usecase, prompt, source, url}. Array CATEGORIES: {key, label, icon}. Array NORMEN für die Normen-Register-Tabelle.
+- Rendering rein clientseitig aus den Arrays, kein Server, kein fetch().
+
+DESIGN-VORGABEN
+- Hintergrund durchgehend Weiß, color-scheme:light auf html/body, kein Dark Theme.
+- Fließtext ≥16px, Sekundärtext/Badges ≥14px, Kontrast ≥4.5:1 (WCAG AA).
+- Keine externen CDN-Ressourcen — alles inline in einer Datei (CSS + JS).
+- Kopierfunktion: navigator.clipboard.writeText in try/catch, Fallback über verstecktes Textarea + document.execCommand("copy"), ebenfalls try/catch, mit sichtbarem Erfolgs-/Fehler-Feedback direkt am Button.
+- Kein sessionStorage/localStorage nötig für die Grundfunktion; falls ergänzt, zwingend try/catch.
+- Beamer-Modus-Toggle: vierstufig, kumulativ (Normal → Beamer → Beamer XL → Beamer XXL → Normal), className von <html> kumulativ ('', 'beamer', 'beamer beamer-xl', 'beamer beamer-xl beamer-xxl'), reine Größensteigerung, Footer ab Stufe 1 display:none.
+
+PERSONA-BEZUG
+- Nur in der Kategorie RE/BA/PM-Extra: illustrativ die festen Personas verwenden (Ela = Projektleitung, Knut = Entwicklung, Sarah = Vertrieb, Petra = QM, Herr Bachmeier = Geschäftsführung). Nicht erzwingen, wo unpassend. In den übrigen 7 Kategorien keine Personas — dort ist der Bezug fachneutral.
+
+FACHLICHER BEZUG
+- Kategorie RE/BA/PM-Extra referenziert konkret IREB (CPRE Foundation Level Syllabus), BABOK Guide v3 (IIBA), PMBOK Guide (PMI), ISO/IEC/IEEE 29148, INVEST-Kriterien, ISO/IEC 25010 — jeweils mit Version/Status im Normen-Register, per Websuche verifiziert, nicht aus Trainingswissen übernommen.
+
+NICHT-TUN
+- Kein Sliding-Panel, das den Kerninhalt einer Karte hinter einem Klick versteckt — jede Karte zeigt Titel, Einsatzzweck, vollständigen Prompt und Quelle immer sichtbar.
+- Keine generischen Platzhalter-Werte in der RE/BA-Kategorie ohne konkreten Normbezug.
+- Keine Personas außerhalb ihrer festen Rollen verwenden.
+- Kein Impressum im Footer.
+- Keine Unicode-Escape-Sequenzen in JS-Strings — UTF-8 direkt.`;
+
+  var HANDBUCH = `Diese Bibliothek ist kein einzelnes Lehrbeispiel, sondern eine kuratierte Sammlung von rund 60 Prompts — die didaktische Klammer ist daher nicht die Analyse eines einzelnen Prompts, sondern die Framework-Zuordnung über die gesamte Sammlung hinweg.
+
+Framework-Legende (siehe Badge auf jeder Karte):
+– RTF (Role, Task, Format): kurze, direkte Abfragen mit klarem Ausgabeformat — z. B. Master-Index, Glossar, FAQ.
+– CO-STAR (Context, Objective, Style, Tone, Audience, Response): Prompts mit klar definierter Zielgruppe und Tonalität — v. a. Personas (Lehrkraft, Product Manager, Advocatus Diaboli) und Audio-Overview-Steuerung.
+– RISEN (Role, Instructions, Steps, End Goal, Narrowing): mehrstufige Analyseaufgaben mit explizitem Ziel und Eingrenzung — v. a. Widerspruchs-, Lücken- und Gap-Analysen.
+– TRACE (Task, Request, Action, Context, Example): Prompts, die von einem Beispiel/Format leben — Flashcards, Tabellen, Given-When-Then-Akzeptanzkriterien.
+– PACT (Purpose, Action, Context, Tone): Kommunikationsaufgaben mit klarem Empfängerbezug — Entscheidungsmemos, Risikoprüfungen.
+– Chain-of-Thought: Prompts, die einen Denkprozess sichtbar machen (Feynman-Rollentausch, Prioritätenkarte bei den 5 Kernfragen).
+– Few-Shot: Prompts, die ein vorgegebenes Beispiel/Muster fortsetzen (Prüfung im Dozentenstil, INVEST-Check).
+
+Zentraler Lernhinweis: Ein Prompt wird nicht dadurch besser, dass er länger ist, sondern dadurch, dass er 1) eine Quellen-Bindung erzwingt (Zitatpflicht statt freier Behauptung), 2) ein Ausgabeformat vorgibt statt nur ein Thema zu nennen, und 3) explizit sagt, was NICHT im Fokus stehen soll. Diese drei Punkte tauchen in praktisch jedem Prompt dieser Bibliothek auf — das ist der eigentliche "Meister"-Faktor, nicht die Kategorie.
+
+Nachbau-Tipp: Eine eigene Kategorie ergänzen, indem ein bestehender RISEN- oder CO-STAR-Prompt als Vorlage genommen und Rolle/Zielgruppe/Norm-Bezug ausgetauscht werden — die Struktur (Zitatpflicht, Format, Eingrenzung) bleibt stabil. Genau so ist die RE/BA/PM-Extra-Kategorie aus den allgemeinen Prompts abgeleitet.
+
+IREB/BABOK/PMBOK-Bezug: Die sieben allgemeinen Kategorien sind bewusst fachneutral gehalten (Studium, Recherche, Content) — ein direkter IREB/BABOK/PMBOK-Bezug ist dort nicht einschlägig. Er ist explizit in der Kategorie "RE/BA/PM-Extra" hergestellt (siehe Normen-Register).`;
+
+  var VORTRAG = `Schritt 1 — Einstieg (30 Sek.)
+(Tool im Browser öffnen, Filterleiste zeigen)
+Sprechtext: "Das hier ist keine Anleitung zum Prompten, sondern eine fertige Bibliothek: rund 60 einsatzbereite Masterprompts für NotebookLM, aus mehreren Quellen zusammengetragen und für unser Requirements-Engineering- und Business-Analyse-Umfeld angepasst."
+Übergang: "Schauen wir uns an, wie sie aufgebaut ist."
+
+Schritt 2 — Kategorien zeigen (45 Sek.)
+(Auf die Pill-Buttons klicken, 2-3 Kategorien durchklicken)
+Sprechtext: "Acht Kategorien, von 'Erster Überblick' bis 'Content-Repurposing'. Jede Karte zeigt sofort: wofür der Prompt gedacht ist, den vollständigen Text zum Copy-Paste, und aus welcher Quelle er stammt."
+Übergang: "Und jede Karte trägt zusätzlich ein Framework-Label."
+
+Schritt 3 — Framework-Badge erklären (45 Sek.)
+(Auf ein Badge wie "RISEN" zeigen)
+Sprechtext: "Das ist der eigentliche Lerneffekt: Man sieht nicht nur, DASS ein Prompt funktioniert, sondern WELCHES Framework aus unserer PromptSchule dahintersteckt — RTF, CO-STAR, RISEN, TRACE, PACT. Das macht die Bibliothek auch als Unterrichtsmaterial nutzbar."
+Übergang: "Jetzt zur Suche."
+
+Schritt 4 — Suche & Kopieren live zeigen (60 Sek.)
+(Im Suchfeld z. B. "Widerspruch" eingeben, eine Karte anklicken, "Kopieren" klicken)
+Sprechtext: "Die Suche filtert über alle Kategorien hinweg — Titel, Text, Framework. Und ein Klick auf 'Kopieren' legt den vollständigen Prompt in die Zwischenablage, fertig zum Einfügen in NotebookLM."
+Übergang: "Jetzt zur Kategorie, die für uns am wichtigsten ist."
+
+Schritt 5 — RE/BA/PM-Extra-Kategorie (90 Sek.)
+(Pill "RE/BA/PM-Extra" anklicken)
+Sprechtext: "Diese neun Prompts sind keine Übersetzungen, sondern echte Adaptionen: Anforderungs-Gap-Analyse nach IREB-Vollständigkeitskriterium, Stakeholder-Widerspruchs-Detektor mit unseren Personas, INVEST-Check für User Stories, IREB-Qualitätscheck für Einzelanforderungen. Wer ein Anforderungsdokument oder Interview-Transkripte in NotebookLM lädt, hat hier den direkten Einstieg."
+Übergang: "Zum Schluss: der Beamer-Modus."
+
+Schritt 6 — Beamer-Modus (30 Sek.)
+(Beamer-Button 2-3x klicken)
+Sprechtext: "Für den Vortrag selbst: ein Klick auf diesen Button vergrößert die gesamte Ansicht in drei Stufen — praktisch, wenn wir das direkt aus dem Raum heraus zeigen, ohne vorher Schriftgrößen anzupassen."
+Abschluss: "Die Datei läuft komplett offline, ihr könnt sie also direkt vom iPad aus öffnen und mitnehmen."
+
+Allgemeine Regie-Hinweise: Nicht mit der RE/BA-Kategorie beginnen — erst den allgemeinen Nutzen zeigen, dann den fachlichen Mehrwert. Gesamtdauer ca. 5-6 Minuten.`;
+
+  // ---------- Rendering ----------
+
+  function escapeHtml(str){
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  var catByKey = {};
+  CATEGORIES.forEach(function(c){ catByKey[c.key] = c; });
+
+  var state = { activeCat: 'all', query: '' };
+
+  function pillRow(){
+    var row = document.getElementById('pillRow');
+    var html = '<button type="button" class="pill active" data-cat="all">Alle</button>';
+    CATEGORIES.forEach(function(c){
+      html += '<button type="button" class="pill" data-cat="' + c.key + '">' + c.icon + ' ' + escapeHtml(c.label) + '</button>';
+    });
+    row.innerHTML = html;
+    row.addEventListener('click', function(e){
+      var btn = e.target.closest('.pill');
+      if(!btn) return;
+      state.activeCat = btn.getAttribute('data-cat');
+      row.querySelectorAll('.pill').forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      render();
+    });
+  }
+
+  function matchesQuery(p, q){
+    if(!q) return true;
+    var hay = (p.title + ' ' + p.framework + ' ' + p.usecase + ' ' + p.prompt + ' ' + p.source).toLowerCase();
+    return hay.indexOf(q) !== -1;
+  }
+
+  function render(){
+    var grid = document.getElementById('grid');
+    var q = state.query.trim().toLowerCase();
+    var cats = state.activeCat === 'all' ? CATEGORIES : [catByKey[state.activeCat]];
+    var html = '';
+    var totalShown = 0;
+
+    cats.forEach(function(cat){
+      var items = PROMPTS.filter(function(p){ return p.cat === cat.key && matchesQuery(p, q); });
+      if(items.length === 0) return;
+      totalShown += items.length;
+      html += '<section class="cat-section"><h2 class="cat-heading">' + cat.icon + ' ' + escapeHtml(cat.label) + ' <span class="cat-count">(' + items.length + ')</span></h2><div class="grid">';
+      items.forEach(function(p){
+        var promptHtml = escapeHtml(p.prompt).replace(/\n/g, '<br>');
+        var sourceHtml = p.url
+          ? '<a href="' + escapeHtml(p.url) + '" target="_blank" rel="noopener">' + escapeHtml(p.source) + '</a>'
+          : escapeHtml(p.source);
+        html += '<article class="card" data-id="' + p.id + '">'
+          + '<div class="card-head"><span class="badge badge-cat">' + escapeHtml(cat.label) + '</span><span class="badge badge-fw">' + escapeHtml(p.framework) + '</span></div>'
+          + '<h3>' + escapeHtml(p.title) + '</h3>'
+          + '<p class="usecase"><strong>Einsatz:</strong> ' + escapeHtml(p.usecase) + '</p>'
+          + '<div class="prompt-box">' + promptHtml + '</div>'
+          + '<div class="card-foot"><button type="button" class="copy-btn" data-id="' + p.id + '">In Zwischenablage kopieren</button><span class="source">Quelle: ' + sourceHtml + '</span></div>'
+          + '</article>';
+      });
+      html += '</div></section>';
+    });
+
+    if(totalShown === 0){
+      html = '<p class="no-results">Keine Treffer für diese Suche/Filterkombination.</p>';
+    }
+    grid.innerHTML = html;
+  }
+
+  function copyText(text, btn){
+    var original = btn.textContent;
+    function ok(){
+      btn.textContent = 'Kopiert ✓';
+      btn.classList.add('copied');
+      setTimeout(function(){ btn.textContent = original; btn.classList.remove('copied'); }, 1800);
+    }
+    function fail(){
+      btn.textContent = 'Bitte manuell markieren';
+      setTimeout(function(){ btn.textContent = original; }, 2500);
+    }
+    function fallbackCopy(){
+      try{
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.top = '-1000px';
+        ta.style.left = '-1000px';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        var success = false;
+        try{ success = document.execCommand('copy'); } catch(e2){ success = false; }
+        document.body.removeChild(ta);
+        if(success){ ok(); } else { fail(); }
+      } catch(e3){
+        fail();
+      }
+    }
+    try{
+      if(navigator.clipboard && window.isSecureContext){
+        navigator.clipboard.writeText(text).then(ok, fallbackCopy);
+      } else {
+        fallbackCopy();
+      }
+    } catch(e){
+      fallbackCopy();
+    }
+  }
+
+  function wireGrid(){
+    document.getElementById('main').addEventListener('click', function(e){
+      var btn = e.target.closest('.copy-btn');
+      if(!btn) return;
+      var id = parseInt(btn.getAttribute('data-id'), 10);
+      var item = null;
+      for(var i=0;i<PROMPTS.length;i++){ if(PROMPTS[i].id === id){ item = PROMPTS[i]; break; } }
+      if(item){ copyText(item.prompt, btn); }
+    });
+  }
+
+  function wireSearch(){
+    var input = document.getElementById('searchInput');
+    input.addEventListener('input', function(){
+      state.query = input.value;
+      render();
+    });
+  }
+
+  // ---------- Beamer mode (K18) ----------
+  var BEAMER_LEVELS = [
+    { cls: '',                                 label: '☀ Beamer' },
+    { cls: 'beamer',                           label: '☀ Beamer XL' },
+    { cls: 'beamer beamer-xl',                 label: '☀ Beamer XXL' },
+    { cls: 'beamer beamer-xl beamer-xxl',      label: '☀ Normal' }
+  ];
+  var beamerIdx = 0;
+
+  function wireBeamer(){
+    var btn = document.getElementById('beamerBtn');
+    btn.addEventListener('click', function(){
+      beamerIdx = (beamerIdx + 1) % BEAMER_LEVELS.length;
+      document.documentElement.className = BEAMER_LEVELS[beamerIdx].cls;
+      btn.textContent = BEAMER_LEVELS[beamerIdx].label;
+    });
+  }
+
+  // ---------- Footer content ----------
+  function renderFooterText(){
+    document.getElementById('systemPromptBox').textContent = SYSTEM_PROMPT;
+    document.getElementById('handbuchBox').textContent = HANDBUCH;
+    document.getElementById('vortragsBox').textContent = VORTRAG;
+
+    var tbody = document.querySelector('#normenTable tbody');
+    var rows = '';
+    NORMEN.forEach(function(n){
+      rows += '<tr><td>' + escapeHtml(n[0]) + '</td><td>' + escapeHtml(n[1]) + '</td><td>' + escapeHtml(n[2]) + '</td></tr>';
+    });
+    tbody.innerHTML = rows;
+  }
+
+  // ---------- Init ----------
+  pillRow();
+  wireGrid();
+  wireSearch();
+  wireBeamer();
+  renderFooterText();
+  render();
+
+})();
+</script>
+</body>
+</html>
