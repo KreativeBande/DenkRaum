@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BA-Lifecycle-Lernreise | Michaela Kühn</title>
+<style>
+  html,body{color-scheme:light;background:#ffffff;margin:0;padding:0;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  :root{
+    --ink:#1e2430; --muted:#5b6472; --faint:#8b93a1; --line:#dde2e8;
+    --panel:#f6f7f9; --accent:#1d4ed8; --accent-soft:#e8edfb;
+    --good:#0f7a4c; --good-soft:#e4f5ec; --bad:#b3261e; --bad-soft:#fbe9e8;
+    --ela:#4F46E5; --ela-soft:#eeecfd;
+    --knut:#0D9488; --knut-soft:#e4f5f3;
+    --sarah:#B45309; --sarah-soft:#fbeed8;
+    --petra:#7C3AED; --petra-soft:#f1e9fd;
+    --bach:#334155; --bach-soft:#e7eaee;
+    --feld:#9D174D; --feld-soft:#fce7f0;
+    --oez:#166534; --oez-soft:#e3f3e8;
+  }
+  body{font-family:"Segoe UI",Calibri,Arial,Helvetica,sans-serif;color:var(--ink);}
+
+  .signature{position:fixed;top:14px;right:28px;z-index:500;text-align:right;line-height:1.3;background:rgba(255,255,255,.92);padding:4px 8px;border-radius:8px;}
+  .signature strong{display:block;font-size:14px;color:var(--ink);}
+  .signature a{font-size:14px;color:var(--accent);text-decoration:none;}
+  .signature a:hover{text-decoration:underline;}
+  @media (max-width:900px){.signature{position:static;text-align:right;padding:6px 16px 0;background:none;}}
+
+  .back-link{display:inline-block;font-size:14px;font-weight:600;color:var(--muted);text-decoration:none;margin-bottom:10px;}
+  .back-link:hover{color:var(--accent);}
+
+  header.top{padding:18px 24px 14px;border-bottom:2px solid var(--line);}
+  h1.tool-title{font-size:22px;margin:0 0 4px;line-height:1.25;}
+  html.beamer h1.tool-title{font-size:26px;}
+  html.beamer.beamer-xl h1.tool-title{font-size:30px;}
+  html.beamer.beamer-xl.beamer-xxl h1.tool-title{font-size:34px;}
+  p.tool-sub{font-size:14px;color:var(--muted);margin:0 0 12px;max-width:960px;}
+  html.beamer p.tool-sub{font-size:16px;}
+  html.beamer.beamer-xl p.tool-sub{font-size:18px;}
+  html.beamer.beamer-xl.beamer-xxl p.tool-sub{font-size:20px;}
+
+  .case-switch{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+  .case-pill{min-height:44px;padding:9px 16px;border-radius:999px;border:2px solid var(--line);background:#fff;font-size:15px;font-weight:700;color:var(--muted);}
+  html.beamer .case-pill{font-size:17px;padding:11px 18px;}
+  html.beamer.beamer-xl .case-pill{font-size:19px;}
+  .case-pill.active{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+
+  .topbar-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:14px;padding:6px 12px;border-radius:999px;background:var(--panel);border:1px solid var(--line);color:var(--muted);}
+  html.beamer .badge{font-size:16px;padding:8px 14px;}
+  html.beamer.beamer-xl .badge{font-size:18px;}
+  html.beamer.beamer-xl.beamer-xxl .badge{font-size:20px;}
+  .badge.pass{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);font-weight:700;}
+
+  button{font-family:inherit;cursor:pointer;border:none;}
+  .btn{font-size:16px;min-height:44px;padding:10px 18px;border-radius:10px;background:var(--accent);color:#fff;font-weight:700;}
+  html.beamer .btn{font-size:19px;min-height:52px;padding:12px 22px;}
+  html.beamer.beamer-xl .btn{font-size:22px;min-height:58px;}
+  html.beamer.beamer-xl.beamer-xxl .btn{font-size:26px;min-height:66px;}
+  .btn:active{transform:translateY(1px);}
+  .btn.ghost{background:var(--panel);color:var(--ink);border:1px solid var(--line);}
+  .btn.beamer-btn{background:var(--bach);}
+
+  main{padding:20px 24px 40px;max-width:1320px;margin:0 auto;}
+  .hidden{display:none !important;}
+
+  .intro-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 26px;max-width:960px;}
+  .intro-card h2{font-size:18px;margin:0 0 10px;}
+  html.beamer .intro-card h2{font-size:44px;}
+  html.beamer.beamer-xl .intro-card h2{font-size:54px;}
+  html.beamer.beamer-xl.beamer-xxl .intro-card h2{font-size:64px;}
+  .intro-card p{font-size:16px;line-height:1.55;margin:0 0 12px;}
+  html.beamer .intro-card p{font-size:22px;}
+  html.beamer.beamer-xl .intro-card p{font-size:28px;}
+  html.beamer.beamer-xl.beamer-xxl .intro-card p{font-size:34px;}
+  .fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:14px 0;}
+  .fact{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;}
+  .fact b{display:block;font-size:14px;color:var(--muted);}
+  html.beamer .fact b{font-size:16px;}
+  .fact span{font-size:16px;font-weight:700;}
+  html.beamer .fact span{font-size:19px;}
+  .note-box{border-left:4px solid var(--accent);background:var(--accent-soft);padding:10px 14px;border-radius:0 10px 10px 0;font-size:14px;color:var(--ink);margin-top:14px;}
+  html.beamer .note-box{font-size:17px;}
+  html.beamer.beamer-xl .note-box{font-size:20px;}
+  html.beamer.beamer-xl.beamer-xxl .note-box{font-size:23px;}
+
+  .journey-grid{display:grid;grid-template-columns:34% 66%;gap:22px;align-items:start;margin-top:18px;}
+  @media (max-width:900px){.journey-grid{grid-template-columns:1fr;}}
+
+  .path{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;position:sticky;top:14px;}
+  .path h3{font-size:14px;color:var(--muted);margin:0 0 12px;text-transform:uppercase;letter-spacing:.04em;}
+  html.beamer .path h3{font-size:16px;}
+  .station-nav{list-style:none;margin:0;padding:0;position:relative;}
+  .station-nav::before{content:"";position:absolute;left:21px;top:14px;bottom:14px;width:3px;background:var(--line);border-radius:2px;}
+  .station-item{position:relative;padding:0 0 6px 0;}
+  .station-btn{width:100%;display:flex;align-items:center;gap:12px;background:transparent;border-radius:12px;padding:10px 10px 10px 0;text-align:left;min-height:56px;}
+  .station-btn:hover{background:#eef1f5;}
+  .station-btn.active{background:#fff;box-shadow:0 0 0 2px var(--accent) inset;}
+  .num{position:relative;z-index:2;flex:0 0 auto;width:44px;height:44px;border-radius:50%;background:#fff;border:3px solid var(--faint);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--muted);}
+  html.beamer .num{width:50px;height:50px;font-size:20px;}
+  .station-item.done .num{border-color:var(--good);color:var(--good);background:var(--good-soft);}
+  .station-item.active .num{border-color:var(--accent);color:var(--accent);}
+  .station-meta{display:flex;flex-direction:column;gap:2px;}
+  .station-meta .ka-de{font-size:15px;font-weight:700;line-height:1.25;}
+  html.beamer .station-meta .ka-de{font-size:17px;}
+  html.beamer.beamer-xl .station-meta .ka-de{font-size:19px;}
+  html.beamer.beamer-xl.beamer-xxl .station-meta .ka-de{font-size:21px;}
+  .station-meta .ka-code{font-size:14px;color:var(--faint);}
+  html.beamer .station-meta .ka-code{font-size:16px;}
+  .stamp{margin-left:auto;font-size:18px;flex:0 0 auto;}
+
+  .detail{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;min-height:420px;}
+  .detail-head{display:flex;align-items:flex-start;gap:14px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:16px;}
+  .detail-head .icon{font-size:34px;line-height:1;}
+  html.beamer .detail-head .icon{font-size:40px;}
+  html.beamer.beamer-xl .detail-head .icon{font-size:46px;}
+  html.beamer.beamer-xl.beamer-xxl .detail-head .icon{font-size:52px;}
+  .detail-head h2{font-size:19px;margin:0 0 2px;}
+  html.beamer .detail-head h2{font-size:44px;}
+  html.beamer.beamer-xl .detail-head h2{font-size:54px;}
+  html.beamer.beamer-xl.beamer-xxl .detail-head h2{font-size:64px;}
+  .detail-head .chapter{font-size:14px;color:var(--muted);}
+  html.beamer .detail-head .chapter{font-size:16px;}
+  .task-chip{display:inline-block;margin-top:6px;font-size:14px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:4px 10px;border-radius:999px;}
+  html.beamer .task-chip{font-size:16px;}
+
+  .tech-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .tech-chip{font-size:14px;background:#fff;border:1px dashed var(--faint);color:var(--muted);padding:3px 10px;border-radius:999px;}
+  html.beamer .tech-chip{font-size:16px;}
+
+  .section-label{font-size:14px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);margin:16px 0 6px;font-weight:700;display:flex;align-items:center;justify-content:space-between;}
+  html.beamer .section-label{font-size:16px;}
+  .doc-count{background:var(--accent);color:#fff;border-radius:999px;padding:2px 10px;font-size:14px;font-weight:700;text-transform:none;letter-spacing:0;}
+  html.beamer .doc-count{font-size:15px;}
+
+  .artifact{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
+  .artifact-title-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;margin-bottom:8px;}
+  .artifact-title{font-size:15px;font-weight:700;}
+  html.beamer .artifact-title{font-size:18px;}
+  .artifact-source{font-size:14px;color:var(--accent);background:var(--accent-soft);padding:2px 9px;border-radius:999px;font-weight:600;}
+  html.beamer .artifact-source{font-size:15px;}
+  .artifact table{width:100%;border-collapse:collapse;font-size:14px;}
+  html.beamer .artifact table{font-size:16px;}
+  html.beamer.beamer-xl .artifact table{font-size:18px;}
+  html.beamer.beamer-xl.beamer-xxl .artifact table{font-size:21px;}
+  .artifact th,.artifact td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top;}
+  .artifact th{color:var(--muted);font-weight:700;font-size:14px;text-transform:uppercase;}
+  html.beamer .artifact th{font-size:16px;}
+  html.beamer.beamer-xl .artifact th{font-size:18px;}
+  html.beamer.beamer-xl.beamer-xxl .artifact th{font-size:21px;}
+  .artifact ul{margin:4px 0 0;padding-left:18px;font-size:14px;}
+  html.beamer .artifact ul{font-size:22px;}
+  html.beamer.beamer-xl .artifact ul{font-size:28px;}
+  html.beamer.beamer-xl.beamer-xxl .artifact ul{font-size:34px;}
+  .artifact p.artifact-text{font-size:14px;line-height:1.5;margin:0;}
+  html.beamer .artifact p.artifact-text{font-size:22px;}
+  html.beamer.beamer-xl .artifact p.artifact-text{font-size:28px;}
+  html.beamer.beamer-xl.beamer-xxl .artifact p.artifact-text{font-size:34px;}
+  .artifact .mono{font-family:"Consolas",Menlo,monospace;font-size:14px;line-height:1.5;white-space:pre-wrap;}
+  html.beamer .artifact .mono{font-size:22px;}
+  html.beamer.beamer-xl .artifact .mono{font-size:28px;}
+  html.beamer.beamer-xl.beamer-xxl .artifact .mono{font-size:34px;}
+
+  .approach-block{border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-top:12px;}
+  .approach-block summary{cursor:pointer;list-style:none;padding:12px 14px;font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;justify-content:space-between;}
+  html.beamer .approach-block summary{font-size:18px;}
+  html.beamer.beamer-xl .approach-block summary{font-size:21px;}
+  .approach-block summary::-webkit-details-marker{display:none;}
+  .approach-block summary .gl-arrow::before{content:"▸";color:var(--accent);margin-right:6px;}
+  .approach-block[open] summary .gl-arrow::before{content:"▾";}
+  .approach-body{padding:2px 14px 14px;}
+  .approach-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media (max-width:640px){.approach-grid{grid-template-columns:1fr;}}
+  .approach-col{background:#fff;border-radius:10px;padding:12px 14px;}
+  .approach-col.classic{border:2px solid var(--bach);}
+  .approach-col.agile{border:2px solid var(--knut);}
+  .approach-col h4{margin:0 0 6px;font-size:14px;display:flex;align-items:center;gap:6px;}
+  html.beamer .approach-col h4{font-size:17px;}
+  .approach-col.classic h4{color:var(--bach);}
+  .approach-col.agile h4{color:var(--knut);}
+  .approach-col p{font-size:14px;line-height:1.5;margin:0;color:var(--ink);}
+  html.beamer .approach-col p{font-size:22px;}
+  html.beamer.beamer-xl .approach-col p{font-size:28px;}
+  html.beamer.beamer-xl.beamer-xxl .approach-col p{font-size:34px;}
+  .approach-ref{font-size:14px;color:var(--muted);margin-top:8px;font-style:italic;}
+  html.beamer .approach-ref{font-size:15px;}
+  html.beamer.beamer-xl .approach-ref{font-size:18px;}
+  html.beamer.beamer-xl.beamer-xxl .approach-ref{font-size:21px;}
+
+  .glossary-block{border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-top:4px;}
+  .glossary-block summary{cursor:pointer;list-style:none;padding:12px 14px;font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;justify-content:space-between;}
+  html.beamer .glossary-block summary{font-size:18px;}
+  html.beamer.beamer-xl .glossary-block summary{font-size:21px;}
+  .glossary-block summary::-webkit-details-marker{display:none;}
+  .glossary-block summary .gl-arrow::before{content:"▸";color:var(--accent);margin-right:6px;}
+  .glossary-block[open] summary .gl-arrow::before{content:"▾";}
+  .glossary-body{padding:2px 14px 14px;}
+  .gl-term{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:8px;}
+  .gl-name{font-size:15px;font-weight:800;color:var(--ink);margin:0 0 4px;}
+  html.beamer .gl-name{font-size:18px;}
+  html.beamer.beamer-xl .gl-name{font-size:20px;}
+  html.beamer.beamer-xl.beamer-xxl .gl-name{font-size:23px;}
+  .gl-def{font-size:14px;line-height:1.5;color:var(--ink);margin:0 0 6px;}
+  html.beamer .gl-def{font-size:22px;}
+  html.beamer.beamer-xl .gl-def{font-size:28px;}
+  html.beamer.beamer-xl.beamer-xxl .gl-def{font-size:34px;}
+  .gl-ex{font-size:14px;line-height:1.5;color:var(--muted);font-style:italic;margin:0;padding-left:10px;border-left:3px solid var(--accent);}
+  html.beamer .gl-ex{font-size:22px;}
+  html.beamer.beamer-xl .gl-ex{font-size:28px;}
+  html.beamer.beamer-xl.beamer-xxl .gl-ex{font-size:34px;}
+
+  .persona-box{display:flex;gap:12px;align-items:flex-start;border-radius:12px;padding:12px 14px;margin-top:6px;}
+  .persona-avatar{flex:0 0 auto;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:15px;}
+  .persona-name{font-weight:800;font-size:14px;}
+  html.beamer .persona-name{font-size:17px;}
+  .persona-role{font-weight:400;font-size:14px;color:var(--muted);}
+  html.beamer .persona-role{font-size:16px;}
+  .persona-text{font-size:15px;line-height:1.5;margin-top:3px;}
+  html.beamer .persona-text{font-size:22px;}
+  html.beamer.beamer-xl .persona-text{font-size:28px;}
+  html.beamer.beamer-xl.beamer-xxl .persona-text{font-size:34px;}
+
+  .crossref{font-size:14px;color:var(--muted);margin-top:10px;padding:8px 12px;border:1px dashed var(--line);border-radius:8px;}
+  html.beamer .crossref{font-size:16px;}
+
+  .quiz{margin-top:16px;border-top:1px solid var(--line);padding-top:14px;}
+  .quiz-q{font-size:15px;font-weight:700;margin:0 0 10px;line-height:1.4;}
+  html.beamer .quiz-q{font-size:22px;}
+  html.beamer.beamer-xl .quiz-q{font-size:28px;}
+  html.beamer.beamer-xl.beamer-xxl .quiz-q{font-size:34px;}
+  .opt{display:block;width:100%;text-align:left;background:var(--panel);border:2px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:8px;font-size:15px;min-height:44px;}
+  html.beamer .opt{font-size:22px;padding:14px 16px;}
+  html.beamer.beamer-xl .opt{font-size:28px;}
+  html.beamer.beamer-xl.beamer-xxl .opt{font-size:34px;}
+  .opt:hover{border-color:var(--faint);}
+  .opt.correct{background:var(--good-soft);border-color:var(--good);}
+  .opt.wrong{background:var(--bad-soft);border-color:var(--bad);}
+  .opt[disabled]{cursor:default;}
+  .feedback{font-size:14px;line-height:1.5;padding:12px 14px;border-radius:10px;margin-top:6px;}
+  html.beamer .feedback{font-size:22px;}
+  html.beamer.beamer-xl .feedback{font-size:28px;}
+  html.beamer.beamer-xl.beamer-xxl .feedback{font-size:34px;}
+  .feedback.ok{background:var(--good-soft);color:#0a4a2f;}
+  .feedback.no{background:var(--bad-soft);color:#7a1a15;}
+
+  .detail-nav{display:flex;justify-content:space-between;margin-top:18px;gap:10px;}
+
+  .finale-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;margin-top:18px;}
+  .finale-card h2{font-size:20px;margin:0 0 12px;}
+  html.beamer .finale-card h2{font-size:44px;}
+  html.beamer.beamer-xl .finale-card h2{font-size:54px;}
+  html.beamer.beamer-xl.beamer-xxl .finale-card h2{font-size:64px;}
+  .trace-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px;}
+  html.beamer .trace-table{font-size:16px;}
+  .trace-table th,.trace-table td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
+  .trace-table th{background:#fff;font-size:14px;text-transform:uppercase;color:var(--muted);}
+  html.beamer .trace-table th{font-size:16px;}
+
+  .compare-card{background:#fff;border:2px dashed var(--accent);border-radius:16px;padding:20px 24px;margin-top:18px;max-width:960px;}
+  .compare-card h3{font-size:16px;margin:0 0 8px;}
+  html.beamer .compare-card h3{font-size:19px;}
+  .compare-card p{font-size:15px;line-height:1.55;margin:0;}
+  html.beamer .compare-card p{font-size:18px;}
+
+  .trace-thread{position:relative;max-width:820px;margin:22px auto 0;padding-left:40px;}
+  .trace-thread::before{content:"";position:absolute;left:15px;top:6px;bottom:6px;width:3px;background:var(--accent);border-radius:2px;opacity:.35;}
+  .trace-item{position:relative;margin-bottom:18px;}
+  .trace-dot{position:absolute;left:-40px;top:0;width:32px;height:32px;border-radius:50%;background:#fff;border:3px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:15px;z-index:2;}
+  .trace-content{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px;}
+  .trace-content h5{margin:0 0 4px;font-size:14px;font-weight:800;color:var(--accent);}
+  html.beamer .trace-content h5{font-size:17px;}
+  html.beamer.beamer-xl .trace-content h5{font-size:18px;}
+  html.beamer.beamer-xl.beamer-xxl .trace-content h5{font-size:21px;}
+  .trace-content p{margin:0;font-size:15px;line-height:1.5;}
+  html.beamer .trace-content p{font-size:22px;}
+  html.beamer.beamer-xl .trace-content p{font-size:28px;}
+  html.beamer.beamer-xl.beamer-xxl .trace-content p{font-size:34px;}
+  .trace-req-badge{display:inline-block;background:var(--accent);color:#fff;font-weight:800;padding:6px 14px;border-radius:999px;font-size:14px;margin-bottom:4px;}
+  html.beamer .trace-req-badge{font-size:16px;}
+
+  .mindmap-wrap{position:relative;width:100%;max-width:640px;aspect-ratio:1/1;margin:24px auto;}
+  .mm-svg{position:absolute;inset:0;width:100%;height:100%;}
+  .mm-hub{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:33%;aspect-ratio:1/1;text-align:center;background:#fff;border:3px solid var(--accent);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6%;box-shadow:0 2px 10px rgba(0,0,0,.08);}
+  .mm-hub-title{font-size:15px;font-weight:800;line-height:1.2;}
+  html.beamer .mm-hub-title{font-size:18px;}
+  html.beamer.beamer-xl .mm-hub-title{font-size:21px;}
+  .mm-hub-sub{font-size:14px;color:var(--muted);margin-top:4px;}
+  html.beamer .mm-hub-sub{font-size:16px;}
+  .mm-hub-case{font-size:14px;color:var(--accent);font-weight:700;margin-top:6px;}
+  html.beamer .mm-hub-case{font-size:16px;}
+  .mm-node{position:absolute;transform:translate(-50%,-50%);width:30%;min-width:108px;background:#fff;border:2px solid var(--line);border-radius:16px;padding:10px 6px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.06);min-height:44px;}
+  .mm-node:hover{border-color:var(--accent);}
+  .mm-node .mm-num{display:inline-block;width:26px;height:26px;line-height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:14px;font-weight:800;margin-bottom:2px;}
+  .mm-node .mm-icon{font-size:22px;line-height:1;}
+  html.beamer .mm-node .mm-icon{font-size:28px;}
+  .mm-node .mm-title{font-size:14px;font-weight:700;line-height:1.25;margin-top:2px;}
+  html.beamer .mm-node .mm-title{font-size:16px;}
+  html.beamer.beamer-xl .mm-node .mm-title{font-size:18px;}
+  .mm-node .mm-task{font-size:14px;color:var(--muted);margin-top:2px;}
+  html.beamer .mm-node .mm-task{font-size:15px;}
+  .mm-pos-1{top:6%;left:50%;}
+  .mm-pos-2{top:27%;left:88%;}
+  .mm-pos-3{top:73%;left:88%;}
+  .mm-pos-4{top:94%;left:50%;}
+  .mm-pos-5{top:73%;left:12%;}
+  .mm-pos-6{top:27%;left:12%;}
+  @media (max-width:560px){
+    .mindmap-wrap{aspect-ratio:auto;max-width:100%;}
+    .mm-svg{display:none;}
+    .mm-hub{position:static;transform:none;width:100%;aspect-ratio:auto;border-radius:16px;margin-bottom:12px;padding:14px;}
+    .mm-node{position:static;transform:none;width:100%;margin-bottom:10px;}
+  }
+
+  .baccm-section{max-width:960px;margin:20px auto 0;}
+  .baccm-section h3{font-size:16px;margin:0 0 4px;}
+  html.beamer .baccm-section h3{font-size:19px;}
+  .baccm-section p.baccm-lead{font-size:14px;color:var(--muted);margin:0 0 12px;}
+  html.beamer .baccm-section p.baccm-lead{font-size:16px;}
+  .baccm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  @media (max-width:640px){.baccm-grid{grid-template-columns:1fr;}}
+  .baccm-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;}
+  .baccm-card h5{margin:0 0 4px;font-size:14px;font-weight:800;display:flex;align-items:center;gap:6px;}
+  html.beamer .baccm-card h5{font-size:16px;}
+  .baccm-def{font-size:14px;color:var(--muted);margin:0 0 6px;line-height:1.4;}
+  html.beamer .baccm-def{font-size:15px;}
+  html.beamer.beamer-xl .baccm-def{font-size:18px;}
+  html.beamer.beamer-xl.beamer-xxl .baccm-def{font-size:21px;}
+  .baccm-case{font-size:14px;color:var(--ink);font-weight:600;line-height:1.4;padding-top:6px;border-top:1px dashed var(--line);}
+  html.beamer .baccm-case{font-size:16px;}
+  html.beamer.beamer-xl .baccm-case{font-size:18px;}
+  html.beamer.beamer-xl.beamer-xxl .baccm-case{font-size:21px;}
+
+  footer{max-width:1320px;margin:30px auto 40px;padding:0 24px;}
+  .footer-sig{font-size:14px;color:var(--muted);margin-bottom:12px;line-height:1.6;}
+  .footer-sig strong{color:var(--ink);}
+  .footer-sig a{color:var(--accent);}
+  .footer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  @media (max-width:900px){.footer-grid{grid-template-columns:1fr;}}
+  .footer-box{border:1px solid var(--line);border-radius:12px;background:#fff;}
+  .footer-box summary{cursor:pointer;list-style:none;padding:12px 14px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;}
+  .footer-box summary::-webkit-details-marker{display:none;}
+  .footer-box summary::before{content:"▸";color:var(--accent);}
+  .footer-box[open] summary::before{content:"▾";}
+  .footer-content{padding:0 14px 14px;}
+  .footer-mono{font-family:"Consolas",Menlo,monospace;font-size:14px;line-height:1.55;white-space:pre-wrap;background:#fafbfc;padding:10px;border-radius:8px;max-height:340px;overflow:auto;}
+  .footer-sans{font-size:16px;line-height:1.55;}
+  .footer-sans h4{font-size:14px;margin:12px 0 4px;}
+  .footer-sans ol,.footer-sans ul{padding-left:20px;}
+  .footer-table{width:100%;border-collapse:collapse;font-size:14px;}
+  .footer-table th,.footer-table td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;vertical-align:top;}
+
+  html.beamer footer{display:none;}
+</style>
+</head>
+<body>
+
+<div class="signature">
+  <strong>Michaela Kühn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<header class="top">
+  <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+  <h1 class="tool-title">🧭 BA-Lifecycle-Lernreise</h1>
+  <p class="tool-sub">Sechs Wissensbereiche des BABOK® Guide v3 als Stationenweg – dieselbe Struktur, drei völlig unterschiedliche Fälle. Je Station: fünf Artefakte (eines je BABOK-Teilaufgabe des Kapitels), ein Klassisch-vs.-Agil-Vergleich, ein Dokumenten-Glossar, zwei Kernmethoden, eine Entscheidung.</p>
+  <div class="case-switch" id="caseSwitch"></div>
+  <div class="topbar-row">
+    <div class="badges" id="badgeRow"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn ghost" id="mindmapBtn" type="button">🗺️ BABOK-Mindmap</button>
+      <button class="btn ghost" id="traceBtn" type="button">🧵 Traceability-Faden</button>
+      <button class="btn ghost beamer-btn" id="beamerBtn" type="button">🖥 Beamer-Modus</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="intro">
+    <div class="intro-card" id="introCard"></div>
+  </section>
+
+  <section id="journey" class="hidden">
+    <div class="journey-grid">
+      <nav class="path">
+        <h3>Die 6 Stationen</h3>
+        <ul class="station-nav" id="stationNav"></ul>
+        <button class="btn ghost" id="pathMindmapBtn" type="button" style="width:100%;margin-top:10px;">🗺️ Zurück zur Mindmap</button>
+        <button class="btn ghost" id="pathTraceBtn" type="button" style="width:100%;margin-top:8px;">🧵 Traceability-Faden</button>
+      </nav>
+      <div class="detail" id="detailPanel"></div>
+    </div>
+  </section>
+
+  <section id="traceView" class="hidden">
+    <div class="intro-card" style="max-width:960px;">
+      <h2>🧵 Traceability-Faden: eine Anforderung durch alle 6 Stationen</h2>
+      <p style="font-size:16px;line-height:1.55;margin:0 0 4px;">BABOK-Aufgabe <strong>5.1 Trace Requirements</strong> verlangt, jede Anforderung bis zu ihrer Quelle zurück und bis zu ihrer Wirkung nach vorn verfolgen zu können. Hier ist genau das für eine einzige, durchgängige Anforderung sichtbar gemacht — vom ersten Bedarf bis zum gemessenen Ergebnis.</p>
+    </div>
+    <div id="traceThreadWrap"></div>
+    <div class="note-box" style="max-width:820px;margin:16px auto 0;">🔗 Vorwärts- und Rückwärts-Tracing: Von jeder Station aus lässt sich sowohl zur Quelle zurückverfolgen (woher kommt die Anforderung?) als auch nach vorn (was folgt aus ihr?). Genau diese doppelte Verfolgbarkeit prüft eine Traceability-Matrix in der Praxis.</div>
+    <div style="max-width:820px;margin:18px auto 0;">
+      <button class="btn ghost" id="traceBackBtn" type="button">← Zurück</button>
+    </div>
+  </section>
+
+  <section id="mindmapView" class="hidden">
+    <div class="intro-card" style="max-width:960px;">
+      <h2>🗺️ BABOK-Mindmap: die 6 Wissensbereiche auf einen Blick</h2>
+      <p style="font-size:16px;line-height:1.55;margin:0 0 4px;">Tippen Sie auf einen Wissensbereich, um direkt in die passende Station der Reise zu springen.</p>
+    </div>
+    <div class="mindmap-wrap" id="mindmapWrap"></div>
+    <div class="note-box" style="max-width:960px;margin-left:auto;margin-right:auto;">🧠 Diese Mindmap nutzt selbst BABOK-Technik 10.29 (Mind Mapping) — und macht sichtbar, was die lineare Stationenliste nicht zeigen kann: Laut Figure 1.4.1 sind die sechs Wissensbereiche vernetzt, nicht linear. Business Analysis Planning and Monitoring steht im Zentrum und beliefert alle anderen Bereiche fortlaufend.</div>
+    <div class="baccm-section">
+      <h3>🧩 BACCM — Business Analysis Core Concept Model (BABOK Kapitel 2)</h3>
+      <p class="baccm-lead">Die 6 Kernkonzepte, mit denen sich <em>jede</em> Business-Analysis-Aktivität beschreiben lässt — hier konkret für den aktuellen Fall instanziiert.</p>
+      <div class="baccm-grid" id="baccmGrid"></div>
+    </div>
+    <div style="max-width:960px;margin:18px auto 0;">
+      <button class="btn ghost" id="mindmapBackBtn" type="button">← Zurück</button>
+    </div>
+  </section>
+
+  <section id="finale" class="hidden">
+    <div class="finale-card">
+      <h2 id="finaleTitle">🏁 Ziel erreicht</h2>
+      <p id="finaleIntro" style="font-size:16px;line-height:1.55;"></p>
+      <table class="trace-table" id="traceTable"></table>
+      <div class="note-box" id="finaleNote" style="margin-top:16px;"></div>
+      <div class="compare-card" id="compareCard"></div>
+      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn ghost" id="resetBtn" type="button">↺ Diese Reise neu starten</button>
+        <button class="btn" id="switchCaseBtn" type="button">Zum anderen Fall wechseln →</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-sig">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a><br>
+    Referenzrahmen: BABOK® Guide v3 (IIBA) · Querverweise IREB CPRE, PMBOK 8, IEEE 29148 · EU AI Act (VO (EU) 2024/1689) · Digital Omnibus (VO (EU) 2026/1744) · VwVfG § 3a · BITV 2.0 (WCAG 2.1 AA)<br>
+    Zuletzt geprüft: 22.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll
+  </div>
+  <div class="footer-grid">
+
+    <details class="footer-box">
+      <summary>🛠 Systemprompt</summary>
+      <div class="footer-content footer-mono">MASTER-BAU-PROMPT — BA-Lifecycle-Lernreise (2 Fälle, verdichtet)
+
+ZIEL
+Single-File-HTML-Trainingstool: 6 BABOK-v3-Wissensbereiche als Stationenweg,
+identische Struktur für zwei Fallbeispiele. Jede Station zeigt NICHT nur die
+eine Quiz-Aufgabe, sondern moeglichst ALLE Teilaufgaben des zugehoerigen
+BABOK-Kapitels – je Teilaufgabe genau EIN konkretes Artefakt (>4 Dokumente
+je Station, meist 5 = alle bzw. fast alle Teilaufgaben des Kapitels).
+
+STRUKTUR (3 States je Fall, fester Split-Screen, kein Sliding)
+1) Intro: Fallbeschreibung, Hinweis auf Nicht-Linearitaet der BABOK-KAs
+   (Figure 1.4.1), Start-Button. Fall-Switcher permanent im Header.
+2) Journey: Split-Screen 34/66. Links Stationenweg (6 Punkte, sticky),
+   rechts Detail-Panel je Station:
+   a) Kopf: Icon, BABOK-Kapitel + Wissensbereich, Task-Chip mit der fuer
+      den Quiz zentralen Aufgabennummer.
+   a2) Klassisch-vs-Agil-Block (<details>, offen): zwei Spalten, wie
+      dieselbe Aufgabe plangetrieben bzw. agil aussieht, mit Verweis auf
+      BABOK 11.1 The Agile Perspective. Falluebergreifend wie das Glossar
+      (APPROACH-Objekt, nach Stations-ID indiziert).
+   b) Methoden-Zeile: 2 BABOK-Kern-Techniken als Chips (Kapitel 10).
+   c) FUENF Artefakt-Cards: je Artefakt ein "Quelle:"-Tag mit echter
+      BABOK-Teilaufgabe (z.B. "Quelle: 3.4 Plan Business Analysis
+      Information Management") — nur echte Aufgaben-/Techniknamen aus dem
+      BABOK-Inhaltsverzeichnis, keine Erfindungen. Ueberschrift zeigt
+      Dokumentenzahl als Badge ("5 Dokumente").
+   c2) Dokumenten-Glossar (<details>, klappbar, Default zu): je Artefakt-
+      TYP (nicht Instanz) ein Glossar-Eintrag mit Begriff, Definition
+      (BABOK-Bezug in Klammern) und einem generischen Beispielsatz in
+      Anfuehrungszeichen. Gilt fallUEBERGREIFEND, da beide Faelle je
+      Station dieselben Artefakt-Typen erzeugen (GLOSSARY-Objekt getrennt
+      von CASES, nach Stations-ID indiziert).
+   d) Persona-Reaktion, farbcodiert.
+   e) Cross-Reference-Zeile: IREB/PMBOK/IEEE 29148, wo einschlaegig.
+   f) Mini-Check: Single-Choice zur zentralen Quiz-Aufgabe, 3 Optionen,
+      Erklaerung nach Antwort. Setzt Stempel.
+3) Finale (6/6): Traceability-Tabelle (inkl. aller 5 Artefakte je Station)
+   + Vergleichs-Box zum anderen Fall, Reset- und Fall-Wechsel-Button.
+
+FAELLE
+A) TalentMatch AI / Vantera Systemtechnik GmbH — Hochrisiko-KI-Recruiting,
+   Anhang III Nr. 4 EU AI Act. Personas: Ela, Knut, Petra, Herr Bachmeier,
+   Sarah.
+B) Studierendenakte digital / Hochschule Nordwest (fiktiv) — klassische
+   Verwaltungsdigitalisierung, VwVfG §3a, BITV 2.0/WCAG 2.1 AA, 50-Jahres-
+   Aufbewahrungsfrist. Personas: Ela, Knut, Petra, Kanzlerin Dr. Feldmann,
+   Herr Oeztuerk.
+C) NovaTrade Pulse / NovaTrade Systems GmbH — agile Produktentwicklung
+   (Scrum, 2-Wochen-Sprints) fuer ein Boersenprodukt (Bruchteilsaktien-
+   Handel), MiFID II/WpHG §63 ff. Product Governance als hartes Gate vor
+   jedem Release. Personas: Ela (Product Owner), Knut, Petra (Compliance),
+   Herr Bachmeier (Vorstand), Sarah.
+Alle drei Faelle nutzen an jeder Station dieselben BABOK-Teilaufgaben-
+Codes — Fall-Switcher zyklisch (naechster Fall in CASE_ORDER, nicht nur
+Toggle zwischen zweien).
+
+DESIGN
+Wie Vorgaengerversion: Weiss, color-scheme:light, Pointer Events, ≥16px/
+≥14px, ≥44px Touch-Ziele, Signatur fixed oben rechts, Beamer-Toggle
+4-stufig, Footer ab Stufe 1 ausgeblendet. Fortschritt getrennt pro Fall in
+sessionStorage (try/catch).
+
+NICHT TUN
+- Keine erfundenen BABOK-Aufgaben-/Techniknamen, auch nicht bei den
+  Artefakt-Quellen-Tags.
+- Kein technik-Tag erzwingen, wenn keine der 50 BABOK-Techniken sauber
+  passt (dann Quellen-Tag ohne Technik-Zusatz).
+- Keine Vermischung der beiden Faelle in einem Datensatz.
+- Persona Sarah/Herr Bachmeier nicht in Fall B zweckentfremden.
+- Kein Dark Mode, kein externer fetch(), kein HTML5-Drag&Drop.</div>
+    </details>
+
+    <details class="footer-box">
+      <summary>📘 Handbuch</summary>
+      <div class="footer-content footer-sans">
+        <p><strong>Framework:</strong> RAKFE — Rolle · Aufgabe · Kontext · Format · Eingrenzung.</p>
+        <h4>Rolle</h4>
+        <p>RE/BA-Trainerin, die zeigen will: ein BABOK-Wissensbereich ist kein einzelner Task, sondern ein Bündel zusammenhängender Teilaufgaben, die je eigene Artefakte erzeugen.</p>
+        <h4>Aufgabe</h4>
+        <p>Zweite Verdichtungsstufe: statt zwei Artefakten je Station jetzt fünf – nach Möglichkeit eines je Teilaufgabe des BABOK-Kapitels. Das macht sichtbar, dass z.B. „Requirements Life Cycle Management“ nicht nur Priorisierung ist, sondern auch Tracing, Pflege, Änderungsbewertung und Freigabe.</p>
+        <h4>Kontext</h4>
+        <p>Beide Fälle (TalentMatch AI, Studierendenakte) folgen exakt demselben Fünf-Artefakte-Muster je Station, mit denselben Teilaufgaben-Codes – nur die konkreten Inhalte unterscheiden sich vollständig.</p>
+        <h4>Format</h4>
+        <p>Jede Artefakt-Card trägt ein „Quelle:“-Tag mit der jeweiligen BABOK-Teilaufgabe. Der Mini-Check bleibt bewusst auf die zentrale, im Task-Chip genannte Aufgabe fokussiert, damit die Prüfungsvorbereitung nicht durch fünf gleichzeitige Fragen überfrachtet wird.</p>
+        <h4>Eingrenzung</h4>
+        <p>Nicht jede Teilaufgabe hat eine sauber passende Kapitel-10-Technik (z.B. reine Governance-/Planungsaufgaben) – dort bewusst kein Technik-Tag erzwungen, um keine falschen Zuordnungen zu erzeugen (Vermeidung Halluzination).</p>
+        <h4>Nachbau-Tipp</h4>
+        <p>Für ein Kapitel mit nur 4 Teilaufgaben (Strategy Analysis) wird eine Teilaufgabe mit zwei Artefakten/Techniken belegt, um trotzdem auf 5 Dokumente zu kommen — Muster für weitere 4-Task-Kapitel übertragbar.</p>
+        <h4>Zentraler Lernhinweis</h4>
+        <p>Wer nur den Task-Chip liest, sieht 1 Aufgabe. Wer alle Artefakte liest, sieht: jedes BABOK-Kapitel ist ein kleines Ökosystem aus 4–6 zusammenhängenden Aufgaben.</p>
+        <h4>Vollständigkeitsstand (Stand 22.08.2026)</h4>
+        <p>Kapitel 3–8 (die 6 Wissensbereiche): 30/30 Teilaufgaben vollständig abgedeckt. Kapitel 10 (Techniken): 18/50. Kapitel 11 (Perspectives): 1/5 (Agile). Kapitel 2 (BACCM) kompakt in der Mindmap-Ansicht integriert. Kapitel 9 (Underlying Competencies) bewusst ausgeklammert — persönliche Kompetenzen passen nicht zur Artefakt-Logik dieses Tools.</p>
+        <h4>Traceability-Faden (BABOK 5.1)</h4>
+        <p>Ergänzend zur Traceability-Matrix in Station 3 zeigt der Traceability-Faden (Header-Button und Button unter der Stationsliste) EINE Anforderung durchgängig über alle 6 Stationen hinweg — vom Stakeholder-Bedarf bis zum gemessenen KPI. Macht Vorwärts-/Rückwärts-Tracing im Gegensatz zur reinen Matrix-Darstellung zeitlich erfahrbar.</p>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary>🎤 Vortrags-Skript</summary>
+      <div class="footer-content footer-sans">
+        <p><em>(Klick-Hinweise kursiv in Klammern)</em></p>
+        <ol>
+          <li><strong>Einstieg Fall A</strong> — <em>(Intro TalentMatch AI zeigen)</em><br>„Vantera will ein KI-Tool zum Bewerbungs-Screening einführen — Hochrisiko-KI nach EU AI Act.“</li>
+          <li><strong>Station öffnen, Dokumentenzahl zeigen</strong> — <em>(auf den „5 Dokumente“-Badge zeigen)</em><br>„Fünf Dokumente an einer einzigen Station — das ist kein Zufall. Das BABOK-Kapitel hat fünf Teilaufgaben, jede erzeugt ihr eigenes Artefakt.“</li>
+          <li><strong>Artefakte durchgehen</strong> — <em>(auf die „Quelle:“-Tags zeigen)</em><br>„Lest die Tags: Stakeholder-Plan kommt aus 3.2, die Retrospektive aus 3.5 — zwei völlig verschiedene Aufgaben, gleiche Station.“</li>
+          <li><strong>Quiz</strong> — <em>(Frage vorlesen, raten lassen, dann klicken)</em><br>„Trotzdem bleibt eine Aufgabe die Leitfrage — genau die, die wir jetzt prüfen.“</li>
+          <li><strong>Fall wechseln</strong> — <em>(Pill-Button „Studierendenakte“)</em><br>„Gleiches Muster, andere Welt: keine KI, dafür 50 Jahre Aufbewahrung statt 30 Tage Frist.“</li>
+          <li><strong>Finale</strong><br>„Sechs Stationen, fünf Artefakte, zwei Welten, eine Struktur.“</li>
+        </ol>
+        <p><strong>Regie-Hinweise:</strong> Bei Zeitdruck nicht alle 5 Artefakte vorlesen — 2–3 gezielt hervorheben, den Rest als „zum Nachlesen“ ankündigen. Gesamtdauer beider Fälle: 70–90 Min. bei vollständiger Behandlung, 40–50 Min. im Schnelldurchlauf (nur Quiz + je 2 Artefakte).</p>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary>⚖ Normen-Register</summary>
+      <div class="footer-content">
+        <table class="footer-table">
+          <tr><th>Norm/Referenz</th><th>Status</th></tr>
+          <tr><td>BABOK® Guide v3 (IIBA)</td><td>Aktuelle Ausgabe, 2015, keine Nachfolgeversion; Stand geprüft 22.08.2026</td></tr>
+          <tr><td>BABOK 11.1 The Agile Perspective</td><td>Bestandteil BABOK Guide v3, Kapitel 11</td></tr>
+          <tr><td>EU AI Act – VO (EU) 2024/1689</td><td>In Kraft; Hochrisiko-Einstufung Anhang III Nr. 4 unverändert</td></tr>
+          <tr><td>Digital Omnibus – VO (EU) 2026/1744</td><td>In Kraft seit 27.07.2026; Anhang-III-Betreiberpflichten verschoben auf 02.12.2027</td></tr>
+          <tr><td>DSGVO Art. 35 (DSFA)</td><td>In Kraft</td></tr>
+          <tr><td>BetrVG § 87 Abs. 1 Nr. 6</td><td>In Kraft (Mitbestimmung techn. Überwachungseinrichtungen)</td></tr>
+          <tr><td>IEEE 29148:2018 (SRS-Format)</td><td>In Kraft</td></tr>
+          <tr><td>VwVfG § 3a (elektronische Kommunikation)</td><td>In Kraft</td></tr>
+          <tr><td>BITV 2.0 (Barrierefreie-IT-Verordnung)</td><td>In Kraft seit 25.05.2019; verweist auf WCAG 2.1 Stufe AA (EN 301 549)</td></tr>
+          <tr><td>Richtlinie (EU) 2016/2102 (Web-Barrierefreiheit)</td><td>In Kraft</td></tr>
+          <tr><td>ISO/IEC 25010:2023</td><td>Aktuelle Edition (Edition 2); Sicherheit, Zuverlässigkeit, Wartbarkeit u.a. als Qualitätsmerkmale</td></tr>
+          <tr><td>ISO/IEC 27001:2022</td><td>Aktuelle Edition, inkl. Umwelt-Amendment 2024; Anhang A mit 93 Controls in 4 Themenfeldern</td></tr>
+          <tr><td>ISO/IEC 27000:2026</td><td>6. Edition (Juli 2026), Überblicksdokument zur 27000-Familie</td></tr>
+          <tr><td>MiFID II – Richtlinie 2014/65/EU</td><td>In Kraft; Product-Governance-Pflichten (Art. 16(3), 24(2)) unverändert</td></tr>
+          <tr><td>WpHG § 63 ff. i.V.m. MaComp (BaFin)</td><td>In Kraft; MaComp-Modul BT 5 zu Product Governance</td></tr>
+          <tr><td>Marktmissbrauchsverordnung (MAR) – VO (EU) 596/2014</td><td>In Kraft</td></tr>
+          <tr><td>Retail Investment Strategy (RIS, EU)</td><td>In Verhandlung/geplant; Auswirkung auf Product Governance noch nicht final, Stand geprüft 22.08.2026</td></tr>
+          <tr><td>IREB CPRE (Querverweis)</td><td>Aktueller Lehrplan-Stand</td></tr>
+          <tr><td>PMBOK Guide, 8. Ausgabe (Querverweis)</td><td>Aktuelle Ausgabe (PMI)</td></tr>
+        </table>
+      </div>
+    </details>
+
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var PERSONA = {
+    ela:{name:"Ela", role:"Projektleitung", color:"var(--ela)", soft:"var(--ela-soft)", init:"E"},
+    knut:{name:"Knut", role:"Entwicklung", color:"var(--knut)", soft:"var(--knut-soft)", init:"K"},
+    sarah:{name:"Sarah", role:"Vertrieb", color:"var(--sarah)", soft:"var(--sarah-soft)", init:"S"},
+    petra:{name:"Petra", role:"QM", color:"var(--petra)", soft:"var(--petra-soft)", init:"P"},
+    bach:{name:"Herr Bachmeier", role:"Geschäftsführung", color:"var(--bach)", soft:"var(--bach-soft)", init:"B"},
+    feld:{name:"Kanzlerin Dr. Feldmann", role:"Hochschulleitung", color:"var(--feld)", soft:"var(--feld-soft)", init:"F"},
+    oez:{name:"Herr Öztürk", role:"Sachbearbeiter Prüfungsamt", color:"var(--oez)", soft:"var(--oez-soft)", init:"Ö"}
+  };
+
+  var EXPLAIN = {
+    s1:"3.2 legt einmalig planerisch fest, WIE mit Stakeholdern zusammengearbeitet wird. 4.5 ist die laufende Pflege dieser Beziehungen während der Umsetzung. 3.3 regelt stattdessen Entscheidungs- und Change-Prozesse, nicht die Stakeholder-Kommunikation selbst.",
+    s2:"Die Durchführung der Ermittlung selbst ist 4.2. 4.1 wäre die vorgelagerte Vorbereitung (Auswahl der Technik, Sichtung von Vormaterial). 6.1 analysiert den IST-Zustand auf Unternehmens-/Strategieebene (Strategy Analysis) — hier geht es dagegen um konkrete Anforderungsdetails im Tagesgeschäft.",
+    s3:"Priorisierung nach Wert, Risiko und Dringlichkeit ist 5.3 (Requirements Life Cycle Management). 7.1 wäre die fachliche Modellierung/Spezifikation der Anforderung selbst — nicht ihre Rangfolge. 3.1 legt den grundsätzlichen Vorgehensansatz fest, nicht die Reihenfolge einzelner Anforderungen.",
+    s4:"Alle drei Aufgaben heißen „Assess“ — Unterscheidung nach Zeitpunkt: 6.3 bewertet Risiken VOR der Lösungsentscheidung (Strategy Analysis). 8.3 bewertet Einschränkungen einer BEREITS im Einsatz befindlichen Lösung. 5.4 bewertet vorgeschlagene ÄNDERUNGEN an bereits vereinbarten Anforderungen.",
+    s5:"Verify (7.2) prüft, ob eine Anforderung gut formuliert ist (eindeutig, testbar, konsistent). Validate (7.3) prüft, ob die Anforderung tatsächlich zum Bedarf bzw. zur Pflicht beiträgt. Die Frage „erfüllt das wirklich die Vorgabe?“ ist eine Validate-Frage.",
+    s6:"Das reine Erheben und Ablesen von Kennzahlen ist 8.1. Erst die anschließende Bewertung, ob diese Zahlen ein strukturelles Problem aufzeigen, wäre 8.2/8.3. 5.1 Trace Requirements verfolgt Anforderungen zu ihren Quellen — nicht die laufende Leistungsmessung."
+  };
+
+  function opts3(correct, wrong1, wrong2){
+    return [{t:correct, correct:true},{t:wrong1, correct:false},{t:wrong2, correct:false}];
+  }
+  function art(title, task, html){ return {title:title, task:task, html:html}; }
+  function term(name, def, ex){ return {name:name, def:def, ex:ex}; }
+
+  // Klassisch-vs-Agil-Vergleich je Station: zeigt, wie dieselbe BABOK-Aufgabe
+  // in einem plangetriebenen bzw. einem agilen Vorgehen konkret aussieht.
+  // Fachliche Grundlage: BABOK Kapitel 11.1 "The Agile Perspective".
+  var APPROACH = {
+    1:{ classic:"Der Stakeholder-Engagement-Plan wird einmal zu Projektbeginn vollständig erstellt und für die gesamte Laufzeit vom Lenkungsausschuss freigegeben.",
+        agile:"Ein knapper Stakeholder-Überblick entsteht zu Beginn und wird laufend im Backlog-Refinement nachjustiert — „just enough, just in time“ statt einmaliger Vollständigkeit.",
+        ref:"BABOK 11.1 The Agile Perspective: Planungsartefakte werden inkrementell verfeinert statt einmalig fixiert." },
+    2:{ classic:"Groß angelegte Workshops zu Projektbeginn; Ergebnis fließt in ein umfangreiches, weitgehend abschließendes Lastenheft.",
+        agile:"Kurze, wiederkehrende Ermittlungsrunden (z.B. im Sprint Review); es wird nur so viel dokumentiert, wie für den nächsten Sprint gebraucht wird.",
+        ref:"BABOK 11.1 The Agile Perspective: Ermittlung ist fortlaufend, nicht einmalig am Projektanfang abgeschlossen." },
+    3:{ classic:"Einmalige MoSCoW-Priorisierung zu Projektbeginn; spätere Änderungen laufen über ein formales Change-Request-Verfahren.",
+        agile:"Der Product Owner priorisiert das Product Backlog laufend neu, meist vor jedem Sprint (Backlog Grooming) — ohne Change-Request-Formalismus.",
+        ref:"BABOK 11.1 The Agile Perspective: Priorisierung ist ein wiederkehrender, kein einmaliger Vorgang." },
+    4:{ classic:"Umfassendes Risikoregister zu Projektbeginn, danach quartalsweise Reviews im Lenkungsausschuss.",
+        agile:"Risiken werden in Retrospektiven laufend identifiziert und bei Bedarf direkt als Aufgabe in den nächsten Sprint aufgenommen.",
+        ref:"BABOK 11.1 The Agile Perspective: kurze Feedback-Zyklen statt fixer Review-Termine." },
+    5:{ classic:"Die formale Anforderungsspezifikation (SRS) wird vollständig vor Entwicklungsbeginn validiert und anschließend eingefroren.",
+        agile:"User Stories werden unmittelbar vor der Umsetzung im Sprint validiert; die Akzeptanzkriterien dienen als „Definition of Done“ und können sich zwischen Sprints ändern.",
+        ref:"BABOK 11.1 The Agile Perspective: Validierung erfolgt „rollierend“, nicht als einmaliges Gate." },
+    6:{ classic:"Die Lösungsbewertung erfolgt einmalig nach Projektabschluss, meist als abschließender Lessons-Learned-Bericht.",
+        agile:"Nach jedem Sprint/Release werden Kennzahlen im Sprint Review ausgewertet und fließen direkt in die Planung der nächsten Iteration ein.",
+        ref:"BABOK 11.1 The Agile Perspective: Wertbewertung ist Teil jedes Zyklus, nicht nur des Projektendes." }
+  };
+
+  // Dokumenten-Glossar: gilt fallübergreifend, da beide Fälle je Station
+  // dieselben Artefakt-Typen erzeugen (unterschiedlicher Inhalt, gleiche Form).
+  var GLOSSARY = {
+    1:[
+      term("Stakeholder-Engagement-Plan / Stakeholder-Liste","Dokument, das alle relevanten Stakeholder mit Einfluss, Interesse und dem geplanten Vorgehen zur Zusammenarbeit erfasst (BABOK 3.2).","„Der Stakeholder-Engagement-Plan legt fest, dass die Datenschutzbeauftragte vor jedem Meilenstein konsultiert wird.“"),
+      term("RACI-Matrix (Rollen- und Rechte-Matrix)","Tabelle, die für zentrale Entscheidungen festlegt, wer verantwortlich (Responsible), rechenschaftspflichtig (Accountable), zu konsultieren (Consulted) oder zu informieren (Informed) ist (BABOK 3.3, Technik 10.39).","„In der RACI-Matrix ist die Projektleitung verantwortlich, die Geschäftsführung rechenschaftspflichtig.“"),
+      term("Vorgehensentscheid (BA-Approach-Papier)","Kurzdokument, das begründet, welche Projektteile klassisch/planbasiert und welche agil/iterativ bearbeitet werden (BABOK 3.1).","„Der Vorgehensentscheid hält fest: gesetzliche Meilensteine klassisch, die Nutzeroberfläche agil.“"),
+      term("Informationsablage-Konzept","Festlegung, wo und wie Anforderungsdokumente während des Projekts gespeichert, versioniert und zugänglich gemacht werden (BABOK 3.4).","„Das Informationsablage-Konzept bestimmt, dass sensible Dokumente nur einem eingeschränkten Personenkreis zugänglich sind.“"),
+      term("BA-Retrospektive","Rückblick auf die eigene Analysearbeit mit dem Ziel, den BA-Prozess selbst zu verbessern, nicht das Produkt (BABOK 3.5).","„Die BA-Retrospektive ergab, dass die Vorbereitungszeit für Workshops künftig länger eingeplant werden sollte.“")
+    ],
+    2:[
+      term("Dokumentenanalyse-Ergebnis","Auswertung bereits vorhandener Unterlagen zur Vorbereitung der eigentlichen Ermittlung (BABOK 4.1, Technik 10.18).","„Die Dokumentenanalyse zeigte, dass die bisherigen Prozessschritte nirgendwo vollständig dokumentiert waren.“"),
+      term("Workshop-Protokoll","Schriftliche Zusammenfassung eines moderierten Termins mit mehreren Stakeholdern zur gemeinsamen Ermittlung von Anforderungen (BABOK 4.2, Technik 10.50).","„Im Workshop-Protokoll ist festgehalten, dass drei von vier Teilnehmenden dieselbe Priorität nannten.“"),
+      term("Bestätigungsprotokoll","Nachweis, dass die ermittelten Informationen von den Quell-Stakeholdern als korrekt und vollständig bestätigt wurden (BABOK 4.3).","„Ohne unterschriebenes Bestätigungsprotokoll gilt ein Workshop-Ergebnis formal noch nicht als abgesichert.“"),
+      term("Management-Summary","Knapp gehaltene Zusammenfassung zentraler Analyseergebnisse für Entscheidungsträger:innen ohne Fachdetails (BABOK 4.4).","„Das Management-Summary reduziert 20 Seiten Workshop-Material auf drei entscheidungsrelevante Kernaussagen.“"),
+      term("Eskalationsprotokoll","Dokumentation eines ungelösten Konflikts zwischen Stakeholdern sowie der Entscheidung, die ihn schließlich auflöst (BABOK 4.5).","„Das Eskalationsprotokoll zeigt, wie der Streit zwischen Fachbereich und IT-Security pragmatisch beigelegt wurde.“")
+    ],
+    3:[
+      term("Traceability-Matrix","Tabelle, die jede Anforderung zu ihrer Quelle und ihren Auswirkungen zurückverfolgbar macht (BABOK 5.1).","„Die Traceability-Matrix zeigt, dass Anforderung AN-014 direkt aus einer gesetzlichen Vorgabe stammt.“"),
+      term("Versions-Historie","Chronologische Aufzeichnung, wie sich eine einzelne Anforderung im Projektverlauf verändert hat (BABOK 5.2).","„Aus der Versions-Historie geht hervor, warum die Schwelle von 30 % auf 40 % angehoben wurde.“"),
+      term("MoSCoW-Priorisierung","Einteilung von Anforderungen in Must, Should, Could und Won't, um Umfang und Reihenfolge der Umsetzung zu steuern (BABOK 5.3, Technik 10.33).","„In der MoSCoW-Priorisierung landen gesetzlich zwingende Anforderungen automatisch in der Kategorie Must.“"),
+      term("Änderungsantrag (Change Request)","Formaler Vorschlag, eine bereits vereinbarte Anforderung zu ändern, inklusive Bewertung der Auswirkungen (BABOK 5.4).","„Der Änderungsantrag CR-009 wurde geprüft und mangels rechtlicher Notwendigkeit abgelehnt.“"),
+      term("Freigabeprotokoll","Nachweis, dass eine Anforderung von den dafür autorisierten Rollen formal akzeptiert wurde (BABOK 5.5).","„Ohne Freigabeprotokoll darf eine Anforderung nicht in die Umsetzung übergeben werden.“"),
+      term("Epic","Grobkörnige Anforderung, zu groß für einen einzelnen Sprint, die in kleinere User Stories zerlegt wird (BABOK 5.3, Technik 10.2 Backlog Management).","„Das Epic ‚Bruchteilsaktien-Handel‘ wurde in vier einzeln umsetzbare Stories aufgeteilt.“")
+    ],
+    4:[
+      term("Ist-Zustand-Analyse","Beschreibung der aktuellen Situation als Ausgangspunkt für die Bewertung von Veränderungsbedarf (BABOK 6.1).","„Die Ist-Zustand-Analyse macht sichtbar, wie viel Zeit der bisherige manuelle Prozess tatsächlich kostet.“"),
+      term("Soll-Zustand-Beschreibung","Zielbild des künftigen Zustands nach Umsetzung der geplanten Veränderung (BABOK 6.2).","„Die Soll-Zustand-Beschreibung nennt eine konkrete Zielgröße für die Prozesszeit-Reduktion.“"),
+      term("Risikoregister","Liste identifizierter Risiken mit Eintrittswahrscheinlichkeit, Auswirkung und geplanter Gegenmaßnahme; Informationssicherheitsrisiken orientieren sich häufig an den Controls aus ISO/IEC 27001 Anhang A (BABOK 6.3, Technik 10.38).","„Das Risikoregister stuft das Risiko eines Datenverlusts als mittel/hoch ein und benennt eine Gegenmaßnahme.“"),
+      term("SWOT-Analyse","Einordnung eines Vorhabens nach Stärken, Schwächen, Chancen und Risiken (BABOK 6.3, Technik 10.46).","„Die SWOT-Analyse nennt den hohen Migrationsaufwand als zentrale Schwäche des Vorhabens.“"),
+      term("Change-Strategy-Papier","Kurzbeschreibung, wie und in welcher Reihenfolge eine Veränderung im Unternehmen eingeführt werden soll (BABOK 6.4).","„Das Change-Strategy-Papier sieht einen Pilotbereich vor, bevor unternehmensweit ausgerollt wird.“"),
+      term("Business Case","Wirtschaftliche Begründung eines Vorhabens: Investition, erwarteter Nutzen und Amortisationszeitraum (BABOK 6.4, Technik 10.7 Business Cases).","„Der Business Case weist eine geschätzte Amortisation nach neun Monaten aus.“")
+    ],
+    5:[
+      term("Anforderungsspezifikation (SRS)","Formale, überprüfbare Beschreibung einer Anforderung, häufig nach einem Standardformat wie IEEE 29148 (BABOK 7.1).","„Die Anforderungsspezifikation REQ-021 beschreibt exakt, unter welcher Bedingung eine manuelle Freigabe zwingend ist.“"),
+      term("Review-Protokoll","Nachweis einer strukturierten Prüfung, ob eine Anforderung korrekt und eindeutig formuliert ist (BABOK 7.2, Technik 10.37).","„Das Review-Protokoll bestätigt, dass die Anforderung testbar formuliert ist.“"),
+      term("Akzeptanzkriterium (Gherkin)","Testbare Bedingung in Angenommen-Wenn-Dann-Form, die festlegt, wann eine Anforderung als erfüllt gilt (BABOK 7.3, Technik 10.1).","„Das Akzeptanzkriterium legt fest: Wenn der Score unter 40 % liegt, dann ist eine manuelle Freigabe zwingend.“"),
+      term("Data Dictionary / Datenmodell","Sammlung aller relevanten Datenfelder mit Typ, Bedeutung und Regeln, die ein System verarbeitet (BABOK 7.4).","„Im Data Dictionary ist das Feld 'human_override' als Pflichtfeld bei niedrigem Score definiert.“"),
+      term("Design-Optionen-Vergleich","Gegenüberstellung mehrerer Lösungswege mit Vor- und Nachteilen als Entscheidungsgrundlage (BABOK 7.5).","„Der Design-Optionen-Vergleich empfiehlt die einfachere Option für den Pilotbetrieb.“"),
+      term("Use Case","Beschreibung, wie ein:e Akteur:in ein Ziel mit dem System erreicht, inklusive Haupt- und Alternativszenario (BABOK 7.1, Technik 10.47 Use Cases and Scenarios).","„Der Use Case ‚Erstkauf durchführen‘ beschreibt sowohl den Erfolgsfall als auch die nicht bestandene Prüfung.“"),
+      term("NFR-Checkliste (ISO/IEC 25010)","Prüfliste nicht-funktionaler Anforderungen entlang der Qualitätsmerkmale von ISO/IEC 25010, z.B. Sicherheit, Zuverlässigkeit, Effizienz (BABOK 7.1, Technik 10.30 Non-Functional Requirements Analysis).","„Die NFR-Checkliste verlangt eine Order-Ausführung unter 200 Millisekunden als Effizienz-Anforderung.“"),
+      term("Wertanalyse & Empfehlung","Bewertung des potenziellen Nutzens mehrerer Lösungsoptionen und begründete Empfehlung für eine davon — der Abschluss der Anforderungsanalyse vor der Umsetzung (BABOK 7.6).","„Die Wertanalyse empfiehlt Option A wegen geringerem regulatorischem Risiko, auch wenn Option B technisch eleganter wäre.“")
+    ],
+    6:[
+      term("KPI-Dashboard","Übersicht zentraler Kennzahlen, die den Erfolg einer eingeführten Lösung messbar machen (BABOK 8.1, Technik 10.28).","„Das KPI-Dashboard zeigt eine Reduktion der Bearbeitungszeit um 75 Prozent.“"),
+      term("Kennzahlen-Auswertung","Interpretation der gemessenen Werte: Liegen sie im geplanten Zielkorridor oder weichen sie ab? (BABOK 8.2).","„Die Kennzahlen-Auswertung bestätigt, dass die Bias-Kennzahl innerhalb der Toleranzgrenze bleibt.“"),
+      term("Limitations-Bericht","Dokumentation bekannter Schwächen oder Grenzen einer bereits eingesetzten Lösung (BABOK 8.3).","„Der Limitations-Bericht nennt eine Datenlücke bei einer bestimmten Bewerbergruppe.“"),
+      term("Enterprise-Limitations-Notiz","Beschreibung organisatorischer Einschränkungen, die die volle Wirkung einer Lösung begrenzen (BABOK 8.4).","„Die Enterprise-Limitations-Notiz verweist auf fehlende Personalkapazität für laufendes Monitoring.“"),
+      term("Handlungsempfehlung","Konkreter Vorschlag, wie der Wert einer Lösung nach dem Go-Live weiter gesteigert werden kann (BABOK 8.5).","„Die Handlungsempfehlung schlägt ein erweitertes Trainingsdatenset für die nächste Iteration vor.“")
+    ]
+  };
+
+  var CASES = {
+
+    talentmatch: {
+      id:"talentmatch", label:"🤖 TalentMatch AI (Vantera)",
+      introTitle:"Fall A: TalentMatch AI bei Vantera Systemtechnik GmbH",
+      introText:"Vantera Systemtechnik GmbH, ein mittelständischer Maschinenbauer mit chronischem Fachkräftemangel im Bereich Montage/Instandhaltung, will <strong>TalentMatch AI</strong> einführen: ein KI-gestütztes Screening- und Ranking-Tool für eingehende Bewerbungen. Weil das System über die Vorauswahl von Bewerber:innen entscheidet, ist es ein <strong>Hochrisiko-KI-System nach Anhang III Nr. 4 EU AI Act</strong>.",
+      facts:[["Organisation","Vantera Systemtechnik GmbH"],["Projekt","TalentMatch AI (CV-Screening &amp; Ranking)"],["Einstufung","Hochrisiko · Anhang III Nr. 4"],["Rechtsrahmen","EU AI Act, DSGVO, BetrVG"]],
+      badges:["📘 BABOK® Guide v3 (IIBA)","⚠️ Hochrisiko-KI · Anhang III Nr. 4 EU AI Act"],
+      finaleNote:"🔄 In der Praxis laufen diese Wissensbereiche parallel und iterativ: Ein neues Risiko in Strategy Analysis (6.3) kann jederzeit eine Änderung der Priorisierung in Requirements Life Cycle Management (5.3) auslösen.",
+      stations:[
+        {
+          id:1, chapter:"Kapitel 3", kaEN:"Business Analysis Planning and Monitoring", kaDE:"Planung &amp; Überwachung der Geschäftsanalyse", icon:"🧭",
+          taskCode:"3.2", taskName:"Plan Stakeholder Engagement",
+          techniques:["10.43 Stakeholder List, Map, or Personas","10.39 Roles and Permissions Matrix"],
+          artifacts:[
+            art("Stakeholder-Engagement-Plan (Auszug)","3.2 Plan Stakeholder Engagement",
+              '<table><tr><th>Stakeholder</th><th>Einfluss/Interesse</th><th>Vorgehen</th></tr>'+
+              '<tr><td>Frau Herzog, HR-Leitung Recruiting</td><td>hoch/hoch</td><td>wöchentlicher Jour fixe</td></tr>'+
+              '<tr><td>Betriebsrat Vantera</td><td>hoch/mittel</td><td>formale Anhörung vor Rollout (§ 87 Abs. 1 Nr. 6 BetrVG)</td></tr>'+
+              '<tr><td>Datenschutzbeauftragte</td><td>hoch/mittel</td><td>DSFA vor Go-Live (Art. 35 DSGVO)</td></tr></table>'),
+            art("Rollen- und Rechte-Matrix zur Freigabe (Auszug)","3.3 Plan Business Analysis Governance",
+              '<table><tr><th>Rolle</th><th>Bei DSFA-Freigabe</th></tr>'+
+              '<tr><td>Ela (Projektleitung)</td><td>Responsible</td></tr>'+
+              '<tr><td>Herr Bachmeier (GF)</td><td>Accountable</td></tr>'+
+              '<tr><td>Datenschutzbeauftragte</td><td>Consulted</td></tr>'+
+              '<tr><td>Betriebsrat</td><td>Informed</td></tr></table>'),
+            art("Vorgehensentscheid (Auszug)","3.1 Plan Business Analysis Approach",
+              '<p class="artifact-text">Compliance-Meilensteine (DSFA, Betriebsrats-Anhörung) werden klassisch/wasserfallartig geplant und dürfen nicht verschoben werden. UI/UX-Entscheidungen für die Recruiter-Oberfläche laufen agil in 2-Wochen-Sprints.</p>'),
+            art("Informationsablage-Konzept (Auszug)","3.4 Plan Business Analysis Information Management",
+              '<p class="artifact-text">Anforderungsdokumente im Confluence-Space „TalentMatch-AI“, versioniert über Git. DSFA-Unterlagen liegen in einem separaten, zugriffsbeschränkten Ordner (nur Ela, Datenschutzbeauftragte, Herr Bachmeier).</p>'),
+            art("BA-Retrospektive nach Kickoff-Phase (Auszug)","3.5 Identify Business Analysis Performance Improvements",
+              '<p class="artifact-text">Gut gelaufen: Betriebsrat wurde früh eingebunden. Verbesserungspotenzial: DSFA-Vorlage stand erst in Woche 3 statt Woche 1 bereit — nächstes Projekt: Vorlage vorab mit Datenschutzbeauftragter abstimmen.</p>')
+          ],
+          persona:"ela", personaText:"„Bei einem Hochrisiko-System kann ich die Compliance-Meilensteine nicht agil verschieben — DSFA und Betriebsrats-Anhörung müssen vor Rollout stehen. Das UI feilen wir dagegen iterativ.“",
+          crossref:"Querverweis PMBOK 8: entspricht der Prozessgruppe „Planning“ – Stakeholder-Register als frühes Schlüsselartefakt.",
+          quizQ:"Ela erstellt eine Tabelle mit Einfluss/Interesse aller Beteiligten und legt fest, wie mit ihnen zusammengearbeitet wird. Welche BABOK-Aufgabe führt sie damit zentral durch?",
+          options:opts3("3.2 Plan Stakeholder Engagement","4.5 Manage Stakeholder Collaboration","3.3 Plan Business Analysis Governance"), explain:EXPLAIN.s1
+        },
+        {
+          id:2, chapter:"Kapitel 4", kaEN:"Elicitation and Collaboration", kaDE:"Ermittlung &amp; Zusammenarbeit", icon:"🎙",
+          taskCode:"4.2", taskName:"Conduct Elicitation",
+          techniques:["10.50 Workshops","10.18 Document Analysis"],
+          artifacts:[
+            art("Dokumentenanalyse: Ist-Prozess-Reporting (Auszug)","4.1 Prepare for Elicitation",
+              '<table><tr><th>Prozessschritt</th><th>Ø Zeit</th></tr>'+
+              '<tr><td>Eingang &amp; Sichtung</td><td>3 Min.</td></tr><tr><td>Abgleich Stellenprofil</td><td>5 Min.</td></tr><tr><td>Weiterleitung Fachbereich</td><td>4 Min.</td></tr></table>'),
+            art("Workshop-Protokoll (Auszug)","4.2 Conduct Elicitation",
+              '<table><tr><th>Feld</th><th>Inhalt</th></tr>'+
+              '<tr><td>Teilnehmer:innen</td><td>Frau Herzog, 3 Recruiter:innen, Knut (IT)</td></tr>'+
+              '<tr><td>Kernbefund</td><td>Ø 40% der Bewerbungen kommen unstrukturiert per E-Mail; manuelles Screening dauert Ø 12 Min./Bewerbung</td></tr></table>'),
+            art("Bestätigungsprotokoll (Auszug)","4.3 Confirm Elicitation Results",
+              '<p class="artifact-text">Frau Herzog bestätigt per E-Mail am 14.09.: Workshop-Protokoll gibt die Pain-Points korrekt wieder, keine Ergänzung nötig.</p>'),
+            art("Management-Summary an Steuerkreis (Auszug)","4.4 Communicate Business Analysis Information",
+              '<p class="artifact-text">Drei Kernbefunde für Herrn Bachmeier: (1) 40% unstrukturierte Bewerbungen, (2) Ø 12 Min. Screening-Zeit je Bewerbung, (3) Betriebsrat fordert formale Mitbestimmung vor Rollout.</p>'),
+            art("Eskalationsprotokoll (Auszug)","4.5 Manage Stakeholder Collaboration",
+              '<p class="artifact-text">Konflikt: IT-Security verweigert Testzugriff auf das Produktivsystem. Gelöst durch anonymisierte Testdatenbank (Entscheidung Ela, 20.09.).</p>')
+          ],
+          persona:"knut", personaText:"„Wenn TalentMatch AI an unser ATS andocken soll, brauche ich vorher ein sauberes Datenschema — sonst screent die KI auf Basis von Freitext-Chaos.“",
+          crossref:"Querverweis IREB CPRE: Ermittlungstechniken (Workshop, Dokumentenanalyse) folgen derselben Systematik — Vorbereitung/Durchführung/Nachbereitung.",
+          quizQ:"Knut und Frau Herzog führen den Workshop durch und dokumentieren die Pain-Points direkt im Protokoll. Welche BABOK-Aufgabe ist das zentral?",
+          options:opts3("4.2 Conduct Elicitation","4.1 Prepare for Elicitation","6.1 Analyze Current State"), explain:EXPLAIN.s2
+        },
+        {
+          id:3, chapter:"Kapitel 5", kaEN:"Requirements Life Cycle Management", kaDE:"Anforderungs-Lebenszyklusmanagement", icon:"🔗",
+          taskCode:"5.3", taskName:"Prioritize Requirements",
+          techniques:["10.33 Prioritization","10.9 Business Rules Analysis"],
+          artifacts:[
+            art("Traceability-Matrix (Auszug)","5.1 Trace Requirements",
+              '<p class="artifact-text">AN-014 „Human-in-the-loop-Freigabe“ ← Quelle: Art. 14 EU AI Act ← eingebracht von: Datenschutzbeauftragte.</p>'),
+            art("Versions-Historie (Auszug)","5.2 Maintain Requirements",
+              '<p class="artifact-text">AN-014 v1.0 (Entwurf, Score-Schwelle 30%) → v1.1 (auf 40% angepasst nach Recruiter-Feedback, 18.09.).</p>'),
+            art("Priorisierung nach MoSCoW (Auszug)","5.3 Prioritize Requirements",
+              '<table><tr><th>Priorität</th><th>Anforderung</th></tr>'+
+              '<tr><td>Must</td><td>Human-in-the-loop-Freigabe vor jeder Ablehnung</td></tr>'+
+              '<tr><td>Must</td><td>Automatisierte Löschfristen für Bewerberdaten</td></tr>'+
+              '<tr><td>Should</td><td>Diversitäts-Dashboard für Recruiting-Leitung</td></tr>'+
+              '<tr><td>Could</td><td>Chatbot für Rückfragen an Bewerber:innen</td></tr></table>'),
+            art("Änderungsantrag-Bewertung (Auszug)","5.4 Assess Requirements Changes",
+              '<p class="artifact-text">CR-009: Diversitäts-Dashboard von Should auf Must hochstufen? Bewertung: bleibt Should — kein regulatorischer Zwang, nur Empfehlung.</p>'),
+            art("Freigabeprotokoll (Auszug)","5.5 Approve Requirements",
+              '<p class="artifact-text">AN-014 freigegeben durch Herrn Bachmeier (Accountable) am 25.09.; Petra (QM, Consulted) bestätigt Testbarkeit.</p>'),
+            art("Epic „KI-gestütztes Bewerber-Screening“ (Auszug)","5.3 Prioritize Requirements",
+              '<p class="artifact-text">Das Epic wird in vier einzeln umsetzbare Stories zerlegt: Score-Berechnung, Human-Override-Freigabe, Diversitäts-Dashboard, Recruiter-Benachrichtigung.</p>')
+          ],
+          persona:"petra", personaText:"„Bevor ich das priorisiere, will ich sehen, woraus jede Anforderung entstanden ist. Ohne Rückverfolgbarkeit zur Quelle unterschreibe ich keine Freigabe.“",
+          crossref:"Querverweis IREB CPRE: Priorisierung nach Wert/Risiko folgt derselben Logik wie die Qualitätskriterien „testbar“ und „verfolgbar“.",
+          quizQ:"Petra sortiert die Anforderungen in Must/Should/Could und begründet die Rangfolge. Welche BABOK-Aufgabe führt sie damit zentral durch?",
+          options:opts3("5.3 Prioritize Requirements","7.1 Specify and Model Requirements","3.1 Plan Business Analysis Approach"), explain:EXPLAIN.s3
+        },
+        {
+          id:4, chapter:"Kapitel 6", kaEN:"Strategy Analysis", kaDE:"Strategieanalyse", icon:"⚖️",
+          taskCode:"6.3", taskName:"Assess Risks",
+          techniques:["10.38 Risk Analysis and Management","10.46 SWOT Analysis"],
+          artifacts:[
+            art("Ist-Zustand-Kurzanalyse (Auszug)","6.1 Analyze Current State",
+              '<p class="artifact-text">Aktuell: 100% manuelles Screening, keine strukturierten Daten, hoher Recruiter-Aufwand (Ø 12 Min./Bewerbung).</p>'),
+            art("Soll-Zustand-Kurzbeschreibung (Auszug)","6.2 Define Future State",
+              '<p class="artifact-text">Ziel: KI-gestütztes Vorscreening mit verpflichtender menschlicher Freigabe; Screening-Zeit −70%, Bias-Kennzahl unter 5 Prozentpunkten.</p>'),
+            art("Risikoregister (Auszug)","6.3 Assess Risks",
+              '<table><tr><th>Risiko</th><th>Bewertung</th><th>Gegenmaßnahme</th></tr>'+
+              '<tr><td>Diskriminierung durch Bias in Trainingsdaten</td><td>mittel/hoch</td><td>Bias-Testing vor Rollout</td></tr>'+
+              '<tr><td>Bußgeld bei Verstoß gegen Hochrisiko-Pflichten</td><td>bis 15 Mio. €/3% Umsatz</td><td>Konformitätsbewertung vor 02.12.2027</td></tr>'+
+              '<tr><td>Unbefugter Zugriff auf Bewerberdaten (Informationssicherheit)</td><td>mittel/hoch</td><td>Rollenbasierte Zugriffskontrolle nach ISO/IEC 27001 Anhang A.5.15</td></tr></table>'),
+            art("SWOT-Kurzanalyse (Auszug)","6.3 Assess Risks",
+              '<table><tr><th>Stärken</th><th>Schwächen</th></tr><tr><td>Schnelleres Screening</td><td>Bias-Gefahr</td></tr>'+
+              '<tr><th>Chancen</th><th>Risiken</th></tr><tr><td>Employer-Branding</td><td>Bußgeld/Reputationsschaden</td></tr></table>'),
+            art("Change-Strategy-Kurzpapier (Auszug)","6.4 Define Change Strategy",
+              '<p class="artifact-text">Rollout in 2 Phasen: Phase 1 Pilotbereich Montage (3 Monate), Phase 2 unternehmensweit erst nach bestandenem Bias-Audit.</p>'),
+            art("Business Case (Kurzfassung)","6.4 Define Change Strategy",
+              '<p class="artifact-text">Investition ca. 85.000€ (Entwicklung + Bias-Audit). Nutzen: Screening-Zeit −75% entspricht rund 3 FTE-Stunden/Woche. Amortisation geschätzt nach 14 Monaten.</p>')
+          ],
+          persona:"bach", personaText:"„3% vom Jahresumsatz ist kein abstraktes Risiko, das ist eine Zahl, die ich dem Aufsichtsrat erklären muss. Was kostet uns das Bias-Testing im Vergleich?“",
+          crossref:"Querverweis PMBOK 8: entspricht dem Risikomanagement-Prozess — hier auf Ebene der Geschäftsstrategie. Querverweis ISO/IEC 27001:2022 Anhang A: Informationssicherheitsrisiken folgen demselben Bewertungsschema.",
+          quizQ:"Herr Bachmeier und Ela bewerten den Risikoregister-Eintrag zum Bias-Risiko: Eintrittswahrscheinlichkeit, Auswirkung, Gegenmaßnahme. Welche BABOK-Aufgabe ist das zentral?",
+          options:opts3("6.3 Assess Risks","8.3 Assess Solution Limitations","5.4 Assess Requirements Changes"), explain:EXPLAIN.s4
+        },
+        {
+          id:5, chapter:"Kapitel 7", kaEN:"Requirements Analysis and Design Definition", kaDE:"Anforderungsanalyse &amp; Design-Definition", icon:"✅",
+          taskCode:"7.3", taskName:"Validate Requirements",
+          techniques:["10.1 Acceptance and Evaluation Criteria","10.37 Reviews"],
+          artifacts:[
+            art("Anforderungsspezifikation (Auszug, IEEE 29148)","7.1 Specify and Model Requirements",
+              '<p class="artifact-text">REQ-021: Das System MUSS bei einem Matching-Score unter 40% eine manuelle Freigabe durch eine:n Recruiter:in erzwingen, bevor eine Ablehnung versendet wird.</p>'),
+            art("Review-Protokoll (Auszug)","7.2 Verify Requirements",
+              '<table><tr><th>Prüfpunkt</th><th>Ergebnis</th></tr>'+
+              '<tr><td>Eindeutig formuliert?</td><td>✅ bestätigt</td></tr>'+
+              '<tr><td>Testbar?</td><td>✅ bestätigt (Petra)</td></tr></table>'),
+            art("Akzeptanzkriterium (Gherkin)","7.3 Validate Requirements",
+              '<div class="mono">Angenommen ein/e Bewerber:in wird vom System als\n"nicht geeignet" eingestuft\nWenn der Matching-Score unter 40% liegt\nDann muss ein/e Recruiter:in die Ablehnung manuell\nbestätigen, bevor eine Absage versendet wird</div>'),
+            art("Datenmodell-Auszug (Data Dictionary)","7.4 Define Requirements Architecture",
+              '<table><tr><th>Feld</th><th>Typ</th></tr><tr><td>matching_score</td><td>Integer, 0–100</td></tr>'+
+              '<tr><td>human_override</td><td>Boolean, Pflichtfeld bei score&lt;40</td></tr></table>'),
+            art("Design-Optionen-Vergleich (Auszug)","7.5 Define Design Options",
+              '<p class="artifact-text">Option A: regelbasiertes Scoring (transparent, weniger präzise). Option B: ML-Modell (präziser, höheres Bias-Risiko). Empfehlung: Option A für den Pilotbetrieb, Option B erst nach abgeschlossenem Audit-Verfahren.</p>'),
+            art("Use Case „Bewerbung ablehnen“ (Auszug)","7.1 Specify and Model Requirements",
+              '<p class="artifact-text">Akteur: Recruiter:in. Auslöser: Score unter 40%. Hauptszenario: System schlägt Ablehnung vor → Recruiter:in prüft → bestätigt oder überschreibt. Alternativszenario: Recruiter:in fordert Zweitmeinung an.</p>'),
+            art("NFR-Checkliste (Auszug, ISO/IEC 25010)","7.1 Specify and Model Requirements",
+              '<table><tr><th>Qualitätsmerkmal</th><th>Konkrete Anforderung</th></tr>'+
+              '<tr><td>Sicherheit</td><td>Zugriff auf Bewerberdaten nur für autorisierte Recruiter:innen (rollenbasierte Berechtigung)</td></tr>'+
+              '<tr><td>Funktionale Eignung</td><td>Score-Berechnung nachvollziehbar dokumentiert und auditierbar</td></tr>'+
+              '<tr><td>Interaktionsfähigkeit (vormals Usability)</td><td>Freigabe-Dialog für Recruiter:innen in max. 3 Klicks bedienbar</td></tr></table>'),
+            art("Wertanalyse &amp; Empfehlung (Auszug)","7.6 Analyze Potential Value and Recommend Solution",
+              '<p class="artifact-text">Empfehlung: Option A (regelbasiertes Scoring). Begründung: bessere Nachvollziehbarkeit gegenüber Bewerber:innen und Betriebsrat, geringeres regulatorisches Risiko, schnellere Konformitätsbewertung vor dem 02.12.2027.</p>')
+          ],
+          persona:"petra", personaText:"„Das Kriterium ist sauber formuliert und testbar — aber prüfen wir auch gegen den Bedarf: Erfüllt es wirklich Art. 14? Ja. Also nicht nur korrekt, sondern auch wertstiftend.“",
+          crossref:"Querverweis ISO/IEC 25010:2023: Qualitätsmerkmal „Funktionale Angemessenheit“.",
+          quizQ:"Petra prüft das Akzeptanzkriterium im Review nicht nur auf Formulierung, sondern fragt: „Erfüllt das wirklich unsere gesetzliche Pflicht?“ Welche BABOK-Aufgabe ist das zentral — Verify oder Validate?",
+          options:opts3("7.3 Validate Requirements","7.2 Verify Requirements","8.1 Measure Solution Performance"), explain:EXPLAIN.s5
+        },
+        {
+          id:6, chapter:"Kapitel 8", kaEN:"Solution Evaluation", kaDE:"Lösungsbewertung", icon:"📊",
+          taskCode:"8.1", taskName:"Measure Solution Performance",
+          techniques:["10.28 Metrics and Key Performance Indicators (KPIs)","10.27 Lessons Learned"],
+          artifacts:[
+            art("KPI-Dashboard nach 3 Monaten Betrieb","8.1 Measure Solution Performance",
+              '<table><tr><th>Kennzahl</th><th>Vorher</th><th>Nachher</th></tr>'+
+              '<tr><td>Screening-Zeit je Bewerbung</td><td>Ø 12 Min.</td><td>Ø 3 Min. (−75%)</td></tr>'+
+              '<tr><td>Bias-Kennzahl (Geschlecht)</td><td>—</td><td>&lt; 2 Prozentpunkte</td></tr>'+
+              '<tr><td>Human-Oversight-Eingriffe</td><td>—</td><td>14 (0 Beschwerden)</td></tr></table>'),
+            art("Auswertung der Kennzahlen (Auszug)","8.2 Analyze Performance Measures",
+              '<p class="artifact-text">Bias-Kennzahl &lt;2 Prozentpunkte liegt im Zielkorridor (Toleranzgrenze 5pp). Screening-Zeit-Reduktion übertrifft Zielwert (−70% geplant, −75% erreicht).</p>'),
+            art("Limitations-Bericht (Auszug)","8.3 Assess Solution Limitations",
+              '<p class="artifact-text">Einschränkung: Das System erkennt Quereinsteiger-Profile bislang nicht zuverlässig (Lücke in den Trainingsdaten).</p>'),
+            art("Enterprise-Limitations-Notiz (Auszug)","8.4 Assess Enterprise Limitations",
+              '<p class="artifact-text">Fehlende IT-Kapazität für monatliches statt jährliches Bias-Monitoring. Empfehlung: 0,5 zusätzliche Stelle (FTE).</p>'),
+            art("Handlungsempfehlung (Auszug)","8.5 Recommend Actions to Increase Solution Value",
+              '<p class="artifact-text">Empfehlung: Trainingsdaten um Quereinsteiger-Profile erweitern, Re-Audit in Q2 2027 ansetzen.</p>')
+          ],
+          persona:"sarah", personaText:"„Für mich zählt vor allem: Wir besetzen offene Montage-Stellen jetzt schneller — meine Vertriebsprojekte stehen nicht mehr wochenlang wegen fehlender Techniker still.“",
+          crossref:"Querverweis PMBOK 8: entspricht dem Prozess „Benefits Realization“ nach Projektabschluss.",
+          quizQ:"Sarah sieht sich das KPI-Dashboard drei Monate nach Go-Live an: Screening-Zeit, Bias-Kennzahl, Human-Oversight-Eingriffe. Welche BABOK-Aufgabe wird hier zentral durchgeführt?",
+          options:opts3("8.1 Measure Solution Performance","8.3 Assess Solution Limitations","5.1 Trace Requirements"), explain:EXPLAIN.s6
+        }
+      ]
+    },
+
+    studienakte: {
+      id:"studienakte", label:"🎓 Studierendenakte (Hochschule Nordwest)",
+      introTitle:"Fall B: Studierendenakte digital an der Hochschule Nordwest",
+      introText:"Die Hochschule Nordwest (fiktiv) will ihr Prüfungsamt von der Papierakte auf die <strong>elektronische Studierendenakte</strong> umstellen: Notenspiegel, Abschlusszeugnisse, Widerspruchsverfahren, Nachteilsausgleich. Kein KI-System — dafür strenge Vorgaben zu <strong>Barrierefreiheit (BITV 2.0)</strong> und sehr langen <strong>Aufbewahrungsfristen</strong> statt kurzer Löschpflichten.",
+      facts:[["Organisation","Hochschule Nordwest (fiktiv)"],["Projekt","Studierendenakte digital (E-Akte)"],["Besonderheit","Aufbewahrungsfrist 50 Jahre statt Löschpflicht"],["Rechtsrahmen","VwVfG §3a, BITV 2.0, DSGVO"]],
+      badges:["📘 BABOK® Guide v3 (IIBA)","♿ Barrierefreiheit · BITV 2.0/WCAG 2.1 AA"],
+      finaleNote:"🔄 Auch hier laufen die Wissensbereiche iterativ: Ein Migrationsrisiko in Strategy Analysis (6.3) verändert sofort die Priorisierung in Requirements Life Cycle Management (5.3) — genau wie im Fall TalentMatch AI.",
+      stations:[
+        {
+          id:1, chapter:"Kapitel 3", kaEN:"Business Analysis Planning and Monitoring", kaDE:"Planung &amp; Überwachung der Geschäftsanalyse", icon:"🧭",
+          taskCode:"3.2", taskName:"Plan Stakeholder Engagement",
+          techniques:["10.43 Stakeholder List, Map, or Personas","10.39 Roles and Permissions Matrix"],
+          artifacts:[
+            art("Stakeholder-Liste (Auszug)","3.2 Plan Stakeholder Engagement",
+              '<table><tr><th>Stakeholder</th><th>Einfluss/Interesse</th><th>Vorgehen</th></tr>'+
+              '<tr><td>Kanzlerin Dr. Feldmann</td><td>hoch/hoch</td><td>monatliches Lenkungsgremium</td></tr>'+
+              '<tr><td>Datenschutzbeauftragte Hochschule</td><td>hoch/mittel</td><td>DSFA-Pflicht vor Rollout</td></tr>'+
+              '<tr><td>Prüfungsamt-Team (Herr Öztürk)</td><td>mittel/hoch</td><td>wöchentliches Feedback</td></tr></table>'),
+            art("RACI-Matrix: Freigabe Aktenordnung (Auszug)","3.3 Plan Business Analysis Governance",
+              '<table><tr><th>Rolle</th><th>Status</th></tr>'+
+              '<tr><td>Ela (Projektleitung)</td><td>Responsible</td></tr>'+
+              '<tr><td>Kanzlerin Dr. Feldmann</td><td>Accountable</td></tr>'+
+              '<tr><td>Justiziariat</td><td>Consulted</td></tr>'+
+              '<tr><td>Studierendenvertretung</td><td>Informed</td></tr></table>'),
+            art("Vorgehensentscheid (Auszug)","3.1 Plan Business Analysis Approach",
+              '<p class="artifact-text">Migrations-Meilensteine (Scan, Rechtsprüfung) werden klassisch geplant. Die Nutzeroberfläche des Prüfungsamts wird iterativ mit Herrn Öztürk abgestimmt.</p>'),
+            art("Informationsablage-Konzept (Auszug)","3.4 Plan Business Analysis Information Management",
+              '<p class="artifact-text">Anforderungsdokumente im Confluence-Space der Hochschul-IT; die Aktenordnung liegt als PDF im Justiziariats-Ordner mit Lesezugriff für das Projektteam.</p>'),
+            art("BA-Retrospektive (Auszug)","3.5 Identify Business Analysis Performance Improvements",
+              '<p class="artifact-text">Gut gelaufen: frühe Einbindung des Justiziariats. Verbesserungspotenzial: Datenschutzbeauftragte erst in Woche 4 statt Woche 1 einbezogen.</p>')
+          ],
+          persona:"ela", personaText:"„Bei einer Hochschule tagt das Lenkungsgremium monatlich, nicht wöchentlich — dafür ist die Freigabe der Aktenordnung ein Formalakt, den ich nicht überspringen kann.“",
+          crossref:"Querverweis PMBOK 8: entspricht der Prozessgruppe „Planning“ – Stakeholder-Register als frühes Schlüsselartefakt.",
+          quizQ:"Ela erstellt eine Stakeholder-Liste mit Einfluss/Interesse und legt fest, wie mit den Beteiligten zusammengearbeitet wird. Welche BABOK-Aufgabe führt sie damit zentral durch?",
+          options:opts3("3.2 Plan Stakeholder Engagement","4.5 Manage Stakeholder Collaboration","3.3 Plan Business Analysis Governance"), explain:EXPLAIN.s1
+        },
+        {
+          id:2, chapter:"Kapitel 4", kaEN:"Elicitation and Collaboration", kaDE:"Ermittlung &amp; Zusammenarbeit", icon:"🎙",
+          taskCode:"4.2", taskName:"Conduct Elicitation",
+          techniques:["10.18 Document Analysis","10.34 Process Analysis"],
+          artifacts:[
+            art("Dokumentenanalyse: Aufbau Papierakte (Auszug)","4.1 Prepare for Elicitation",
+              '<ul><li>Deckblatt mit Matrikelnummer</li><li>Notenspiegel (chronologisch)</li><li>Widerspruchsschreiben gegen Prüfungsnoten</li><li>Anträge auf Nachteilsausgleich</li></ul>'),
+            art("Ist-Prozess-Analyse: Widerspruchsverfahren (Auszug)","4.2 Conduct Elicitation",
+              '<table><tr><th>Schritt</th><th>Ø Dauer</th></tr>'+
+              '<tr><td>Posteingang &amp; Erfassung</td><td>2 Tage</td></tr><tr><td>Weiterleitung Prüfungsausschuss</td><td>5 Tage</td></tr>'+
+              '<tr><td>Bescheid-Erstellung</td><td>4 Tage</td></tr><tr><td>Gesamt (7 Schritte)</td><td>Ø 18 Tage</td></tr></table>'),
+            art("Bestätigungsprotokoll (Auszug)","4.3 Confirm Elicitation Results",
+              '<p class="artifact-text">Herr Öztürk bestätigt die Ist-Prozess-Darstellung, ergänzt einen bisher fehlenden Schritt (Nachfrist-Setzung).</p>'),
+            art("Management-Summary an Kanzlerin (Auszug)","4.4 Communicate Business Analysis Information",
+              '<p class="artifact-text">Drei Kernbefunde: (1) Ø 18 Tage Durchlaufzeit, (2) 7 manuelle Schritte, (3) Barrierefreiheit bislang nicht berücksichtigt.</p>'),
+            art("Eskalationsprotokoll (Auszug)","4.5 Manage Stakeholder Collaboration",
+              '<p class="artifact-text">Konflikt: Justiziariat besteht auf Papier-Originalunterschrift, IT schlägt qualifizierte elektronische Signatur vor. Gelöst durch Rechtsgutachten: eSignatur zulässig nach § 3a VwVfG.</p>')
+          ],
+          persona:"knut", personaText:"„Bevor ich eine Schnittstelle zum Campus-Management-System baue, muss ich wissen, welche 7 Schritte wirklich nötig sind — sonst digitalisiere ich nur das Chaos.“",
+          crossref:"Querverweis IREB CPRE: Dokumentenanalyse und Prozessanalyse als etablierte Ermittlungstechniken.",
+          quizQ:"Knut und das Prüfungsamt-Team analysieren gemeinsam den Ist-Prozess eines Widerspruchsverfahrens Schritt für Schritt. Welche BABOK-Aufgabe ist das zentral?",
+          options:opts3("4.2 Conduct Elicitation","4.1 Prepare for Elicitation","6.1 Analyze Current State"), explain:EXPLAIN.s2
+        },
+        {
+          id:3, chapter:"Kapitel 5", kaEN:"Requirements Life Cycle Management", kaDE:"Anforderungs-Lebenszyklusmanagement", icon:"🔗",
+          taskCode:"5.3", taskName:"Prioritize Requirements",
+          techniques:["10.33 Prioritization","10.9 Business Rules Analysis"],
+          artifacts:[
+            art("Traceability-Matrix (Auszug)","5.1 Trace Requirements",
+              '<p class="artifact-text">AN-008 „Aufbewahrung 50 Jahre“ ← Quelle: Prüfungsordnung §12 ← eingebracht von: Justiziariat.</p>'),
+            art("Versions-Historie (Auszug)","5.2 Maintain Requirements",
+              '<p class="artifact-text">AN-008 v1.0 (Entwurf: 30 Jahre) → v1.1 (korrigiert auf 50 Jahre nach Rechtsprüfung, 22.09.).</p>'),
+            art("Priorisierung nach MoSCoW (Auszug)","5.3 Prioritize Requirements",
+              '<table><tr><th>Priorität</th><th>Anforderung</th></tr>'+
+              '<tr><td>Must</td><td>Barrierefreie Bedienung nach BITV 2.0/WCAG 2.1 AA</td></tr>'+
+              '<tr><td>Must</td><td>Automatisierte Einhaltung der 50-Jahres-Aufbewahrungsfrist</td></tr>'+
+              '<tr><td>Should</td><td>Volltextsuche in Altakten</td></tr>'+
+              '<tr><td>Could</td><td>Self-Service-Portal für Studierende</td></tr></table>'),
+            art("Änderungsantrag-Bewertung (Auszug)","5.4 Assess Requirements Changes",
+              '<p class="artifact-text">CR-005: Volltextsuche von Should auf Must hochstufen? Bewertung: bleibt Should — kein rechtlicher Zwang.</p>'),
+            art("Freigabeprotokoll (Auszug)","5.5 Approve Requirements",
+              '<p class="artifact-text">AN-008 freigegeben durch Kanzlerin Dr. Feldmann am 03.10.; Petra bestätigt Testbarkeit der Löschsperre.</p>'),
+            art("Epic „Elektronische Studierendenakte“ (Auszug)","5.3 Prioritize Requirements",
+              '<p class="artifact-text">Das Epic wird in vier einzeln umsetzbare Stories zerlegt: Scan-Workflow, automatisierte Fristenkontrolle, barrierefreie Ansicht, Volltextsuche.</p>')
+          ],
+          persona:"petra", personaText:"„Bei einer Akte mit 50 Jahren Aufbewahrungsfrist kann ich mir keine stillschweigende Lösch-Automatik erlauben — das muss ich vor Rollout hart verifizieren.“",
+          crossref:"Querverweis IREB CPRE: Geschäftsregeln als eigener Anforderungstyp neben funktionalen/nicht-funktionalen Anforderungen.",
+          quizQ:"Petra sortiert die Anforderungen in Must/Should/Could und begründet die Rangfolge. Welche BABOK-Aufgabe führt sie damit zentral durch?",
+          options:opts3("5.3 Prioritize Requirements","7.1 Specify and Model Requirements","3.1 Plan Business Analysis Approach"), explain:EXPLAIN.s3
+        },
+        {
+          id:4, chapter:"Kapitel 6", kaEN:"Strategy Analysis", kaDE:"Strategieanalyse", icon:"⚖️",
+          taskCode:"6.3", taskName:"Assess Risks",
+          techniques:["10.38 Risk Analysis and Management","10.46 SWOT Analysis"],
+          artifacts:[
+            art("Ist-Zustand-Kurzanalyse (Auszug)","6.1 Analyze Current State",
+              '<p class="artifact-text">Aktuell: 100% Papierakte, Zugriff nur vor Ort, Ø 18 Tage Durchlaufzeit bei Widerspruch.</p>'),
+            art("Soll-Zustand-Kurzbeschreibung (Auszug)","6.2 Define Future State",
+              '<p class="artifact-text">Ziel: elektronische Akte mit automatisierter Fristenkontrolle und barrierefreier Bedienung; Durchlaufzeit −60%.</p>'),
+            art("Risikoregister (Auszug)","6.3 Assess Risks",
+              '<table><tr><th>Risiko</th><th>Bewertung</th><th>Gegenmaßnahme</th></tr>'+
+              '<tr><td>Datenverlust bei Migration von Papierakten</td><td>mittel/hoch</td><td>4-Augen-Prinzip nach Scan</td></tr>'+
+              '<tr><td>Unbefugter Zugriff auf gescannte Prüfungsakten</td><td>mittel/hoch</td><td>Zugriffskontrolle und Protokollierung nach ISO/IEC 27001 Anhang A.8.15</td></tr></table>'),
+            art("SWOT-Kurzanalyse (Auszug)","6.3 Assess Risks",
+              '<table><tr><th>Stärken</th><th>Schwächen</th></tr><tr><td>Schnellerer Zugriff</td><td>Hoher Migrationsaufwand</td></tr>'+
+              '<tr><th>Chancen</th><th>Risiken</th></tr><tr><td>Vorbild für andere Fachbereiche</td><td>Datenverlust bei Altakten</td></tr></table>'),
+            art("Change-Strategy-Kurzpapier (Auszug)","6.4 Define Change Strategy",
+              '<p class="artifact-text">Migration fachbereichsweise: Start im Prüfungsamt (Pilot), danach Immatrikulationsamt, danach Prüfungsausschüsse.</p>'),
+            art("Business Case (Kurzfassung)","6.4 Define Change Strategy",
+              '<p class="artifact-text">Investition ca. 210.000€ (Scanstraße, Schulung, Softwareanpassung). Nutzen: Durchlaufzeit −67%, Vermeidung von Haftungsrisiken bei Aktenverlust. Amortisation nicht rein monetär, da gesetzlicher Digitalisierungsauftrag.</p>')
+          ],
+          persona:"feld", personaText:"„Ich trage die Verantwortung gegenüber dem Landesrechnungshof — ein verlorenes Abschlusszeugnis ist für mich kein IT-Vorfall, das ist ein Politikum.“",
+          crossref:"Querverweis PMBOK 8: entspricht dem Risikomanagement-Prozess, hier auf Trägerschaftsebene. Querverweis ISO/IEC 27001:2022 Anhang A: Informationssicherheitsrisiken folgen demselben Bewertungsschema.",
+          quizQ:"Kanzlerin Dr. Feldmann und Ela bewerten den Risikoregister-Eintrag zu Datenverlust: Wahrscheinlichkeit, Auswirkung, Gegenmaßnahme. Welche BABOK-Aufgabe ist das zentral?",
+          options:opts3("6.3 Assess Risks","8.3 Assess Solution Limitations","5.4 Assess Requirements Changes"), explain:EXPLAIN.s4
+        },
+        {
+          id:5, chapter:"Kapitel 7", kaEN:"Requirements Analysis and Design Definition", kaDE:"Anforderungsanalyse &amp; Design-Definition", icon:"✅",
+          taskCode:"7.3", taskName:"Validate Requirements",
+          techniques:["10.1 Acceptance and Evaluation Criteria","10.37 Reviews"],
+          artifacts:[
+            art("Anforderungsspezifikation (Auszug, IEEE 29148)","7.1 Specify and Model Requirements",
+              '<p class="artifact-text">REQ-015: Das System MUSS Abschlusszeugnisse für mindestens 50 Jahre vor Löschung sperren.</p>'),
+            art("Review-Protokoll: BITV-2.0-Checkliste (Auszug)","7.2 Verify Requirements",
+              '<table><tr><th>Prüfpunkt</th><th>Ergebnis</th></tr>'+
+              '<tr><td>Tastaturbedienbarkeit</td><td>✅ bestätigt</td></tr>'+
+              '<tr><td>Screenreader-Kompatibilität PDF</td><td>⚠️ Nacharbeit nötig</td></tr></table>'),
+            art("Akzeptanzkriterium (Gherkin)","7.3 Validate Requirements",
+              '<div class="mono">Angenommen eine gescannte Pruefungsakte wird\nhochgeladen\nWenn die OCR-Texterkennung unter 98% Konfidenz\nliegt\nDann muss ein/e Sachbearbeiter:in die Akte manuell\nnachpruefen, bevor sie archiviert wird</div>'),
+            art("Datenmodell-Auszug (Data Dictionary)","7.4 Define Requirements Architecture",
+              '<table><tr><th>Feld</th><th>Typ</th></tr><tr><td>aufbewahrung_bis</td><td>Datum, Standard = Scan-Datum + 50 Jahre</td></tr>'+
+              '<tr><td>ocr_konfidenz</td><td>Prozent</td></tr></table>'),
+            art("Design-Optionen-Vergleich (Auszug)","7.5 Define Design Options",
+              '<p class="artifact-text">Option A: Inhouse-Scanstraße (volle Kontrolle, hoher Initialaufwand). Option B: externer Scan-Dienstleister (schneller, DSFA für Auftragsverarbeitung nötig). Empfehlung: Option A wegen Prüfungsgeheimnis.</p>'),
+            art("Use Case „Akte digital einsehen“ (Auszug)","7.1 Specify and Model Requirements",
+              '<p class="artifact-text">Akteur: Sachbearbeiter:in. Auslöser: Widerspruchseingang. Hauptszenario: Akte digital öffnen → relevante Unterlagen filtern → Bearbeitung dokumentieren. Alternativszenario: OCR-Konfidenz zu niedrig → manuelle Nachprüfung.</p>'),
+            art("NFR-Checkliste (Auszug, ISO/IEC 25010)","7.1 Specify and Model Requirements",
+              '<table><tr><th>Qualitätsmerkmal</th><th>Konkrete Anforderung</th></tr>'+
+              '<tr><td>Zuverlässigkeit</td><td>Verfügbarkeit der E-Akte während Prüfungsphasen mind. 99,5%</td></tr>'+
+              '<tr><td>Interaktionsfähigkeit (vormals Usability, inkl. Barrierefreiheit)</td><td>Bedienbarkeit nach BITV 2.0/WCAG 2.1 AA</td></tr>'+
+              '<tr><td>Wartbarkeit</td><td>Aufbewahrungsfristen bei Gesetzesänderung ohne Code-Anpassung konfigurierbar</td></tr></table>'),
+            art("Wertanalyse &amp; Empfehlung (Auszug)","7.6 Analyze Potential Value and Recommend Solution",
+              '<p class="artifact-text">Empfehlung: Option A (Inhouse-Scanstraße). Begründung: Prüfungsgeheimnis bleibt vollständig gewahrt, langfristig günstiger trotz höherer Anfangsinvestition, keine zusätzliche DSFA für Auftragsverarbeitung nötig.</p>')
+          ],
+          persona:"oez", personaText:"„Für mich zählt, dass ich am Ende nicht mehr nacharbeiten muss als vorher — sonst hat die Digitalisierung meinen Job nicht leichter gemacht.“",
+          crossref:"Querverweis ISO/IEC 25010:2023: Qualitätsmerkmal „Bedienbarkeit“ inkl. Zugänglichkeit (Accessibility).",
+          quizQ:"Petra und die Datenschutzbeauftragte prüfen das Akzeptanzkriterium im Review nicht nur auf Formulierung, sondern fragen: „Erfüllt das wirklich unsere BITV-2.0-Pflicht?“ Welche BABOK-Aufgabe ist das zentral — Verify oder Validate?",
+          options:opts3("7.3 Validate Requirements","7.2 Verify Requirements","8.1 Measure Solution Performance"), explain:EXPLAIN.s5
+        },
+        {
+          id:6, chapter:"Kapitel 8", kaEN:"Solution Evaluation", kaDE:"Lösungsbewertung", icon:"📊",
+          taskCode:"8.1", taskName:"Measure Solution Performance",
+          techniques:["10.28 Metrics and Key Performance Indicators (KPIs)","10.27 Lessons Learned"],
+          artifacts:[
+            art("KPI-Dashboard nach 6 Monaten Betrieb","8.1 Measure Solution Performance",
+              '<table><tr><th>Kennzahl</th><th>Vorher</th><th>Nachher</th></tr>'+
+              '<tr><td>Durchlaufzeit Widerspruch</td><td>Ø 18 Tage</td><td>Ø 6 Tage (−67%)</td></tr>'+
+              '<tr><td>Barrierefreiheits-Audit</td><td>—</td><td>bestanden (BITV 2.0)</td></tr>'+
+              '<tr><td>Datenverlust-Vorfälle</td><td>—</td><td>0</td></tr></table>'),
+            art("Auswertung der Kennzahlen (Auszug)","8.2 Analyze Performance Measures",
+              '<p class="artifact-text">Durchlaufzeit-Reduktion übertrifft Zielwert (−60% geplant, −67% erreicht). Barrierefreiheits-Audit bestanden ohne Auflagen.</p>'),
+            art("Limitations-Bericht (Auszug)","8.3 Assess Solution Limitations",
+              '<p class="artifact-text">Einschränkung: OCR erkennt handschriftliche Vermerke auf Akten vor 1990 nur eingeschränkt.</p>'),
+            art("Enterprise-Limitations-Notiz (Auszug)","8.4 Assess Enterprise Limitations",
+              '<p class="artifact-text">Fehlende Kapazität im Justiziariat für die Prüfung weiterer Fachbereichs-Migrationen. Empfehlung: externe Rechtsberatung für Rollout-Welle 2.</p>'),
+            art("Handlungsempfehlung (Auszug)","8.5 Recommend Actions to Increase Solution Value",
+              '<p class="artifact-text">Empfehlung: Nacherfassung der Altakten vor 1990 priorisieren, Rollout-Welle 2 (Immatrikulationsamt) ab Q2 vorbereiten.</p>')
+          ],
+          persona:"ela", personaText:"„Sechs Tage statt achtzehn — das ist der Unterschied, den Studierende tatsächlich spüren, wenn sie auf einen Widerspruchsbescheid warten.“",
+          crossref:"Querverweis PMBOK 8: entspricht dem Prozess „Benefits Realization“ nach Projektabschluss.",
+          quizQ:"Ela sieht sich das KPI-Dashboard sechs Monate nach Go-Live an: Durchlaufzeit, Audit-Ergebnis, Datenverlust-Vorfälle. Welche BABOK-Aufgabe wird hier zentral durchgeführt?",
+          options:opts3("8.1 Measure Solution Performance","8.3 Assess Solution Limitations","5.1 Trace Requirements"), explain:EXPLAIN.s6
+        }
+      ]
+    },
+
+    novatrade: {
+      id:"novatrade", label:"📈 NovaTrade Pulse (Börsenprodukt)",
+      introTitle:"Fall C: NovaTrade Pulse – Bruchteilsaktien-Handel bei NovaTrade Systems GmbH",
+      introText:"NovaTrade Systems GmbH, ein lizenziertes Wertpapierdienstleistungsunternehmen, entwickelt <strong>NovaTrade Pulse</strong>: eine neue Funktion für den Handel mit <strong>Bruchteilsaktien ab 1€</strong> in der bestehenden Trading-App. Das Scrum-Team arbeitet in 2-Wochen-Sprints — jedes Release durchläuft aber ein hartes <strong>MiFID-II-Product-Governance-Gate</strong>, das nicht verschoben werden darf.",
+      facts:[["Organisation","NovaTrade Systems GmbH"],["Projekt","NovaTrade Pulse (Bruchteilsaktien-Handel)"],["Besonderheit","Agile Sprints + hartes Compliance-Gate vor Release"],["Rechtsrahmen","MiFID II, WpHG §63 ff., MAR"]],
+      badges:["📘 BABOK® Guide v3 (IIBA)","📈 Wertpapierhandel · MiFID II Product Governance"],
+      finaleNote:"🔄 Hier ist Iteration nicht nur Theorie: Jede der sechs Aufgaben wiederholt sich im Sprint-Rhythmus alle zwei Wochen — Requirements Life Cycle Management (5.x) läuft buchstäblich im Kreis, während das Compliance-Gate aus Strategy Analysis (6.3) unverrückbar bleibt.",
+      stations:[
+        {
+          id:1, chapter:"Kapitel 3", kaEN:"Business Analysis Planning and Monitoring", kaDE:"Planung &amp; Überwachung der Geschäftsanalyse", icon:"🧭",
+          taskCode:"3.2", taskName:"Plan Stakeholder Engagement",
+          techniques:["10.43 Stakeholder List, Map, or Personas","10.39 Roles and Permissions Matrix"],
+          artifacts:[
+            art("Stakeholder-Liste (Auszug)","3.2 Plan Stakeholder Engagement",
+              '<table><tr><th>Stakeholder</th><th>Einfluss/Interesse</th><th>Vorgehen</th></tr>'+
+              '<tr><td>Vorstand/Herr Bachmeier</td><td>hoch/hoch</td><td>Sprint-Review alle 2 Wochen</td></tr>'+
+              '<tr><td>Compliance-Funktion (Petra)</td><td>hoch/hoch</td><td>Freigabe-Gate vor jedem Release</td></tr>'+
+              '<tr><td>BaFin (extern)</td><td>kein Einfluss/hohe Betroffenheit</td><td>Meldepflichten nach WpHG</td></tr></table>'),
+            art("RACI-Matrix zur Release-Freigabe (Auszug)","3.3 Plan Business Analysis Governance",
+              '<table><tr><th>Rolle</th><th>Bei Release-Freigabe</th></tr>'+
+              '<tr><td>Ela (Product Owner)</td><td>Responsible</td></tr>'+
+              '<tr><td>Herr Bachmeier (Vorstand)</td><td>Accountable</td></tr>'+
+              '<tr><td>Petra (Compliance)</td><td>Consulted</td></tr>'+
+              '<tr><td>BaFin</td><td>Informed (via Meldewesen)</td></tr></table>'),
+            art("Vorgehensentscheid (Auszug)","3.1 Plan Business Analysis Approach",
+              '<p class="artifact-text">Das Produkt wird komplett agil in 2-Wochen-Sprints entwickelt. Die MiFID-II-Product-Governance-Freigabe bleibt jedoch ein hartes, nicht verschiebbares Gate vor jedem Release — ein klassisches Element im agilen Fluss.</p>'),
+            art("Informationsablage-Konzept (Auszug)","3.4 Plan Business Analysis Information Management",
+              '<p class="artifact-text">Der Product Backlog lebt in Jira, tagesaktuell für das ganze Team einsehbar. Compliance-Nachweise liegen in einem separaten, auditierbaren Confluence-Space (WpHG-Dokumentationspflicht nach § 63 WpHG).</p>'),
+            art("BA-Retrospektive nach Sprint 3 (Auszug)","3.5 Identify Business Analysis Performance Improvements",
+              '<p class="artifact-text">Gut gelaufen: Backlog-Refinement lief reibungslos. Verbesserungspotenzial: Compliance-Review kam bislang zu spät im Sprint — künftig ergänzt eine „Definition of Ready“ eine Compliance-Vorprüfung.</p>')
+          ],
+          persona:"ela", personaText:"„Wir arbeiten in Sprints, aber die MiFID-II-Freigabe ist für mich ein hartes Gate — das verschiebe ich nicht, egal wie voll der Sprint ist.“",
+          crossref:"Querverweis PMBOK 8: entspricht der Prozessgruppe „Planning“ – Stakeholder-Register als frühes Schlüsselartefakt.",
+          quizQ:"Ela erstellt eine Stakeholder-Liste mit Einfluss/Interesse und legt fest, wie mit den Beteiligten zusammengearbeitet wird. Welche BABOK-Aufgabe führt sie damit zentral durch?",
+          options:opts3("3.2 Plan Stakeholder Engagement","4.5 Manage Stakeholder Collaboration","3.3 Plan Business Analysis Governance"), explain:EXPLAIN.s1
+        },
+        {
+          id:2, chapter:"Kapitel 4", kaEN:"Elicitation and Collaboration", kaDE:"Ermittlung &amp; Zusammenarbeit", icon:"🎙",
+          taskCode:"4.2", taskName:"Conduct Elicitation",
+          techniques:["10.50 Workshops","10.18 Document Analysis"],
+          artifacts:[
+            art("Dokumentenanalyse: Wettbewerbsprodukte (Auszug)","4.1 Prepare for Elicitation",
+              '<p class="artifact-text">Auswertung von App-Store-Reviews und Wettbewerbs-Apps: Bruchteilsaktien-Handel wird in 4 von 5 Konkurrenzprodukten bereits angeboten, häufigster Kritikpunkt an der eigenen App: „nur ganze Aktien kaufbar“.</p>'),
+            art("Backlog-Refinement-Protokoll (Auszug)","4.2 Conduct Elicitation",
+              '<table><tr><th>Feld</th><th>Inhalt</th></tr>'+
+              '<tr><td>Teilnehmer:innen</td><td>Ela (PO), Knut, 2 Entwickler:innen, Petra (Compliance)</td></tr>'+
+              '<tr><td>Kernbefund</td><td>Nutzer:innen wollen Investitionen ab 1€; aktuell nur ganze Aktien handelbar (Mindesteinstieg oft &gt;50€)</td></tr></table>'),
+            art("Bestätigungsprotokoll (Auszug)","4.3 Confirm Elicitation Results",
+              '<p class="artifact-text">Ela bestätigt im Refinement: Die erfassten User Stories geben den Bedarf korrekt wieder, keine Ergänzung nötig.</p>'),
+            art("Sprint-Review-Summary an Vorstand (Auszug)","4.4 Communicate Business Analysis Information",
+              '<p class="artifact-text">Drei priorisierte Kernstories für Herrn Bachmeier: (1) Bruchteilskauf ab 1€, (2) verpflichtende Geeignetheitsprüfung, (3) Kosten-Transparenz-Anzeige.</p>'),
+            art("Eskalationsprotokoll (Auszug)","4.5 Manage Stakeholder Collaboration",
+              '<p class="artifact-text">Konflikt: Dev-Team will Live-Kurse über eine Drittanbieter-API einbinden, Compliance sieht die Datenlizenz als ungeklärt an. Gelöst durch Wechsel auf einen lizenzierten Marktdaten-Feed.</p>')
+          ],
+          persona:"knut", personaText:"„Das Refinement zeigt mir sofort, welche Story als Nächstes dran ist — aber die Marktdaten-Lizenz kann ich nicht einfach im Sprint klären, das dauert länger als zwei Wochen.“",
+          crossref:"Querverweis IREB CPRE: Ermittlungstechniken (Workshop/Refinement, Dokumentenanalyse) folgen derselben Systematik — Vorbereitung/Durchführung/Nachbereitung.",
+          quizQ:"Knut, Ela und Petra führen das Backlog-Refinement durch und dokumentieren den Bedarf direkt im Protokoll. Welche BABOK-Aufgabe ist das zentral?",
+          options:opts3("4.2 Conduct Elicitation","4.1 Prepare for Elicitation","6.1 Analyze Current State"), explain:EXPLAIN.s2
+        },
+        {
+          id:3, chapter:"Kapitel 5", kaEN:"Requirements Life Cycle Management", kaDE:"Anforderungs-Lebenszyklusmanagement", icon:"🔗",
+          taskCode:"5.3", taskName:"Prioritize Requirements",
+          techniques:["10.33 Prioritization","10.9 Business Rules Analysis"],
+          artifacts:[
+            art("Traceability-Matrix (Auszug)","5.1 Trace Requirements",
+              '<p class="artifact-text">Story „Bruchteilsaktien-Kauf“ ← Quelle: Nutzerfeedback + Wettbewerbsanalyse ← priorisiert von: Ela (PO).</p>'),
+            art("Versions-Historie (Auszug)","5.2 Maintain Requirements",
+              '<p class="artifact-text">Story „Mindestinvestition“ v1 (Entwurf: 10€) → v2 (auf 1€ gesenkt nach Kundenfeedback aus dem Refinement).</p>'),
+            art("Product Backlog nach MoSCoW (Auszug)","5.3 Prioritize Requirements",
+              '<table><tr><th>Priorität</th><th>Story</th></tr>'+
+              '<tr><td>Must</td><td>Geeignetheitsprüfung vor Erstkauf (§ 63 WpHG)</td></tr>'+
+              '<tr><td>Must</td><td>Kosten-Transparenz-Anzeige (Product Governance)</td></tr>'+
+              '<tr><td>Should</td><td>Sparplan-Funktion</td></tr>'+
+              '<tr><td>Could</td><td>Social-Trading-Feed</td></tr></table>'),
+            art("Änderungsbewertung (Auszug)","5.4 Assess Requirements Changes",
+              '<p class="artifact-text">Story „Krypto-Anbindung“ wird verschoben: regulatorischer Rahmen (MiCA-Bezug) noch nicht abschließend geklärt.</p>'),
+            art("Sprint-Planning-Freigabe (Auszug)","5.5 Approve Requirements",
+              '<p class="artifact-text">Backlog-Zuschnitt für Sprint 7 freigegeben durch Ela (PO) und Petra (Compliance) vor Sprint-Start.</p>'),
+            art("Epic „Bruchteilsaktien-Handel“ (Auszug)","5.3 Prioritize Requirements",
+              '<p class="artifact-text">Das Epic wird im Product Backlog in vier Stories zerlegt: Kaufabschluss ab 1€, Geeignetheitsprüfung, Kosten-Transparenz-Anzeige, Sparplan-Funktion.</p>')
+          ],
+          persona:"petra", personaText:"„Jede Story, die die Geeignetheitsprüfung betrifft, ist für mich automatisch Must — da verhandle ich nicht.“",
+          crossref:"Querverweis IREB CPRE: Priorisierung nach Wert/Risiko folgt derselben Logik wie die Qualitätskriterien „testbar“ und „verfolgbar“.",
+          quizQ:"Petra sortiert die Backlog-Einträge in Must/Should/Could und begründet die Rangfolge. Welche BABOK-Aufgabe führt sie damit zentral durch?",
+          options:opts3("5.3 Prioritize Requirements","7.1 Specify and Model Requirements","3.1 Plan Business Analysis Approach"), explain:EXPLAIN.s3
+        },
+        {
+          id:4, chapter:"Kapitel 6", kaEN:"Strategy Analysis", kaDE:"Strategieanalyse", icon:"⚖️",
+          taskCode:"6.3", taskName:"Assess Risks",
+          techniques:["10.38 Risk Analysis and Management","10.46 SWOT Analysis"],
+          artifacts:[
+            art("Ist-Zustand-Kurzanalyse (Auszug)","6.1 Analyze Current State",
+              '<p class="artifact-text">Aktuell: nur Ganzaktien handelbar, faktische Einstiegshürde oft über 50€, junge Zielgruppe unterrepräsentiert.</p>'),
+            art("Soll-Zustand-Kurzbeschreibung (Auszug)","6.2 Define Future State",
+              '<p class="artifact-text">Ziel: Bruchteilsaktien ab 1€, Zielgruppe 18–35-Jährige, geplantes Kundenwachstum +20% in dieser Gruppe.</p>'),
+            art("Risikoregister (Auszug)","6.3 Assess Risks",
+              '<table><tr><th>Risiko</th><th>Bewertung</th><th>Gegenmaßnahme</th></tr>'+
+              '<tr><td>Verstoß gegen Geeignetheitsprüfungspflicht bei zu einfachem Onboarding</td><td>mittel/hoch</td><td>Pflicht-Fragebogen vor Erstkauf, Compliance-Review je Release</td></tr>'+
+              '<tr><td>Unbefugter Zugriff auf Kundendepot-/Investitionsdaten</td><td>hoch/hoch</td><td>Verschlüsselung und Zugriffskontrolle nach ISO/IEC 27001 Anhang A.8.24</td></tr></table>'),
+            art("SWOT-Kurzanalyse (Auszug)","6.3 Assess Risks",
+              '<table><tr><th>Stärken</th><th>Schwächen</th></tr><tr><td>Niedrige Einstiegshürde</td><td>Höherer Prüfaufwand je Order</td></tr>'+
+              '<tr><th>Chancen</th><th>Risiken</th></tr><tr><td>Neue, jüngere Zielgruppe</td><td>BaFin-Beanstandung bei Mängeln</td></tr></table>'),
+            art("Change-Strategy-Kurzpapier (Auszug)","6.4 Define Change Strategy",
+              '<p class="artifact-text">Rollout zweistufig: zunächst geschlossene Beta mit 500 Bestandskund:innen, volle Freigabe erst nach abgeschlossenem Compliance-Review.</p>'),
+            art("Business Case (Kurzfassung)","6.4 Define Change Strategy",
+              '<p class="artifact-text">Investition ca. 120.000€ (Entwicklung über 6 Sprints + Compliance-Reviews). Nutzen: +18% Neukunden in Zielgruppe 18–35, zusätzlicher Umsatz durch Ordergebühren. Amortisation geschätzt nach 9 Monaten.</p>')
+          ],
+          persona:"bach", personaText:"„Ein Bußgeld wegen mangelhafter Geeignetheitsprüfung wäre für unsere BaFin-Lizenz existenzbedrohend — das wiegt schwerer als jedes Feature.“",
+          crossref:"Querverweis PMBOK 8: entspricht dem Risikomanagement-Prozess — hier auf Ebene der Geschäftsstrategie und der aufsichtsrechtlichen Lizenz. Querverweis ISO/IEC 27001:2022 Anhang A: Informationssicherheitsrisiken folgen demselben Bewertungsschema.",
+          quizQ:"Herr Bachmeier und Ela bewerten den Risikoregister-Eintrag zur Geeignetheitsprüfung und ordnen das Vorhaben in eine SWOT ein. Welche BABOK-Aufgabe ist das zentral?",
+          options:opts3("6.3 Assess Risks","8.3 Assess Solution Limitations","5.4 Assess Requirements Changes"), explain:EXPLAIN.s4
+        },
+        {
+          id:5, chapter:"Kapitel 7", kaEN:"Requirements Analysis and Design Definition", kaDE:"Anforderungsanalyse &amp; Design-Definition", icon:"✅",
+          taskCode:"7.3", taskName:"Validate Requirements",
+          techniques:["10.1 Acceptance and Evaluation Criteria","10.37 Reviews"],
+          artifacts:[
+            art("User Story (Auszug)","7.1 Specify and Model Requirements",
+              '<p class="artifact-text">„Als Kundin möchte ich bereits ab 1€ in eine Aktie investieren können, damit ich auch mit kleinem Budget diversifizieren kann.“</p>'),
+            art("Review-Protokoll (Auszug)","7.2 Verify Requirements",
+              '<table><tr><th>Prüfpunkt</th><th>Ergebnis</th></tr>'+
+              '<tr><td>Erfüllt INVEST-Kriterien?</td><td>✅ bestätigt</td></tr>'+
+              '<tr><td>Testbar formuliert?</td><td>✅ bestätigt (Petra)</td></tr></table>'),
+            art("Akzeptanzkriterium (Gherkin)","7.3 Validate Requirements",
+              '<div class="mono">Angenommen eine Kundin kauft zum ersten Mal eine\nBruchteilsaktie\nWenn keine bestandene Geeignetheitspruefung im\nSystem hinterlegt ist\nDann muss vor Kaufabschluss der Pflicht-\nFragebogen angezeigt werden</div>'),
+            art("Datenmodell-Auszug (Data Dictionary)","7.4 Define Requirements Architecture",
+              '<table><tr><th>Feld</th><th>Typ</th></tr><tr><td>geeignetheit_bestanden</td><td>Boolean, Pflichtfeld vor erster Order</td></tr>'+
+              '<tr><td>investitionsbetrag</td><td>Decimal, Minimum 1.00</td></tr></table>'),
+            art("Design-Optionen-Vergleich (Auszug)","7.5 Define Design Options",
+              '<p class="artifact-text">Option A: In-App-Fragebogen bei Erstkauf (aktuell, aber mehr Klicks). Option B: Verweis auf bestehende Depoteröffnungsdaten (schneller, aber ggf. veraltet). Empfehlung: Option A für regulatorische Aktualität.</p>'),
+            art("Use Case „Erstkauf durchführen“ (Auszug)","7.1 Specify and Model Requirements",
+              '<p class="artifact-text">Akteur: Kundin. Auslöser: Kaufabsicht Bruchteilsaktie. Hauptszenario: Geeignetheitsprüfung anzeigen → Fragebogen ausfüllen → Kauf freigeben. Alternativszenario: Prüfung nicht bestanden → Kauf blockiert, Hinweistext angezeigt.</p>'),
+            art("NFR-Checkliste (Auszug, ISO/IEC 25010)","7.1 Specify and Model Requirements",
+              '<table><tr><th>Qualitätsmerkmal</th><th>Konkrete Anforderung</th></tr>'+
+              '<tr><td>Effizienz (Performance Efficiency)</td><td>Order-Ausführung unter 200 Millisekunden</td></tr>'+
+              '<tr><td>Sicherheit</td><td>Verschlüsselte Übertragung von Investitionsdaten (TLS 1.3)</td></tr>'+
+              '<tr><td>Zuverlässigkeit</td><td>Handelsplattform-Verfügbarkeit mind. 99,9% während Handelszeiten</td></tr></table>'),
+            art("Wertanalyse &amp; Empfehlung (Auszug)","7.6 Analyze Potential Value and Recommend Solution",
+              '<p class="artifact-text">Empfehlung: Option A (In-App-Fragebogen). Begründung: regulatorisch aktuellste Datenbasis, geringeres Risiko einer BaFin-Beanstandung, konsistent mit der Product-Governance-Freigabe.</p>')
+          ],
+          persona:"petra", personaText:"„Das Akzeptanzkriterium ist testbar formuliert — aber prüfen wir auch: Erfüllt es wirklich unsere Pflicht aus § 63 WpHG? Ja, also nicht nur korrekt, sondern auch wertstiftend.“",
+          crossref:"Querverweis ISO/IEC 25010:2023: Qualitätsmerkmal „Funktionale Angemessenheit“.",
+          quizQ:"Petra prüft das Akzeptanzkriterium im Review nicht nur auf Formulierung, sondern fragt: „Erfüllt das wirklich unsere gesetzliche Pflicht?“ Welche BABOK-Aufgabe ist das zentral — Verify oder Validate?",
+          options:opts3("7.3 Validate Requirements","7.2 Verify Requirements","8.1 Measure Solution Performance"), explain:EXPLAIN.s5
+        },
+        {
+          id:6, chapter:"Kapitel 8", kaEN:"Solution Evaluation", kaDE:"Lösungsbewertung", icon:"📊",
+          taskCode:"8.1", taskName:"Measure Solution Performance",
+          techniques:["10.28 Metrics and Key Performance Indicators (KPIs)","10.27 Lessons Learned"],
+          artifacts:[
+            art("KPI-Dashboard nach 6 Wochen Beta","8.1 Measure Solution Performance",
+              '<table><tr><th>Kennzahl</th><th>Wert</th></tr>'+
+              '<tr><td>Neukunden (Zielgruppe 18–35)</td><td>+18%</td></tr>'+
+              '<tr><td>Ø Erstinvestition</td><td>47€</td></tr>'+
+              '<tr><td>Abbruchquote Geeignetheitsprüfung</td><td>12%</td></tr></table>'),
+            art("Auswertung der Kennzahlen (Auszug)","8.2 Analyze Performance Measures",
+              '<p class="artifact-text">Abbruchquote von 12% liegt über dem Zielwert von 8%. Ursache: Der Pflicht-Fragebogen wird als zu lang empfunden.</p>'),
+            art("Limitations-Bericht (Auszug)","8.3 Assess Solution Limitations",
+              '<p class="artifact-text">Einschränkung: Die Sparplan-Funktion fehlt noch — die von Beta-Kund:innen am häufigsten nachgefragte Ergänzung.</p>'),
+            art("Enterprise-Limitations-Notiz (Auszug)","8.4 Assess Enterprise Limitations",
+              '<p class="artifact-text">Das Compliance-Team kann das aktuelle Review-Tempo (ein Review je 2-Wochen-Sprint) auf Dauer nicht halten — Kapazität ist knapp.</p>'),
+            art("Handlungsempfehlung (Auszug)","8.5 Recommend Actions to Increase Solution Value",
+              '<p class="artifact-text">Empfehlung: Fragebogen von 12 auf 5 Fragen kürzen (regulatorisch zulässiges Minimum), Sparplan-Funktion für das nächste Quartal einplanen.</p>')
+          ],
+          persona:"sarah", personaText:"„Die Abbruchquote von 12% ärgert mich als Vertrieb am meisten — jede abgebrochene Prüfung ist eine Kundin, die wir fast gewonnen hätten.“",
+          crossref:"Querverweis PMBOK 8: entspricht dem Prozess „Benefits Realization“ nach Projektabschluss.",
+          quizQ:"Sarah sieht sich das KPI-Dashboard nach der 6-wöchigen Beta-Phase an: Neukunden, Ø Erstinvestition, Abbruchquote. Welche BABOK-Aufgabe wird hier zentral durchgeführt?",
+          options:opts3("8.1 Measure Solution Performance","8.3 Assess Solution Limitations","5.1 Trace Requirements"), explain:EXPLAIN.s6
+        }
+      ]
+    }
+  };
+
+  // BACCM — Business Analysis Core Concept Model (BABOK Kapitel 2): die 6
+  // Kernkonzepte, generisch definiert und je Fall konkret instanziiert.
+  var BACCM_DEF = {
+    change:{icon:"🔄", name:"Change / Veränderung", def:"Kontrollierte Transformation als Reaktion auf einen Bedarf."},
+    need:{icon:"❓", name:"Need / Bedarf", def:"Ein Problem oder eine Chance, die angegangen werden soll."},
+    solution:{icon:"🛠", name:"Solution / Lösung", def:"Ein spezifischer Weg, einen Bedarf zu befriedigen."},
+    stakeholder:{icon:"👥", name:"Stakeholder", def:"Eine Gruppe oder Person mit einer Beziehung zur Veränderung."},
+    value:{icon:"💎", name:"Value / Wert", def:"Der Nutzen, die Wichtigkeit oder Nützlichkeit von etwas für einen Stakeholder."},
+    context:{icon:"🌍", name:"Context / Kontext", def:"Die Umstände, die die Veränderung beeinflussen und von ihr beeinflusst werden."}
+  };
+  var BACCM_CASE = {
+    talentmatch:{
+      change:"Einführung von KI-gestütztem Bewerber-Screening",
+      need:"Zu langsames, unstrukturiertes manuelles Screening bei Fachkräftemangel",
+      solution:"TalentMatch AI mit verpflichtender Human-in-the-loop-Freigabe",
+      stakeholder:"HR, Betriebsrat, Bewerber:innen, Datenschutzbeauftragte",
+      value:"75% schnelleres Screening bei gewahrter Fairness",
+      context:"EU AI Act, DSGVO, Fachkräftemangel im Maschinenbau"
+    },
+    studienakte:{
+      change:"Umstellung von Papier- auf elektronische Studierendenakte",
+      need:"Lange Durchlaufzeiten, fehlende Barrierefreiheit, Datenverlustrisiko",
+      solution:"E-Akte mit automatisierter Fristenkontrolle",
+      stakeholder:"Prüfungsamt, Studierende, Justiziariat, Kanzlerin",
+      value:"67% schnellere Bearbeitung, bestandenes Barrierefreiheits-Audit",
+      context:"VwVfG, BITV 2.0, gesetzlicher Digitalisierungsauftrag"
+    },
+    novatrade:{
+      change:"Einführung des Bruchteilsaktien-Handels",
+      need:"Hohe Einstiegshürde (&gt;50€) blockiert junge Zielgruppe",
+      solution:"Kauf ab 1€ mit verpflichtender Geeignetheitsprüfung",
+      stakeholder:"Vorstand, Compliance, Kund:innen, BaFin",
+      value:"+18% Neukunden bei eingehaltener Product Governance",
+      context:"MiFID II, WpHG, agiler Sprint-Rhythmus"
+    }
+  };
+
+  // Traceability-Faden: EINE Anforderung, konsequent durch alle 6 Stationen
+  // verfolgt — macht BABOK 5.1 "Trace Requirements" konkret erfahrbar.
+  var TRACE_CASE = {
+    talentmatch:{
+      reqId:"AN-014", reqTitle:"Human-in-the-loop-Freigabe bei Score unter 40%",
+      steps:[
+        {icon:"🧭", label:"Station 1 · Ursprung", text:"Die Datenschutzbeauftragte fordert im Stakeholder-Engagement-Plan eine Transparenzpflicht gegenüber Bewerber:innen (Art. 13 EU AI Act) — der Keim der späteren Anforderung."},
+        {icon:"🎙", label:"Station 2 · Ermittlung", text:"Im Workshop bestätigen die Recruiter:innen: eine vollautomatische Ablehnung ohne menschliche Prüfung ist für sie nicht akzeptabel."},
+        {icon:"🔗", label:"Station 3 · Priorisierung &amp; Tracing", text:"Als AN-014 in die Traceability-Matrix aufgenommen (Quelle: Art. 14 EU AI Act), als Must priorisiert und von Herrn Bachmeier formal freigegeben."},
+        {icon:"⚖️", label:"Station 4 · Risikobezug", text:"Das Risikoregister nennt Diskriminierung durch Trainingsdaten-Bias als Risiko — genau das Risiko, das AN-014 abmildern soll."},
+        {icon:"✅", label:"Station 5 · Spezifikation", text:"Als REQ-021 formal spezifiziert und als Gherkin-Akzeptanzkriterium testbar gemacht: „Wenn Score unter 40%, dann manuelle Freigabe zwingend.“"},
+        {icon:"📊", label:"Station 6 · Wirkungsnachweis", text:"Das KPI-Dashboard zählt 14 Human-Oversight-Eingriffe bei 0 Beschwerden — die Anforderung wirkt nachweislich in der Praxis."}
+      ]
+    },
+    studienakte:{
+      reqId:"AN-008", reqTitle:"Aufbewahrungsfrist 50 Jahre für Abschlusszeugnisse",
+      steps:[
+        {icon:"🧭", label:"Station 1 · Ursprung", text:"Das Justiziariat bringt die gesetzliche Aufbewahrungspflicht bereits im Stakeholder-Engagement als zentrales Thema ein."},
+        {icon:"🎙", label:"Station 2 · Ermittlung", text:"Die Dokumentenanalyse der bestehenden Prüfungsordnung bestätigt die Frist als verbindliche, nicht verhandelbare Vorgabe."},
+        {icon:"🔗", label:"Station 3 · Priorisierung &amp; Tracing", text:"Als AN-008 in die Traceability-Matrix aufgenommen (Quelle: Prüfungsordnung §12), als Must priorisiert und von Kanzlerin Dr. Feldmann freigegeben."},
+        {icon:"⚖️", label:"Station 4 · Risikobezug", text:"Das Risikoregister nennt Datenverlust bei der Migration als Risiko — ein Verstoß gegen genau diese Pflicht."},
+        {icon:"✅", label:"Station 5 · Spezifikation", text:"Als REQ-015 spezifiziert, im Datenmodell als Pflichtfeld „aufbewahrung_bis“ hinterlegt und per Gherkin testbar gemacht."},
+        {icon:"📊", label:"Station 6 · Wirkungsnachweis", text:"Das KPI-Dashboard zeigt 0 Datenverlust-Vorfälle — die Sperrfrist hält in der Praxis stand."}
+      ]
+    },
+    novatrade:{
+      reqId:"AN-011", reqTitle:"Geeignetheitsprüfung vor jedem Erstkauf",
+      steps:[
+        {icon:"🧭", label:"Station 1 · Ursprung", text:"Bereits im Vorgehensentscheid macht Petra klar: das Compliance-Gate für die Geeignetheitsprüfung ist nicht verhandelbar, egal wie voll der Sprint ist."},
+        {icon:"🎙", label:"Station 2 · Ermittlung", text:"Im Backlog-Refinement wird der Bedarf konkret: eine Prüfung ist laut § 63 WpHG vor jedem Erstkauf zwingend vorgeschrieben."},
+        {icon:"🔗", label:"Station 3 · Priorisierung &amp; Tracing", text:"Als AN-011 mit Must-Priorität ins Product Backlog aufgenommen; Sprint-Planning-Freigabe durch Ela (PO) und Petra (Compliance) vor Sprint-Start."},
+        {icon:"⚖️", label:"Station 4 · Risikobezug", text:"Das Risikoregister nennt einen Verstoß gegen diese Prüfungspflicht als das zentrale Risiko des gesamten Vorhabens."},
+        {icon:"✅", label:"Station 5 · Spezifikation", text:"Als Gherkin-Akzeptanzkriterium spezifiziert, im Datenmodell als Pflichtfeld „geeignetheit_bestanden“ verankert."},
+        {icon:"📊", label:"Station 6 · Wirkungsnachweis", text:"Das KPI-Dashboard zeigt eine Abbruchquote von 12% — die Prüfung wirkt, ist aber noch verbesserungswürdig (Fragebogen zu lang)."}
+      ]
+    }
+  };
+
+  var CASE_ORDER = ["talentmatch","studienakte","novatrade"];
+  var state = { activeCase:"talentmatch", perCase:{} };
+  CASE_ORDER.forEach(function(cid){ state.perCase[cid] = { active:1, done:{} }; });
+
+  function loadState(){
+    try{
+      var raw = sessionStorage.getItem("ba-lifecycle-lernreise-v3");
+      if(raw){
+        var parsed = JSON.parse(raw);
+        if(parsed && parsed.perCase){
+          CASE_ORDER.forEach(function(cid){
+            if(parsed.perCase[cid]) state.perCase[cid] = parsed.perCase[cid];
+          });
+        }
+        if(parsed && parsed.activeCase) state.activeCase = parsed.activeCase;
+      }
+    }catch(e){ /* sessionStorage nicht verfügbar - ignorieren */ }
+  }
+  function saveState(){
+    try{ sessionStorage.setItem("ba-lifecycle-lernreise-v3", JSON.stringify(state)); }
+    catch(e){ /* ignorieren */ }
+  }
+
+  function curCase(){ return CASES[state.activeCase]; }
+  function curState(){ return state.perCase[state.activeCase]; }
+  function doneCount(){ var d = curState().done, n=0; for(var k in d){ if(d[k]) n++; } return n; }
+
+  function renderCaseSwitch(){
+    var wrap = document.getElementById("caseSwitch");
+    wrap.innerHTML = "";
+    CASE_ORDER.forEach(function(cid){
+      var c = CASES[cid];
+      var b = document.createElement("button");
+      b.type="button"; b.className = "case-pill" + (cid===state.activeCase?" active":"");
+      b.textContent = c.label;
+      b.addEventListener("pointerup", function(){ switchCase(cid); });
+      wrap.appendChild(b);
+    });
+  }
+
+  function renderBadges(){
+    var row = document.getElementById("badgeRow");
+    var c = curCase();
+    var html = "";
+    c.badges.forEach(function(b){ html += '<span class="badge">'+b+'</span>'; });
+    html += '<span class="badge pass" id="passBadge">🎫 Reisepass: '+doneCount()+'/6 Stationen</span>';
+    row.innerHTML = html;
+  }
+
+  function switchCase(cid){
+    state.activeCase = cid;
+    saveState();
+    renderCaseSwitch();
+    renderBadges();
+    document.getElementById("finale").classList.add("hidden");
+    document.getElementById("journey").classList.add("hidden");
+    document.getElementById("mindmapView").classList.add("hidden");
+    document.getElementById("traceView").classList.add("hidden");
+    document.getElementById("intro").classList.remove("hidden");
+    renderIntro();
+    if(typeof updateMindmapHub === "function") updateMindmapHub();
+    if(typeof renderTraceThread === "function") renderTraceThread();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  function renderIntro(){
+    var c = curCase();
+    var factsHTML = "";
+    c.facts.forEach(function(f){ factsHTML += '<div class="fact"><b>'+f[0]+'</b><span>'+f[1]+'</span></div>'; });
+    document.getElementById("introCard").innerHTML =
+      '<h2>'+c.introTitle+'</h2>'+
+      '<p>'+c.introText+'</p>'+
+      '<div class="fact-grid">'+factsHTML+'</div>'+
+      '<p>Auf dieser Reise durchlaufen Sie die <strong>sechs Wissensbereiche des BABOK® Guide v3</strong> – von der Planung bis zur Lösungsbewertung – je Station mit <strong>fünf Artefakten</strong> (eines je BABOK-Teilaufgabe des Kapitels), einem <strong>Klassisch-vs.-Agil-Vergleich</strong> (nach BABOK 11.1 The Agile Perspective), einem <strong>Dokumenten-Glossar</strong> (Begriff · Definition · Beispielsatz), <strong>zwei Kernmethoden</strong>, einer Persona-Reaktion und einem Mini-Check.</p>'+
+      '<div class="note-box">📎 <strong>Wichtig:</strong> Der BABOK® Guide versteht die sechs Wissensbereiche <em>nicht</em> als starre Abfolge, sondern als vernetztes Modell (Figure 1.4.1). Diese Lernreise nutzt eine typische Reihenfolge als didaktisches Gerüst — und zeigt mit drei völlig unterschiedlichen Fällen, dass dieselbe Struktur auf verschiedenste Projekte passt.</div>'+
+      '<div style="margin-top:18px;"><button class="btn" id="startBtn" type="button">Reise starten →</button></div>';
+    document.getElementById("startBtn").addEventListener("pointerup", function(){
+      document.getElementById("intro").classList.add("hidden");
+      document.getElementById("journey").classList.remove("hidden");
+      renderNav();
+      renderDetail(curState().active);
+    });
+  }
+
+  function renderNav(){
+    var c = curCase();
+    var cs = curState();
+    var ul = document.getElementById("stationNav");
+    ul.innerHTML = "";
+    c.stations.forEach(function(st){
+      var li = document.createElement("li");
+      li.className = "station-item" + (st.id===cs.active?" active":"") + (cs.done[st.id]?" done":"");
+      var btn = document.createElement("button");
+      btn.type="button"; btn.className="station-btn"+(st.id===cs.active?" active":"");
+      btn.innerHTML =
+        '<span class="num">'+st.id+'</span>'+
+        '<span class="station-meta"><span class="ka-de">'+st.icon+' '+st.kaDE+'</span>'+
+        '<span class="ka-code">'+st.chapter+' · BABOK '+st.taskCode+'</span></span>'+
+        '<span class="stamp">'+(cs.done[st.id]?"✅":"")+'</span>';
+      btn.addEventListener("pointerup", function(id){ return function(){ selectStation(id); }; }(st.id));
+      li.appendChild(btn);
+      ul.appendChild(li);
+    });
+  }
+
+  function selectStation(id){
+    curState().active = id;
+    renderNav();
+    renderDetail(id);
+  }
+
+  function renderDetail(id){
+    var c = curCase();
+    var st = c.stations.filter(function(s){return s.id===id;})[0];
+    var p = PERSONA[st.persona];
+    var panel = document.getElementById("detailPanel");
+    var idx = c.stations.indexOf(st);
+
+    var prevBtn = idx>0 ? '<button class="btn ghost" id="prevStBtn" type="button">← Vorherige Station</button>' : '<span></span>';
+    var nextLabel = idx<c.stations.length-1 ? "Nächste Station →" : "Zur Zusammenfassung 🏁";
+    var nextBtn = '<button class="btn ghost" id="nextStBtn" type="button">'+nextLabel+'</button>';
+
+    var techHTML = "";
+    st.techniques.forEach(function(t){ techHTML += '<span class="tech-chip">🧰 '+t+'</span>'; });
+
+    var artifactsHTML = "";
+    st.artifacts.forEach(function(a){
+      artifactsHTML += '<div class="artifact"><div class="artifact-title-row"><span class="artifact-title">'+a.title+'</span>'+
+        '<span class="artifact-source">Quelle: '+a.task+'</span></div>'+a.html+'</div>';
+    });
+
+    var glossaryTerms = GLOSSARY[st.id] || [];
+    var glossaryHTML = '<details class="glossary-block" id="glossaryBlock"><summary><span><span class="gl-arrow"></span>📖 Dokumenten-Glossar dieser Station</span><span class="doc-count">'+glossaryTerms.length+' Begriffe</span></summary><div class="glossary-body">';
+    glossaryTerms.forEach(function(t){
+      glossaryHTML += '<div class="gl-term"><div class="gl-name">'+t.name+'</div><p class="gl-def">'+t.def+'</p><p class="gl-ex">'+t.ex+'</p></div>';
+    });
+    glossaryHTML += '</div></details>';
+
+    var ap = APPROACH[st.id];
+    var approachHTML = '';
+    if(ap){
+      approachHTML = '<details class="approach-block" id="approachBlock" open><summary><span><span class="gl-arrow"></span>🏛↔🔄 Klassisch vs. Agil an dieser Station</span></summary>'+
+        '<div class="approach-body"><div class="approach-grid">'+
+        '<div class="approach-col classic"><h4>🏛 Klassisch / plangetrieben</h4><p>'+ap.classic+'</p></div>'+
+        '<div class="approach-col agile"><h4>🔄 Agil</h4><p>'+ap.agile+'</p></div>'+
+        '</div><div class="approach-ref">'+ap.ref+'</div></div></details>';
+    }
+
+    panel.innerHTML =
+      '<div class="detail-head">'+
+        '<div class="icon">'+st.icon+'</div>'+
+        '<div><h2>'+st.kaDE+'</h2><div class="chapter">'+st.chapter+' · '+st.kaEN+'</div>'+
+        '<span class="task-chip">BABOK '+st.taskCode+' · '+st.taskName+'</span>'+
+        '<div class="tech-row">'+techHTML+'</div></div>'+
+      '</div>'+
+      approachHTML+
+      '<div class="section-label">Artefakte aus dem Projekt <span class="doc-count">'+st.artifacts.length+' Dokumente</span></div>'+
+      artifactsHTML+
+      glossaryHTML+
+      '<div class="section-label">Reaktion aus dem Projektteam</div>'+
+      '<div class="persona-box" style="background:'+p.soft+';">'+
+        '<div class="persona-avatar" style="background:'+p.color+';">'+p.init+'</div>'+
+        '<div><div><span class="persona-name">'+p.name+'</span> <span class="persona-role">· '+p.role+'</span></div>'+
+        '<div class="persona-text">'+st.personaText+'</div></div>'+
+      '</div>'+
+      '<div class="crossref">'+st.crossref+'</div>'+
+      '<div class="quiz" id="quizBlock">'+
+        '<div class="quiz-q">❓ '+st.quizQ+'</div>'+
+        '<div id="optWrap"></div>'+
+        '<div id="feedbackWrap"></div>'+
+      '</div>'+
+      '<div class="detail-nav">'+prevBtn+nextBtn+'</div>';
+
+    var optWrap = document.getElementById("optWrap");
+    var answered = false;
+    st.options.forEach(function(opt){
+      var b = document.createElement("button");
+      b.className = "opt"; b.type="button"; b.textContent = opt.t;
+      b.addEventListener("pointerup", function(){
+        if(answered) return;
+        answered = true;
+        Array.prototype.forEach.call(optWrap.children, function(el, j){
+          el.setAttribute("disabled","disabled");
+          if(st.options[j].correct) el.classList.add("correct");
+        });
+        var fb = document.getElementById("feedbackWrap");
+        if(opt.correct){
+          fb.innerHTML = '<div class="feedback ok">✅ Richtig. '+st.explain+'</div>';
+          curState().done[st.id] = true;
+          saveState();
+          renderNav();
+          renderBadges();
+        } else {
+          b.classList.add("wrong");
+          fb.innerHTML = '<div class="feedback no">❌ Nicht ganz. '+st.explain+'</div>';
+        }
+      });
+      optWrap.appendChild(b);
+    });
+
+    if(idx>0){
+      document.getElementById("prevStBtn").addEventListener("pointerup", function(){
+        selectStation(c.stations[idx-1].id);
+      });
+    }
+    document.getElementById("nextStBtn").addEventListener("pointerup", function(){
+      if(idx<c.stations.length-1){ selectStation(c.stations[idx+1].id); }
+      else { showFinale(); }
+    });
+  }
+
+  function buildTraceTable(){
+    var c = curCase();
+    var rows = '<tr><th>Wissensbereich</th><th>Zentrale Aufgabe</th><th>Methoden</th><th>Artefakte (5)</th></tr>';
+    c.stations.forEach(function(st){
+      rows += '<tr><td>'+st.icon+' '+st.kaDE+'</td><td>'+st.taskCode+' '+st.taskName+'</td><td>'+st.techniques.join("<br>")+'</td><td>'+
+        st.artifacts.map(function(a){return a.title+' <span style=\"color:var(--muted);font-size:14px;\">('+a.task.split(" ")[0]+')</span>';}).join("<br>")+'</td></tr>';
+    });
+    document.getElementById("traceTable").innerHTML = rows;
+  }
+
+  function buildCompare(){
+    var otherIds = CASE_ORDER.filter(function(id){ return id !== state.activeCase; });
+    var allOtherDone = otherIds.every(function(id){ return doneCountFor(id) === 6; });
+    var box = document.getElementById("compareCard");
+    if(allOtherDone){
+      var names = CASE_ORDER.map(function(id){ return CASES[id].label; }).join(", ");
+      box.innerHTML = '<h3>🔀 Vergleich aller Fälle</h3><p>Sie haben alle Fälle abgeschlossen (' + names + ')! In allen durchlief dieselbe BABOK-Struktur (6 Kapitel, je 5 Artefakte, identische Aufgaben-Codes je Station) – aber jeder Fall bringt eigene Risiken, Rechtsgrundlagen und ein eigenes Vorgehen mit: Hochrisiko-KI und 30-Tage-Fristen, Barrierefreiheit und 50-Jahres-Aufbewahrung, oder ein hartes Compliance-Gate mitten im Sprint-Rhythmus. Gleiche Landkarte, drei völlig verschiedene Reisen.</p>';
+    } else {
+      var nextId = otherIds.filter(function(id){ return doneCountFor(id) < 6; })[0];
+      var next = CASES[nextId];
+      box.innerHTML = '<h3>🔀 Und in den anderen Fällen?</h3><p>Wechseln Sie zu <strong>'+next.label+'</strong>, um dieselben 6 Stationen mit völlig anderen Artefakten, Risiken und einer anderen Rechtsgrundlage zu durchlaufen – gleiche Struktur, andere Inhalte.</p>';
+    }
+  }
+
+  function doneCountFor(cid){
+    var d = state.perCase[cid].done, n=0; for(var k in d){ if(d[k]) n++; } return n;
+  }
+
+  function showFinale(){
+    document.getElementById("journey").classList.add("hidden");
+    document.getElementById("finale").classList.remove("hidden");
+    var c = curCase();
+    document.getElementById("finaleTitle").textContent = "🏁 Ziel erreicht: " + c.label;
+    document.getElementById("finaleIntro").textContent = "Sie haben alle sechs Wissensbereiche für diesen Fall durchlaufen — insgesamt 30 Artefakte über 6 Stationen. Die folgende Tabelle zeigt Aufgaben, Methoden und Artefakte im Zusammenhang — Requirements Life Cycle Management (5.1 Trace Requirements) in der Praxis.";
+    document.getElementById("finaleNote").textContent = c.finaleNote;
+    buildTraceTable();
+    buildCompare();
+    var idx = CASE_ORDER.indexOf(state.activeCase);
+    var nextId = CASE_ORDER[(idx+1) % CASE_ORDER.length];
+    document.getElementById("switchCaseBtn").textContent = "Weiter zu " + CASES[nextId].label + " →";
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  document.getElementById("resetBtn").addEventListener("pointerup", function(){
+    curState().active = 1; curState().done = {};
+    saveState();
+    document.getElementById("finale").classList.add("hidden");
+    document.getElementById("intro").classList.remove("hidden");
+    renderIntro();
+    renderBadges();
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+
+  document.getElementById("switchCaseBtn").addEventListener("pointerup", function(){
+    var idx = CASE_ORDER.indexOf(state.activeCase);
+    var nextId = CASE_ORDER[(idx+1) % CASE_ORDER.length];
+    switchCase(nextId);
+  });
+
+  var BEAMER_LEVELS = ["", "beamer", "beamer beamer-xl", "beamer beamer-xl beamer-xxl"];
+  var beamerIdx = 0;
+  document.getElementById("beamerBtn").addEventListener("pointerup", function(){
+    beamerIdx = (beamerIdx+1) % BEAMER_LEVELS.length;
+    document.documentElement.className = BEAMER_LEVELS[beamerIdx];
+    var labels = ["🖥 Beamer-Modus","🖥 Beamer XL","🖥 Beamer XXL","🖥 Normal"];
+    this.textContent = labels[beamerIdx];
+  });
+
+  // ---- BABOK-Mindmap (technikgestützt: BABOK 10.29 Mind Mapping) ----
+  var MM_POS = ["mm-pos-1","mm-pos-2","mm-pos-3","mm-pos-4","mm-pos-5","mm-pos-6"];
+  var mindmapLastView = "intro";
+
+  function renderMindmap(){
+    var stations = CASES.talentmatch.stations; // KA/Task-Struktur ist fallübergreifend identisch
+    var wrap = document.getElementById("mindmapWrap");
+    var svgLines =
+      '<svg class="mm-svg" viewBox="0 0 100 100" preserveAspectRatio="none">'+
+      '<line x1="50" y1="50" x2="50" y2="6" stroke="#dde2e8" stroke-width="0.6" stroke-dasharray="2,2"/>'+
+      '<line x1="50" y1="50" x2="88" y2="27" stroke="#dde2e8" stroke-width="0.6" stroke-dasharray="2,2"/>'+
+      '<line x1="50" y1="50" x2="88" y2="73" stroke="#dde2e8" stroke-width="0.6" stroke-dasharray="2,2"/>'+
+      '<line x1="50" y1="50" x2="50" y2="94" stroke="#dde2e8" stroke-width="0.6" stroke-dasharray="2,2"/>'+
+      '<line x1="50" y1="50" x2="12" y2="73" stroke="#dde2e8" stroke-width="0.6" stroke-dasharray="2,2"/>'+
+      '<line x1="50" y1="50" x2="12" y2="27" stroke="#dde2e8" stroke-width="0.6" stroke-dasharray="2,2"/>'+
+      '</svg>';
+    var hub = '<div class="mm-hub" id="mmHub"><div class="mm-hub-title">📘 BABOK® Guide v3</div>'+
+      '<div class="mm-hub-sub">6 Wissensbereiche</div><div class="mm-hub-case" id="mmHubCase"></div></div>';
+    var nodesHTML = "";
+    stations.forEach(function(st, i){
+      nodesHTML += '<button type="button" class="mm-node '+MM_POS[i]+'" data-station="'+st.id+'">'+
+        '<span class="mm-num">'+st.id+'</span><br>'+
+        '<span class="mm-icon">'+st.icon+'</span>'+
+        '<div class="mm-title">'+st.kaDE+'</div>'+
+        '<div class="mm-task">'+st.chapter+' · '+st.taskCode+'</div>'+
+        '</button>';
+    });
+    wrap.innerHTML = svgLines + hub + nodesHTML;
+    wrap.querySelectorAll(".mm-node").forEach(function(btn){
+      btn.addEventListener("pointerup", function(){
+        goToStationFromMap(parseInt(btn.getAttribute("data-station"), 10));
+      });
+    });
+    updateMindmapHub();
+  }
+
+  function updateMindmapHub(){
+    var el = document.getElementById("mmHubCase");
+    if(el) el.textContent = "Aktueller Fall: " + curCase().label;
+    renderBaccm();
+  }
+
+  function renderBaccm(){
+    var grid = document.getElementById("baccmGrid");
+    if(!grid) return;
+    var inst = BACCM_CASE[state.activeCase];
+    var order = ["change","need","solution","stakeholder","value","context"];
+    var html = "";
+    order.forEach(function(key){
+      var d = BACCM_DEF[key];
+      html += '<div class="baccm-card"><h5>'+d.icon+' '+d.name+'</h5>'+
+        '<p class="baccm-def">'+d.def+'</p>'+
+        '<div class="baccm-case">'+inst[key]+'</div></div>';
+    });
+    grid.innerHTML = html;
+  }
+
+  function goToStationFromMap(id){
+    document.getElementById("mindmapView").classList.add("hidden");
+    document.getElementById("traceView").classList.add("hidden");
+    document.getElementById("intro").classList.add("hidden");
+    document.getElementById("finale").classList.add("hidden");
+    document.getElementById("journey").classList.remove("hidden");
+    curState().active = id;
+    renderNav();
+    renderDetail(id);
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  function openMindmap(){
+    openOverlayView("mindmapView");
+    updateMindmapHub();
+  }
+
+  var lastOverlayView = "intro";
+
+  function openOverlayView(viewId){
+    ["intro","journey","finale"].forEach(function(id){
+      var el = document.getElementById(id);
+      if(!el.classList.contains("hidden")){ lastOverlayView = id; mindmapLastView = id; }
+      el.classList.add("hidden");
+    });
+    document.getElementById("mindmapView").classList.add("hidden");
+    document.getElementById("traceView").classList.add("hidden");
+    document.getElementById(viewId).classList.remove("hidden");
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  function closeOverlayView(viewId){
+    document.getElementById(viewId).classList.add("hidden");
+    document.getElementById(lastOverlayView).classList.remove("hidden");
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  document.getElementById("mindmapBtn").addEventListener("pointerup", openMindmap);
+  document.getElementById("pathMindmapBtn").addEventListener("pointerup", openMindmap);
+
+  document.getElementById("mindmapBackBtn").addEventListener("pointerup", function(){
+    closeOverlayView("mindmapView");
+  });
+
+  // ---- Traceability-Faden (BABOK 5.1 Trace Requirements, erfahrbar gemacht) ----
+  function renderTraceThread(){
+    var wrap = document.getElementById("traceThreadWrap");
+    if(!wrap) return;
+    var data = TRACE_CASE[state.activeCase];
+    var html = '<div class="trace-thread"><div class="trace-req-badge">'+data.reqId+' — '+data.reqTitle+'</div>';
+    data.steps.forEach(function(step){
+      html += '<div class="trace-item"><div class="trace-dot">'+step.icon+'</div>'+
+        '<div class="trace-content"><h5>'+step.label+'</h5><p>'+step.text+'</p></div></div>';
+    });
+    html += '</div>';
+    wrap.innerHTML = html;
+  }
+
+  function openTrace(){
+    openOverlayView("traceView");
+    renderTraceThread();
+  }
+
+  document.getElementById("traceBtn").addEventListener("pointerup", openTrace);
+  document.getElementById("pathTraceBtn").addEventListener("pointerup", openTrace);
+
+  document.getElementById("traceBackBtn").addEventListener("pointerup", function(){
+    closeOverlayView("traceView");
+  });
+
+  loadState();
+  renderCaseSwitch();
+  renderBadges();
+  renderIntro();
+  renderMindmap();
+  renderTraceThread();
+})();
+</script>
+</body>
+</html>
