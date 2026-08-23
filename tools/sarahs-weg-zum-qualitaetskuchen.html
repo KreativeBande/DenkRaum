@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sarahs Weg zum Qualitätskuchen — Anforderungsmanagement &amp; Softwarequalität</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#ffffff;
+    --panel:#faf8f4;
+    --ink:#1c1a17;
+    --muted:#6b6459;
+    --faint:#9c9488;
+    --line:#e7e1d6;
+    --accent:#b5651d;
+    --accent-ink:#7a4310;
+    --sarah:#2563eb;
+    --bachmeier:#92400e;
+    --vogt:#4338ca;
+    --ela:#15803d;
+    --knut:#7c3aed;
+    --petra:#0e7490;
+    --good:#15803d;
+    --bad:#b91c1c;
+    --fs-h1:26px;
+    --fs-h2:21px;
+    --fs-h3:18px;
+    --fs-body:16px;
+    --fs-secondary:14px;
+    --fs-small:14px;
+    --btn-min-h:44px;
+    --gap:20px;
+  }
+  html.beamer{ --fs-h1:50px; --fs-h2:44px; --fs-h3:24px; --fs-body:22px; --fs-secondary:16px; --fs-small:15px; --btn-min-h:56px; }
+  html.beamer.beamer-xl{ --fs-h1:60px; --fs-h2:54px; --fs-h3:30px; --fs-body:28px; --fs-secondary:19px; --fs-small:18px; --btn-min-h:64px; }
+  html.beamer.beamer-xl.beamer-xxl{ --fs-h1:70px; --fs-h2:64px; --fs-h3:36px; --fs-body:34px; --fs-secondary:22px; --fs-small:21px; --btn-min-h:72px; }
+
+  html,body{ color-scheme: light; background:var(--bg); margin:0; height:100%; }
+  *{ box-sizing:border-box; }
+  body{
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color:var(--ink);
+    font-size:var(--fs-body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{ max-width:1400px; margin:0 auto; padding:64px 24px 24px; }
+
+  /* Signature */
+  .signature{
+    position:fixed; top:14px; right:28px; z-index:500; text-align:right;
+    font-size:var(--fs-small); background:rgba(255,255,255,.92); padding:2px 6px; border-radius:6px;
+  }
+  .signature strong{ display:block; color:var(--ink); }
+  .signature a{ color:var(--accent-ink); text-decoration:none; }
+  @media (max-width:900px){ .signature{ position:static; text-align:right; margin-bottom:8px; } }
+
+  /* Header */
+  header.top{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
+  h1{ font-size:var(--fs-h1); margin:0 0 4px; }
+  .subtitle{ color:var(--muted); font-size:var(--fs-secondary); margin:0; }
+  .controls{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+
+  .pill{
+    display:inline-flex; align-items:center; gap:6px; padding:0 16px; height:var(--btn-min-h);
+    border-radius:999px; border:1.5px solid var(--line); background:#fff; color:var(--ink);
+    font-size:var(--fs-secondary); font-weight:600; cursor:pointer; white-space:nowrap;
+  }
+  .pill.active{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .pill:hover{ border-color:var(--accent); }
+  button{ font-family:inherit; }
+
+  .beamerBtn{
+    height:var(--btn-min-h); padding:0 16px; border-radius:10px; border:1.5px solid var(--line);
+    background:#fff; font-size:var(--fs-secondary); font-weight:600; cursor:pointer;
+  }
+  .beamerBtn:hover{ border-color:var(--accent); }
+
+  /* progress */
+  .progress-track{ height:8px; background:var(--line); border-radius:999px; overflow:hidden; margin:6px 0 22px; }
+  .progress-fill{ height:100%; background:var(--accent); transition:width .3s ease; }
+
+  /* layout split screen 32/68 */
+  .layout{ display:grid; grid-template-columns: 320px 1fr; gap:var(--gap); align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } }
+
+  nav.sidebar{
+    border:1px solid var(--line); border-radius:14px; background:var(--panel); padding:14px;
+    position:sticky; top:64px; max-height:calc(100vh - 90px); overflow-y:auto;
+  }
+  @media (max-width:900px){ nav.sidebar{ position:static; max-height:none; } }
+  .daygroup{ margin-bottom:6px; }
+  .daylabel{ font-size:var(--fs-small); text-transform:uppercase; letter-spacing:.05em; color:var(--faint); font-weight:700; margin:14px 4px 6px; }
+  .chapitem{
+    display:flex; align-items:flex-start; gap:10px; padding:10px 10px; border-radius:10px; cursor:pointer;
+    font-size:var(--fs-secondary); min-height:var(--btn-min-h);
+  }
+  .chapitem:hover{ background:#f0ebe0; }
+  .chapitem.current{ background:#fff; border:1.5px solid var(--accent); font-weight:700; }
+  .chnum{
+    flex:0 0 auto; width:calc(var(--fs-small) + 16px); height:calc(var(--fs-small) + 16px); border-radius:50%; background:#fff; border:1.5px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:var(--fs-small); font-weight:700; color:var(--muted);
+  }
+  .chapitem.current .chnum{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .chapitem.done .chnum{ background:var(--good); border-color:var(--good); color:#fff; }
+  .chapitem.done .chnum::after{ content:"✓"; }
+  .chapitem.done .chnum{ font-size:0; }
+  .chapitem.done .chnum::after{ font-size:var(--fs-small); }
+
+  /* main panel */
+  main.panel{ border:1px solid var(--line); border-radius:16px; padding:28px; min-height:60vh; }
+  .kicker{ font-size:var(--fs-small); color:var(--accent-ink); font-weight:700; text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;}
+  h2.chaptitle{ font-size:var(--fs-h2); margin:0 0 4px; }
+  .chapsub{ color:var(--muted); font-size:var(--fs-secondary); margin:0 0 18px; }
+
+  .persona-badge{
+    display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:999px;
+    font-size:var(--fs-secondary); font-weight:700; color:#fff; margin-bottom:14px;
+  }
+  .dot{ width:9px; height:9px; border-radius:50%; background:#fff; opacity:.85; }
+
+  .story p{ margin:0 0 12px; }
+  .line{
+    border-left:4px solid var(--line); padding:10px 14px; margin:0 0 12px; border-radius:0 10px 10px 0; background:var(--panel);
+  }
+  .line.sarah{ border-color:var(--sarah); }
+  .line.bachmeier{ border-color:var(--bachmeier); }
+  .line.vogt{ border-color:var(--vogt); }
+  .line.ela{ border-color:var(--ela); }
+  .line.knut{ border-color:var(--knut); }
+  .line.petra{ border-color:var(--petra); }
+  .line .who{ font-weight:700; font-size:var(--fs-secondary); margin-bottom:2px; display:block; }
+
+  .kuchenbox{
+    border:1.5px dashed var(--accent); border-radius:12px; padding:16px 18px; margin:16px 0; background:#fff9f0;
+  }
+  .kuchenbox .kbtitle{ font-weight:700; color:var(--accent-ink); font-size:var(--fs-secondary); margin-bottom:6px; }
+
+  .transfer{
+    border-radius:12px; padding:16px 18px; margin-top:18px; background:#eef6ee; border:1px solid #cfe6cf;
+  }
+  .transfer .kbtitle{ font-weight:700; color:var(--good); font-size:var(--fs-secondary); margin-bottom:6px; }
+
+  .task{ border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:18px 0; background:#fff; }
+  .task .tasktitle{ font-weight:700; font-size:var(--fs-secondary); color:var(--ink); margin-bottom:10px; display:flex; align-items:center; gap:8px;}
+  .task .tasktitle::before{ content:"✎"; color:var(--accent); }
+  textarea{
+    width:100%; min-height:90px; border:1.5px solid var(--line); border-radius:10px; padding:12px;
+    font-family:inherit; font-size:var(--fs-secondary); resize:vertical;
+  }
+  textarea:focus{ outline:2px solid var(--accent); border-color:var(--accent); }
+
+  .quizopt{
+    display:block; width:100%; text-align:left; padding:12px 14px; margin:8px 0; border-radius:10px;
+    border:1.5px solid var(--line); background:#fff; cursor:pointer; font-size:var(--fs-secondary); min-height:var(--btn-min-h);
+  }
+  .quizopt:hover{ border-color:var(--accent); }
+  .quizopt.correct{ border-color:var(--good); background:#eef6ee; color:var(--good); font-weight:700; }
+  .quizopt.wrong{ border-color:var(--bad); background:#fdeeee; color:var(--bad); font-weight:700; }
+  .quizopt[disabled]{ cursor:default; }
+  .explain{ margin-top:10px; font-size:var(--fs-secondary); color:var(--muted); padding:10px 12px; background:var(--panel); border-radius:10px; display:none; }
+  .explain.show{ display:block; }
+
+  .grid9{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:10px 0; }
+  @media (max-width:700px){ .grid9{ grid-template-columns:repeat(2,1fr); } }
+  .qcard{
+    border:1.5px solid var(--line); border-radius:12px; padding:12px; cursor:pointer; text-align:left;
+    background:#fff; min-height:70px; font-size:var(--fs-small);
+  }
+  .qcard .qnum{ font-size:var(--fs-small); color:var(--faint); font-weight:700; }
+  .qcard .qname{ font-weight:700; font-size:var(--fs-secondary); margin-top:2px; }
+  .qcard.active{ border-color:var(--accent); background:#fff9f0; }
+  .qcard.new-2023{ position:relative; }
+  .qcard.new-2023::after{ content:"NEU 2023"; position:absolute; top:6px; right:6px; font-size:var(--fs-small); background:var(--accent); color:#fff; padding:2px 8px; border-radius:6px; }
+  .qdetail{ border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-top:10px; background:var(--panel); }
+  .qdetail .qd-title{ font-weight:700; margin-bottom:6px; }
+  .qdetail .qd-nfr{ margin-top:8px; padding:10px 12px; background:#fff; border-radius:8px; border:1px solid var(--line); font-size:var(--fs-small); }
+  .qdetail .qd-nfr b{ color:var(--accent-ink); }
+
+  .navbtns{ display:flex; justify-content:space-between; gap:10px; margin-top:24px; flex-wrap:wrap; }
+  .btn{
+    min-height:var(--btn-min-h); padding:0 20px; border-radius:10px; border:1.5px solid var(--ink);
+    background:var(--ink); color:#fff; font-size:var(--fs-secondary); font-weight:700; cursor:pointer;
+  }
+  .btn.ghost{ background:#fff; color:var(--ink); }
+  .btn:hover{ opacity:.85; }
+  .btn[disabled]{ opacity:.35; cursor:not-allowed; }
+
+  table.reftable{ width:100%; border-collapse:collapse; font-size:var(--fs-secondary); }
+  table.reftable th, table.reftable td{ text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.reftable th{ color:var(--muted); font-weight:700; font-size:var(--fs-small); }
+
+  /* footer */
+  footer{ margin-top:40px; }
+  .footer-sig{ font-size:var(--fs-small); color:var(--muted); margin-bottom:14px; line-height:1.6; }
+  .footer-sig strong{ color:var(--ink); }
+  .footer-sig a{ color:var(--accent-ink); }
+  .footer-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  @media (max-width:900px){ .footer-grid{ grid-template-columns:1fr; } }
+  .footer-box{ border:1px solid var(--line); border-radius:12px; background:var(--panel); }
+  .footer-box summary{ cursor:pointer; padding:14px 16px; font-weight:700; font-size:var(--fs-secondary); list-style:none; }
+  .footer-box summary::-webkit-details-marker{ display:none; }
+  .footer-box summary::before{ content:"▸ "; color:var(--accent); }
+  .footer-box[open] summary::before{ content:"▾ "; }
+  .footer-content{ padding:0 16px 16px; }
+  .footer-mono{ font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:var(--fs-small); white-space:pre-wrap; background:#fff; border:1px solid var(--line); border-radius:8px; padding:12px; max-height:340px; overflow:auto; }
+  .footer-sans{ font-size:var(--fs-body); }
+  .footer-sans h4{ font-size:var(--fs-secondary); margin:14px 0 4px; }
+  .footer-sans ol, .footer-sans ul{ padding-left:20px; }
+
+  html.beamer footer{ display:none; }
+
+  .backlink{ display:inline-block; font-size:var(--fs-small); color:var(--muted); text-decoration:none; margin-bottom:10px; }
+  .backlink:hover{ color:var(--accent-ink); }
+  html.beamer .backlink{ display:none; }
+
+  .crosslink{ margin-top:20px; font-size:var(--fs-small); color:var(--muted); }
+  .crosslink a{ color:var(--accent-ink); font-weight:700; text-decoration:none; }
+  .crosslink a:hover{ text-decoration:underline; }
+  .crosslink ul{ margin:8px 0 0; padding-left:20px; }
+  .crosslink li{ margin-bottom:4px; }
+  html.beamer .crosslink{ display:none; }
+</style>
+</head>
+<body>
+<div class="signature">
+  <strong>Michaela Kühn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<div class="app">
+  <a class="backlink" href="../index.html">← Zurück zur Startseite</a>
+  <header class="top">
+    <div>
+      <h1>Sarahs Weg zum Qualitätskuchen</h1>
+      <p class="subtitle" id="subtitleText">Erzähltool: Anforderungsmanagement als Basis für Softwarequalität · 2‑Tage-Schulung · 2 Teilnehmer:innen</p>
+    </div>
+    <div class="controls">
+      <button class="pill active" id="scenPill1">🎂 Bäckerei Bachmeier</button>
+      <button class="pill" id="scenPill2">🎓 Digitale Studienakte</button>
+      <button class="pill" id="scenPill3">🤖 TalentMatch AI</button>
+      <button class="pill" id="scenPill4">📈 NovaTrade Pulse</button>
+    </div>
+  </header>
+  <header class="top" style="margin-top:-4px;">
+    <div class="controls">
+      <button class="pill" id="dayPill1">Tag 1 · Anforderungen</button>
+      <button class="pill" id="dayPill2">Tag 2 · Qualität</button>
+    </div>
+    <div class="controls">
+      <button class="beamerBtn" id="beamerBtn">Beamer: Normal</button>
+    </div>
+  </header>
+
+
+  <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+  <div class="layout">
+    <nav class="sidebar" id="sidebar"></nav>
+    <main class="panel" id="panel"></main>
+  </div>
+
+  <div class="crosslink">
+    Verwandte Denkraum-Tools zu diesem Thema:
+    <ul>
+      <li><a href="./fallstudie-qualitaetssystem.html">Fallstudie: Von der Idee zum Qualitätssystem</a> — dieselben fünf Personas, aber die umgekehrte Perspektive: dort entsteht die K1–K19-Checkliste selbst aus sieben realen Tool-Bau-Stationen, hier durchläuft Sarah als Nachwuchskraft ein konkretes RE-Projekt und lernt ISO/IEC 25010 aus Anwendersicht.</li>
+      <li><a href="./iso-25010-kompendium.html">ISO/IEC 25010:2023 Kompendium</a> — reines Nachschlagewerk zu allen neun Qualitätsmerkmalen mit FA-zu-NFA-Demonstrator, ohne Story oder Kapitel-Fortschritt.</li>
+      <li><a href="./priorisierungslabor.html">🧭 Priorisierungslabor</a> — vertieft die MoSCoW-Priorisierung aus Tag 1 dieses Tools um weitere Verfahren (Kano, WSJF, RICE) mit denselben Personas.</li>
+    </ul>
+  </div>
+
+  <footer>
+    <div class="footer-sig">
+      <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a><br>
+      Bezug: IREB CPRE · BABOK v3 (IIBA) · IEEE 29148:2018 · ISO/IEC 25010:2023 (Ed. 2) · ISO/IEC 25019:2023 · SWEBOK® Guide V4.0a (IEEE CS)<br>
+      Zuletzt geprüft: 23.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll
+    </div>
+    <div class="footer-grid">
+      <details class="footer-box"><summary>Systemprompt</summary>
+        <div class="footer-content footer-mono" id="systemPromptBox"></div>
+      </details>
+      <details class="footer-box"><summary>Handbuch</summary>
+        <div class="footer-content footer-sans" id="handbuchBox"></div>
+      </details>
+      <details class="footer-box"><summary>Vortrags-Skript</summary>
+        <div class="footer-content footer-sans" id="skriptBox"></div>
+      </details>
+      <details class="footer-box"><summary>Normen-Register</summary>
+        <div class="footer-content" id="normenBox"></div>
+      </details>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- Personas (szenario-abhängig) ---------- */
+var P_SETS = {
+  baeckerei: {
+    sarah:{ name:"Sarah", role:"Requirements Engineering / BA-Nachwuchs", color:"var(--sarah)" },
+    bachmeier:{ name:"Herr Bachmeier", role:"Auftraggeber, Inhaber Bäckerei Bachmeier", color:"var(--bachmeier)" },
+    ela:{ name:"Ela", role:"Entwicklung", color:"var(--ela)" },
+    knut:{ name:"Knut", role:"Agile Coach / Scrum Master", color:"var(--knut)" },
+    petra:{ name:"Petra", role:"Mentorin, erfahrene Projektleiterin", color:"var(--petra)" }
+  },
+  studienakte: {
+    sarah:{ name:"Sarah", role:"Requirements Engineering / BA-Nachwuchs", color:"var(--sarah)" },
+    vogt:{ name:"Prof. Dr. Vogt", role:"Studiendekan, Auftraggeber", color:"var(--vogt)" },
+    ela:{ name:"Ela", role:"Entwicklung", color:"var(--ela)" },
+    knut:{ name:"Knut", role:"Agile Coach / Scrum Master", color:"var(--knut)" },
+    petra:{ name:"Petra", role:"Mentorin, erfahrene Projektleiterin", color:"var(--petra)" }
+  },
+  talentmatch: {
+    sarah:{ name:"Sarah", role:"Vertrieb", color:"var(--sarah)" },
+    bachmeier:{ name:"Herr Bachmeier", role:"Geschäftsführung, Vantera Systemtechnik GmbH", color:"var(--bachmeier)" },
+    ela:{ name:"Ela", role:"Projektleitung", color:"var(--ela)" },
+    knut:{ name:"Knut", role:"Entwicklung", color:"var(--knut)" },
+    petra:{ name:"Petra", role:"QM", color:"var(--petra)" }
+  },
+  novatrade: {
+    sarah:{ name:"Sarah", role:"Vertrieb", color:"var(--sarah)" },
+    bachmeier:{ name:"Herr Bachmeier", role:"Vorstand, NovaTrade Systems GmbH", color:"var(--bachmeier)" },
+    ela:{ name:"Ela", role:"Product Owner", color:"var(--ela)" },
+    knut:{ name:"Knut", role:"Entwicklung", color:"var(--knut)" },
+    petra:{ name:"Petra", role:"Compliance", color:"var(--petra)" }
+  }
+};
+function curP(){ return P_SETS[state.scenario]; }
+
+/* ---------- state (deklariert früh, weil ln() beim Kapitel-Array-Aufbau sofort läuft) ---------- */
+var state = { idx:0, done:{}, answers:{}, quiz:{}, gridActive:{}, scenario:"baeckerei" };
+
+function ln(p, text){ return '<div class="line '+p+'"><span class="who">'+curP()[p].name+' · '+curP()[p].role+'</span>'+text+'</div>'; }
+
+/* ---------- 9 Merkmale ISO/IEC 25010:2023 (Ed.2) — je Szenario ---------- */
+var Q9_BAECKEREI = [
+  { id:"fs", name:"Funktionale Eignung", isNew:false,
+    def:"Erfüllt die Software die Anforderungen vollständig, korrekt und angemessen?",
+    nfr:"<b>NFR-Beispiel:</b> Alle 14 im Sprint 3 vereinbarten User Stories der MarmorkuchenApp sind zu 100&nbsp;% abgenommen; Bestellung nach Sorte, Menge und Abholzeit ist vollständig möglich." },
+  { id:"pe", name:"Leistungsfähigkeit &amp; Effizienz", isNew:false,
+    def:"Wie verhalten sich Reaktionszeit, Ressourcenverbrauch und Kapazität unter Last?",
+    nfr:"<b>NFR-Beispiel:</b> Bestellbestätigung in &lt;&nbsp;2 Sekunden bei 50 gleichzeitigen Nutzer:innen am Samstagvormittag; Serverauslastung bleibt &lt;&nbsp;70&nbsp;%." },
+  { id:"co", name:"Kompatibilität", isNew:false,
+    def:"Interoperabilität und Koexistenz mit anderen Systemen im selben Umfeld.",
+    nfr:"<b>NFR-Beispiel:</b> Anbindung an die bestehende SIGMA-Kasse per REST-API; störungsfreie Koexistenz mit dem Terminal des Lieferdienstpartners." },
+  { id:"ic", name:"Interaktionsfähigkeit", isNew:true,
+    def:"Vormals „Benutzbarkeit&quot; — seit 2023 erweitert um Inklusivität und Selbstbeschreibungsfähigkeit.",
+    nfr:"<b>NFR-Beispiel:</b> Bestellung in max. 3 Klicks abschließbar; bedienbar durch die 68-jährige Verkäuferin ohne Schulung &gt;&nbsp;15&nbsp;Min.; WCAG 2.2 AA für Screenreader-Nutzung." },
+  { id:"re", name:"Zuverlässigkeit", isNew:false,
+    def:"Stabilität, Fehlertoleranz und Wiederherstellbarkeit im Betrieb.",
+    nfr:"<b>NFR-Beispiel:</b> Verfügbarkeit 99,5&nbsp;% während der Öffnungszeiten (6–18&nbsp;Uhr); Wiederherstellung nach Ausfall in &lt;&nbsp;5&nbsp;Min." },
+  { id:"se", name:"Sicherheit", isNew:false,
+    def:"Schutz vor Bedrohungen und Datenschutz — seit 2023 mit erweiterter Subcharakteristik Resistance.",
+    nfr:"<b>NFR-Beispiel:</b> Zahlungsdaten TLS-1.3-verschlüsselt; DSGVO-konforme Speicherung der Kundendaten; rollenbasierter Zugriff auf Bestellhistorie." },
+  { id:"ma", name:"Wartbarkeit", isNew:false,
+    def:"Modifizierbarkeit, Testbarkeit und Wiederverwendbarkeit des Codes.",
+    nfr:"<b>NFR-Beispiel:</b> Neue Kuchensorte in &lt;&nbsp;10&nbsp;Min. über die Admin-Oberfläche anlegbar, ohne Deployment; Testabdeckung ≥&nbsp;80&nbsp;% für die Bestelllogik." },
+  { id:"fl", name:"Flexibilität", isNew:true,
+    def:"Vormals „Übertragbarkeit&quot; — seit 2023 erweitert um Skalierbarkeit als Subcharakteristik.",
+    nfr:"<b>NFR-Beispiel:</b> Lauffähig ohne Anpassung auf iPad (Tresen) und Smartphone (Kund:innen); Umzug auf neuen Hosting-Anbieter in &lt;&nbsp;1 Tag." },
+  { id:"sa", name:"Safety", isNew:true,
+    def:"Neu in ISO/IEC 25010:2023 — Vermeidung von Personen-, Sach- oder Umweltschäden durch das System.",
+    nfr:"<b>NFR-Beispiel:</b> Ausfall der Bestell-App darf die Backmaschinen-Steuerung nicht beeinträchtigen; Fehlbestellungen dürfen nicht zu Lebensmittelverschwendung &gt;&nbsp;10&nbsp;% führen." }
+];
+
+var Q9_STUDIENAKTE = [
+  { id:"fs", name:"Funktionale Eignung", isNew:false,
+    def:"Erfüllt die Software die Anforderungen vollständig, korrekt und angemessen?",
+    nfr:"<b>NFR-Beispiel:</b> Alle 18 im Sprint vereinbarten Use Cases der digitalen Studienakte (Noteneinsicht, Prüfungsanmeldung, Bescheinigung) sind zu 100&nbsp;% abgenommen." },
+  { id:"pe", name:"Leistungsfähigkeit &amp; Effizienz", isNew:false,
+    def:"Wie verhalten sich Reaktionszeit, Ressourcenverbrauch und Kapazität unter Last?",
+    nfr:"<b>NFR-Beispiel:</b> Notenabruf in &lt;&nbsp;1,5 Sekunden bei 800 gleichzeitigen Zugriffen zur Notenbekanntgabe; Serverauslastung bleibt &lt;&nbsp;75&nbsp;%." },
+  { id:"co", name:"Kompatibilität", isNew:false,
+    def:"Interoperabilität und Koexistenz mit anderen Systemen im selben Umfeld.",
+    nfr:"<b>NFR-Beispiel:</b> Anbindung an das bestehende Campus-Management-System per definierter Schnittstelle; störungsfreie Koexistenz mit dem BAföG-Bescheinigungsmodul." },
+  { id:"ic", name:"Interaktionsfähigkeit", isNew:true,
+    def:"Vormals „Benutzbarkeit&quot; — seit 2023 erweitert um Inklusivität und Selbstbeschreibungsfähigkeit.",
+    nfr:"<b>NFR-Beispiel:</b> Notenabruf in max. 3 Klicks; barrierefrei nach WCAG 2.2 AA für Studierende mit Sehbeeinträchtigung; bedienbar durch die 55-jährige Prüfungsamts-Mitarbeiterin ohne Schulung &gt;&nbsp;15&nbsp;Min." },
+  { id:"re", name:"Zuverlässigkeit", isNew:false,
+    def:"Stabilität, Fehlertoleranz und Wiederherstellbarkeit im Betrieb.",
+    nfr:"<b>NFR-Beispiel:</b> Verfügbarkeit 99,8&nbsp;% während der Prüfungsanmelde- und Rückmeldefristen; Wiederherstellung nach Ausfall in &lt;&nbsp;10&nbsp;Min." },
+  { id:"se", name:"Sicherheit", isNew:false,
+    def:"Schutz vor Bedrohungen und Datenschutz — seit 2023 mit erweiterter Subcharakteristik Resistance.",
+    nfr:"<b>NFR-Beispiel:</b> Zugriff auf Prüfungsamtsfunktionen nur mit Hochschul-SSO + Zwei-Faktor; Notendaten AES-256-verschlüsselt; Nachteilsausgleich-Vermerke nur für berechtigte Rollen sichtbar (rollenbasierte Zugriffskontrolle)." },
+  { id:"ma", name:"Wartbarkeit", isNew:false,
+    def:"Modifizierbarkeit, Testbarkeit und Wiederverwendbarkeit des Codes.",
+    nfr:"<b>NFR-Beispiel:</b> Neue Prüfungsordnung in &lt;&nbsp;2 Tagen über ein Regelwerk-Konfigurationsmodul abbildbar, ohne Code-Deployment; Testabdeckung ≥&nbsp;80&nbsp;% für die Notenverbuchung." },
+  { id:"fl", name:"Flexibilität", isNew:true,
+    def:"Vormals „Übertragbarkeit&quot; — seit 2023 erweitert um Skalierbarkeit als Subcharakteristik.",
+    nfr:"<b>NFR-Beispiel:</b> Lauffähig ohne Anpassung für weitere Fakultäten; Migration auf neuen Hosting-Anbieter in &lt;&nbsp;2 Tagen." },
+  { id:"sa", name:"Safety", isNew:true,
+    def:"Neu in ISO/IEC 25010:2023 — Vermeidung von Personen-, Sach- oder Umweltschäden durch das System.",
+    nfr:"<b>NFR-Beispiel:</b> Ausfall des Self-Service-Portals darf die rechtsverbindliche Notenverbuchung im Prüfungsamt nicht gefährden; ein Systemfehler darf nicht zu falsch ausgestellten Abschlussnoten führen." }
+];
+function Q9(){
+  if(state.scenario === 'studienakte') return Q9_STUDIENAKTE;
+  if(state.scenario === 'talentmatch') return Q9_TALENTMATCH;
+  if(state.scenario === 'novatrade') return Q9_NOVATRADE;
+  return Q9_BAECKEREI;
+}
+
+/* ---------- 9 Merkmale ISO/IEC 25010:2023 — TalentMatch AI ---------- */
+var Q9_TALENTMATCH = [
+  { id:"fs", name:"Funktionale Eignung", isNew:false,
+    def:"Erfüllt die Software die Anforderungen vollständig, korrekt und angemessen?",
+    nfr:"<b>NFR-Beispiel:</b> Alle nach EU-AI-Act Art. 9–15 geforderten Pflichtfunktionen (Bias-Prüfung, Erklärbarkeits-Ausgabe, Human-Oversight-Layer) sind zu 100&nbsp;% implementiert und im Konformitätsbewertungsverfahren abgenommen." },
+  { id:"pe", name:"Leistungsfähigkeit &amp; Effizienz", isNew:false,
+    def:"Wie verhalten sich Reaktionszeit, Ressourcenverbrauch und Kapazität unter Last?",
+    nfr:"<b>NFR-Beispiel:</b> Scoring-Ergebnis liegt innerhalb 3 Sekunden vor, auch bei 500 gleichzeitig eingereichten Bewerbungen zur Bewerbungsfrist." },
+  { id:"co", name:"Kompatibilität", isNew:false,
+    def:"Interoperabilität und Koexistenz mit anderen Systemen im selben Umfeld.",
+    nfr:"<b>NFR-Beispiel:</b> Anbindung an das bestehende Bewerbermanagementsystem (ATS) von Vantera per REST-API; störungsfreie Koexistenz mit dem HR-Kernsystem." },
+  { id:"ic", name:"Interaktionsfähigkeit", isNew:true,
+    def:"Vormals „Benutzbarkeit&quot; — seit 2023 erweitert um Inklusivität und Selbstbeschreibungsfähigkeit.",
+    nfr:"<b>NFR-Beispiel:</b> Erklärbarkeits-Panel zeigt Petra bei jeder Empfehlung die drei Hauptfaktoren in max. 2 Klicks; Bewerber:innen-Portal barrierefrei nach WCAG 2.1 AA." },
+  { id:"re", name:"Zuverlässigkeit", isNew:false,
+    def:"Stabilität, Fehlertoleranz und Wiederherstellbarkeit im Betrieb.",
+    nfr:"<b>NFR-Beispiel:</b> Verfügbarkeit 99,5&nbsp;% während der Bewerbungsfrist; Wiederherstellung nach Ausfall in &lt;&nbsp;10&nbsp;Min." },
+  { id:"se", name:"Sicherheit", isNew:false,
+    def:"Schutz vor Bedrohungen und Datenschutz — seit 2023 mit erweiterter Subcharakteristik Resistance.",
+    nfr:"<b>NFR-Beispiel:</b> Bewerberdaten AES-256-verschlüsselt; DSGVO-konforme Löschfristen; rollenbasierter Zugriff trennt Sarah (Vertrieb) strikt vom Scoring-Modell." },
+  { id:"ma", name:"Wartbarkeit", isNew:false,
+    def:"Modifizierbarkeit, Testbarkeit und Wiederverwendbarkeit des Codes.",
+    nfr:"<b>NFR-Beispiel:</b> Modell-Update in &lt;&nbsp;1 Tag ohne Downtime einspielbar; Testabdeckung ≥&nbsp;85&nbsp;% für die Scoring-Logik inkl. Bias-Testfälle." },
+  { id:"fl", name:"Flexibilität", isNew:true,
+    def:"Vormals „Übertragbarkeit&quot; — seit 2023 erweitert um Skalierbarkeit als Subcharakteristik.",
+    nfr:"<b>NFR-Beispiel:</b> Scoring-Modell als austauschbare Komponente, lauffähig ohne Anpassung für weitere Stellenprofile." },
+  { id:"sa", name:"Safety", isNew:true,
+    def:"Neu in ISO/IEC 25010:2023 — Vermeidung von Personen-, Sach- oder Umweltschäden durch das System.",
+    nfr:"<b>NFR-Beispiel:</b> Fehlentscheidungen des Scoring-Modells dürfen keine Grundrechtsverletzung verursachen; die False-Negative-Rate je Bewerbergruppe muss innerhalb 2 Prozentpunkten der Gesamtrate liegen." }
+];
+
+/* ---------- 9 Merkmale ISO/IEC 25010:2023 — NovaTrade Pulse ---------- */
+var Q9_NOVATRADE = [
+  { id:"fs", name:"Funktionale Eignung", isNew:false,
+    def:"Erfüllt die Software die Anforderungen vollständig, korrekt und angemessen?",
+    nfr:"<b>NFR-Beispiel:</b> Alle im Sprint vereinbarten User Stories des Order-Moduls sind zu 100&nbsp;% abgenommen; Kauf/Verkauf von Bruchteilsaktien vollständig möglich." },
+  { id:"pe", name:"Leistungsfähigkeit &amp; Effizienz", isNew:false,
+    def:"Wie verhalten sich Reaktionszeit, Ressourcenverbrauch und Kapazität unter Last?",
+    nfr:"<b>NFR-Beispiel:</b> Order-Bestätigung in &lt;&nbsp;100&nbsp;ms bei 5.000 gleichzeitigen Trades zur Handelseröffnung; Serverauslastung bleibt &lt;&nbsp;70&nbsp;%." },
+  { id:"co", name:"Kompatibilität", isNew:false,
+    def:"Interoperabilität und Koexistenz mit anderen Systemen im selben Umfeld.",
+    nfr:"<b>NFR-Beispiel:</b> Anbindung an den bestehenden Marktdaten-Feed per FIX-Protokoll; störungsfreie Koexistenz mit dem Broker-Partner-System." },
+  { id:"ic", name:"Interaktionsfähigkeit", isNew:true,
+    def:"Vormals „Benutzbarkeit&quot; — seit 2023 erweitert um Inklusivität und Selbstbeschreibungsfähigkeit.",
+    nfr:"<b>NFR-Beispiel:</b> Order aufgeben in max. 3 Klicks; mehrsprachige Order-Maske für internationale Kund:innen; WCAG 2.1 AA." },
+  { id:"re", name:"Zuverlässigkeit", isNew:false,
+    def:"Stabilität, Fehlertoleranz und Wiederherstellbarkeit im Betrieb.",
+    nfr:"<b>NFR-Beispiel:</b> Failover-Zeit &lt;&nbsp;30 Sekunden vertraglich zugesichert; Verfügbarkeit 99,9&nbsp;% während der Handelszeiten." },
+  { id:"se", name:"Sicherheit", isNew:false,
+    def:"Schutz vor Bedrohungen und Datenschutz — seit 2023 mit erweiterter Subcharakteristik Resistance.",
+    nfr:"<b>NFR-Beispiel:</b> Order-Transaktionen kryptographisch signiert (MiFID-II-Nachweisfähigkeit); TLS 1.3; rollenbasierter Zugriff trennt Sarah (Vertrieb) strikt von der Order-Ausführung." },
+  { id:"ma", name:"Wartbarkeit", isNew:false,
+    def:"Modifizierbarkeit, Testbarkeit und Wiederverwendbarkeit des Codes.",
+    nfr:"<b>NFR-Beispiel:</b> Neue Assetklasse in &lt;&nbsp;5 Tagen über ein Konfigurationsmodul integrierbar, ohne Kernrefactoring; Testabdeckung ≥&nbsp;85&nbsp;% für die Order-Logik." },
+  { id:"fl", name:"Flexibilität", isNew:true,
+    def:"Vormals „Übertragbarkeit&quot; — seit 2023 erweitert um Skalierbarkeit als Subcharakteristik.",
+    nfr:"<b>NFR-Beispiel:</b> Lauffähig ohne Anpassung für weitere europäische Handelsplätze; Migration auf neuen Hosting-Anbieter in &lt;&nbsp;1 Tag." },
+  { id:"sa", name:"Safety", isNew:true,
+    def:"Neu in ISO/IEC 25010:2023 — Vermeidung von Personen-, Sach- oder Umweltschäden durch das System.",
+    nfr:"<b>NFR-Beispiel:</b> Eine Fehlausführung einer Order gilt als Safety-Vorfall; ein Systemfehler darf nicht zu einer nicht autorisierten Order führen." }
+];
+
+/* ---------- Chapters je Szenario ---------- */
+var SCEN_BAECKEREI = (function(){
+var _P = P_SETS.baeckerei;
+function ln(p, text){ return '<div class="line '+p+'"><span class="who">'+_P[p].name+' · '+_P[p].role+'</span>'+text+'</div>'; }
+return [
+// TAG 1
+{ day:1, title:"Bevor die Geschichte beginnt", sub:"Grundlagen der ISO/IEC 25010 — Einordnung, Ziele, Abgrenzung",
+  persona:"petra",
+  story:
+    ln("petra","„Bevor ihr Sarah bei ihrem ersten Projekt begleitet, müsst ihr wissen, in welcher Normenwelt sie sich bewegt. Die ISO/IEC 25010 steht nicht allein.&quot;"),
+  box:{ title:"Die SQuaRE-Reihe (ISO/IEC 25000-Familie)", text:
+    "SQuaRE steht für <i>Systems and software Quality Requirements and Evaluation</i> und gliedert sich in fünf Divisionen:<br>"+
+    "<b>2500n</b> Quality-Management-Division (ISO/IEC 25000 Leitfaden, 25001 Planung &amp; Management)<br>"+
+    "<b>2501n</b> Quality-Model-Division — <b>hier lebt die ISO/IEC 25010</b> (Produkt- und Nutzungsqualitätsmodell) sowie ISO/IEC 25012 (Datenqualität)<br>"+
+    "<b>2502n</b> Quality-Measurement-Division (Messverfahren)<br>"+
+    "<b>2503n</b> Quality-Requirements-Division (Qualitätsanforderungen spezifizieren)<br>"+
+    "<b>2504n</b> Quality-Evaluation-Division (Bewertungsverfahren)<br>"+
+    "Die ISO/IEC 25000-Reihe löst seit 2005 die ältere ISO/IEC 9126 ab." },
+  task:{ type:"quiz", id:"q0",
+    q:"Herr Bachmeier hat schon von ISO 9001 gehört und fragt: „Brauche ich jetzt noch eine zweite Norm?&quot; Was antwortet ihr?",
+    options:[
+      {t:"Nein, ISO 9001 und ISO/IEC 25010 regeln dasselbe — man braucht nur eine.", correct:false, why:"Beide behandeln Qualität, aber auf völlig unterschiedlichen Ebenen — die eine reicht nicht für die andere."},
+      {t:"Ja: ISO 9001 bewertet das Qualitätsmanagementsystem der Organisation, ISO/IEC 25010 bewertet die konkreten Eigenschaften des Softwareprodukts selbst.", correct:true, why:"Genau diese Abgrenzung ist entscheidend: Prozess-/Organisationsebene (ISO 9001, auch CMMI) vs. Produkt-/Nutzungsebene (ISO/IEC 25010)."},
+      {t:"Nein, ISO/IEC 25010 ersetzt ISO 9001 vollständig.", correct:false, why:"ISO/IEC 25010 ersetzt nicht ISO 9001 — sie ersetzt fachlich die ältere ISO/IEC 9126 und ergänzt, statt zu ersetzen."}
+    ]},
+  transfer:"Ziel der ISO/IEC 25010: eine <b>gemeinsame, objektive Sprache</b> für Softwarequalität zwischen Auftraggeber, Entwicklung und Qualitätssicherung. Abgrenzung: ISO 9001 bewertet das Managementsystem der Organisation, ISO/IEC 27001 fokussiert allein auf Informationssicherheit, CMMI bewertet die Reife der Entwicklungsprozesse — ISO/IEC 25010 bewertet als einzige davon die konkreten Qualitätsmerkmale des Produkts selbst." },
+
+{ day:1, title:"Der Anruf von Herrn Bachmeier", sub:"Bedeutung klarer und messbarer Anforderungen",
+  persona:"bachmeier",
+  story:
+    ln("bachmeier","„Frau Kollegin, ich brauche eine App für meine Bäckerei. Die Leute sollen Kuchen bestellen können. Das kann doch nicht so schwer sein.&quot;") +
+    ln("sarah","Sarah nickt, notiert „App für Kuchenbestellung&quot; auf ihrem Block — und beginnt zwei Wochen später zu programmieren.") +
+    "<p>Sprint 1 ist fertig. Herr Bachmeier testet die App auf seinem Tablet.</p>" +
+    ln("bachmeier","„Wo sehe ich denn, wie viele Kuchen ich heute noch backen muss? Und warum kann der Kunde keine Uhrzeit für die Abholung wählen? Das war doch selbstverständlich!&quot;"),
+  box:{ title:"Was ist hier passiert?", text:"„Eine App für Kuchenbestellung&quot; ist kein Requirement — es ist eine Absicht. Sarah hat eine vage Aussage 1:1 in Code übersetzt, statt sie zu präzisieren. Ohne klare, messbare Anforderungen entscheidet am Ende der Zufall, was gebaut wird — nicht der Bedarf." },
+  task:{ type:"reflect", id:"r1", prompt:"Woran erkennt ihr, dass „Die Leute sollen Kuchen bestellen können&quot; keine vollständige Anforderung ist? Was fehlt konkret?", sample:"Es fehlt der Rahmen: Wer bestellt worüber (welcher Kanal, welche Produkte), und wie gut muss es funktionieren (Reaktionszeit, Verfügbarkeit)? Ohne diese Angaben lässt sich die Anforderung weder umsetzen noch später abnehmen." },
+  transfer:"Eine Anforderung ist erst dann brauchbar, wenn sie <b>atomar, testbar, eindeutig, konsistent und verfolgbar</b> ist (IREB-Qualitätskriterien). „Messbar&quot; heißt: Es lässt sich am Ende objektiv prüfen, ob sie erfüllt wurde." },
+
+{ day:1, title:"Das Marmorkuchen-Prinzip", sub:"Funktionale und nicht-funktionale Anforderungen formulieren",
+  persona:"petra",
+  story:
+    ln("petra","„Sarah, was genau meinst du mit 'die App soll gut funktionieren'? Beschreib mir das mal wie ein Rezept, nicht wie einen Wunsch.&quot;") +
+    "<p>Sarah zögert — dann beginnt sie zu trennen: <b>Was</b> die App tun muss (Bestellung entgegennehmen, Sorte und Menge erfassen) und <b>wie gut</b> sie es tun muss (in unter 2 Sekunden bestätigen, auch bei 50 gleichzeitigen Kund:innen).</p>",
+  box:{ title:"Marmorkuchen-Prinzip", text:"Der helle Teig ist die <b>funktionale Anforderung</b>: „Das System muss X tun.&quot; Der dunkle, kakaohaltige Teig ist die <b>nicht-funktionale Anforderung (NFR)</b>: „Und zwar so gut/schnell/sicher/robust.&quot; Erst zusammen ergeben sie den vollständigen Kuchen — ein Marmorkuchen ohne dunklen Teig ist nur heller Teig mit einem falschen Namen." },
+  task:{ type:"quiz", id:"q1",
+    q:"„Die App muss die Bestellhistorie der letzten 12 Monate anzeigen, Ladezeit unter 1 Sekunde.&quot; Welcher Anteil ist funktional, welcher nicht-funktional?",
+    options:[
+      {t:"Beides funktional — es geht ja nur um eine Anzeige.", correct:false, why:"Die Ladezeit ist ein Qualitätsmerkmal (Performance Efficiency), keine Funktion."},
+      {t:"„Bestellhistorie anzeigen&quot; = funktional, „unter 1 Sekunde&quot; = nicht-funktional.", correct:true, why:"Genau — das WAS ist funktional, das WIE GUT ist nicht-funktional (hier: Performance Efficiency nach ISO 25010)."},
+      {t:"Beides nicht-funktional, weil es um Historie geht.", correct:false, why:"Das Anzeigen selbst ist eine konkrete Funktion des Systems — also funktional."}
+    ]},
+  transfer:"Faustregel: Funktionale Anforderungen beantworten „<b>Was</b> tut das System?&quot;, nicht-funktionale Anforderungen beantworten „<b>Wie gut/sicher/schnell/robust</b> tut es das?&quot; (ISO/IEC 25010)." },
+
+{ day:1, title:"Wer sitzt eigentlich am Tisch?", sub:"Stakeholder-Analyse und Anforderungserhebung",
+  persona:"knut",
+  story:
+    ln("knut","„Bevor wir weiterbauen: Wer redet hier überhaupt mit? Bachmeier ist nicht der einzige Stakeholder.&quot;") +
+    "<p>Sarah erstellt eine erste Stakeholder-Landkarte für die MarmorkuchenApp:</p>",
+  box:{ title:"Stakeholder-Landkarte (Macht/Interesse)", text:
+    "<table class='reftable'><tr><th>Stakeholder</th><th>Interesse</th><th>Macht</th><th>Erhebungsmethode</th></tr>"+
+    "<tr><td>Herr Bachmeier</td><td>hoch</td><td>hoch</td><td>Strukturiertes Interview</td></tr>"+
+    "<tr><td>Kund:innen</td><td>hoch</td><td>niedrig</td><td>Beobachtung am Tresen (Shadowing), Kurzumfrage</td></tr>"+
+    "<tr><td>Verkaufspersonal</td><td>mittel</td><td>mittel</td><td>Workshop, Prozessbegehung</td></tr>"+
+    "<tr><td>Ela (Entwicklung)</td><td>hoch</td><td>mittel</td><td>Backlog-Refinement</td></tr>"+
+    "<tr><td>Datenschutzbehörde (DSGVO)</td><td>niedrig</td><td>hoch (Constraint)</td><td>Dokumentenanalyse</td></tr></table>" },
+  task:{ type:"reflect", id:"r2", prompt:"Welche Erhebungsmethode würdet ihr wählen, um herauszufinden, wie Verkäufer:innen die App am Tresen tatsächlich nutzen — und warum genau diese?", sample:"Beobachtung vor Ort während des realen Tagesgeschäfts, ergänzt durch kurze Nachfragen im Anschluss. Reine Interviews liefern nur subjektive Erinnerung, nicht das tatsächliche Verhalten unter Zeitdruck an der Kasse." },
+  transfer:"Stakeholder-Analyse verhindert den häufigsten RE-Fehler: nur den lautesten Stakeholder zu befragen. Macht/Interesse-Matrix + passende Erhebungstechnik (Interview, Workshop, Beobachtung, Dokumentenanalyse, Prototyping) je Stakeholder-Typ." },
+
+{ day:1, title:"Muss, soll, kann — oder eben nicht", sub:"Anforderungen bewerten, priorisieren und verwalten",
+  persona:"sarah",
+  story:
+    "<p>26 Anforderungen liegen auf dem Tisch. Budget und Zeit reichen nicht für alle. Sarah sortiert mit dem Team nach <b>MoSCoW</b>:</p>",
+  box:{ title:"MoSCoW für die MarmorkuchenApp (Auszug)", text:
+    "<b>Must:</b> Bestellung aufgeben, Bezahlung online<br>"+
+    "<b>Should:</b> Wunsch-Abholzeit wählen<br>"+
+    "<b>Could:</b> Treuepunkte-Programm<br>"+
+    "<b>Won't (Phase 1):</b> Lieferservice nach Hause" },
+  task:{ type:"quiz", id:"q2",
+    q:"Herr Bachmeier besteht darauf, dass „Treuepunkte&quot; unbedingt in Release 1 müssen, obwohl Zeit und Budget das nicht hergeben. Was ist der nächste sinnvolle RE-Schritt?",
+    options:[
+      {t:"Einfach zusagen, er ist der Kunde.", correct:false, why:"Ungeprüfte Zusagen bei Kapazitätskonflikten führen zu Scope-Creep und Terminverzug."},
+      {t:"Business Value und Aufwand gemeinsam mit ihm bewerten (z. B. Kano-Modell) und die Konsequenz für andere Must-Anforderungen offenlegen.", correct:true, why:"Priorisierung ist eine Verhandlung auf Basis von Nutzen/Aufwand — nicht Lautstärke. Trade-offs müssen sichtbar gemacht werden."},
+      {t:"Ablehnen, ohne Begründung.", correct:false, why:"Ohne nachvollziehbare Begründung verliert der Auftraggeber Vertrauen in den Priorisierungsprozess."}
+    ]},
+  transfer:"Priorisierung braucht Kriterien (Business Value, Risiko, Aufwand, Abhängigkeiten) und ein Verfahren (MoSCoW, Kano, Wertstromanalyse) — sonst wird aus Anforderungsmanagement Verwaltung von Wünschen." },
+
+{ day:1, title:"Der Werkzeugkasten", sub:"Methoden: User Stories, Use Cases, Modellierungstechniken",
+  persona:"ela",
+  story:
+    ln("ela","„Für das App-Frontend reicht mir eine gute User Story mit Akzeptanzkriterien. Aber für die Backmaschinen-Steuerung brauche ich einen vollständigen Use Case — da geht's um Sicherheit und Zertifizierung.&quot;"),
+  box:{ title:"Zwei Artefakte, zwei Zwecke", text:
+    "<b>User Story (App-Frontend, agil):</b><br>„Als Kundin möchte ich meine Bestellung 24&nbsp;h im Voraus aufgeben, damit ich sicher sein kann, dass mein Kuchen zur Abholzeit fertig ist.&quot;<br>"+
+    "<i>Akzeptanzkriterium (Gherkin):</i> Given eine Bestellung 24h vor Abholung, When die Kundin bestätigt, Then erscheint eine Bestellnummer und eine E-Mail-Bestätigung innerhalb 1 Min.<br><br>"+
+    "<b>Use Case (Backmaschinen-Steuerung, klassisch):</b> UC-07 „Temperaturprofil starten&quot; — Vorbedingung, Hauptablauf, Fehlerfälle, Nachbedingung, vollständig spezifiziert wegen Lebensmittelsicherheit und Zertifizierungspflicht." },
+  task:{ type:"reflect", id:"r3", prompt:"Warum passt INVEST (Independent, Negotiable, Valuable, Estimable, Small, Testable) gut zur User Story oben, aber schlecht zum Use Case der Backmaschine?", sample:"Die Backmaschinen-Steuerung ist sicherheitskritisch und muss vollständig, eindeutig und geprüft vorliegen — sie darf nicht „Negotiable&quot; oder bewusst klein gehalten sein, wie INVEST es für User Stories vorsieht." },
+  transfer:"<b>Hybrid statt Dogma:</b> Agil (User Stories, Backlog) für unscharfe, sich ändernde Bereiche wie das App-Frontend; klassisch (Use Cases, Spezifikation vorab) für sicherheitskritische, zertifizierungspflichtige Bereiche wie die Backmaschinen-Steuerung." },
+
+{ day:1, title:"Sarahs Pflichtenheft", sub:"Anforderungen angemessen dokumentieren",
+  persona:"sarah",
+  story:
+    "<p>Sarah dokumentiert nicht mehr „App soll bestellen können&quot; auf einem Post-it, sondern strukturiert nach IEEE&nbsp;29148:</p>",
+  box:{ title:"Anforderungsdatensatz REQ-014 (Auszug)", text:
+    "<b>ID:</b> REQ-014 &nbsp; <b>Titel:</b> Bestellbestätigung per E-Mail<br>"+
+    "<b>Quelle:</b> Interview Bachmeier, 12.03.2026 &nbsp; <b>Priorität:</b> Must (MoSCoW)<br>"+
+    "<b>Beschreibung:</b> Das System muss nach erfolgreicher Bestellung automatisch eine Bestätigungs-E-Mail mit Bestellnummer, Sorte, Menge und Abholzeit versenden.<br>"+
+    "<b>Akzeptanzkriterium:</b> E-Mail-Versand innerhalb 60 Sekunden nach Bestellabschluss, Zustellrate ≥ 98&nbsp;%.<br>"+
+    "<b>Verknüpft mit:</b> REQ-009 (Bestellung aufgeben), NFR-003 (Reliability)" },
+  task:{ type:"quiz", id:"q3",
+    q:"Warum reicht „Bestellbestätigung per E-Mail versenden&quot; als Dokumentation allein nicht aus?",
+    options:[
+      {t:"Weil Quelle, Priorität, Akzeptanzkriterium und Verknüpfung fehlen — ohne sie ist die Anforderung nicht testbar und nicht verfolgbar.", correct:true, why:"Genau das sind die IREB-Kriterien testbar und verfolgbar in der Praxis."},
+      {t:"Weil E-Mails technisch nicht möglich sind.", correct:false, why:"Das ist keine inhaltliche RE-Frage, sondern eine technische Randbedingung."},
+      {t:"Es reicht völlig aus, mehr Doku kostet nur Zeit.", correct:false, why:"Ohne Traceability lässt sich später nicht mehr nachvollziehen, warum eine Anforderung besteht — teuer bei jeder Änderung."}
+    ]},
+  transfer:"Angemessene Dokumentation heißt nicht „möglichst viel&quot;, sondern: so viel, dass Testbarkeit, Nachvollziehbarkeit (Traceability) und Quelle jederzeit rekonstruierbar sind — Format je nach Kontext (SRS, Pflichtenheft, Story-Karte mit verlinkten Kriterien)." },
+
+{ day:1, title:"Nach dem Sprint ist vor dem Sprint", sub:"Dokumentation als Basis für Change, Erweiterung und den Sprung zu ISO 25010",
+  persona:"petra",
+  story:
+    "<p>Sechs Monate später: Herr Bachmeier will eine zweite Filiale eröffnen.</p>" +
+    ln("bachmeier","„Können wir die App einfach für die zweite Filiale mitnutzen?&quot;") +
+    ln("ela","Weil REQ-014 & Co. sauber dokumentiert und verknüpft sind, findet Ela die relevanten Anforderungen in 2 Tagen wieder — statt in 3 Wochen alles neu zu erheben.") +
+    ln("petra","„Siehst du, Sarah? Gute Dokumentation ist keine Bürokratie für heute. Sie ist die Grundlage für jede Änderung von morgen — neues Projekt, Erweiterung, Anpassung.&quot;"),
+  box:{ title:"Die Brücke zu Tag 2", text:"Petra stellt die entscheidende Frage: „Woran erkennt ihr eigentlich, ob 'die App gut funktioniert'? 'Gut' ist doch selbst wieder eine unscharfe Anforderung.&quot; Genau hier beginnt morgen das Produktqualitätsmodell — jede Anforderung braucht ein Qualitätsmerkmal, sonst bleibt sie ein Wunsch." },
+  task:{ type:"reflect", id:"r4", prompt:"Was hättet ihr in eurem letzten Projekt an Dokumentation vermisst, als eine Änderung oder Erweiterung anstand?", sample:"Typische Lücken: die Begründung einer Entscheidung, die Verknüpfung zu verwandten Anforderungen, die Versionshistorie. Ohne diese drei lässt sich eine Änderung später nicht sicher einschätzen." },
+  transfer:"Requirements Engineering endet nicht mit dem Go-Live. Gute Dokumentation ist der Unterschied zwischen Wiederverwendung in Tagen und Neuerhebung in Wochen." },
+
+// TAG 2
+{ day:2, title:"„Der Kuchen muss gut sein.&quot;", sub:"Einführung: das Produktqualitätsmodell ISO/IEC 25010:2023",
+  persona:"petra",
+  story:
+    ln("bachmeier","„Ich will doch nur, dass die App gut ist!&quot;") +
+    ln("petra","„Was genau meinen Sie mit 'gut', Herr Bachmeier? Schnell? Sicher? Einfach zu bedienen? Zuverlässig auch samstags um 11 Uhr, wenn 40 Leute gleichzeitig bestellen?&quot;") +
+    "<p>„Gut&quot; ist kein Qualitätsmerkmal — es ist ein Wunsch ohne Substanz. Die ISO/IEC 25010 übersetzt „gut&quot; in ein Modell mit konkreten, messbaren Merkmalen.</p>",
+  box:{ title:"Norm-Hinweis (K17-Check)", text:"ISO/IEC 25010:2023 (Edition 2, veröffentlicht 2023-11) ersetzt ISO/IEC 25010:2011. Wichtigste Änderung: Das Produktqualitätsmodell hat jetzt <b>neun</b> statt acht Hauptmerkmale — „Safety&quot; wurde neu ergänzt, „Benutzbarkeit&quot; heißt jetzt „Interaktionsfähigkeit&quot;, „Übertragbarkeit&quot; heißt jetzt „Flexibilität&quot;. Das Qualität-in-Nutzung-Modell ist separat in ISO/IEC 25019:2023 geregelt." },
+  task:{ type:"reflect", id:"r5", prompt:"Übersetzt „Der Kuchen muss gut sein&quot; in drei konkrete, messbare Qualitätsmerkmale — bevor ihr im nächsten Kapitel die vollständige Liste seht.", sample:"Zum Beispiel: Funktionale Eignung (alle bestellten Zutaten sind tatsächlich enthalten), Zuverlässigkeit (Lieferung erfolgt in ≥&nbsp;98&nbsp;% der Fälle zur zugesagten Zeit), Interaktionsfähigkeit (Bestellvorgang dauert &lt;&nbsp;2&nbsp;Minuten)." },
+  transfer:"Ohne Qualitätsmodell bleibt „gut&quot; subjektiv und nicht überprüfbar. Mit ISO/IEC 25010 wird aus dem Wunsch eine Menge testbarer Merkmale." },
+
+{ day:2, title:"Die neun Zutaten des Qualitätskuchens", sub:"Das Produktqualitätsmodell — neun Hauptmerkmale im Detail",
+  persona:"ela",
+  story: ln("ela","„Klickt euch durch — zu jedem Merkmal gibt's die Definition und ein konkretes NFR-Beispiel aus unserer MarmorkuchenApp.&quot;"),
+  isGrid9:true,
+  transfer:"Drei der neun Merkmale sind mit ISO/IEC 25010:2023 neu bzw. umbenannt: <b>Safety</b> (neu), <b>Interaktionsfähigkeit</b> (vormals Benutzbarkeit), <b>Flexibilität</b> (vormals Übertragbarkeit). Für Bestandsmaterial mit „acht Hauptmerkmalen&quot; gilt: das war die 2011er-Fassung — inhaltlich weiter nützlich, aber nicht mehr aktuell." },
+
+{ day:2, title:"Schmeckt's auch dem Gast?", sub:"Qualität in der Nutzung — die fünf Dimensionen (ISO/IEC 25019:2023)",
+  persona:"bachmeier",
+  story:
+    ln("bachmeier","„Die App hat alle Haken auf eurer Liste. Aber meine Stammkundin Frau Reiter sagt, sie nutzt sie trotzdem nicht mehr.&quot;") +
+    ln("petra","„Das Produktqualitätsmodell beschreibt die Software selbst. Ob sie in der echten Nutzung wirklich funktioniert, misst ein zweites Modell: Qualität in der Nutzung.&quot;"),
+  box:{ title:"Die fünf Dimensionen — angewendet auf die MarmorkuchenApp", text:
+    "<b>Effektivität:</b> 95&nbsp;% der Bestellungen werden ohne Abbruch abgeschlossen.<br>"+
+    "<b>Effizienz:</b> Bestellzeit sinkt von 4&nbsp;Min. am Tresen auf &lt;&nbsp;90&nbsp;Sek. in der App.<br>"+
+    "<b>Zufriedenstellung:</b> Net Promoter Score ≥&nbsp;40 nach 3 Monaten (Vertrauen, Freude, Komfort).<br>"+
+    "<b>Risikofreiheit:</b> keine wirtschaftlichen Verluste durch Doppelbestellungen, keine Gesundheitsrisiken durch falsche Allergen-Angaben.<br>"+
+    "<b>Kontextabdeckung:</b> App funktioniert auch bei schwachem WLAN in der Backstube und lässt sich auf eine zweite Filiale übertragen." },
+  task:{ type:"quiz", id:"q4",
+    q:"Frau Reiter findet die App „alles richtig gebaut, trotzdem unangenehm zu benutzen&quot;. Welche Dimension der Nutzungsqualität ist am ehesten betroffen?",
+    options:[
+      {t:"Effektivität — sie kann ja bestellen.", correct:false, why:"Effektivität misst, ob das Ziel erreicht wird — das gelingt ihr offenbar."},
+      {t:"Zufriedenstellung — die App erfüllt Anforderungen, aber nicht das Nutzungserlebnis.", correct:true, why:"Genau das ist der Unterschied zwischen Produktqualität (Merkmale erfüllt) und Nutzungsqualität (fühlt sich für die reale Nutzerin gut an)."},
+      {t:"Kompatibilität — ein Merkmal des Produktqualitätsmodells, nicht der Nutzungsqualität.", correct:false, why:"Kompatibilität gehört zum Produktqualitätsmodell (ISO 25010), nicht zum Nutzungsmodell (ISO 25019)."}
+    ]},
+  transfer:"Produktqualität (ISO/IEC 25010) und Nutzungsqualität (ISO/IEC 25019) sind zwei verschiedene, komplementäre Modelle. Ein Produkt kann alle Merkmale erfüllen und trotzdem in der echten Nutzung scheitern." },
+
+{ day:2, title:"Der Praxis-Test", sub:"Fallstudie: Anwendung auf die zweite Filiale",
+  persona:"sarah",
+  story:
+    "<p>Fallstudie für die zweite Filiale: „Die App soll auch in der Filiale Nord genauso zuverlässig laufen, aber dort gibt es nur mobiles Internet mit häufigen Aussetzern, und die Verkäuferin dort hat noch nie ein Tablet benutzt.&quot;</p>",
+  box:{ title:"Eure Aufgabe", text:"Ordnet die Situation aus der Fallstudie einem konkreten Merkmal des Produktqualitätsmodells UND einer Dimension der Nutzungsqualität zu. Formuliert daraus jeweils ein testbares Akzeptanzkriterium mit Zahl." },
+  task:{ type:"reflect", id:"r6", prompt:"Eure Zuordnung: Welches ISO-25010-Merkmal, welche ISO-25019-Dimension — und wie lautet euer testbares Akzeptanzkriterium?", sample:"Zuverlässigkeit + Kontextabdeckung: „App bleibt bei Verbindungsabbruch bis 30 Sek. funktionsfähig (Offline-Puffer) und synct automatisch nach.&quot; Interaktionsfähigkeit: „Erste erfolgreiche Bestellung ohne Einweisung in &lt; 5 Min.&quot;" },
+  transfer:"Typische Trainer-Referenz: Zuverlässigkeit + Kontextabdeckung → z. B. „App bleibt bei Verbindungsabbruch bis 30 Sek. funktionsfähig (Offline-Puffer) und synct automatisch nach.&quot; Interaktionsfähigkeit → „Erste erfolgreiche Bestellung ohne Einweisung in &lt; 5 Min.&quot;" },
+
+{ day:2, title:"Von der Anforderung zur Qualitätsanforderung", sub:"Qualitätsanforderungen aus dem Nutzungskontext ableiten",
+  persona:"knut",
+  story:
+    ln("knut","„Bevor ihr eine NFR aus dem Nichts erfindet: Beschreibt erst den Nutzungskontext. Wer nutzt was, wo, womit, unter welchen Bedingungen?&quot;"),
+  box:{ title:"Methode: Nutzungskontext → Qualitätsanforderung", text:
+    "<b>Wer?</b> Verkäuferin, 68 Jahre, wenig IT-Erfahrung<br>"+
+    "<b>Wo?</b> Tresen, Stoßzeit mit Warteschlange<br>"+
+    "<b>Womit?</b> Firmen-iPad, Touch-Bedienung<br>"+
+    "<b>Unter welchen Bedingungen?</b> Zeitdruck, Kund:innen warten sichtbar<br>"+
+    "→ <b>Abgeleitete NFRs:</b> Interaktionsfähigkeit (max. 3 Klicks, große Touch-Ziele ≥ 44px), Performance Efficiency (Reaktion &lt; 1 Sek. bei jedem Klick)" },
+  task:{ type:"quiz", id:"q5",
+    q:"Warum ist „Nutzungskontext zuerst beschreiben&quot; besser, als direkt NFRs zu brainstormen?",
+    options:[
+      {t:"Weil es länger dauert und gründlicher wirkt.", correct:false, why:"Nicht die Dauer zählt, sondern die Ableitbarkeit konkreter, begründbarer Anforderungen."},
+      {t:"Weil sich daraus konkrete, begründbare Qualitätsanforderungen ableiten lassen statt geratener Wunschlisten.", correct:true, why:"Der Kontext liefert die Begründung — jede NFR lässt sich auf eine konkrete Nutzungssituation zurückführen (Traceability)."},
+      {t:"Weil der Nutzungskontext gesetzlich vorgeschrieben ist.", correct:false, why:"Es ist eine methodische Empfehlung (u. a. ISO 25019), keine gesetzliche Pflicht."}
+    ]},
+  transfer:"Qualitätsanforderungen, die direkt aus einem konkreten Nutzungskontext abgeleitet sind, lassen sich besser begründen, priorisieren und später verteidigen als abstrakt gesammelte NFR-Wünsche." },
+
+{ day:2, title:"Der große Rahmen: SWEBOK", sub:"Wo Anforderungsmanagement und Softwarequalität im Software-Lifecycle stehen",
+  persona:"petra",
+  story:
+    ln("petra","„Bevor wir zum Schlusskapitel kommen, noch eine Einordnung: Was ihr diese zwei Tage gelernt habt, ist kein Sonderthema — es sind zwei von elf Kernbereichen eines viel größeren Rahmenwerks.&quot;") +
+    "<p>Petra zeigt eine Übersicht: den SWEBOK<sup>®</sup> Guide (Software Engineering Body of Knowledge) der IEEE Computer Society, aktuell Version 4.0a.</p>",
+  box:{ title:"SWEBOK Guide V4.0a — wo diese zwei Tage einsortieren", text:
+    "<b>Tag 1 (Anforderungsmanagement)</b> entspricht SWEBOK Kapitel 1 „Software Requirements&quot; — Elicitation, Analysis, Specification, Validation, genau die Schritte, die die MarmorkuchenApp durchlaufen hat.<br>"+
+    "<b>Tag 2 (ISO/IEC 25010)</b> entspricht SWEBOK Kapitel 12 „Software Quality&quot; — die Norm ist dort die zentrale Grundlage für Quality Assurance und Verification &amp; Validation.<br>"+
+    "<b>Neun weitere Kapitel</b> kommen in dieser Schulung bewusst nicht vor, weil sie Entwicklungs- und Betriebsthemen sind, keine RM-/Qualitätsthemen: Architecture, Design, Construction, Testing, Operations, Maintenance, Configuration Management, Management, Security." },
+  task:{ type:"reflect", id:"r8", prompt:"Welcher der neun nicht behandelten SWEBOK-Bereiche würde in eurem eigenen Projekt gerade am meisten Klärungsbedarf auslösen — und warum?", sample:"Je nach Projekt oft: Security (Absicherung sensibler Daten) oder Testing (wie wird die Anforderung überhaupt geprüft?). Es gibt hier bewusst kein einzig korrektes Ergebnis — wichtig ist die Begründung." },
+  transfer:"Requirements Engineering und Softwarequalität sind der Anfang, nicht das Ganze: SWEBOK zeigt, dass beide Themen durchgängig von Architecture, Testing, Operations und Security begleitet werden — dieselbe Logik wie das Marmorkuchen-Prinzip, nur auf den gesamten Software-Lebenszyklus angewendet." },
+
+{ day:2, title:"Sarahs Werkzeugkoffer", sub:"Best Practices, Zusammenfassung und Abschluss",
+  persona:"petra",
+  story:
+    ln("petra","„Was nimmst du aus diesen zwei Tagen mit, Sarah?&quot;") +
+    ln("sarah","„Dass eine Anforderung ohne Qualitätsmerkmal ein Wunsch bleibt. Und dass gute Dokumentation heute die Grundlage für jede Änderung von morgen ist.&quot;"),
+  box:{ title:"Best Practices — die Kurzfassung", text:
+    "<ul style='margin:4px 0 0 18px; padding:0;'>"+
+    "<li>Funktional (Was) und nicht-funktional (Wie gut) immer gemeinsam denken — Marmorkuchen-Prinzip</li>"+
+    "<li>Stakeholder-Landkarte vor der Erhebung, nicht danach</li>"+
+    "<li>Priorisierung braucht Kriterien und Verfahren, nicht Lautstärke</li>"+
+    "<li>Methode passend zum Kontext wählen: agil für Unsicheres, klassisch für Zertifizierungspflichtiges</li>"+
+    "<li>Traceability von Anfang an — Dokumentation ist Zukunftsinvestition</li>"+
+    "<li>„Gut&quot; immer in ISO-25010-Merkmale und ISO-25019-Dimensionen übersetzen</li>"+
+    "</ul>" },
+  task:{ type:"reflect", id:"r7", prompt:"Euer persönlicher Transfer: Welche EINE Sache nehmt ihr aus dieser Schulung morgen konkret mit in euer eigenes Projekt?", sample:"Es gibt keine „richtige&quot; Antwort — Beispiel: „Ich werde künftig jede Anforderung sofort mit einem messbaren Qualitätsmerkmal verknüpfen, statt das nachträglich zu ergänzen.&quot;" },
+  transfer:"Prompt Engineering ist Requirements Engineering für KI-Systeme, Softwarequalität ist Requirements Engineering für Menschen. Beide beginnen mit derselben Frage: Was genau meinen wir eigentlich?" }
+];
+})();
+
+/* ================= SZENARIO 2: DIGITALE STUDIENAKTE ================= */
+var SCEN_STUDIENAKTE = (function(){
+var _P = P_SETS.studienakte;
+function ln(p, text){ return '<div class="line '+p+'"><span class="who">'+_P[p].name+' · '+_P[p].role+'</span>'+text+'</div>'; }
+return [
+// TAG 1
+{ day:1, title:"Bevor die Geschichte beginnt", sub:"Grundlagen der ISO/IEC 25010 — Einordnung, Ziele, Abgrenzung",
+  persona:"petra",
+  story:
+    ln("petra","„Bevor ihr Sarah bei der digitalen Studienakte begleitet, müsst ihr wissen, in welcher Normenwelt sie sich bewegt. Die ISO/IEC 25010 steht nicht allein.&quot;"),
+  box:{ title:"Die SQuaRE-Reihe (ISO/IEC 25000-Familie)", text:
+    "SQuaRE steht für <i>Systems and software Quality Requirements and Evaluation</i> und gliedert sich in fünf Divisionen:<br>"+
+    "<b>2500n</b> Quality-Management-Division (ISO/IEC 25000 Leitfaden, 25001 Planung &amp; Management)<br>"+
+    "<b>2501n</b> Quality-Model-Division — <b>hier lebt die ISO/IEC 25010</b> (Produkt- und Nutzungsqualitätsmodell) sowie ISO/IEC 25012 (Datenqualität)<br>"+
+    "<b>2502n</b> Quality-Measurement-Division (Messverfahren)<br>"+
+    "<b>2503n</b> Quality-Requirements-Division (Qualitätsanforderungen spezifizieren)<br>"+
+    "<b>2504n</b> Quality-Evaluation-Division (Bewertungsverfahren)<br>"+
+    "Die ISO/IEC 25000-Reihe löst seit 2005 die ältere ISO/IEC 9126 ab." },
+  task:{ type:"quiz", id:"q0",
+    q:"Prof. Dr. Vogt sagt: „Unsere Fakultät ist doch systemakkreditiert nach den Regeln des Akkreditierungsrates — brauchen wir jetzt noch eine Software-Norm?&quot; Was antwortet ihr?",
+    options:[
+      {t:"Nein, Systemakkreditierung und ISO/IEC 25010 prüfen dasselbe.", correct:false, why:"Beide betreffen Qualität, aber auf unterschiedlichen Ebenen — die eine ersetzt die andere nicht."},
+      {t:"Ja: Die Systemakkreditierung bewertet das interne Qualitätsmanagementsystem für Studium und Lehre der Hochschule, ISO/IEC 25010 bewertet die konkreten Eigenschaften der Studienakte als Software.", correct:true, why:"Genau diese Abgrenzung ist entscheidend: institutionelle QM-Ebene (Systemakkreditierung nach MRVO) vs. Produkt-/Nutzungsebene (ISO/IEC 25010) der Software selbst."},
+      {t:"Nein, die Systemakkreditierung ersetzt jede Software-Qualitätsprüfung.", correct:false, why:"Die Systemakkreditierung bewertet Studiengänge und Lehrprozesse, nicht die technischen Qualitätsmerkmale eines konkreten IT-Systems."}
+    ]},
+  transfer:"Ziel der ISO/IEC 25010: eine <b>gemeinsame, objektive Sprache</b> für Softwarequalität zwischen Studiendekanat, Entwicklung und Prüfungsamt. Abgrenzung: die Systemakkreditierung (Akkreditierungsrat, MRVO) bewertet das Qualitätsmanagementsystem der Hochschule in Studium und Lehre — ISO/IEC 25010 bewertet die Qualitätsmerkmale der Studienakte als Softwareprodukt." },
+
+{ day:1, title:"Der Anruf von Prof. Vogt", sub:"Bedeutung klarer und messbarer Anforderungen",
+  persona:"vogt",
+  story:
+    ln("vogt","„Frau Kollegin, wir brauchen endlich eine digitale Studienakte. Die Verwaltung soll die Papierordner loswerden. Das kann doch nicht so schwer sein.&quot;") +
+    ln("sarah","Sarah nickt, notiert „digitale Studienakte&quot; auf ihrem Block — und beginnt zwei Wochen später zu programmieren.") +
+    "<p>Sprint 1 ist fertig. Prof. Vogt testet den ersten Entwurf.</p>" +
+    ln("vogt","„Wo sehe ich denn, welche Studierenden einen Nachteilsausgleich haben? Und warum kann das Prüfungsamt keine Sperrvermerke setzen? Das war doch selbstverständlich!&quot;"),
+  box:{ title:"Was ist hier passiert?", text:"„Eine digitale Studienakte&quot; ist kein Requirement — es ist eine Absicht. Sarah hat eine vage Aussage 1:1 in Code übersetzt, statt sie zu präzisieren. Ohne klare, messbare Anforderungen entscheidet am Ende der Zufall, was gebaut wird — nicht der Bedarf." },
+  task:{ type:"reflect", id:"r1", prompt:"Woran erkennt ihr, dass „Wir brauchen eine digitale Studienakte&quot; keine vollständige Anforderung ist? Was fehlt konkret?", sample:"Es fehlt: für wen genau (Studierende? Prüfungsamt?), welche konkreten Funktionen, und die rechtlichen/Qualitäts-Rahmenbedingungen (z. B. Barrierefreiheit, Aufbewahrungsfrist). Ohne diese Angaben ist die Anforderung nicht prüfbar." },
+  transfer:"Eine Anforderung ist erst dann brauchbar, wenn sie <b>atomar, testbar, eindeutig, konsistent und verfolgbar</b> ist (IREB-Qualitätskriterien). „Messbar&quot; heißt: Es lässt sich am Ende objektiv prüfen, ob sie erfüllt wurde." },
+
+{ day:1, title:"Das Marmorkuchen-Prinzip", sub:"Funktionale und nicht-funktionale Anforderungen formulieren",
+  persona:"petra",
+  story:
+    ln("petra","„Sarah, was genau meinst du mit 'die Akte soll gut funktionieren'? Beschreib mir das mal wie ein Rezept, nicht wie einen Wunsch.&quot;") +
+    "<p>Sarah trennt: <b>Was</b> die Akte tun muss (Prüfungsergebnisse der letzten 6 Semester anzeigen) und <b>wie gut</b> sie es tun muss (nur für berechtigte Rollen sichtbar, jeder Zugriff protokolliert).</p>",
+  box:{ title:"Marmorkuchen-Prinzip", text:"Der helle Teig ist die <b>funktionale Anforderung</b>: „Das System muss X tun.&quot; Der dunkle, kakaohaltige Teig ist die <b>nicht-funktionale Anforderung (NFR)</b>: „Und zwar so sicher/schnell/nachvollziehbar.&quot; Erst zusammen ergeben sie den vollständigen Kuchen." },
+  task:{ type:"quiz", id:"q1",
+    q:"„Die Akte muss die Prüfungsergebnisse der letzten 6 Semester anzeigen, Zugriff nur für Studierende und Prüfungsamt, jeder Zugriff wird protokolliert.&quot; Welcher Anteil ist funktional, welcher nicht-funktional?",
+    options:[
+      {t:"Beides funktional — es geht ja nur um eine Anzeige.", correct:false, why:"Zugriffsbeschränkung und Protokollierung sind Qualitätsmerkmale (Security), keine Funktion."},
+      {t:"„Prüfungsergebnisse anzeigen&quot; = funktional, „nur berechtigte Rollen + Protokollierung&quot; = nicht-funktional.", correct:true, why:"Genau — das WAS ist funktional, das WIE GESICHERT ist nicht-funktional (hier: Security nach ISO 25010)."},
+      {t:"Beides nicht-funktional, weil sensible Daten betroffen sind.", correct:false, why:"Das Anzeigen selbst ist eine konkrete Funktion des Systems — also funktional."}
+    ]},
+  transfer:"Faustregel: Funktionale Anforderungen beantworten „<b>Was</b> tut das System?&quot;, nicht-funktionale Anforderungen beantworten „<b>Wie gut/sicher/schnell/nachvollziehbar</b> tut es das?&quot; (ISO/IEC 25010)." },
+
+{ day:1, title:"Wer sitzt eigentlich am Tisch?", sub:"Stakeholder-Analyse und Anforderungserhebung",
+  persona:"knut",
+  story:
+    ln("knut","„Bevor wir weiterbauen: Wer redet hier überhaupt mit? Prof. Vogt ist nicht der einzige Stakeholder.&quot;") +
+    "<p>Sarah erstellt eine erste Stakeholder-Landkarte für die digitale Studienakte:</p>",
+  box:{ title:"Stakeholder-Landkarte (Macht/Interesse)", text:
+    "<table class='reftable'><tr><th>Stakeholder</th><th>Interesse</th><th>Macht</th><th>Erhebungsmethode</th></tr>"+
+    "<tr><td>Prof. Dr. Vogt (Studiendekan)</td><td>hoch</td><td>hoch</td><td>Strukturiertes Interview</td></tr>"+
+    "<tr><td>Studierende</td><td>hoch</td><td>niedrig</td><td>Kurzumfrage, Nutzertests am Prototyp</td></tr>"+
+    "<tr><td>Prüfungsamt-Mitarbeitende</td><td>hoch</td><td>mittel</td><td>Workshop, Prozessbegehung</td></tr>"+
+    "<tr><td>Ela (Entwicklung)</td><td>hoch</td><td>mittel</td><td>Backlog-Refinement</td></tr>"+
+    "<tr><td>Datenschutzbeauftragte der Hochschule</td><td>niedrig</td><td>hoch (Constraint)</td><td>Dokumentenanalyse (DSGVO, Nachteilsausgleich)</td></tr></table>" },
+  task:{ type:"reflect", id:"r2", prompt:"Welche Erhebungsmethode würdet ihr wählen, um herauszufinden, wie Prüfungsamt-Mitarbeitende die Akte im Tagesgeschäft tatsächlich nutzen — und warum genau diese?", sample:"Beobachtung/Shadowing im Prüfungsamt während des realen Tagesgeschäfts, ergänzt durch strukturierte Interviews zu Ausnahmefällen. So zeigt sich, wie die Akte tatsächlich unter Zeitdruck genutzt wird, nicht nur wie sie idealerweise genutzt werden sollte." },
+  transfer:"Stakeholder-Analyse verhindert den häufigsten RE-Fehler: nur den lautesten Stakeholder zu befragen. Macht/Interesse-Matrix + passende Erhebungstechnik je Stakeholder-Typ." },
+
+{ day:1, title:"Muss, soll, kann — oder eben nicht", sub:"Anforderungen bewerten, priorisieren und verwalten",
+  persona:"sarah",
+  story:
+    "<p>22 Anforderungen liegen auf dem Tisch. Budget und Zeit reichen nicht für alle. Sarah sortiert mit dem Team nach <b>MoSCoW</b>:</p>",
+  box:{ title:"MoSCoW für die digitale Studienakte (Auszug)", text:
+    "<b>Must:</b> Noteneinsicht, Prüfungsanmeldung<br>"+
+    "<b>Should:</b> Benachrichtigung bei neuer Note<br>"+
+    "<b>Could:</b> Self-Service-Bescheinigungsdruck<br>"+
+    "<b>Won't (Phase 1):</b> Mobile App" },
+  task:{ type:"quiz", id:"q2",
+    q:"Prof. Vogt besteht darauf, dass der „Self-Service-Bescheinigungsdruck&quot; unbedingt in Release 1 muss, obwohl Zeit und Budget das nicht hergeben. Was ist der nächste sinnvolle RE-Schritt?",
+    options:[
+      {t:"Einfach zusagen, er ist der Auftraggeber.", correct:false, why:"Ungeprüfte Zusagen bei Kapazitätskonflikten führen zu Scope-Creep und Terminverzug."},
+      {t:"Business Value und Aufwand gemeinsam mit ihm bewerten (z. B. Kano-Modell) und die Konsequenz für andere Must-Anforderungen offenlegen.", correct:true, why:"Priorisierung ist eine Verhandlung auf Basis von Nutzen/Aufwand — nicht Lautstärke. Trade-offs müssen sichtbar gemacht werden."},
+      {t:"Ablehnen, ohne Begründung.", correct:false, why:"Ohne nachvollziehbare Begründung verliert der Auftraggeber Vertrauen in den Priorisierungsprozess."}
+    ]},
+  transfer:"Priorisierung braucht Kriterien (Business Value, Risiko, Aufwand, Abhängigkeiten) und ein Verfahren (MoSCoW, Kano, Wertstromanalyse) — sonst wird aus Anforderungsmanagement Verwaltung von Wünschen." },
+
+{ day:1, title:"Der Werkzeugkasten", sub:"Methoden: User Stories, Use Cases, Modellierungstechniken",
+  persona:"ela",
+  story:
+    ln("ela","„Für das Studierenden-Portal reicht mir eine gute User Story mit Akzeptanzkriterien. Aber für den Sperrvermerk im Prüfungsamt brauche ich einen vollständigen Use Case — da geht's um Prüfungsordnungs-Konformität.&quot;"),
+  box:{ title:"Zwei Artefakte, zwei Zwecke", text:
+    "<b>User Story (Studierenden-Portal, agil):</b><br>„Als Studierende möchte ich meine Prüfungsergebnisse sofort nach Freigabe einsehen können, damit ich meinen Studienfortschritt planen kann.&quot;<br>"+
+    "<i>Akzeptanzkriterium (Gherkin):</i> Given eine freigegebene Note, When die Studierende sich einloggt, Then erscheint die Note innerhalb 1 Min. mit Zeitstempel der Freigabe.<br><br>"+
+    "<b>Use Case (Prüfungsamt, klassisch):</b> UC-11 „Sperrvermerk setzen&quot; — Vorbedingung, Hauptablauf, Fehlerfälle, Nachbedingung, vollständig spezifiziert wegen Prüfungsordnungs-Konformität und Rechtsverbindlichkeit." },
+  task:{ type:"reflect", id:"r3", prompt:"Warum passt INVEST (Independent, Negotiable, Valuable, Estimable, Small, Testable) gut zur User Story oben, aber schlecht zum Use Case „Sperrvermerk setzen&quot;?", sample:"Der „Sperrvermerk setzen&quot;-Use-Case ist rechtsverbindlich und muss vollständig sowie eindeutig vorliegen, weil er Prüfungsrecht direkt berührt — INVEST-Kriterien wie „Negotiable&quot; oder „Small&quot; passen hier nicht." },
+  transfer:"<b>Hybrid statt Dogma:</b> Agil (User Stories, Backlog) für unscharfe, sich ändernde Bereiche wie das Studierenden-Portal; klassisch (Use Cases, Spezifikation vorab) für rechtsverbindliche, prüfungsrechtlich geregelte Bereiche wie das Prüfungsamt." },
+
+{ day:1, title:"Sarahs Pflichtenheft", sub:"Anforderungen angemessen dokumentieren",
+  persona:"sarah",
+  story:
+    "<p>Sarah dokumentiert nicht mehr „Akte soll Noten anzeigen&quot; auf einem Post-it, sondern strukturiert nach IEEE&nbsp;29148:</p>",
+  box:{ title:"Anforderungsdatensatz REQ-021 (Auszug)", text:
+    "<b>ID:</b> REQ-021 &nbsp; <b>Titel:</b> Notenbenachrichtigung per E-Mail<br>"+
+    "<b>Quelle:</b> Interview Prof. Vogt, 14.03.2026 &nbsp; <b>Priorität:</b> Should (MoSCoW)<br>"+
+    "<b>Beschreibung:</b> Das System muss Studierende automatisch per E-Mail benachrichtigen, sobald eine Prüfungsnote freigegeben wurde.<br>"+
+    "<b>Akzeptanzkriterium:</b> E-Mail-Versand innerhalb 5 Minuten nach Freigabe, Zustellrate ≥ 98&nbsp;%.<br>"+
+    "<b>Verknüpft mit:</b> REQ-014 (Noteneinsicht), NFR-005 (Reliability)" },
+  task:{ type:"quiz", id:"q3",
+    q:"Warum reicht „Notenbenachrichtigung per E-Mail versenden&quot; als Dokumentation allein nicht aus?",
+    options:[
+      {t:"Weil Quelle, Priorität, Akzeptanzkriterium und Verknüpfung fehlen — ohne sie ist die Anforderung nicht testbar und nicht verfolgbar.", correct:true, why:"Genau das sind die IREB-Kriterien testbar und verfolgbar in der Praxis."},
+      {t:"Weil E-Mails im Hochschulnetz technisch nicht möglich sind.", correct:false, why:"Das ist keine inhaltliche RE-Frage, sondern eine technische Randbedingung."},
+      {t:"Es reicht völlig aus, mehr Doku kostet nur Zeit.", correct:false, why:"Ohne Traceability lässt sich später nicht mehr nachvollziehen, warum eine Anforderung besteht — teuer bei jeder Änderung der Prüfungsordnung."}
+    ]},
+  transfer:"Angemessene Dokumentation heißt nicht „möglichst viel&quot;, sondern: so viel, dass Testbarkeit, Nachvollziehbarkeit (Traceability) und Quelle jederzeit rekonstruierbar sind." },
+
+{ day:1, title:"Nach dem Sprint ist vor dem Sprint", sub:"Dokumentation als Basis für Change, Erweiterung und den Sprung zu ISO 25010",
+  persona:"petra",
+  story:
+    "<p>Sechs Monate später: Die Fakultät Maschinenbau will die Studienakte übernehmen.</p>" +
+    ln("vogt","„Können wir die Akte einfach auch für Maschinenbau nutzen?&quot;") +
+    ln("ela","Weil REQ-021 & Co. sauber dokumentiert und verknüpft sind, findet Ela die relevanten Anforderungen in 2 Tagen wieder — statt in 3 Wochen alles neu zu erheben.") +
+    ln("petra","„Siehst du, Sarah? Gute Dokumentation ist keine Bürokratie für heute. Sie ist die Grundlage für jede Änderung von morgen — neue Fakultät, Erweiterung, Anpassung.&quot;"),
+  box:{ title:"Die Brücke zu Tag 2", text:"Petra stellt die entscheidende Frage: „Woran erkennt ihr eigentlich, ob 'die Akte gut funktioniert'? 'Gut' ist doch selbst wieder eine unscharfe Anforderung.&quot; Genau hier beginnt morgen das Produktqualitätsmodell — jede Anforderung braucht ein Qualitätsmerkmal, sonst bleibt sie ein Wunsch." },
+  task:{ type:"reflect", id:"r4", prompt:"Was hättet ihr in eurem letzten Projekt an Dokumentation vermisst, als eine Änderung oder Erweiterung anstand?", sample:"Typische Lücken: Begründung einer Entscheidung, Verknüpfung zu verwandten Anforderungen, Versionshistorie — gerade bei Verwaltungssoftware mit langen Aufbewahrungsfristen entscheidend." },
+  transfer:"Requirements Engineering endet nicht mit dem Go-Live. Gute Dokumentation ist der Unterschied zwischen Wiederverwendung in Tagen und Neuerhebung in Wochen." },
+
+// TAG 2
+{ day:2, title:"„Die Akte muss gut sein.&quot;", sub:"Einführung: das Produktqualitätsmodell ISO/IEC 25010:2023",
+  persona:"petra",
+  story:
+    ln("vogt","„Ich will doch nur, dass die Studienakte gut ist!&quot;") +
+    ln("petra","„Was genau meinen Sie mit 'gut', Prof. Vogt? Schnell? Sicher? Nachvollziehbar auch bei einer Widerspruchsprüfung? Zuverlässig auch während der Notenbekanntgabe, wenn 800 Studierende gleichzeitig zugreifen?&quot;") +
+    "<p>„Gut&quot; ist kein Qualitätsmerkmal — es ist ein Wunsch ohne Substanz. Die ISO/IEC 25010 übersetzt „gut&quot; in ein Modell mit konkreten, messbaren Merkmalen.</p>",
+  box:{ title:"Norm-Hinweis (K17-Check)", text:"ISO/IEC 25010:2023 (Edition 2, veröffentlicht 2023-11) ersetzt ISO/IEC 25010:2011. Wichtigste Änderung: Das Produktqualitätsmodell hat jetzt <b>neun</b> statt acht Hauptmerkmale — „Safety&quot; wurde neu ergänzt, „Benutzbarkeit&quot; heißt jetzt „Interaktionsfähigkeit&quot;, „Übertragbarkeit&quot; heißt jetzt „Flexibilität&quot;. Das Qualität-in-Nutzung-Modell ist separat in ISO/IEC 25019:2023 geregelt." },
+  task:{ type:"reflect", id:"r5", prompt:"Übersetzt „Die Studienakte muss gut sein&quot; in drei konkrete, messbare Qualitätsmerkmale — bevor ihr im nächsten Kapitel die vollständige Liste seht.", sample:"Zum Beispiel: Funktionale Eignung (alle Pflichtfelder aus der Prüfungsordnung sind abgebildet), Flexibilität (Format bleibt über Jahrzehnte lesbar), Interaktionsfähigkeit (barrierefrei nach WCAG 2.1 AA)." },
+  transfer:"Ohne Qualitätsmodell bleibt „gut&quot; subjektiv und nicht überprüfbar. Mit ISO/IEC 25010 wird aus dem Wunsch eine Menge testbarer Merkmale." },
+
+{ day:2, title:"Die neun Zutaten des Qualitätskuchens", sub:"Das Produktqualitätsmodell — neun Hauptmerkmale im Detail",
+  persona:"ela",
+  story: ln("ela","„Klickt euch durch — zu jedem Merkmal gibt's die Definition und ein konkretes NFR-Beispiel aus unserer digitalen Studienakte.&quot;"),
+  isGrid9:true,
+  transfer:"Drei der neun Merkmale sind mit ISO/IEC 25010:2023 neu bzw. umbenannt: <b>Safety</b> (neu), <b>Interaktionsfähigkeit</b> (vormals Benutzbarkeit), <b>Flexibilität</b> (vormals Übertragbarkeit). Für Bestandsmaterial mit „acht Hauptmerkmalen&quot; gilt: das war die 2011er-Fassung — inhaltlich weiter nützlich, aber nicht mehr aktuell." },
+
+{ day:2, title:"Schmeckt's auch dem Gast?", sub:"Qualität in der Nutzung — die fünf Dimensionen (ISO/IEC 25019:2023)",
+  persona:"vogt",
+  story:
+    ln("vogt","„Die Akte hat alle Haken auf eurer Liste. Aber unsere Studierendenvertretung sagt, viele nutzen sie trotzdem nicht.&quot;") +
+    ln("petra","„Das Produktqualitätsmodell beschreibt die Software selbst. Ob sie in der echten Nutzung wirklich funktioniert, misst ein zweites Modell: Qualität in der Nutzung.&quot;"),
+  box:{ title:"Die fünf Dimensionen — angewendet auf die digitale Studienakte", text:
+    "<b>Effektivität:</b> 95&nbsp;% der Studierenden können ihre Noten ohne Rückfrage beim Prüfungsamt einsehen.<br>"+
+    "<b>Effizienz:</b> Zeit für Notenabruf sinkt von 3 Tagen (Aushang/E-Mail-Anfrage) auf &lt;&nbsp;1 Minute.<br>"+
+    "<b>Zufriedenstellung:</b> Zufriedenheit laut Evaluationsbogen ≥&nbsp;4,2 von 5 nach einem Semester.<br>"+
+    "<b>Risikofreiheit:</b> keine fehlerhaften Notenveröffentlichungen, die zu Widersprüchen führen; kein Datenschutzvorfall bei sensiblen Nachteilsausgleich-Vermerken.<br>"+
+    "<b>Kontextabdeckung:</b> Akte funktioniert auch über das langsame Hochschul-WLAN in der Bibliothek während der Klausurenphase und lässt sich auf weitere Fakultäten übertragen." },
+  task:{ type:"quiz", id:"q4",
+    q:"Die Studierendenvertretung findet die Akte „alles richtig gebaut, trotzdem unangenehm zu benutzen&quot;. Welche Dimension der Nutzungsqualität ist am ehesten betroffen?",
+    options:[
+      {t:"Effektivität — sie können ja ihre Noten abrufen.", correct:false, why:"Effektivität misst, ob das Ziel erreicht wird — das gelingt offenbar."},
+      {t:"Zufriedenstellung — die Akte erfüllt Anforderungen, aber nicht das Nutzungserlebnis.", correct:true, why:"Genau das ist der Unterschied zwischen Produktqualität (Merkmale erfüllt) und Nutzungsqualität (fühlt sich für die reale Nutzerin gut an)."},
+      {t:"Kompatibilität — ein Merkmal des Produktqualitätsmodells, nicht der Nutzungsqualität.", correct:false, why:"Kompatibilität gehört zum Produktqualitätsmodell (ISO 25010), nicht zum Nutzungsmodell (ISO 25019)."}
+    ]},
+  transfer:"Produktqualität (ISO/IEC 25010) und Nutzungsqualität (ISO/IEC 25019) sind zwei verschiedene, komplementäre Modelle. Ein Produkt kann alle Merkmale erfüllen und trotzdem in der echten Nutzung scheitern." },
+
+{ day:2, title:"Der Praxis-Test", sub:"Fallstudie: Anwendung auf die Fakultät Maschinenbau",
+  persona:"sarah",
+  story:
+    "<p>Fallstudie für die Fakultät Maschinenbau: „Die Akte soll dort genauso zuverlässig laufen, aber die Prüfungsordnung erlaubt beliebig viele Wiederholungsprüfungen, und die Prüfungsamt-Mitarbeiterin dort hat noch nie mit einer digitalen Akte gearbeitet.&quot;</p>",
+  box:{ title:"Eure Aufgabe", text:"Ordnet die Situation aus der Fallstudie einem konkreten Merkmal des Produktqualitätsmodells UND einer Dimension der Nutzungsqualität zu. Formuliert daraus jeweils ein testbares Akzeptanzkriterium mit Zahl." },
+  task:{ type:"reflect", id:"r6", prompt:"Eure Zuordnung: Welches ISO-25010-Merkmal, welche ISO-25019-Dimension — und wie lautet euer testbares Akzeptanzkriterium?", sample:"Wartbarkeit + Kontextabdeckung: „Regelwerk für beliebig viele Wiederholungsprüfungen in &lt; 2 Tagen konfigurierbar, ohne Deployment.&quot; Interaktionsfähigkeit: „Erste erfolgreiche Notenverbuchung ohne Einweisung in &lt; 10 Min.&quot;" },
+  transfer:"Typische Trainer-Referenz: Wartbarkeit + Kontextabdeckung → z. B. „Regelwerk für beliebig viele Wiederholungsprüfungen in &lt; 2 Tagen konfigurierbar, ohne Deployment.&quot; Interaktionsfähigkeit → „Erste erfolgreiche Notenverbuchung ohne Einweisung in &lt; 10 Min.&quot;" },
+
+{ day:2, title:"Von der Anforderung zur Qualitätsanforderung", sub:"Qualitätsanforderungen aus dem Nutzungskontext ableiten",
+  persona:"knut",
+  story:
+    ln("knut","„Bevor ihr eine NFR aus dem Nichts erfindet: Beschreibt erst den Nutzungskontext. Wer nutzt was, wo, womit, unter welchen Bedingungen?&quot;"),
+  box:{ title:"Methode: Nutzungskontext → Qualitätsanforderung", text:
+    "<b>Wer?</b> Prüfungsamt-Mitarbeiterin, 55 Jahre, wenig IT-Erfahrung<br>"+
+    "<b>Wo?</b> Prüfungsamt-Schalter, Stoßzeiten zu Rückmeldefristen<br>"+
+    "<b>Womit?</b> Verwaltungs-PC, Maus/Tastatur<br>"+
+    "<b>Unter welchen Bedingungen?</b> Zeitdruck, Studierende warten in der Schlange<br>"+
+    "→ <b>Abgeleitete NFRs:</b> Interaktionsfähigkeit (max. 4 Klicks bis zum Sperrvermerk), Performance Efficiency (Reaktion &lt; 1 Sek. bei jedem Klick)" },
+  task:{ type:"quiz", id:"q5",
+    q:"Warum ist „Nutzungskontext zuerst beschreiben&quot; besser, als direkt NFRs zu brainstormen?",
+    options:[
+      {t:"Weil es länger dauert und gründlicher wirkt.", correct:false, why:"Nicht die Dauer zählt, sondern die Ableitbarkeit konkreter, begründbarer Anforderungen."},
+      {t:"Weil sich daraus konkrete, begründbare Qualitätsanforderungen ableiten lassen statt geratener Wunschlisten.", correct:true, why:"Der Kontext liefert die Begründung — jede NFR lässt sich auf eine konkrete Nutzungssituation zurückführen (Traceability)."},
+      {t:"Weil der Nutzungskontext gesetzlich vorgeschrieben ist.", correct:false, why:"Es ist eine methodische Empfehlung (u. a. ISO 25019), keine gesetzliche Pflicht."}
+    ]},
+  transfer:"Qualitätsanforderungen, die direkt aus einem konkreten Nutzungskontext abgeleitet sind, lassen sich besser begründen, priorisieren und später verteidigen als abstrakt gesammelte NFR-Wünsche." },
+
+{ day:2, title:"Der große Rahmen: SWEBOK", sub:"Wo Anforderungsmanagement und Softwarequalität im Software-Lifecycle stehen",
+  persona:"petra",
+  story:
+    ln("petra","„Bevor wir zum Schlusskapitel kommen, noch eine Einordnung: Was ihr diese zwei Tage gelernt habt, ist kein Sonderthema — es sind zwei von elf Kernbereichen eines viel größeren Rahmenwerks.&quot;") +
+    "<p>Petra zeigt eine Übersicht: den SWEBOK<sup>®</sup> Guide (Software Engineering Body of Knowledge) der IEEE Computer Society, aktuell Version 4.0a.</p>",
+  box:{ title:"SWEBOK Guide V4.0a — wo diese zwei Tage einsortieren", text:
+    "<b>Tag 1 (Anforderungsmanagement)</b> entspricht SWEBOK Kapitel 1 „Software Requirements&quot; — Elicitation, Analysis, Specification, Validation, genau die Schritte, die die digitale Studienakte durchlaufen hat.<br>"+
+    "<b>Tag 2 (ISO/IEC 25010)</b> entspricht SWEBOK Kapitel 12 „Software Quality&quot; — die Norm ist dort die zentrale Grundlage für Quality Assurance und Verification &amp; Validation.<br>"+
+    "<b>Neun weitere Kapitel</b> kommen in dieser Schulung bewusst nicht vor, weil sie Entwicklungs- und Betriebsthemen sind, keine RM-/Qualitätsthemen: Architecture, Design, Construction, Testing, Operations, Maintenance, Configuration Management, Management, Security." },
+  task:{ type:"reflect", id:"r8", prompt:"Welcher der neun nicht behandelten SWEBOK-Bereiche würde in eurem eigenen Projekt gerade am meisten Klärungsbedarf auslösen — und warum?", sample:"Bei Verwaltungssoftware oft: Maintenance (Formatmigration über Jahrzehnte) oder Security (Manipulationsschutz archivierter Entscheidungen). Es gibt bewusst keine „richtige&quot; Antwort." },
+  transfer:"Requirements Engineering und Softwarequalität sind der Anfang, nicht das Ganze: SWEBOK zeigt, dass beide Themen durchgängig von Architecture, Testing, Operations und Security begleitet werden — dieselbe Logik wie das Marmorkuchen-Prinzip, nur auf den gesamten Software-Lebenszyklus angewendet." },
+
+{ day:2, title:"Sarahs Werkzeugkoffer", sub:"Best Practices, Zusammenfassung und Abschluss",
+  persona:"petra",
+  story:
+    ln("petra","„Was nimmst du aus diesen zwei Tagen mit, Sarah?&quot;") +
+    ln("sarah","„Dass eine Anforderung ohne Qualitätsmerkmal ein Wunsch bleibt. Und dass gute Dokumentation heute die Grundlage für jede Änderung von morgen ist.&quot;"),
+  box:{ title:"Best Practices — die Kurzfassung", text:
+    "<ul style='margin:4px 0 0 18px; padding:0;'>"+
+    "<li>Funktional (Was) und nicht-funktional (Wie gut) immer gemeinsam denken — Marmorkuchen-Prinzip</li>"+
+    "<li>Stakeholder-Landkarte vor der Erhebung, nicht danach</li>"+
+    "<li>Priorisierung braucht Kriterien und Verfahren, nicht Lautstärke</li>"+
+    "<li>Methode passend zum Kontext wählen: agil für Unsicheres, klassisch für Rechtsverbindliches</li>"+
+    "<li>Traceability von Anfang an — Dokumentation ist Zukunftsinvestition</li>"+
+    "<li>„Gut&quot; immer in ISO-25010-Merkmale und ISO-25019-Dimensionen übersetzen</li>"+
+    "</ul>" },
+  task:{ type:"reflect", id:"r7", prompt:"Euer persönlicher Transfer: Welche EINE Sache nehmt ihr aus dieser Schulung morgen konkret mit in euer eigenes Projekt?", sample:"Beispiel: „Ich werde künftig bei jeder Verwaltungssoftware fragen: Was bedeutet hier eigentlich 'gut' — und für wen?&quot;" },
+  transfer:"Prompt Engineering ist Requirements Engineering für KI-Systeme, Softwarequalität ist Requirements Engineering für Menschen. Beide beginnen mit derselben Frage: Was genau meinen wir eigentlich?" }
+];
+})();
+
+/* ================= SZENARIO 3: TALENTMATCH AI ================= */
+var SCEN_TALENTMATCH = (function(){
+var _P = P_SETS.talentmatch;
+function ln(p, text){ return '<div class="line '+p+'"><span class="who">'+_P[p].name+' · '+_P[p].role+'</span>'+text+'</div>'; }
+return [
+// TAG 1
+{ day:1, title:"Bevor die Geschichte beginnt", sub:"Grundlagen der ISO/IEC 25010 — Einordnung, Ziele, Abgrenzung",
+  persona:"petra",
+  story:
+    ln("petra","„Bevor ihr Sarah bei TalentMatch AI begleitet, müsst ihr wissen, in welcher Normenwelt sie sich bewegt. Die ISO/IEC 25010 steht nicht allein.&quot;"),
+  box:{ title:"Die SQuaRE-Reihe (ISO/IEC 25000-Familie)", text:
+    "SQuaRE steht für <i>Systems and software Quality Requirements and Evaluation</i> und gliedert sich in fünf Divisionen:<br>"+
+    "<b>2500n</b> Quality-Management-Division (ISO/IEC 25000 Leitfaden, 25001 Planung &amp; Management)<br>"+
+    "<b>2501n</b> Quality-Model-Division — <b>hier lebt die ISO/IEC 25010</b> (Produkt- und Nutzungsqualitätsmodell) sowie ISO/IEC 25012 (Datenqualität)<br>"+
+    "<b>2502n</b> Quality-Measurement-Division (Messverfahren)<br>"+
+    "<b>2503n</b> Quality-Requirements-Division (Qualitätsanforderungen spezifizieren)<br>"+
+    "<b>2504n</b> Quality-Evaluation-Division (Bewertungsverfahren)<br>"+
+    "Die ISO/IEC 25000-Reihe löst seit 2005 die ältere ISO/IEC 9126 ab." },
+  task:{ type:"quiz", id:"q0",
+    q:"Herr Bachmeier sagt: „Wir müssen ohnehin den EU AI Act einhalten — brauchen wir dann noch die ISO/IEC 25010?&quot; Was antwortet ihr?",
+    options:[
+      {t:"Nein, der EU AI Act deckt Softwarequalität vollständig ab.", correct:false, why:"Der AI Act regelt rechtliche Pflichten (Risikomanagement, menschliche Aufsicht), nicht die technischen Qualitätsmerkmale des Produkts selbst."},
+      {t:"Ja: Der EU AI Act formuliert rechtliche Pflichten für Hochrisiko-KI, ISO/IEC 25010 strukturiert die technischen Qualitätsmerkmale, mit denen sich diese Pflichten (z. B. Robustheit, Genauigkeit) überhaupt messbar umsetzen lassen.", correct:true, why:"Genau diese Abgrenzung ist entscheidend: Rechtspflicht-Ebene (EU AI Act) vs. technische Merkmals-Ebene (ISO/IEC 25010) — komplementär, nicht redundant."},
+      {t:"Nein, ISO/IEC 25010 ersetzt den EU AI Act vollständig.", correct:false, why:"ISO/IEC 25010 ist eine technische Norm ohne Rechtsverbindlichkeit — sie ersetzt keine gesetzliche Pflicht."}
+    ]},
+  transfer:"Ziel der ISO/IEC 25010: eine <b>gemeinsame, objektive Sprache</b> für Softwarequalität zwischen Geschäftsführung, Entwicklung und Qualitätssicherung. Abgrenzung: der EU AI Act regelt rechtliche Pflichten für Hochrisiko-KI, ISO/IEC 25010 bewertet als technische Norm die konkreten Qualitätsmerkmale des Produkts selbst." },
+
+{ day:1, title:"Der Anruf von Herrn Bachmeier", sub:"Bedeutung klarer und messbarer Anforderungen",
+  persona:"bachmeier",
+  story:
+    ln("bachmeier","„Frau Kollegin, wir brauchen ein KI-System, das Bewerbungen vorsortiert. Das kann doch nicht so schwer sein.&quot;") +
+    ln("sarah","Sarah nickt, sagt dem Kunden eine schnelle Lösung zu — und beauftragt zwei Wochen später Ela mit der Umsetzung, ohne die Anforderung selbst zu präzisieren.") +
+    "<p>Sprint 1 ist fertig. Herr Bachmeier testet den ersten Prototyp.</p>" +
+    ln("bachmeier","„Wo sehe ich denn, WARUM eine Bewerbung abgelehnt wurde? Und wer prüft das eigentlich, bevor die Absage rausgeht? Das war doch selbstverständlich!&quot;"),
+  box:{ title:"Was ist hier passiert?", text:"„Ein KI-System, das Bewerbungen vorsortiert&quot; ist kein Requirement — es ist eine Absicht. Sarah hat als Vertrieb eine vage Kundenzusage gemacht, ohne sie in prüfbare Anforderungen zu übersetzen. Bei einem Hochrisiko-KI-System nach EU AI Act (Anhang III Nr. 4) ist das nicht nur unpräzise, sondern ein Compliance-Risiko." },
+  task:{ type:"reflect", id:"r1", prompt:"Woran erkennt ihr, dass „ein KI-System, das Bewerbungen vorsortiert&quot; keine vollständige Anforderung ist? Was fehlt konkret — gerade bei einem Hochrisiko-KI-System?", sample:"Es fehlt: welche konkreten Kriterien bewertet werden, wie Bias verhindert wird, wer die Entscheidung prüft (Human Oversight), und woran „vorsortieren&quot; konkret gemessen wird. Bei Hochrisiko-KI fehlt zusätzlich der Bezug zu den EU-AI-Act-Pflichten (Art. 9–15)." },
+  transfer:"Eine Anforderung ist erst dann brauchbar, wenn sie <b>atomar, testbar, eindeutig, konsistent und verfolgbar</b> ist (IREB-Qualitätskriterien). „Messbar&quot; heißt: Es lässt sich am Ende objektiv prüfen, ob sie erfüllt wurde." },
+
+{ day:1, title:"Das Marmorkuchen-Prinzip", sub:"Funktionale und nicht-funktionale Anforderungen formulieren",
+  persona:"petra",
+  story:
+    ln("petra","„Sarah, was genau meinst du mit 'die KI soll fair bewerten'? Beschreib mir das mal wie ein Rezept, nicht wie einen Wunsch.&quot;") +
+    "<p>Sarah zögert — dann beginnt sie zu trennen: <b>Was</b> das System tun muss (Bewerbungen anhand definierter Kriterien bewerten) und <b>wie gut</b> es das tun muss (unabhängig von Geschlecht oder Herkunft mit vergleichbarer Fehlerrate).</p>",
+  box:{ title:"Marmorkuchen-Prinzip", text:"Der helle Teig ist die <b>funktionale Anforderung</b>: „Das System muss X tun.&quot; Der dunkle, kakaohaltige Teig ist die <b>nicht-funktionale Anforderung (NFR)</b>: „Und zwar so fair/schnell/sicher/nachvollziehbar.&quot; Erst zusammen ergeben sie den vollständigen Kuchen — ein Marmorkuchen ohne dunklen Teig ist nur heller Teig mit einem falschen Namen." },
+  task:{ type:"quiz", id:"q1",
+    q:"„Das System muss bei jeder automatischen Ablehnung eine Begründung anzeigen, Erklärung binnen 2 Sekunden verfügbar.&quot; Welcher Anteil ist funktional, welcher nicht-funktional?",
+    options:[
+      {t:"Beides funktional — es geht ja nur um eine Anzeige.", correct:false, why:"Die Reaktionszeit ist ein Qualitätsmerkmal (Performance Efficiency), keine Funktion."},
+      {t:"„Begründung anzeigen&quot; = funktional, „binnen 2 Sekunden&quot; = nicht-funktional.", correct:true, why:"Genau — das WAS ist funktional, das WIE SCHNELL ist nicht-funktional (hier: Performance Efficiency nach ISO 25010)."},
+      {t:"Beides nicht-funktional, weil es um eine automatische Entscheidung geht.", correct:false, why:"Das Anzeigen der Begründung selbst ist eine konkrete Funktion des Systems — also funktional."}
+    ]},
+  transfer:"Faustregel: Funktionale Anforderungen beantworten „<b>Was</b> tut das System?&quot;, nicht-funktionale Anforderungen beantworten „<b>Wie gut/sicher/schnell/nachvollziehbar</b> tut es das?&quot; (ISO/IEC 25010)." },
+
+{ day:1, title:"Wer sitzt eigentlich am Tisch?", sub:"Stakeholder-Analyse und Anforderungserhebung",
+  persona:"knut",
+  story:
+    ln("knut","„Bevor wir weiterbauen: Wer redet hier überhaupt mit? Bachmeier ist nicht der einzige Stakeholder.&quot;") +
+    "<p>Sarah erstellt eine erste Stakeholder-Landkarte für TalentMatch AI:</p>",
+  box:{ title:"Stakeholder-Landkarte (Macht/Interesse)", text:
+    "<table class='reftable'><tr><th>Stakeholder</th><th>Interesse</th><th>Macht</th><th>Erhebungsmethode</th></tr>"+
+    "<tr><td>Herr Bachmeier (Geschäftsführung)</td><td>hoch</td><td>hoch</td><td>Strukturiertes Interview</td></tr>"+
+    "<tr><td>Bewerber:innen</td><td>hoch</td><td>niedrig</td><td>Nutzertest, rechtliche Anforderungsanalyse</td></tr>"+
+    "<tr><td>Betriebsrat</td><td>mittel</td><td>hoch (Mitbestimmung § 87 Abs. 1 Nr. 6 BetrVG)</td><td>Workshop, Verhandlung</td></tr>"+
+    "<tr><td>Ela (Projektleitung)</td><td>hoch</td><td>mittel</td><td>Backlog-Refinement</td></tr>"+
+    "<tr><td>Externe Konformitätsbewertungsstelle</td><td>niedrig</td><td>hoch (Constraint)</td><td>Dokumentenanalyse</td></tr></table>" },
+  task:{ type:"reflect", id:"r2", prompt:"Welche Erhebungsmethode würdet ihr wählen, um die Mitbestimmungsanforderungen des Betriebsrats zu klären — und warum genau diese?", sample:"Ein moderierter Workshop mit dem Betriebsrat, weil Mitbestimmungsrechte (§ 87 Abs. 1 Nr. 6 BetrVG) verhandelt, nicht nur erfragt werden müssen — ein reines Interview würde die Verhandlungsdimension übergehen." },
+  transfer:"Stakeholder-Analyse verhindert den häufigsten RE-Fehler: nur den lautesten Stakeholder zu befragen. Macht/Interesse-Matrix + passende Erhebungstechnik je Stakeholder-Typ — bei Hochrisiko-KI kommt der Betriebsrat als Pflicht-Stakeholder hinzu." },
+
+{ day:1, title:"Muss, soll, kann — oder eben nicht", sub:"Anforderungen bewerten, priorisieren und verwalten",
+  persona:"sarah",
+  story:
+    "<p>22 Anforderungen liegen auf dem Tisch. Budget und Zeit reichen nicht für alle. Sarah sortiert mit dem Team nach <b>MoSCoW</b>:</p>",
+  box:{ title:"MoSCoW für TalentMatch AI (Auszug)", text:
+    "<b>Must:</b> Bias-Schwellenwert-Prüfung, Human-Oversight-Layer<br>"+
+    "<b>Should:</b> Erklärbarkeits-Panel<br>"+
+    "<b>Could:</b> Self-Service-Dashboard für Bewerber:innen<br>"+
+    "<b>Won't (Phase 1):</b> automatische Endentscheidung ohne menschliche Prüfung" },
+  task:{ type:"quiz", id:"q2",
+    q:"Herr Bachmeier besteht darauf, dass die KI in Release 1 vollautomatisch ablehnen kann soll, obwohl Art. 14 EU AI Act menschliche Aufsicht verlangt. Was ist der nächste sinnvolle RE-Schritt?",
+    options:[
+      {t:"Einfach zusagen, er ist der Kunde.", correct:false, why:"Eine ungeprüfte Zusage würde hier gegen eine gesetzliche Pflicht verstoßen — nicht nur ein Priorisierungsfehler, sondern ein Compliance-Risiko."},
+      {t:"Rechtliche Konformität und Business Value gemeinsam mit ihm bewerten und die Konsequenz einer Nichteinhaltung offenlegen.", correct:true, why:"Priorisierung ist eine Verhandlung auf Basis von Nutzen, Aufwand UND rechtlichen Constraints — nicht Lautstärke."},
+      {t:"Ablehnen, ohne Begründung.", correct:false, why:"Ohne nachvollziehbare Begründung verliert der Auftraggeber Vertrauen in den Priorisierungsprozess."}
+    ]},
+  transfer:"Priorisierung braucht Kriterien (Business Value, Risiko, Aufwand, rechtliche Constraints) und ein Verfahren (MoSCoW, Kano) — bei regulierten Systemen kommt Rechtskonformität als harter Constraint hinzu, der nicht verhandelbar ist." },
+
+{ day:1, title:"Der Werkzeugkasten", sub:"Methoden: User Stories, Use Cases, Modellierungstechniken",
+  persona:"ela",
+  story:
+    ln("ela","„Für das Bewerber:innen-Portal reicht mir eine gute User Story mit Akzeptanzkriterien. Aber für die Human-Oversight-Komponente brauche ich einen vollständigen Use Case — da geht's um EU-AI-Act-Konformität.&quot;"),
+  box:{ title:"Zwei Artefakte, zwei Zwecke", text:
+    "<b>User Story (Bewerber:innen-Portal, agil):</b><br>„Als Bewerberin möchte ich meinen Bewerbungsstatus jederzeit einsehen können, damit ich weiß, woran ich bin.&quot;<br>"+
+    "<i>Akzeptanzkriterium (Gherkin):</i> Given eine eingereichte Bewerbung, When die Bewerberin sich einloggt, Then zeigt das Portal den aktuellen Status innerhalb 2 Sekunden.<br><br>"+
+    "<b>Use Case (Human-Oversight-Layer, klassisch):</b> UC-04 „Scoring-Ergebnis manuell prüfen&quot; — Vorbedingung, Hauptablauf, Fehlerfälle, Nachbedingung, vollständig spezifiziert wegen Art. 14 EU AI Act (menschliche Aufsicht)." },
+  task:{ type:"reflect", id:"r3", prompt:"Warum passt INVEST (Independent, Negotiable, Valuable, Estimable, Small, Testable) gut zur User Story oben, aber schlecht zum Use Case des Human-Oversight-Layers?", sample:"Der Human-Oversight-Layer ist durch Art. 14 EU AI Act rechtlich zwingend vorgeschrieben und muss vollständig spezifiziert sein — „Negotiable&quot; und bewusst klein gehalten (wie bei INVEST) widerspricht der Nachweispflicht." },
+  transfer:"<b>Hybrid statt Dogma:</b> Agil (User Stories, Backlog) für unscharfe, sich ändernde Bereiche wie das Bewerber:innen-Portal; klassisch (Use Cases, Spezifikation vorab) für rechtlich zwingende, zertifizierungspflichtige Bereiche wie den Human-Oversight-Layer." },
+
+{ day:1, title:"Sarahs Pflichtenheft", sub:"Anforderungen angemessen dokumentieren",
+  persona:"sarah",
+  story:
+    "<p>Sarah dokumentiert nicht mehr „KI soll Bewerbungen vorsortieren&quot; auf einem Post-it, sondern strukturiert nach IEEE&nbsp;29148:</p>",
+  box:{ title:"Anforderungsdatensatz REQ-021 (Auszug)", text:
+    "<b>ID:</b> REQ-021 &nbsp; <b>Titel:</b> Bias-Schwellenwert-Prüfung vor Freigabe<br>"+
+    "<b>Quelle:</b> Workshop mit Betriebsrat, 15.01.2026 &nbsp; <b>Priorität:</b> Must (MoSCoW)<br>"+
+    "<b>Beschreibung:</b> Das System muss vor jeder produktiven Modellfreigabe eine automatisierte Bias-Prüfung je Bewerbergruppe durchführen und dokumentieren.<br>"+
+    "<b>Akzeptanzkriterium:</b> Abweichung der False-Negative-Rate zwischen Gruppen &lt; 2 Prozentpunkte, Prüfprotokoll archiviert.<br>"+
+    "<b>Verknüpft mit:</b> REQ-009 (Human-Oversight-Layer), NFR-003 (Safety)" },
+  task:{ type:"quiz", id:"q3",
+    q:"Warum reicht „Bias-Prüfung durchführen&quot; als Dokumentation allein nicht aus?",
+    options:[
+      {t:"Weil Quelle, Priorität, Akzeptanzkriterium und Verknüpfung fehlen — ohne sie ist die Anforderung nicht testbar und nicht verfolgbar.", correct:true, why:"Genau das sind die IREB-Kriterien testbar und verfolgbar in der Praxis — bei Hochrisiko-KI zusätzlich Nachweispflicht gegenüber der Konformitätsbewertungsstelle."},
+      {t:"Weil Bias-Prüfungen technisch nicht möglich sind.", correct:false, why:"Das ist keine inhaltliche RE-Frage, sondern eine technische Randbedingung."},
+      {t:"Es reicht völlig aus, mehr Doku kostet nur Zeit.", correct:false, why:"Ohne Traceability lässt sich später nicht mehr nachvollziehen, warum eine Anforderung besteht — bei Hochrisiko-KI zusätzlich ein Auditrisiko."}
+    ]},
+  transfer:"Angemessene Dokumentation heißt nicht „möglichst viel&quot;, sondern: so viel, dass Testbarkeit, Nachvollziehbarkeit (Traceability) und Quelle jederzeit rekonstruierbar sind — bei Hochrisiko-KI ist das zusätzlich eine gesetzliche Nachweispflicht." },
+
+{ day:1, title:"Nach dem Sprint ist vor dem Sprint", sub:"Dokumentation als Basis für Change, Erweiterung und den Sprung zu ISO 25010",
+  persona:"petra",
+  story:
+    "<p>Sechs Monate später: Vantera will TalentMatch AI auf ein zweites Stellenprofil (IT-Fachkräfte) erweitern.</p>" +
+    ln("bachmeier","„Können wir das Modell einfach für IT-Stellen mitnutzen?&quot;") +
+    ln("ela","Weil REQ-021 & Co. sauber dokumentiert und verknüpft sind, findet Ela die relevanten Anforderungen in 2 Tagen wieder — statt in 3 Wochen alles neu zu erheben.") +
+    ln("petra","„Siehst du, Sarah? Gute Dokumentation ist keine Bürokratie für heute. Sie ist die Grundlage für jede Änderung von morgen — neues Stellenprofil, Erweiterung, Anpassung.&quot;"),
+  box:{ title:"Die Brücke zu Tag 2", text:"Petra stellt die entscheidende Frage: „Woran erkennt ihr eigentlich, ob 'die KI gut funktioniert'? 'Gut' ist doch selbst wieder eine unscharfe Anforderung.&quot; Genau hier beginnt morgen das Produktqualitätsmodell — jede Anforderung braucht ein Qualitätsmerkmal, sonst bleibt sie ein Wunsch." },
+  task:{ type:"reflect", id:"r4", prompt:"Was hättet ihr in eurem letzten Projekt an Dokumentation vermisst, als eine Änderung oder Erweiterung anstand?", sample:"Typische Lücken: Begründung einer Entscheidung, Verknüpfung zu Compliance-Anforderungen, Versionshistorie — bei Hochrisiko-KI zusätzlich Pflicht für die Konformitätsbewertung." },
+  transfer:"Requirements Engineering endet nicht mit dem Go-Live. Gute Dokumentation ist der Unterschied zwischen Wiederverwendung in Tagen und Neuerhebung in Wochen." },
+
+// TAG 2
+{ day:2, title:"„Die KI muss gut sein.&quot;", sub:"Einführung: das Produktqualitätsmodell ISO/IEC 25010:2023",
+  persona:"petra",
+  story:
+    ln("bachmeier","„Ich will doch nur, dass die KI gut ist!&quot;") +
+    ln("petra","„Was genau meinen Sie mit 'gut', Herr Bachmeier? Schnell? Sicher? Nachvollziehbar? Zuverlässig auch bei 500 Bewerbungen am letzten Tag der Frist?&quot;") +
+    "<p>„Gut&quot; ist kein Qualitätsmerkmal — es ist ein Wunsch ohne Substanz. Die ISO/IEC 25010 übersetzt „gut&quot; in ein Modell mit konkreten, messbaren Merkmalen.</p>",
+  box:{ title:"Norm-Hinweis (K17-Check)", text:"ISO/IEC 25010:2023 (Edition 2, veröffentlicht 2023-11) ersetzt ISO/IEC 25010:2011. Wichtigste Änderung: Das Produktqualitätsmodell hat jetzt <b>neun</b> statt acht Hauptmerkmale — „Safety&quot; wurde neu ergänzt, „Benutzbarkeit&quot; heißt jetzt „Interaktionsfähigkeit&quot;, „Übertragbarkeit&quot; heißt jetzt „Flexibilität&quot;. Das Qualität-in-Nutzung-Modell ist separat in ISO/IEC 25019:2023 geregelt." },
+  task:{ type:"reflect", id:"r5", prompt:"Übersetzt „Die KI muss gut sein&quot; in drei konkrete, messbare Qualitätsmerkmale — bevor ihr im nächsten Kapitel die vollständige Liste seht.", sample:"Zum Beispiel: Safety (keine Grundrechtsverletzung durch Fehlentscheidungen), Interaktionsfähigkeit (Erklärung in max. 2 Klicks), Zuverlässigkeit (99,5&nbsp;% Verfügbarkeit während der Bewerbungsfrist)." },
+  transfer:"Ohne Qualitätsmodell bleibt „gut&quot; subjektiv und nicht überprüfbar. Mit ISO/IEC 25010 wird aus dem Wunsch eine Menge testbarer Merkmale." },
+
+{ day:2, title:"Die neun Zutaten des Qualitätskuchens", sub:"Das Produktqualitätsmodell — neun Hauptmerkmale im Detail",
+  persona:"ela",
+  story: ln("ela","„Klickt euch durch — zu jedem Merkmal gibt's die Definition und ein konkretes NFR-Beispiel aus TalentMatch AI.&quot;"),
+  isGrid9:true,
+  transfer:"Drei der neun Merkmale sind mit ISO/IEC 25010:2023 neu bzw. umbenannt: <b>Safety</b> (neu), <b>Interaktionsfähigkeit</b> (vormals Benutzbarkeit), <b>Flexibilität</b> (vormals Übertragbarkeit). Für Bestandsmaterial mit „acht Hauptmerkmalen&quot; gilt: das war die 2011er-Fassung — inhaltlich weiter nützlich, aber nicht mehr aktuell." },
+
+{ day:2, title:"Vertraut auch die Belegschaft?", sub:"Qualität in der Nutzung — die fünf Dimensionen (ISO/IEC 25019:2023)",
+  persona:"bachmeier",
+  story:
+    ln("bachmeier","„Die KI hat alle Haken auf eurer Liste. Aber unser Betriebsrat sagt, das Vertrauen der Belegschaft fehlt trotzdem.&quot;") +
+    ln("petra","„Das Produktqualitätsmodell beschreibt die Software selbst. Ob sie in der echten Nutzung wirklich funktioniert, misst ein zweites Modell: Qualität in der Nutzung.&quot;"),
+  box:{ title:"Die fünf Dimensionen — angewendet auf TalentMatch AI", text:
+    "<b>Effektivität:</b> 98&nbsp;% der Bewerbungen werden ohne manuellen Eingriff korrekt weiterverarbeitet.<br>"+
+    "<b>Effizienz:</b> Prüfzeit pro Bewerbung sinkt von 8&nbsp;Min. auf &lt;&nbsp;2&nbsp;Min. für das Prüfungsteam.<br>"+
+    "<b>Zufriedenstellung:</b> interner Vertrauens-Score ≥&nbsp;70&nbsp;% Zustimmung zu „faire Behandlung&quot; nach 3 Monaten.<br>"+
+    "<b>Risikofreiheit:</b> keine dokumentierten Diskriminierungsfälle, keine EU-AI-Act-Bußgelder.<br>"+
+    "<b>Kontextabdeckung:</b> KI funktioniert auch bei stark schwankendem Bewerbungsvolumen zur Stellenausschreibungssaison." },
+  task:{ type:"quiz", id:"q4",
+    q:"Der Betriebsrat findet das System „alles richtig gebaut, trotzdem fehlt Vertrauen&quot;. Welche Dimension der Nutzungsqualität ist am ehesten betroffen?",
+    options:[
+      {t:"Effektivität — die Bewerbungen werden ja korrekt verarbeitet.", correct:false, why:"Effektivität misst, ob das Ziel erreicht wird — das gelingt offenbar."},
+      {t:"Zufriedenstellung — das System erfüllt Anforderungen, aber nicht das Vertrauensgefühl der Nutzenden.", correct:true, why:"Genau das ist der Unterschied zwischen Produktqualität (Merkmale erfüllt) und Nutzungsqualität (fühlt sich für die reale Belegschaft vertrauenswürdig an)."},
+      {t:"Kompatibilität — ein Merkmal des Produktqualitätsmodells, nicht der Nutzungsqualität.", correct:false, why:"Kompatibilität gehört zum Produktqualitätsmodell (ISO 25010), nicht zum Nutzungsmodell (ISO 25019)."}
+    ]},
+  transfer:"Produktqualität (ISO/IEC 25010) und Nutzungsqualität (ISO/IEC 25019) sind zwei verschiedene, komplementäre Modelle. Ein Produkt kann alle Merkmale erfüllen und trotzdem in der echten Nutzung auf Misstrauen stoßen." },
+
+{ day:2, title:"Der Praxis-Test", sub:"Fallstudie: Anwendung auf ein zweites Stellenprofil",
+  persona:"sarah",
+  story:
+    "<p>Fallstudie für das neue IT-Fachkräfte-Profil: „Das Modell soll auch dort genauso zuverlässig laufen, aber es gibt deutlich weniger historische Bewerbungsdaten zum Trainieren, und der Betriebsrat hat noch nie ein Erklärbarkeits-Panel gesehen.&quot;</p>",
+  box:{ title:"Eure Aufgabe", text:"Ordnet die Situation aus der Fallstudie einem konkreten Merkmal des Produktqualitätsmodells UND einer Dimension der Nutzungsqualität zu. Formuliert daraus jeweils ein testbares Akzeptanzkriterium mit Zahl." },
+  task:{ type:"reflect", id:"r6", prompt:"Eure Zuordnung: Welches ISO-25010-Merkmal, welche ISO-25019-Dimension — und wie lautet euer testbares Akzeptanzkriterium?", sample:"Zuverlässigkeit + Kontextabdeckung: „Modell erkennt und markiert eigenständig, wenn zu wenig Trainingsdaten für ein neues Stellenprofil vorliegen (Data-Sufficiency-Warnung).&quot; Interaktionsfähigkeit: „Erstes erfolgreiches Prüfen einer Empfehlung durch den Betriebsrat ohne Einweisung in &lt; 10 Min.&quot;" },
+  transfer:"Typische Trainer-Referenz: Zuverlässigkeit + Kontextabdeckung → z. B. „Modell erkennt und markiert eigenständig, wenn zu wenig Trainingsdaten für ein neues Stellenprofil vorliegen (Data-Sufficiency-Warnung).&quot; Interaktionsfähigkeit → „Erstes erfolgreiches Prüfen einer Empfehlung durch den Betriebsrat ohne Einweisung in &lt; 10 Min.&quot;" },
+
+{ day:2, title:"Von der Anforderung zur Qualitätsanforderung", sub:"Qualitätsanforderungen aus dem Nutzungskontext ableiten",
+  persona:"knut",
+  story:
+    ln("knut","„Bevor ihr eine NFR aus dem Nichts erfindet: Beschreibt erst den Nutzungskontext. Wer nutzt was, wo, womit, unter welchen Bedingungen?&quot;"),
+  box:{ title:"Methode: Nutzungskontext → Qualitätsanforderung", text:
+    "<b>Wer?</b> Betriebsratsmitglied, 50 Jahre, wenig KI-Erfahrung<br>"+
+    "<b>Wo?</b> Prüfsitzung, unter Zeitdruck vor Freigabeentscheidung<br>"+
+    "<b>Womit?</b> Firmen-Laptop, Erklärbarkeits-Panel<br>"+
+    "<b>Unter welchen Bedingungen?</b> muss die Entscheidung rechtssicher nachvollziehen können<br>"+
+    "→ <b>Abgeleitete NFRs:</b> Interaktionsfähigkeit (Erklärung in max. 2 Klicks), Sicherheit (jede Einsicht wird protokolliert)" },
+  task:{ type:"quiz", id:"q5",
+    q:"Warum ist „Nutzungskontext zuerst beschreiben&quot; besser, als direkt NFRs zu brainstormen?",
+    options:[
+      {t:"Weil es länger dauert und gründlicher wirkt.", correct:false, why:"Nicht die Dauer zählt, sondern die Ableitbarkeit konkreter, begründbarer Anforderungen."},
+      {t:"Weil sich daraus konkrete, begründbare Qualitätsanforderungen ableiten lassen statt geratener Wunschlisten.", correct:true, why:"Der Kontext liefert die Begründung — jede NFR lässt sich auf eine konkrete Nutzungssituation zurückführen (Traceability)."},
+      {t:"Weil der Nutzungskontext gesetzlich vorgeschrieben ist.", correct:false, why:"Es ist eine methodische Empfehlung (u. a. ISO 25019), keine gesetzliche Pflicht."}
+    ]},
+  transfer:"Qualitätsanforderungen, die direkt aus einem konkreten Nutzungskontext abgeleitet sind, lassen sich besser begründen, priorisieren und später verteidigen als abstrakt gesammelte NFR-Wünsche." },
+
+{ day:2, title:"Der große Rahmen: SWEBOK", sub:"Wo Anforderungsmanagement und Softwarequalität im Software-Lifecycle stehen",
+  persona:"petra",
+  story:
+    ln("petra","„Bevor wir zum Schlusskapitel kommen, noch eine Einordnung: Was ihr diese zwei Tage gelernt habt, ist kein Sonderthema — es sind zwei von elf Kernbereichen eines viel größeren Rahmenwerks.&quot;") +
+    "<p>Petra zeigt eine Übersicht: den SWEBOK<sup>®</sup> Guide (Software Engineering Body of Knowledge) der IEEE Computer Society, aktuell Version 4.0a.</p>",
+  box:{ title:"SWEBOK Guide V4.0a — wo diese zwei Tage einsortieren", text:
+    "<b>Tag 1 (Anforderungsmanagement)</b> entspricht SWEBOK Kapitel 1 „Software Requirements&quot; — Elicitation, Analysis, Specification, Validation, genau die Schritte, die TalentMatch AI durchlaufen hat.<br>"+
+    "<b>Tag 2 (ISO/IEC 25010)</b> entspricht SWEBOK Kapitel 12 „Software Quality&quot; — die Norm ist dort die zentrale Grundlage für Quality Assurance und Verification &amp; Validation.<br>"+
+    "<b>Neun weitere Kapitel</b> kommen in dieser Schulung bewusst nicht vor, weil sie Entwicklungs- und Betriebsthemen sind, keine RM-/Qualitätsthemen: Architecture, Design, Construction, Testing, Operations, Maintenance, Configuration Management, Management, Security." },
+  task:{ type:"reflect", id:"r8", prompt:"Welcher der neun nicht behandelten SWEBOK-Bereiche würde in eurem eigenen Projekt gerade am meisten Klärungsbedarf auslösen — und warum?", sample:"Bei KI-Systemen oft: Security (Data Poisoning) oder Operations (Canary-Rollout bei Modell-Updates). Es gibt bewusst keine „richtige&quot; Antwort — die Begründung zählt." },
+  transfer:"Requirements Engineering und Softwarequalität sind der Anfang, nicht das Ganze: SWEBOK zeigt, dass beide Themen durchgängig von Architecture, Testing, Operations und Security begleitet werden — dieselbe Logik wie das Marmorkuchen-Prinzip, nur auf den gesamten Software-Lebenszyklus angewendet." },
+
+{ day:2, title:"Sarahs Werkzeugkoffer", sub:"Best Practices, Zusammenfassung und Abschluss",
+  persona:"petra",
+  story:
+    ln("petra","„Was nimmst du aus diesen zwei Tagen mit, Sarah?&quot;") +
+    ln("sarah","„Dass eine Anforderung ohne Qualitätsmerkmal ein Wunsch bleibt — und bei einem Hochrisiko-KI-System sogar ein Compliance-Risiko.&quot;"),
+  box:{ title:"Best Practices — die Kurzfassung", text:
+    "<ul style='margin:4px 0 0 18px; padding:0;'>"+
+    "<li>Funktional (Was) und nicht-funktional (Wie gut) immer gemeinsam denken — Marmorkuchen-Prinzip</li>"+
+    "<li>Stakeholder-Landkarte vor der Erhebung, nicht danach — bei Hochrisiko-KI mit Betriebsrat als Pflicht-Stakeholder</li>"+
+    "<li>Priorisierung braucht Kriterien und Verfahren, nicht Lautstärke — rechtliche Constraints sind nicht verhandelbar</li>"+
+    "<li>Methode passend zum Kontext wählen: agil für Unsicheres, klassisch für Rechtsverbindliches</li>"+
+    "<li>Traceability von Anfang an — Dokumentation ist Zukunftsinvestition und Nachweispflicht zugleich</li>"+
+    "<li>„Gut&quot; immer in ISO-25010-Merkmale und ISO-25019-Dimensionen übersetzen</li>"+
+    "</ul>" },
+  task:{ type:"reflect", id:"r7", prompt:"Euer persönlicher Transfer: Welche EINE Sache nehmt ihr aus dieser Schulung morgen konkret mit in euer eigenes Projekt?", sample:"Beispiel: „Ich werde künftig bei automatisierten Entscheidungen immer fragen: Wer genau prüft das Ergebnis, bevor es wirkt?&quot;" },
+  transfer:"Prompt Engineering ist Requirements Engineering für KI-Systeme, Softwarequalität ist Requirements Engineering für Menschen. Beide beginnen mit derselben Frage: Was genau meinen wir eigentlich?" }
+];
+})();
+
+/* ================= SZENARIO 4: NOVATRADE PULSE ================= */
+var SCEN_NOVATRADE = (function(){
+var _P = P_SETS.novatrade;
+function ln(p, text){ return '<div class="line '+p+'"><span class="who">'+_P[p].name+' · '+_P[p].role+'</span>'+text+'</div>'; }
+return [
+// TAG 1
+{ day:1, title:"Bevor die Geschichte beginnt", sub:"Grundlagen der ISO/IEC 25010 — Einordnung, Ziele, Abgrenzung",
+  persona:"petra",
+  story:
+    ln("petra","„Bevor ihr Sarah bei NovaTrade Pulse begleitet, müsst ihr wissen, in welcher Normenwelt sie sich bewegt. Die ISO/IEC 25010 steht nicht allein.&quot;"),
+  box:{ title:"Die SQuaRE-Reihe (ISO/IEC 25000-Familie)", text:
+    "SQuaRE steht für <i>Systems and software Quality Requirements and Evaluation</i> und gliedert sich in fünf Divisionen:<br>"+
+    "<b>2500n</b> Quality-Management-Division (ISO/IEC 25000 Leitfaden, 25001 Planung &amp; Management)<br>"+
+    "<b>2501n</b> Quality-Model-Division — <b>hier lebt die ISO/IEC 25010</b> (Produkt- und Nutzungsqualitätsmodell) sowie ISO/IEC 25012 (Datenqualität)<br>"+
+    "<b>2502n</b> Quality-Measurement-Division (Messverfahren)<br>"+
+    "<b>2503n</b> Quality-Requirements-Division (Qualitätsanforderungen spezifizieren)<br>"+
+    "<b>2504n</b> Quality-Evaluation-Division (Bewertungsverfahren)<br>"+
+    "Die ISO/IEC 25000-Reihe löst seit 2005 die ältere ISO/IEC 9126 ab." },
+  task:{ type:"quiz", id:"q0",
+    q:"Herr Bachmeier sagt: „Wir sind doch ohnehin WpHG-pflichtig — brauchen wir dann noch die ISO/IEC 25010?&quot; Was antwortet ihr?",
+    options:[
+      {t:"Nein, das WpHG deckt Softwarequalität vollständig ab.", correct:false, why:"Das WpHG regelt aufsichtsrechtliche Pflichten (u. a. Product Governance), nicht die technischen Qualitätsmerkmale des Produkts selbst."},
+      {t:"Ja: Das WpHG formuliert aufsichtsrechtliche Pflichten, ISO/IEC 25010 strukturiert die technischen Qualitätsmerkmale, mit denen sich Anforderungen wie Zuverlässigkeit oder Sicherheit erst messbar umsetzen lassen.", correct:true, why:"Genau diese Abgrenzung ist entscheidend: aufsichtsrechtliche Ebene (WpHG/MiFID II) vs. technische Merkmals-Ebene (ISO/IEC 25010) — komplementär, nicht redundant."},
+      {t:"Nein, ISO/IEC 25010 ersetzt das WpHG vollständig.", correct:false, why:"ISO/IEC 25010 ist eine technische Norm ohne Aufsichtsbefugnis — sie ersetzt keine gesetzliche Pflicht."}
+    ]},
+  transfer:"Ziel der ISO/IEC 25010: eine <b>gemeinsame, objektive Sprache</b> für Softwarequalität zwischen Vorstand, Entwicklung und Compliance. Abgrenzung: das WpHG (i. V. m. MiFID II) regelt aufsichtsrechtliche Pflichten, ISO/IEC 25010 bewertet als technische Norm die konkreten Qualitätsmerkmale des Produkts selbst." },
+
+{ day:1, title:"Der Anruf von Herrn Bachmeier", sub:"Bedeutung klarer und messbarer Anforderungen",
+  persona:"bachmeier",
+  story:
+    ln("bachmeier","„Frau Kollegin, wir brauchen eine App, mit der man Bruchteilsaktien handeln kann. Das kann doch nicht so schwer sein.&quot;") +
+    ln("sarah","Sarah nickt, sagt dem Kunden eine schnelle Lösung zu — und beauftragt zwei Wochen später Ela mit der Umsetzung, ohne die Anforderung selbst zu präzisieren.") +
+    "<p>Sprint 1 ist fertig. Herr Bachmeier testet den ersten Prototyp.</p>" +
+    ln("bachmeier","„Wo sehe ich denn, ob eine Order die Compliance-Prüfung bestanden hat? Und warum kann ich nicht sehen, wie viele Bruchteile ich wirklich besitze? Das war doch selbstverständlich!&quot;"),
+  box:{ title:"Was ist hier passiert?", text:"„Eine App, mit der man Bruchteilsaktien handeln kann&quot; ist kein Requirement — es ist eine Absicht. Sarah hat als Vertrieb eine vage Kundenzusage gemacht, ohne sie in prüfbare Anforderungen zu übersetzen. Bei einem börsennahen System nach MiFID II/WpHG ist das nicht nur unpräzise, sondern ein aufsichtsrechtliches Risiko." },
+  task:{ type:"reflect", id:"r1", prompt:"Woran erkennt ihr, dass „eine App, mit der man Bruchteilsaktien handeln kann&quot; keine vollständige Anforderung ist? Was fehlt konkret — gerade bei einem regulierten Handelssystem?", sample:"Es fehlt: welche Assetklassen, welche Compliance-Prüfungen vor Ausführung, wie die Bestandsübersicht funktioniert, und wie schnell/zuverlässig gehandelt werden muss. Bei einem regulierten Handelssystem fehlt zusätzlich der Bezug zu MiFID II/WpHG." },
+  transfer:"Eine Anforderung ist erst dann brauchbar, wenn sie <b>atomar, testbar, eindeutig, konsistent und verfolgbar</b> ist (IREB-Qualitätskriterien). „Messbar&quot; heißt: Es lässt sich am Ende objektiv prüfen, ob sie erfüllt wurde." },
+
+{ day:1, title:"Das Marmorkuchen-Prinzip", sub:"Funktionale und nicht-funktionale Anforderungen formulieren",
+  persona:"petra",
+  story:
+    ln("petra","„Sarah, was genau meinst du mit 'die App soll schnell handeln'? Beschreib mir das mal wie ein Rezept, nicht wie einen Wunsch.&quot;") +
+    "<p>Sarah zögert — dann beginnt sie zu trennen: <b>Was</b> die App tun muss (Order aufgeben) und <b>wie gut</b> sie es tun muss (Bestätigung in unter 100 Millisekunden, auch bei 5.000 gleichzeitigen Trades).</p>",
+  box:{ title:"Marmorkuchen-Prinzip", text:"Der helle Teig ist die <b>funktionale Anforderung</b>: „Das System muss X tun.&quot; Der dunkle, kakaohaltige Teig ist die <b>nicht-funktionale Anforderung (NFR)</b>: „Und zwar so schnell/sicher/zuverlässig.&quot; Erst zusammen ergeben sie den vollständigen Kuchen — ein Marmorkuchen ohne dunklen Teig ist nur heller Teig mit einem falschen Namen." },
+  task:{ type:"quiz", id:"q1",
+    q:"„Die App muss den aktuellen Kurs anzeigen, Aktualisierung alle 500 Millisekunden.&quot; Welcher Anteil ist funktional, welcher nicht-funktional?",
+    options:[
+      {t:"Beides funktional — es geht ja nur um eine Anzeige.", correct:false, why:"Das Aktualisierungsintervall ist ein Qualitätsmerkmal (Performance Efficiency), keine Funktion."},
+      {t:"„Kurs anzeigen&quot; = funktional, „alle 500 ms&quot; = nicht-funktional.", correct:true, why:"Genau — das WAS ist funktional, das WIE OFT/SCHNELL ist nicht-funktional (hier: Performance Efficiency nach ISO 25010)."},
+      {t:"Beides nicht-funktional, weil es um Echtzeitdaten geht.", correct:false, why:"Das Anzeigen des Kurses selbst ist eine konkrete Funktion des Systems — also funktional."}
+    ]},
+  transfer:"Faustregel: Funktionale Anforderungen beantworten „<b>Was</b> tut das System?&quot;, nicht-funktionale Anforderungen beantworten „<b>Wie gut/sicher/schnell/zuverlässig</b> tut es das?&quot; (ISO/IEC 25010)." },
+
+{ day:1, title:"Wer sitzt eigentlich am Tisch?", sub:"Stakeholder-Analyse und Anforderungserhebung",
+  persona:"knut",
+  story:
+    ln("knut","„Bevor wir weiterbauen: Wer redet hier überhaupt mit? Bachmeier ist nicht der einzige Stakeholder.&quot;") +
+    "<p>Sarah erstellt eine erste Stakeholder-Landkarte für NovaTrade Pulse:</p>",
+  box:{ title:"Stakeholder-Landkarte (Macht/Interesse)", text:
+    "<table class='reftable'><tr><th>Stakeholder</th><th>Interesse</th><th>Macht</th><th>Erhebungsmethode</th></tr>"+
+    "<tr><td>Herr Bachmeier (Vorstand)</td><td>hoch</td><td>hoch</td><td>Strukturiertes Interview</td></tr>"+
+    "<tr><td>Trader/Kund:innen</td><td>hoch</td><td>niedrig</td><td>Beobachtung, Nutzertest am Prototyp</td></tr>"+
+    "<tr><td>Petra (Compliance)</td><td>hoch</td><td>hoch (Constraint)</td><td>Workshop, Regelwerks-Review</td></tr>"+
+    "<tr><td>Ela (Product Owner)</td><td>hoch</td><td>mittel</td><td>Backlog-Refinement</td></tr>"+
+    "<tr><td>BaFin (Aufsicht)</td><td>niedrig</td><td>hoch (Constraint)</td><td>Dokumentenanalyse</td></tr></table>" },
+  task:{ type:"reflect", id:"r2", prompt:"Welche Erhebungsmethode würdet ihr wählen, um Petras Governance-Anforderungen vollständig zu erfassen — und warum genau diese?", sample:"Ein moderierter Workshop mit Petra (Compliance) und Regelwerks-Review gemeinsam, weil Governance-Anforderungen oft aus mehreren, teils widersprüchlichen Regularien (MiFID II, WpHG, MaComp) zusammengeführt werden müssen — ein einfaches Interview würde diese Verzahnung nicht aufdecken." },
+  transfer:"Stakeholder-Analyse verhindert den häufigsten RE-Fehler: nur den lautesten Stakeholder zu befragen. Macht/Interesse-Matrix + passende Erhebungstechnik je Stakeholder-Typ — bei regulierten Handelssystemen kommt Compliance als Pflicht-Stakeholder hinzu." },
+
+{ day:1, title:"Muss, soll, kann — oder eben nicht", sub:"Anforderungen bewerten, priorisieren und verwalten",
+  persona:"sarah",
+  story:
+    "<p>24 Anforderungen liegen auf dem Tisch. Budget und Zeit reichen nicht für alle. Sarah sortiert mit dem Team nach <b>MoSCoW</b>:</p>",
+  box:{ title:"MoSCoW für NovaTrade Pulse (Auszug)", text:
+    "<b>Must:</b> Order aufgeben, Compliance-Gate vor Order-Ausführung<br>"+
+    "<b>Should:</b> Kursverlauf-Chart<br>"+
+    "<b>Could:</b> Watchlist<br>"+
+    "<b>Won't (Phase 1):</b> Krypto-Handel" },
+  task:{ type:"quiz", id:"q2",
+    q:"Herr Bachmeier besteht darauf, dass Krypto-Handel unbedingt in Release 1 muss, obwohl Zeit, Budget und regulatorische Zulassung dafür fehlen. Was ist der nächste sinnvolle RE-Schritt?",
+    options:[
+      {t:"Einfach zusagen, er ist der Vorstand.", correct:false, why:"Ungeprüfte Zusagen bei fehlender Zulassung führen zu einem aufsichtsrechtlichen Risiko, nicht nur zu Terminverzug."},
+      {t:"Business Value, Aufwand und regulatorische Machbarkeit gemeinsam mit ihm bewerten und die Konsequenz offenlegen.", correct:true, why:"Priorisierung ist eine Verhandlung auf Basis von Nutzen, Aufwand UND regulatorischen Constraints — nicht Lautstärke."},
+      {t:"Ablehnen, ohne Begründung.", correct:false, why:"Ohne nachvollziehbare Begründung verliert der Auftraggeber Vertrauen in den Priorisierungsprozess."}
+    ]},
+  transfer:"Priorisierung braucht Kriterien (Business Value, Risiko, Aufwand, regulatorische Zulassung) und ein Verfahren (MoSCoW, Kano) — sonst wird aus Anforderungsmanagement Verwaltung von Wünschen." },
+
+{ day:1, title:"Der Werkzeugkasten", sub:"Methoden: User Stories, Use Cases, Modellierungstechniken",
+  persona:"ela",
+  story:
+    ln("ela","„Für die Order-Maske reicht mir eine gute User Story mit Akzeptanzkriterien. Aber für das Compliance-Gate brauche ich einen vollständigen Use Case — da geht's um WpHG-Nachweispflicht.&quot;"),
+  box:{ title:"Zwei Artefakte, zwei Zwecke", text:
+    "<b>User Story (Order-Maske, agil):</b><br>„Als Trader möchte ich Bruchteilsaktien in Echtzeit kaufen, damit ich schnell auf Marktbewegungen reagieren kann.&quot;<br>"+
+    "<i>Akzeptanzkriterium (Gherkin):</i> Given eine gültige Order, When der Trader bestätigt, Then erscheint eine Bestätigung innerhalb 100&nbsp;ms.<br><br>"+
+    "<b>Use Case (Compliance-Gate, klassisch):</b> UC-05 „Order gegen Governance-Regeln prüfen&quot; — Vorbedingung, Hauptablauf, Fehlerfälle, Nachbedingung, vollständig spezifiziert wegen WpHG-Nachweispflicht." },
+  task:{ type:"reflect", id:"r3", prompt:"Warum passt INVEST (Independent, Negotiable, Valuable, Estimable, Small, Testable) gut zur User Story oben, aber schlecht zum Use Case des Compliance-Gates?", sample:"Das Compliance-Gate ist durch WpHG-Nachweispflichten rechtlich zwingend und muss vollständig spezifiziert sein — „Negotiable&quot; und bewusst klein gehalten widerspricht der aufsichtsrechtlichen Nachweispflicht." },
+  transfer:"<b>Hybrid statt Dogma:</b> Agil (User Stories, Backlog) für unscharfe, sich ändernde Bereiche wie die Order-Maske; klassisch (Use Cases, Spezifikation vorab) für aufsichtsrechtlich zwingende Bereiche wie das Compliance-Gate." },
+
+{ day:1, title:"Sarahs Pflichtenheft", sub:"Anforderungen angemessen dokumentieren",
+  persona:"sarah",
+  story:
+    "<p>Sarah dokumentiert nicht mehr „App soll Order gegen Governance prüfen&quot; auf einem Post-it, sondern strukturiert nach IEEE&nbsp;29148:</p>",
+  box:{ title:"Anforderungsdatensatz REQ-033 (Auszug)", text:
+    "<b>ID:</b> REQ-033 &nbsp; <b>Titel:</b> Compliance-Gate vor Order-Ausführung<br>"+
+    "<b>Quelle:</b> Workshop mit Petra (Compliance), 20.02.2026 &nbsp; <b>Priorität:</b> Must (MoSCoW)<br>"+
+    "<b>Beschreibung:</b> Das System muss jede Order vor Ausführung automatisch gegen die hinterlegten Product-Governance-Regeln prüfen und das Ergebnis protokollieren.<br>"+
+    "<b>Akzeptanzkriterium:</b> 100&nbsp;% der Orders durchlaufen das Gate, Prüfprotokoll revisionssicher archiviert.<br>"+
+    "<b>Verknüpft mit:</b> REQ-028 (Order-Engine), NFR-005 (Security)" },
+  task:{ type:"quiz", id:"q3",
+    q:"Warum reicht „Order gegen Governance prüfen&quot; als Dokumentation allein nicht aus?",
+    options:[
+      {t:"Weil Quelle, Priorität, Akzeptanzkriterium und Verknüpfung fehlen — ohne sie ist die Anforderung nicht testbar und nicht verfolgbar.", correct:true, why:"Genau das sind die IREB-Kriterien testbar und verfolgbar in der Praxis — bei regulierten Handelssystemen zusätzlich Nachweispflicht gegenüber der Aufsicht."},
+      {t:"Weil Governance-Prüfungen technisch nicht möglich sind.", correct:false, why:"Das ist keine inhaltliche RE-Frage, sondern eine technische Randbedingung."},
+      {t:"Es reicht völlig aus, mehr Doku kostet nur Zeit.", correct:false, why:"Ohne Traceability lässt sich später nicht mehr nachvollziehen, warum eine Anforderung besteht — bei regulierten Systemen zusätzlich ein Prüfungsrisiko."}
+    ]},
+  transfer:"Angemessene Dokumentation heißt nicht „möglichst viel&quot;, sondern: so viel, dass Testbarkeit, Nachvollziehbarkeit (Traceability) und Quelle jederzeit rekonstruierbar sind — bei regulierten Handelssystemen ist das zusätzlich eine aufsichtsrechtliche Nachweispflicht." },
+
+{ day:1, title:"Nach dem Sprint ist vor dem Sprint", sub:"Dokumentation als Basis für Change, Erweiterung und den Sprung zu ISO 25010",
+  persona:"petra",
+  story:
+    "<p>Sechs Monate später: NovaTrade will Pulse um eine neue Assetklasse erweitern.</p>" +
+    ln("bachmeier","„Können wir die App einfach fürs Krypto-Segment mitnutzen?&quot;") +
+    ln("ela","Weil REQ-033 & Co. sauber dokumentiert und verknüpft sind, findet Ela die relevanten Anforderungen in 2 Tagen wieder — statt in 3 Wochen alles neu zu erheben.") +
+    ln("petra","„Siehst du, Sarah? Gute Dokumentation ist keine Bürokratie für heute. Sie ist die Grundlage für jede Änderung von morgen — neue Assetklasse, Erweiterung, Anpassung.&quot;"),
+  box:{ title:"Die Brücke zu Tag 2", text:"Petra stellt die entscheidende Frage: „Woran erkennt ihr eigentlich, ob 'die App gut funktioniert'? 'Gut' ist doch selbst wieder eine unscharfe Anforderung.&quot; Genau hier beginnt morgen das Produktqualitätsmodell — jede Anforderung braucht ein Qualitätsmerkmal, sonst bleibt sie ein Wunsch." },
+  task:{ type:"reflect", id:"r4", prompt:"Was hättet ihr in eurem letzten Projekt an Dokumentation vermisst, als eine Änderung oder Erweiterung anstand?", sample:"Typische Lücken: Begründung einer Entscheidung, Verknüpfung zu Governance-Regeln, Versionshistorie — bei Finanzsystemen zusätzlich Pflicht gegenüber der Aufsicht." },
+  transfer:"Requirements Engineering endet nicht mit dem Go-Live. Gute Dokumentation ist der Unterschied zwischen Wiederverwendung in Tagen und Neuerhebung in Wochen." },
+
+// TAG 2
+{ day:2, title:"„Die App muss gut sein.&quot;", sub:"Einführung: das Produktqualitätsmodell ISO/IEC 25010:2023",
+  persona:"petra",
+  story:
+    ln("bachmeier","„Ich will doch nur, dass die App gut ist!&quot;") +
+    ln("petra","„Was genau meinen Sie mit 'gut', Herr Bachmeier? Schnell? Sicher? Zuverlässig auch samstags bei Marktvolatilität, wenn 5.000 Trader gleichzeitig ordern?&quot;") +
+    "<p>„Gut&quot; ist kein Qualitätsmerkmal — es ist ein Wunsch ohne Substanz. Die ISO/IEC 25010 übersetzt „gut&quot; in ein Modell mit konkreten, messbaren Merkmalen.</p>",
+  box:{ title:"Norm-Hinweis (K17-Check)", text:"ISO/IEC 25010:2023 (Edition 2, veröffentlicht 2023-11) ersetzt ISO/IEC 25010:2011. Wichtigste Änderung: Das Produktqualitätsmodell hat jetzt <b>neun</b> statt acht Hauptmerkmale — „Safety&quot; wurde neu ergänzt, „Benutzbarkeit&quot; heißt jetzt „Interaktionsfähigkeit&quot;, „Übertragbarkeit&quot; heißt jetzt „Flexibilität&quot;. Das Qualität-in-Nutzung-Modell ist separat in ISO/IEC 25019:2023 geregelt." },
+  task:{ type:"reflect", id:"r5", prompt:"Übersetzt „Die App muss gut sein&quot; in drei konkrete, messbare Qualitätsmerkmale — bevor ihr im nächsten Kapitel die vollständige Liste seht.", sample:"Zum Beispiel: Zuverlässigkeit (Failover &lt; 30 Sek.), Sicherheit (kryptographisch signierte Orders), Leistungsfähigkeit (Order-Bestätigung &lt; 100 ms)." },
+  transfer:"Ohne Qualitätsmodell bleibt „gut&quot; subjektiv und nicht überprüfbar. Mit ISO/IEC 25010 wird aus dem Wunsch eine Menge testbarer Merkmale." },
+
+{ day:2, title:"Die neun Zutaten des Qualitätskuchens", sub:"Das Produktqualitätsmodell — neun Hauptmerkmale im Detail",
+  persona:"ela",
+  story: ln("ela","„Klickt euch durch — zu jedem Merkmal gibt's die Definition und ein konkretes NFR-Beispiel aus NovaTrade Pulse.&quot;"),
+  isGrid9:true,
+  transfer:"Drei der neun Merkmale sind mit ISO/IEC 25010:2023 neu bzw. umbenannt: <b>Safety</b> (neu), <b>Interaktionsfähigkeit</b> (vormals Benutzbarkeit), <b>Flexibilität</b> (vormals Übertragbarkeit). Für Bestandsmaterial mit „acht Hauptmerkmalen&quot; gilt: das war die 2011er-Fassung — inhaltlich weiter nützlich, aber nicht mehr aktuell." },
+
+{ day:2, title:"Bleibt der Kunde auch dabei?", sub:"Qualität in der Nutzung — die fünf Dimensionen (ISO/IEC 25019:2023)",
+  persona:"bachmeier",
+  story:
+    ln("bachmeier","„Die App hat alle Haken auf eurer Liste. Aber unser größter institutioneller Kunde sagt, er nutzt sie trotzdem seltener.&quot;") +
+    ln("petra","„Das Produktqualitätsmodell beschreibt die Software selbst. Ob sie in der echten Nutzung wirklich funktioniert, misst ein zweites Modell: Qualität in der Nutzung.&quot;"),
+  box:{ title:"Die fünf Dimensionen — angewendet auf NovaTrade Pulse", text:
+    "<b>Effektivität:</b> 97&nbsp;% der Orders werden ohne Abbruch abgeschlossen.<br>"+
+    "<b>Effizienz:</b> Orderzeit sinkt von 45&nbsp;Sek. auf &lt;&nbsp;10&nbsp;Sek. in der App.<br>"+
+    "<b>Zufriedenstellung:</b> Net Promoter Score ≥&nbsp;35 nach 3 Monaten (Vertrauen, Kontrolle, Komfort).<br>"+
+    "<b>Risikofreiheit:</b> keine nicht autorisierten Order-Ausführungen, keine WpHG-Verstöße.<br>"+
+    "<b>Kontextabdeckung:</b> App funktioniert auch bei starker Marktvolatilität mit Lastspitzen." },
+  task:{ type:"quiz", id:"q4",
+    q:"Der institutionelle Kunde findet die App „alles richtig gebaut, trotzdem nutze ich sie seltener&quot;. Welche Dimension der Nutzungsqualität ist am ehesten betroffen?",
+    options:[
+      {t:"Effektivität — er kann ja handeln.", correct:false, why:"Effektivität misst, ob das Ziel erreicht wird — das gelingt ihm offenbar."},
+      {t:"Zufriedenstellung — die App erfüllt Anforderungen, aber nicht das Nutzungserlebnis.", correct:true, why:"Genau das ist der Unterschied zwischen Produktqualität (Merkmale erfüllt) und Nutzungsqualität (fühlt sich für den realen Kunden gut an)."},
+      {t:"Kompatibilität — ein Merkmal des Produktqualitätsmodells, nicht der Nutzungsqualität.", correct:false, why:"Kompatibilität gehört zum Produktqualitätsmodell (ISO 25010), nicht zum Nutzungsmodell (ISO 25019)."}
+    ]},
+  transfer:"Produktqualität (ISO/IEC 25010) und Nutzungsqualität (ISO/IEC 25019) sind zwei verschiedene, komplementäre Modelle. Ein Produkt kann alle Merkmale erfüllen und trotzdem in der echten Nutzung scheitern." },
+
+{ day:2, title:"Der Praxis-Test", sub:"Fallstudie: Anwendung auf Kleinanleger:innen",
+  persona:"sarah",
+  story:
+    "<p>Fallstudie für die Kleinanleger-Zielgruppe: „Die App soll auch für Kleinanleger:innen mit sehr geringem Handelsvolumen genauso zuverlässig laufen, aber dort schwankt die mobile Verbindung stark, und viele haben noch nie Bruchteilsaktien gehandelt.&quot;</p>",
+  box:{ title:"Eure Aufgabe", text:"Ordnet die Situation aus der Fallstudie einem konkreten Merkmal des Produktqualitätsmodells UND einer Dimension der Nutzungsqualität zu. Formuliert daraus jeweils ein testbares Akzeptanzkriterium mit Zahl." },
+  task:{ type:"reflect", id:"r6", prompt:"Eure Zuordnung: Welches ISO-25010-Merkmal, welche ISO-25019-Dimension — und wie lautet euer testbares Akzeptanzkriterium?", sample:"Zuverlässigkeit + Kontextabdeckung: „App bleibt bei Verbindungsabbruch bis 15 Sek. funktionsfähig (Offline-Order-Queue) und synct automatisch nach.&quot; Interaktionsfähigkeit: „Erste erfolgreiche Order ohne Einweisung in &lt; 5 Min.&quot;" },
+  transfer:"Typische Trainer-Referenz: Zuverlässigkeit + Kontextabdeckung → z. B. „App bleibt bei Verbindungsabbruch bis 15 Sek. funktionsfähig (Offline-Order-Queue) und synct automatisch nach.&quot; Interaktionsfähigkeit → „Erste erfolgreiche Order ohne Einweisung in &lt; 5 Min.&quot;" },
+
+{ day:2, title:"Von der Anforderung zur Qualitätsanforderung", sub:"Qualitätsanforderungen aus dem Nutzungskontext ableiten",
+  persona:"knut",
+  story:
+    ln("knut","„Bevor ihr eine NFR aus dem Nichts erfindet: Beschreibt erst den Nutzungskontext. Wer nutzt was, wo, womit, unter welchen Bedingungen?&quot;"),
+  box:{ title:"Methode: Nutzungskontext → Qualitätsanforderung", text:
+    "<b>Wer?</b> Kleinanlegerin, 24 Jahre, erste Börsenerfahrung<br>"+
+    "<b>Wo?</b> unterwegs, mobiles Netz<br>"+
+    "<b>Womit?</b> Smartphone, Touch-Bedienung<br>"+
+    "<b>Unter welchen Bedingungen?</b> unsicher, ob die Order korrekt platziert wurde<br>"+
+    "→ <b>Abgeleitete NFRs:</b> Interaktionsfähigkeit (eindeutige Bestätigungsanzeige, max. 3 Klicks), Zuverlässigkeit (Order-Status jederzeit abrufbar)" },
+  task:{ type:"quiz", id:"q5",
+    q:"Warum ist „Nutzungskontext zuerst beschreiben&quot; besser, als direkt NFRs zu brainstormen?",
+    options:[
+      {t:"Weil es länger dauert und gründlicher wirkt.", correct:false, why:"Nicht die Dauer zählt, sondern die Ableitbarkeit konkreter, begründbarer Anforderungen."},
+      {t:"Weil sich daraus konkrete, begründbare Qualitätsanforderungen ableiten lassen statt geratener Wunschlisten.", correct:true, why:"Der Kontext liefert die Begründung — jede NFR lässt sich auf eine konkrete Nutzungssituation zurückführen (Traceability)."},
+      {t:"Weil der Nutzungskontext gesetzlich vorgeschrieben ist.", correct:false, why:"Es ist eine methodische Empfehlung (u. a. ISO 25019), keine gesetzliche Pflicht."}
+    ]},
+  transfer:"Qualitätsanforderungen, die direkt aus einem konkreten Nutzungskontext abgeleitet sind, lassen sich besser begründen, priorisieren und später verteidigen als abstrakt gesammelte NFR-Wünsche." },
+
+{ day:2, title:"Der große Rahmen: SWEBOK", sub:"Wo Anforderungsmanagement und Softwarequalität im Software-Lifecycle stehen",
+  persona:"petra",
+  story:
+    ln("petra","„Bevor wir zum Schlusskapitel kommen, noch eine Einordnung: Was ihr diese zwei Tage gelernt habt, ist kein Sonderthema — es sind zwei von elf Kernbereichen eines viel größeren Rahmenwerks.&quot;") +
+    "<p>Petra zeigt eine Übersicht: den SWEBOK<sup>®</sup> Guide (Software Engineering Body of Knowledge) der IEEE Computer Society, aktuell Version 4.0a.</p>",
+  box:{ title:"SWEBOK Guide V4.0a — wo diese zwei Tage einsortieren", text:
+    "<b>Tag 1 (Anforderungsmanagement)</b> entspricht SWEBOK Kapitel 1 „Software Requirements&quot; — Elicitation, Analysis, Specification, Validation, genau die Schritte, die NovaTrade Pulse durchlaufen hat.<br>"+
+    "<b>Tag 2 (ISO/IEC 25010)</b> entspricht SWEBOK Kapitel 12 „Software Quality&quot; — die Norm ist dort die zentrale Grundlage für Quality Assurance und Verification &amp; Validation.<br>"+
+    "<b>Neun weitere Kapitel</b> kommen in dieser Schulung bewusst nicht vor, weil sie Entwicklungs- und Betriebsthemen sind, keine RM-/Qualitätsthemen: Architecture, Design, Construction, Testing, Operations, Maintenance, Configuration Management, Management, Security." },
+  task:{ type:"reflect", id:"r8", prompt:"Welcher der neun nicht behandelten SWEBOK-Bereiche würde in eurem eigenen Projekt gerade am meisten Klärungsbedarf auslösen — und warum?", sample:"Bei Handelssystemen oft: Security (signierte Transaktionen) oder Operations (Failover-Strategie). Es gibt bewusst keine „richtige&quot; Antwort — die Begründung zählt." },
+  transfer:"Requirements Engineering und Softwarequalität sind der Anfang, nicht das Ganze: SWEBOK zeigt, dass beide Themen durchgängig von Architecture, Testing, Operations und Security begleitet werden — dieselbe Logik wie das Marmorkuchen-Prinzip, nur auf den gesamten Software-Lebenszyklus angewendet." },
+
+{ day:2, title:"Sarahs Werkzeugkoffer", sub:"Best Practices, Zusammenfassung und Abschluss",
+  persona:"petra",
+  story:
+    ln("petra","„Was nimmst du aus diesen zwei Tagen mit, Sarah?&quot;") +
+    ln("sarah","„Dass eine Anforderung ohne Qualitätsmerkmal ein Wunsch bleibt — und bei einem regulierten Handelssystem sogar ein Aufsichtsrisiko.&quot;"),
+  box:{ title:"Best Practices — die Kurzfassung", text:
+    "<ul style='margin:4px 0 0 18px; padding:0;'>"+
+    "<li>Funktional (Was) und nicht-funktional (Wie gut) immer gemeinsam denken — Marmorkuchen-Prinzip</li>"+
+    "<li>Stakeholder-Landkarte vor der Erhebung, nicht danach — Compliance als Pflicht-Stakeholder</li>"+
+    "<li>Priorisierung braucht Kriterien und Verfahren, nicht Lautstärke — regulatorische Zulassung ist nicht verhandelbar</li>"+
+    "<li>Methode passend zum Kontext wählen: agil für Unsicheres, klassisch für Aufsichtsrechtliches</li>"+
+    "<li>Traceability von Anfang an — Dokumentation ist Zukunftsinvestition und Nachweispflicht zugleich</li>"+
+    "<li>„Gut&quot; immer in ISO-25010-Merkmale und ISO-25019-Dimensionen übersetzen</li>"+
+    "</ul>" },
+  task:{ type:"reflect", id:"r7", prompt:"Euer persönlicher Transfer: Welche EINE Sache nehmt ihr aus dieser Schulung morgen konkret mit in euer eigenes Projekt?", sample:"Beispiel: „Ich werde künftig bei jedem Feature fragen: Welche Zahl beweist, dass es wirklich fertig ist?&quot;" },
+  transfer:"Prompt Engineering ist Requirements Engineering für KI-Systeme, Softwarequalität ist Requirements Engineering für Menschen. Beide beginnen mit derselben Frage: Was genau meinen wir eigentlich?" }
+];
+})();
+
+var SCEN = { baeckerei: SCEN_BAECKEREI, studienakte: SCEN_STUDIENAKTE, talentmatch: SCEN_TALENTMATCH, novatrade: SCEN_NOVATRADE };
+var SCEN_LABEL = { baeckerei:"Bäckerei Bachmeier", studienakte:"Digitale Studienakte", talentmatch:"TalentMatch AI", novatrade:"NovaTrade Pulse" };
+function CH(){ return SCEN[state.scenario]; }
+
+/* ---------- render sidebar ---------- */
+function renderSidebar(){
+  var el = document.getElementById('sidebar');
+  var html = '';
+  [1,2].forEach(function(day){
+    html += '<div class="daygroup"><div class="daylabel">'+(day===1?'Tag 1 · Anforderungsmanagement':'Tag 2 · Softwarequalität')+'</div>';
+    CH().forEach(function(c, i){
+      if(c.day !== day) return;
+      var cls = 'chapitem' + (i===state.idx?' current':'') + (state.done[i]?' done':'');
+      html += '<div class="'+cls+'" data-idx="'+i+'"><div class="chnum">'+(i+1)+'</div><div>'+c.title+'</div></div>';
+    });
+    html += '</div>';
+  });
+  el.innerHTML = html;
+  el.querySelectorAll('.chapitem').forEach(function(node){
+    node.addEventListener('click', function(){ goTo(parseInt(node.getAttribute('data-idx'),10)); });
+  });
+}
+
+function renderProgress(){
+  var pct = Math.round((Object.keys(state.done).length / CH().length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+/* ---------- render main panel ---------- */
+function renderPanel(){
+  var c = CH()[state.idx];
+  var p = curP()[c.persona];
+  var html = '';
+  html += '<div class="kicker">Kapitel '+(state.idx+1)+' von '+CH().length+' · Tag '+c.day+' · Szenario: '+SCEN_LABEL[state.scenario]+'</div>';
+  html += '<h2 class="chaptitle">'+c.title+'</h2>';
+  html += '<p class="chapsub">'+c.sub+'</p>';
+  html += '<span class="persona-badge" style="background:'+p.color+'"><span class="dot"></span>'+p.name+' · '+p.role+'</span>';
+  html += '<div class="story">'+c.story+'</div>';
+
+  if(c.isGrid9){
+    html += '<div class="grid9" id="grid9"></div>';
+    html += '<div class="qdetail" id="qdetail" style="display:none"></div>';
+  }
+
+  if(c.box){
+    html += '<div class="kuchenbox"><div class="kbtitle">🎂 '+c.box.title+'</div><div>'+c.box.text+'</div></div>';
+  }
+
+  if(c.task){
+    if(c.task.type === 'reflect'){
+      html += '<div class="task"><div class="tasktitle">Reflexion für beide Teilnehmer:innen</div>';
+      html += '<p style="margin:0 0 8px;">'+c.task.prompt+'</p>';
+      html += '<textarea id="reflect_'+c.task.id+'" placeholder="Eure Notizen …">'+(state.answers[c.task.id]||'')+'</textarea>';
+      if(c.task.sample){
+        html += '<button class="btn ghost" id="sampleBtn_'+c.task.id+'" style="margin-top:8px;">Musterlösung anzeigen</button>';
+        html += '<div class="explain" id="sample_'+c.task.id+'" style="display:none;"><b>Musterlösung:</b> '+c.task.sample+'</div>';
+      }
+      html += '</div>';
+    } else if(c.task.type === 'quiz'){
+      html += '<div class="task"><div class="tasktitle">Quiz</div><p style="margin:0 0 8px;">'+c.task.q+'</p><div id="quiz_'+c.task.id+'">';
+      c.task.options.forEach(function(o, oi){
+        html += '<button class="quizopt" data-oi="'+oi+'">'+o.t+'</button>';
+      });
+      html += '</div><div class="explain" id="explain_'+c.task.id+'"></div></div>';
+    }
+  }
+
+  if(c.transfer){
+    html += '<div class="transfer"><div class="kbtitle">💡 Merksatz</div><div>'+c.transfer+'</div></div>';
+  }
+
+  html += '<div class="navbtns">';
+  html += '<button class="btn ghost" id="prevBtn"'+(state.idx===0?' disabled':'')+'>← Zurück</button>';
+  html += '<button class="btn" id="nextBtn">'+(state.idx===CH().length-1?'Schulung abschließen ✓':'Weiter →')+'</button>';
+  html += '</div>';
+
+  document.getElementById('panel').innerHTML = html;
+
+  // wire reflect
+  if(c.task && c.task.type === 'reflect'){
+    var ta = document.getElementById('reflect_'+c.task.id);
+    ta.addEventListener('input', function(){ state.answers[c.task.id] = ta.value; markDone(); });
+    if(c.task.sample){
+      var sBtn = document.getElementById('sampleBtn_'+c.task.id);
+      sBtn.addEventListener('click', function(){
+        var box = document.getElementById('sample_'+c.task.id);
+        var showing = box.style.display !== 'none';
+        box.style.display = showing ? 'none' : 'block';
+        sBtn.textContent = showing ? 'Musterlösung anzeigen' : 'Musterlösung ausblenden';
+        markDone();
+      });
+    }
+  }
+  // wire quiz
+  if(c.task && c.task.type === 'quiz'){
+    var wrap = document.getElementById('quiz_'+c.task.id);
+    wrap.querySelectorAll('.quizopt').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(state.quiz[c.task.id] !== undefined) return;
+        var oi = parseInt(btn.getAttribute('data-oi'),10);
+        state.quiz[c.task.id] = oi;
+        wrap.querySelectorAll('.quizopt').forEach(function(b2, i2){
+          b2.disabled = true;
+          if(c.task.options[i2].correct) b2.classList.add('correct');
+          else if(i2 === oi) b2.classList.add('wrong');
+        });
+        var ex = document.getElementById('explain_'+c.task.id);
+        ex.textContent = c.task.options[oi].why;
+        ex.classList.add('show');
+        markDone();
+      });
+    });
+  }
+  // wire grid9
+  if(c.isGrid9){
+    var g = document.getElementById('grid9');
+    var gh = '';
+    Q9().forEach(function(q, qi){
+      gh += '<div class="qcard'+(q.isNew?' new-2023':'')+'" data-qi="'+qi+'"><div class="qnum">Merkmal '+(qi+1)+'</div><div class="qname">'+q.name+'</div></div>';
+    });
+    g.innerHTML = gh;
+    g.querySelectorAll('.qcard').forEach(function(card){
+      card.addEventListener('click', function(){
+        var qi = parseInt(card.getAttribute('data-qi'),10);
+        g.querySelectorAll('.qcard').forEach(function(cc){ cc.classList.remove('active'); });
+        card.classList.add('active');
+        var q = Q9()[qi];
+        var d = document.getElementById('qdetail');
+        d.style.display = 'block';
+        d.innerHTML = '<div class="qd-title">'+q.name+(q.isNew?' <span style="color:var(--accent-ink); font-size:var(--fs-small);">(neu/umbenannt seit 2023)</span>':'')+'</div>'+
+          '<div>'+q.def+'</div><div class="qd-nfr">'+q.nfr+'</div>';
+        state.gridActive[qi] = true;
+        if(Object.keys(state.gridActive).length >= 9) markDone();
+      });
+    });
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', function(){ goTo(state.idx-1); });
+  document.getElementById('nextBtn').addEventListener('click', function(){
+    markDone();
+    if(state.idx < CH().length-1) goTo(state.idx+1);
+    else { alert('Schulung abgeschlossen — gute Reise durch beide Tage! 🎂'); }
+  });
+}
+
+function markDone(){ state.done[state.idx] = true; renderSidebar(); renderProgress(); }
+
+function goTo(i){
+  if(i<0 || i>=CH().length) return;
+  state.idx = i;
+  renderSidebar();
+  renderPanel();
+  document.getElementById('dayPill1').classList.toggle('active', CH()[i].day===1);
+  document.getElementById('dayPill2').classList.toggle('active', CH()[i].day===2);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function switchScenario(name){
+  if(state.scenario === name) return;
+  state.scenario = name;
+  state.idx = 0;
+  state.done = {};
+  state.answers = {};
+  state.quiz = {};
+  state.gridActive = {};
+  document.getElementById('scenPill1').classList.toggle('active', name==='baeckerei');
+  document.getElementById('scenPill2').classList.toggle('active', name==='studienakte');
+  document.getElementById('scenPill3').classList.toggle('active', name==='talentmatch');
+  document.getElementById('scenPill4').classList.toggle('active', name==='novatrade');
+  document.getElementById('subtitleText').textContent = 'Erzähltool: Anforderungsmanagement als Basis für Softwarequalität · 2‑Tage-Schulung · 2 Teilnehmer:innen · Szenario: ' + SCEN_LABEL[name];
+  goTo(0);
+}
+
+document.getElementById('scenPill1').addEventListener('click', function(){ switchScenario('baeckerei'); });
+document.getElementById('scenPill2').addEventListener('click', function(){ switchScenario('studienakte'); });
+document.getElementById('scenPill3').addEventListener('click', function(){ switchScenario('talentmatch'); });
+document.getElementById('scenPill4').addEventListener('click', function(){ switchScenario('novatrade'); });
+
+document.getElementById('dayPill1').addEventListener('click', function(){
+  var idx = CH().findIndex(function(c){ return c.day===1; });
+  goTo(idx);
+});
+document.getElementById('dayPill2').addEventListener('click', function(){
+  var idx = CH().findIndex(function(c){ return c.day===2; });
+  goTo(idx);
+});
+
+/* beamer toggle K18 */
+var beamerLevels = ['', 'beamer', 'beamer beamer-xl', 'beamer beamer-xl beamer-xxl'];
+var beamerLabels = ['Beamer: Normal', 'Beamer: An', 'Beamer: XL', 'Beamer: XXL'];
+var beamerIdx = 0;
+document.getElementById('beamerBtn').addEventListener('click', function(){
+  beamerIdx = (beamerIdx+1) % beamerLevels.length;
+  document.documentElement.className = beamerLevels[beamerIdx];
+  document.getElementById('beamerBtn').textContent = beamerLabels[beamerIdx];
+});
+
+/* ---------- footer content ---------- */
+document.getElementById('systemPromptBox').textContent =
+"MASTER-BAU-PROMPT — Erzähltool „Sarahs Weg zum Qualitätskuchen”\n\n"+
+"ROLLE: Erstelle ein einzeiliges, offline-fähiges HTML-Trainingstool im\n"+
+"Design-Standard von Michaela Kühn (PromptSchule).\n\n"+
+"STRUKTUR:\n"+
+"- Szenario-Umschalter oben: vier parallele, didaktisch gleichwertige\n"+
+"  Erzähl-Tracks (🎂 Bäckerei Bachmeier / 🎓 Digitale Studienakte /\n"+
+"  🤖 TalentMatch AI / 📈 NovaTrade Pulse), identische Kapitelanzahl/\n"+
+"  -reihenfolge/-aufgabentypen je Track, damit Trainer:innen zielgruppen-\n"+
+"  passend wählen können (Wirtschaft / Hochschule / Hochrisiko-KI / FinTech).\n"+
+"- Split-Screen-Layout: Sidebar (Kapitel-Navigation, 2 Tage, je 7–8 Kapitel)\n"+
+"  + Hauptpanel (Story, Persona-Badge, interaktive Aufgabe, Merksatz).\n"+
+"- Fortschrittsbalken oben, Kapitel-Häkchen in der Sidebar.\n"+
+"- Ein Kapitel = Story-Absatz(e) mit Personendialog + optionaler\n"+
+"  Kuchenbox (Merksatz/Konzept) + Aufgabe (Reflexion ODER Quiz ODER\n"+
+"  interaktives 3x3-Grid) + abschließender Merksatz-Box.\n"+
+"- Jede Reflexionsaufgabe hat eine ausklappbare Musterlösung (Button\n"+
+"  „Musterlösung anzeigen”, verdeckt bis Klick, damit Teilnehmende erst\n"+
+"  selbst schreiben, bevor sie vergleichen).\n"+
+"- Szenario-Wechsel setzt Fortschritt/Antworten zurück (kein ID-Clash\n"+
+"  zwischen den Tracks) und startet bei Kapitel 1 des neuen Tracks.\n\n"+
+"INHALT PRO SPUR (für alle vier Szenarien identisch strukturiert):\n"+
+"Tag 1 (8 Kapitel): SQuaRE-Reihe & Abgrenzung ISO/IEC 25010 -> Bedeutung\n"+
+"klarer Anforderungen -> funktional/nicht-funktional (Marmorkuchen-\n"+
+"Prinzip) -> Stakeholder-Analyse -> Priorisierung (MoSCoW) -> Methoden\n"+
+"(User Story/Use Case, hybrid) -> Dokumentation (IEEE 29148) ->\n"+
+"Traceability & Brücke zu ISO 25010.\n"+
+"Tag 2 (7 Kapitel): Einführung Produktqualitätsmodell -> interaktives\n"+
+"Grid der 9 ISO/IEC-25010:2023-Hauptmerkmale mit NFR-Beispielen ->\n"+
+"Qualität in der Nutzung (ISO/IEC 25019:2023, 5 Dimensionen) ->\n"+
+"Praxis-Fallstudie -> Nutzungskontext->NFR-Ableitung -> Einordnung in\n"+
+"SWEBOK Guide V4.0a (Kap. 1 & 12 vs. die 9 nicht behandelten Kapitel) ->\n"+
+"Best-Practices-Abschluss.\n\n"+
+"SZENARIO A — Bäckerei Bachmeier: Sarah (RE-Nachwuchs), Herr Bachmeier\n"+
+"(Bäcker/Auftraggeber — Kernrolle in diesem Track nicht änderbar), Ela,\n"+
+"Knut, Petra. Fall: MarmorkuchenApp (Bestellsystem).\n"+
+"SZENARIO B — Digitale Studienakte: Sarah, Prof. Dr. Vogt (Studiendekan/\n"+
+"Auftraggeber — neue, szenariointerne Kontextrolle statt Bachmeier,\n"+
+"siehe Konsistenzregel unten), Ela, Knut, Petra. Fall: digitale\n"+
+"Studienakte (Noten, Prüfungsanmeldung, Prüfungsamt) an einer Hochschule.\n"+
+"SZENARIO C — TalentMatch AI: Sarah (Vertrieb), Herr Bachmeier\n"+
+"(Geschäftsführung Vantera — kanonische Rolle aus Michaelas TalentMatch-\n"+
+"Kanon), Ela (Projektleitung), Knut (Entwicklung), Petra (QM). Fall:\n"+
+"KI-gestütztes Bewerbungs-Scoring, Hochrisiko-KI nach EU AI Act Anhang III\n"+
+"Nr. 4.\n"+
+"SZENARIO D — NovaTrade Pulse: Sarah (Vertrieb), Herr Bachmeier (Vorstand\n"+
+"NovaTrade — kanonische Rolle), Ela (Product Owner), Knut (Entwicklung),\n"+
+"Petra (Compliance). Fall: Handelsplattform für Bruchteilsaktien,\n"+
+"MiFID II/WpHG §63 ff.\n\n"+
+"DESIGN-VORGABEN:\n"+
+"- Weißer Hintergrund, color-scheme:light, keine Dark-Mode-Option.\n"+
+"- Beamer-Tauglichkeit: Fließtext >=16px, Sekundärtext >=14px, vierstufiger\n"+
+"  Beamer-Toggle (Normal/Beamer/XL/XXL) über CSS-Variablen skaliert.\n"+
+"- Klickziele/Touch-Targets >=44px (skaliert im Beamer-Modus mit).\n"+
+"- Pointer Events statt HTML5-Drag&Drop (hier: nur Click, kein DnD nötig).\n"+
+"- Signatur oben rechts, position:fixed, Name + Website-Link.\n"+
+"- Footer mit vier Pflicht-Boxen: Systemprompt, Handbuch, Vortrags-\n"+
+"  Skript, Normen-Register — Footer verschwindet ab Beamer-Stufe 1.\n"+
+"- Personas SIND szenario-abhängig (P_SETS-Objekt, kein globales P mehr):\n"+
+"  dieselben fünf Namen tragen je Szenario andere Rollen (z. B. Ela ist\n"+
+"  in A/B Entwicklung, in C Projektleitung, in D Product Owner) — das ist\n"+
+"  eine bewusste Entscheidung, kanonische Rollen aus Michaelas breiterem\n"+
+"  TalentMatch-/NovaTrade-Kanon (SE-Lifecycle-Lernreise u. a.) zu\n"+
+"  übernehmen, statt sie zu verbiegen. Innerhalb jedes einzelnen Szenarios\n"+
+"  bleibt jede Rolle konsistent über alle 15 Kapitel hinweg.\n"+
+"- Herr Bachmeier bleibt in Szenario A ausschließlich der Bäcker; für\n"+
+"  Szenario B wird die neue, szenariointerne Figur Prof. Dr. Vogt\n"+
+"  eingeführt; in C und D trägt Bachmeier seine kanonische Rolle\n"+
+"  (Geschäftsführung/Vorstand) — pro Szenario in sich konsistent.\n"+
+"- Keine generischen Werte: jede NFR mit konkreter Zahl/Einheit, in\n"+
+"  allen vier Szenarien.\n"+
+"- Alle Normverweise (ISO/IEC 25010:2023, 25019:2023, IEEE 29148:2018,\n"+
+"  IREB, BABOK v3, ISO/IEC 25000 SQuaRE-Reihe, Systemakkreditierung/\n"+
+"  MRVO, EU AI Act, MiFID II/WpHG, SWEBOK Guide V4.0a) mit Status/Datum,\n"+
+"  per Websuche verifiziert (K17).\n\n"+
+"NICHT TUN:\n"+
+"- Kein Dark Mode, kein localStorage/sessionStorage (nur In-Memory-State).\n"+
+"- Keine externen CDN-Ressourcen, kein fetch() auf externe URLs.\n"+
+"- Keine Vermischung der Rollen EINES Szenarios untereinander — Ausnahme:\n"+
+"  klar gekennzeichnete, szenariointerne Zusatzfigur (Prof. Dr. Vogt in B).\n"+
+"- Keine Anforderungen ohne zugehöriges Qualitätsmerkmal in Tag 2.";
+
+document.getElementById('handbuchBox').innerHTML =
+"<p><b>Framework:</b> TRACE (Task, Request, Action, Context, Example) — "+
+"angewendet auf die Tool-Konstruktion selbst: die <i>Task</i> war ein "+
+"zweitägiges Curriculum, die <i>Request</i> ein schrittweises Erzähltool, "+
+"die <i>Action</i> die Zuordnung von Curriculum-Bullet zu Story-Kapitel, "+
+"der <i>Context</i> Michaelas feste Personas und Design-Standards, das "+
+"<i>Example</i> die MarmorkuchenApp als durchgehender Trainingsfall.</p>"+
+"<h4>Analyse entlang Rolle/Aufgabe/Kontext/Format/Eingrenzung</h4>"+
+"<ul><li><b>Rolle:</b> RE/BA-Trainerin mit fester Marmorkuchen-Erzählwelt</li>"+
+"<li><b>Aufgabe:</b> 20 Curriculum-Bullets in eine schrittweise Geschichte übersetzen</li>"+
+"<li><b>Kontext:</b> 2 Teilnehmer:innen, 2 Tage, Präsenzschulung mit Beamer — Zielgruppe laut Seminarausschreibung (GFU S5078): Fachbereich, Business Analyst:innen, Requirements Engineers, Projektmanager:innen, Softwarequalitätsmanager:innen</li>"+
+"<li><b>Format:</b> Kapitel-Navigator statt linearer Text — freie Navigation, aber empfohlene Reihenfolge</li>"+
+"<li><b>Eingrenzung:</b> jedes Kapitel maximal 1 Kernaussage + 1 Aufgabe, sonst Überladung</li></ul>"+
+"<h4>Zentraler Lernhinweis</h4>"+
+"<p>Die Geschichte trägt den Stoff — nicht umgekehrt. Jedes RE-/ISO-25010-Konzept "+
+"hängt an einer konkreten Szene mit einer der Personas, nicht an einer "+
+"abstrakten Definition zuerst.</p>"+
+"<h4>Vier Szenarien, eine Didaktik — mit bewusstem Rollentausch</h4>"+
+"<p>Der Szenario-Umschalter (🎂/🎓/🤖/📈) tauscht Fall UND Personas-Rollen "+
+"aus — Kapitelanzahl, Aufgabentypen und die didaktische Kernaussage jedes "+
+"Kapitels bleiben identisch. In den Szenarien A (Bäckerei) und B (Studienakte) "+
+"behalten Sarah, Ela, Knut und Petra ihre lokalen Marmorkuchen-Rollen "+
+"(RE-Nachwuchs, Entwicklung, Agile Coach, Mentorin); Herr Bachmeier bleibt "+
+"dabei ausschließlich der Bäcker, für den Hochschulkontext übernimmt die "+
+"neue, szenariointerne Figur Prof. Dr. Vogt die Auftraggeber-Rolle. In den "+
+"Szenarien C (TalentMatch AI) und D (NovaTrade Pulse) tragen dieselben fünf "+
+"Namen bewusst ihre <b>kanonischen Rollen</b> aus Michaelas breiterem "+
+"TalentMatch-/NovaTrade-Ökosystem (Ela = Projektleitung/Product Owner, "+
+"Knut = Entwicklung, Sarah = Vertrieb, Petra = QM/Compliance, Bachmeier = "+
+"Geschäftsführung/Vorstand) — eine explizite Entscheidung vom 23.08.2026, "+
+"Konsistenz zum größeren Portfolio (u. a. SE-Lifecycle-Lernreise) höher zu "+
+"gewichten als lokale Rollenkontinuität über alle vier Tracks hinweg. Da "+
+"nur je ein Track gleichzeitig sichtbar ist, entsteht dadurch für "+
+"Teilnehmende keine Verwechslungsgefahr.</p>"+
+"<h4>Brücke zum Gesamtbild (Kapitel 14)</h4>"+
+"<p>Ergänzt am 23.08.2026: ein kurzes SWEBOK-Einordnungskapitel vor dem Abschluss, das Tag 1 und Tag 2 als "+
+"zwei von elf SWEBOK-Kernbereichen verortet, ohne die neun nicht behandelten Bereiche (Architecture, Design, "+
+"Construction, Testing, Operations, Maintenance, Configuration Management, Management, Security) inhaltlich "+
+"zu vertiefen — das bleibt bewusst Stoff für ein eigenständiges Format (z. B. eine SE-Lifecycle-Lernreise), "+
+"nicht für dieses 2-Tage-RM/Qualitäts-Seminar. Gilt in allen vier Szenarien identisch.</p>"+
+"<h4>Nachbau-Tipp</h4>"+
+"<p>Neues Thema oder neues Szenario? Curriculum-Bullets clustern, jedem "+
+"Cluster eine Szene mit passender Persona zuordnen (Petra fragt, Ela baut, "+
+"Knut prozessiert, der/die Auftraggebende will „nur, dass es funktioniert”), "+
+"danach erst Aufgabentyp (Reflexion/Quiz/Grid) wählen. Für ein fünftes "+
+"Szenario: gleiche Kapitelstruktur kopieren, nur Story/Box/Task-Text und "+
+"NFR-Beispiele austauschen — nie die Aufgabentypen pro Kapitelindex ändern, "+
+"sonst bricht die gemeinsame Render-Logik. Rollenwahl vorab klären: lokale "+
+"Marmorkuchen-Rollen (wie A/B) oder kanonische Rollen aus einem bestehenden "+
+"Fall-Kanon (wie C/D) — beides ist möglich, aber muss vor dem Schreiben "+
+"entschieden werden, nicht danach.</p>";
+
+document.getElementById('skriptBox').innerHTML =
+"<h4>Vor Beginn</h4><p>Passendes Szenario wählen (🎂 Bäckerei Bachmeier für Wirtschaftsgruppen, "+
+"🎓 Digitale Studienakte für Hochschul-/Verwaltungsgruppen, 🤖 TalentMatch AI für Gruppen mit KI-/"+
+"Compliance-Bezug, 📈 NovaTrade Pulse für FinTech-/Agile-Kontexte — oben rechts umschaltbar, auch "+
+"während der Schulung möglich, setzt aber Fortschritt zurück). Beamer-Modus auf „Beamer” oder "+
+"„XL” stellen. Tag-1-Pill ist aktiv. Die folgende Regie gilt für alle vier Szenarien identisch, "+
+"nur Figuren-/Fallnamen unterscheiden sich (Herr Bachmeier/Bäckerei ↔ Prof. Dr. Vogt/Studienakte ↔ "+
+"Herr Bachmeier/Vantera ↔ Herr Bachmeier/NovaTrade — in C und D behält Bachmeier seinen Namen, "+
+"aber mit anderer Rolle als in A).</p>"+
+"<ol>"+
+"<li><i>(Kapitel 1 „Bevor die Geschichte beginnt”)</i></i> SQuaRE-Reihe kurz an der Kuchenbox erklären, "+
+"bevor das Quiz zur Abgrenzung (ISO 9001/CMMI, Systemakkreditierung, EU AI Act oder WpHG — je nach Szenario) startet — das verortet die Norm, bevor die Geschichte beginnt.</li>"+
+"<li><i>(Kapitel 2 zeigen)</i> Den Anruf des/der Auftraggebenden laut vorlesen — bewusst ohne eigenen Kommentar, "+
+"die Gruppe soll selbst merken, dass die Anforderung vage ist, bevor die Kuchenbox aufklappt.</li>"+
+"<li><i>(Kapitel 3)</i> Marmorkuchen-Prinzip zuerst als Bild beschreiben, dann erst das Quiz starten lassen.</li>"+
+"<li><i>(Kapitel 4–8)</i> Je Kapitel: Story vorlesen → Teilnehmer:innen zur Kuchenbox befragen, bevor "+
+"sie selbst lesen → Aufgabe gemeinsam bearbeiten lassen → erst danach Merksatz aufdecken.</li>"+
+"<li><i>(Übergang Tag 1 → Tag 2)</i> Kapitel 8 endet mit Petras Frage „Was heißt 'gut' eigentlich?” — "+
+"hier bewusst eine Pause machen, nicht sofort zu Tag 2 springen.</li>"+
+"<li><i>(Kapitel 10, Grid)</i> Teilnehmer:innen abwechselnd je 4–5 Karten klicken lassen, gemeinsam "+
+"laut die NFR-Beispiele vorlesen. Auf die drei „NEU 2023”-Karten explizit hinweisen.</li>"+
+"<li><i>(Kapitel 14, SWEBOK-Einordnung)</i> Kurz halten — max. 5 Min. Ziel ist Einordnung, nicht neuer Stoff: "+
+"die Gruppe soll sehen, dass RM und Qualität zwei von elf SWEBOK-Bereichen sind, ohne die anderen neun im Detail "+
+"zu behandeln.</li>"+
+"<li><i>(Kapitel 15)</i> Reflexionsfrage schriftlich beantworten lassen, danach beide laut vorlesen lassen "+
+"— das ist der eigentliche Transfer-Moment der Schulung.</li>"+
+"</ol>"+
+"<h4>Allgemeine Regie-Hinweise</h4>"+
+"<ul><li>Timing: ca. 20–25 Min pro Kapitel bei 2 Teilnehmer:innen inkl. Diskussion, macht real ca. "+
+"3–3,5 Std. reinen Toolanteil pro Tag — restliche Zeit für Vertiefungsübungen außerhalb des Tools nutzen.</li>"+
+"<li>Nicht zuerst den Merksatz zeigen — erst Story und Aufgabe, der Merksatz ist die Bestätigung, nicht der Einstieg.</li>"+
+"<li>Bei Quiz-Antworten: auch bei falscher Antwort erst nach der Begründung fragen „Was hätte für diese Antwort gesprochen?”, bevor die richtige Lösung vertieft wird.</li>"+
+"<li>Szenario-Wahl vor Schulungsbeginn treffen und nicht mehr wechseln — ein Wechsel mitten in der Schulung setzt den Fortschritt zurück.</li></ul>";
+
+document.getElementById('normenBox').innerHTML =
+"<table class='reftable'>"+
+"<tr><th>Norm/Framework</th><th>Status</th><th>Verwendung im Tool</th></tr>"+
+"<tr><td>ISO/IEC 25000 (SQuaRE-Reihe)</td><td>In Kraft seit 2005, löst ISO/IEC 9126 ab</td><td>Einordnung der 5 Divisionen (Kapitel 1)</td></tr>"+
+"<tr><td>ISO/IEC 25010:2023 (Ed. 2)</td><td>In Kraft seit 2023-11, ersetzt ISO/IEC 25010:2011</td><td>Produktqualitätsmodell, 9 Hauptmerkmale (Kapitel 1, 9–10)</td></tr>"+
+"<tr><td>ISO/IEC 25019:2023</td><td>In Kraft seit 2023</td><td>Qualität-in-Nutzung-Modell, 5 Dimensionen (Kapitel 11)</td></tr>"+
+"<tr><td>IEEE 29148:2018</td><td>In Kraft</td><td>Struktur des Anforderungsdatensatzes (Kapitel 7)</td></tr>"+
+"<tr><td>IREB CPRE</td><td>Laufend gepflegt</td><td>Qualitätskriterien für Anforderungen (Kapitel 2, 7)</td></tr>"+
+"<tr><td>BABOK v3 (IIBA)</td><td>In Kraft</td><td>Stakeholder-Analyse, Priorisierung (Kapitel 4, 5)</td></tr>"+
+"<tr><td>Systemakkreditierung (Akkreditierungsrat/MRVO)</td><td>Laufend, aktuell in Reakkreditierungsrunden 2026</td><td>Abgrenzung zu ISO/IEC 25010, nur Szenario „Digitale Studienakte&quot; (Kapitel 1)</td></tr>"+
+"<tr><td>SWEBOK® Guide V4.0a (IEEE Computer Society)</td><td>Aktuelle Fassung; Erstveröffentlichung 15.10.2024, Update V4.0a am 25.09.2025; 18 Wissensbereiche</td><td>Einordnung von Tag 1/Tag 2 im gesamten Software-Lifecycle (Kapitel 14)</td></tr>"+
+"</table>"+
+"<p style='margin-top:10px; font-size:var(--fs-small); color:var(--muted);'>Hinweis: Das ursprüngliche Curriculum listete „acht Hauptmerkmale” (Stand ISO/IEC 25010:2011). "+
+"Seit der Revision 2023-11 sind es neun Hauptmerkmale — Safety wurde neu ergänzt, Benutzbarkeit "+
+"und Übertragbarkeit wurden umbenannt und erweitert. Das Tool verwendet durchgehend den aktuellen Stand, "+
+"in beiden Szenarien identisch.</p>";
+
+/* init */
+goTo(0);
+})();
+</script>
+</body>
+</html>
