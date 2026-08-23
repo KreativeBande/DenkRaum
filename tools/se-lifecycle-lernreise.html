@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SE-Lifecycle-Lernreise (SWEBOK v4.0a) | Michaela Kühn</title>
+<style>
+:root{
+  --c-indigo:#4338ca; --c-indigo-bg:#eef2ff;
+  --c-teal:#0f766e; --c-teal-bg:#f0fdfa;
+  --c-amber:#92400e; --c-amber-bg:#fffbeb;
+  --c-violet:#6d28d9; --c-violet-bg:#f5f3ff;
+  --c-slate:#334155; --c-slate-bg:#f1f5f9;
+  --c-brown:#7c2d12; --c-brown-bg:#fff7ed;
+  --ink:#1e293b; --muted:#64748b; --faint:#94a3b8;
+  --border:#e2e8f0; --border-strong:#cbd5e1;
+  --accent:#4338ca; --accent-bg:#eef2ff;
+  --good:#15803d; --good-bg:#f0fdf4;
+  color-scheme: light;
+}
+html,body{color-scheme: light; background:#ffffff; margin:0; padding:0; overflow-y:auto; overflow-x:hidden;}
+*{box-sizing:border-box;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:var(--ink); background:#fff; font-size:16px; line-height:1.5;
+  -webkit-tap-highlight-color: transparent;
+}
+h1,h2,h3,h4{margin:0 0 8px 0; line-height:1.25;}
+p{margin:0 0 10px 0;}
+button{font-family:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent;}
+
+/* ---------- signature ---------- */
+.signature{
+  position:fixed; top:14px; right:28px; z-index:500; text-align:right;
+  font-size:14px; background:rgba(255,255,255,.92); padding:4px 10px; border-radius:8px;
+}
+.signature strong{display:block; font-size:14px;}
+.signature a{color:var(--accent); text-decoration:none; font-size:14px;}
+@media (max-width:900px){
+  .signature{position:static; text-align:right; margin:8px 16px 0 0;}
+}
+
+/* ---------- header ---------- */
+.appheader{
+  padding:16px 24px 10px 24px; border-bottom:1px solid var(--border);
+}
+.back-link{display:inline-block; font-size:14px; font-weight:600; color:var(--muted); text-decoration:none; margin-bottom:10px;}
+.back-link:hover{color:var(--accent);}
+.appheader h1{font-size:22px;}
+.lead{font-size:14px; color:var(--muted); margin:0 0 12px;}
+.headerRow{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+.pill{
+  border:1.5px solid var(--border-strong); background:#fff; color:var(--ink);
+  border-radius:999px; padding:9px 16px; font-size:14px; font-weight:600; min-height:44px;
+  display:inline-flex; align-items:center; gap:6px;
+}
+.pill.active{ background:var(--accent); border-color:var(--accent); color:#fff; }
+.pill.ghost{ background:var(--accent-bg); border-color:var(--accent); color:var(--accent); }
+.caseSwitch{display:flex; gap:6px; flex-wrap:wrap;}
+
+/* ---------- views ---------- */
+.view{display:none;}
+.view.active{display:block;}
+
+/* intro */
+.introWrap{max-width:920px; margin:0 auto; padding:24px 24px 60px;}
+.introCard{
+  border:1.5px dashed var(--border-strong); border-radius:14px; padding:20px 22px; margin:16px 0;
+  background:#fafafa;
+}
+.introCard h3{font-size:18px;}
+.introCard p{font-size:16px;}
+.warnBox{
+  border:1.5px solid #f59e0b; background:#fffbeb; border-radius:12px; padding:14px 18px; margin:16px 0; font-size:16px;
+}
+.warnBox strong{color:#92400e;}
+.startBtn{
+  background:var(--accent); color:#fff; border:none; border-radius:12px; padding:14px 28px;
+  font-size:17px; font-weight:700; min-height:52px; margin-top:12px;
+}
+
+/* journey split screen */
+.journeyGrid{
+  display:grid; grid-template-columns:minmax(230px,32%) 1fr; min-height:calc(100vh - 78px);
+}
+@media (max-width:900px){ .journeyGrid{grid-template-columns:1fr;} }
+.stationList{
+  border-right:1px solid var(--border); padding:16px 12px; position:sticky; top:0; align-self:start;
+  max-height:calc(100vh - 78px); overflow-y:auto;
+}
+@media (max-width:900px){ .stationList{position:static; max-height:none; border-right:none; border-bottom:1px solid var(--border);} }
+.stationRow{
+  display:flex; align-items:center; gap:10px; padding:12px 10px; border-radius:10px; cursor:pointer;
+  border:1.5px solid transparent; min-height:52px; margin-bottom:4px;
+}
+.stationRow:hover{background:var(--accent-bg);}
+.stationRow.current{border-color:var(--accent); background:var(--accent-bg); font-weight:700;}
+.stationRow .num{
+  width:28px; height:28px; border-radius:999px; background:var(--border); color:var(--muted);
+  display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; flex-shrink:0;
+}
+.stationRow.done .num{background:var(--good); color:#fff;}
+.stationRow .icon{font-size:20px;}
+.stationRow .lbl{font-size:15px;}
+.stationRow .sub{font-size:14px; color:var(--muted); display:block;}
+.miniLinks{margin-top:14px; display:flex; flex-direction:column; gap:6px;}
+.miniLinkBtn{
+  text-align:left; background:#fff; border:1.5px solid var(--border-strong); border-radius:10px;
+  padding:10px 12px; font-size:14px; font-weight:600; min-height:44px;
+}
+
+.detailPanel{padding:20px 26px 60px; max-width:900px;}
+.stationHead{display:flex; align-items:flex-start; gap:14px; margin-bottom:10px;}
+.stationHead .bigIcon{font-size:34px;}
+.stationHead h2{font-size:22px;}
+.chapterTag{font-size:14px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.03em;}
+.taskChip{
+  display:inline-block; background:var(--accent-bg); color:var(--accent); border-radius:999px;
+  padding:5px 12px; font-size:14px; font-weight:700; margin-top:6px;
+}
+.docBadge{
+  display:inline-block; background:var(--good-bg); color:var(--good); border-radius:999px;
+  padding:4px 10px; font-size:14px; font-weight:700; margin-left:8px;
+}
+
+details.block{border:1.5px solid var(--border); border-radius:12px; margin:14px 0; overflow:hidden;}
+details.block summary{
+  padding:12px 16px; font-weight:700; font-size:15px; cursor:pointer; background:#f8fafc;
+  list-style:none; display:flex; align-items:center; gap:8px; min-height:44px;
+}
+details.block summary::-webkit-details-marker{display:none;}
+details.block summary::before{content:"▸"; color:var(--muted); font-size:14px;}
+details.block[open] summary::before{content:"▾";}
+details.block .blockBody{padding:14px 16px;}
+
+.agileGrid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+@media (max-width:640px){ .agileGrid{grid-template-columns:1fr;} }
+.agileCol{border-radius:10px; padding:12px 14px; font-size:16px;}
+.agileCol.classic{background:var(--slate-bg,#f1f5f9); border:1px solid var(--border-strong);}
+.agileCol.agile{background:var(--c-teal-bg); border:1px solid var(--c-teal);}
+.agileCol h4{font-size:14px; text-transform:uppercase; letter-spacing:.03em; margin-bottom:6px;}
+
+.methodRow{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0;}
+.methodChip{
+  background:var(--c-violet-bg); color:var(--c-violet); border:1px solid var(--c-violet);
+  border-radius:999px; padding:6px 12px; font-size:14px; font-weight:600;
+}
+
+.artGrid{display:grid; grid-template-columns:1fr; gap:12px; margin:14px 0;}
+.artCard{border:1.5px solid var(--border); border-radius:12px; padding:14px 16px; background:#fff;}
+.artCard .src{font-size:14px; color:var(--muted); font-weight:600; margin-bottom:6px;}
+.artCard .txt{font-size:16px;}
+
+.glossaryEntry{border-bottom:1px solid var(--border); padding:10px 0; font-size:16px;}
+.glossaryEntry:last-child{border-bottom:none;}
+.glossaryEntry .term{font-weight:700;}
+.glossaryEntry .ex{color:var(--muted); font-size:14px; font-style:italic; display:block; margin-top:4px;}
+
+.personaRow{
+  display:flex; gap:12px; align-items:flex-start; border-radius:12px; padding:14px 16px; margin:14px 0;
+  border-left:5px solid var(--accent); background:var(--accent-bg);
+}
+.personaRow .pname{font-weight:800; font-size:15px;}
+.personaRow .prole{font-size:14px; color:var(--muted); margin-bottom:4px;}
+.personaRow .ptxt{font-size:16px; font-style:italic;}
+
+.crossrefRow{font-size:14px; color:var(--muted); border-top:1px dashed var(--border-strong); padding-top:10px; margin-top:14px;}
+.crossrefRow strong{color:var(--ink);}
+
+.codeCompare{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:4px 0 10px 0;}
+@media (max-width:640px){ .codeCompare{grid-template-columns:1fr;} }
+.codeBlock{border-radius:10px; padding:12px 14px; overflow-x:auto;}
+.codeBlock.bad{background:#fef2f2; border:1.5px solid #dc2626;}
+.codeBlock.good{background:#f0fdf4; border:1.5px solid #15803d;}
+.codeBlock .codeLabel{font-size:14px; font-weight:700; margin-bottom:8px; display:block;}
+.codeBlock.bad .codeLabel{color:#b91c1c;}
+.codeBlock.good .codeLabel{color:#15803d;}
+.codeBlock pre{margin:0; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:14px; line-height:1.55; white-space:pre-wrap; word-break:break-word; color:var(--ink);}
+.codeCaption{font-size:14px; color:var(--muted); margin:2px 0 14px 0;}
+
+.quizBox{border:1.5px solid var(--c-indigo); border-radius:12px; padding:16px 18px; margin:18px 0; background:var(--c-indigo-bg);}
+.quizBox h4{font-size:15px; text-transform:uppercase; letter-spacing:.03em; color:var(--c-indigo);}
+.quizQ{font-size:16px; font-weight:600; margin-bottom:10px;}
+.quizOpt{
+  display:block; width:100%; text-align:left; background:#fff; border:1.5px solid var(--border-strong);
+  border-radius:10px; padding:11px 14px; margin-bottom:8px; font-size:16px; min-height:44px;
+}
+.quizOpt.correct{background:var(--good-bg); border-color:var(--good); color:var(--good); font-weight:700;}
+.quizOpt.wrong{background:#fef2f2; border-color:#dc2626; color:#b91c1c;}
+.quizExplain{font-size:16px; margin-top:10px; padding:12px 14px; background:#fff; border-radius:10px; border:1px solid var(--border);}
+
+.navRow{display:flex; justify-content:space-between; gap:10px; margin-top:22px;}
+.navBtn{
+  background:#fff; border:1.5px solid var(--border-strong); border-radius:10px; padding:11px 18px;
+  font-size:15px; font-weight:700; min-height:44px;
+}
+.navBtn.primary{background:var(--accent); border-color:var(--accent); color:#fff;}
+
+/* mindmap / trace overlays */
+.overlay{position:fixed; inset:0; background:#fff; z-index:400; overflow-y:auto; padding:20px 24px 60px; display:none;}
+.overlay.active{display:block;}
+.overlayMax{max-width:1000px; margin:0 auto;}
+.mindmapWrap{display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin-top:24px;}
+.mindNode{
+  width:180px; min-height:96px; border-radius:14px; padding:14px; text-align:center; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+  border:2px solid var(--border-strong); font-weight:700; font-size:14.5px;
+}
+.mindNode .mi{font-size:26px;}
+.traceStep{border-left:3px solid var(--accent); padding:10px 0 10px 16px; margin-bottom:4px; font-size:16px;}
+.traceStep .stlabel{font-size:14px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.03em;}
+.backBtn{
+  background:#fff; border:1.5px solid var(--border-strong); border-radius:10px; padding:10px 16px;
+  font-size:14px; font-weight:700; min-height:44px; margin-bottom:6px;
+}
+
+/* finale */
+.finaleWrap{max-width:920px; margin:0 auto; padding:24px 24px 60px; text-align:center;}
+.finaleWrap h1{font-size:28px;}
+.finaleLabel{font-size:17px;}
+.traceTable{width:100%; border-collapse:collapse; margin:20px 0; font-size:16px; text-align:left;}
+.traceTable th,.traceTable td{border:1px solid var(--border); padding:8px 10px; vertical-align:top;}
+.traceTable th{background:#f8fafc; font-size:14px;}
+.compareBox{border:1.5px dashed var(--border-strong); border-radius:12px; padding:16px 18px; margin:20px 0; text-align:left; font-size:16px;}
+.overlayLead{font-size:16px; color:var(--muted);}
+.isoSubline{font-size:14px; color:var(--muted); margin-bottom:10px;}
+.crosslink{max-width:920px; margin:0 auto; padding:0 24px 20px; font-size:14px; color:var(--muted);}
+.crosslink a{color:var(--accent); font-weight:700; text-decoration:none;}
+.crosslink a:hover{text-decoration:underline;}
+.crosslink ul{margin:8px 0 0; padding-left:20px;}
+.crosslink li{margin-bottom:4px;}
+
+/* footer */
+footer{border-top:1px solid var(--border); padding:22px 24px 40px; max-width:1100px; margin:0 auto;}
+.footer-sig{font-size:14px; color:var(--muted); margin-bottom:16px; line-height:1.7;}
+.footer-sig strong{color:var(--ink); font-size:15px;}
+.footer-sig a{color:var(--accent);}
+.footer-details{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+@media (max-width:900px){ .footer-details{grid-template-columns:1fr;} }
+.footer-box{border:1.5px solid var(--border); border-radius:12px; overflow:hidden;}
+.footer-summary{padding:12px 14px; font-weight:700; font-size:15px; cursor:pointer; background:#f8fafc; list-style:none; min-height:44px; display:flex; align-items:center;}
+.footer-summary::-webkit-details-marker{display:none;}
+.footer-content{padding:14px 16px; max-height:420px; overflow-y:auto;}
+.footer-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:14px; white-space:pre-wrap; line-height:1.55;}
+.footer-sans{font-size:16px; line-height:1.6;}
+.footer-sans h4{font-size:15px; margin-top:14px;}
+.footer-table{width:100%; border-collapse:collapse; font-size:14px;}
+.footer-table th,.footer-table td{border:1px solid var(--border); padding:6px 8px; text-align:left; vertical-align:top;}
+footer[hidden]{display:none;}
+
+/* beamer mode - cumulative */
+html.beamer{ --muted:#3D4A5C; }
+html.beamer body{font-size:19px;}
+html.beamer footer{display:none;}
+
+/* stage 1: beamer */
+html.beamer .pill{font-size:16px; padding:11px 20px;}
+html.beamer .lead{font-size:22px;}
+html.beamer .stationHead h2{font-size:44px;}
+html.beamer .stationHead .bigIcon{font-size:38px;}
+html.beamer .introCard h3{font-size:24px;}
+html.beamer .introCard p, html.beamer .overlayLead{font-size:22px;}
+html.beamer .warnBox{font-size:20px;}
+html.beamer .startBtn{font-size:19px; padding:16px 30px;}
+html.beamer .stationRow .lbl{font-size:17px;}
+html.beamer .stationRow .sub{font-size:16px;}
+html.beamer .chapterTag{font-size:16px;}
+html.beamer .taskChip{font-size:16px;}
+html.beamer .docBadge{font-size:15px;}
+html.beamer details.block summary{font-size:17px;}
+html.beamer .agileCol{font-size:22px;}
+html.beamer .agileCol h4{font-size:16px;}
+html.beamer .methodChip{font-size:16px;}
+html.beamer .artCard .src{font-size:15px;}
+html.beamer .artCard .txt{font-size:22px;}
+html.beamer .glossaryEntry{font-size:22px;}
+html.beamer .glossaryEntry .ex{font-size:18px;}
+html.beamer .personaRow .pname{font-size:17px;}
+html.beamer .personaRow .prole{font-size:16px;}
+html.beamer .personaRow .ptxt{font-size:22px;}
+html.beamer .crossrefRow{font-size:16px;}
+html.beamer .isoSubline{font-size:16px;}
+html.beamer .codeBlock .codeLabel{font-size:16px;}
+html.beamer .codeBlock pre{font-size:18px;}
+html.beamer .codeCaption{font-size:16px;}
+html.beamer .quizBox h4{font-size:16px;}
+html.beamer .quizQ{font-size:22px;}
+html.beamer .quizOpt{font-size:22px; padding:14px 16px;}
+html.beamer .quizExplain{font-size:22px;}
+html.beamer .navBtn{font-size:17px; padding:13px 20px;}
+html.beamer .mindNode{font-size:16px;}
+html.beamer .mindNode .mi{font-size:30px;}
+html.beamer .traceStep{font-size:22px;}
+html.beamer .traceStep .stlabel{font-size:16px;}
+html.beamer .backBtn{font-size:16px;}
+html.beamer .finaleWrap h1{font-size:44px;}
+html.beamer .finaleLabel{font-size:22px;}
+html.beamer .traceTable{font-size:22px;}
+html.beamer .traceTable th{font-size:16px;}
+html.beamer .compareBox{font-size:22px;}
+html.beamer .footer-sig{font-size:16px;}
+
+/* stage 2: beamer XL */
+html.beamer.beamer-xl body{font-size:22px;}
+html.beamer.beamer-xl .pill{font-size:18px; padding:13px 22px;}
+html.beamer.beamer-xl .lead{font-size:28px;}
+html.beamer.beamer-xl .stationHead h2{font-size:54px;}
+html.beamer.beamer-xl .stationHead .bigIcon{font-size:42px;}
+html.beamer.beamer-xl .introCard h3{font-size:28px;}
+html.beamer.beamer-xl .introCard p, html.beamer.beamer-xl .overlayLead{font-size:28px;}
+html.beamer.beamer-xl .warnBox{font-size:23px;}
+html.beamer.beamer-xl .startBtn{font-size:22px; padding:18px 34px;}
+html.beamer.beamer-xl .stationRow .lbl{font-size:19px;}
+html.beamer.beamer-xl .stationRow .sub{font-size:18px;}
+html.beamer.beamer-xl .chapterTag{font-size:18px;}
+html.beamer.beamer-xl .taskChip{font-size:18px;}
+html.beamer.beamer-xl .docBadge{font-size:18px;}
+html.beamer.beamer-xl details.block summary{font-size:20px;}
+html.beamer.beamer-xl .agileCol{font-size:28px;}
+html.beamer.beamer-xl .agileCol h4{font-size:18px;}
+html.beamer.beamer-xl .methodChip{font-size:18px;}
+html.beamer.beamer-xl .artCard .src{font-size:18px;}
+html.beamer.beamer-xl .artCard .txt{font-size:28px;}
+html.beamer.beamer-xl .glossaryEntry{font-size:28px;}
+html.beamer.beamer-xl .glossaryEntry .ex{font-size:21px;}
+html.beamer.beamer-xl .personaRow .pname{font-size:19px;}
+html.beamer.beamer-xl .personaRow .prole{font-size:18px;}
+html.beamer.beamer-xl .personaRow .ptxt{font-size:28px;}
+html.beamer.beamer-xl .crossrefRow{font-size:18px;}
+html.beamer.beamer-xl .isoSubline{font-size:18px;}
+html.beamer.beamer-xl .codeBlock .codeLabel{font-size:18px;}
+html.beamer.beamer-xl .codeBlock pre{font-size:22px;}
+html.beamer.beamer-xl .codeCaption{font-size:18px;}
+html.beamer.beamer-xl .quizBox h4{font-size:18px;}
+html.beamer.beamer-xl .quizQ{font-size:28px;}
+html.beamer.beamer-xl .quizOpt{font-size:28px;}
+html.beamer.beamer-xl .quizExplain{font-size:28px;}
+html.beamer.beamer-xl .navBtn{font-size:20px; padding:15px 24px;}
+html.beamer.beamer-xl .mindNode{font-size:18px;}
+html.beamer.beamer-xl .mindNode .mi{font-size:34px;}
+html.beamer.beamer-xl .traceStep{font-size:28px;}
+html.beamer.beamer-xl .traceStep .stlabel{font-size:18px;}
+html.beamer.beamer-xl .backBtn{font-size:18px;}
+html.beamer.beamer-xl .finaleWrap h1{font-size:54px;}
+html.beamer.beamer-xl .finaleLabel{font-size:28px;}
+html.beamer.beamer-xl .traceTable{font-size:28px;}
+html.beamer.beamer-xl .traceTable th{font-size:18px;}
+html.beamer.beamer-xl .compareBox{font-size:28px;}
+
+/* stage 3: beamer XXL */
+html.beamer.beamer-xl.beamer-xxl body{font-size:25px;}
+html.beamer.beamer-xl.beamer-xxl .pill{font-size:21px; padding:15px 26px;}
+html.beamer.beamer-xl.beamer-xxl .lead{font-size:34px;}
+html.beamer.beamer-xl.beamer-xxl .stationHead h2{font-size:64px;}
+html.beamer.beamer-xl.beamer-xxl .stationHead .bigIcon{font-size:46px;}
+html.beamer.beamer-xl.beamer-xxl .introCard h3{font-size:32px;}
+html.beamer.beamer-xl.beamer-xxl .introCard p, html.beamer.beamer-xl.beamer-xxl .overlayLead{font-size:34px;}
+html.beamer.beamer-xl.beamer-xxl .warnBox{font-size:26px;}
+html.beamer.beamer-xl.beamer-xxl .startBtn{font-size:25px; padding:20px 38px;}
+html.beamer.beamer-xl.beamer-xxl .stationRow .lbl{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .stationRow .sub{font-size:20px;}
+html.beamer.beamer-xl.beamer-xxl .chapterTag{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .taskChip{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .docBadge{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl details.block summary{font-size:23px;}
+html.beamer.beamer-xl.beamer-xxl .agileCol{font-size:34px;}
+html.beamer.beamer-xl.beamer-xxl .agileCol h4{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .methodChip{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .artCard .src{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .artCard .txt{font-size:34px;}
+html.beamer.beamer-xl.beamer-xxl .glossaryEntry{font-size:34px;}
+html.beamer.beamer-xl.beamer-xxl .glossaryEntry .ex{font-size:24px;}
+html.beamer.beamer-xl.beamer-xxl .personaRow .pname{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .personaRow .prole{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .personaRow .ptxt{font-size:34px;}
+html.beamer.beamer-xl.beamer-xxl .crossrefRow{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .isoSubline{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .codeBlock .codeLabel{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .codeBlock pre{font-size:26px;}
+html.beamer.beamer-xl.beamer-xxl .codeCaption{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .quizBox h4{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .quizQ{font-size:34px;}
+html.beamer.beamer-xl.beamer-xxl .quizOpt{font-size:34px;}
+html.beamer.beamer-xl.beamer-xxl .quizExplain{font-size:34px;}
+html.beamer.beamer-xl.beamer-xxl .navBtn{font-size:23px; padding:17px 28px;}
+html.beamer.beamer-xl.beamer-xxl .mindNode{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .mindNode .mi{font-size:38px;}
+html.beamer.beamer-xl.beamer-xxl .traceStep{font-size:34px;}
+html.beamer.beamer-xl.beamer-xxl .traceStep .stlabel{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .backBtn{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .finaleWrap h1{font-size:64px;}
+html.beamer.beamer-xl.beamer-xxl .finaleLabel{font-size:34px;}
+html.beamer.beamer-xl.beamer-xxl .traceTable{font-size:34px;}
+html.beamer.beamer-xl.beamer-xxl .traceTable th{font-size:21px;}
+html.beamer.beamer-xl.beamer-xxl .compareBox{font-size:34px;}
+</style>
+</head>
+<body>
+
+<div class="signature">
+  <strong>Michaela Kühn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<div class="appheader">
+  <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+  <h1>🧭 SE-Lifecycle-Lernreise</h1>
+  <p class="lead">Elf Wissensbereiche des SWEBOK® Guide V4.0a als Stationenweg – drei neue Kapitel (Architecture, Operations, Security) inklusive – ein Fall wechselt zwischen Hochrisiko-KI, agilem FinTech und klassischer Verwaltungsdigitalisierung.</p>
+  <div class="headerRow">
+    <button class="pill ghost" id="btnMindmap">🗺️ SWEBOK-Mindmap</button>
+    <button class="pill ghost" id="btnTrace">🧵 Traceability-Faden</button>
+    <button class="pill ghost" id="btnBeamer">🖥 Beamer-Modus</button>
+  </div>
+</div>
+
+<!-- INTRO -->
+<div class="view active" id="view-intro">
+  <div class="introWrap">
+    <div class="caseSwitch" id="caseSwitchIntro"></div>
+    <div class="introCard" id="introCaseCard"></div>
+    <div class="warnBox">
+      <strong>✅ Versionshinweis:</strong> Dieses Tool bildet SWEBOK<sup>®</sup> Guide V4.0a ab (aktuelle Fassung, Update vom 25.09.2025, IEEE Computer Society) — 18 statt vormals 15 Wissensbereiche. Elf davon bilden hier den artefakt-erzeugenden Lebenszyklus-Kern, darunter drei komplett neue Kapitel: Software Architecture, Software Engineering Operations, Software Security. Details siehe Normen-Register im Footer.
+    </div>
+    <div class="introCard">
+      <h3>Nicht linear, sondern vernetzt</h3>
+      <p>Wie die BABOK-Wissensbereiche sind auch die SWEBOK-Wissensbereiche kein starrer Wasserfall: Requirements, Architecture, Design, Construction, Testing, Operations und Maintenance greifen ineinander, während Configuration Management, Management, Quality und Security sie durchgängig begleiten – nicht als einmalige Phase am Ende.</p>
+    </div>
+    <button class="startBtn" id="btnStart">Lernreise starten →</button>
+  </div>
+</div>
+
+<!-- JOURNEY -->
+<div class="view" id="view-journey">
+  <div class="journeyGrid">
+    <div class="stationList">
+      <div class="caseSwitch" id="caseSwitchJourney" style="margin-bottom:12px;"></div>
+      <h4 style="font-size:14px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);">Die 11 Stationen</h4>
+      <div id="stationListInner"></div>
+      <div class="miniLinks">
+        <button class="miniLinkBtn" id="btnMindmap2">🗺️ Zurück zur Mindmap</button>
+        <button class="miniLinkBtn" id="btnTrace2">🧵 Traceability-Faden</button>
+      </div>
+    </div>
+    <div class="detailPanel" id="detailPanel"></div>
+  </div>
+</div>
+
+<!-- MINDMAP OVERLAY -->
+<div class="overlay" id="overlay-mindmap">
+  <div class="overlayMax">
+    <button class="backBtn" id="mmBack">← Zurück</button>
+    <h2>🗺️ SWEBOK-Mindmap: die 11 Wissensbereiche auf einen Blick</h2>
+    <p class="overlayLead">Tippen Sie auf einen Wissensbereich, um direkt in die passende Station der Reise zu springen.</p>
+    <div class="introCard">
+      <p>Diese Mindmap macht sichtbar, was die lineare Stationenliste nicht zeigt: In SWEBOK v4.0a bilden Requirements → Architecture → Design → Construction → Testing → Operations → Maintenance den eigentlichen Software-Lebenszyklus, während Configuration Management, Management, Quality und Security ihn querschnittlich begleiten – von der ersten Anforderung bis zur letzten Wartungsversion.</p>
+    </div>
+    <div class="mindmapWrap" id="mindmapWrap"></div>
+    <div class="introCard" style="margin-top:24px;">
+      <h3>🧩 Ausgeklammerte SWEBOK-Kapitel (bewusst)</h3>
+      <p id="excludedNote"></p>
+    </div>
+  </div>
+</div>
+
+<!-- TRACE OVERLAY -->
+<div class="overlay" id="overlay-trace">
+  <div class="overlayMax">
+    <button class="backBtn" id="trBack">← Zurück</button>
+    <h2>🧵 Traceability-Faden: ein Software-Item durch alle 11 Stationen</h2>
+    <p class="overlayLead">SWEBOK Kapitel 9, 3.4 Traceability verlangt, ein Artefakt bis zu seiner Anforderungsquelle zurück und bis zu seiner Qualitätsprüfung nach vorn verfolgen zu können. Hier ist genau das für <strong id="traceCaseLabel"></strong> durchgängig sichtbar gemacht.</p>
+    <div id="traceSteps"></div>
+  </div>
+</div>
+
+<!-- FINALE -->
+<div class="view" id="view-finale">
+  <div class="finaleWrap">
+    <h1>🏁 Ziel erreicht</h1>
+    <p id="finaleCaseLabel" class="finaleLabel"></p>
+    <table class="traceTable">
+      <thead><tr><th>Station</th><th>Zentrales Artefakt</th><th>SWEBOK-Quelle</th></tr></thead>
+      <tbody id="finaleTraceBody"></tbody>
+    </table>
+    <div class="compareBox" id="finaleCompare"></div>
+    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px;">
+      <button class="navBtn" id="btnReset">↺ Diese Reise neu starten</button>
+      <button class="navBtn primary" id="btnNextCase">Zum anderen Fall wechseln →</button>
+    </div>
+  </div>
+</div>
+
+<div class="crosslink">
+  Verwandte Denkraum-Tools zu diesem Thema:
+  <ul>
+    <li><a href="./ba-lifecycle-lernreise.html">BA-Lifecycle-Lernreise</a> — dieselbe Stationenweg-Struktur, aber für die sechs BABOK®-Wissensbereiche der Business-Analyse statt der elf SWEBOK-Wissensbereiche des Software Engineering.</li>
+    <li><a href="./iso-25010-kompendium.html">ISO 25010 Kompendium</a> — vertieft die neun ISO/IEC-25010:2023-Qualitätsmerkmale eigenständig, statt sie wie hier nur station-begleitend je einem SWEBOK-Kapitel zuzuordnen.</li>
+    <li><a href="./sarahs-weg-zum-qualitaetskuchen.html">Sarahs Weg zum Qualitätskuchen</a> — dieselben Fälle TalentMatch AI und NovaTrade Pulse, hier aber als Lernpfad rund um ISO/IEC 25010 und die fünf RE-Dimensionen statt als vollständige SWEBOK-Stationenreise.</li>
+  </ul>
+</div>
+
+<footer id="mainFooter">
+  <div class="footer-sig" id="footerSig"></div>
+  <div class="footer-details">
+    <details class="footer-box"><summary class="footer-summary">🛠 Systemprompt</summary>
+      <div class="footer-content footer-mono" id="footerSystemprompt"></div></details>
+    <details class="footer-box"><summary class="footer-summary">📘 Handbuch</summary>
+      <div class="footer-content footer-sans" id="footerHandbuch"></div></details>
+    <details class="footer-box"><summary class="footer-summary">🎤 Vortrags-Skript</summary>
+      <div class="footer-content footer-sans" id="footerSkript"></div></details>
+    <details class="footer-box"><summary class="footer-summary">⚖ Normen-Register</summary>
+      <div class="footer-content" id="footerNormen"></div></details>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// SE-Lifecycle-Lernreise — Datenmodell
+// Referenz: SWEBOK® Guide V4.0a (IEEE Computer Society, 2024/2026)
+// Quelle TOC: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf
+// ============================================================
+
+const CASE_ORDER = ["talentmatch","novatrade","studierendenakte"];
+
+const CASES = {
+  talentmatch: {
+    label: "TalentMatch AI",
+    org: "Vantera Systemtechnik GmbH",
+    tag: "Hochrisiko-KI-Recruiting · Anhang III Nr. 4 EU AI Act",
+    color: "indigo",
+    intro: "Vantera Systemtechnik GmbH führt TalentMatch AI ein — ein KI-gestütztes Bewerbungs-Scoring-System. Als Hochrisiko-KI nach Anhang III Nr. 4 EU AI Act (VO (EU) 2024/1689) durchläuft jede der elf SWEBOK-Stationen zusätzliche Konformitätsanforderungen: Transparenz, menschliche Aufsicht, Bias-Kontrolle.",
+    personas: {
+      ela: {name:"Ela", role:"Projektleitung", color:"indigo"},
+      knut: {name:"Knut", role:"Entwicklung", color:"teal"},
+      sarah: {name:"Sarah", role:"Vertrieb", color:"amber"},
+      petra: {name:"Petra", role:"QM", color:"violet"},
+      lead: {name:"Herr Bachmeier", role:"Geschäftsführung", color:"slate"}
+    }
+  },
+  novatrade: {
+    label: "NovaTrade Pulse",
+    org: "NovaTrade Systems GmbH",
+    tag: "Agile FinTech-Entwicklung · MiFID II / WpHG §63 ff.",
+    color: "teal",
+    intro: "NovaTrade Systems GmbH entwickelt NovaTrade Pulse — eine Handelsplattform für Bruchteilsaktien. Scrum mit Zwei-Wochen-Sprints, doch Product Governance (MiFID II Art. 16(3)/24(2), WpHG §63 ff. i.V.m. MaComp) bleibt ein hartes Gate vor jedem Release, egal wie kurz der Sprint ist.",
+    personas: {
+      ela: {name:"Ela", role:"Product Owner", color:"indigo"},
+      knut: {name:"Knut", role:"Entwicklung", color:"teal"},
+      sarah: {name:"Sarah", role:"Vertrieb", color:"amber"},
+      petra: {name:"Petra", role:"Compliance", color:"violet"},
+      lead: {name:"Herr Bachmeier", role:"Vorstand", color:"slate"}
+    }
+  },
+  studierendenakte: {
+    label: "Studierendenakte digital",
+    org: "Hochschule Nordwest (fiktiv)",
+    tag: "Klassische Verwaltungsdigitalisierung · VwVfG §3a / BITV 2.0",
+    color: "slate",
+    intro: "Die Hochschule Nordwest digitalisiert die Studierendenakte — von Immatrikulation bis Prüfungsverwaltung. Elektronische Kommunikation nach VwVfG §3a, Barrierefreiheit nach BITV 2.0/WCAG 2.1 AA und eine 50-Jahres-Aufbewahrungsfrist prägen alle elf Stationen.",
+    personas: {
+      ela: {name:"Ela", role:"Projektleitung", color:"indigo"},
+      knut: {name:"Knut", role:"Entwicklung", color:"teal"},
+      sarah: {name:"Herr Öztürk", role:"Prüfungsamt", color:"brown"},
+      petra: {name:"Petra", role:"QM", color:"violet"},
+      lead: {name:"Kanzlerin Dr. Feldmann", role:"Hochschulleitung", color:"slate"}
+    }
+  }
+};
+
+const STATIONS = [
+{
+  id:"req", icon:"📋", chapter:"SWEBOK Kapitel 1", title:"Software Requirements",
+  centralTopic:"4. Requirements Specification",
+  chips:["2.2 Common Requirements Elicitation Techniques","3.3 Formal Analysis"],
+  crossref:"IREB CPRE (Elicitation &amp; Analysis) · IEEE 29148:2018 (SRS-Format) · BABOK 5. Requirements Life Cycle Management",
+  iso25010:{characteristic:"Functional Suitability", sub:"Functional Completeness / Functional Appropriateness",
+    talentmatch:"Die SRS listet Bias-Schwellenwerte als Pflicht-Akzeptanzkriterium — ohne sie ist die Kernfunktion 'faires Scoring' laut ISO 25010 funktional unvollständig spezifiziert.",
+    novatrade:"Die Akzeptanzkriterien der User Story legen exakt fest, wann 'Echtzeit-Handel mit Bruchteilsaktien' als funktional angemessen erfüllt gilt.",
+    studierendenakte:"Die SRS bindet VwVfG §3a wörtlich ein — nur so ist die Kommunikationsfunktion im Sinne von Functional Correctness auch rechtlich korrekt."},
+  classicAgile:{
+    classic:"Vollständige Software Requirements Specification (SWEBOK 1, 4. Requirements Specification) vor Entwicklungsbeginn, Baseline durch Freigabegremium — Muster bei TalentMatch AI und Studierendenakte.",
+    agile:"Anforderungen als priorisiertes, laufend verfeinertes Backlog aus User Stories — vgl. SWEBOK Kapitel 11, 4.4 Agile Methods. Muster bei NovaTrade Pulse."
+  },
+  glossary:{term:"Software Requirements Specification (SRS)", ref:"SWEBOK v4.0a, 1, 4", def:"Vollständiges, geprüftes Dokument, das die Anforderungen an ein Softwaresystem eindeutig, konsistent und überprüfbar festhält.", example:"Die SRS ist die Referenz, gegen die jeder spätere Acceptance Test geprüft wird."},
+  code:{caseLabel:"TalentMatch AI", ref:"SWEBOK 1, Kap. 4 Requirements Specification &middot; ISO 25010 Functional Suitability",
+    bad:`// Akzeptanzkriterium nur als Kommentar, nicht pruefbar
+// "Das System soll fair bewerten"
+function scoreApplicant(profile) {
+  return model.predict(profile);
+}`,
+    good:`// Akzeptanzkriterium als ausfuehrbarer, quantifizierter Test
+function assertFairScoring(scoresByGroup) {
+  const gap = Math.max(...scoresByGroup) - Math.min(...scoresByGroup);
+  if (gap > BIAS_THRESHOLD) {
+    throw new ComplianceError("Art. 10 EU AI Act: Bias-Schwellenwert ueberschritten");
+  }
+}`},
+  artifacts:{
+    talentmatch:[
+      {code:"2. Requirements Elicitation", text:"Workshop mit HR-Fachbereich und Betriebsrat: Anforderung an Scoring-Transparenz für Bewerber:innen (Art. 86 EU AI Act — Recht auf Erklärung)."},
+      {code:"3. Requirements Analysis", text:"Konfliktanalyse zwischen Sarahs Wunsch nach automatischer Vorauswahl und Petras Pflicht zur menschlichen Aufsicht (Art. 14 EU AI Act, Human Oversight)."},
+      {code:"4. Requirements Specification", text:"Software Requirements Specification nach IEEE 29148: eigener Abschnitt 'Bias-Schwellenwerte' mit quantifizierten Fairness-Metriken je Bewerbergruppe."},
+      {code:"5. Requirements Validation", text:"Acceptance Test mit synthetischen Bewerberprofilen: prüft, ob das Modell bei identischer Qualifikation unabhängig vom Geschlecht gleich bewertet."},
+      {code:"7. Practical Considerations", text:"Requirements Tracing von Art. 10 EU AI Act (Datenqualität) bis zur konkreten Datenbereinigungs-Anforderung im Trainingsdatensatz."}
+    ],
+    novatrade:[
+      {code:"2. Requirements Elicitation", text:"Sprint-Review mit Petra (Compliance): Anforderung an Echtzeit-Warnung bei Product-Governance-Verstoß vor Order-Ausführung."},
+      {code:"3. Requirements Analysis", text:"Konflikt zwischen Elas Wunsch nach 100-ms-Ausführungslatenz und Petras Pflicht zu lückenloser MiFID-II-Protokollierung jeder Transaktion."},
+      {code:"4. Requirements Specification", text:"User Story statt klassischer SRS: 'Als Trader will ich Bruchteilsaktien in Echtzeit handeln, damit …' — mit Akzeptanzkriterien statt Vollspezifikation."},
+      {code:"5. Requirements Validation", text:"Sprint Review als laufende Validierung: Herr Bachmeier prüft im Increment, ob das Product-Governance-Gate (WpHG §63) technisch nicht umgehbar ist."},
+      {code:"7. Practical Considerations", text:"Requirements Tracing über das Jira-Backlog: jede User Story verlinkt auf den MaComp-BT-5-Absatz, den sie erfüllt."}
+    ],
+    studierendenakte:[
+      {code:"2. Requirements Elicitation", text:"Interview mit Herrn Öztürk (Prüfungsamt): Anforderung an eine barrierefreie Antragsstrecke nach BITV 2.0/WCAG 2.1 AA."},
+      {code:"3. Requirements Analysis", text:"Konflikt zwischen Kanzlerin Dr. Feldmanns Digitalisierungsdruck und der 50-Jahres-Aufbewahrungspflicht für Prüfungsunterlagen (Archivrecht)."},
+      {code:"4. Requirements Specification", text:"System Requirements Specification: elektronische Kommunikation nach VwVfG §3a inkl. Nutzer-Einwilligung als Pflichtfeld."},
+      {code:"5. Requirements Validation", text:"Requirements Review mit externem Barrierefreiheits-Auditor: Prototyp gegen WCAG-2.1-AA-Kriterien geprüft."},
+      {code:"7. Practical Considerations", text:"Requirements Tracing von VwVfG §3a bis zur technischen Signatur-Komponente im Antragsformular."}
+    ]
+  },
+  personaReaction:{
+    talentmatch:{who:"petra", text:"Ohne quantifizierte Bias-Schwellenwerte in der SRS unterschreibe ich keine Freigabe — 'fair' ist kein Akzeptanzkriterium."},
+    novatrade:{who:"ela", text:"Wir schreiben keine 200-Seiten-SRS mehr — aber jede User Story braucht trotzdem messbare Akzeptanzkriterien, sonst ist sie nicht 'Ready'."},
+    studierendenakte:{who:"sarah", text:"Die SRS muss VwVfG §3a wörtlich zitieren — sonst hält sie vor dem Verwaltungsgericht nicht stand."}
+  },
+  quiz:{
+    talentmatch:{q:"Welches Kriterium darf laut SWEBOK Kap. 1 (Requirements Specification) in einer belastbaren SRS für TalentMatch AI NICHT fehlen?",
+      options:["Ein allgemeines Bekenntnis zu 'fairer KI'","Quantifizierte, messbare Bias-Schwellenwerte je Bewerbergruppe","Eine Liste aller verwendeten Programmiersprachen"], correct:1,
+      explain:"SWEBOK 1, Kapitel 4 verlangt eine Software Requirements Specification mit prüfbaren, nicht-funktionalen Anforderungen — 'fair' ist ohne Messgröße nicht verifizierbar."},
+    novatrade:{q:"Warum reicht bei NovaTrade Pulse eine User Story mit Akzeptanzkriterien, wo TalentMatch eine vollständige SRS nach IEEE 29148 braucht?",
+      options:["Weil Börsenprodukte generell weniger reguliert sind","Weil agile Vorgehen (SWEBOK Kapitel 11, 4.4 Agile Methods) Spezifikation inkrementell statt vollständig vorab erzeugen — bei gleichbleibender Nachweispflicht","Weil User Stories keine Nachweispflicht kennen"], correct:1,
+      explain:"Der Detaillierungsgrad unterscheidet sich, nicht die Nachweispflicht: MiFID-II-Konformität muss am Ende genauso belegbar sein wie bei einer Vollspezifikation."},
+    studierendenakte:{q:"Welche Anforderung MUSS laut VwVfG §3a in der System Requirements Specification der Studierendenakte stehen?",
+      options:["Eine Vorgabe zur bevorzugten Programmiersprache","Die rechtssichere Ausgestaltung elektronischer Kommunikation inkl. Einwilligung","Eine Empfehlung für Cloud-Hosting"], correct:1,
+      explain:"VwVfG §3a regelt die Zulässigkeit elektronischer Kommunikation im Verwaltungsverfahren — das ist eine Rechtsanforderung, keine technische Präferenz."}
+  }
+},
+{
+  id:"arch", icon:"🏛️", chapter:"SWEBOK Kapitel 2", title:"Software Architecture",
+  centralTopic:"2.4 Architecture as Significant Decisions",
+  chips:["2.2 Architecture Patterns, Styles and Reference Architectures","4.3 Architecture Reviews"],
+  crossref:"ISO/IEC 25010:2023 (Architektur-Qualitätsmerkmale) · IEEE 42010 (Architecture Description, indirekt referenziert in SWEBOK 2.2.3)",
+  iso25010:{characteristic:"Maintainability", sub:"Modularity",
+    talentmatch:"Das Scoring-Modell als austauschbare Komponente lässt sich ohne Neuzertifizierung der Gesamtarchitektur aktualisieren — Modularity im Sinne von ISO 25010 als bewusstes Architekturziel.",
+    novatrade:"Die Governance-Middleware ist von der Order-Engine strikt entkoppelt und unabhängig wartbar — geringe Kopplung ist hier direkt Modularity.",
+    studierendenakte:"Das getrennte Archiv-Subsystem lässt sich unabhängig von der aktiven Antragsstrecke migrieren — Modularity trifft hier zusätzlich auf Flexibility (Adaptability)."},
+  classicAgile:{
+    classic:"Architektur wird vor Implementierungsbeginn vollständig dokumentiert (ADR-Katalog), Freigabe durch ein Architektur-Board — Muster bei TalentMatch AI und Studierendenakte.",
+    agile:"Architektur entsteht evolutionär im Sprint, aber jede folgenreiche Entscheidung wird trotzdem als ADR festgehalten — 'agil' heißt nicht 'undokumentiert' (SWEBOK 2, 3.2 Architectural Design). Muster bei NovaTrade Pulse."
+  },
+  glossary:{term:"Architecture Decision Record (ADR)", ref:"SWEBOK v4.0a, 2, 2.4", def:"Dokumentierte, folgenreiche Architekturentscheidung mit geprüften Alternativen und Begründung.", example:"Eine ADR hält fest, welche Alternative verworfen wurde und warum — nicht nur, was gebaut wurde."},
+  code:{caseLabel:"NovaTrade Pulse", ref:"SWEBOK 2, 2.4 Architecture as Significant Decisions &middot; ISO 25010 Maintainability",
+    bad:`// Compliance-Pruefung im Order-Service selbst -> umgehbar
+function placeOrder(order) {
+  if (order.amount < 10000) {
+    executeOrder(order); // Governance-Check evtl. vergessen
+  }
+}`,
+    good:`// Governance-Check als vorgelagerte Middleware, nicht umgehbar
+app.use(governanceMiddleware); // prueft JEDE Order zuerst
+
+function placeOrder(order) {
+  executeOrder(order); // Governance-Pruefung ist bereits erfolgt
+}`},
+  artifacts:{
+    talentmatch:[
+      {code:"1. Software Architecture Fundamentals", text:"Stakeholder-Mapping: Petra (QM), der Betriebsrat und die externe Konformitätsbewertungsstelle werden als Architektur-Stakeholder geführt, nicht nur Knuts Entwicklungsteam (1.2 Stakeholders and Concerns)."},
+      {code:"2.2 Architecture Patterns, Styles and Reference Architectures", text:"Referenzarchitektur 'Human-in-the-Loop' als eigenes, wiederverwendbares Muster für alle Hochrisiko-KI-Systeme bei Vantera festgelegt."},
+      {code:"2.4 Architecture as Significant Decisions", text:"Architecture Decision Record: 'Scoring-Modell bleibt austauschbare Komponente' — Alternative 'monolithische Integration' bewusst verworfen, um Re-Zertifizierungsaufwand bei Modell-Updates zu begrenzen."},
+      {code:"3. Software Architecture Process", text:"Architectural Design: Architektur-Synthese und -Analyse laufen iterativ mit jedem neuen EU-AI-Act-Konkretisierungsschreiben der Kommission."},
+      {code:"4. Software Architecture Evaluation", text:"Architecture Reviews: externe Prüfstelle bewertet die Architektur explizit gegen Art. 15 EU AI Act (Robustheit), nicht nur gegen funktionale Kriterien."}
+    ],
+    novatrade:[
+      {code:"1. Software Architecture Fundamentals", text:"Stakeholder-Mapping: die Aufsichtsbehörde (BaFin) wird als indirekter Architektur-Stakeholder geführt, obwohl sie nie Code sieht — ihre Prüfkriterien prägen die Struktur."},
+      {code:"2.2 Architecture Patterns, Styles and Reference Architectures", text:"Event-Driven-Architecture-Pattern für das Orderbuch: jede Order als Event, damit Compliance-Prüfung asynchron mitlaufen kann, ohne die Latenz zu erhöhen."},
+      {code:"2.4 Architecture as Significant Decisions", text:"Architecture Decision Record: 'Governance-Check als Middleware, nicht als Bibliotheksaufruf' — Alternative 'Compliance-Check im Order-Service selbst' verworfen, weil sie umgehbar wäre."},
+      {code:"3. Software Architecture Process", text:"Architectural Design im Sprint-Rhythmus: jede Architekturentscheidung wird im Sprint Review kurz gegen die Governance-Anforderungen gegengeprüft."},
+      {code:"4. Software Architecture Evaluation", text:"Architecture Reviews: informelles Review im Sprint-Review-Meeting statt formaler Abnahme — aber Petra hat festes Vetorecht bei Governance-relevanten Entscheidungen."}
+    ],
+    studierendenakte:[
+      {code:"1. Software Architecture Fundamentals", text:"Stakeholder-Mapping: die Landesarchiv-Behörde wird als langfristiger Architektur-Stakeholder geführt, obwohl sie erst in Jahrzehnten aktiv wird."},
+      {code:"2.2 Architecture Patterns, Styles and Reference Architectures", text:"Layered-Architecture-Pattern trennt die aktive Antragsstrecke strikt vom Langzeitarchiv-Subsystem — unterschiedliche Lebenszyklen, unterschiedliche Architektur-Schichten."},
+      {code:"2.4 Architecture as Significant Decisions", text:"Architecture Decision Record: 'Offenes, dokumentiertes Dateiformat statt proprietärer Datenbank' — Alternative 'Cloud-natives Format' verworfen wegen Vendor-Lock-in-Risiko über 50 Jahre."},
+      {code:"3. Software Architecture Process", text:"Architectural Design orientiert sich am Haushaltsjahr: größere Architekturentscheidungen werden einmal jährlich im IT-Ausschuss der Hochschule getroffen."},
+      {code:"4. Software Architecture Evaluation", text:"Architecture Reviews: jährliche Prüfung durch die Hochschul-IT-Revision, ergänzt um eine Portabilitäts-Stichprobe (kann das Archiv-Subsystem noch migriert werden?)."}
+    ]
+  },
+  personaReaction:{
+    talentmatch:{who:"knut", text:"Eine ADR ist kein Bürokratie-Dokument — sie ist meine Verteidigung, wenn in zwei Jahren jemand fragt, warum wir das Scoring-Modell nicht direkt in den Kernservice eingebaut haben."},
+    novatrade:{who:"petra", text:"Die ADR zur Governance-Middleware ist mein wichtigstes Dokument im ganzen Projekt — sie beweist, dass die Umgehung technisch unmöglich, nicht nur unerwünscht ist."},
+    studierendenakte:{who:"lead", text:"Eine Architekturentscheidung, die ich heute treffe, muss meine Nachfolgerin in zwanzig Jahren noch nachvollziehen können — deshalb bestehe ich auf dokumentierten Alternativen, nicht nur auf dem Ergebnis."}
+  },
+  quiz:{
+    talentmatch:{q:"Warum verwirft die ADR bei TalentMatch AI bewusst die Alternative 'monolithische Integration' des Scoring-Modells?",
+      options:["Weil Monolithen technisch unmöglich sind","Weil eine austauschbare Komponente Modell-Updates ohne Neuzertifizierung der Gesamtarchitektur erlaubt","Weil Monolithen mehr Speicherplatz brauchen"], correct:1,
+      explain:"Architecture Decision Records dokumentieren nicht nur die Wahl, sondern die verworfene Alternative — hier: warum lose Kopplung den Zertifizierungsaufwand begrenzt."},
+    novatrade:{q:"Warum ist die Ablehnung von 'Compliance-Check im Order-Service selbst' in der NovaTrade-ADR wichtig?",
+      options:["Weil es schneller wäre","Weil ein eingebetteter statt zentraler Check umgehbar wäre — Middleware kann es nicht","Weil das Order-Service-Team überlastet ist"], correct:1,
+      explain:"Eine strukturell vorgelagerte Middleware lässt sich nicht 'aus Versehen' umgehen — ein Check im Service selbst schon."},
+    studierendenakte:{q:"Warum verwirft die ADR der Studierendenakte ein 'Cloud-natives Format' zugunsten offener Formate?",
+      options:["Aus Kostengründen","Wegen des Vendor-Lock-in-Risikos über die 50-jährige Aufbewahrungsfrist","Weil Cloud-Lösungen technisch nicht möglich sind"], correct:1,
+      explain:"Über fünfzig Jahre kann ein proprietäres Cloud-Format vom Anbieter eingestellt werden — offene Formate sichern langfristige Lesbarkeit."}
+  }
+},
+{
+  id:"design", icon:"🏗️", chapter:"SWEBOK Kapitel 3", title:"Software Design",
+  centralTopic:"6. Software Design Quality Analysis and Evaluation",
+  chips:["5.6 Component-Based Design (CBD)","4.4 Design Patterns and Styles"],
+  crossref:"ISO/IEC 25010:2023 (Qualitätsmerkmale, direkte Grundlage von 6.2 Quality Attributes) · IEEE 29148:2018",
+  iso25010:{characteristic:"variiert je Fall — Functional Suitability / Performance Efficiency / Flexibility", sub:"siehe Beispiele",
+    talentmatch:"Functional Suitability (erweitert): demografische Parität wird als zusätzliches, messbares Qualitätsmerkmal neben den neun ISO-25010-Standardmerkmalen geführt — die Norm allein deckt KI-Fairness nicht ab.",
+    novatrade:"Performance Efficiency — Time Behaviour: die 100-ms-Grenze für die Order-Bestätigung ist eine konkrete, messbare Ausprägung dieses Submerkmals.",
+    studierendenakte:"Flexibility — Adaptability: das technologieneutrale, offene Format sichert Übertragbarkeit über mehrere Systemgenerationen hinweg (vormals 'Portability' in ISO 25010:2011)."},
+  classicAgile:{
+    classic:"Design Quality Analysis erfolgt als eigener Review-Meilenstein vor Freigabe der Implementierung — Muster bei TalentMatch AI und Studierendenakte.",
+    agile:"Design Quality wird kontinuierlich im Sprint bewertet, aber Messkriterien (z. B. eine Latenzgrenze) stehen von Anfang an fest — vgl. SWEBOK 3, 6.3 Quality Analysis and Evaluation Techniques. Muster bei NovaTrade Pulse."
+  },
+  glossary:{term:"Design Rationale", ref:"SWEBOK v4.0a, 3, 4.6", def:"Dokumentierte Begründung, warum eine bestimmte Designentscheidung getroffen wurde.", example:"Design Rationale hält fest, warum ein Erklärbarkeits-Panel als eigene Komponente statt als UI-Overlay umgesetzt wurde."},
+  code:{caseLabel:"Studierendenakte digital", ref:"SWEBOK 3, 3. Software Design Qualities (Data Persistence) &middot; ISO 25010 Flexibility",
+    bad:`// Speicherung im proprietaeren Format eines Anbieters
+db.save(record, { format: "VendorX-Binary-v7" });`,
+    good:`// Offenes, dokumentiertes Format sichert Portabilitaet ueber 50 Jahre
+db.save(record, { format: "PDF/A-3", schema: "XOEV-Standard" });`},
+  artifacts:{
+    talentmatch:[
+      {code:"1. Software Design Fundamentals", text:"Design Thinking: Petra fordert, dass 'Fairness' von Anfang an als Designproblem behandelt wird, nicht als nachträglicher Test (1.1 Design Thinking)."},
+      {code:"3. Software Design Qualities", text:"Assurance, Security, and Safety: Sicherheitsdesign und Fairness-Sicherung werden als eine gemeinsame Design-Qualität behandelt, nicht getrennt betrachtet."},
+      {code:"4. Recording Software Designs", text:"Design Rationale: jede Designentscheidung rund um das Erklärbarkeits-Panel wird mit Begründung dokumentiert, nicht nur das Endergebnis."},
+      {code:"5. Software Design Strategies and Methods", text:"Component-Based Design (CBD): das Scoring-Modell bleibt austauschbare Komponente, damit Modell-Updates keine Neuzertifizierung der Gesamtarchitektur erzwingen."},
+      {code:"6. Software Design Quality Analysis and Evaluation", text:"Quality Attributes: demografische Parität wird als Architektur-Qualitätsziel neben Performance messbar gemacht."}
+    ],
+    novatrade:[
+      {code:"1. Software Design Fundamentals", text:"Context of Software Design: der regulatorische Kontext (Börsenhandelsrecht) bestimmt Designentscheidungen stärker als reine Technikpräferenzen."},
+      {code:"3. Software Design Qualities", text:"Concurrency: paralleler Zugriff tausender Trader auf denselben Bruchteilsaktien-Pool ohne Race Conditions."},
+      {code:"4. Recording Software Designs", text:"Behavioral Design Descriptions: ein Zustandsdiagramm des Orderbuchs als verbindliche Designdokumentation für alle Randzustände."},
+      {code:"5. Software Design Strategies and Methods", text:"Object-Oriented Design für das Order-Modul, ermöglicht inkrementelle Sprint-für-Sprint-Erweiterung ohne Architektur-Bruch."},
+      {code:"6. Software Design Quality Analysis and Evaluation", text:"Measures and Metrics: eine Order-Bestätigung unter 100 ms wird als messbares Qualitätsziel im Design festgeschrieben."}
+    ],
+    studierendenakte:[
+      {code:"1. Software Design Fundamentals", text:"Software Design Principles: 'Design for Longevity' wird als eigene, zusätzliche Designleitlinie neben den klassischen Prinzipien geführt."},
+      {code:"3. Software Design Qualities", text:"Data Persistence: die 50-Jahres-Archivierung erfordert ein migrationssicheres, formatunabhängiges Speicherformat."},
+      {code:"4. Recording Software Designs", text:"Structural Design Descriptions: ein UML-Klassendiagramm des Archiv-Subsystems bewusst technologieneutral gehalten, um spätere Migrationen zu erleichtern."},
+      {code:"5. Software Design Strategies and Methods", text:"Domain-Driven Design für das Archiv-Subsystem: Fachbegriffe aus dem Prüfungsrecht (Widerspruchsfrist, Bestandskraft) direkt im Domänenmodell abgebildet."},
+      {code:"6. Software Design Quality Analysis and Evaluation", text:"Verification, Validation, and Certification: eine externe WCAG-2.1-AA-Zertifizierung wird als Designabnahmekriterium verlangt, nicht nur ein interner Test."}
+    ]
+  },
+  personaReaction:{
+    talentmatch:{who:"petra", text:"Demografische Parität ist für mich ein Designziel, kein Nachtest — wenn wir das erst am Ende messen, ist es zu spät zum Nachbessern."},
+    novatrade:{who:"ela", text:"Hundert Millisekunden sind kein Wunschwert, sondern ein Designkriterium — jede Komponente wird von Anfang an daraufhin bewertet."},
+    studierendenakte:{who:"sarah", text:"Eine externe WCAG-Zertifizierung ist für mich die einzige Designabnahme, die zählt — interne Selbsteinschätzung reicht nicht."}
+  },
+  quiz:{
+    talentmatch:{q:"Warum behandelt TalentMatch AI demografische Parität als Designziel (SWEBOK 3, 6.2 Quality Attributes) statt als reinen Nachtest?",
+      options:["Weil Nachtests generell verboten sind","Weil sich Fairness-Probleme, die erst im Test auffallen, oft nicht ohne Architekturänderung beheben lassen","Weil das schneller ist"], correct:1,
+      explain:"Wird ein Fairness-Problem erst im Test entdeckt, sitzt es oft strukturell im Design — eine reine Codekorrektur reicht dann nicht mehr."},
+    novatrade:{q:"Warum ist die 100-ms-Latenzgrenze bei NovaTrade ein Designkriterium und kein reines Testkriterium (SWEBOK 3, 6.4 Measures and Metrics)?",
+      options:["Weil Tests bei NovaTrade nicht erlaubt sind","Weil sich Latenzprobleme oft aus Architekturentscheidungen ergeben, die sich nachträglich kaum korrigieren lassen","Weil 100 ms gesetzlich vorgeschrieben ist"], correct:1,
+      explain:"Latenz ist meist eine Eigenschaft der Architektur (z. B. Anzahl synchroner Aufrufe) — im Design festgelegt, im Test nur gemessen."},
+    studierendenakte:{q:"Warum verlangt die Studierendenakte eine EXTERNE WCAG-2.1-AA-Zertifizierung als Designabnahme (SWEBOK 3, 6.5 Verification, Validation, and Certification)?",
+      options:["Weil interne Tests grundsätzlich wertlos sind","Weil eine unabhängige Prüfung blinde Flecken interner Teams aufdeckt","Weil das Land keine internen Prüfungen zulässt"], correct:1,
+      explain:"Externe Zertifizierung reduziert das Risiko, dass ein Team seine eigenen Barrierefreiheits-Annahmen unhinterfragt für ausreichend hält."}
+  }
+},
+{
+  id:"constr", icon:"🔧", chapter:"SWEBOK Kapitel 4", title:"Software Construction",
+  centralTopic:"3. Practical Considerations",
+  chips:["1.4 Reusing Assets","3.4 Construction Testing"],
+  crossref:"ISO/IEC 25010:2023 (Wartbarkeit) · IREB (Anforderung-zu-Code-Traceability)",
+  iso25010:{characteristic:"Maintainability", sub:"Testability / Modifiability / Reusability",
+    talentmatch:"Testability: das CI-Gate mit fest verankerten Bias-Testfällen macht die Fairness-Eigenschaft bei jedem Build laufend prüfbar, nicht nur stichprobenartig.",
+    novatrade:"Modifiability: lock-freie Concurrency-Primitives erlauben Änderungen am Orderbuch-Modul, ohne Seiteneffekte auf andere Threads zu riskieren.",
+    studierendenakte:"Reusability: bestehende Verwaltungs-Komponenten aus dem Landes-Portal werden wiederverwendet statt neu gebaut — geringerer Wartungsaufwand durch Wiederverwendung."},
+  classicAgile:{
+    classic:"Konstruktion folgt festgelegtem Entwurf, Änderungen durchlaufen formale Change Control — Muster bei TalentMatch AI und Studierendenakte.",
+    agile:"Konstruktion und Entwurf verschränken sich sprintweise (Emergent Design) — vgl. SWEBOK Kapitel 10, 2.1 Categories of Software Processes. Muster bei NovaTrade Pulse."
+  },
+  glossary:{term:"Coding Standard", ref:"SWEBOK v4.0a, 4, 1.5", def:"Verbindliche Konventionen für Quellcode, die Lesbarkeit, Wartbarkeit und Prüfbarkeit sichern.", example:"Ein Coding Standard erzwingt einheitliches Logging über das gesamte Team hinweg."},
+  code:{caseLabel:"TalentMatch AI", ref:"SWEBOK 4, 1.5 Applying Standards in Construction &middot; ISO 25010 Maintainability",
+    bad:`function decide(applicant) {
+  return model.predict(applicant); // keine Nachvollziehbarkeit
+}`,
+    good:`function decide(applicant) {
+  const result = model.predict(applicant);
+  auditLog.write({
+    applicantId: applicant.id, factors: result.topFactors,
+    timestamp: Date.now(), modelVersion: MODEL_VERSION
+  }); // Art. 12 EU AI Act: Nachweispflicht erfuellt
+  return result;
+}`},
+  artifacts:{
+    talentmatch:[
+      {code:"1. Software Construction Fundamentals", text:"Applying Standards in Construction: verbindlicher Coding-Standard verlangt Logging jeder Scoring-Entscheidung — Grundlage für spätere Auditierbarkeit (Art. 12 EU AI Act)."},
+      {code:"2. Managing Construction", text:"Construction Measurement: Knut trackt die Code-Coverage der Fairness-Testfälle separat von der allgemeinen Coverage-Quote."},
+      {code:"3. Practical Considerations", text:"Integration: Petra fordert, dass das System ohne den Human-Oversight-Layer technisch nicht startfähig ist (Fail-Safe by Design)."},
+      {code:"4. Construction Technologies", text:"Assertions, Design by Contract, and Defensive Programming: eine Vorbedingung prüft vor jeder Bewertung, ob das Pflichtfeld 'Ablehnungsgrund' befüllbar ist."},
+      {code:"5. Software Construction Tools", text:"Unit-Testing-Tools mit fest verankerten Bias-Testfällen im CI-Pipeline-Gate — der Build schlägt fehl, wenn der Fairness-Schwellenwert verletzt wird."}
+    ],
+    novatrade:[
+      {code:"1. Software Construction Fundamentals", text:"Anticipating and Embracing Change: Konstruktion so, dass neue Assetklassen (nach Bruchteilsaktien z. B. Krypto) ohne Kernrefactoring integrierbar sind."},
+      {code:"2. Managing Construction", text:"Construction in Life Cycle Models: Konstruktion strikt sprintweise, jedes Increment potenziell auslieferbar (Definition of Done inkl. Compliance-Check)."},
+      {code:"3. Practical Considerations", text:"Coding: eine Coding-Konvention erzwingt idempotente Order-Funktionen — Voraussetzung für sicheres Retry bei Netzwerkfehlern im Hochfrequenz-Kontext."},
+      {code:"4. Construction Technologies", text:"Concurrency Primitives: lock-freie Datenstrukturen für den Orderbuch-Zugriff, um das Latenz-SLA einzuhalten."},
+      {code:"5. Software Construction Tools", text:"Profiling-Tools fest im Sprint eingeplant: Petra verlangt einen Latenz-Report vor jedem Release-Kandidaten."}
+    ],
+    studierendenakte:[
+      {code:"1. Software Construction Fundamentals", text:"Reusing Assets: bestehende Verwaltungs-Komponenten aus dem Landes-Portal werden wiederverwendet statt neu gebaut — reduziert den Prüfaufwand für Herrn Öztürk."},
+      {code:"2. Managing Construction", text:"Construction Planning orientiert sich am Haushaltsjahr der Hochschule — feste Meilensteine statt Sprint-Kadenz."},
+      {code:"3. Practical Considerations", text:"Construction Testing gegen Screenreader (NVDA/JAWS) als fester Bestandteil jedes Feature-Merges, nicht erst am Projektende."},
+      {code:"4. Construction Technologies", text:"Runtime Configuration and Internationalization: Antragsformular technisch mehrsprachig vorbereitet, auch wenn aktuell nur Deutsch ausgeliefert wird."},
+      {code:"5. Software Construction Tools", text:"Development Environment mit Barrierefreiheits-Linter (axe-core) fest in die IDE integriert."}
+    ]
+  },
+  personaReaction:{
+    talentmatch:{who:"knut", text:"Jede Bewertung loggt automatisch ihre Begründung — das baue ich nicht extra ein, das ist Teil des Coding-Standards."},
+    novatrade:{who:"knut", text:"Idempotente Order-Funktionen sind kein Nice-to-have — bei einem Netzwerkfehler darf niemals doppelt gekauft werden."},
+    studierendenakte:{who:"sarah", text:"Der Barrierefreiheits-Linter läuft bei jedem Commit mit — nicht erst, wenn ich am Ende reklamiere."}
+  },
+  quiz:{
+    talentmatch:{q:"Was verlangt der Coding-Standard bei TalentMatch AI laut SWEBOK 4, 1.5 (Applying Standards in Construction) zusätzlich zur reinen Funktionalität?",
+      options:["Automatisches Logging jeder Scoring-Entscheidung","Verwendung einer bestimmten IDE","Kommentare ausschließlich auf Englisch"], correct:0,
+      explain:"Ein Audit-Log jeder Entscheidung ist Voraussetzung für die Nachweispflicht nach Art. 12 EU AI Act — der Coding-Standard erzwingt das strukturell."},
+    novatrade:{q:"Warum müssen Order-Funktionen bei NovaTrade idempotent sein (SWEBOK 4, 4.4)?",
+      options:["Damit der Code kürzer wird","Damit ein Netzwerk-Retry niemals eine Order doppelt ausführt","Weil Scrum das formal vorschreibt"], correct:1,
+      explain:"Idempotenz verhindert, dass ein wiederholter Aufruf (z. B. nach Timeout) denselben Effekt mehrfach auslöst — kritisch bei Finanztransaktionen."},
+    studierendenakte:{q:"Was leistet der Barrierefreiheits-Linter im Entwicklungsprozess der Studierendenakte (SWEBOK 4, 3.5 Reuse in Construction/Praxis)?",
+      options:["Er ersetzt manuelle Tests vollständig","Er prüft WCAG-Verstöße schon bei jedem Commit, nicht erst am Projektende","Er generiert automatisch Übersetzungen"], correct:1,
+      explain:"Frühes, automatisiertes Feedback im Commit-Zyklus verhindert, dass sich Barrierefreiheits-Schulden über Monate anhäufen."}
+  }
+},
+{
+  id:"test", icon:"🧪", chapter:"SWEBOK Kapitel 5", title:"Software Testing",
+  centralTopic:"3. Test Techniques",
+  chips:["3.2 Structure-Based Test Techniques","3.4 Fault-Based and Mutation Techniques"],
+  crossref:"ISO/IEC 25010:2023 (Funktionale Eignung, Zuverlässigkeit) · PMBOK Guide, 8. Ausgabe (Quality Control)",
+  iso25010:{characteristic:"Reliability", sub:"Fault Tolerance / Availability / Faultlessness",
+    talentmatch:"Fault Tolerance: gezielte Mutation der Trainingsdaten prüft, ob das System diskriminierende Fehlermuster toleriert, erkennt und meldet, statt sie stillschweigend zu übernehmen.",
+    novatrade:"Availability: der Lasttest mit 10.000 gleichzeitigen Order-Anfragen prüft, ob die Plattform unter Spitzenlast verfügbar bleibt.",
+    studierendenakte:"Faultlessness (vormals 'Maturity' in ISO 25010:2011): Testfälle aus echten Antragsverläufen prüfen, ob die Formularlogik im Praxisbetrieb tatsächlich fehlerfrei bleibt."},
+  classicAgile:{
+    classic:"Eigene Testphase nach Entwicklungsabschluss inklusive externer Konformitätsbewertung — Muster bei TalentMatch AI und Studierendenakte.",
+    agile:"Testen ist sprintintegriert, jede Story bringt ihre Testfälle mit — vgl. SWEBOK 5, 6.1.2 Testing in Line with Shift-Left Movement. Muster bei NovaTrade Pulse."
+  },
+  glossary:{term:"Fault-Based and Mutation Techniques", ref:"SWEBOK v4.0a, 5, 3.4", def:"Testtechnik, die gezielt Fehler (Mutationen) in Code oder Daten einführt, um die Erkennungsfähigkeit der Tests zu prüfen.", example:"Ein Mutationstest führt gezielt Fehler ein, um zu prüfen, ob die Testsuite sie erkennt."},
+  code:{caseLabel:"NovaTrade Pulse", ref:"SWEBOK 5, 3.4 Fault-Based and Mutation Techniques &middot; ISO 25010 Reliability",
+    bad:`function buyShares(orderId, qty) {
+  portfolio.shares += qty; // bei Retry: doppelter Kauf moeglich
+}`,
+    good:`function buyShares(orderId, qty) {
+  if (processedOrders.has(orderId)) return; // Retry-sicher
+  portfolio.shares += qty;
+  processedOrders.add(orderId);
+}`},
+  artifacts:{
+    talentmatch:[
+      {code:"1. Software Testing Fundamentals", text:"Faults vs. Failures: Petra besteht auf klarer Trennung zwischen 'Bias-Fehler' und 'Systemausfall' — unterschiedliche Abnahmekriterien."},
+      {code:"2. Test Levels", text:"Systemtest gegen Art. 15 EU AI Act (Genauigkeit, Robustheit, Cybersicherheit) als eigener, dokumentierter Testlevel vor Rollout."},
+      {code:"3. Test Techniques", text:"Fault-Based and Mutation Techniques: gezielte Mutation der Trainingsdaten, um zu prüfen, ob das Modell diskriminierende Muster erkennt und meldet."},
+      {code:"4. Test-Related Measures", text:"Evaluation of the SUT: die False-Negative-Rate je demografischer Gruppe wird als Pflichtmesswert erhoben, nicht nur die Gesamtgenauigkeit."},
+      {code:"5. Test Process", text:"Test Sub-Processes and Activities: eine unabhängige Konformitätsbewertung durch eine externe Stelle vor Marktzugang (Art. 43 EU AI Act, Hochrisiko-Konformität)."}
+    ],
+    novatrade:[
+      {code:"1. Software Testing Fundamentals", text:"Relationship of Testing to Other Activities: Testing läuft sprintbegleitend, nicht als Endphase — jede Story hat ihre Testfälle vor dem Review."},
+      {code:"2. Test Levels", text:"Lasttest als eigener Testlevel: 10.000 gleichzeitige Order-Anfragen simulieren die Handelseröffnung."},
+      {code:"3. Test Techniques", text:"Techniques Based on the Nature of the Application: ein Zustandsmodell des Orderbuchs generiert automatisch Testfälle für Randzustände (leeres Buch, Marktabbruch)."},
+      {code:"4. Test-Related Measures", text:"Evaluation of the Tests Performed: Petra verlangt 100 % Testabdeckung aller Product-Governance-Regeln, nicht nur allgemeine Code-Coverage."},
+      {code:"5. Test Process", text:"Test Sub-Processes and Activities: Compliance-Testfälle laufen automatisiert bei jedem Pull Request, nicht erst vor Release."}
+    ],
+    studierendenakte:[
+      {code:"1. Software Testing Fundamentals", text:"Key Issues: der Testfokus liegt auf Langzeit-Stabilität, nicht auf Performance — die Prüfungsakte muss in 30 Jahren noch korrekt lesbar sein."},
+      {code:"2. Test Levels", text:"Abnahmetest mit realen Nutzer:innen inklusive Screenreader-Nutzer:innen — Herr Öztürk moderiert die Testsitzung."},
+      {code:"3. Test Techniques", text:"Usage-Based Techniques: Testfälle aus echten Antragsverläufen des Prüfungsamts abgeleitet, nicht synthetisch konstruiert."},
+      {code:"4. Test-Related Measures", text:"Evaluation of the SUT: die WCAG-2.1-AA-Konformitätsquote je Formularseite wird als Pflichtmesswert vor Freigabe erhoben."},
+      {code:"5. Test Process", text:"Practical Considerations: die Testphase wird um eine externe Prüfstelle für Barrierefreiheit verlängert — Kanzlerin Feldmann akzeptiert den Zeitverzug."}
+    ]
+  },
+  personaReaction:{
+    talentmatch:{who:"petra", text:"Eine Gesamtgenauigkeit von 95 % sagt mir nichts — zeig mir die Falsch-Negativ-Rate für jede Bewerbergruppe einzeln."},
+    novatrade:{who:"ela", text:"Compliance-Testfälle laufen bei jedem Pull Request automatisch mit — wir testen nicht erst kurz vor dem Release."},
+    studierendenakte:{who:"sarah", text:"Ich moderiere den Test selbst mit echten Screenreader-Nutzer:innen — simulierte Barrierefreiheit reicht mir nicht."}
+  },
+  quiz:{
+    talentmatch:{q:"Warum reicht eine Gesamtgenauigkeit von 95 % bei TalentMatch AI laut SWEBOK 5, 4.1 (Evaluation of the SUT) nicht aus?",
+      options:["Weil 95 % technisch unmöglich ist","Weil sich dahinter stark unterschiedliche Fehlerraten je Bewerbergruppe verbergen können","Weil der Wert nicht rund ist"], correct:1,
+      explain:"Aggregierte Metriken können gruppenspezifische Diskriminierung verdecken — deshalb verlangt Petra die Aufschlüsselung nach Gruppe."},
+    novatrade:{q:"Was unterscheidet Compliance-Testfälle bei NovaTrade von klassischem Regressionstesten (SWEBOK 5, 5.2 Test Sub-Processes and Activities)?",
+      options:["Sie laufen bei jedem Pull Request automatisiert, nicht nur vor Release","Sie werden grundsätzlich nie automatisiert","Sie sind optional"], correct:0,
+      explain:"Kontinuierliche Prüfung bei jedem PR verhindert, dass sich Governance-Verstöße erst kurz vor Release zeigen."},
+    studierendenakte:{q:"Warum moderiert Herr Öztürk den Abnahmetest der Studierendenakte persönlich mit echten Screenreader-Nutzer:innen (SWEBOK 5, 2. Test Levels)?",
+      options:["Simulierte Tests decken reale Bedienbarkeitsprobleme oft nicht auf","Weil das gesetzlich für alle Softwareprojekte vorgeschrieben ist","Aus Kostengründen"], correct:0,
+      explain:"Automatisierte Accessibility-Checker erkennen nur einen Teil der WCAG-Kriterien — echte Nutzungstests decken den Rest ab."}
+  }
+},
+{
+  id:"ops", icon:"🚀", chapter:"SWEBOK Kapitel 6", title:"Software Engineering Operations",
+  centralTopic:"3. Software Engineering Operations Delivery",
+  chips:["2.5 Software Backup, Disaster Recovery, and Failover","4.1 Incident Management"],
+  crossref:"ISO/IEC 20000 (IT Service Management, indirekt) · EU AI Act Art. 73 (Meldepflicht schwerwiegender Vorfälle, nur TalentMatch AI einschlägig)",
+  iso25010:{characteristic:"Reliability", sub:"Recoverability / Availability",
+    talentmatch:"Recoverability: der Canary-Rollout erlaubt einen sofortigen Stopp und Rückzug eines Modell-Updates, sobald eine Diskriminierung erkannt wird.",
+    novatrade:"Availability: eine vertraglich zugesicherte Failover-Zeit unter 30 Sekunden sichert die durchgehende Verfügbarkeit der Handelsplattform.",
+    studierendenakte:"Recoverability: der getestete Rollback-Pfad stellt sicher, dass ein fehlgeschlagenes Release ohne Datenverlust rückgängig gemacht werden kann."},
+  classicAgile:{
+    classic:"Betrieb als eigene Phase nach Abnahme, mit festen Wartungsfenstern — Muster bei der Studierendenakte.",
+    agile:"Betrieb (DevOps) verschränkt sich mit Entwicklung: Continuous Delivery, aber Governance-Gates bleiben harte, nicht automatisch mitskalierende Kontrollpunkte — Muster bei NovaTrade Pulse und, mit Canary-Rollout, bei TalentMatch AI."
+  },
+  glossary:{term:"Canary-Rollout", ref:"SWEBOK v4.0a, 6, 3.2", def:"Kontrollierte Auslieferung einer neuen Version an einen kleinen Nutzeranteil, um Risiken vor Vollausrollung zu erkennen.", example:"Ein Canary-Rollout auf 5 % der Anfragen deckt Bias-Drift auf, bevor er alle Nutzer:innen betrifft."},
+  code:{caseLabel:"TalentMatch AI", ref:"SWEBOK 6, 3. Operations Delivery &middot; ISO 25010 Reliability (Recoverability)",
+    bad:`deploy(newModelVersion, { traffic: "100%" }); // sofort fuer alle live`,
+    good:`deploy(newModelVersion, { traffic: "5%" });
+monitorBiasMetrics({ onViolation: rollback });
+if (biasMetricsOk()) increaseTraffic("100%"); // erst nach sauberem Ergebnis`},
+  artifacts:{
+    talentmatch:[
+      {code:"1. SE Operations Fundamentals", text:"Definition of Software Engineering Operations: Petra besteht darauf, dass 'Betrieb' bei TalentMatch AI auch das laufende Monitoring der Bias-Metriken umfasst, nicht nur Systemverfügbarkeit."},
+      {code:"2. Operations Planning", text:"Software Availability, Continuity, and Service Levels: das SLA verlangt, dass bei Ausfall des Erklärbarkeits-Panels das gesamte Scoring-System pausiert — kein Betrieb ohne Transparenzfunktion."},
+      {code:"3. Operations Delivery", text:"Deployment/Release Engineering: jedes Modell-Update durchläuft einen Canary-Rollout mit Bias-Monitoring auf 5 % der echten Anfragen, bevor es vollständig live geht."},
+      {code:"4. Operations Control", text:"Incident Management: eine erkannte Diskriminierung im Live-Betrieb löst einen Sofort-Stopp aus, mit Meldepflicht an die Marktüberwachungsbehörde binnen 15 Tagen (Art. 73 EU AI Act)."},
+      {code:"5. Practical Considerations", text:"Operational Risk Management: Betriebsrisiken (Bias-Drift durch neue Bewerberpopulationen) werden separat von klassischen IT-Betriebsrisiken (Serverausfall) geführt."}
+    ],
+    novatrade:[
+      {code:"1. SE Operations Fundamentals", text:"Performance, Reliability and Load Balancing: Lastverteilung über mehrere Rechenzentren, damit die Handelsplattform auch bei Handelseröffnungs-Spitzen nicht einbricht."},
+      {code:"2. Operations Planning", text:"Software Backup, Disaster Recovery, and Failover: eine Failover-Zeit unter 30 Sekunden ist vertraglich zugesichert — jede Sekunde Ausfall kostet bei Handelsvolumen real Geld."},
+      {code:"3. Operations Delivery", text:"Deployment/Release Engineering: mehrfache tägliche Deployments möglich, aber jedes durchläuft automatisch das Compliance-Gate aus der SCM-Station."},
+      {code:"4. Operations Control", text:"Change Management: jede Produktionsänderung wird protokolliert und ist der MiFID-II-Aufsicht auf Anfrage vorlegbar."},
+      {code:"5. Practical Considerations", text:"Automating Software Engineering Operations: Auto-Scaling reagiert auf Handelsvolumen, aber Governance-Regeln skalieren nie automatisch mit — Petra muss neue Regeln immer manuell freigeben."}
+    ],
+    studierendenakte:[
+      {code:"1. SE Operations Fundamentals", text:"Software Installation: der Rollout erfolgt zentral über die Hochschul-IT, nicht dezentral über einzelne Fakultäten — ein einheitlicher Update-Stand ist Pflicht."},
+      {code:"2. Operations Planning", text:"Software Capacity Management: die Kapazitätsplanung orientiert sich an Stoßzeiten der Einschreibung, nicht an Dauerlast."},
+      {code:"3. Operations Delivery", text:"Rollback and Data Migration: jedes Release hat einen getesteten Rollback-Pfad, weil ein fehlgeschlagenes Update während der Prüfungsphase inakzeptabel wäre."},
+      {code:"4. Operations Control", text:"Problem Resolution: Störungen während Prüfungswochen haben höchste Priorität — außerhalb dieser Zeit gilt ein regulärer Wartungsfenster-Rhythmus."},
+      {code:"5. Practical Considerations", text:"SE Operations for Small Organizations: die Hochschul-IT ist klein besetzt — Betrieb ist bewusst auf Standardkomponenten statt Eigenentwicklung ausgelegt, um Wartungsaufwand gering zu halten."}
+    ]
+  },
+  personaReaction:{
+    talentmatch:{who:"knut", text:"Ein Canary-Rollout mit Bias-Monitoring auf fünf Prozent der Anfragen — erst wenn das sauber ist, geht das Modell-Update vollständig live."},
+    novatrade:{who:"lead", text:"Mehrfache Deployments am Tag sind für uns Alltag — aber jedes einzelne läuft durch dasselbe Compliance-Gate, ohne Ausnahme."},
+    studierendenakte:{who:"sarah", text:"Ein Release ohne getesteten Rollback-Pfad käme mir während der Prüfungsphase nicht ins System."}
+  },
+  quiz:{
+    talentmatch:{q:"Warum nutzt TalentMatch AI einen Canary-Rollout für Modell-Updates (SWEBOK 6, 3.2 Deployment/Release Engineering)?",
+      options:["Um Serverkosten zu sparen","Um Bias-Drift auf einem kleinen Live-Anteil zu erkennen, bevor das gesamte System betroffen ist","Weil das gesetzlich für alle Updates vorgeschrieben ist"], correct:1,
+      explain:"Ein kontrollierter Teil-Rollout deckt unerwünschtes Modellverhalten auf, bevor es alle Nutzer:innen betrifft."},
+    novatrade:{q:"Warum skalieren bei NovaTrade Governance-Regeln nie automatisch mit dem Auto-Scaling mit?",
+      options:["Aus technischen Kapazitätsgründen","Weil neue Regeln immer eine bewusste, manuelle Freigabe durch Compliance brauchen","Weil Auto-Scaling Governance-Regeln automatisch übernimmt"], correct:1,
+      explain:"Automatisierung darf technische Ressourcen skalieren, aber keine Compliance-Entscheidungen treffen — das bleibt bewusst manuell."},
+    studierendenakte:{q:"Warum hat jedes Release der Studierendenakte einen getesteten Rollback-Pfad (SWEBOK 6, 3.3 Rollback and Data Migration)?",
+      options:["Aus Prinzip, unabhängig vom Zeitpunkt","Weil ein fehlgeschlagenes Update während laufender Prüfungsverfahren inakzeptabel wäre","Weil das Landesrecht es für alle Software verlangt"], correct:1,
+      explain:"Ein Systemausfall während einer Prüfungsphase hätte unmittelbare Folgen für Studierende — der Rollback-Pfad ist Risikoabsicherung."}
+  }
+},
+{
+  id:"maint", icon:"🛠️", chapter:"SWEBOK Kapitel 7", title:"Software Maintenance",
+  centralTopic:"3. Software Maintenance Processes",
+  chips:["1.6 Categories of Software Maintenance","4.2 Software Reengineering"],
+  crossref:"BABOK 5. Requirements Life Cycle Management (Change Assessment) · ISO/IEC 25010:2023 (Wartbarkeit)",
+  iso25010:{characteristic:"Maintainability", sub:"Modifiability / Analysability",
+    talentmatch:"Modifiability: das Scoring-Modul wird nach zwei Jahren refaktoriert, um neue Erklärbarkeits-Anforderungen ohne Neubau zu erfüllen.",
+    novatrade:"Analysability: das Change-Impact-Tool macht sichtbar, welche MaComp-Regeln von einer geplanten Codeänderung betroffen sind, bevor sie live geht.",
+    studierendenakte:"Modifiability unter Nachweispflicht: jede Änderung ist im Versionsvergleich dokumentiert — Wartbarkeit und Nachvollziehbarkeit zugleich."},
+  classicAgile:{
+    classic:"Wartungszyklen an feste Termine (Quartal, Haushaltsjahr) gebunden — Muster bei TalentMatch AI und Studierendenakte.",
+    agile:"Wartung ist Teil des fortlaufenden Backlogs, keine eigene Projektphase — Muster bei NovaTrade Pulse."
+  },
+  glossary:{term:"Maintenance Activity", ref:"SWEBOK v4.0a, 7, 3.2", def:"Konkrete, wiederkehrende Tätigkeit zur Pflege eines Systems nach der Erstauslieferung.", example:"Ein quartalsweises Re-Audit ist eine planbare Maintenance Activity."},
+  code:{caseLabel:"Studierendenakte digital", ref:"SWEBOK 7, 4. Software Maintenance Techniques (Migration) &middot; ISO 25010 Maintainability",
+    bad:`records.forEach(r => convertInPlace(r, "NeuesFormat"));
+// Original ueberschrieben, kein Nachweis mehr moeglich`,
+    good:`records.forEach(r => {
+  const migrated = convert(r, "NeuesFormat");
+  archive.store(migrated, { previousVersion: r, migratedAt: Date.now() });
+}); // Originalversion bleibt nachweisbar erhalten`},
+  artifacts:{
+    talentmatch:[
+      {code:"1. Software Maintenance Fundamentals", text:"Need for Software Maintenance: gesetzlich erzwungene Anpassung bei jeder EU-AI-Act-Konkretisierung (z. B. neue Guidance zu Art. 15) — nicht optional."},
+      {code:"2. Key Issues in Software Maintenance", text:"Management Issues: Petra fordert Re-Zertifizierung bei jedem Modell-Update, nicht nur bei Architekturänderungen — erhöht den Wartungsaufwand deutlich."},
+      {code:"3. Software Maintenance Processes", text:"Maintenance Activities and Tasks: quartalsweises Bias-Re-Audit als fester Wartungszyklus, unabhängig von Feature-Änderungen."},
+      {code:"4. Software Maintenance Techniques", text:"Software Reengineering: das Scoring-Modul wird nach zwei Jahren refaktoriert, um neue Erklärbarkeits-Anforderungen ohne Neubau zu erfüllen."},
+      {code:"5. Software Maintenance Tools", text:"Die Maintenance-Tool-Kette protokolliert jede Modelländerung automatisch für das nach Art. 12 geforderte Audit-Log."}
+    ],
+    novatrade:[
+      {code:"1. Software Maintenance Fundamentals", text:"Categories of Software Maintenance: adaptive Wartung dominiert — neue Assetklassen und regulatorische Änderungen (MiFID-Updates) treiben die Roadmap."},
+      {code:"2. Key Issues in Software Maintenance", text:"Software Maintenance Costs: Petra kalkuliert Compliance-Wartung als eigenen Budgetposten, getrennt von Feature-Wartung."},
+      {code:"3. Software Maintenance Processes", text:"Maintenance Activities and Tasks: ein Hotfix-Prozess mit maximal vier Stunden Reaktionszeit bei Product-Governance-relevanten Bugs."},
+      {code:"4. Software Maintenance Techniques", text:"Reverse Engineering: das Legacy-Orderbuch-Modul wird analysiert, bevor Knut es für die neue Assetklasse erweitert."},
+      {code:"5. Software Maintenance Tools", text:"Ein automatisiertes Change-Impact-Tool zeigt, welche MaComp-Regeln von einer Codeänderung betroffen sind."}
+    ],
+    studierendenakte:[
+      {code:"1. Software Maintenance Fundamentals", text:"Evolution of Software: über 50 Jahre Aufbewahrung hinweg muss das System mehrere Technologiegenerationen überleben — Migration ist Kernanforderung, nicht Ausnahme."},
+      {code:"2. Key Issues in Software Maintenance", text:"Technical Issues: Formatveraltung als größtes Risiko — Herr Öztürk verlangt eine regelmäßige Formatmigrationsprüfung."},
+      {code:"3. Software Maintenance Processes", text:"Maintenance Activities and Tasks: ein jährlicher Wartungszyklus, orientiert am Hochschul-Haushaltsjahr, mit fixem Barrierefreiheits-Re-Check."},
+      {code:"4. Software Maintenance Techniques", text:"Continuous Integration, Delivery, Testing, and Deployment: bewusst NICHT eingesetzt — Migrationsschritte laufen kontrolliert und einzeln, nicht kontinuierlich, wegen der Beweiskraft-Anforderung archivierter Entscheidungen."},
+      {code:"5. Software Maintenance Tools", text:"Ein Versionsvergleich dokumentiert lückenlos, welche Änderung wann welchen Datensatz betraf — Nachweispflicht gegenüber dem Rechnungshof."}
+    ]
+  },
+  personaReaction:{
+    talentmatch:{who:"petra", text:"Ein Modell-Update ohne Re-Zertifizierung gibt es bei mir nicht — auch nicht bei einem kleinen Bugfix."},
+    novatrade:{who:"lead", text:"Vier Stunden Reaktionszeit bei Governance-Bugs ist nicht verhandelbar — das kostet uns sonst die Handelslizenz."},
+    studierendenakte:{who:"lead", text:"Fünfzig Jahre sind länger als jede IT-Karriere hier im Haus — die Formatmigration muss dokumentiert sein, auch wenn ich längst nicht mehr im Amt bin."}
+  },
+  quiz:{
+    talentmatch:{q:"Warum erfordert jedes Modell-Update bei TalentMatch AI laut SWEBOK 7, 2.2 (Management Issues) eine Re-Zertifizierung?",
+      options:["Weil jede Codeänderung automatisch dokumentiert wird","Weil sich Fairness-Eigenschaften bei jeder Modelländerung verschieben können — auch unbeabsichtigt","Weil das EU-Recht keine Ausnahmen kennt"], correct:1,
+      explain:"Ein neu trainiertes Modell kann sich in seinem Bias-Verhalten unbemerkt verändern — Re-Zertifizierung fängt das systematisch ab."},
+    novatrade:{q:"Warum hat NovaTrade eine maximale Reaktionszeit von vier Stunden für Governance-relevante Bugs (SWEBOK 7, 2.3 Software Maintenance Costs)?",
+      options:["Aus Marketinggründen","Weil längeres Zögern die Handelslizenz gefährden kann","Weil Kunden das so wünschen"], correct:1,
+      explain:"Regulatorisch kritische Fehler im laufenden Handel können aufsichtsrechtliche Konsequenzen haben — schnelle Reaktion ist Risikomanagement."},
+    studierendenakte:{q:"Warum ist Continuous Deployment für die Studierendenakte bewusst NICHT das Wartungsmuster der Wahl?",
+      options:["Weil die Hochschule kein CI/CD-Tooling besitzt","Weil archivierte Entscheidungen kontrolliert und nachvollziehbar, nicht laufend automatisiert verändert werden dürfen","Weil das Land es verbietet"], correct:1,
+      explain:"Bei Beweiskraft-relevanten Archivdaten ist Nachvollziehbarkeit jeder einzelnen Änderung wichtiger als Geschwindigkeit."}
+  }
+},
+{
+  id:"scm", icon:"🗂️", chapter:"SWEBOK Kapitel 8", title:"Software Configuration Management",
+  centralTopic:"3. Software Configuration Change Control",
+  chips:["3.1 Requesting, Evaluating, and Approving Software Changes","5.1 Software Functional Configuration Audit"],
+  crossref:"ISO/IEC 27001:2022 Anhang A (Change Management) · BABOK 5.1 Trace Requirements",
+  iso25010:{characteristic:"Kein sauberes 1:1-Merkmal — SCM ist Prozess-Enabler für mehrere Merkmale zugleich", sub:"siehe Beispiele",
+    talentmatch:"Trainingsdaten- und Modellversionierung sichert die Reproduzierbarkeit von Prüfergebnissen — Voraussetzung für jede spätere, belastbare Aussage zu Reliability oder Functional Suitability.",
+    novatrade:"Feature-Flags trennen Deployment von Aktivierung — ein Sicherheitsnetz für Reliability (Recoverability), falls ein einzelnes Feature fehlerhaft ist.",
+    studierendenakte:"Referenzierbare Altversionen sichern Functional Suitability für laufende Altfälle auch nach einem Release der neuen Formularversion."},
+  classicAgile:{
+    classic:"Konfigurationsänderungen durchlaufen ein formales Freigabegremium — Muster bei TalentMatch AI und Studierendenakte.",
+    agile:"Feature-Flags erlauben granulare, schnelle Kontrolle einzelner Konfigurationselemente ohne Gremiensitzung — Muster bei NovaTrade Pulse."
+  },
+  glossary:{term:"Software Configuration Item", ref:"SWEBOK v4.0a, 8, 2.1", def:"Ein eindeutig identifiziertes, unter Versionskontrolle stehendes Element (Code, Daten, Dokumentation).", example:"Bei TalentMatch AI ist auch der Trainingsdatensatz ein Configuration Item, nicht nur der Code."},
+  code:{caseLabel:"NovaTrade Pulse", ref:"SWEBOK 8, 3.2 Implementing Software Changes &middot; ISO 25010 Reliability",
+    bad:`// Neues Feature direkt fest verdrahtet, kein Rollback ohne Redeploy
+function checkOrder(order) {
+  return newRiskEngine.check(order);
+}`,
+    good:`function checkOrder(order) {
+  return featureFlags.isEnabled("newRiskEngine")
+    ? newRiskEngine.check(order)
+    : legacyRiskEngine.check(order); // Rollback ohne Redeploy moeglich
+}`},
+  artifacts:{
+    talentmatch:[
+      {code:"1. Management of the SCM Process", text:"Der SCM-Plan legt fest: jede Trainingsdaten-Version ist ein eigenes Konfigurationselement, nicht nur der Code."},
+      {code:"2. Software Configuration Identification", text:"Identifying Items to Be Controlled: Modellversion, Trainingsdatensatz-Version und Fairness-Schwellenwert-Konfiguration werden gemeinsam versioniert."},
+      {code:"3. Software Configuration Change Control", text:"Requesting, Evaluating, and Approving Software Changes: jede Änderung am Scoring-Modell durchläuft Petras Vier-Augen-Freigabe vor dem Merge."},
+      {code:"5. Software Configuration Auditing", text:"Functional Configuration Audit: unabhängige Prüfung, ob die ausgelieferte Version exakt der zertifizierten Konformitätserklärung entspricht (Art. 47 EU AI Act)."},
+      {code:"6. Software Release Management and Delivery", text:"Kein Rollout ohne aktuelles Konformitätsbewertungs-Zertifikat im Release-Paket."}
+    ],
+    novatrade:[
+      {code:"1. Management of the SCM Process", text:"Der SCM-Plan wird pro Sprint aktualisiert, die Baseline nach jedem Release-Increment neu gesetzt."},
+      {code:"2. Software Configuration Identification", text:"Identifying Items to Be Controlled: Order-Engine, Governance-Regelwerk und Marktdaten-Feed als getrennte, unabhängig versionierbare Konfigurationselemente."},
+      {code:"3. Software Configuration Change Control", text:"Implementing Software Changes: Feature-Flags erlauben Rollback einzelner Sprint-Features ohne Gesamt-Rollback des Release."},
+      {code:"5. Software Configuration Auditing", text:"Physical Configuration Audit vor Release: Petra prüft, ob die deployten Artefakte exakt den freigegebenen Build-Hashes entsprechen."},
+      {code:"6. Software Release Management and Delivery", text:"Software Building: eine Continuous-Delivery-Pipeline mit automatisiertem Compliance-Gate vor jedem Produktions-Deploy."}
+    ],
+    studierendenakte:[
+      {code:"1. Management of the SCM Process", text:"Planning for SCM: der Konfigurationsmanagement-Plan ist an die 50-Jahres-Aufbewahrungspflicht angepasst — auch stillgelegte Versionen bleiben nachvollziehbar archiviert."},
+      {code:"2. Software Configuration Identification", text:"Software Libraries: jede Formularversion des Antragsprozesses bleibt referenzierbar, auch nach Ablösung — wichtig für laufende Altfälle."},
+      {code:"3. Software Configuration Change Control", text:"Deviations and Waivers: eine dokumentierte Ausnahme, wenn eine Barrierefreiheits-Anforderung technisch temporär nicht erfüllbar ist, mit Fristsetzung."},
+      {code:"5. Software Configuration Auditing", text:"In-Process Audits of a Software Baseline: eine jährliche interne Prüfung durch die Hochschul-IT-Revision."},
+      {code:"6. Software Release Management and Delivery", text:"Software Release Management: Releases nur im vorlesungsfreien Zeitraum, um laufende Prüfungsverfahren nicht zu stören."}
+    ]
+  },
+  personaReaction:{
+    talentmatch:{who:"petra", text:"Trainingsdaten-Version, Modellversion und Schwellenwert-Konfiguration gehören zusammen versioniert — sonst ist keine Konformitätsprüfung reproduzierbar."},
+    novatrade:{who:"knut", text:"Feature-Flags erlauben mir, ein einzelnes Sprint-Feature zurückzurollen, ohne das ganze Release zu kippen."},
+    studierendenakte:{who:"sarah", text:"Auch eine abgelöste Formularversion muss ich noch aufrufen können — laufende Altfälle warten nicht auf unsere Releases."}
+  },
+  quiz:{
+    talentmatch:{q:"Warum wird bei TalentMatch AI nicht nur der Code, sondern auch der Trainingsdatensatz als eigenes Konfigurationselement geführt (SWEBOK 8, 2.1)?",
+      options:["Weil Trainingsdaten Speicherplatz sparen","Weil Konformitätsprüfungen ohne exakte Datensatzversion nicht reproduzierbar wären","Weil es einfacher zu programmieren ist"], correct:1,
+      explain:"Ohne exakte Versionierung von Code UND Trainingsdaten lässt sich ein Prüfergebnis später nicht mehr reproduzieren — Kern der Auditierbarkeit."},
+    novatrade:{q:"Wozu dienen Feature-Flags im Release-Prozess von NovaTrade (SWEBOK 8, 3.2 Implementing Software Changes)?",
+      options:["Rückrollen einzelner Sprint-Features ohne Gesamt-Rollback","Schnellere Kompilierung","Bessere Testabdeckung"], correct:0,
+      explain:"Feature-Flags entkoppeln Deployment von Aktivierung — ein fehlerhaftes Feature lässt sich isoliert deaktivieren."},
+    studierendenakte:{q:"Warum bleibt bei der Studierendenakte auch eine abgelöste Formularversion referenzierbar (SWEBOK 8, 2.6 Software Libraries)?",
+      options:["Aus Nostalgie","Weil laufende Altfälle noch auf Basis der alten Version bearbeitet werden","Weil das Backup-System es verlangt"], correct:1,
+      explain:"Ein Antrag, der unter der alten Formularversion gestellt wurde, muss auch nach dem Release weiter nachvollziehbar bearbeitbar sein."}
+  }
+},
+{
+  id:"mgmt", icon:"📊", chapter:"SWEBOK Kapitel 9", title:"Software Engineering Management",
+  centralTopic:"2. Software Project Planning",
+  chips:["2.5 Risk Management","3.5 Control Process"],
+  crossref:"PMBOK Guide, 8. Ausgabe (direkte thematische Deckung) · BABOK 3. Strategy Analysis",
+  iso25010:{characteristic:"n/a — Management ist Prozessebene, kein Produkt-Qualitätsmerkmal", sub:"ISO 25010 ist ein reines Produktqualitätsmodell",
+    talentmatch:"Kein direktes Merkmal einschlägig: Risikomanagement wirkt indirekt auf alle neun Merkmale, ist selbst aber kein Produktmerkmal — bewusst als 'n/a' geführt statt eine Zuordnung zu erzwingen.",
+    novatrade:"Kein direktes Merkmal einschlägig: Sprint-Planung betrifft Prozessorganisation, nicht das Produkt selbst.",
+    studierendenakte:"Kein direktes Merkmal einschlägig: Haushaltsbindung ist eine organisatorische, keine Produkteigenschaft."},
+  classicAgile:{
+    classic:"Projektplanung mit fixem Scope, Termin- und Budgetrahmen (klassisches magisches Dreieck) — Muster bei TalentMatch AI und Studierendenakte.",
+    agile:"Planung iterativ, Scope variabel, Termin (Sprint-Ende) fix — vgl. SWEBOK 9, 2. Software Project Planning, Abschnitt Process Planning. Muster bei NovaTrade Pulse."
+  },
+  glossary:{term:"Risk Register", ref:"SWEBOK v4.0a, 9, 2.5", def:"Strukturierte Liste identifizierter Projektrisiken mit Bewertung und Gegenmaßnahme.", example:"Non-Compliance-Risiken stehen bei regulierten Systemen oft ganz oben im Risk Register."},
+  code:{caseLabel:"TalentMatch AI", ref:"SWEBOK 9, 2.5 Risk Management &middot; ISO 25010: n/a (Prozessebene, siehe Hinweis oben)",
+    bad:`const risks = ["Budget", "Termin", "Bugs"];
+// unpriorisiert, kein Bezug zu Compliance-Risiken`,
+    good:`const risks = [
+  { id:"R1", desc:"EU-AI-Act-Non-Compliance", likelihood:"mittel",
+    impact:"Marktverbot", owner:"Petra", priority:1 },
+  { id:"R2", desc:"Terminverzug", likelihood:"hoch",
+    impact:"Budget +10%", owner:"Ela", priority:3 }
+];`},
+  artifacts:{
+    talentmatch:[
+      {code:"1. Initiation and Scope Definition", text:"Feasibility Analysis: Herr Bachmeier lässt vor Projektstart prüfen, ob ein Hochrisiko-KI-System überhaupt wirtschaftlich vertretbar ist (Konformitätskosten vs. Nutzen)."},
+      {code:"2. Software Project Planning", text:"Risk Management: Petra führt EU-AI-Act-Non-Compliance als eigenes Risiko mit höchster Priorität im Risikoregister."},
+      {code:"3. Software Project Execution", text:"Control Process: monatliches Compliance-Steering-Meeting mit Vetorecht von Petra bei kritischen Abweichungen."},
+      {code:"4. Software Review and Evaluation", text:"Determining Satisfaction of Requirements: eine externe Konformitätsbewertungsstelle bestätigt formal die Erfüllung aller Anforderungen aus Art. 9–16 EU AI Act."},
+      {code:"5. Closure", text:"Closure Activities: Projektabschluss erst nach CE-Kennzeichnung und Eintrag in die EU-Datenbank für Hochrisiko-KI-Systeme."}
+    ],
+    novatrade:[
+      {code:"1. Initiation and Scope Definition", text:"Determination and Negotiation of Requirements: der Scope wird pro Sprint neu verhandelt — Ela priorisiert als Product Owner das Backlog."},
+      {code:"2. Software Project Planning", text:"Effort, Schedule, and Cost Estimation: Story Points statt klassischer Aufwandsschätzung, nach jedem Sprint neu kalibriert."},
+      {code:"3. Software Project Execution", text:"Monitor Process: Burndown-Chart und Compliance-Gate-Status werden gemeinsam im Daily sichtbar gemacht."},
+      {code:"4. Software Review and Evaluation", text:"Reviewing and Evaluating Performance: Sprint Review mit Herrn Bachmeier (Vorstand) als informellem Stakeholder-Feedback, kein formaler Abnahmeakt."},
+      {code:"5. Closure", text:"Determining Closure: kein klassisches Projektende — der Produktlebenszyklus läuft weiter, 'Closure' bezieht sich auf einzelne Release-Zyklen."}
+    ],
+    studierendenakte:[
+      {code:"1. Initiation and Scope Definition", text:"Process for the Review and Revision of Requirements: Change Requests laufen über einen formalen Gremienbeschluss der Hochschulverwaltung."},
+      {code:"2. Software Project Planning", text:"Resource Allocation: das Budget ist an das Haushaltsjahr der Hochschule gebunden — Nachbewilligung nur zum Jahreswechsel möglich."},
+      {code:"3. Software Project Execution", text:"Reporting: quartalsweiser Statusbericht an das Präsidium, formal dokumentiert nach Verwaltungsvorschrift."},
+      {code:"4. Software Review and Evaluation", text:"Determining Satisfaction of Requirements: Abnahme durch das Prüfungsamt UND die Barrierefreiheits-Beauftragte(n) — zwei getrennte Freigaben nötig."},
+      {code:"5. Closure", text:"Determining Closure: das Projekt gilt erst als abgeschlossen, wenn die Übergabedokumentation für die nächsten 50 Jahre vollständig archiviert ist."}
+    ]
+  },
+  personaReaction:{
+    talentmatch:{who:"petra", text:"EU-AI-Act-Non-Compliance steht bei mir ganz oben im Risikoregister — noch vor Budget- und Terminrisiken."},
+    novatrade:{who:"ela", text:"Wir schätzen in Story Points, nicht in Personentagen — und wir kalibrieren nach jedem Sprint neu."},
+    studierendenakte:{who:"lead", text:"Nachbewilligungen gibt es bei uns nur zum Jahreswechsel — das prägt jede Planung hier im Haus."}
+  },
+  quiz:{
+    talentmatch:{q:"Warum steht EU-AI-Act-Non-Compliance bei TalentMatch AI ganz oben im Risikoregister (SWEBOK 9, 2.5 Risk Management)?",
+      options:["Weil andere Risiken unwichtiger sind","Weil eine Non-Compliance-Feststellung das gesamte Produkt vom Markt nehmen könnte","Weil Petra das gerne so hätte"], correct:1,
+      explain:"Risikopriorisierung folgt Schadenshöhe: ein Marktverbot ist existenzieller als ein Terminverzug."},
+    novatrade:{q:"Warum schätzt NovaTrade in Story Points statt in Personentagen (SWEBOK 9, 2.3 Effort, Schedule, and Cost Estimation)?",
+      options:["Weil das gesetzlich vorgeschrieben ist","Weil relative Schätzung sich im agilen Rhythmus schneller re-kalibrieren lässt","Weil Personentage nicht mehr existieren"], correct:1,
+      explain:"Relative Schätzung (Story Points) passt sich der tatsächlichen Team-Velocity kontinuierlich an, ohne jede Schätzung neu zu verhandeln."},
+    studierendenakte:{q:"Warum sind Nachbewilligungen bei der Studierendenakte nur zum Jahreswechsel möglich (SWEBOK 9, 2.4 Resource Allocation)?",
+      options:["Aus Tradition","Weil das Budget an das Haushaltsjahr der Hochschule gebunden ist","Wegen Steuerregeln"], correct:1,
+      explain:"Öffentliche Haushalte sind periodengebunden — Ressourcenzuteilung folgt dem Haushaltsjahr, nicht dem Projektfortschritt."}
+  }
+},
+{
+  id:"qual", icon:"⭐", chapter:"SWEBOK Kapitel 12", title:"Software Quality",
+  centralTopic:"3.4 V&amp;V and Testing",
+  chips:["1.3 Standards, Models, and Certifications","3.4 V&amp;V and Testing"],
+  crossref:"ISO/IEC 25010:2023 (direkte Grundlage) · EU AI Act Art. 15 (Robustheit/Genauigkeit, nur bei TalentMatch AI einschlägig)",
+  iso25010:{characteristic:"Safety (neu 2023) &amp; Reliability", sub:"Fail Safe / Risk Identification (Safety) · Faultlessness (Reliability)",
+    talentmatch:"Safety — Risk Identification: Petra ordnet Fehlentscheidungen des Scoring-Modells einer hohen Integritätsstufe zu — genau das 2023 neu ergänzte Merkmal Safety, weil Grundrechte betroffen sind.",
+    novatrade:"Reliability — Faultlessness: eine Fehlausführung einer Order wird einer hohen Integritätsstufe zugeordnet, mit Meldepflicht binnen 24 Stunden.",
+    studierendenakte:"Safety — Hazard Warning: der Verlust einer Prüfungsakte gefährdet Rechtsansprüche — ein klassischer Anwendungsfall des 2023 ergänzten Safety-Merkmals."},
+  classicAgile:{
+    classic:"Qualitätsgates am Ende definierter Phasen — Muster bei TalentMatch AI und Studierendenakte.",
+    agile:"Qualität wird kontinuierlich im Sprint geprüft (Continuous QA) statt am Phasenende — Muster bei NovaTrade Pulse."
+  },
+  glossary:{term:"Verification &amp; Validation (V&amp;V)", ref:"SWEBOK v4.0a, 12, 3.4", def:"Zwei komplementäre Prüfarten: Verifikation prüft 'richtig gebaut', Validierung prüft 'das Richtige gebaut'.", example:"Ein System kann verifiziert korrekt und trotzdem nicht validiert nutzergerecht sein."},
+  code:{caseLabel:"Studierendenakte digital", ref:"SWEBOK 12, 3.4 V&amp;V and Testing &middot; ISO 25010 (Grundlage aller Merkmale)",
+    bad:`// Nur Verifikation: prueft Code gegen Spezifikation
+test("Formular entspricht WCAG-Spezifikation", () => {
+  expect(lintWCAG(form)).toBe(true);
+});`,
+    good:`test("Formular entspricht WCAG-Spezifikation", () => {
+  expect(lintWCAG(form)).toBe(true); // Verifikation
+});
+test("Screenreader-Nutzer:in kann Antrag abschliessen", () => {
+  expect(realUserTest(form, "NVDA")).toBe("erfolgreich"); // Validierung
+});`},
+  artifacts:{
+    talentmatch:[
+      {code:"1.3 Standards, Models, and Certifications", text:"Fairness und Erklärbarkeit werden als zusätzliche Qualitätsmerkmale neben ISO 25010 ergänzt — die Norm allein deckt KI-Spezifika nicht ab."},
+      {code:"1.4 Software Dependability and Integrity Levels", text:"Petra ordnet Fehlentscheidungen des Scoring-Modells einer hohen Integritätsstufe zu, weil sie Grundrechte (Diskriminierungsschutz) berühren."},
+      {code:"3.2 Perform Process Assurance", text:"Ein eigenständiges QA-Team entscheidet unabhängig von Knuts Entwicklungsteam über Bias-Freigaben — Interessenkonflikt strukturell vermieden."},
+      {code:"3.4 V&amp;V and Testing", text:"Verifikation prüft 'System korrekt gebaut', Validierung prüft zusätzlich 'System diskriminiert nicht' — zwei getrennte Gate-Kriterien."},
+      {code:"2.4 Perform Corrective and Preventive Actions", text:"Diskriminierungsrate je Gruppe als KPI im Qualitätsbericht, quartalsweise an die Geschäftsführung berichtet — mit dokumentierter Korrekturmaßnahme bei Grenzwertüberschreitung."}
+    ],
+    novatrade:[
+      {code:"1.3 Standards, Models, and Certifications", text:"Performance-Effizienz und Zuverlässigkeit (ISO 25010) stehen im Zentrum — das Handelssystem darf nicht ausfallen."},
+      {code:"1.4 Software Dependability and Integrity Levels", text:"Eine Fehlausführung einer Order wird einer hohen Integritätsstufe zugeordnet, mit Meldepflicht an Petra (Compliance) binnen 24 Stunden."},
+      {code:"3.2 Perform Process Assurance", text:"Process Assurance läuft sprintintegriert, kein separates QA-Gate am Projektende wie bei klassischem Vorgehen."},
+      {code:"3.4 V&amp;V and Testing", text:"Automatisierte Regressionstests bei jedem Deploy (Verifikation), manuelles Compliance-Review vor Release (Validierung)."},
+      {code:"2.4 Perform Corrective and Preventive Actions", text:"Order-Ausführungslatenz und Governance-Verstoßrate als zentrale Qualitäts-KPIs im Sprint-Report, mit fester Eskalationsregel bei Grenzwertüberschreitung."}
+    ],
+    studierendenakte:[
+      {code:"1.3 Standards, Models, and Certifications", text:"Portabilität und Zugänglichkeit (Accessibility) werden gleichrangig zu Funktionalität als Qualitätsziel behandelt."},
+      {code:"1.4 Software Dependability and Integrity Levels", text:"Der Verlust einer Prüfungsakte wird der höchsten Integritätsstufe zugeordnet, da er Rechtsansprüche von Studierenden gefährdet."},
+      {code:"3.2 Perform Process Assurance", text:"Eine unabhängige Prüfung durch die Landesbeauftragte für Barrierefreiheit erfolgt vor jeder Freigabe."},
+      {code:"3.4 V&amp;V and Testing", text:"Verifikation prüft Norm-Konformität (BITV 2.0), Validierung prüft echte Nutzbarkeit mit Screenreader-Nutzer:innen."},
+      {code:"2.4 Perform Corrective and Preventive Actions", text:"WCAG-Konformitätsquote und Formatstabilität über Systemgenerationen als Langzeit-KPI, mit dokumentierter Korrekturmaßnahme bei Unterschreitung."}
+    ]
+  },
+  personaReaction:{
+    talentmatch:{who:"petra", text:"Verifikation zeigt mir, ob das System korrekt gebaut ist. Validierung zeigt mir, ob es trotzdem diskriminiert. Ich brauche beide Antworten."},
+    novatrade:{who:"petra", text:"Automatisierte Regressionstests bei jedem Deploy, ein manuelles Compliance-Review vor jedem Release — beides, nicht nur eines."},
+    studierendenakte:{who:"sarah", text:"Norm-Konformität allein reicht mir nicht — ich will sehen, dass echte Screenreader-Nutzer:innen durch das Formular kommen."}
+  },
+  quiz:{
+    talentmatch:{q:"Was ist der Unterschied zwischen Verifikation und Validierung bei TalentMatch AI (SWEBOK 12, 3.4 V&amp;V and Testing)?",
+      options:["Es gibt keinen Unterschied","Verifikation prüft korrekte Umsetzung, Validierung prüft zusätzlich Diskriminierungsfreiheit","Verifikation ist nur für Entwickler, Validierung nur für Kunden"], correct:1,
+      explain:"'Richtig gebaut' (Verifikation) und 'das Richtige gebaut' (Validierung) sind bei KI-Systemen zwei getrennte, beide notwendige Fragen."},
+    novatrade:{q:"Warum reicht bei NovaTrade automatisiertes Regressionstesten allein nicht aus (SWEBOK 12, 3.4)?",
+      options:["Weil Automatisierung grundsätzlich fehleranfällig ist","Weil ein manuelles Compliance-Review Aspekte prüft, die Tests nicht automatisch erfassen","Weil das Gesetz Handarbeit vorschreibt"], correct:1,
+      explain:"Automatisierte Tests prüfen bekannte, kodierte Regeln — regulatorische Auslegungsfragen brauchen zusätzlich menschliches Urteil."},
+    studierendenakte:{q:"Warum reicht formale Norm-Konformität (BITV 2.0) bei der Studierendenakte laut Herrn Öztürk allein nicht aus (SWEBOK 12, 3.4)?",
+      options:["Weil Normen grundsätzlich unzuverlässig sind","Weil echte Nutzbarkeit mit Screenreadern über die reine Konformitätsprüfung hinausgeht","Weil BITV 2.0 veraltet ist"], correct:1,
+      explain:"Ein System kann alle WCAG-Kriterien technisch erfüllen und trotzdem in der Praxis schwer bedienbar sein — Validierung mit echten Nutzer:innen deckt das auf."}
+  }
+},
+{
+  id:"sec", icon:"🛡️", chapter:"SWEBOK Kapitel 13", title:"Software Security",
+  centralTopic:"4. Security Engineering for Software Systems",
+  chips:["4.1 Security Requirements","4.5 Security Testing"],
+  crossref:"ISO/IEC 27001:2022 (ISMS-Grundlage) · Common Criteria (SWEBOK 13, 3.2, indirekt) · EU AI Act Art. 15 (Cybersicherheit, nur TalentMatch AI einschlägig)",
+  iso25010:{characteristic:"Security", sub:"Integrity / Authenticity / Non-repudiation",
+    talentmatch:"Integrity: der Data-Poisoning-Schutz sichert die Integrität der Trainingsdaten — Kern-Submerkmal von Security nach ISO 25010:2023.",
+    novatrade:"Authenticity: kryptographisch signierte Order-Transaktionen sind ein Lehrbuchbeispiel für das Security-Submerkmal Authenticity.",
+    studierendenakte:"Non-repudiation: die unveränderliche Protokollierung jeder Änderung an einer Prüfungsentscheidung erfüllt exakt dieses Security-Submerkmal — niemand kann eine dokumentierte Änderung im Nachhinein abstreiten."},
+  classicAgile:{
+    classic:"Security-Audit als eigene, formale Phase vor Go-Live — Muster bei der Studierendenakte.",
+    agile:"Security-in-the-Sprint: Security-Reviews laufend statt einmalig am Ende (SWEBOK 13, 2.3 Agile Practice for Software Security) — Muster bei NovaTrade Pulse."
+  },
+  glossary:{term:"Data Poisoning", ref:"SWEBOK v4.0a, 13, 6.3", def:"Gezielte Manipulation von Trainingsdaten, um das Verhalten eines ML-Modells zu verfälschen.", example:"Ein Angriff, der gezielt Bewerbungsdaten einer Gruppe verzerrt, um das Scoring-Modell zu täuschen, ist eine Form von Data Poisoning."},
+  code:{caseLabel:"NovaTrade Pulse", ref:"SWEBOK 13, 4.1 Security Requirements &middot; ISO 25010 Security (Authenticity)",
+    bad:`function submitOrder(order) {
+  db.save(order); // nachtraeglich manipulierbar, kein Nachweis
+}`,
+    good:`function submitOrder(order) {
+  const signature = sign(order, privateKey);
+  db.save({ ...order, signature }); // MiFID-II-Nachweisfaehigkeit
+}`},
+  artifacts:{
+    talentmatch:[
+      {code:"1. Software Security Fundamentals", text:"Information Security: Bewerberdaten gelten als besonders schützenswert — Zugriffskontrolle strikter als bei sonstigen Personaldaten, weil Scoring-Ergebnisse diskriminierungsrelevant sind."},
+      {code:"2. Security Management and Organization", text:"Information Security Management System: Petra verlangt eine Kopplung zwischen klassischer Informationssicherheit und KI-spezifischer Robustheitsprüfung — zwei Managementsysteme, ein gemeinsames Reporting."},
+      {code:"4. Security Engineering for Software Systems", text:"Security Requirements: eine Anforderung, dass ein Angriff auf die Trainingsdaten (Data Poisoning) technisch erkennbar sein muss — eigene Bedrohungskategorie neben klassischen Cyberangriffen."},
+      {code:"5. Software Security Tools", text:"Security Vulnerability Checking Tools: ein automatisierter Scan nicht nur des Codes, sondern auch der Trainingsdaten-Pipeline auf Manipulationsspuren."},
+      {code:"6. Domain-Specific Software Security", text:"Security for Machine Learning-Based Application: Adversarial-Testing gegen gezielte Manipulation von Bewerbungsunterlagen, um das Scoring zu täuschen."}
+    ],
+    novatrade:[
+      {code:"1. Software Security Fundamentals", text:"Cybersecurity: der Schutz vor Marktmanipulation durch kompromittierte Order-Systeme steht neben klassischem Datenschutz gleichrangig im Fokus."},
+      {code:"2. Security Management and Organization", text:"Agile Practice for Software Security: Security-Reviews sind fester Bestandteil jedes Sprints (Security-in-the-Sprint), nicht ein separates Audit am Projektende."},
+      {code:"4. Security Engineering for Software Systems", text:"Security Requirements: jede Order-Transaktion muss kryptographisch signiert und nicht nachträglich manipulierbar sein — Grundvoraussetzung für MiFID-II-Nachweisfähigkeit."},
+      {code:"5. Software Security Tools", text:"Penetration Testing Tools: ein quartalsweiser externer Penetrationstest der Handelsplattform, Ergebnisse direkt an Herrn Bachmeier (Vorstand) berichtet."},
+      {code:"6. Domain-Specific Software Security", text:"Security for Container and Cloud: die Order-Engine läuft in isolierten Containern, damit ein kompromittierter Microservice nicht das gesamte Handelssystem gefährdet."}
+    ],
+    studierendenakte:[
+      {code:"1. Software Security Fundamentals", text:"Information Security: Prüfungsdaten gelten als besonders sensibel — unautorisierter Zugriff könnte Notenmanipulation ermöglichen, daher strengere Zugriffskontrolle als bei allgemeinen Verwaltungsdaten."},
+      {code:"2. Security Management and Organization", text:"Information Security Management System: an das ISMS der gesamten Hochschul-IT angebunden, nicht als isoliertes Projekt-ISMS geführt."},
+      {code:"4. Security Engineering for Software Systems", text:"Security Requirements: jede Änderung an einer archivierten Prüfungsentscheidung muss unveränderbar protokolliert sein (Manipulationsschutz für Rechtsansprüche)."},
+      {code:"5. Software Security Tools", text:"Security Vulnerability Checking Tools: ein regelmäßiger Scan der öffentlich erreichbaren Antragsstrecke, weil sie der einzige direkt von außen erreichbare Teil des Systems ist."},
+      {code:"6. Domain-Specific Software Security", text:"Security for IoT Software: bewusst nicht einschlägig — die Studierendenakte hat keine IoT-Komponenten; im Handbuch als Negativbeispiel dokumentiert, dass nicht jedes Teilthema zu jedem Fall passt."}
+    ]
+  },
+  personaReaction:{
+    talentmatch:{who:"petra", text:"Data Poisoning ist für mich eine eigene Bedrohungskategorie — ein manipulierter Trainingsdatensatz ist gefährlicher als ein gehackter Server."},
+    novatrade:{who:"knut", text:"Jede Order-Transaktion ist kryptographisch signiert — ohne das hätten wir vor der Aufsicht gar keine Nachweisgrundlage."},
+    studierendenakte:{who:"sarah", text:"Eine Änderung an einer Prüfungsentscheidung, die sich nicht unveränderbar protokollieren lässt, akzeptiere ich nicht — das wäre ein Einfallstor für Manipulation."}
+  },
+  quiz:{
+    talentmatch:{q:"Warum führt TalentMatch AI Data Poisoning als eigene Bedrohungskategorie (SWEBOK 13, 4.1 Security Requirements)?",
+      options:["Weil klassische Firewalls dagegen nicht helfen und ein manipulierter Trainingsdatensatz das Scoring systematisch verzerren kann","Weil das EU-Recht den Begriff vorschreibt","Weil es ein Marketingbegriff ist"], correct:0,
+      explain:"Data Poisoning greift nicht das System, sondern die Trainingsdaten an — klassische Netzwerksicherheit erkennt das nicht."},
+    novatrade:{q:"Warum müssen Order-Transaktionen bei NovaTrade kryptographisch signiert sein?",
+      options:["Aus Performance-Gründen","Als Grundvoraussetzung für die MiFID-II-Nachweisfähigkeit jeder Transaktion","Weil Kunden das verlangen"], correct:1,
+      explain:"Eine signierte, unveränderliche Transaktionshistorie ist Voraussetzung dafür, gegenüber der Aufsicht lückenlos nachweisen zu können, was tatsächlich passiert ist."},
+    studierendenakte:{q:"Warum ist 'Security for IoT Software' (SWEBOK 13, 6.2) für die Studierendenakte NICHT einschlägig?",
+      options:["Weil IoT grundsätzlich unsicher ist","Weil das System keine IoT-Komponenten hat","Weil Hochschulen IoT nicht nutzen dürfen"], correct:1,
+      explain:"Nicht jedes SWEBOK-Teilthema passt zu jedem Fall — hier fehlt schlicht der fachliche Bezugspunkt."}
+  }
+}
+];
+
+const TRACE = {
+  talentmatch:[
+    {station:"Requirements", text:"Anforderung: 'Scoring-Entscheidung muss für Bewerber:in nachvollziehbar sein' (Art. 13 EU AI Act)."},
+    {station:"Architecture", text:"→ Architekturentscheidung (ADR): Erklärbarkeits-Panel als eigene, nicht entfernbare Architekturkomponente festgehalten."},
+    {station:"Design", text:"→ Design: das Panel wird als eigene, dokumentierte Designentscheidung (Design Rationale) mit klarer Begründung geführt."},
+    {station:"Construction", text:"→ Umsetzung: jede Bewertung loggt automatisch ihre drei Hauptfaktoren."},
+    {station:"Testing", text:"→ Test: Acceptance Test prüft bei 100 Testfällen, ob das Panel korrekt die realen Einflussfaktoren zeigt."},
+    {station:"Operations", text:"→ Betrieb: jedes Modell-Update durchläuft einen Canary-Rollout mit Bias-Monitoring, bevor das Erklärbarkeits-Feature vollständig live geht."},
+    {station:"Maintenance", text:"→ Wartung: die Erklärbarkeits-Logik wird bei jedem Modell-Update erneut geprüft."},
+    {station:"SCM", text:"→ Konfiguration: die Erklärbarkeits-Panel-Version ist fest an die Modellversion gekoppelt, gemeinsam versioniert."},
+    {station:"Management", text:"→ Steuerung: das Erklärbarkeits-Feature ist im Risikoregister als 'compliance-kritisch' markiert."},
+    {station:"Quality", text:"→ Qualitätsgate: keine Freigabe ohne bestandenen Erklärbarkeits-Validierungstest."},
+    {station:"Security", text:"→ Sicherheit: der Data-Poisoning-Schutz stellt sicher, dass die Erklärbarkeits-Logik nicht durch manipulierte Trainingsdaten unterlaufen wird."}
+  ],
+  novatrade:[
+    {station:"Requirements", text:"Anforderung: 'Jede Order muss vor Ausführung automatisch gegen Product-Governance-Regeln geprüft werden' (WpHG §63)."},
+    {station:"Architecture", text:"→ Architekturentscheidung (ADR): Governance-Check als Middleware festgehalten, Alternative 'Check im Order-Service' explizit verworfen."},
+    {station:"Design", text:"→ Design: der Governance-Check wird als eigene Behavioral-Design-Beschreibung (Zustandsdiagramm) dokumentiert."},
+    {station:"Construction", text:"→ Umsetzung: das Governance-Regelwerk als eigenständiges, unabhängig deploybares Modul."},
+    {station:"Testing", text:"→ Test: automatisierter Compliance-Testfall bei jedem Pull Request."},
+    {station:"Operations", text:"→ Betrieb: jedes Deployment durchläuft automatisch dasselbe Compliance-Gate, mehrfach täglich."},
+    {station:"Maintenance", text:"→ Wartung: maximal vier Stunden Reaktionszeit bei Governance-relevanten Bugs."},
+    {station:"SCM", text:"→ Konfiguration: das Governance-Regelwerk ist ein eigenes Configuration Item, unabhängig von der Order-Engine versioniert."},
+    {station:"Management", text:"→ Steuerung: der Governance-Gate-Status ist im Daily neben dem Burndown sichtbar."},
+    {station:"Quality", text:"→ Qualitätsgate: manuelles Compliance-Review vor jedem Produktions-Release, zusätzlich zu automatisierten Tests."},
+    {station:"Security", text:"→ Sicherheit: jede Order-Transaktion ist kryptographisch signiert — Grundlage für die MiFID-II-Nachweisfähigkeit des gesamten Prozesses."}
+  ],
+  studierendenakte:[
+    {station:"Requirements", text:"Anforderung: 'Antragsstrecke muss vollständig mit Screenreader bedienbar sein' (BITV 2.0/WCAG 2.1 AA)."},
+    {station:"Architecture", text:"→ Architekturentscheidung (ADR): offenes Dateiformat statt proprietärer Datenbank festgehalten, wegen 50-Jahres-Aufbewahrungspflicht."},
+    {station:"Design", text:"→ Design: die Antragsstrecke folgt General User Interface Design Principles, Tastaturbedienbarkeit als Pflichtkriterium."},
+    {station:"Construction", text:"→ Umsetzung: der Barrierefreiheits-Linter (axe-core) läuft bei jedem Commit."},
+    {station:"Testing", text:"→ Test: Abnahmetest mit echten Screenreader-Nutzer:innen, moderiert von Herrn Öztürk."},
+    {station:"Operations", text:"→ Betrieb: jedes Release hat einen getesteten Rollback-Pfad, um Ausfälle während Prüfungsphasen zu vermeiden."},
+    {station:"Maintenance", text:"→ Wartung: jährlicher Barrierefreiheits-Re-Check als fester Wartungstermin."},
+    {station:"SCM", text:"→ Konfiguration: jede Formularversion bleibt referenzierbar, auch nach Ablösung."},
+    {station:"Management", text:"→ Steuerung: zwei getrennte Freigaben nötig — Prüfungsamt UND Barrierefreiheits-Beauftragte(r)."},
+    {station:"Quality", text:"→ Qualitätsgate: die WCAG-Konformitätsquote ist Pflicht-KPI vor Go-Live."},
+    {station:"Security", text:"→ Sicherheit: jede Änderung an einer archivierten Prüfungsentscheidung ist unveränderbar protokolliert — Manipulationsschutz für Rechtsansprüche."}
+  ]
+};
+
+const EXCLUDED_NOTE = "Kapitel 10 (Software Engineering Process) und 11 (Models and Methods) sind quer zu allen elf Stationen wirksam (z. B. Agile Methods, Traceability) und werden dort referenziert statt als eigene Station geführt. Kapitel 14 (Professional Practice) und 15 (Economics) sowie die drei Foundations-Kapitel (16–18: Computing, Mathematical, Engineering Foundations) sind Grundlagenwissen, keine Artefakt-erzeugenden Lebenszyklus-Aufgaben — analog zur BABOK-Lernreise, die 'Underlying Competencies' aus demselben Grund ausklammert.";
+
+</script>
+<script>
+// ============================================================
+// SE-Lifecycle-Lernreise — Engine
+// ============================================================
+
+const STATE = {
+  view: "intro",
+  currentCase: "talentmatch",
+  stationIdx: 0,
+  done: {}, // { caseKey: Set(stationId) }
+  answered: {} // { caseKey: { stationId: optionIndex } }
+};
+
+function loadProgress(){
+  CASE_ORDER.forEach(c=>{
+    STATE.done[c] = new Set();
+    STATE.answered[c] = {};
+    try{
+      const raw = sessionStorage.getItem("selr_done_"+c);
+      if(raw){ JSON.parse(raw).forEach(id=>STATE.done[c].add(id)); }
+      const rawA = sessionStorage.getItem("selr_ans_"+c);
+      if(rawA){ STATE.answered[c] = JSON.parse(rawA); }
+    }catch(e){ /* storage unavailable - continue without persistence */ }
+  });
+}
+function saveProgress(c){
+  try{
+    sessionStorage.setItem("selr_done_"+c, JSON.stringify(Array.from(STATE.done[c])));
+    sessionStorage.setItem("selr_ans_"+c, JSON.stringify(STATE.answered[c]));
+  }catch(e){ /* ignore */ }
+}
+
+function el(tag, cls, html){
+  const e = document.createElement(tag);
+  if(cls) e.className = cls;
+  if(html !== undefined) e.innerHTML = html;
+  return e;
+}
+
+function personaOf(caseKey, who){
+  return CASES[caseKey].personas[who];
+}
+function escapeHtml(str){
+  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+// ---------------- Case switchers ----------------
+function renderCaseSwitchers(){
+  ["caseSwitchIntro","caseSwitchJourney"].forEach(id=>{
+    const wrap = document.getElementById(id);
+    wrap.innerHTML = "";
+    CASE_ORDER.forEach(c=>{
+      const btn = el("button","pill"+(c===STATE.currentCase?" active":""), CASES[c].label);
+      btn.addEventListener("pointerup", ()=>{ setCase(c); });
+      wrap.appendChild(btn);
+    });
+  });
+}
+function setCase(c){
+  STATE.currentCase = c;
+  STATE.stationIdx = 0;
+  renderCaseSwitchers();
+  renderIntroCard();
+  renderStationList();
+  renderDetail();
+}
+
+function renderIntroCard(){
+  const c = CASES[STATE.currentCase];
+  const card = document.getElementById("introCaseCard");
+  card.innerHTML =
+    "<h3>"+c.label+" — "+c.org+"</h3>"+
+    "<div class='taskChip'>"+c.tag+"</div>"+
+    "<p style='margin-top:10px;'>"+c.intro+"</p>";
+}
+
+// ---------------- Station list ----------------
+function renderStationList(){
+  const wrap = document.getElementById("stationListInner");
+  wrap.innerHTML = "";
+  STATIONS.forEach((s,i)=>{
+    const isDone = STATE.done[STATE.currentCase].has(s.id);
+    const row = el("div","stationRow"+(i===STATE.stationIdx?" current":"")+(isDone?" done":""));
+    row.innerHTML =
+      "<div class='num'>"+(isDone?"✓":(i+1))+"</div>"+
+      "<div class='icon'>"+s.icon+"</div>"+
+      "<div><span class='lbl'>"+s.title+"</span><span class='sub'>"+s.chapter+"</span></div>";
+    row.addEventListener("pointerup", ()=>{ STATE.stationIdx = i; renderStationList(); renderDetail(); });
+    wrap.appendChild(row);
+  });
+}
+
+// ---------------- Detail panel ----------------
+function renderDetail(){
+  const s = STATIONS[STATE.stationIdx];
+  const caseKey = STATE.currentCase;
+  const c = CASES[caseKey];
+  const panel = document.getElementById("detailPanel");
+  panel.innerHTML = "";
+
+  // head
+  const head = el("div","stationHead");
+  head.innerHTML =
+    "<div class='bigIcon'>"+s.icon+"</div>"+
+    "<div><div class='chapterTag'>"+s.chapter+"</div><h2>"+s.title+"</h2>"+
+    "<div class='taskChip'>Zentrales Thema: "+s.centralTopic+"</div>"+
+    "<span class='docBadge'>5 Dokumente</span></div>";
+  panel.appendChild(head);
+
+  // classic vs agile
+  const cvA = el("details","block");
+  cvA.innerHTML = "<summary>⚖ Klassisch vs. Agil</summary><div class='blockBody'><div class='agileGrid'>"+
+    "<div class='agileCol classic'><h4>Plangetrieben</h4><p>"+s.classicAgile.classic+"</p></div>"+
+    "<div class='agileCol agile'><h4>Agil</h4><p>"+s.classicAgile.agile+"</p></div>"+
+    "</div></div>";
+  panel.appendChild(cvA);
+
+  // method chips
+  const mrow = el("div","methodRow");
+  s.chips.forEach(ch=>{ mrow.appendChild(el("span","methodChip",ch)); });
+  panel.appendChild(mrow);
+
+  // code comparison (with/without SWEBOK & ISO 25010)
+  if(s.code){
+    const cd = s.code;
+    const compare = el("div","codeCompare");
+    const badBlock = el("div","codeBlock bad");
+    badBlock.innerHTML = "<span class='codeLabel'>❌ Ohne SWEBOK/ISO 25010</span><pre>"+escapeHtml(cd.bad)+"</pre>";
+    const goodBlock = el("div","codeBlock good");
+    goodBlock.innerHTML = "<span class='codeLabel'>✅ Mit SWEBOK/ISO 25010</span><pre>"+escapeHtml(cd.good)+"</pre>";
+    compare.appendChild(badBlock); compare.appendChild(goodBlock);
+    panel.appendChild(compare);
+    panel.appendChild(el("div","codeCaption","<strong>Bezug:</strong> "+cd.ref+" · Beispiel angelehnt an "+cd.caseLabel));
+  }
+
+  // artifact cards
+  const artGrid = el("div","artGrid");
+  s.artifacts[caseKey].forEach(a=>{
+    const card = el("div","artCard");
+    card.innerHTML = "<div class='src'>Quelle: "+a.code+"</div><div class='txt'>"+a.text+"</div>";
+    artGrid.appendChild(card);
+  });
+  panel.appendChild(artGrid);
+
+  // glossary
+  const gloss = el("details","block");
+  gloss.innerHTML = "<summary>📖 Dokumenten-Glossar</summary><div class='blockBody'>"+
+    "<div class='glossaryEntry'><span class='term'>"+s.glossary.term+"</span> ("+s.glossary.ref+") — "+s.glossary.def+
+    "<span class='ex'>„"+s.glossary.example+"“</span></div></div>";
+  panel.appendChild(gloss);
+
+  // persona reaction
+  const pr = s.personaReaction[caseKey];
+  const pdata = personaOf(caseKey, pr.who);
+  const prow = el("div","personaRow");
+  prow.style.borderLeftColor = "var(--c-"+pdata.color+")";
+  prow.style.background = "var(--c-"+pdata.color+"-bg)";
+  prow.innerHTML = "<div><div class='pname'>"+pdata.name+"</div><div class='prole'>"+pdata.role+"</div>"+
+    "<div class='ptxt'>„"+pr.text+"“</div></div>";
+  panel.appendChild(prow);
+
+  // cross-reference
+  panel.appendChild(el("div","crossrefRow","<strong>Querverweise:</strong> "+s.crossref));
+
+  // ISO/IEC 25010:2023 mapping
+  if(s.iso25010){
+    const iso = s.iso25010;
+    const isoBlock = el("details","block");
+    isoBlock.innerHTML = "<summary>🎯 ISO/IEC 25010:2023 — "+iso.characteristic+"</summary><div class='blockBody'>"+
+      "<div class='isoSubline'>Submerkmal(e): "+iso.sub+"</div>"+
+      "<div class='glossaryEntry'><span class='term'>TalentMatch AI</span><span class='ex'>"+iso.talentmatch+"</span></div>"+
+      "<div class='glossaryEntry'><span class='term'>NovaTrade Pulse</span><span class='ex'>"+iso.novatrade+"</span></div>"+
+      "<div class='glossaryEntry'><span class='term'>Studierendenakte digital</span><span class='ex'>"+iso.studierendenakte+"</span></div>"+
+      "</div>";
+    panel.appendChild(isoBlock);
+  }
+
+  // quiz
+  const q = s.quiz[caseKey];
+  const qBox = el("div","quizBox");
+  const alreadyAnswered = STATE.answered[caseKey][s.id];
+  qBox.innerHTML = "<h4>✓ Mini-Check</h4><div class='quizQ'>"+q.q+"</div>";
+  const optWrap = el("div","");
+  q.options.forEach((opt,idx)=>{
+    const b = el("button","quizOpt", (idx+1)+". "+opt);
+    if(alreadyAnswered !== undefined){
+      if(idx===q.correct) b.classList.add("correct");
+      else if(idx===alreadyAnswered) b.classList.add("wrong");
+    }
+    b.addEventListener("pointerup", ()=>{
+      STATE.answered[caseKey][s.id] = idx;
+      STATE.done[caseKey].add(s.id);
+      saveProgress(caseKey);
+      renderStationList();
+      renderDetail();
+    });
+    optWrap.appendChild(b);
+  });
+  qBox.appendChild(optWrap);
+  if(alreadyAnswered !== undefined){
+    qBox.appendChild(el("div","quizExplain","<strong>"+(alreadyAnswered===q.correct?"Richtig. ":"Nicht ganz. ")+"</strong>"+q.explain));
+  }
+  panel.appendChild(qBox);
+
+  // nav
+  const nav = el("div","navRow");
+  const prevBtn = el("button","navBtn","← Vorherige Station");
+  prevBtn.disabled = STATE.stationIdx===0;
+  prevBtn.addEventListener("pointerup", ()=>{ if(STATE.stationIdx>0){ STATE.stationIdx--; renderStationList(); renderDetail(); } });
+  const nextBtn = el("button","navBtn primary", STATE.stationIdx===STATIONS.length-1 ? "Zum Abschluss →" : "Nächste Station →");
+  nextBtn.addEventListener("pointerup", ()=>{
+    if(STATE.stationIdx<STATIONS.length-1){ STATE.stationIdx++; renderStationList(); renderDetail(); }
+    else { showFinale(); }
+  });
+  nav.appendChild(prevBtn); nav.appendChild(nextBtn);
+  panel.appendChild(nav);
+}
+
+// ---------------- Views ----------------
+function showView(id){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  STATE.view = id;
+}
+
+function showFinale(){
+  const caseKey = STATE.currentCase;
+  const c = CASES[caseKey];
+  document.getElementById("finaleCaseLabel").innerHTML = "Alle 11 Stationen der SE-Lifecycle-Lernreise für <strong>"+c.label+"</strong> durchlaufen.";
+  const body = document.getElementById("finaleTraceBody");
+  body.innerHTML = "";
+  STATIONS.forEach(s=>{
+    const tr = document.createElement("tr");
+    const central = s.artifacts[caseKey][2] || s.artifacts[caseKey][0];
+    tr.innerHTML = "<td>"+s.icon+" "+s.title+"</td><td>"+central.text+"</td><td>"+s.chapter+" · "+central.code+"</td>";
+    body.appendChild(tr);
+  });
+  const others = CASE_ORDER.filter(k=>k!==caseKey);
+  document.getElementById("finaleCompare").innerHTML =
+    "<strong>Vergleich zum anderen Fall:</strong> Dieselben elf SWEBOK-Stationen gelten unverändert für "+
+    others.map(k=>CASES[k].label).join(" und ")+" — nur die konkreten Artefakte, Konflikte und Personas unterscheiden sich vollständig.";
+  showView("view-finale");
+}
+
+// ---------------- Mindmap ----------------
+function renderMindmap(){
+  const wrap = document.getElementById("mindmapWrap");
+  wrap.innerHTML = "";
+  STATIONS.forEach((s,i)=>{
+    const node = el("div","mindNode");
+    node.style.borderColor = "var(--border-strong)";
+    node.innerHTML = "<div class='mi'>"+s.icon+"</div><div>"+s.title+"</div><div style='font-size:14px;color:var(--muted);font-weight:500;'>"+s.chapter+"</div>";
+    node.addEventListener("pointerup", ()=>{
+      STATE.stationIdx = i;
+      closeOverlays();
+      showView("view-journey");
+      renderStationList();
+      renderDetail();
+    });
+    wrap.appendChild(node);
+  });
+  document.getElementById("excludedNote").textContent = EXCLUDED_NOTE;
+}
+
+// ---------------- Trace ----------------
+function renderTrace(){
+  const caseKey = STATE.currentCase;
+  document.getElementById("traceCaseLabel").textContent = CASES[caseKey].label;
+  const wrap = document.getElementById("traceSteps");
+  wrap.innerHTML = "";
+  TRACE[caseKey].forEach(t=>{
+    const step = el("div","traceStep");
+    step.innerHTML = "<div class='stlabel'>"+t.station+"</div><div>"+t.text+"</div>";
+    wrap.appendChild(step);
+  });
+}
+
+function openOverlay(id){
+  document.querySelectorAll(".overlay").forEach(o=>o.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+function closeOverlays(){
+  document.querySelectorAll(".overlay").forEach(o=>o.classList.remove("active"));
+}
+
+// ---------------- Beamer toggle ----------------
+const BEAMER_LEVELS = ["","beamer","beamer beamer-xl","beamer beamer-xl beamer-xxl"];
+const BEAMER_LABELS = ["🖥 Beamer-Modus","🖥 Beamer XL","🖥 Beamer XXL","🖥 Normal"];
+let beamerIdx = 0;
+function toggleBeamer(){
+  beamerIdx = (beamerIdx+1) % BEAMER_LEVELS.length;
+  document.documentElement.className = BEAMER_LEVELS[beamerIdx];
+  const btn = document.getElementById("btnBeamer");
+  btn.textContent = BEAMER_LABELS[beamerIdx];
+  btn.classList.toggle("active", beamerIdx !== 0);
+}
+
+// ---------------- Footer content ----------------
+function renderFooter(){
+  document.getElementById("footerSig").innerHTML =
+    "<strong>Michaela Kühn</strong> · <a href='https://www.michaela-kuehn.com'>www.michaela-kuehn.com</a><br>"+
+    "Referenzrahmen: SWEBOK® Guide V4.0a (IEEE Computer Society) · Querverweise IREB CPRE, BABOK® Guide v3 (IIBA), PMBOK Guide 8. Ausgabe, IEEE 29148:2018, ISO/IEC 25010:2023 · EU AI Act (VO (EU) 2024/1689) · Digital Omnibus (VO (EU) 2026/1744) · MiFID II (2014/65/EU), WpHG §63 ff. · VwVfG §3a, BITV 2.0/WCAG 2.1 AA<br>"+
+    "Zuletzt geprüft: 23.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll";
+
+  document.getElementById("footerSystemprompt").textContent =
+`MASTER-BAU-PROMPT — SE-Lifecycle-Lernreise (SWEBOK v4.0a, 3 Faelle)
+
+ZIEL
+Single-File-HTML-Trainingstool: 11 SWEBOK-v4.0a-Wissensbereiche als
+Stationenweg (von 18 KAs insgesamt; 7 bewusst ausgeklammert), identische
+Struktur fuer drei Fallbeispiele. Jede Station zeigt moeglichst ALLE
+Teilthemen des zugehoerigen SWEBOK-Kapitels - je Teilthema genau EIN
+konkretes Artefakt (5 Dokumente je Station). Kapitelnummern/-namen exakt
+aus der v4.0a-TOC uebernommen, NICHT aus v3 uebernommen (v3 hat andere
+Nummerierung und drei KAs weniger).
+
+STRUKTUR (3 States je Fall, fester Split-Screen, kein Sliding)
+1) Intro: Fallbeschreibung, Versionshinweis (dieses Tool nutzt v4.0a,
+   nicht mehr v3), Start-Button. Fall-Switcher permanent im Header.
+2) Journey: Split-Screen ca. 32/68. Links Stationenweg (11 Punkte,
+   sticky), rechts Detail-Panel je Station:
+   a) Kopf: Icon, SWEBOK-Kapitel + Wissensbereich, Task-Chip mit dem
+      fuer den Quiz zentralen Teilthema.
+   a2) Klassisch-vs-Agil-Block (<details>, geschlossen): zwei Spalten,
+      wie dieselbe Aufgabe plangetrieben (TalentMatch, Studierenden-
+      akte) bzw. agil (NovaTrade) aussieht, mit Verweis auf SWEBOK
+      Kapitel 8/9 wo einschlaegig.
+   b) Methoden-Zeile: 2 echte SWEBOK-Teilthemen als Chips (aus der
+      TOC entnommen, keine Erfindungen).
+   c) FUENF Artefakt-Cards: je Artefakt ein "Quelle:"-Tag mit echtem
+      SWEBOK-Teilthema (z.B. "5. Requirements Specification") - nur
+      echte Kapitel-/Themennamen aus dem SWEBOK-Inhaltsverzeichnis.
+      Ueberschrift zeigt Dokumentenzahl als Badge ("5 Dokumente").
+   c2) Dokumenten-Glossar (<details>, klappbar, Default zu): je
+      Artefakt-TYP ein Glossar-Eintrag mit Begriff, SWEBOK-Referenz,
+      Definition und einem Beispielsatz in Anfuehrungszeichen.
+   d) Persona-Reaktion, farbcodiert nach Rolle.
+   e) Cross-Reference-Zeile: IREB/BABOK/PMBOK/IEEE 29148/ISO 25010,
+      wo einschlaegig.
+   e2) ISO/IEC 25010:2023-Block (<details>): konkretes Qualitaetsmerkmal
+      + Submerkmal + je ein Beispiel pro Fall. Bei Stationen ohne
+      sauberes 1:1-Merkmal (Management, SCM) ehrlich als "kein
+      direktes Merkmal"/"Prozess-Enabler" kennzeichnen statt eine
+      Zuordnung zu erzwingen.
+   e3) Code-Vergleichsblock (ohne <details>, immer sichtbar): ein
+      Beispiel "Ohne SWEBOK/ISO 25010" (rot) neben "Mit SWEBOK/
+      ISO 25010" (gruen), Caption mit SWEBOK-/ISO-Bezug und Fall-
+      Zuordnung. EIN Paar pro Station (nicht dreifach je Fall), Code
+      HTML-escaped, kurze sprachneutrale Pseudocode-Snippets.
+   f) Mini-Check: Single-Choice zum zentralen Teilthema, 3 Optionen,
+      Erklaerung nach Antwort. Setzt Stempel.
+3) Finale (11/11): Traceability-Tabelle (zentrales Artefakt je Station)
+   + Vergleichs-Box zu den anderen Faellen, Reset- und
+   Fall-Wechsel-Button.
+
+STATIONEN (SWEBOK v4.0a-Kapitelnummern)
+1 Requirements, 2 Architecture (NEU), 3 Design, 4 Construction,
+5 Testing, 6 Operations (NEU), 7 Maintenance, 8 Configuration
+Management, 9 Management, 12 Quality, 13 Security (NEU).
+Ausgeklammert: 10 Process, 11 Models & Methods (querverweisend
+eingebunden), 14 Professional Practice, 15 Economics, 16-18
+Foundations (Computing/Mathematical/Engineering).
+
+FAELLE
+A) TalentMatch AI / Vantera Systemtechnik GmbH - Hochrisiko-KI-
+   Recruiting, Anhang III Nr. 4 EU AI Act. Personas: Ela, Knut, Petra,
+   Herr Bachmeier, Sarah.
+B) NovaTrade Pulse / NovaTrade Systems GmbH - agile Produktentwicklung
+   (Scrum, 2-Wochen-Sprints) fuer ein Boersenprodukt (Bruchteilsaktien-
+   Handel), MiFID II/WpHG §63 ff. Product Governance als hartes Gate
+   vor jedem Release. Personas: Ela (Product Owner), Knut, Petra
+   (Compliance), Herr Bachmeier (Vorstand), Sarah.
+C) Studierendenakte digital / Hochschule Nordwest (fiktiv) -
+   klassische Verwaltungsdigitalisierung, VwVfG §3a, BITV 2.0/
+   WCAG 2.1 AA, 50-Jahres-Aufbewahrungsfrist. Personas: Ela, Knut,
+   Petra, Kanzlerin Dr. Feldmann, Herr Oeztuerk.
+Alle drei Faelle nutzen an jeder Station dieselben SWEBOK-Teilthemen-
+Codes - Fall-Switcher zyklisch (CASE_ORDER).
+
+DESIGN
+Weiss, color-scheme:light, Pointer Events, >=16px/>=14px, >=44px
+Touch-Ziele, Signatur fixed oben rechts, Beamer-Toggle 4-stufig,
+Footer ab Stufe 1 ausgeblendet. Fortschritt getrennt pro Fall in
+sessionStorage (try/catch).
+
+NICHT TUN
+- Keine erfundenen SWEBOK-Teilthemen-Namen, auch nicht bei den
+  Artefakt-Quellen-Tags.
+- Kein Technik-Chip erzwingen, wenn kein SWEBOK-Teilthema sauber
+  passt.
+- Keine Vermischung der drei Faelle in einem Datensatz.
+- Persona Sarah/Herr Bachmeier nicht in Fall C zweckentfremden
+  (dort Herr Oeztuerk/Kanzlerin Dr. Feldmann als Kontextrollen).
+- Keine Kapitelnummern/-namen aus SWEBOK v3 uebernehmen; v4.0a-TOC
+  ist alleinige Quelle (v3 und v4.0a unterscheiden sich in Nummerierung
+  UND Themenzuschnitt, nicht nur im Umfang).
+- Kein Dark Mode, kein externer fetch(), kein HTML5-Drag&Drop.`;
+
+  document.getElementById("footerHandbuch").innerHTML =
+    "<p><strong>Framework:</strong> RAKFE — Rolle · Aufgabe · Kontext · Format · Eingrenzung.</p>"+
+    "<h4>Rolle</h4><p>RE/BA/PM-Trainerin, die zeigt: ein SWEBOK-Wissensbereich ist kein einzelner Task, sondern ein Bündel zusammenhängender Teilthemen, die je eigene Artefakte erzeugen — genau wie bei BABOK, nur für die Software-Engineering-Perspektive statt der Business-Analysis-Perspektive.</p>"+
+    "<h4>Aufgabe</h4><p>Analog zur BA-Lifecycle-Lernreise: fünf Artefakte je Station, nach Möglichkeit eines je Teilthema des SWEBOK-Kapitels. Drei Fälle von Anfang an, weil NovaTrade Pulse den agilen Kontrapunkt zu den zwei plangetriebenen Fällen liefert.</p>"+
+    "<h4>Kontext</h4><p>Alle drei Fälle folgen exakt demselben Fünf-Artefakte-Muster je Station, mit denselben SWEBOK-v4.0a-Teilthemen-Codes — nur die konkreten Inhalte unterscheiden sich vollständig.</p>"+
+    "<h4>Format</h4><p>Jede Artefakt-Card trägt ein „Quelle:“-Tag mit dem jeweiligen SWEBOK-Teilthema. Der Mini-Check bleibt bewusst auf das zentrale, im Task-Chip genannte Teilthema fokussiert.</p>"+
+    "<h4>Eingrenzung</h4><p>SWEBOK v4.0a hat 18 Kapitel; elf davon bilden hier den artefakt-erzeugenden Kern (Requirements, Architecture, Design, Construction, Testing, Operations, Maintenance, Configuration Management, Management, Quality, Security). Kapitel 10/11 (Process, Models &amp; Methods) sind Querschnittsthemen und werden als Cross-Reference eingebunden statt als eigene Station. Kapitel 14–18 (Professional Practice, Economics, drei Foundations-Kapitel) sind bewusst ausgeklammert — analog zur BABOK-Lernreise, die „Underlying Competencies“ aus demselben Grund ausklammert.</p>"+
+    "<h4>Was sich beim Update von v3 auf v4.0a geändert hat</h4><p>Drei komplett neue Stationen (Architecture, Operations, Security) wurden ergänzt. Die bisherigen acht Stationen wurden nicht nur umnummeriert, sondern teils inhaltlich neu zugeschnitten: 'Software Structure and Architecture' und 'User Interface Design' sind aus dem Design-Kapitel herausgelöst und bilden jetzt größtenteils das neue Architecture-Kapitel. 'Software Safety' heißt jetzt 'Software Dependability and Integrity Levels'. 'Verification &amp; Validation' ist jetzt ein Unterpunkt von 'Software Quality Assurance Process' statt ein eigenes Top-Level-Thema.</p>"+
+    "<h4>Nachbau-Tipp</h4><p>Für ein Kapitel mit nur vier Top-Level-Teilthemen (Software Architecture, Software Quality) wird ein Teilthema in zwei Artefakte gesplittet (z. B. Architecture Description → Patterns/Styles UND Architecture as Significant Decisions als eigener Punkt) — dasselbe Muster, das die BABOK-Lernreise für ein 4-Task-Kapitel dokumentiert.</p>"+
+    "<h4>Zentraler Lernhinweis</h4><p>Wer nur den Task-Chip liest, sieht 1 Teilthema. Wer alle Artefakte liest, sieht: jedes SWEBOK-Kapitel ist ein kleines Ökosystem aus 4–8 zusammenhängenden Teilthemen — und Requirements, Architecture, Design, Construction, Testing, Operations und Maintenance werden durchgängig von Management, SCM, Quality und Security begleitet, nicht nacheinander abgearbeitet.</p>"+
+    "<h4>Versionsstand (geprüft 23.08.2026)</h4><p>SWEBOK Guide V4.0a ist die aktuelle Fassung (IEEE Computer Society; Erstveröffentlichung 15.10.2024, Update V4.0a 25.09.2025) mit 18 statt vormals 15 Wissensbereichen. Dieses Tool ersetzt die vorherige, auf SWEBOK v3 (2014) basierende Fassung vollständig — Quelle der Kapitelstruktur: <span style='word-break:break-all;'>ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf</span>.</p>"+
+    "<h4>Traceability-Faden (SWEBOK 11, 3.4 Analyzing for Traceability)</h4><p>Ergänzend zur Traceability-Tabelle im Finale zeigt der Traceability-Faden (Header-Button und Button unter der Stationsliste) EIN Software-Item durchgängig über alle 11 Stationen hinweg — von der Anforderungsquelle bis zum Sicherheits-Check.</p>";
+
+  document.getElementById("footerSkript").innerHTML =
+    "<p><em>(Klick-Hinweise kursiv in Klammern)</em></p>"+
+    "<p><strong>0. Versionshinweis kurz einordnen</strong> — <em>(nur falls gefragt, nicht von selbst voranstellen)</em><br>„Dieses Tool nutzt SWEBOK v4.0a, die aktuelle Fassung — mit drei komplett neuen Kapiteln: Architecture, Operations, Security.“</p>"+
+    "<p><strong>1. Einstieg Fall A</strong> — <em>(Intro TalentMatch AI zeigen)</em><br>„Vantera führt TalentMatch AI ein — ein Hochrisiko-KI-Scoring-System nach EU AI Act. Elf SWEBOK-Wissensbereiche, ein Fall.“</p>"+
+    "<p><strong>2. Station öffnen, Dokumentenzahl zeigen</strong> — <em>(auf den „5 Dokumente“-Badge zeigen)</em><br>„Fünf Dokumente an einer Station — das SWEBOK-Kapitel hat mehrere Teilthemen, jedes erzeugt sein eigenes Artefakt.“</p>"+
+    "<p><strong>3. Artefakte durchgehen</strong> — <em>(auf die „Quelle:“-Tags zeigen)</em><br>„Requirements Elicitation und Requirements Validation sind zwei völlig verschiedene Teilthemen, gleiche Station.“</p>"+
+    "<p><strong>4. Quiz</strong> — <em>(Frage vorlesen, raten lassen, dann klicken)</em><br>„Eine Aufgabe bleibt aber die Leitfrage — genau die prüfen wir jetzt.“</p>"+
+    "<p><strong>5. Fall wechseln</strong> — <em>(Pill-Button „NovaTrade Pulse“)</em><br>„Gleiches Muster, andere Welt: Scrum statt Wasserfall, aber die Governance-Middleware ist genauso hart wie Petras Vier-Augen-Freigabe bei TalentMatch.“</p>"+
+    "<p><strong>6. Dritten Fall zeigen</strong> — <em>(Pill-Button „Studierendenakte digital“)</em><br>„Und ein dritter Kontrapunkt: keine KI, kein Hochfrequenzhandel, dafür 50 Jahre Aufbewahrungspflicht statt Sprint-Rhythmus.“</p>"+
+    "<p><strong>7. Neue Kapitel hervorheben</strong> — <em>(Mindmap öffnen, auf Architecture/Operations/Security zeigen)</em><br>„Drei Stationen gab es in der alten SWEBOK-Fassung noch gar nicht — Architektur war Teil des Designs, Security kam nirgends vor.“</p>"+
+    "<p><strong>8. Finale</strong><br>„Elf Stationen, fünf Artefakte, drei Welten, eine Struktur.“</p>"+
+    "<p><strong>Regie-Hinweise:</strong> Bei Zeitdruck nicht alle 5 Artefakte vorlesen — 2–3 gezielt hervorheben, den Rest als „zum Nachlesen“ ankündigen. Gesamtdauer aller drei Fälle: 100–120 Min. bei vollständiger Behandlung, 55–65 Min. im Schnelldurchlauf (nur Quiz + je 2 Artefakte).</p>";
+
+  const normen = [
+    ["SWEBOK® Guide V4.0a (IEEE Computer Society)", "Aktuelle Fassung; Erstveröffentlichung 15.10.2024, Update V4.0a am 25.09.2025; 18 Wissensbereiche (vormals 15 in v3, 2014). Editor: Hironori Washizaki (Waseda University). Quelle: ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf"],
+    ["BABOK® Guide v3 (IIBA)", "Aktuelle Ausgabe, 2015, keine Nachfolgeversion; Stand geprüft 23.08.2026"],
+    ["PMBOK Guide, 8. Ausgabe (PMI)", "Aktuelle Ausgabe"],
+    ["IEEE 29148:2018 (SRS-Format)", "In Kraft"],
+    ["ISO/IEC/IEEE 42010:2022 (Architecture Description)", "Aktuelle Edition; in SWEBOK v4.0a Kapitel 2 referenziert"],
+    ["ISO/IEC 25010:2023", "Aktuelle Edition (2. Ausgabe, ersetzt 25010:2011); 9 Qualitätsmerkmale statt vormals 8 — neu: Safety; umbenannt: Usability→Interaction Capability, Portability→Flexibility. Je Station dieses Tools mit konkretem Merkmal + Beispiel hinterlegt"],
+    ["ISO/IEC 27001:2022", "Aktuelle Edition, inkl. Umwelt-Amendment 2024; Anhang A mit 93 Controls in 4 Themenfeldern"],
+    ["ISO/IEC 20000-1:2018 (IT Service Management)", "In Kraft; indirekter Querverweis zu SWEBOK Kapitel 6 (Operations)"],
+    ["EU AI Act – VO (EU) 2024/1689", "In Kraft; Hochrisiko-Einstufung Anhang III Nr. 4 unverändert"],
+    ["Digital Omnibus – VO (EU) 2026/1744", "In Kraft seit 27.07.2026; Anhang-III-Betreiberpflichten verschoben auf 02.12.2027"],
+    ["DSGVO Art. 32 (Sicherheit der Verarbeitung)", "In Kraft"],
+    ["MiFID II – Richtlinie 2014/65/EU", "In Kraft; Product-Governance-Pflichten (Art. 16(3), 24(2)) unverändert"],
+    ["WpHG § 63 ff. i.V.m. MaComp (BaFin)", "In Kraft; MaComp-Modul BT 5 zu Product Governance"],
+    ["VwVfG § 3a (elektronische Kommunikation)", "In Kraft"],
+    ["BITV 2.0 (Barrierefreie-IT-Verordnung)", "In Kraft seit 25.05.2019; verweist auf WCAG 2.1 Stufe AA (EN 301 549)"],
+    ["Richtlinie (EU) 2016/2102 (Web-Barrierefreiheit)", "In Kraft"],
+    ["IREB CPRE (Querverweis)", "Aktueller Lehrplan-Stand"]
+  ];
+  let tbl = "<table class='footer-table'><thead><tr><th>Norm/Referenz</th><th>Status</th></tr></thead><tbody>";
+  normen.forEach(n=>{ tbl += "<tr><td>"+n[0]+"</td><td>"+n[1]+"</td></tr>"; });
+  tbl += "</tbody></table>";
+  document.getElementById("footerNormen").innerHTML = tbl;
+}
+
+// ---------------- Wire up ----------------
+function init(){
+  loadProgress();
+  renderCaseSwitchers();
+  renderIntroCard();
+  renderStationList();
+  renderDetail();
+  renderMindmap();
+  renderTrace();
+  renderFooter();
+
+  document.getElementById("btnStart").addEventListener("pointerup", ()=>{ showView("view-journey"); });
+  document.getElementById("btnMindmap").addEventListener("pointerup", ()=>{ renderMindmap(); openOverlay("overlay-mindmap"); });
+  document.getElementById("btnMindmap2").addEventListener("pointerup", ()=>{ renderMindmap(); openOverlay("overlay-mindmap"); });
+  document.getElementById("mmBack").addEventListener("pointerup", closeOverlays);
+  document.getElementById("btnTrace").addEventListener("pointerup", ()=>{ renderTrace(); openOverlay("overlay-trace"); });
+  document.getElementById("btnTrace2").addEventListener("pointerup", ()=>{ renderTrace(); openOverlay("overlay-trace"); });
+  document.getElementById("trBack").addEventListener("pointerup", closeOverlays);
+  document.getElementById("btnBeamer").addEventListener("pointerup", toggleBeamer);
+  document.getElementById("btnReset").addEventListener("pointerup", ()=>{
+    STATE.done[STATE.currentCase] = new Set();
+    STATE.answered[STATE.currentCase] = {};
+    saveProgress(STATE.currentCase);
+    STATE.stationIdx = 0;
+    showView("view-journey");
+    renderStationList();
+    renderDetail();
+  });
+  document.getElementById("btnNextCase").addEventListener("pointerup", ()=>{
+    const idx = CASE_ORDER.indexOf(STATE.currentCase);
+    const next = CASE_ORDER[(idx+1)%CASE_ORDER.length];
+    setCase(next);
+    showView("view-journey");
+  });
+}
+
+init();
+
+</script>
+</body>
+</html>
