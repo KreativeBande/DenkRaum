@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMP ECO — Kombi-Tool (Referenz · Lifecycle · Roadmap)</title>
+<style>
+  :root {
+    color-scheme: light;
+    --navy:#1E2761; --navydark:#141A45; --navymid:#243080;
+    --teal:#028090; --tealdark:#015F6B; --teallight:#03A8BF;
+    --white:#fff; --off:#F8FAFC; --charcoal:#1E293B; --slate:#475569; --muted:#64748B; --div:#E2E8F0;
+    --orange:#D4500A; --orangebg:#FFF4EE;
+    --blue:#1E40AF; --bluebg:#EFF6FF;
+    --purple:#5B21B6; --purplebg:#F5F3FF;
+    --green:#166534; --greenbg:#F0FDF4;
+    --amber:#B45309; --amberbg:#FFFBEB;
+    --ph-init:#5B21B6; --ph-init-bg:#F5F3FF;
+    --ph-plan:#1E40AF; --ph-plan-bg:#EFF6FF;
+    --ph-exec:#028090; --ph-exec-bg:#F0F9FF;
+    --ph-mon:#D4500A;  --ph-mon-bg:#FFF4EE;
+    --ph-close:#166534; --ph-close-bg:#F0FDF4;
+  }
+  html, body { color-scheme: light; background:#fff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI', Calibri, Arial, sans-serif; background:var(--off); color:var(--charcoal); font-size:16px; line-height:1.5; -webkit-tap-highlight-color:transparent; }
+  button, input { font-family:inherit; }
+
+  /* ── SIGNATUR (fix oben rechts) ── */
+  .signature {
+    position:fixed; top:14px; right:28px; z-index:300;
+    text-align:right; background:rgba(20,26,69,.82); backdrop-filter:blur(3px);
+    padding:6px 14px; border-radius:8px; line-height:1.3;
+  }
+  .signature strong { display:block; font-size:14px; color:#fff; }
+  .signature a { display:block; font-size:14px; color:var(--teallight); text-decoration:none; }
+  @media (max-width:900px) {
+    .signature { position:static; text-align:right; background:transparent; padding:4px 24px 0; }
+    .signature strong, .signature a { color:var(--navydark); }
+    .signature a { color:var(--tealdark); }
+  }
+
+  /* ── ZURÜCK-LINK ── */
+  .back-link { display:inline-block; font-size:14px; font-weight:600; color:var(--teallight); text-decoration:none; margin-bottom:6px; }
+  .back-link:hover { color:#fff; text-decoration:underline; }
+
+  /* ── HEADER ── */
+  .app-header { background:var(--navydark); color:#fff; position:sticky; top:0; z-index:100; box-shadow:0 2px 14px rgba(0,0,0,.4); }
+  .header-top { padding:14px 24px 10px; display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .header-title { font-size:22px; font-weight:800; }
+  .header-sub { font-size:14px; color:var(--teallight); margin-top:3px; }
+
+  .mode-bar { display:flex; gap:8px; padding:0 24px 10px; flex-wrap:wrap; }
+  .mode-btn {
+    padding:10px 18px; min-height:44px; border-radius:22px; border:1.5px solid rgba(255,255,255,.28);
+    background:rgba(255,255,255,.05); color:#fff; cursor:pointer; font-size:14px; font-weight:700;
+    display:flex; align-items:center; gap:8px;
+  }
+  .mode-btn.active { background:var(--teal); border-color:var(--teal); }
+  .mode-btn:hover { border-color:var(--teal); }
+
+  .beamer-btn {
+    min-height:44px; padding:10px 16px; border-radius:22px; border:1.5px solid rgba(255,255,255,.28);
+    background:rgba(255,255,255,.05); color:#fff; cursor:pointer; font-size:14px; font-weight:700;
+    margin-left:auto;
+  }
+  .beamer-btn:hover { border-color:var(--teallight); }
+
+  .filter-bar { display:flex; gap:8px; padding:10px 24px 12px; flex-wrap:wrap; align-items:center; border-top:1px solid rgba(255,255,255,.12); }
+  .filter-btn {
+    min-height:44px; padding:8px 16px; border-radius:20px; border:1.5px solid rgba(255,255,255,.25);
+    background:transparent; color:#CBD5E1; cursor:pointer; font-size:14px; font-weight:600;
+  }
+  .filter-btn.active { background:var(--teal); border-color:var(--teal); color:#fff; }
+  .filter-btn.people.active  { background:var(--purple); border-color:var(--purple); }
+  .filter-btn.process.active { background:var(--blue);   border-color:var(--blue); }
+  .filter-btn.bizenv.active  { background:var(--green);  border-color:var(--green); }
+
+  .search-wrap { margin-left:auto; position:relative; }
+  .search-wrap input {
+    min-height:44px; padding:8px 14px 8px 36px; border-radius:20px; border:1.5px solid rgba(255,255,255,.25);
+    background:rgba(255,255,255,.08); color:#fff; font-size:14px; width:220px; outline:none;
+  }
+  .search-wrap input::placeholder { color:#94A3B8; }
+  .search-wrap input:focus { border-color:var(--teal); }
+  .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#94A3B8; font-size:14px; }
+
+  .stats-bar { display:flex; gap:22px; padding:10px 24px; background:#fff; border-bottom:1px solid var(--div); font-size:14px; color:var(--slate); flex-wrap:wrap; }
+  .stat { display:flex; align-items:center; gap:6px; }
+  .stat-dot { width:11px; height:11px; border-radius:50%; }
+  .stat-dot.people { background:var(--purple); } .stat-dot.process { background:var(--blue); } .stat-dot.bizenv { background:var(--green); }
+  .stat-num { font-weight:800; color:var(--charcoal); }
+
+  main { padding:22px 24px 40px; max-width:1500px; margin:0 auto; }
+
+  /* ══ DOMÄNEN-ANSICHT ══ */
+  .domain-header { display:flex; align-items:center; gap:14px; margin:22px 0 12px; }
+  .domain-header:first-child { margin-top:0; }
+  .domain-line { flex:1; height:2px; border-radius:2px; }
+  .domain-label { font-size:15px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; padding:6px 16px; border-radius:20px; color:#fff; }
+  .domain-pct { font-size:14px; color:var(--muted); font-weight:600; }
+  .people-theme  .domain-line, .people-theme  .domain-label { background:var(--purple); }
+  .process-theme .domain-line, .process-theme .domain-label { background:var(--blue); }
+  .bizenv-theme  .domain-line, .bizenv-theme  .domain-label { background:var(--green); }
+
+  .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(520px,1fr)); gap:18px; margin-bottom:8px; }
+
+  .card { background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,.07); border:1.5px solid var(--div); display:flex; flex-direction:column; }
+  .card.hidden { display:none; }
+  .card-header { padding:14px 16px 12px; display:flex; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+  .card-header.people { background:var(--purplebg); } .card-header.process { background:var(--bluebg); } .card-header.bizenv { background:var(--greenbg); }
+  .eco-badge { font-size:14px; font-weight:800; padding:5px 11px; border-radius:6px; white-space:nowrap; color:#fff; }
+  .people .eco-badge { background:var(--purple); } .process .eco-badge { background:var(--blue); } .bizenv .eco-badge { background:var(--green); }
+  .card-title-wrap { flex:1; min-width:180px; }
+  .card-task-title { font-size:17px; font-weight:700; color:var(--charcoal); line-height:1.3; }
+  .card-was { font-size:14px; color:var(--slate); margin-top:5px; line-height:1.4; }
+  .chip-row { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+  .meta-chip { font-size:14px; font-weight:700; padding:3px 10px; border-radius:10px; border:1px solid; background:#fff; white-space:nowrap; }
+
+  .card-body { padding:14px 16px 16px; display:flex; flex-direction:column; gap:14px; }
+  .section-label { font-size:14px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; display:flex; align-items:center; gap:6px; margin-bottom:7px; }
+  .section-label.tipps { color:var(--tealdark); } .section-label.fallen { color:var(--orange); }
+  .tip-list, .fall-list { list-style:none; display:flex; flex-direction:column; gap:6px; }
+  .tip-item, .fall-item { font-size:16px; line-height:1.48; padding:9px 12px 9px 30px; border-radius:6px; position:relative; }
+  .tip-item { background:#F0F9FF; } .fall-item { background:var(--orangebg); }
+  .tip-item::before { content:"✓"; position:absolute; left:10px; color:var(--tealdark); font-weight:800; font-size:14px; }
+  .fall-item::before { content:"!"; position:absolute; left:11px; color:var(--orange); font-weight:900; font-size:14px; }
+
+  /* ══ LIFECYCLE-ANSICHT ══ */
+  .phase-tabbar { display:flex; gap:0; overflow-x:auto; padding:0 24px 10px; }
+  .phase-tab {
+    flex:1; min-width:130px; min-height:52px; padding:10px 12px; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    border:none; background:rgba(255,255,255,.05); color:#CBD5E1; font-size:14px; font-weight:700;
+    border-bottom:3px solid transparent; text-transform:uppercase; letter-spacing:.03em;
+  }
+  .phase-tab .tab-num { font-size:19px; font-weight:800; }
+  .phase-tab .tab-count { font-size:14px; color:#94A3B8; text-transform:none; letter-spacing:0; }
+  .phase-tab.active { color:#fff; background:rgba(255,255,255,.09); }
+
+  .flow-vis { display:flex; align-items:center; gap:0; overflow-x:auto; padding:14px 24px; background:#fff; border-bottom:1px solid var(--div); }
+  .flow-step { display:flex; align-items:center; flex-shrink:0; }
+  .flow-box { padding:9px 16px; min-height:44px; display:flex; flex-direction:column; justify-content:center; border-radius:8px; font-size:14px; font-weight:700; color:#fff; text-align:center; cursor:pointer; white-space:nowrap; }
+  .flow-box small { font-size:14px; font-weight:400; opacity:.85; }
+  .flow-arrow { color:var(--muted); font-size:20px; padding:0 8px; flex-shrink:0; }
+
+  .phase-section { margin-bottom:26px; }
+  .phase-header { display:flex; align-items:center; gap:16px; padding:16px 20px; border-radius:12px; color:#fff; margin-bottom:16px; }
+  .phase-num { font-size:38px; font-weight:900; opacity:.9; }
+  .phase-name { font-size:21px; font-weight:800; }
+  .phase-desc { font-size:14px; opacity:.9; margin-top:3px; }
+  .phase-taskcount { font-size:14px; opacity:.75; margin-top:2px; }
+
+  .task-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(520px,1fr)); gap:16px; }
+  .eco-card { background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.07); border:1.5px solid var(--div); }
+  .card-top { padding:13px 15px 11px; display:flex; align-items:flex-start; gap:12px; }
+  .eco-id { font-size:14px; font-weight:800; padding:5px 10px; border-radius:6px; color:#fff; white-space:nowrap; }
+  .card-meta { flex:1; }
+  .card-body-lc { padding:11px 15px 15px; display:flex; gap:14px; flex-wrap:wrap; }
+  .col { flex:1; min-width:220px; }
+  .col-label { font-size:14px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; margin-bottom:7px; }
+  .col-label.t { color:var(--tealdark); } .col-label.f { color:var(--orange); }
+  .divider-v { width:1px; background:var(--div); align-self:stretch; }
+
+  /* ══ ROADMAP-ANSICHT ══ */
+  .rm-note { background:rgba(180,83,9,.07); border:1px dashed rgba(180,83,9,.4); border-radius:8px; padding:10px 16px; font-size:14px; color:var(--amber); margin-bottom:14px; }
+  .rm-grid-wrap { overflow-x:auto; }
+  .pgrid { display:grid; grid-template-columns:150px repeat(5, minmax(200px,1fr)); gap:4px; min-width:1200px; margin-bottom:6px; }
+  .rm-corner {}
+  .ph { padding:10px 12px; border-radius:8px 8px 0 0; text-align:center; font-size:14px; font-weight:700; }
+  .ph span { display:block; font-size:22px; font-weight:800; line-height:1.1; }
+  .ph small { font-size:14px; opacity:.75; display:block; margin-top:2px; }
+  .ph1 { background:var(--ph-init-bg); color:var(--ph-init); border:1px solid var(--ph-init); border-bottom:none; }
+  .ph2 { background:var(--ph-plan-bg); color:var(--ph-plan); border:1px solid var(--ph-plan); border-bottom:none; }
+  .ph3 { background:var(--ph-exec-bg); color:var(--ph-exec); border:1px solid var(--ph-exec); border-bottom:none; }
+  .ph4 { background:var(--ph-mon-bg); color:var(--ph-mon); border:1px solid var(--ph-mon); border-bottom:none; }
+  .ph5 { background:var(--ph-close-bg); color:var(--ph-close); border:1px solid var(--ph-close); border-bottom:none; }
+
+  .sl { display:grid; grid-template-columns:150px repeat(5, minmax(200px,1fr)); gap:4px; min-width:1200px; }
+  .dlbl { padding:10px 8px; display:flex; align-items:center; gap:8px; border-right:2px solid var(--div); }
+  .dname { font-size:14px; font-weight:700; }
+  .dpct { font-size:14px; color:var(--slate); }
+  .cell { padding:8px; border:1px dashed var(--div); border-radius:6px; display:flex; flex-wrap:wrap; gap:6px; align-content:flex-start; min-height:56px; }
+
+  .rm-chip {
+    padding:7px 10px; min-height:44px; border-radius:6px; cursor:pointer; font-size:14px; line-height:1.3;
+    border:1.5px solid transparent; display:flex; flex-direction:column; justify-content:center; gap:1px; min-width:88px;
+  }
+  .rm-chip.people { background:var(--purplebg); border-color:var(--purple); color:var(--purple); }
+  .rm-chip.process { background:var(--bluebg); border-color:var(--blue); color:var(--blue); }
+  .rm-chip.bizenv { background:var(--greenbg); border-color:var(--green); color:var(--green); }
+  .rm-chip.sel.people { background:var(--purple); color:#fff; }
+  .rm-chip.sel.process { background:var(--blue); color:#fff; }
+  .rm-chip.sel.bizenv { background:var(--green); color:#fff; }
+  .rm-chip.dim { opacity:.25; }
+  .rm-cid { font-size:14px; font-weight:800; opacity:.85; }
+  .rm-cnm { font-size:14px; font-weight:600; }
+
+  .detail { margin-top:16px; border:1.5px solid var(--div); border-radius:10px; background:#fff; overflow:hidden; display:none; }
+  .detail.vis { display:block; }
+  .dh { padding:12px 16px; display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--div); flex-wrap:wrap; }
+  .dbadge { padding:5px 12px; border-radius:6px; font-size:14px; font-weight:800; color:#fff; }
+  .dtitle { font-size:17px; font-weight:700; }
+  .dmeta { margin-left:auto; font-size:14px; color:var(--slate); }
+  .close-btn { min-height:44px; min-width:44px; cursor:pointer; font-size:16px; color:var(--muted); background:transparent; border:1px solid var(--div); border-radius:8px; }
+  .dbody { padding:16px; display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .dbody label { font-size:14px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; display:block; margin-bottom:8px; }
+  .dbody label.t { color:var(--tealdark); } .dbody label.f { color:var(--orange); }
+
+  /* ── EMPTY STATE ── */
+  .empty-state { text-align:center; padding:60px 20px; color:var(--muted); display:none; }
+  .empty-state.visible { display:block; }
+  .empty-state-icon { font-size:44px; margin-bottom:12px; }
+  .empty-state-title { font-size:18px; font-weight:700; color:var(--slate); }
+  .empty-state-hint { margin-top:6px; font-size:16px; }
+
+  /* ── BEAMER-MODUS (kumulativ) ── */
+  html.beamer{ --muted:#3D4A5C; }
+  html.beamer .app-footer, html.beamer footer { display:none !important; }
+
+  html.beamer .card-was, html.beamer .tip-item, html.beamer .fall-item,
+  html.beamer .empty-state-hint { font-size:22px; }
+  html.beamer .card-task-title, html.beamer .dtitle { font-size:24px; }
+  html.beamer .domain-label, html.beamer .phase-name { font-size:26px; }
+  html.beamer .header-title { font-size:26px; }
+  html.beamer .header-sub { font-size:16px; }
+  html.beamer .empty-state-title { font-size:22px; }
+  html.beamer .eco-badge, html.beamer .meta-chip, html.beamer .eco-id,
+  html.beamer .rm-cid, html.beamer .rm-cnm, html.beamer .dbadge, html.beamer .dmeta,
+  html.beamer .domain-pct, html.beamer .phase-desc, html.beamer .phase-taskcount,
+  html.beamer .col-label, html.beamer .section-label, html.beamer .dbody label,
+  html.beamer .flow-box, html.beamer .flow-box small, html.beamer .tab-count,
+  html.beamer .stat, html.beamer .rm-note, html.beamer #visibleCount { font-size:15px; }
+  html.beamer .mode-btn, html.beamer .filter-btn, html.beamer .beamer-btn,
+  html.beamer .phase-tab, html.beamer .close-btn, html.beamer #searchInput { min-height:52px; font-size:16px; }
+  html.beamer .beamer-btn, html.beamer-xl .beamer-btn, html.beamer-xxl .beamer-btn {
+    background:var(--teal); border-color:var(--teal); color:#fff;
+  }
+
+  html.beamer-xl .card-was, html.beamer-xl .tip-item, html.beamer-xl .fall-item,
+  html.beamer-xl .empty-state-hint { font-size:28px; }
+  html.beamer-xl .card-task-title, html.beamer-xl .dtitle { font-size:30px; }
+  html.beamer-xl .domain-label, html.beamer-xl .phase-name { font-size:32px; }
+  html.beamer-xl .header-title { font-size:32px; }
+  html.beamer-xl .header-sub { font-size:18px; }
+  html.beamer-xl .empty-state-title { font-size:26px; }
+  html.beamer-xl .eco-badge, html.beamer-xl .meta-chip, html.beamer-xl .eco-id,
+  html.beamer-xl .rm-cid, html.beamer-xl .rm-cnm, html.beamer-xl .dbadge, html.beamer-xl .dmeta,
+  html.beamer-xl .domain-pct, html.beamer-xl .phase-desc, html.beamer-xl .phase-taskcount,
+  html.beamer-xl .col-label, html.beamer-xl .section-label, html.beamer-xl .dbody label,
+  html.beamer-xl .flow-box, html.beamer-xl .flow-box small, html.beamer-xl .tab-count,
+  html.beamer-xl .stat, html.beamer-xl .rm-note, html.beamer-xl #visibleCount { font-size:18px; }
+  html.beamer-xl .mode-btn, html.beamer-xl .filter-btn, html.beamer-xl .beamer-btn,
+  html.beamer-xl .phase-tab, html.beamer-xl .close-btn, html.beamer-xl #searchInput { min-height:58px; font-size:18px; }
+
+  html.beamer-xxl .card-was, html.beamer-xxl .tip-item, html.beamer-xxl .fall-item,
+  html.beamer-xxl .empty-state-hint { font-size:34px; }
+  html.beamer-xxl .card-task-title, html.beamer-xxl .dtitle { font-size:36px; }
+  html.beamer-xxl .domain-label, html.beamer-xxl .phase-name { font-size:38px; }
+  html.beamer-xxl .header-title { font-size:38px; }
+  html.beamer-xxl .header-sub { font-size:21px; }
+  html.beamer-xxl .empty-state-title { font-size:30px; }
+  html.beamer-xxl .eco-badge, html.beamer-xxl .meta-chip, html.beamer-xxl .eco-id,
+  html.beamer-xxl .rm-cid, html.beamer-xxl .rm-cnm, html.beamer-xxl .dbadge, html.beamer-xxl .dmeta,
+  html.beamer-xxl .domain-pct, html.beamer-xxl .phase-desc, html.beamer-xxl .phase-taskcount,
+  html.beamer-xxl .col-label, html.beamer-xxl .section-label, html.beamer-xxl .dbody label,
+  html.beamer-xxl .flow-box, html.beamer-xxl .flow-box small, html.beamer-xxl .tab-count,
+  html.beamer-xxl .stat, html.beamer-xxl .rm-note, html.beamer-xxl #visibleCount { font-size:21px; }
+  html.beamer-xxl .mode-btn, html.beamer-xxl .filter-btn, html.beamer-xxl .beamer-btn,
+  html.beamer-xxl .phase-tab, html.beamer-xxl .close-btn, html.beamer-xxl #searchInput { min-height:64px; font-size:21px; }
+
+  /* ── FOOTER (kanonisch) ── */
+  .app-footer { border-top:1px solid var(--div); background:#fff; padding:20px 24px 30px; }
+  .footer-sig { text-align:center; font-size:14px; color:var(--muted); margin-bottom:16px; line-height:1.6; }
+  .footer-sig strong { color:var(--charcoal); }
+  .footer-sig a { color:var(--tealdark); }
+  .footer-details { max-width:1500px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit, minmax(320px,1fr)); gap:14px; }
+  .footer-box { border:1px solid var(--div); border-radius:10px; background:var(--off); overflow:hidden; }
+  .footer-summary { padding:12px 16px; font-weight:700; font-size:15px; cursor:pointer; list-style:none; display:flex; align-items:center; gap:8px; }
+  .footer-summary::-webkit-details-marker { display:none; }
+  .footer-summary::before { content:"▸"; font-size:14px; color:var(--teal); }
+  details[open] .footer-summary::before { content:"▾"; }
+  .footer-content { padding:0 16px 16px; }
+  .footer-mono { font-family:'Consolas','Courier New',monospace; font-size:14px; line-height:1.6; white-space:pre-wrap; background:#fff; border:1px solid var(--div); border-radius:6px; padding:12px; }
+  .footer-sans { font-size:16px; line-height:1.6; }
+  .footer-sans h4 { font-size:15px; margin:12px 0 6px; color:var(--navydark); }
+  .footer-sans p, .footer-sans li { margin-bottom:6px; }
+  .footer-sans ol, .footer-sans ul { padding-left:20px; }
+  .footer-table { width:100%; border-collapse:collapse; font-size:14px; }
+  .footer-table th, .footer-table td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--div); }
+  .footer-table th { color:var(--slate); font-size:14px; text-transform:uppercase; letter-spacing:.03em; }
+
+  @media (max-width:640px) {
+    .grid, .task-grid { grid-template-columns:1fr; }
+    .search-wrap { margin-left:0; }
+    .search-wrap input { width:100%; }
+    .dbody { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="signature">
+  <strong>Michaela Kühn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<header class="app-header">
+  <div class="header-top">
+    <div>
+      <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+      <div class="header-title">🎯 PMP ECO — Kombi-Tool</div>
+      <div class="header-sub">26 Tasks · 3 Perspektiven: Domänen-Referenz · Lifecycle · Roadmap · PMP Exam Prep v4.1</div>
+    </div>
+  </div>
+  <div class="mode-bar">
+    <button class="mode-btn active" data-mode="domain">📇 Domänen-Referenz</button>
+    <button class="mode-btn" data-mode="lifecycle">🔄 Lifecycle</button>
+    <button class="mode-btn" data-mode="roadmap">🗺️ Roadmap</button>
+    <button class="beamer-btn" id="beamerBtn">🖥️ Beamer</button>
+  </div>
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" data-domain="all">Alle 26 Tasks</button>
+    <button class="filter-btn people" data-domain="people">👥 People — 33%</button>
+    <button class="filter-btn process" data-domain="process">⚙️ Process — 41%</button>
+    <button class="filter-btn bizenv" data-domain="bizenv">🌍 Business Env. — 26%</button>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="ECO-Task, Keyword, Nummer suchen…">
+    </div>
+  </div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-dot people"></div><span class="stat-num">8</span>&nbsp;Tasks · People</div>
+  <div class="stat"><div class="stat-dot process"></div><span class="stat-num">10</span>&nbsp;Tasks · Process</div>
+  <div class="stat"><div class="stat-dot bizenv"></div><span class="stat-num">8</span>&nbsp;Tasks · Business Environment</div>
+  <div style="margin-left:auto;color:var(--muted)" id="visibleCount">26 von 26 Tasks sichtbar</div>
+</div>
+
+<div id="phaseTabbarWrap" style="display:none;background:var(--navydark);">
+  <div class="phase-tabbar" id="phaseTabbar"></div>
+</div>
+<div id="flowVisWrap" style="display:none;">
+  <div class="flow-vis" id="flowVis"></div>
+</div>
+
+<main id="app"></main>
+
+<footer class="app-footer">
+  <div class="footer-sig">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a><br>
+    Referenzrahmen: PMI Examination Content Outline (ECO) 2026 · PMBOK® Guide, 8. Auflage (unterstützendes Referenzmaterial)<br>
+    <span style="font-size:13px;">Zuletzt geprüft: 24.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+  </div>
+  <div class="footer-details">
+
+    <details class="footer-box">
+      <summary class="footer-summary">Systemprompt</summary>
+      <div class="footer-content footer-mono">MASTER-BAU-PROMPT — PMP ECO Kombi-Tool
+====================================
+
+ROLLE
+Du baust ein einzelnes, offlinefähiges HTML-Trainingstool für PMP-Exam-Prep-
+Workshops (Beamer + iPad), das drei bestehende Einzelansichten zu EINEM
+gemeinsamen Datenmodell zusammenführt.
+
+DATENMODELL (26 Objekte)
+{ id, domain: "people"|"process"|"bizenv", phase: "initiating"|"planning"|
+  "executing"|"monitoring"|"closing", title, lektion, was, tipps:[3-4 Items],
+  fallen:[3 Items] }
+Domänen-Split: People 8 / Process 10 / Business Environment 8 = 26.
+Phasen-Split: Initiating 3 / Planning 12 / Executing 5 / Monitoring&Controlling
+5 / Closing 1 = 26. Ein Task hat GENAU EINE Domäne und GENAU EINE Phase
+(M&C-Tasks laufen inhaltlich kontinuierlich, werden aber der Phase
+"Monitoring &amp; Controlling" eindeutig zugeordnet — kein Doppel-Listing).
+
+STRUKTUR — DREI MODI ÜBER EINEM DATENSATZ
+1. Domänen-Referenz: Kartenraster gruppiert nach People/Process/Business Env.,
+   je Karte: ID-Badge, Titel, "Was", Lektion-Chip, Tipps-Liste (✓), Stolperfallen-
+   Liste (!).
+2. Lifecycle: Phasen-Tabs (Initiating→Planning→Executing→M&C→Closing) +
+   Flow-Visualisierung, je Phase eigener Kartenabschnitt, Karten 2-spaltig
+   (Tipps | Stolperfallen).
+3. Roadmap: Swimlane-Matrix Domäne (Zeile) × Phase (Spalte), klickbare Chips,
+   Klick öffnet Detail-Panel unterhalb der Matrix mit vollständigen Tipps/
+   Stolperfallen.
+Gemeinsame Filterleiste (Domäne + Volltextsuche über ID/Titel/Was/Tipps/
+Fallen) wirkt modusübergreifend.
+
+DESIGN-VORGABEN
+- Single-File HTML, kein fetch(), keine CDN-Abhängigkeit, kein Dark Mode,
+  color-scheme:light, Hintergrund immer Weiß.
+- Fließtext ≥16px, Sekundärtext/Badges/IDs ≥14px (Beamer-Lesbarkeit hat
+  Priorität 1 — auch kleine Chip-/ID-Texte zählen mit).
+- Nur pointerup-Events, keine HTML5-Drag-and-Drop-API, 44px Mindest-
+  Klickfläche für alle interaktiven Elemente.
+- Vierstufiger Beamer-Toggle (Normal→Beamer→Beamer XL→Beamer XXL→Normal),
+  reine Größensteigerung, Footer ab Stufe 1 ausgeblendet.
+- Signatur fix oben rechts (Name + Website-Link), Fallback position:static
+  unter 900px Breite.
+- Farbcodierung konsistent: People=Lila #5B21B6, Process=Blau #1E40AF,
+  Business Env.=Grün #166534; Phasenfarben: Initiating Lila, Planning Blau,
+  Executing Teal #028090, Monitoring Orange #D4500A, Closing Grün.
+
+FOOTER (vier Pflicht-Boxen)
+Systemprompt (dieser Text, Monospace ≥14px) · Handbuch (Sans-Serif ≥16px,
+PromptSchule-Methodik) · Vortrags-Skript (Sans-Serif ≥16px, Schritt-für-
+Schritt-Sprechtext) · Normen-Register (aktueller Stand PMI ECO + PMBOK,
+per Websuche verifiziert, nicht aus Trainingswissen übernommen).
+
+NICHT TUN
+- Keine Domänen-/Prozentangaben verändern (PMI-Originalwerte 33/41/26%
+  unverändert übernehmen).
+- Keine Tasks doppelt zählen, auch wenn sie in der Roadmap-Quelle als
+  Doppel-Chip (Haupt-Phase + M&C-Band) auftauchten.
+- Keine generischen Platzhalterwerte einführen — jeder Tipp/jede Stolperfalle
+  stammt wortgetreu aus dem Quellmaterial.
+- Kein Impressum im Footer.</div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">Handbuch</summary>
+      <div class="footer-content footer-sans">
+        <h4>Framework</h4>
+        <p>RTF-Grundstruktur (Rolle · Task · Format), erweitert um RAKFE-Analyse
+        (Rolle · Aufgabe · Kontext · Format · Eingrenzung) nach PromptSchule-
+        Methodik.</p>
+        <h4>Analyse entlang Rolle/Aufgabe/Kontext/Format/Eingrenzung</h4>
+        <ul>
+          <li><strong>Rolle:</strong> Trainer-Werkzeug für PMP-Exam-Prep-Workshops — kein
+          Lernenden-Quiz, sondern Dozenten-Referenz mit direktem Beamer-Einsatz.</li>
+          <li><strong>Aufgabe:</strong> Drei bereits einzeln existierende Perspektiven auf
+          dieselben 26 ECO-Tasks (Karten-Referenz, Lifecycle-Reihenfolge,
+          Domäne×Phase-Matrix) so verschmelzen, dass die Datenbasis einmalig
+          gepflegt wird und alle drei Sichten synchron bleiben.</li>
+          <li><strong>Kontext:</strong> PMI Examination Content Outline (ECO) 2026 — löste
+          am 9. Juli 2026 die ECO-Fassung von Januar 2021 ab. Domänen-Gewichtung
+          People 33% / Process 41% / Business Environment 26%. Der starke Anstieg
+          von Business Environment gegenüber der Vorfassung ist ein zentraler
+          Merkpunkt für Prüfungskandidat:innen.</li>
+          <li><strong>Format:</strong> Modus-Umschalter statt drei getrennter Dateien —
+          reduziert Pflegeaufwand und verhindert Drift zwischen den Ansichten.</li>
+          <li><strong>Eingrenzung:</strong> IREB/BABOK sind hier bewusst NICHT referenziert
+          — dieses Tool liegt vollständig in der PM-Domäne (PMI/PMBOK), nicht im
+          RE/BA-Bereich. PMBOK® Guide, 8. Auflage, wird als unterstützendes
+          Referenzmaterial genannt, ist laut PMI aber nicht die prüfungsbestimmende
+          Quelle — das ist ausschließlich die ECO selbst.</li>
+        </ul>
+        <h4>Zentraler Lernhinweis</h4>
+        <p>Ein Datenmodell, drei Linsen: Dieselbe fachliche Aussage wirkt je nach
+        Betrachtungswinkel unterschiedlich lehrreich — die Domänen-Referenz zeigt
+        Prüfungsgewichtung, der Lifecycle zeigt Ablauflogik, die Roadmap zeigt
+        beides gleichzeitig als Matrix. Für Workshop-Teilnehmende ist oft erst die
+        Kombination aller drei Sichten der eigentliche "Klarheits-Sprung".</p>
+        <h4>Nachbau-Tipp</h4>
+        <p>Bei Migration bestehender Einzeltools in eine Kombi-Ansicht zuerst die
+        Datenmodelle diffen (welche Version von "was"/Tipps/Fallen ist die
+        vollständigste?) und dann EINE kanonische Fassung je Task festlegen,
+        statt mehrere leicht abweichende Textvarianten mitzuschleppen.</p>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">Vortrags-Skript</summary>
+      <div class="footer-content footer-sans">
+        <p><em>(Beamer-Modus vor Sessionbeginn auf "Beamer" oder "Beamer XL" stellen.)</em></p>
+        <ol>
+          <li><strong>Einstieg — Modus "Domänen-Referenz" (Default beim Laden).</strong>
+          "Wir starten mit der Prüfungsbrille: 26 Tasks, drei Domänen, klar
+          gewichtet — People 33, Process 41, Business Environment 26 Prozent."
+          <em>(Kurz über die drei Filter-Buttons scrollen, ohne zu klicken.)</em>
+          Übergang: "Aber Prüfungsgewichtung sagt nichts über die Reihenfolge im
+          echten Projekt — deshalb wechseln wir die Perspektive."</li>
+          <li><strong>Klick auf "🔄 Lifecycle".</strong> "Jetzt dieselben 26 Tasks, aber
+          entlang des Projektverlaufs: Initiating, Planning, Executing, Monitoring
+          &amp; Controlling, Closing." <em>(Auf den Phasen-Flow oben zeigen.)</em> "Fällt
+          auf: Planning trägt allein 12 der 26 Tasks — fast die Hälfte der
+          gesamten ECO liegt in der Planungsphase." Übergang: "Und jetzt legen
+          wir beide Sichten übereinander."</li>
+          <li><strong>Klick auf "🗺️ Roadmap".</strong> "Domäne als Zeile, Phase als
+          Spalte — hier sehen Sie auf einen Blick, wo sich People-, Process- und
+          Business-Environment-Themen im Projektverlauf konzentrieren."
+          <em>(Auf die M&amp;C-Spalte zeigen.)</em> "Und dieser Hinweis hier oben ist
+          wichtig: Monitoring &amp; Controlling läuft nicht als eigene Zeitscheibe,
+          sondern parallel durch das ganze Projekt — die fünf Tasks hier sind
+          durchgehend aktiv."</li>
+          <li><strong>Vertiefung an einem Beispiel.</strong> <em>(Chip "3.3 · Change
+          Control" antippen.)</em> "Ein klassischer Prüfungsklassiker: Corrective
+          versus Preventive Action — der Zeitpunkt der Maßnahme entscheidet, nicht
+          die Maßnahme selbst." <em>(Detail-Panel vorlesen lassen oder selbst
+          zusammenfassen.)</em></li>
+          <li><strong>Suchfeld demonstrieren.</strong> "Wer im Workshop eine konkrete
+          Frage hat — z. B. 'RACI' — tippt das einfach ins Suchfeld, unabhängig
+          vom aktuellen Modus." <em>(Suchbegriff eintippen, Ergebnis zeigen,
+          wieder löschen.)</em></li>
+        </ol>
+        <p><strong>Allgemeine Regie-Hinweise:</strong> Nicht mit der Roadmap-Matrix
+        beginnen — sie ist ohne die vorherigen zwei Perspektiven zu dicht.
+        Timing: ca. 6–8 Minuten für den vollständigen Durchlauf aller drei Modi.
+        Bei Beamer-Projektion &gt; 8 m Entfernung vorab auf "Beamer XL" schalten.</p>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary">Normen-Register</summary>
+      <div class="footer-content">
+        <table class="footer-table">
+          <tr><th>Referenz</th><th>Status</th><th>Stand</th></tr>
+          <tr><td>PMI Examination Content Outline (ECO)</td><td>In Kraft seit 9. Juli 2026 (ersetzt Fassung Januar 2021)</td><td>Domänen: People 33% · Process 41% · Business Environment 26% · 26 Tasks gesamt</td></tr>
+          <tr><td>PMBOK® Guide, 8. Auflage</td><td>Unterstützendes Referenzmaterial — laut PMI NICHT die prüfungsbestimmende Quelle</td><td>Websuche 24.08.2026</td></tr>
+        </table>
+        <p style="font-size:14px;color:var(--muted);margin-top:10px;">Verifiziert per Websuche am 24.08.2026. Die ECO ist laut PMI die alleinige
+        prüfungsbestimmende Quelle für den PMP-Exam; der PMBOK® Guide dient als
+        begleitendes Nachschlagewerk. Bei künftigen ECO-Revisionen diese Box vor
+        erneutem Einsatz gegenprüfen.</p>
+      </div>
+    </details>
+
+  </div>
+</footer>
+
+<script>
+const DATA = [
+  { id:"1.1", domain:"people", phase:"initiating", title:"Develop a Common Vision", lektion:"L03",
+    was:"Gemeinsame Projektvision mit Sponsor und Stakeholdern entwickeln und kommunizieren",
+    tipps:["Vision kommt vom Sponsor/Executive — PM facilitiert, erstellt sie nicht eigenständig","Project Charter = formale Autorisierung des PM + Commitment-Instrument für Stakeholder","Kickoff-Meeting: intern (Team, Rollen, Charter) ≠ öffentlich (Vision, Sponsor, Stakeholder)","Reihenfolge: Vision Statement → Charter → internes Kickoff → öffentliches Kickoff"],
+    fallen:["PM erstellt Vision selbst — Prüfung: Wer erstellt die Vision? Sponsor/Executive.","Kein Charter = keine formale PM-Autorität über Ressourcen und Budget","Nur einen Kickoff-Typ kennen — PMI unterscheidet intern und öffentlich"] },
+  { id:"1.2", domain:"people", phase:"executing", title:"Manage Conflicts", lektion:"L04",
+    was:"Konfliktsituationen identifizieren, Eskalationsstufen einschätzen und situationsgerecht lösen",
+    tipps:["Collaborate/Problem-Solve = PMI-Favorit wenn Zeit vorhanden und Beziehung langfristig wichtig","Force nur bei Not-Situationen, Sicherheitsfragen oder wenn alle anderen Wege versagen","Avoid/Withdraw: temporär zur Abkühlung — nie als finale Lösung","Leas' 5 Stufen: Stufe 1 (Problem to Solve) ist noch produktiv — Ziel: dort bleiben"],
+    fallen:["'Compromise ist immer der beste Mittelweg' — PMI bevorzugt Collaborate (beide gewinnen)","Avoid als nachhaltige Konfliktlösung — verlagert das Problem, löst es nicht","Smooth als Zeichen von Stärke — oft Signal für nicht angesprochene Probleme"] },
+  { id:"1.3", domain:"people", phase:"executing", title:"Lead the Project Team", lektion:"L04",
+    was:"Führungsstil situationsgerecht wählen, Team befähigen und Teamentwicklung begleiten",
+    tipps:["Servant Leadership = bevorzugter Stil in kollaborativen und adaptiven Umgebungen","Directive bei Krise, Transformational bei Change, Transactional bei klarer Performance","Team Charter: kollaborativ vom Team erstellt — nicht vom PM vorgegeben","Tuckman: Teams können bei Personalwechsel in Forming/Storming zurückfallen"],
+    fallen:["Einen Führungsstil für alle Situationen — PMI erwartet kontext-abhängige Anpassung","PM erstellt Team Charter allein — widerspricht dem Servant Leadership-Prinzip","Storming als Problem ansehen — es ist eine notwendige Entwicklungsphase"] },
+  { id:"1.4", domain:"people", phase:"initiating", title:"Engage Stakeholders", lektion:"L03",
+    was:"Stakeholder kontinuierlich identifizieren, analysieren und aktiv einbinden",
+    tipps:["Stakeholder-Identifikation ist kontinuierlich — neue Stakeholder tauchen jederzeit auf","Stakeholder Register = öffentliches Dokument — resistente Stakeholder NUR mit Nummer","Power/Interest Grid: High Power + Low Interest = Keep Satisfied (≠ Manage Closely!)","Manage Closely = High Power + High Interest — häufigste Verwechslung"],
+    fallen:["'Stakeholder habe ich einmal zu Beginn identifiziert' — Identifikation endet nie","Resistente Stakeholder namentlich im Register aufführen — Register kann öffentlich sein","High Power immer als Manage Closely klassifizieren — Interest-Level entscheidet"] },
+  { id:"1.5", domain:"people", phase:"planning", title:"Align Stakeholder Expectations", lektion:"L03",
+    was:"Stakeholder-Erwartungen kategorisieren, Lücken analysieren und Engagement-Strategie ableiten",
+    tipps:["Engagement Assessment Matrix: C (Current) → D (Desired) — Gap zeigt Handlungsbedarf","5 Stufen: Unaware → Resistant → Neutral → Supportive → Leading","Directions of Influence: Upward · Downward · Outward · Sideward","Resistance ist Information — Ursachen verstehen, nicht konfrontieren"],
+    fallen:["'Resistente Stakeholder muss ich überzeugen' — PMI: Strategie anpassen, nicht überreden","C = D angenommen ohne Analyse — Ausgangslage immer erheben","Alignment als einmalige Aktivität — Erwartungen verschieben sich laufend"] },
+  { id:"1.6", domain:"people", phase:"executing", title:"Manage Stakeholder Expectations", lektion:"L03",
+    was:"Stakeholder-Erwartungen laufend managen, Engagement-Plan umsetzen und Vertrauen aufbauen",
+    tipps:["Stakeholder Engagement Plan (Strategien) ≠ Communications Management Plan (Wer/Was/Wann)","Proaktive Kommunikation bei Scope- oder Plan-Änderungen ist PM-Pflicht, keine Option","Regelmäßige Updates auch wenn es keine Neuigkeiten gibt — Vertrauen durch Konsistenz","In adaptiven Projekten: PM + Product Owner managen Erwartungen gemeinsam"],
+    fallen:["Engagement Plan und Communication Plan als dasselbe behandeln — sind verlinkt aber verschieden","'Wir schicken wöchentlich einen Status-Report' — Push allein ist keine Engagement-Strategie","Erwartungsmanagement nur bei Problemen aktivieren — PMI: kontinuierlicher Prozess"] },
+  { id:"1.7", domain:"people", phase:"executing", title:"Ensure Knowledge Transfer", lektion:"L04",
+    was:"Kritisches Projektwissen identifizieren, sichern und an Team und Organisation übertragen",
+    tipps:["Tacit Knowledge (Erfahrung, Intuition) aktiv identifizieren — schwer zu codieren","Wissenstransfer auf 3 Ebenen: Individuum → Team → Organisation","Lessons Learned kontinuierlich sammeln — neutraler Facilitator, konsistente Templates","In Risk Management Discussions integrieren — Erkenntnisse als Frühwarnsignale nutzen"],
+    fallen:["'Wissensmanagement = Dokumentation' — Tacit Knowledge ist explizit PM-Verantwortung","Lessons Learned nur beim Abschluss — zu spät, Lernchancen verpassen","'Knowledge Transfer ist Aufgabe der HR' — PM ist verantwortlich"] },
+  { id:"1.8", domain:"people", phase:"planning", title:"Plan and Manage Communication", lektion:"L03",
+    was:"Kommunikationsstrategie planen und zielgruppengerecht umsetzen",
+    tipps:["Push (Email, Reports) · Pull (Intranet) · Interactive (Meetings) — bewusst wählen","Communication Requirements Analysis: Wer braucht was, wie oft, in welchem Format?","Interactive = einzige bidirektionale Methode — für kritische Entscheidungen bevorzugen","Communication Plan aus Stakeholder Register und Engagement Plan ableiten"],
+    fallen:["Push, Pull und Interactive als Synonyme behandeln — Prüfung fragt den Unterschied explizit","'Viel Kommunikation = gute Kommunikation' — falsches Format und Zielgruppe sind Noise","Communication Plan nur für große Projekte — PMI erwartet immer einen"] },
+
+  { id:"2.1", domain:"process", phase:"planning", title:"Develop Integrated PM Plan & Plan Delivery", lektion:"L06",
+    was:"Integrierten PM-Plan entwickeln, Lieferansatz bewusst wählen und Business Value sicherstellen",
+    tipps:["Needs Assessment zuerst: Probleme/Chancen analysieren bevor der Ansatz gewählt wird","Entwicklungsansatz (predictive/adaptive/hybrid) bewusst und begründet wählen","Integrated Plan ist lebendes Dokument — Änderungen nur durch formalen Change Control","Business Value Types: Financial · Customer · Social · Market — alle evaluieren"],
+    fallen:["'Wir machen immer Wasserfall' — PMI erwartet begründete, kontextbasierte Ansatzwahl","PM-Plan einmal erstellen und nicht mehr anpassen — lebendes Dokument!","Alle Teilpläne isoliert entwickeln — PMI: alle Pläne sind integriert und voneinander abhängig"] },
+  { id:"2.2", domain:"process", phase:"planning", title:"Develop and Manage Project Scope", lektion:"L05",
+    was:"Projektumfang definieren, WBS/Backlog erstellen und Scope Creep konsequent verhindern",
+    tipps:["Project Scope ≠ Product Scope — Arbeit, die gemacht werden muss vs. Produktfunktionen","WBS 100%-Regel: alles drin, nichts doppelt — WBS-Dictionary enthält Acceptance Criteria","Adaptive: Product Backlog mit User Stories (Epics→Stories→Tasks) statt WBS","Value Breakdown Structure (VBS) = neu in PMBOK 8 — Wertdimension je Scope-Element"],
+    fallen:["'WBS-Dictionary ist optional' — enthält Acceptance Criteria und ist kritisch für Abnahmen","Scope Creep dulden wenn der Kunde es will — PMI: IMMER formaler Change Request","Project Scope und Product Scope verwechseln — beide müssen separat definiert werden"] },
+  { id:"2.3", domain:"process", phase:"planning", title:"Ensure Value-Based Delivery", lektion:"L05",
+    was:"Sicherstellen dass Deliverables echten Wert für Stakeholder und die Organisation schaffen",
+    tipps:["DoR (Definition of Ready) = Eintrittsbedingung für Arbeit — gilt auch hybrid","DoD (Definition of Done) = Abschlussnachweis — vor Projektstart vereinbaren","Deliverables unterstützen Value Delivery — sind aber nicht dasselbe wie Value","Regelmäßig prüfen: Liefert das Projekt noch den erwarteten Business Value?"],
+    fallen:["DoR und DoD nur als Agile-Konzepte sehen — PMBOK 8: universell für alle Ansätze","Value Delivery als einmalige Aktivität am Projektende — kontinuierliche Prüfung nötig","'Scope erfüllt = Value geliefert' — Scope ist Constraint, Value ist das Ziel"] },
+  { id:"2.4", domain:"process", phase:"planning", title:"Plan and Manage Resources", lektion:"L05",
+    was:"Ressourcen (Menschen, Material, Equipment) planen, zuordnen und verfügbar halten",
+    tipps:["RACI: genau ein Accountable je Aufgabe — Responsible ≠ Accountable","Resource Calendar: Verfügbarkeit dokumentieren BEVOR Aufwände geschätzt werden","Blended Rate (adaptiv): Teamkostenschätzung per Story Point und Velocity","Resource Management Plan: Rollen, Autorität, Verantwortlichkeiten, Kompetenzen"],
+    fallen:["'Ressourcenplanung = Personalplanung' — Material, Equipment, Facilities gehören dazu","RACI: mehrere Accountable-Personen je Aufgabe — nur einer darf Accountable sein","Ressourcenverfügbarkeit erst beim Problem prüfen — PMI: proaktive Planung nötig"] },
+  { id:"2.5", domain:"process", phase:"planning", title:"Plan and Manage Procurement", lektion:"L06",
+    was:"Beschaffungsstrategie entwickeln, Vertragstypen wählen und Lieferantenbeziehungen managen",
+    tipps:["Make-or-Buy Analyse IMMER zuerst — vor der Vertragstyp-Wahl","Fixed-Price: Risiko beim Seller (gut bei stabilem, klarem Scope)","Cost-Reimbursable: Risiko beim Buyer (gut bei unklarem/sich änderndem Scope)","Adaptive Contracts: Not-to-exceed T&M, iterative Lieferung, Early Cancellation Option"],
+    fallen:["'Fixed-Price schützt den Buyer immer' — bei unklarem Scope baut Seller Risikoaufschläge ein","Make-or-Buy-Entscheidung überspringen und direkt Vertragstyp wählen","T&M als risikoarme Standardlösung — erfordert enges Monitoring"] },
+  { id:"2.6", domain:"process", phase:"planning", title:"Plan and Manage Finance", lektion:"L05",
+    was:"Projektbudget entwickeln, Reserven verwalten und Finanzperformance messen",
+    tipps:["Contingency Reserve: Known-Unknowns · IN Cost Baseline · PM-Freigabe","Management Reserve: Unknown-Unknowns · AUSSERHALB Baseline · Mgmt-Freigabe","ROM: –25% bis +75% (asymmetrisch!) | Definitive: –5% bis +10%","EAC = BAC / CPI ist die beste laufende Prognose auf Basis bisheriger Effizienz"],
+    fallen:["Contingency und Management Reserve verwechseln — häufigste Prüfungsfalle","ROM-Asymmetrie ignorieren: –25/+75 ≠ ±50 — Unterschätzungsgefahr ist größer","'Als PM kann ich Management Reserve freigeben' — benötigt Management-Genehmigung"] },
+  { id:"2.7", domain:"process", phase:"planning", title:"Plan and Optimize Quality", lektion:"L06",
+    was:"Qualitätsanforderungen planen, QA-Prozesse etablieren und QC-Aktivitäten durchführen",
+    tipps:["QA = proaktiv, prozessorientiert, Defekte VERHINDERN — während des Projekts","QC = reaktiv, produktorientiert, Defekte FINDEN — an Deliverables","Cost of Quality: Prevention + Appraisal (Conformance) vs. Internal + External Failure","Pareto (80/20): die wichtigsten Fehlerquellen zuerst — dann Ishikawa für Ursachen"],
+    fallen:["QA und QC verwechseln — Prüfung unterscheidet: Prozess (QA) vs. Produkt (QC)","'Qualitätssicherung = wir testen das Produkt' — Testen ist QC, nicht QA","Prävention als teuer betrachten — billiger als Fehler nach der Lieferung"] },
+  { id:"2.8", domain:"process", phase:"planning", title:"Plan and Manage Schedule", lektion:"L06",
+    was:"Projektplan entwickeln, Kritischen Pfad managen und Schedule bei Bedarf komprimieren",
+    tipps:["Critical Path = längster Weg = kürzeste mögliche Projektdauer","Fast Tracking: überlappende Aktivitäten → erhöht RISIKO (Rework), geringe Mehrkosten","Crashing: Ressourcen auf CP-Aktivitäten → erhöht KOSTEN, wirkt NUR auf Critical Path","Resource Smoothing (Float, CP bleibt) ≠ Resource Leveling (kann CP verschieben)"],
+    fallen:["Fast Tracking und Crashing verwechseln — Prüfung stellt Zeitdruck-Szenarien","Resource Leveling und Smoothing gleichsetzen — Leveling kann Projektende verschieben","Crashing auf Nicht-CP-Aktivitäten anwenden — kostet Geld ohne Zeitersparnis"] },
+  { id:"2.9", domain:"process", phase:"monitoring", title:"Evaluate Project Status & Manage Artifacts", lektion:"L07",
+    was:"Projektstatus messen und berichten, Artefakte verwalten und Monitoring-Tools einsetzen",
+    tipps:["EVM-Kern: CV=EV−AC | SV=EV−PV | CPI=EV/AC | SPI=EV/PV | EAC=BAC/CPI","Burndown (verbleibende Arbeit) ≠ Burnup (geleistete Arbeit + Scope-Änderungen sichtbar)","Configuration Management Plan: Version Control und Traceability für alle Artefakte","SPI nähert sich am Projektende immer 1.0 — CPI und EAC sind stabiler"],
+    fallen:["CPI=0.9 als '10% teurer' — richtig: für €1 geplanter Arbeit werden €1,11 ausgegeben","SPI > 1.0 am Projektende als immer positiv — SPI verliert am Ende an Aussagekraft","Burndown und Burnup als gleichwertig — Burnup macht Scope Creep sichtbar, Burndown nicht"] },
+  { id:"2.10", domain:"process", phase:"closing", title:"Manage Project Closure", lektion:"L08",
+    was:"Projekt oder Phase formal abschließen — Abnahme, Admin Closure, Transition, Knowledge Transfer",
+    tipps:["Formale Stakeholder-Abnahme (schriftlich) = Pflicht vor offiziellem Closure","Admin Closure: Kosten · Final Report · Docs archivieren · Ressourcen freigeben · Verträge","Transition Readiness: End Users · Organisation · Project Team · Support Staff","Early Termination = auch ein formaler Closure-Prozess — kein informelles Auslaufen"],
+    fallen:["'Lieferung = Projektabschluss' — PMI: Closure erfordert formale Abnahme + Admin Closure","Nur bei normalem Projektende Closure durchführen — abgebrochene Projekte brauchen denselben Prozess","Benefits Realization in den Abschluss integrieren — oft erst Monate/Jahre später messbar"] },
+
+  { id:"3.1", domain:"bizenv", phase:"initiating", title:"Evaluate and Align Project Governance", lektion:"L02",
+    was:"Governance-Rahmen kennen, einhalten und als Enabler für Value Delivery nutzen",
+    tipps:["Governance = Enabler für Value Delivery — Rahmen für Entscheidungen und Eskalation","PMO-Typen: Supportive · Controlling · Directive · Agile CoE — verschiedene Rollen","Stage Gate / Phase Gate Reviews: Entscheidungspunkte weiter/stopp/anpassen","PM muss Governance-Threshold kennen: ab wann eskalieren? Wer genehmigt was?"],
+    fallen:["'Governance = Bürokratie die bremst' — zu wenig Governance gefährdet strategische Ausrichtung","PMO als Pflichtbestandteil sehen — PMBOK 8: PMO ist nicht required","Eskalation als Schwäche interpretieren — korrekte Eskalation = PM-Kompetenz"] },
+  { id:"3.2", domain:"bizenv", phase:"planning", title:"Evaluate External Env. for Risks & Opportunities", lektion:"L08",
+    was:"Externe Umweltfaktoren als Risikoquellen und Chancen kontinuierlich analysieren",
+    tipps:["PESTLE: Political · Economic · Sociocultural · Technological · Legal · Environmental","VUCA: Volatility · Uncertainty · Complexity · Ambiguity — Projektkontext einschätzen","TECOP: Technical · Environmental · Commercial · Operational · Political","Externe Analyse = kontinuierlicher Prozess — veränderte Umwelt kann Scope beeinflussen"],
+    fallen:["Externe Umweltanalyse einmalig in der Initiierung — PMI: kontinuierlich","Nur Threats aus PESTLE ableiten — auch Opportunities aktiv identifizieren","PM wartet passiv auf externe Informationen — proaktives Monitoring ist PM-Pflicht"] },
+  { id:"3.3", domain:"bizenv", phase:"monitoring", title:"Manage and Control Changes", lektion:"L07",
+    was:"Änderungen formal beantragen, bewerten, entscheiden, dokumentieren und Baselines aktualisieren",
+    tipps:["4 CR-Typen: Corrective · Preventive · Defect Repair · Update","Corrective (nach Abweichung) ≠ Preventive (vor möglicher Abweichung) — Zeitpunkt!","CCB: Approved · Rejected · Deferred — alle drei sind valide und prüfungsrelevant","Adaptive: Product Owner priorisiert Backlog — kein formaler CCB aber Dokumentation"],
+    fallen:["Mündliche Sponsor-Genehmigung reicht — immer schriftlicher Change Request!","Corrective und Preventive Action verwechseln — häufigste Verwechslung in diesem Task","Baseline NICHT anpassen nach genehmigtem CR — MUSS aktualisiert werden"] },
+  { id:"3.4", domain:"bizenv", phase:"monitoring", title:"Remove Impediments and Manage Issues", lektion:"L07",
+    was:"Hindernisse aktiv entfernen, Issues strukturiert lösen und das Team arbeitsfähig halten",
+    tipps:["Impediment (verlangsamt) ≠ Obstacle (strategisch) ≠ Blocker (stoppt vollständig)","Predictive: Issue Log · Adaptive: Impediment Log (Scrum-Terminologie)","PM-Rolle: AKTIV entfernen — nicht nur dokumentieren und verwalten","Blocker nicht gelöst in 24–48h → Eskalation ist Pflicht, nicht Option"],
+    fallen:["Issue Log als Archiv behandeln — aktives Tracking- und Eskalations-Tool!","'Das Team muss Impediments selbst lösen' — PM ist verantwortlich für Removal","Impediment, Obstacle und Blocker als Synonyme — Prüfung unterscheidet sie"] },
+  { id:"3.5", domain:"bizenv", phase:"planning", title:"Ensure Compliance", lektion:"L05",
+    was:"Regulatorische, rechtliche und organisatorische Anforderungen von Anfang an sicherstellen",
+    tipps:["Compliance-Anforderungen FRÜH in Scope und Risk Register aufnehmen — nicht am Ende prüfen","Predictive: formale Compliance-Audits als geplante Aktivitäten","Adaptive: Compliance als Constraints im Backlog verankern und regelmäßig prüfen","Non-Compliance sofort eskalieren — nicht intern lösen und später berichten"],
+    fallen:["Compliance als Abschluss-Aktivität behandeln — muss von Anfang an integriert sein","Compliance nur für externe Regulierung denken — auch interne Policies und Standards","'Das lösen wir wenn es ein Problem wird' — reaktive Compliance ist Prüfungsfehler"] },
+  { id:"3.6", domain:"bizenv", phase:"monitoring", title:"Continuous Improvement", lektion:"L08",
+    was:"Kontinuierliche Verbesserung von Prozessen, Wissen und Artefakten über den Projektzyklus",
+    tipps:["Lessons Learned = kontinuierlich während des Projekts — NICHT nur am Ende","CI-Prozesse formal aktualisieren (ECO 3.6.2) — in Org. Process Assets einbetten","Neutraler Facilitator · Konsistente Templates · Leadership zur Verankerung einbinden","Retrospektiven in adaptiven Projekten = strukturiertes CI-Instrument nach jeder Iteration"],
+    fallen:["'Lessons Learned machen wir am Ende' — zu spät für das aktuelle Projekt","CI-Erkenntnisse sammeln aber nicht in Prozesse einarbeiten — keine Verbesserung ohne Integration","CI ohne Management-Unterstützung — Leadership muss Maßnahmen ermöglichen"] },
+  { id:"3.7", domain:"bizenv", phase:"executing", title:"Support Organizational Change", lektion:"L08",
+    was:"Organisatorischen Wandel durch das Projekt begleiten und nachhaltig in der Kultur verankern",
+    tipps:["Kotter 8-Schritte: Urgency→Coalition→Vision→Communicate→Remove Obstacles→Short-term Wins→Build→Culture","Rollout Plan ≠ Komponente des PM-Plans — ist organisatorisches Change-Dokument","DO: Coach · Involve · Enable adaptive mindset · Secure Buy-in","DON'T: Force changes · Alienate Resisters · Top-down mandate without involvement"],
+    fallen:["Kotter-Schritte in falscher Reihenfolge — Prüfung testet die Sequenz explizit","Rollout Plan als PM-Plan-Komponente deklarieren — kein offizieller Bestandteil","'Change abgeschlossen wenn Produkt live' — erst Kotter Schritt 8 (Kultur) = echter Abschluss"] },
+  { id:"3.8", domain:"bizenv", phase:"monitoring", title:"Evaluate External Business Env. Changes", lektion:"L08",
+    was:"Veränderungen im externen Umfeld kontinuierlich beobachten und auf Scope/Backlog übertragen",
+    tipps:["PESTLE/VUCA/TECOP als Daueraufgabe — nicht einmalig in der Initiierung","Interne UND externe Faktoren: Reorganisationen, Regulierung, Markt, Technologie","Scope anpassen (predictive) oder Backlog repriorisieren (adaptive) bei externen Änderungen","SWOT: Opportunities aus Umweltveränderungen aktiv identifizieren und nutzen"],
+    fallen:["'Umweltanalyse haben wir in der Initiierung gemacht' — kontinuierliche Pflicht","Externe Änderungen nur als Bedrohungen sehen — auch Opportunities aktiv suchen","PM wartet auf Sponsor für externe Informationen — proaktives Monitoring ist PM-Pflicht"] },
+];
+
+const DOMAIN_META = {
+  people:  { label:"People",               pct:"33%", emoji:"👥", color:"#5B21B6", bg:"#F5F3FF" },
+  process: { label:"Process",              pct:"41%", emoji:"⚙️", color:"#1E40AF", bg:"#EFF6FF" },
+  bizenv:  { label:"Business Environment", pct:"26%", emoji:"🌍", color:"#166534", bg:"#F0FDF4" }
+};
+const DOMAIN_ORDER = ["people","process","bizenv"];
+
+const PHASE_META = {
+  initiating: { label:"Initiating",             num:"1", color:"#5B21B6", bg:"#F5F3FF", desc:"Projekt starten — Vision, Governance, erste Stakeholder" },
+  planning:   { label:"Planning",                num:"2", color:"#1E40AF", bg:"#EFF6FF", desc:"Baselines erstellen — Scope, Zeit, Kosten, Ressourcen, Qualität, Beschaffung, Risiken, Kommunikation" },
+  executing:  { label:"Executing",               num:"3", color:"#028090", bg:"#F0F9FF", desc:"Projektarbeit durchführen — Team führen, Stakeholder einbinden, Wissen managen, Wert liefern" },
+  monitoring: { label:"Monitoring & Controlling", num:"4", color:"#D4500A", bg:"#FFF4EE", desc:"Performance messen, Abweichungen erkennen und Kurs korrigieren — kontinuierlich über alle Phasen" },
+  closing:    { label:"Closing",                 num:"5", color:"#166534", bg:"#F0FDF4", desc:"Projekt oder Phase formal abschließen — Abnahme, Transition, Knowledge Transfer, Benefits" }
+};
+const PHASE_ORDER = ["initiating","planning","executing","monitoring","closing"];
+
+let mode = "domain";
+let domainFilter = "all";
+let searchTerm = "";
+let activePhase = "all";
+let selectedTaskId = null;
+
+function matches(t) {
+  const domainOk = domainFilter === "all" || domainFilter === t.domain;
+  const q = searchTerm.toLowerCase();
+  const textOk = !q || t.id.includes(q) || t.title.toLowerCase().includes(q) ||
+    t.was.toLowerCase().includes(q) ||
+    t.tipps.some(x => x.toLowerCase().includes(q)) ||
+    t.fallen.some(x => x.toLowerCase().includes(q));
+  return domainOk && textOk;
+}
+
+function renderDomainView() {
+  const app = document.getElementById("app");
+  app.innerHTML = "";
+  let visible = 0;
+  DOMAIN_ORDER.forEach(dom => {
+    const tasks = DATA.filter(t => t.domain === dom && matches(t));
+    if (!tasks.length) return;
+    visible += tasks.length;
+    const m = DOMAIN_META[dom];
+    const hdr = document.createElement("div");
+    hdr.className = `domain-header ${dom}-theme`;
+    hdr.innerHTML = `<div class="domain-line"></div><div class="domain-label">${m.emoji} ${m.label}</div><div class="domain-pct">${m.pct} der Prüfung · ${tasks.length} Tasks</div><div class="domain-line"></div>`;
+    app.appendChild(hdr);
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+    tasks.forEach(t => {
+      const ph = PHASE_META[t.phase];
+      const card = document.createElement("div");
+      card.className = `card ${dom}`;
+      card.innerHTML = `
+        <div class="card-header ${dom}">
+          <div class="eco-badge">${t.id}</div>
+          <div class="card-title-wrap">
+            <div class="card-task-title">${t.title}</div>
+            <div class="card-was">${t.was}</div>
+            <div class="chip-row">
+              <span class="meta-chip" style="color:${ph.color};border-color:${ph.color}">${ph.num} · ${ph.label}</span>
+              <span class="meta-chip" style="color:${DOMAIN_META[dom].color};border-color:${DOMAIN_META[dom].color}">${t.lektion}</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="section-label tipps">✅ Tipps für die Prüfung</div>
+            <ul class="tip-list">${t.tipps.map(x => `<li class="tip-item">${x}</li>`).join("")}</ul>
+          </div>
+          <div>
+            <div class="section-label fallen">⚠️ Stolperfallen</div>
+            <ul class="fall-list">${t.fallen.map(x => `<li class="fall-item">${x}</li>`).join("")}</ul>
+          </div>
+        </div>`;
+      grid.appendChild(card);
+    });
+    app.appendChild(grid);
+  });
+  finishRender(app, visible);
+}
+
+function buildFlow() {
+  const flow = document.getElementById("flowVis");
+  flow.innerHTML = "";
+  PHASE_ORDER.forEach((id, i) => {
+    const ph = PHASE_META[id];
+    const count = DATA.filter(t => t.phase === id).length;
+    const step = document.createElement("div");
+    step.className = "flow-step";
+    step.innerHTML = `<div class="flow-box" data-phase="${id}" style="background:${ph.color}">${ph.num}. ${ph.label}<small>${count} Tasks</small></div>${i < PHASE_ORDER.length - 1 ? '<div class="flow-arrow">→</div>' : ''}`;
+    flow.appendChild(step);
+  });
+}
+
+function buildPhaseTabs() {
+  const bar = document.getElementById("phaseTabbar");
+  bar.innerHTML = `<button class="phase-tab ${activePhase === 'all' ? 'active' : ''}" data-phase="all" style="border-bottom-color:${activePhase==='all'?'#03A8BF':'transparent'}"><span class="tab-num">∞</span><span>Alle</span><span class="tab-count">26 Tasks</span></button>`;
+  PHASE_ORDER.forEach(id => {
+    const ph = PHASE_META[id];
+    const count = DATA.filter(t => t.phase === id).length;
+    const btn = document.createElement("button");
+    btn.className = `phase-tab ${activePhase === id ? "active" : ""}`;
+    btn.dataset.phase = id;
+    btn.style.borderBottomColor = activePhase === id ? ph.color : "transparent";
+    btn.innerHTML = `<span class="tab-num">${ph.num}</span><span>${ph.label}</span><span class="tab-count">${count} Tasks</span>`;
+    bar.appendChild(btn);
+  });
+}
+
+function renderLifecycleView() {
+  const app = document.getElementById("app");
+  app.innerHTML = "";
+  let visible = 0;
+  PHASE_ORDER.forEach(id => {
+    if (activePhase !== "all" && activePhase !== id) return;
+    const ph = PHASE_META[id];
+    const tasks = DATA.filter(t => t.phase === id && matches(t));
+    if (!tasks.length) return;
+    visible += tasks.length;
+
+    const section = document.createElement("div");
+    section.className = "phase-section";
+    section.innerHTML = `
+      <div class="phase-header" style="background:${ph.color}">
+        <div class="phase-num">${ph.num}</div>
+        <div>
+          <div class="phase-name">${ph.label}</div>
+          <div class="phase-desc">${ph.desc}</div>
+          <div class="phase-taskcount">${tasks.length} Task${tasks.length !== 1 ? 's' : ''}</div>
+        </div>
+      </div>
+      <div class="task-grid" id="grid-${id}"></div>`;
+    app.appendChild(section);
+
+    const grid = section.querySelector(`#grid-${id}`);
+    tasks.forEach(t => {
+      const dm = DOMAIN_META[t.domain];
+      const card = document.createElement("div");
+      card.className = "eco-card";
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="eco-id" style="background:${dm.color}">${t.id}</div>
+          <div class="card-meta">
+            <div class="card-task-title">${t.title}</div>
+            <div class="card-was">${t.was}</div>
+            <div class="chip-row">
+              <span class="meta-chip" style="color:${dm.color};border-color:${dm.color}">${dm.emoji} ${dm.label}</span>
+              <span class="meta-chip" style="color:${ph.color};border-color:${ph.color}">${t.lektion}</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body-lc">
+          <div class="col">
+            <div class="col-label t">✅ Tipps</div>
+            ${t.tipps.map(x => `<div class="tip-item">${x}</div>`).join("")}
+          </div>
+          <div class="divider-v"></div>
+          <div class="col">
+            <div class="col-label f">⚠️ Stolperfallen</div>
+            ${t.fallen.map(x => `<div class="fall-item">${x}</div>`).join("")}
+          </div>
+        </div>`;
+      grid.appendChild(card);
+    });
+  });
+  finishRender(app, visible);
+}
+
+function renderRoadmapView() {
+  const app = document.getElementById("app");
+  app.innerHTML = "";
+
+  const note = document.createElement("div");
+  note.className = "rm-note";
+  note.textContent = "↔ Monitoring & Controlling läuft parallel durch alle Phasen — die 5 M&C-Tasks sind während des gesamten Projekts durchgehend aktiv.";
+  app.appendChild(note);
+
+  const wrap = document.createElement("div");
+  wrap.className = "rm-grid-wrap";
+
+  const pgrid = document.createElement("div");
+  pgrid.className = "pgrid";
+  pgrid.innerHTML = `<div class="rm-corner"></div>` + PHASE_ORDER.map((id, i) => {
+    const ph = PHASE_META[id];
+    const count = DATA.filter(t => t.phase === id).length;
+    return `<div class="ph ph${i+1}"><span>${ph.num}</span>${ph.label}<small>${count} Tasks</small></div>`;
+  }).join("");
+  wrap.appendChild(pgrid);
+
+  let visible = 0;
+  DOMAIN_ORDER.forEach(dom => {
+    const dm = DOMAIN_META[dom];
+    const row = document.createElement("div");
+    row.className = "sl";
+    let cellsHtml = `<div class="dlbl"><div class="dname" style="color:${dm.color}">${dm.label}</div><div class="dpct">${dm.pct}</div></div>`;
+    PHASE_ORDER.forEach(ph => {
+      const tasks = DATA.filter(t => t.domain === dom && t.phase === ph);
+      const chips = tasks.map(t => {
+        const show = matches(t);
+        if (show) visible++;
+        return `<div class="rm-chip ${dom} ${t.id === selectedTaskId ? 'sel' : ''} ${show ? '' : 'dim'}" data-id="${t.id}"><span class="rm-cid">${t.id}</span><span class="rm-cnm">${t.title}</span></div>`;
+      }).join("");
+      cellsHtml += `<div class="cell">${chips}</div>`;
+    });
+    row.innerHTML = cellsHtml;
+    wrap.appendChild(row);
+  });
+  app.appendChild(wrap);
+
+  const detail = document.createElement("div");
+  detail.className = "detail" + (selectedTaskId ? " vis" : "");
+  detail.id = "detailPanel";
+  if (selectedTaskId) {
+    const t = DATA.find(x => x.id === selectedTaskId);
+    const dm = DOMAIN_META[t.domain];
+    const ph = PHASE_META[t.phase];
+    detail.innerHTML = `
+      <div class="dh">
+        <div class="dbadge" style="background:${dm.color}">${t.id}</div>
+        <div class="dtitle">${t.title}</div>
+        <div class="dmeta">${dm.emoji} ${dm.label} · ${ph.num} ${ph.label} · ${t.lektion}</div>
+        <button class="close-btn" id="closeDetail">✕</button>
+      </div>
+      <div class="dbody">
+        <div><label class="t">Tipps für die Prüfung</label>${t.tipps.map(x => `<div class="tip-item">${x}</div>`).join("")}</div>
+        <div><label class="f">Stolperfallen</label>${t.fallen.map(x => `<div class="fall-item">${x}</div>`).join("")}</div>
+      </div>`;
+  }
+  app.appendChild(detail);
+
+  finishRender(app, visible, true);
+}
+
+function finishRender(app, visible, skipEmptyGrid) {
+  if (visible === 0) {
+    const empty = document.createElement("div");
+    empty.className = "empty-state visible";
+    empty.innerHTML = `<div class="empty-state-icon">🔍</div><div class="empty-state-title">Kein ECO-Task gefunden</div><div class="empty-state-hint">Suchbegriff anpassen oder Filter zurücksetzen</div>`;
+    app.appendChild(empty);
+  }
+  document.getElementById("visibleCount").textContent = `${visible} von 26 Tasks sichtbar`;
+}
+
+function render() {
+  const tabWrap = document.getElementById("phaseTabbarWrap");
+  const flowWrap = document.getElementById("flowVisWrap");
+  tabWrap.style.display = mode === "lifecycle" ? "block" : "none";
+  flowWrap.style.display = mode === "lifecycle" ? "block" : "none";
+
+  if (mode === "lifecycle") { buildPhaseTabs(); buildFlow(); renderLifecycleView(); }
+  else if (mode === "roadmap") { renderRoadmapView(); }
+  else { renderDomainView(); }
+}
+
+// ── EVENT-DELEGATION (nur pointerup) ──
+document.querySelectorAll(".mode-btn").forEach(btn => {
+  btn.addEventListener("pointerup", () => {
+    mode = btn.dataset.mode;
+    document.querySelectorAll(".mode-btn").forEach(b => b.classList.toggle("active", b === btn));
+    if (mode !== "roadmap") selectedTaskId = null;
+    render();
+  });
+});
+
+document.getElementById("filterBar").addEventListener("pointerup", (e) => {
+  const btn = e.target.closest(".filter-btn");
+  if (!btn) return;
+  domainFilter = btn.dataset.domain;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b === btn));
+  render();
+});
+
+document.getElementById("searchInput").addEventListener("input", (e) => {
+  searchTerm = e.target.value;
+  render();
+});
+
+document.getElementById("phaseTabbar").addEventListener("pointerup", (e) => {
+  const btn = e.target.closest(".phase-tab");
+  if (!btn) return;
+  activePhase = btn.dataset.phase;
+  render();
+});
+
+document.getElementById("flowVisWrap").addEventListener("pointerup", (e) => {
+  const box = e.target.closest(".flow-box");
+  if (!box) return;
+  activePhase = box.dataset.phase;
+  render();
+});
+
+document.getElementById("app").addEventListener("pointerup", (e) => {
+  const chip = e.target.closest(".rm-chip");
+  if (chip) {
+    const id = chip.dataset.id;
+    selectedTaskId = selectedTaskId === id ? null : id;
+    render();
+    if (selectedTaskId) {
+      setTimeout(() => document.getElementById("detailPanel").scrollIntoView({ behavior: "smooth", block: "nearest" }), 50);
+    }
+    return;
+  }
+  const closeBtn = e.target.closest("#closeDetail");
+  if (closeBtn) { selectedTaskId = null; render(); }
+});
+
+// ── BEAMER-TOGGLE (vierstufig, kumulativ) ──
+const BEAMER_LEVELS = [
+  { classes: [],                                    label: "🖥️ Beamer" },
+  { classes: ["beamer"],                             label: "🖥️ Beamer XL" },
+  { classes: ["beamer", "beamer-xl"],                label: "🖥️ Beamer XXL" },
+  { classes: ["beamer", "beamer-xl", "beamer-xxl"],  label: "🖥️ Normal" }
+];
+let beamerLevel = 0;
+document.getElementById("beamerBtn").addEventListener("pointerup", function () {
+  beamerLevel = (beamerLevel + 1) % BEAMER_LEVELS.length;
+  document.documentElement.classList.remove("beamer", "beamer-xl", "beamer-xxl");
+  BEAMER_LEVELS[beamerLevel].classes.forEach(c => document.documentElement.classList.add(c));
+  this.textContent = BEAMER_LEVELS[beamerLevel].label;
+});
+
+render();
+</script>
+</body>
+</html>
