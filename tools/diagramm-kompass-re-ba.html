@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Diagramm-Kompass für RE/BA | Michaela Kühn</title>
+<style>
+  :root{
+    color-scheme: light;
+    --accent:#1d5fae;
+    --accent-2:#2f8f6f;
+    --accent-3:#b3552b;
+    --ink:#1a1f2b;
+    --muted:#5a6270;
+    --faint:#8891a0;
+    --line:#dbe0e8;
+    --bg-card:#ffffff;
+    --bg-soft:#f4f7fb;
+    --warn-bg:#fff4e5;
+    --warn-line:#e0a458;
+    --erhebung:#1d5fae;
+    --schaetzung:#7c3aed;
+    --qualitaet:#0f8a5f;
+    --stakeholder:#c2410c;
+    --tracking:#0891b2;
+  }
+  html,body{color-scheme: light; background:#ffffff; margin:0; padding:0;}
+  *{box-sizing:border-box;}
+  body{
+    font-family:-apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color:var(--ink);
+    font-size:16px;
+    line-height:1.5;
+    background:#ffffff;
+    padding-bottom:40px;
+  }
+  h1,h2,h3{margin:0 0 6px 0;}
+  a{color:var(--accent);}
+
+  /* ===== Signature (fixed top-right, Pflicht) ===== */
+  .signature{
+    position:fixed; top:14px; right:28px; z-index:500;
+    text-align:right; font-size:14px; line-height:1.3;
+    background:rgba(255,255,255,0.92); padding:4px 8px; border-radius:8px;
+  }
+  .signature strong{display:block; font-size:14px; color:var(--ink);}
+  .signature a{font-size:14px; color:var(--accent); text-decoration:none;}
+  @media (max-width:900px){
+    .signature{position:static; text-align:right; margin:8px 16px 0 auto; width:fit-content; margin-left:auto;}
+  }
+
+  /* ===== Container ===== */
+  .app{max-width:1180px; margin:0 auto; padding:0 24px;}
+
+  /* ===== Topbar (nur Navigation/Meta-Controls) ===== */
+  .topbar{
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+    padding-top:22px;
+  }
+  .back-link{display:inline-block; font-size:14px; font-weight:700; color:var(--muted); text-decoration:none;}
+  .back-link:hover{color:var(--accent);}
+
+  /* ===== Hero ===== */
+  .hero{padding:18px 0 18px;}
+  .eyebrow{
+    display:block;
+    font-size:14px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--accent); margin-bottom:6px;
+  }
+  .hero h1{font-size:30px; font-weight:800;}
+  .hero p.lead{font-size:17px; color:var(--muted); margin-top:6px;}
+
+  /* ===== Filter-Toolbar (funktional, unterhalb der Hero) ===== */
+  .toolbar{
+    display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+    margin-top:8px; padding-top:16px; border-top:1px solid var(--line);
+  }
+  .pill{
+    border:1.5px solid var(--line); background:#fff; color:var(--ink);
+    font-size:15px; font-weight:600; padding:9px 16px; border-radius:999px;
+    cursor:pointer; min-height:44px; display:inline-flex; align-items:center; gap:6px;
+    touch-action:manipulation;
+  }
+  .pill[aria-pressed="true"]{
+    background:var(--accent); border-color:var(--accent); color:#fff;
+  }
+  .pill .dot{width:9px; height:9px; border-radius:50%; display:inline-block; background:var(--faint);}
+  .pill[aria-pressed="true"] .dot{background:#fff;}
+
+  .beamer-btn{
+    border:1.5px solid var(--line); background:transparent; color:var(--muted);
+    font-size:15px; font-weight:600; padding:9px 18px; border-radius:999px;
+    cursor:pointer; min-height:44px; touch-action:manipulation;
+  }
+  .beamer-btn:hover{border-color:var(--accent); color:var(--ink);}
+  html.beamer .beamer-btn, html.beamer-xl .beamer-btn, html.beamer-xxl .beamer-btn{
+    background:var(--ink); color:#fff; border-color:var(--ink);
+  }
+
+  /* ===== Grid ===== */
+  main{padding:8px 0 24px;}
+  .grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-top:18px;
+  }
+  @media (max-width:980px){ .grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:640px){ .grid{grid-template-columns:1fr;} }
+
+  .card{
+    background:var(--bg-card); border:1.5px solid var(--line); border-radius:14px;
+    padding:16px; cursor:pointer; text-align:left; min-height:44px;
+    display:flex; flex-direction:column; gap:10px;
+    touch-action:manipulation;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .card:hover{border-color:var(--accent); box-shadow:0 4px 14px rgba(29,95,174,0.12);}
+  .card-top{display:flex; align-items:center; justify-content:space-between; gap:8px;}
+  .card-num{font-size:14px; font-weight:800; color:var(--faint);}
+  .phase-tag{
+    font-size:14px; font-weight:700; padding:3px 10px; border-radius:999px; color:#fff;
+    white-space:nowrap;
+  }
+  .card h3{font-size:18px; font-weight:800;}
+  .card .frage{font-size:16px; color:var(--ink); font-weight:600;}
+  .card .zweck-preview{font-size:16px; color:var(--muted);}
+  .glyph{width:100%; height:70px; display:flex; align-items:flex-end; justify-content:center;}
+  .card-cta{font-size:14px; color:var(--accent); font-weight:700; margin-top:auto;}
+
+  /* mini glyphs */
+  .glyph-bars{display:flex; align-items:flex-end; gap:6px; width:100%; height:60px;}
+  .glyph-bars span{flex:1; border-radius:3px 3px 0 0;}
+  .glyph-dots{position:relative; width:100%; height:60px;}
+  .glyph-dots i{position:absolute; width:9px; height:9px; border-radius:50%; display:block;}
+  .glyph-box-plot{display:flex; align-items:center; width:100%; height:60px; position:relative;}
+  .glyph-box-plot .whisker{position:absolute; top:29px; left:8%; right:8%; height:2px;}
+  .glyph-box-plot .box{position:absolute; top:16px; left:32%; width:36%; height:28px; border-radius:4px; border-width:2px; border-style:solid;}
+  .glyph-box-plot .med{position:absolute; top:16px; left:50%; width:2px; height:28px;}
+  .glyph-heat{display:grid; grid-template-columns:repeat(5,1fr); gap:3px; width:100%; height:60px;}
+  .glyph-heat span{border-radius:2px;}
+  .glyph-violin{display:flex; align-items:center; justify-content:space-around; width:100%; height:60px;}
+  .glyph-violin i{display:block; width:20px; height:56px; border-radius:50% / 30%;}
+  .glyph-pair{display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:3px; width:100%; height:60px;}
+  .glyph-pair span{border-radius:2px;}
+  .glyph-ring{width:56px; height:56px; border-radius:50%; margin:0 auto;}
+  .glyph-ring.donut::after{content:""; display:block; width:26px; height:26px; border-radius:50%; background:#fff; margin:15px auto;}
+  svg.glyph-svg{width:100%; height:60px;}
+
+  /* ===== Modal ===== */
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(20,24,32,0.55); z-index:800;
+    display:none; align-items:flex-start; justify-content:center; padding:36px 16px; overflow-y:auto;
+  }
+  .modal-backdrop.open{display:flex;}
+  .modal{
+    background:#fff; border-radius:16px; max-width:760px; width:100%;
+    padding:26px 26px 20px 26px; position:relative; margin-top:10px;
+  }
+  .modal-close{
+    position:absolute; top:14px; right:14px; width:44px; height:44px; border-radius:10px;
+    border:1.5px solid var(--line); background:#fff; font-size:20px; font-weight:800; cursor:pointer;
+    touch-action:manipulation;
+  }
+  .modal .phase-tag{margin-bottom:6px;}
+  .modal h2{font-size:24px; margin-top:6px;}
+  .modal .frage-gross{font-size:18px; font-weight:700; color:var(--accent); margin:10px 0 4px 0;}
+  .modal section{margin-top:16px;}
+  .modal section h4{font-size:15px; text-transform:uppercase; letter-spacing:0.04em; color:var(--muted); margin-bottom:6px;}
+  .modal p{font-size:16px; margin:0;}
+  .framework-badge{
+    display:inline-block; font-size:14px; font-weight:800; padding:4px 12px; border-radius:8px;
+    background:var(--bg-soft); border:1.5px solid var(--line); color:var(--ink); margin-bottom:6px;
+  }
+  .example-box{
+    background:var(--bg-soft); border-left:4px solid var(--accent-2); border-radius:8px;
+    padding:12px 14px; font-size:16px;
+  }
+  .warn-box{
+    background:var(--warn-bg); border-left:4px solid var(--warn-line); border-radius:8px;
+    padding:12px 14px; font-size:16px;
+  }
+
+  /* ===== Crosslink ===== */
+  .crosslink{margin-top:20px; font-size:14px; color:var(--muted);}
+  .crosslink a{color:var(--accent); font-weight:700; text-decoration:none;}
+  .crosslink a:hover{text-decoration:underline;}
+  .crosslink ul{margin:8px 0 0; padding-left:20px;}
+  .crosslink li{margin-bottom:4px;}
+
+  /* ===== Footer ===== */
+  footer{max-width:1180px; margin:30px auto 0 auto; padding:0 24px;}
+  .footer-details{border:1.5px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden;}
+  .footer-summary{
+    font-size:16px; font-weight:700; padding:14px 18px; cursor:pointer; background:var(--bg-soft);
+    list-style:none; display:flex; align-items:center; justify-content:space-between;
+  }
+  .footer-summary::-webkit-details-marker{display:none;}
+  .footer-summary::after{content:"+"; font-size:20px; font-weight:800; color:var(--accent);}
+  details[open] .footer-summary::after{content:"–";}
+  .footer-content{padding:16px 18px 20px 18px;}
+  .footer-mono{
+    font-family:"SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size:14px; white-space:pre-wrap; line-height:1.55; background:#0f172a; color:#dce6f5;
+    padding:14px; border-radius:10px;
+  }
+  .footer-sans{font-size:16px; line-height:1.6;}
+  .footer-sans h5{font-size:16px; margin:14px 0 4px 0;}
+  .footer-sans em{color:var(--muted);}
+  .footer-table{width:100%; border-collapse:collapse; font-size:15px; margin-top:8px;}
+  .footer-table th, .footer-table td{border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top;}
+  .footer-table th{background:var(--bg-soft); font-size:14px;}
+  .footer-sig{font-size:15px; color:var(--muted); padding:10px 4px 0 4px;}
+  .footer-sig strong{color:var(--ink); font-size:15px;}
+  .footer-sig a{font-size:15px;}
+  .audit-line{display:block; margin-top:6px; font-size:14px; color:var(--muted);}
+
+  /* ===== Beamer modes (K18, vierstufig, kumulativ) ===== */
+  html.beamer .back-link, html.beamer .signature{ display:none; }
+  html.beamer footer{ display:none; }
+
+  html.beamer .hero h1{ font-size:44px; }
+  html.beamer .hero p.lead,
+  html.beamer .card .frage,
+  html.beamer .card .zweck-preview,
+  html.beamer .modal p, html.beamer .example-box, html.beamer .warn-box,
+  html.beamer .modal .frage-gross{ font-size:22px; }
+  html.beamer .card h3{ font-size:26px; }
+  html.beamer .modal h2{ font-size:44px; }
+  html.beamer .pill{ font-size:17px; padding:12px 20px; }
+  html.beamer .card-num, html.beamer .phase-tag, html.beamer .eyebrow,
+  html.beamer .framework-badge, html.beamer .card-cta,
+  html.beamer .modal section h4{ font-size:15px; }
+
+  html.beamer-xl .hero h1{ font-size:54px; }
+  html.beamer-xl .hero p.lead,
+  html.beamer-xl .card .frage,
+  html.beamer-xl .card .zweck-preview,
+  html.beamer-xl .modal p, html.beamer-xl .example-box, html.beamer-xl .warn-box,
+  html.beamer-xl .modal .frage-gross{ font-size:28px; }
+  html.beamer-xl .card h3{ font-size:32px; }
+  html.beamer-xl .modal h2{ font-size:54px; }
+  html.beamer-xl .pill{ font-size:19px; }
+  html.beamer-xl .grid{ grid-template-columns:repeat(2,1fr); }
+  html.beamer-xl .card-num, html.beamer-xl .phase-tag, html.beamer-xl .eyebrow,
+  html.beamer-xl .framework-badge, html.beamer-xl .card-cta,
+  html.beamer-xl .modal section h4{ font-size:18px; }
+
+  html.beamer-xxl .hero h1{ font-size:64px; }
+  html.beamer-xxl .hero p.lead,
+  html.beamer-xxl .card .frage,
+  html.beamer-xxl .card .zweck-preview,
+  html.beamer-xxl .modal p, html.beamer-xxl .example-box, html.beamer-xxl .warn-box,
+  html.beamer-xxl .modal .frage-gross{ font-size:34px; }
+  html.beamer-xxl .card h3{ font-size:38px; }
+  html.beamer-xxl .modal h2{ font-size:64px; }
+  html.beamer-xxl .pill{ font-size:21px; }
+  html.beamer-xxl .grid{ grid-template-columns:1fr; }
+  html.beamer-xxl .card-num, html.beamer-xxl .phase-tag, html.beamer-xxl .eyebrow,
+  html.beamer-xxl .framework-badge, html.beamer-xxl .card-cta,
+  html.beamer-xxl .modal section h4{ font-size:21px; }
+
+  @media (max-width:640px){
+    .topbar{flex-direction:column; align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="signature">
+    <strong>Michaela Kühn</strong>
+    <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+  </div>
+
+  <div class="app">
+    <header class="topbar">
+      <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+      <button class="beamer-btn" id="beamerBtn" type="button" title="Vergrößert die Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">☀ Beamer</button>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Nachschlage-Tool · RE / BA / PM</span>
+      <h1>Diagramm-Kompass für Requirements Engineering &amp; Business Analyse</h1>
+      <p class="lead">12 Diagrammtypen, zugeordnet zu konkreten RE/BA-Fragen aus dem Projektalltag — mit Bezug zu IREB, BABOK® (IIBA) und PMBOK® (PMI) sowie Beispielen aus dem TalentMatch&nbsp;AI-Fallbeispiel (Vantera Systemtechnik GmbH). Kachel antippen für Details.</p>
+    </section>
+
+    <div class="toolbar" id="toolbar">
+      <button class="pill" data-phase="alle" aria-pressed="true"><span class="dot"></span>Alle</button>
+      <button class="pill" data-phase="erhebung" aria-pressed="false"><span class="dot" style="background:var(--erhebung)"></span>Erhebung &amp; Analyse</button>
+      <button class="pill" data-phase="schaetzung" aria-pressed="false"><span class="dot" style="background:var(--schaetzung)"></span>Priorisierung &amp; Schätzung</button>
+      <button class="pill" data-phase="qualitaet" aria-pressed="false"><span class="dot" style="background:var(--qualitaet)"></span>Qualität &amp; NFR</button>
+      <button class="pill" data-phase="stakeholder" aria-pressed="false"><span class="dot" style="background:var(--stakeholder)"></span>Stakeholder</button>
+      <button class="pill" data-phase="tracking" aria-pressed="false"><span class="dot" style="background:var(--tracking)"></span>Tracking &amp; Reporting</button>
+    </div>
+
+    <main>
+      <div class="grid" id="grid"></div>
+    </main>
+
+    <div class="crosslink">
+      Verwandte Denkraum-Tools zu diesem Thema:
+      <ul>
+        <li><a href="./priorisierungslabor.html">🧭 Priorisierungslabor</a> — hier bleibt es nicht bei der Diagrammwahl: MoSCoW, Wert-Aufwand-Matrix, Kano, WSJF, RICE und Story-Point-Poker lassen sich am selben Team wirklich durchspielen, statt nur als Chart-Typ erklärt zu werden.</li>
+        <li><a href="./ki-architektur-glossar-reba.html">Begriffslexikon: KI-Architektur für RE/BA</a> — dieselbe TalentMatch-AI-Fallstudie und dieselben Personas, aber als Klick-Lexikon zu LLM-Grundkonzepten statt zu Diagrammtypen.</li>
+        <li><a href="./iso-25010-kompendium.html">ISO/IEC 25010:2023 Kompendium</a> — ein weiteres Kachel-Nachschlagewerk mit Detail-Panel, hier aber für die neun Qualitätsmerkmale statt für Visualisierungsformen.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" id="modal">
+      <button class="modal-close" id="modalClose" aria-label="Schließen">×</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <footer>
+    <details class="footer-details">
+      <summary class="footer-summary">Systemprompt</summary>
+      <div class="footer-content">
+        <div class="footer-mono">ROLLE
+Du bist Instructional Designer für RE/BA/PM-Trainings (Zielgruppe: Requirements
+Engineers, Business Analysts, Projektleiter:innen ohne Data-Science-Hintergrund).
+
+KONTEXT
+Ausgangsmaterial ist ein generisches Data-Visualization-Poster (12 Chart-Typen,
+Fremdmarke). Dieses Material darf inhaltlich NICHT übernommen werden — nur das
+Organisationsprinzip "12 Diagrammtypen mit Einsatzzweck" dient als Struktur-Idee.
+Referenzrahmen verbindlich: IREB CPRE, BABOK® Guide v3 (IIBA), PMBOK® Guide (PMI).
+Feste Fallstudie: TalentMatch AI bei Vantera Systemtechnik GmbH.
+Feste Personas: Ela (Projektleitung), Knut (Entwicklung), Sarah (Vertrieb),
+Petra (QM), Herr Bachmeier (Geschäftsführung).
+
+AUFGABE
+Baue ein interaktives Nachschlage-Tool: 12 Kacheln (ein Diagrammtyp je Kachel),
+gruppiert in 5 Phasen (Erhebung & Analyse / Priorisierung & Schätzung /
+Qualität & NFR / Stakeholder / Tracking & Reporting), filterbar über Pill-Buttons.
+Jede Kachel öffnet ein Detail-Panel mit: konkreter RE/BA-Frage, Einsatzzweck,
+Framework-Bezug (Badge + konkrete Quelle/Kapitel), TalentMatch-AI-Beispiel mit
+echten Zahlen (kein Platzhalter), Vorsicht-Hinweis (Fehlanwendung/Grenzfall).
+
+FORMAT
+Single-File HTML, vollständig offline, kein fetch(), kein CDN, kein localStorage.
+Pointer-Events statt click. Weißer Hintergrund, color-scheme:light, kein Dark Mode.
+Fließtext ≥16px, Sekundärtext ≥14px. Zurück-Link zur Startseite (../index.html) und
+Signatur oben rechts (position:fixed, Name + Website-Link) stehen in einer eigenen
+Topbar-Zeile oberhalb der Hero-Karte, getrennt von H1/Lead-Absatz. Vierstufiger
+Beamer-Toggle (Normal→Beamer→Beamer XL→Beamer XXL, Footer ab Stufe 1 ausgeblendet,
+Button-Label zeigt immer die nächste Stufe). Vier Footer-Boxen: Systemprompt,
+Handbuch, Vortrags-Skript, Normen-Register (kanonische Klassennamen .footer-sig,
+.footer-details, .footer-box, .footer-summary, .footer-content, .footer-mono,
+.footer-sans, .footer-table).
+
+EINGRENZUNG — NICHT TUN
+- Keine Übernahme von Layout/Text/Branding des Ausgangsposters.
+- Keine generischen Platzhalterzahlen — jede Beispielzahl muss zur TalentMatch-AI-
+  Fallstudie passen und plausibel sein.
+- Keine Diagrammtypen ohne konkreten RE/BA-Anwendungsfall (kein "nice to have").
+- Keine Normverweise ohne Status/Datum bei sich entwickelnder Regulatorik.
+- Sarah niemals als "Fachbereich" bezeichnen — immer "Vertrieb".</div>
+      </div>
+    </details>
+
+    <details class="footer-details">
+      <summary class="footer-summary">Handbuch</summary>
+      <div class="footer-content footer-sans">
+        <p><strong>Framework:</strong> CO-STAR (Context – Objective – Style – Tone – Audience – Response).
+        Der Systemprompt oben folgt dieser Struktur, auch wenn die Abschnitte anders
+        beschriftet sind — das lohnt sich, um ihn Schritt für Schritt nachzubauen.</p>
+
+        <h5>Analyse entlang CO-STAR</h5>
+        <table class="footer-table">
+          <tr><th>CO-STAR-Element</th><th>Entsprechung im Systemprompt</th></tr>
+          <tr><td>Context</td><td>Ausgangsmaterial (Fremd-Poster), Referenzrahmen (IREB/BABOK/PMBOK), feste Fallstudie &amp; Personas</td></tr>
+          <tr><td>Objective</td><td>„Baue ein interaktives Nachschlage-Tool …" — klar messbares Ergebnis (12 Kacheln, 5 Phasen, Detail-Panel)</td></tr>
+          <tr><td>Style</td><td>Vorgaben zu Struktur: Kachel-Grid, Pill-Filter, Detail-Panel-Inhalte in fester Reihenfolge</td></tr>
+          <tr><td>Tone</td><td>Implizit über Zielgruppe: professionell, konkret, keine Spielerei — passt zum Corporate-Trainingskontext</td></tr>
+          <tr><td>Audience</td><td>RE/BA/PM-Fachpublikum ohne Data-Science-Hintergrund → Diagrammtypen müssen erklärt, nicht vorausgesetzt werden</td></tr>
+          <tr><td>Response</td><td>Format-Abschnitt: Single-File HTML, K1–K19-Technikvorgaben, vier Footer-Boxen</td></tr>
+        </table>
+
+        <h5>Zentraler Lernhinweis</h5>
+        <p>Ein reines "mach ein Diagramm-Poster für RE/BA" liefert generische Ergebnisse.
+        Die Qualität entsteht durch die <em>Eingrenzung</em>: explizit verbieten, was aus
+        dem Ausgangsmaterial übernommen werden darf (nur die Organisationsidee, nicht
+        Marke/Text), und explizit verlangen, dass jede Beispielzahl an eine feste,
+        wiederverwendbare Fallstudie gebunden ist. Das erzwingt Konkretheit statt
+        Pi-mal-Daumen-Beispiele.</p>
+
+        <h5>Nachbau-Tipp</h5>
+        <p>Beim Nachbauen zuerst die 12 RE/BA-Fragen als Tabelle entwerfen (Frage →
+        Diagrammtyp → Framework-Bezug → Beispielzahl → Vorsicht-Hinweis), bevor eine
+        Zeile HTML geschrieben wird. Das Prompt-Format kommt danach — ohne fertige
+        Inhaltstabelle entstehen sonst Lücken oder generische Werte im Detail-Panel.</p>
+      </div>
+    </details>
+
+    <details class="footer-details">
+      <summary class="footer-summary">Vortrags-Skript</summary>
+      <div class="footer-content footer-sans">
+        <p><strong>Schritt 1</strong> <em>(Klick: nichts, Startbildschirm zeigen)</em><br>
+        „Wie oft stehen wir vor einer Reporting-Folie und fragen uns: Balken, Linie
+        oder Kreis? In der Requirements- und Business-Analyse-Praxis ist das keine
+        Geschmacksfrage — die Diagrammwahl hängt an der Frage, die wir beantworten
+        wollen." <em>Übergang: „Genau dafür ist dieser Kompass gebaut."</em></p>
+
+        <p><strong>Schritt 2</strong> <em>(Klick: Pille „Erhebung &amp; Analyse")</em><br>
+        „Filtern wir zuerst nach der Erhebungsphase. Hier sehen wir den Bar Plot —
+        die klassische Frage: Wie verteilen sich unsere Anforderungen auf Kategorien?"
+        <em>Übergang: „Schauen wir uns das am TalentMatch-AI-Beispiel an."</em></p>
+
+        <p><strong>Schritt 3</strong> <em>(Klick: Kachel „Bar Plot")</em><br>
+        „28 funktionale, 15 nicht-funktionale und 6 Compliance-Anforderungen — auf
+        einen Blick erkennt Petra, wo der Testaufwand liegen wird. Das ist direkt an
+        die IREB-Klassifikationsschema angelehnt." <em>Übergang: „Schließen wir das
+        Panel und wechseln in die Schätzphase."</em></p>
+
+        <p><strong>Schritt 4</strong> <em>(Klick: Modal schließen, dann Pille „Priorisierung &amp; Schätzung")</em><br>
+        „Hier wird’s spannend: Box Plot und Histogram sehen ähnlich technisch aus,
+        beantworten aber unterschiedliche Fragen." <em>Übergang: „Erst der Box
+        Plot."</em></p>
+
+        <p><strong>Schritt 5</strong> <em>(Klick: Kachel „Box Plot")</em><br>
+        „Sechs Teammitglieder schätzen dieselbe Anforderung zwischen 3 und 21 Story
+        Points. Diese Streuung — nicht der Mittelwert — ist das eigentliche Signal:
+        Hier fehlt gemeinsames Verständnis, bevor gesprintet wird."</p>
+
+        <p><strong>Schritt 6</strong> <em>(Klick: Modal schließen, dann Pille „Stakeholder", dann Kachel „Heatmap")</em><br>
+        „Und hier ein Beispiel, das in Workshops oft überrascht: Die Traceability-
+        Heatmap zeigt nicht nur, welche Anforderung zu welchem Stakeholder gehört —
+        sie zeigt auch, wenn jemand systematisch übersehen wurde. Bei uns war das
+        Sarah aus dem Vertrieb bei den nicht-funktionalen Anforderungen."</p>
+
+        <p><strong>Schritt 7</strong> <em>(Klick: Beamer-Modus-Button, einmal oder zweimal weiterschalten)</em><br>
+        „Für den Frontalvortrag schalte ich in den Beamer-Modus — größere Schrift,
+        Footer verschwindet, der Fokus bleibt auf den Kacheln."</p>
+
+        <p><strong>Regie-Hinweise:</strong> Gesamtdauer ca. 8–10 Minuten für diesen
+        Ausschnitt. Nicht mit der Fachterminologie der Diagrammtypen einsteigen
+        ("Wisst ihr, was ein Box Plot ist?") — immer zuerst die RE/BA-Frage stellen,
+        dann das Diagramm zeigen. Bei Zeitdruck Schritte 4–5 zusammenfassen und nur
+        einen der beiden Schätz-Diagrammtypen vorführen.</p>
+      </div>
+    </details>
+
+    <details class="footer-details">
+      <summary class="footer-summary">Normen-Register</summary>
+      <div class="footer-content">
+        <table class="footer-table">
+          <tr><th>Norm / Framework</th><th>Status im Tool</th></tr>
+          <tr><td>IREB CPRE (Certified Professional for Requirements Engineering)</td>
+              <td>Referenzrahmen für Anforderungsklassifikation und Traceability; Curriculum/Glossar aktuell gültig. Stand Prüfung: 24.08.2026.</td></tr>
+          <tr><td>BABOK® Guide (IIBA) — Version 3</td>
+              <td>Weiterhin aktuell gültiger IIBA-Standard; eine Version 4 ist nach Recherche vom 24.08.2026 nicht angekündigt.</td></tr>
+          <tr><td>PMBOK® Guide (PMI)</td>
+              <td>7. Auflage (2021) bleibt laut mehreren Quellen die offiziell von PMI bestätigte, gültige Standard-Referenz. Zu einer 8. Auflage kursieren widersprüchliche Angaben (teils bereits Ende 2025/Anfang 2026 veröffentlicht, teils laut PMI offiziell noch ausstehend). Vor Verwendung im Live-Training erneut gezielt prüfen. Stand Recherche: 24.08.2026.</td></tr>
+          <tr><td>EU AI Act</td>
+              <td>In Kraft seit 01.08.2024, gestaffeltes Inkrafttreten der Pflichten bis 02.08.2027 (Hochrisiko-Systeme). Nur als Beispiel-Compliance-Kategorie im TalentMatch-AI-Fallbeispiel referenziert, kein inhaltlicher Schwerpunkt dieses Tools. Stand Prüfung: 24.08.2026.</td></tr>
+          <tr><td>DSGVO</td>
+              <td>Seit 25.05.2018 in Kraft, unverändert gültig. Nur als Beispiel-Compliance-Kategorie referenziert.</td></tr>
+        </table>
+        <p class="footer-sig">
+          <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a><br>
+          Referenziert: IREB CPRE · BABOK® Guide v3 (IIBA) · PMBOK® Guide (PMI)
+          <span class="audit-line">Zuletzt geprüft: 24.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+        </p>
+      </div>
+    </details>
+  </footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var PHASE_LABEL = {
+    erhebung:"Erhebung & Analyse",
+    schaetzung:"Priorisierung & Schätzung",
+    qualitaet:"Qualität & NFR",
+    stakeholder:"Stakeholder",
+    tracking:"Tracking & Reporting"
+  };
+  var PHASE_COLOR = {
+    erhebung:"var(--erhebung)",
+    schaetzung:"var(--schaetzung)",
+    qualitaet:"var(--qualitaet)",
+    stakeholder:"var(--stakeholder)",
+    tracking:"var(--tracking)"
+  };
+
+  function barsGlyph(vals, colorVar){
+    var html = '<div class="glyph-bars">';
+    for (var i=0;i<vals.length;i++){
+      html += '<span style="height:'+vals[i]+'%; background:'+colorVar+'"></span>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function dotsGlyph(points, colorVar){
+    var html = '<div class="glyph-dots">';
+    for (var i=0;i<points.length;i++){
+      html += '<i style="left:'+points[i][0]+'%; bottom:'+points[i][1]+'%; background:'+colorVar+'"></i>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function lineGlyph(pts, colorVar){
+    var poly = pts.map(function(p){ return p[0]+','+p[1]; }).join(' ');
+    return '<svg class="glyph-svg" viewBox="0 0 100 60" preserveAspectRatio="none">' +
+      '<polyline points="'+poly+'" fill="none" stroke="'+colorVar+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+
+  function areaGlyph(pts, colorVar){
+    var poly = pts.map(function(p){ return p[0]+','+p[1]; }).join(' ');
+    var fillPoly = '0,60 ' + poly + ' 100,60';
+    return '<svg class="glyph-svg" viewBox="0 0 100 60" preserveAspectRatio="none">' +
+      '<polygon points="'+fillPoly+'" fill="'+colorVar+'" fill-opacity="0.35"/>' +
+      '<polyline points="'+poly+'" fill="none" stroke="'+colorVar+'" stroke-width="3"/></svg>';
+  }
+
+  function boxGlyph(colorVar){
+    return '<div class="glyph-box-plot">' +
+      '<div class="whisker" style="background:'+colorVar+'"></div>' +
+      '<div class="box" style="border-color:'+colorVar+'; background:#fff;"></div>' +
+      '<div class="med" style="background:'+colorVar+'"></div>' +
+      '</div>';
+  }
+
+  function heatGlyph(shades){
+    var html = '<div class="glyph-heat">';
+    for (var i=0;i<shades.length;i++){
+      html += '<span style="background:'+shades[i]+'"></span>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function violinGlyph(colorVar){
+    return '<div class="glyph-violin">' +
+      '<i style="background:'+colorVar+'; opacity:0.85;"></i>' +
+      '<i style="background:'+colorVar+'; opacity:0.6; height:44px;"></i>' +
+      '<i style="background:'+colorVar+'; opacity:0.85;"></i>' +
+      '</div>';
+  }
+
+  function pairGlyph(colorVar){
+    var html = '<div class="glyph-pair">';
+    var opac = [0.9,0.4,0.7,0.5,0.9,0.3];
+    for (var i=0;i<6;i++){
+      html += '<span style="background:'+colorVar+'; opacity:'+opac[i]+'"></span>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function bubbleGlyph(colorVar){
+    return '<div class="glyph-dots">' +
+      '<i style="left:12%; bottom:20%; width:12px; height:12px; background:'+colorVar+'; opacity:0.5;"></i>' +
+      '<i style="left:34%; bottom:45%; width:26px; height:26px; background:'+colorVar+'; opacity:0.6;"></i>' +
+      '<i style="left:60%; bottom:25%; width:16px; height:16px; background:'+colorVar+'; opacity:0.55;"></i>' +
+      '<i style="left:78%; bottom:55%; width:36px; height:36px; background:'+colorVar+'; opacity:0.5;"></i>' +
+      '</div>';
+  }
+
+  function ringGlyph(pct, colorVar, donut){
+    var deg = Math.round(pct*3.6);
+    var style = 'background: conic-gradient('+colorVar+' 0deg '+deg+'deg, #dbe0e8 '+deg+'deg 360deg);';
+    return '<div class="glyph-ring'+(donut?' donut':'')+'" style="'+style+'"></div>';
+  }
+
+  var CARDS = [
+    {
+      num:1, phase:"tracking", title:"Line Plot", chart:"Linien­diagramm",
+      frage:"Wie entwickelt sich die Anzahl offener Anforderungen über die Sprints?",
+      zweckPreview:"Trends über eine geordnete/zeitliche Skala sichtbar machen.",
+      zweck:"Zeigt Verläufe über eine geordnete oder kontinuierliche Skala — meist Zeit. Ideal, um Fortschritt, Trends oder Verzögerungen im Verlauf sichtbar zu machen, statt nur einen Endstand zu zeigen.",
+      frameworkBadge:"PMBOK",
+      frameworkText:"PMBOK® Guide (PMI) — Performance-Domain „Delivery“ / Monitoring &amp; Controlling; Trendanalyse als Performance-Reporting-Technik.",
+      beispiel:"Bei TalentMatch AI sinkt die Anzahl offener funktionaler Anforderungen von 42 (Sprint 1) auf 6 (Sprint 8) — ein klar sichtbarer Fortschrittstrend, den Ela im Statusmeeting mit Herrn Bachmeier zeigt.",
+      vorsicht:"Bei nicht-geordneten, rein kategorialen Daten (z. B. Anforderungstypen ohne Zeitbezug) ungeeignet — dafür den Bar Plot verwenden.",
+      glyph:lineGlyph([[0,50],[20,38],[40,42],[60,22],[80,26],[100,8]], "var(--tracking)")
+    },
+    {
+      num:2, phase:"erhebung", title:"Bar Plot", chart:"Balkendiagramm",
+      frage:"Wie verteilen sich die erhobenen Anforderungen auf Kategorien (funktional, NFR, Compliance)?",
+      zweckPreview:"Werte über diskrete, nicht geordnete Kategorien vergleichen.",
+      zweck:"Vergleicht Werte über diskrete, nicht geordnete Kategorien miteinander. Der Klassiker für „welche Gruppe hat wie viel“, wenn keine natürliche Reihenfolge existiert.",
+      frameworkBadge:"IREB",
+      frameworkText:"IREB CPRE — Anforderungsklassifikation (funktional / nicht-funktional / Randbedingung).",
+      beispiel:"Der TalentMatch-AI-Anforderungskatalog umfasst 28 funktionale, 15 nicht-funktionale und 6 Compliance-Anforderungen (u. a. EU AI Act, DSGVO). Petra (QM) nutzt diese Verteilung, um die Testplanung zu priorisieren.",
+      vorsicht:"Ab mehr als ca. 8–10 Kategorien wird der Bar Plot unübersichtlich — dann gruppieren oder auf Top-N plus „Sonstige“ reduzieren.",
+      glyph:barsGlyph([90,55,25], "var(--erhebung)")
+    },
+    {
+      num:3, phase:"schaetzung", title:"Histogram", chart:"Histogramm",
+      frage:"Wie ist die Verteilung der Aufwandsschätzungen (Story Points) im Backlog?",
+      zweckPreview:"Verteilungsform numerischer Daten erkennen — Häufungen, Schiefe, Ausreißer.",
+      zweck:"Zeigt die Verteilungsform numerischer Daten: Wo häufen sich Werte, wie schief ist die Verteilung, gibt es mehrere Häufungspunkte (Bimodalität)?",
+      frameworkBadge:"PMBOK",
+      frameworkText:"PMBOK® Guide (PMI) — Schätztechniken (Aufwandsschätzung) vor der Sprint- bzw. Iterationsplanung.",
+      beispiel:"Knut (Entwicklung) schätzt 34 User Stories des TalentMatch-AI-Backlogs. Das Histogramm zeigt eine Häufung bei 3 und 5 Story Points sowie wenige Ausreißer bei 13 — Hinweis auf zwei unterschätzte Epics.",
+      vorsicht:"Erfordert eine ausreichende Stichprobengröße (Faustregel: ≥ 20–30 Werte) — bei kleineren Backlogs ist das Histogramm wenig aussagekräftig.",
+      glyph:barsGlyph([15,35,60,80,45,20,10], "var(--schaetzung)")
+    },
+    {
+      num:4, phase:"qualitaet", title:"Scatter Plot", chart:"Streudiagramm",
+      frage:"Besteht ein Zusammenhang zwischen Anforderungskomplexität und Testaufwand?",
+      zweckPreview:"Beziehung zwischen zwei kontinuierlichen Variablen zeigen.",
+      zweck:"Zeigt die Beziehung zwischen zwei kontinuierlichen Variablen: Muster, Korrelationstendenz und Ausreißer werden auf einen Blick sichtbar.",
+      frameworkBadge:"BABOK",
+      frameworkText:"BABOK® Guide v3 (IIBA) — Knowledge Area 7: Requirements Analysis and Design Definition.",
+      beispiel:"Petra korreliert für 20 Akzeptanzkriterien den Komplexitäts-Score (1–10) mit dem tatsächlichen Testaufwand in Stunden — ein deutlicher positiver Zusammenhang zeigt sich, mit einer auffälligen Ausnahme: eine einfache Anforderung mit hohem Testaufwand wegen eines Compliance-Nachweises.",
+      vorsicht:"Korrelation ist keine Kausalität — ein sichtbarer Zusammenhang ersetzt nicht die fachliche Ursachenprüfung.",
+      glyph:dotsGlyph([[10,10],[20,18],[30,22],[38,35],[48,40],[58,52],[68,60],[78,70],[88,80],[35,72]], "var(--qualitaet)")
+    },
+    {
+      num:5, phase:"schaetzung", title:"Box Plot", chart:"Box-Plot",
+      frage:"Wie stark streuen die Schätzungen verschiedener Teammitglieder für dieselbe Anforderung (Planning Poker)?",
+      zweckPreview:"Streuung und Ausreißer über die Fünf-Werte-Zusammenfassung zeigen.",
+      zweck:"Fasst eine Verteilung über die Fünf-Werte-Zusammenfassung zusammen (Minimum, Q1, Median, Q3, Maximum) und macht Streuung sowie Ausreißer auf einen Blick sichtbar.",
+      frameworkBadge:"PMBOK",
+      frameworkText:"PMBOK® Guide (PMI) — Umgang mit Schätzunsicherheit, konsensbasierte Aufwandsschätzung (Planning Poker als Delphi-ähnliches Verfahren).",
+      beispiel:"Für eine TalentMatch-AI-Anforderung schätzen 6 Teammitglieder zwischen 3 und 21 Story Points. Der Box Plot macht die große Streuung sofort sichtbar und begründet eine zusätzliche Klärungsrunde vor der Sprint-Planung.",
+      vorsicht:"Bei sehr kleinen Stichproben (unter 5 Werten) wenig robust — dann lieber die Einzelwerte direkt zeigen statt zu aggregieren.",
+      glyph:boxGlyph("var(--schaetzung)")
+    },
+    {
+      num:6, phase:"tracking", title:"Pie / Donut Chart", chart:"Kreis- bzw. Ringdiagramm",
+      frage:"Wie ist das Projektbudget auf Anforderungskategorien verteilt?",
+      zweckPreview:"Anteils-/Teil-Ganzes-Verhältnisse bei wenigen Kategorien zeigen.",
+      zweck:"Zeigt Anteils- bzw. Teil-Ganzes-Verhältnisse, wenn wenige Kategorien existieren, die sich zu 100 % summieren.",
+      frameworkBadge:"PMBOK",
+      frameworkText:"PMBOK® Guide (PMI) — Kostenmanagement / Budgetierung (Performance-Domain „Planning“).",
+      beispiel:"Herr Bachmeier sieht auf einen Blick: 40 % Budget für Kernfunktionen, 25 % für NFR/Performance, 20 % für Compliance-Umsetzung, 15 % Puffer — Grundlage für die Freigabeentscheidung.",
+      vorsicht:"Ab mehr als 5–6 Segmenten oder bei ähnlich großen Anteilen schwer lesbar und schwer vergleichbar — dann den Bar Plot bevorzugen.",
+      glyph:ringGlyph(40, "var(--tracking)", false)
+    },
+    {
+      num:7, phase:"stakeholder", title:"Heatmap", chart:"Heatmap",
+      frage:"Welche Stakeholder sind von welchen Anforderungen betroffen (Traceability)?",
+      zweckPreview:"Muster und Ausprägungsstärke in Matrixdaten über Farbintensität zeigen.",
+      zweck:"Zeigt Muster und Ausprägungsstärke in Matrixdaten über Farbintensität — geeignet, um Zusammenhänge zwischen zwei kategorialen Dimensionen (z. B. Anforderung × Stakeholder) auf einen Blick zu erfassen.",
+      frameworkBadge:"IREB / BABOK",
+      frameworkText:"IREB CPRE — Traceability (Rückverfolgbarkeit); BABOK® Guide v3 (IIBA) — Knowledge Area 4: Elicitation and Collaboration / Stakeholder-Analyse.",
+      beispiel:"Die Traceability-Matrix bei TalentMatch AI (Zeilen = Anforderungen, Spalten = Ela, Knut, Sarah, Petra, Herr Bachmeier) zeigt über Farbintensität: Sarah (Vertrieb) wurde bei überproportional vielen NFR gar nicht konsultiert — eine Lücke in der Stakeholder-Einbindung.",
+      vorsicht:"Ohne klare Legende und WCAG-konforme Farbskala schwer interpretierbar — Farbwahl bewusst mit ausreichendem Kontrast treffen.",
+      glyph:heatGlyph(["#fde3cf","#fbb989","#f7853d","#c94a13","#7a2c0b","#fbb989","#f7853d","#c94a13","#7a2c0b","#fde3cf"])
+    },
+    {
+      num:8, phase:"tracking", title:"Area Plot", chart:"Flächendiagramm",
+      frage:"Wie kumuliert sich der Umsetzungsfortschritt über die Releases (Cumulative Flow)?",
+      zweckPreview:"Trends UND Größenordnungen mehrerer Kategorien über Zeit zeigen.",
+      zweck:"Zeigt Trends und Größenordnungen mehrerer Kategorien gleichzeitig über Zeit — häufig gestapelt, um Gesamtvolumen und Anteile parallel darzustellen.",
+      frameworkBadge:"PMBOK",
+      frameworkText:"PMBOK® Guide (PMI) / agile Praxis — Cumulative-Flow-Diagramm als Fortschritts- und Durchsatz-Reporting.",
+      beispiel:"Die kumulierte Anzahl der Status „Backlog / In Arbeit / Fertig“ über 6 Releases bei TalentMatch AI zeigt eine sich verbreiternde „In Arbeit“-Fläche in Release 4 — ein sichtbares Signal für einen Engpass in Knuts Team.",
+      vorsicht:"Bei vielen Kategorien oder starkem Rauschen wird die gestapelte Fläche unübersichtlich — auf die wirklich relevanten Status-Kategorien begrenzen.",
+      glyph:areaGlyph([[0,45],[20,35],[40,38],[60,20],[80,24],[100,10]], "var(--tracking)")
+    },
+    {
+      num:9, phase:"stakeholder", title:"Violin Plot", chart:"Violin-Plot",
+      frage:"Wie unterscheidet sich die Bewertungsverteilung dreier Stakeholder-Gruppen zu einer Anforderung (Akzeptanz-Umfrage)?",
+      zweckPreview:"Verteilungsform UND Dichte gleichzeitig zeigen — mehr Detail als der Box Plot.",
+      zweck:"Zeigt Verteilungsform und Dichte gleichzeitig — liefert bei ausreichender Datenmenge mehr Information als der Box Plot, etwa ob eine Verteilung ein- oder zweigipflig ist.",
+      frameworkBadge:"BABOK",
+      frameworkText:"BABOK® Guide v3 (IIBA) — Knowledge Area 4: Elicitation and Collaboration, quantitative Auswertung von Elicitation-Ergebnissen.",
+      beispiel:"Eine Akzeptanzbewertung (Skala 1–100) einer TalentMatch-AI-Anforderung durch Vertrieb, Entwicklung und Geschäftsführung zeigt bei Sarahs Vertriebsgruppe eine breite, zweigipflige Verteilung — Hinweis auf uneinheitliche Erwartungen innerhalb des Vertriebsteams.",
+      vorsicht:"Erfordert ausreichend viele Datenpunkte je Gruppe (Faustregel ≥ 15–20) — sonst täuscht die Form eine Dichte vor, die nicht vorhanden ist.",
+      glyph:violinGlyph("var(--stakeholder)")
+    },
+    {
+      num:10, phase:"schaetzung", title:"Pair Plot", chart:"Streudiagramm-Matrix",
+      frage:"Wie hängen mehrere Anforderungsattribute (Priorität, Aufwand, Risiko, Business Value) gleichzeitig zusammen?",
+      zweckPreview:"Paarweise Beziehungen zwischen mehreren Variablen gleichzeitig explorieren.",
+      zweck:"Visualisiert paarweise Beziehungen zwischen mehreren Variablen gleichzeitig — ein Explorationswerkzeug vor der eigentlichen Priorisierungsentscheidung.",
+      frameworkBadge:"BABOK",
+      frameworkText:"BABOK® Guide v3 (IIBA) — Knowledge Area 5: Requirements Life Cycle Management, Task „Prioritize Requirements“.",
+      beispiel:"Vor dem Priorisierungs-Workshop nutzt Ela ein Pair Plot über Aufwand, Business Value, Risiko und Compliance-Dringlichkeit für 25 TalentMatch-AI-Anforderungen — sichtbar wird ein Cluster mit hohem Business Value bei ungewöhnlich niedrigem Aufwand („Quick Wins“).",
+      vorsicht:"Ab mehr als 5–6 Variablen wird die Matrix unübersichtlich — eher als Analysewerkzeug im Vorfeld nutzen, nicht im Live-Vortrag vor Führungskräften zeigen.",
+      glyph:pairGlyph("var(--schaetzung)")
+    },
+    {
+      num:11, phase:"schaetzung", title:"Bubble Chart", chart:"Blasendiagramm",
+      frage:"Wie verhalten sich Nutzen, Aufwand und Risiko gleichzeitig für Priorisierungsentscheidungen?",
+      zweckPreview:"Eine dritte Variable über die Punktgröße zusätzlich darstellen.",
+      zweck:"Stellt eine dritte Variable über die Punktgröße dar — die klassische Nutzen-Aufwand-(Risiko-)Matrix in einem einzigen Diagramm.",
+      frameworkBadge:"PMBOK / BABOK",
+      frameworkText:"PMBOK® Guide (PMI) — Priorisierung im Wertmanagement; BABOK® Guide v3 (IIBA) — Task „Prioritize Requirements“.",
+      beispiel:"X-Achse Aufwand, Y-Achse Business Value, Blasengröße Risiko: Herr Bachmeier erkennt im TalentMatch-AI-Backlog sofort die großen, risikoarmen „Quick-Win“-Blasen oben links.",
+      vorsicht:"Drei Dimensionen gleichzeitig sind für Beamer-Vorträge anspruchsvoll — Beschriftung und Legende großzügig dimensionieren (Beamer-Tauglichkeit beachten).",
+      glyph:bubbleGlyph("var(--schaetzung)")
+    },
+    {
+      num:12, phase:"tracking", title:"Donut Chart", chart:"Ringdiagramm (Fortschritt)",
+      frage:"Wie viele Akzeptanzkriterien sind je Release bereits erfüllt?",
+      zweckPreview:"Teil-Ganzes-Darstellung mit Fokus auf einen einzelnen Fortschrittswert.",
+      zweck:"Teil-Ganzes-Darstellung, meist für Fortschrittsanzeigen genutzt — der Fokus liegt auf einem einzelnen Wert (das „Loch“ zeigt den Restanteil), nicht auf dem Vergleich mehrerer gleichrangiger Kategorien.",
+      frameworkBadge:"PMBOK",
+      frameworkText:"PMBOK® Guide (PMI) — Monitoring &amp; Controlling, Fortschritts-Reporting je Liefergegenstand.",
+      beispiel:"Release 3 von TalentMatch AI: 78 % der Akzeptanzkriterien erfüllt, 14 % in Prüfung, 8 % offen. Petra nutzt das Donut-Chart im QM-Statusbericht an Herrn Bachmeier.",
+      vorsicht:"Verwechslungsgefahr mit dem Pie Chart (Punkt 6): Donut nur nutzen, wenn der Fokus auf einem einzelnen Fortschrittswert liegt — nicht beim reinen Kategorienvergleich.",
+      glyph:ringGlyph(78, "var(--tracking)", true)
+    }
+  ];
+
+  var grid = document.getElementById('grid');
+  var modalBackdrop = document.getElementById('modalBackdrop');
+  var modalBody = document.getElementById('modalBody');
+
+  function renderCards(){
+    var html = '';
+    for (var i=0;i<CARDS.length;i++){
+      var c = CARDS[i];
+      html += '<button type="button" class="card" data-idx="'+i+'" data-phase="'+c.phase+'">' +
+        '<div class="card-top"><span class="card-num">'+String(c.num).padStart(2,'0')+'</span>' +
+        '<span class="phase-tag" style="background:'+PHASE_COLOR[c.phase]+'">'+PHASE_LABEL[c.phase]+'</span></div>' +
+        '<div class="glyph">'+c.glyph+'</div>' +
+        '<h3>'+c.title+'</h3>' +
+        '<div class="frage">'+c.frage+'</div>' +
+        '<div class="zweck-preview">'+c.zweckPreview+'</div>' +
+        '<div class="card-cta">Details ansehen →</div>' +
+        '</button>';
+    }
+    grid.innerHTML = html;
+
+    var cards = grid.querySelectorAll('.card');
+    cards.forEach(function(el){
+      el.addEventListener('pointerup', function(){
+        openModal(CARDS[parseInt(el.getAttribute('data-idx'),10)]);
+      });
+    });
+  }
+
+  function openModal(c){
+    modalBody.innerHTML =
+      '<span class="phase-tag" style="background:'+PHASE_COLOR[c.phase]+'">'+PHASE_LABEL[c.phase]+'</span>' +
+      '<h2>'+String(c.num).padStart(2,'0')+' · '+c.title+' <span style="color:var(--muted); font-weight:600;">('+c.chart+')</span></h2>' +
+      '<div class="frage-gross">„'+c.frage+'"</div>' +
+      '<section><h4>Einsatzzweck</h4><p>'+c.zweck+'</p></section>' +
+      '<section><h4>Framework-Bezug</h4><span class="framework-badge">'+c.frameworkBadge+'</span><p>'+c.frameworkText+'</p></section>' +
+      '<section><h4>Beispiel — TalentMatch AI (Vantera Systemtechnik GmbH)</h4><div class="example-box">'+c.beispiel+'</div></section>' +
+      '<section><h4>Vorsicht / Grenzfall</h4><div class="warn-box">'+c.vorsicht+'</div></section>';
+    modalBackdrop.classList.add('open');
+  }
+
+  function closeModal(){
+    modalBackdrop.classList.remove('open');
+  }
+
+  document.getElementById('modalClose').addEventListener('pointerup', closeModal);
+  modalBackdrop.addEventListener('pointerup', function(e){
+    if (e.target === modalBackdrop) closeModal();
+  });
+
+  // Filter pills
+  var toolbar = document.getElementById('toolbar');
+  var pills = toolbar.querySelectorAll('.pill');
+  pills.forEach(function(p){
+    p.addEventListener('pointerup', function(){
+      pills.forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+      p.setAttribute('aria-pressed','true');
+      var phase = p.getAttribute('data-phase');
+      var cards = grid.querySelectorAll('.card');
+      cards.forEach(function(el){
+        if (phase === 'alle' || el.getAttribute('data-phase') === phase){
+          el.style.display = '';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  renderCards();
+
+  // Beamer toggle (K18) — vierstufig, kumulativ, Label zeigt die nächste Stufe
+  var BEAMER_LEVELS = [
+    { classes: [],                                    label: "☀ Beamer" },
+    { classes: ["beamer"],                             label: "☀ Beamer XL" },
+    { classes: ["beamer", "beamer-xl"],                label: "☀ Beamer XXL" },
+    { classes: ["beamer", "beamer-xl", "beamer-xxl"],  label: "☀ Normal" }
+  ];
+  var beamerLevel = 0;
+  try {
+    var savedLevel = parseInt(sessionStorage.getItem("diagrammKompassBeamer"), 10);
+    if (!isNaN(savedLevel) && savedLevel >= 0 && savedLevel < BEAMER_LEVELS.length){ beamerLevel = savedLevel; }
+  } catch(e){}
+
+  var beamerBtn = document.getElementById('beamerBtn');
+  function applyBeamerLevel(){
+    document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    beamerBtn.textContent = BEAMER_LEVELS[beamerLevel].label;
+  }
+  beamerBtn.addEventListener('pointerup', function(){
+    beamerLevel = (beamerLevel + 1) % BEAMER_LEVELS.length;
+    applyBeamerLevel();
+    try { sessionStorage.setItem("diagrammKompassBeamer", String(beamerLevel)); } catch(e){}
+  });
+  applyBeamerLevel();
+})();
+</script>
+</body>
+</html>
