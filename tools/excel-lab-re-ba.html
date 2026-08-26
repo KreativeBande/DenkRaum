@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Excel Lab für Requirements Engineering &amp; Business Analyse | Michaela Kühn</title>
+<style>
+  :root{
+    color-scheme: light;
+    --ink:#1a1a2e;
+    --muted:#4a4a63;
+    --faint:#8a8aa3;
+    --bg:#ffffff;
+    --panel:#f7f7fb;
+    --line:#e1e1ec;
+    --accent:#4338ca;
+    --accent-2:#0f766e;
+    --accent-soft:#eef0ff;
+    --ok:#15803d;
+    --ok-soft:#e7f6ec;
+    --warn:#b45309;
+    --warn-soft:#fdf3e0;
+    --danger:#b91c1c;
+    --danger-soft:#fdeaea;
+    --neutral-soft:#eef0f4;
+    --fs-body:16px;
+    --fs-sec:14px;
+    --fs-h1:26px;
+    --fs-h2:19px;
+    --radius:12px;
+  }
+  html, body{ color-scheme: light; background:var(--bg); overflow-x:hidden; }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    font-size:var(--fs-body);
+    line-height:1.5;
+    padding-bottom:40px;
+  }
+  h1,h2,h3{ margin:0 0 6px 0; line-height:1.25; }
+  h1{ font-size:var(--fs-h1); }
+  h2{ font-size:var(--fs-h2); }
+  p{ margin:0 0 10px 0; }
+  a{ color:var(--accent); }
+  code, .mono{ font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+  button{ font-family:inherit; touch-action:manipulation; cursor:pointer; }
+  .visually-hidden{ position:absolute; width:1px;height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+
+  /* ---------- Signature (fixed, top right) ---------- */
+  .signature{
+    position:fixed; top:14px; right:28px; z-index:500;
+    background:rgba(255,255,255,0.94);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:8px 14px;
+    text-align:right;
+    box-shadow:0 2px 10px rgba(20,20,40,0.06);
+  }
+  .signature strong{ display:block; font-size:14px; color:var(--ink); }
+  .signature a{ font-size:14px; color:var(--accent); text-decoration:none; }
+  .signature a:hover{ text-decoration:underline; }
+  @media (max-width:900px){
+    .signature{ position:static; text-align:left; margin:10px 16px 0 16px; display:inline-block; }
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    padding:20px 24px 14px 24px;
+    max-width:1180px;
+    margin:0 auto;
+  }
+  .back-link{
+    display:inline-block; font-size:var(--fs-sec); font-weight:700;
+    color:var(--muted); text-decoration:none; margin-bottom:14px;
+  }
+  .back-link:hover{ color:var(--accent); }
+  .eyebrow{
+    display:inline-block; font-size:var(--fs-sec); font-weight:700; letter-spacing:.04em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:6px;
+  }
+  .subtitle{ color:var(--muted); max-width:760px; }
+
+  .controlbar{
+    display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+    margin-top:16px; padding:12px; background:var(--panel);
+    border:1px solid var(--line); border-radius:var(--radius);
+  }
+  .seg{
+    display:inline-flex; background:#fff; border:1px solid var(--line); border-radius:999px; padding:3px;
+  }
+  .seg button{
+    border:none; background:transparent; padding:8px 16px; min-height:44px; min-width:44px;
+    border-radius:999px; font-size:var(--fs-sec); font-weight:600; color:var(--muted);
+  }
+  .seg button.active{ background:var(--accent); color:#fff; }
+
+  .beamer-btn{
+    border:1px solid var(--line); background:#fff; border-radius:999px; padding:8px 16px;
+    min-height:44px; min-width:44px; font-size:var(--fs-sec); font-weight:600; color:var(--muted);
+  }
+  .beamer-btn.on{ background:var(--accent-2); color:#fff; border-color:var(--accent-2); }
+
+  .search-wrap{ flex:1 1 220px; min-width:180px; }
+  .search-wrap input{
+    width:100%; min-height:44px; padding:0 14px; border:1px solid var(--line); border-radius:999px;
+    font-size:var(--fs-sec); color:var(--ink); background:#fff;
+  }
+  .search-wrap input:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+
+  .pillrow{ display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 4px 0; }
+  .pill{
+    border:1px solid var(--line); background:#fff; color:var(--muted);
+    border-radius:999px; padding:8px 14px; min-height:44px; font-size:var(--fs-sec); font-weight:600;
+  }
+  .pill.active{ background:var(--ink); color:#fff; border-color:var(--ink); }
+
+  main{ max-width:1180px; margin:0 auto; padding:0 24px; }
+
+  /* ---------- Cards (Self-Study grid) ---------- */
+  .grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(340px,1fr)); gap:16px; margin-top:16px;
+  }
+  .card{
+    border:1px solid var(--line); border-radius:var(--radius); background:#fff;
+    padding:16px; display:flex; flex-direction:column; gap:10px;
+    box-shadow:0 1px 2px rgba(20,20,40,0.03);
+  }
+  .card-head{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+  .fn-name{ font-family:"SFMono-Regular",Consolas,Menlo,monospace; font-weight:800; font-size:1.05em; color:var(--ink); background:var(--accent-soft); padding:4px 9px; border-radius:7px; }
+  .badge{ font-size:var(--fs-sec); font-weight:600; padding:4px 10px; border-radius:999px; white-space:nowrap; }
+  .badge.cat{ background:var(--neutral-soft); color:var(--muted); }
+  .badge.norm{ background:var(--warn-soft); color:var(--warn); }
+  .fn-usecase{ color:var(--muted); font-size:var(--fs-body); }
+  .fn-usecase b{ color:var(--ink); }
+  .fn-syntax{
+    display:block; background:#12121c; color:#c9f7e5; padding:10px 12px; border-radius:8px;
+    font-size:var(--fs-sec); overflow-x:auto; white-space:pre;
+  }
+  .fn-demo{ background:var(--panel); border:1px dashed var(--line); border-radius:9px; padding:12px; }
+  .fn-demo label{ display:block; font-size:var(--fs-sec); font-weight:600; color:var(--muted); margin-bottom:4px; }
+  .fn-demo select, .fn-demo input[type="text"], .fn-demo input[type="number"]{
+    width:100%; min-height:44px; border:1px solid var(--line); border-radius:8px; padding:0 10px;
+    font-size:var(--fs-sec); background:#fff; color:var(--ink); margin-bottom:8px;
+  }
+  .fn-demo .row2{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .fn-demo .chk{ display:flex; align-items:center; gap:8px; min-height:44px; font-size:var(--fs-sec); color:var(--ink); }
+  .fn-demo .chk input{ width:22px; height:22px; flex-shrink:0; }
+  .fn-demo .chk label{ margin:0; min-height:44px; display:flex; align-items:center; cursor:pointer; }
+  .fn-demo table{ width:100%; border-collapse:collapse; font-size:var(--fs-sec); margin-top:6px; }
+  .fn-demo th, .fn-demo td{ border:1px solid var(--line); padding:5px 7px; text-align:left; }
+  .fn-demo th{ background:#fff; color:var(--muted); }
+  .fn-result{
+    background:var(--ok-soft); border:1px solid #bfe3c9; color:#0d5a2c; border-radius:8px;
+    padding:10px 12px; font-size:var(--fs-body); font-weight:600; min-height:44px; display:flex; align-items:center;
+  }
+  .fn-result.is-error{ background:var(--danger-soft); border-color:#f0bcbc; color:var(--danger); }
+  .fn-script{ border:1px solid var(--line); border-radius:8px; }
+  .fn-script summary{ padding:9px 12px; font-size:var(--fs-sec); font-weight:600; color:var(--accent); min-height:44px; display:flex; align-items:center; }
+  .fn-script .fn-script-body{ padding:0 12px 12px 12px; font-size:var(--fs-sec); color:var(--muted); }
+
+  .empty-state{ color:var(--faint); padding:40px 10px; text-align:center; }
+
+  /* ---------- Workshop mode ---------- */
+  .workshop-wrap{ margin-top:16px; }
+  .progress{ display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .progress-bar{ flex:1; height:8px; background:var(--neutral-soft); border-radius:999px; overflow:hidden; }
+  .progress-fill{ height:100%; background:var(--accent); border-radius:999px; }
+  .progress-label{ font-size:var(--fs-sec); color:var(--muted); white-space:nowrap; }
+
+  .divider-slide{
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+    color:#fff; border-radius:var(--radius); padding:44px 30px; text-align:center;
+  }
+  .divider-slide .cat-icon{ font-size:2.4em; }
+  .divider-slide h2{ font-size:1.6em; margin-top:8px; }
+  .divider-slide p{ opacity:.92; max-width:640px; margin:8px auto 0 auto; }
+
+  .ws-card{ border:1px solid var(--line); border-radius:var(--radius); background:#fff; padding:22px; }
+  .ws-card .fn-name{ font-size:1.3em; }
+  .ws-script{
+    margin-top:12px; background:#fffbea; border:1px solid #f2e2ab; border-radius:9px; padding:12px 14px;
+    font-size:var(--fs-body); color:#5a4a10;
+  }
+  .ws-script b{ display:block; margin-bottom:4px; color:#8a6d0a; font-size:var(--fs-sec); text-transform:uppercase; letter-spacing:.03em; }
+
+  .navbar{
+    display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:16px;
+  }
+  .navbtn{
+    border:1px solid var(--line); background:#fff; color:var(--ink); border-radius:10px;
+    padding:0 20px; min-height:48px; font-size:var(--fs-body); font-weight:700;
+  }
+  .navbtn:disabled{ opacity:.35; }
+  .navbtn.primary{ background:var(--ink); color:#fff; border-color:var(--ink); }
+
+  /* ---------- Crosslink ---------- */
+  .crosslink{ max-width:1180px; margin:20px auto 0 auto; padding:0 24px; font-size:var(--fs-sec); color:var(--muted); }
+  .crosslink a{ color:var(--accent); font-weight:700; text-decoration:none; }
+  .crosslink a:hover{ text-decoration:underline; }
+  .crosslink ul{ margin:8px 0 0; padding-left:20px; }
+  .crosslink li{ margin-bottom:4px; }
+
+  /* ---------- Footer ---------- */
+  footer.footer{ max-width:1180px; margin:36px auto 0 auto; padding:0 24px; }
+  .footer-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:900px){ .footer-grid{ grid-template-columns:1fr; } }
+  .footer-box{ border:1px solid var(--line); border-radius:10px; background:#fff; }
+  .footer-box summary{
+    padding:14px 16px; font-weight:700; font-size:var(--fs-body); cursor:pointer; min-height:44px;
+    display:flex; align-items:center; gap:8px; list-style:none;
+  }
+  .footer-box summary::-webkit-details-marker{ display:none; }
+  .footer-box summary::before{ content:"▸"; color:var(--accent); }
+  .footer-box[open] summary::before{ content:"▾"; }
+  .footer-content{ padding:0 16px 16px 16px; }
+  .footer-mono{ font-family:"SFMono-Regular",Consolas,Menlo,monospace; font-size:var(--fs-sec); white-space:pre-wrap; background:#12121c; color:#dcdce6; padding:14px; border-radius:8px; line-height:1.55; }
+  .footer-sans{ font-size:var(--fs-body); color:var(--muted); }
+  .footer-sans h4{ color:var(--ink); margin:14px 0 4px 0; font-size:1em; }
+  .footer-sans h4:first-child{ margin-top:0; }
+  .footer-table{ width:100%; border-collapse:collapse; font-size:var(--fs-sec); }
+  .footer-table th, .footer-table td{ border:1px solid var(--line); padding:7px 9px; text-align:left; vertical-align:top; }
+  .footer-table th{ background:var(--panel); }
+  .footer-sig{ font-size:var(--fs-sec); color:var(--faint); text-align:center; margin-top:22px; padding:0 24px; }
+  .footer-sig .audit{ display:block; margin-top:4px; color:var(--muted); }
+
+  /* ---------- Beamer mode (K18) ---------- */
+  html.beamer{ --fs-body:22px; --fs-sec:17px; --fs-h1:32px; --fs-h2:23px; --muted:#3D4A5C; }
+  html.beamer.beamer-xl{ --fs-body:28px; --fs-sec:21px; --fs-h1:38px; --fs-h2:27px; }
+  html.beamer.beamer-xl.beamer-xxl{ --fs-body:34px; --fs-sec:26px; --fs-h1:46px; --fs-h2:32px; }
+  html.beamer .footer{ display:none; }
+  html.beamer .pillrow, html.beamer .search-wrap{ display:none; }
+  html.beamer .grid{ grid-template-columns:repeat(auto-fill, minmax(460px,1fr)); }
+  /* Panel-Überschriften (Funktionsname als Karten-/Fokusüberschrift): eigener Größenfloor, unabhängig von --fs-body */
+  html.beamer .fn-name{ font-size:44px; }
+  html.beamer.beamer-xl .fn-name{ font-size:54px; }
+  html.beamer.beamer-xl.beamer-xxl .fn-name{ font-size:64px; }
+</style>
+</head>
+<body>
+
+<div class="signature">
+  <strong>Michaela Kühn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<div class="topbar">
+  <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+  <div>
+  <span class="eyebrow">PromptSchule · Excel Lab</span>
+  <h1>Excel Lab für Requirements Engineering &amp; Business Analyse</h1>
+  <p class="subtitle">Kuratierte Nachschlage-Referenz mit 24 Excel-Funktionen — jede mit Live-Beispiel am Fallbeispiel <b>Vantera Systemtechnik / Vantera Connect</b> (Anforderungs-Tracking für ein Portal zur Anlagenüberwachung). Bezug zu IREB, BABOK und PMBOK ist bei jeder Funktion ausgewiesen.</p>
+  </div>
+
+  <div class="controlbar">
+    <div class="seg" role="tablist" aria-label="Modus">
+      <button id="modeSelf" class="active" onclick="setMode('self')">🔍 Selbstlern</button>
+      <button id="modeWorkshop" onclick="setMode('workshop')">🎤 Workshop</button>
+    </div>
+    <button id="beamerBtn" class="beamer-btn" onclick="cycleBeamer()">📽 Beamer: Normal</button>
+    <div class="search-wrap" id="searchWrap">
+      <input type="text" id="searchInput" placeholder="Funktion oder Stichwort suchen (z. B. „Aufwand“, „Deadline“) …" oninput="renderApp()">
+    </div>
+  </div>
+
+  <div class="pillrow" id="pillrow"></div>
+</div>
+
+<main id="app"></main>
+
+<div class="crosslink">
+  Verwandte Denkraum-Tools zu diesem Thema:
+  <ul>
+    <li><a href="./priorisierungslabor.html">🧭 Priorisierungslabor</a> — vertieft MoSCoW, Wert-Aufwand, Kano, WSJF, RICE und Story-Point-Poker als eigenständige Übungen; dieses Tool zeigt dagegen, wie sich dieselbe MoSCoW-Priorisierung in Excel-Formeln (HLOOKUP, COUNTIFS, RANK, FILTER) rechnerisch abbildet.</li>
+    <li><a href="./iso-25010-kompendium.html">ISO/IEC 25010:2023 Kompendium</a> — erklärt die neun Qualitätsmerkmale selbst im Detail; hier tauchen dieselben NFR-Kategorien nur als Datenfeld auf, das per Excel-Funktion ausgewertet wird.</li>
+    <li><a href="./diagramm-kompass-re-ba.html">Diagramm-Kompass für RE/BA</a> — ordnet RE/BA-Fragen passenden Diagrammtypen zu; dieses Tool ordnet dieselbe Art von Fragen stattdessen passenden Excel-Funktionen zu.</li>
+  </ul>
+</div>
+
+<footer class="footer">
+  <div class="footer-grid">
+
+    <details class="footer-box">
+      <summary>🧩 Systemprompt (Master-Bau-Prompt)</summary>
+      <div class="footer-content footer-mono">Baue ein einzelnes HTML-File "Excel Lab für Requirements Engineering &amp; Business Analyse".
+
+ZWECK
+Nachschlage-Referenz mit Live-Beispielen für 24 kuratierte Excel-Funktionen,
+angewandt auf ein durchgängiges RE/BA-Fallbeispiel (Anforderungs-Tracking).
+Zwei Nutzungsmodi über einen Umschalter: Selbstlern (freies Browsen/Filtern/
+Suchen) und Workshop (linearer Stepper für Live-Vorträge).
+
+DATENGRUNDLAGE
+Ein Array REQS mit 10-15 Anforderungsdatensätzen eines fiktiven Projekts
+(Feldbeispiele: ID, Titel, Typ FA/NFR, NFR-Kategorie nach ISO/IEC 25010:2023,
+MoSCoW-Priorität, Status, Verantwortliche Person aus dem festen Personen-Set,
+Stakeholder, Aufwand in Personentagen, Start, Deadline, Akzeptanzkriterium
+erfüllt ja/nein, Quelle). Alle Live-Beispiele rechnen auf diesem einen
+Datensatz - keine Zufallsdaten, damit Werte zwischen Funktionen konsistent
+nachvollziehbar bleiben.
+
+FUNKTIONSAUSWAHL (kuratiert, nicht vollständig)
+6 Kategorien á 4 Funktionen, jeweils mit klarem RE/BA-Anwendungsfall statt
+generischem Excel-Beispiel:
+- Lookup &amp; Reference: VLOOKUP, HLOOKUP, INDEX+MATCH, XLOOKUP (Traceability)
+- Logische Funktionen: IF, IFS, AND, IFERROR (Akzeptanzkriterien/Statuslogik)
+- Text: TEXTJOIN, LEFT/MID/RIGHT, TRIM+PROPER, SUBSTITUTE (Datenpflege)
+- Statistik: COUNTIF, COUNTIFS, SUMIF, AVERAGEIFS (Anforderungscontrolling)
+- Datum &amp; Zeit: TODAY, NETWORKDAYS, WORKDAY, DATEDIF (Terminplanung)
+- Priorisierung/Dynamic Arrays: ROUND, RANK, UNIQUE, FILTER (Backlog)
+
+Jede Funktion referenziert explizit IREB, BABOK (IIBA) oder PMBOK (Badge im
+Kartenkopf) - kein Tool ohne diesen Bezug ausliefern.
+
+STRUKTUR PRO FUNKTIONS-KARTE
+Name (Formel-Optik) + Kategorie-Badge + Norm-Badge, RE/BA-Anwendungsfall mit
+Persona-Bezug (fester Personenkreis: Ela=Projektleitung, Knut=Entwicklung,
+Sarah=Vertrieb, Petra=QM, Herr Bachmeier=Geschäftsführung - Rollen nicht
+verändern), Excel-Syntax als Code-Zeile, interaktives Live-Beispiel (Dropdown/
+Input/Checkbox, das echte JS-Logik auf REQS ausführt und ein Ergebnis-Feld
+live aktualisiert), im Selbstlern-Modus zusätzlich ein einklappbarer
+Sprechtext-Abschnitt.
+
+MODUS 1 - SELBSTLERN
+Kategorie-Pillrow (inkl. "Alle") + Volltextsuche über Name/Anwendungsfall/
+Syntax, darunter ein responsives Karten-Grid aller (gefilterten) Funktionen.
+
+MODUS 2 - WORKSHOP
+Linearer Stepper über eine Schrittliste (Kategorie-Trenner-Folie + eine
+Karte pro Funktion je Kategorie), großformatige Einzelkarte, sichtbarer
+(nicht eingeklappter) Sprechtext-Kasten, Fortschrittsbalken, Zurück/Weiter-
+Navigation. Umschalten zwischen Modi rendert #app komplett neu, keine
+doppelten IDs im DOM.
+
+DESIGN-PFLICHT (unabhängig vom Thema, für JEDES Tool von Michaela Kühn)
+- Single-File HTML, offlinefähig, kein fetch() auf externe Inhalte.
+- Hintergrund weiß, color-scheme:light auf html/body, kein Dark Mode.
+- Pointer-taugliche Bedienelemente: Touch-Targets min. 44px Höhe/Breite,
+  touch-action:manipulation, keine HTML5-Drag-and-Drop-Events.
+- Zurück-Link zur Startseite (../index.html) oben links in einer eigenen
+  Topbar-Zeile, getrennt von Überschrift/Einleitung.
+- Beamer-Tauglichkeit: Fließtext ≥16px, Sekundärtext ≥14px, vierstufiger
+  Beamer-Modus-Toggle (Normal → Beamer → Beamer XL → Beamer XXL, kumulative
+  className-Vergabe auf &lt;html&gt;, Footer ab Stufe 1 ausgeblendet).
+- Signatur "Michaela Kühn" + Link www.michaela-kuehn.com fix positioniert
+  oben rechts (position:fixed), Fallback auf position:static unter 900px.
+- Footer mit genau vier Aufklapp-Boxen in fester Reihenfolge: Systemprompt
+  (dieser Text), Handbuch, Vortrags-Skript, Normen-Register. Kanonische
+  CSS-Klassen: .footer-sig, .footer-box, .footer-content, .footer-mono,
+  .footer-sans, .footer-table.
+- Keine generischen Platzhalterwerte: jede Norm mit Status + Datum, jede
+  Zahl im Datensatz plausibel und nachvollziehbar.
+
+NICHT TUN
+- Keine externen CDN-Skripte, keine Cloud-Speicherung, kein localStorage/
+  sessionStorage ohne try/catch.
+- Keine Abweichung vom festen Personen-Set oder von deren Rollen.
+- Keine Kürzung der Sprechtexte auf Stichworte - vollständige, vorlesbare
+  Sätze inkl. Regieanweisung in Klammern.
+- Kein Kartenlayout ohne Live-Beispiel - reine Textdefinitionen ohne
+  Interaktion sind für dieses Tool nicht ausreichend.</div>
+    </details>
+
+    <details class="footer-box">
+      <summary>📘 Handbuch</summary>
+      <div class="footer-content footer-sans">
+        <h4>Didaktisches Framework: RTF (Role · Task · Format)</h4>
+        <p>Dieses Tool folgt beim Bau der RTF-Struktur: <b>Role</b> = Trainerin, die
+        RE/BA-Praxis vermittelt; <b>Task</b> = 24 Excel-Funktionen so aufbereiten,
+        dass jede sofort mit einer RE/BA-Situation statt einer generischen
+        Zahlenspielerei verknüpft ist; <b>Format</b> = interaktive Karte mit
+        Syntax + Live-Beispiel + Sprechtext, in zwei umschaltbaren Modi.</p>
+
+        <h4>Konstruktionslogik</h4>
+        <p>Ein einziger Datensatz (REQS) trägt alle 24 Live-Beispiele. Das ist
+        bewusst so gewählt: Teilnehmer:innen sehen dieselben zwölf Anforderungen
+        immer wieder aus einer anderen Funktionsperspektive - das verankert das
+        Fallbeispiel stärker, als wenn jede Funktion eigene Zufallsdaten hätte.</p>
+
+        <h4>Warum Nachschlage-Referenz statt Quiz?</h4>
+        <p>Zielgruppe sind Praktiker:innen, die Excel-Grundlagen bereits kennen,
+        aber den Transfer in RE/BA-Alltag brauchen. Ein Quiz würde Wissen
+        abfragen, das nicht das Problem ist - der Engpass liegt im Anwendungs-
+        bezug. Deshalb: Syntax + Anwendungsfall + „Zum Anfassen“-Demo statt
+        Punkte sammeln.</p>
+
+        <h4>Nachbau-Tipp</h4>
+        <p>Beim Übertragen auf ein anderes Fachgebiet: Datensatz austauschen,
+        Funktionsauswahl an die neuen Kernaufgaben der Zielgruppe anpassen
+        (nicht die 101 Funktionen 1:1 übernehmen), Personas und Norm-Bezüge
+        konsequent beibehalten, damit das Tool im Curriculum wiedererkennbar
+        bleibt.</p>
+
+        <h4>Bezug zu Standards</h4>
+        <table class="footer-table">
+          <tr><th>Standard</th><th>Bezug im Tool</th></tr>
+          <tr><td>IREB CPRE</td><td>Verfolgbarkeit (Lookup-Funktionen), Testbarkeit (Logische Funktionen)</td></tr>
+          <tr><td>BABOK v3 (IIBA)</td><td>Stakeholder-Analyse (Text/UNIQUE), Priorisierungstechniken (HLOOKUP/RANK/FILTER)</td></tr>
+          <tr><td>PMBOK 8 / ECO 2026</td><td>Terminplanung (Datumsfunktionen), Ressourcen- und Aufwandscontrolling (Statistik-Funktionen)</td></tr>
+          <tr><td>IEEE 29148:2018</td><td>SRS-Pflege und Kennungsschemata (XLOOKUP, LEFT/MID/RIGHT)</td></tr>
+        </table>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary>🎤 Vortrags-Skript</summary>
+      <div class="footer-content footer-sans">
+        <p><i>Regie vorab: Vor Beginn den Modus auf „Workshop" stellen und den
+        Beamer-Modus mindestens auf Stufe 1 setzen. Nicht mit der Formel-Syntax
+        einsteigen - erst den RE/BA-Anwendungsfall erzählen, dann die Formel
+        zeigen.</i></p>
+        <table class="footer-table">
+          <tr><th>Kategorie</th><th>Kernbotschaft für den Einstieg</th></tr>
+          <tr><td>🔎 Lookup &amp; Reference</td><td>„Traceability ist die Königsdisziplin im RE - VLOOKUP &amp; Co. sind ihr Excel-Rückgrat.“</td></tr>
+          <tr><td>⚖️ Logische Funktionen</td><td>„Jedes Akzeptanzkriterium ist am Ende eine WENN-Bedingung.“</td></tr>
+          <tr><td>✂️ Text-Funktionen</td><td>„Saubere Stakeholder-Daten entstehen selten sauber - sie werden sauber gemacht.“</td></tr>
+          <tr><td>📊 Statistik-Funktionen</td><td>„Ohne Zählen und Summieren kein Status-Reporting an die Geschäftsführung.“</td></tr>
+          <tr><td>📅 Datum &amp; Zeit</td><td>„Terminplanung ist nie Kalendertage - immer Arbeitstage.“</td></tr>
+          <tr><td>🧮 Priorisierung &amp; Filter</td><td>„MoSCoW ist nur so gut wie die Formel, die daraus einen Sprint-Plan macht.“</td></tr>
+        </table>
+        <p>Die vollständigen, klickgenauen Sprechtexte pro Funktion erscheinen im
+        Workshop-Modus automatisch unter jeder Karte (gelber Kasten) und liegen
+        zusätzlich als Companion-Datei <code>Sprecher-Skript_Excel-Lab-RE-BA.md</code>
+        vor. Am Ende jeder Kategorie: kurz zusammenfassen, dann „Weiter" klicken -
+        nicht die nächste Formel schon ankündigen, das nimmt die Spannung.</p>
+        <p><i>Regie am Ende: Nicht mit einer Funktionsliste schließen, sondern mit
+        der Kernbotschaft: „Ihr müsst nicht alle 101 Funktionen können - diese 24
+        lösen 80 % eurer RE/BA-Excel-Alltagsfragen.“</i></p>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary>📚 Normen-Register</summary>
+      <div class="footer-content footer-sans">
+        <table class="footer-table">
+          <tr><th>Norm / Framework</th><th>Status</th><th>Bezug im Tool</th></tr>
+          <tr><td>IREB CPRE (Certified Professional for Requirements Engineering)</td><td>in Kraft</td><td>Verfolgbarkeit, Testbarkeit, Konsistenzprüfung</td></tr>
+          <tr><td>BABOK v3 (IIBA)</td><td>in Kraft</td><td>Stakeholder-Analyse, Priorisierungstechniken, Schätzverfahren</td></tr>
+          <tr><td>PMBOK 8 / PMI Examination Content Outline (ECO) 2026</td><td>in Kraft</td><td>Terminplanung, Ressourcenplanung, Statusberichterstattung</td></tr>
+          <tr><td>IEEE 29148:2018</td><td>in Kraft</td><td>SRS-Pflege, Kennungsschemata, Datenqualität</td></tr>
+          <tr><td>ISO/IEC 25010:2023 (Edition 2)</td><td>in Kraft</td><td>NFR-Kategorisierung im Datensatz (z. B. Effizienz, Sicherheit, Interaktionsfähigkeit, Flexibilität)</td></tr>
+        </table>
+        <p style="margin-top:10px;">Quelle der Excel-Funktionsübersicht: Exceljet, „101 Excel Functions You
+        Should Know" (© 2021 Exceljet, exceljet.net) - als Ausgangsliste
+        verwendet, für dieses Tool auf 24 RE/BA-relevante Funktionen kuratiert
+        und mit eigenem Fallbeispiel unterlegt.</p>
+      </div>
+    </details>
+
+  </div>
+</footer>
+
+<p class="footer-sig">
+  <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" style="color:inherit;">www.michaela-kuehn.com</a> · IREB CPRE · BABOK v3 (IIBA) · PMBOK 8 / ECO 2026 · ISO/IEC 25010:2023
+  <span class="audit">Zuletzt geprüft: 26.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+</p>
+
+<script>
+/* ============================================================
+   DATENGRUNDLAGE — Vantera Connect Anforderungs-Tracking
+   ============================================================ */
+const REQS = [
+  {id:'REQ-001', titel:'Sensordaten in Echtzeit anzeigen', typ:'FA', nfr:null, moscow:'Must', status:'Erledigt', verantwortlich:'Knut', stakeholder:'Herr Bachmeier', aufwand:8, start:'2026-01-12', deadline:'2026-02-06', akzeptiert:true, quelle:'Workshop'},
+  {id:'REQ-002', titel:'Reaktionszeit Dashboard < 2 Sekunden', typ:'NFR', nfr:'Effizienz', moscow:'Must', status:'In Arbeit', verantwortlich:'Knut', stakeholder:'Petra', aufwand:5, start:'2026-01-20', deadline:'2026-02-13', akzeptiert:false, quelle:'Lastenheft'},
+  {id:'REQ-003', titel:'Rollenbasierte Zugriffsrechte', typ:'NFR', nfr:'Sicherheit', moscow:'Must', status:'Erledigt', verantwortlich:'Ela', stakeholder:'Petra', aufwand:6, start:'2026-01-15', deadline:'2026-02-10', akzeptiert:true, quelle:'Interview'},
+  {id:'REQ-004', titel:'Export als PDF-Report', typ:'FA', nfr:null, moscow:'Should', status:'Offen', verantwortlich:'Sarah', stakeholder:'Herr Bachmeier', aufwand:3, start:'2026-02-01', deadline:'2026-02-20', akzeptiert:false, quelle:'Workshop'},
+  {id:'REQ-005', titel:'Mehrsprachigkeit (DE/EN)', typ:'NFR', nfr:'Interaktionsfähigkeit', moscow:'Could', status:'Offen', verantwortlich:'Ela', stakeholder:'Sarah', aufwand:4, start:null, deadline:'2026-03-15', akzeptiert:false, quelle:'Interview'},
+  {id:'REQ-006', titel:'Wartungshistorie protokollieren', typ:'FA', nfr:null, moscow:'Must', status:'Offen', verantwortlich:'Knut', stakeholder:'Petra', aufwand:7, start:'2026-01-25', deadline:'2026-02-25', akzeptiert:false, quelle:'Lastenheft'},
+  {id:'REQ-007', titel:'Offline-Modus für mobile App', typ:'NFR', nfr:'Flexibilität', moscow:'Should', status:'Offen', verantwortlich:'Knut', stakeholder:'Sarah', aufwand:9, start:null, deadline:'2026-03-30', akzeptiert:false, quelle:'Workshop'},
+  {id:'REQ-008', titel:'Alarmierung bei Grenzwertüberschreitung', typ:'FA', nfr:null, moscow:'Must', status:'Erledigt', verantwortlich:'Ela', stakeholder:'Herr Bachmeier', aufwand:5, start:'2026-01-10', deadline:'2026-02-01', akzeptiert:true, quelle:'Interview'},
+  {id:'REQ-009', titel:'DSGVO-konforme Datenspeicherung', typ:'NFR', nfr:'Sicherheit', moscow:'Must', status:'In Arbeit', verantwortlich:'Petra', stakeholder:'Petra', aufwand:6, start:'2026-01-18', deadline:'2026-02-18', akzeptiert:false, quelle:'Lastenheft'},
+  {id:'REQ-010', titel:'Self-Service-Passwort-Reset', typ:'FA', nfr:null, moscow:"Won't", status:'Abgelehnt', verantwortlich:'Sarah', stakeholder:'Sarah', aufwand:2, start:null, deadline:null, akzeptiert:false, quelle:'Workshop'},
+  {id:'REQ-011', titel:'Barrierefreiheit nach WCAG 2.2 AA', typ:'NFR', nfr:'Interaktionsfähigkeit', moscow:'Should', status:'Offen', verantwortlich:'Ela', stakeholder:'Petra', aufwand:5, start:null, deadline:'2026-04-10', akzeptiert:false, quelle:'Interview'},
+  {id:'REQ-012', titel:'API-Schnittstelle zum ERP-System', typ:'FA', nfr:null, moscow:'Must', status:'In Arbeit', verantwortlich:'Knut', stakeholder:'Herr Bachmeier', aufwand:10, start:'2026-02-01', deadline:'2026-03-15', akzeptiert:false, quelle:'Lastenheft'}
+];
+
+const MOSCOW_SCORE = {'Must':4, 'Should':3, 'Could':2, "Won't":1};
+const HOLIDAYS_2026 = ['2026-01-01','2026-04-03','2026-04-06','2026-05-01','2026-05-14','2026-05-25','2026-10-03','2026-12-25','2026-12-26'];
+
+function byId(id){ return REQS.find(r => r.id === id); }
+function fmtDate(s){ if(!s) return '–'; const d = new Date(s+'T00:00:00'); return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'}); }
+
+/* ============================================================
+   KATEGORIEN
+   ============================================================ */
+const CATS = [
+  {key:'lookup',    icon:'🔎', label:'Lookup & Reference',   intro:'Anforderungs-IDs und Traceability-Matrizen verknüpfen — die Grundlage jeder Nachverfolgbarkeit nach IREB.'},
+  {key:'logical',   icon:'⚖️', label:'Logische Funktionen',  intro:'Akzeptanzkriterien, Statuslogik und Fehlerbehandlung in Anforderungslisten abbilden.'},
+  {key:'text',      icon:'✂️', label:'Text-Funktionen',      intro:'Anforderungs-IDs bauen, Stakeholder-Rohdaten aus Interviews bereinigen, Lastenheft-Vorlagen befüllen.'},
+  {key:'stat',      icon:'📊', label:'Statistik-Funktionen', intro:'Anforderungs-Controlling: zählen, summieren, mitteln — die Basis jedes Projektstatus-Reportings.'},
+  {key:'date',      icon:'📅', label:'Datum & Zeit',         intro:'Termine, Sprintplanung und Verzugsanalyse nach PMBOK-Terminplanungslogik.'},
+  {key:'mathdyn',   icon:'🧮', label:'Priorisierung & Filter', intro:'MoSCoW-Scoring, Backlog-Ranking und dynamische Sprint-Kandidatenlisten.'}
+];
+
+/* ============================================================
+   FUNKTIONSKATALOG (24 kuratierte Funktionen)
+   ============================================================ */
+const FUNKTIONEN = [
+  // ---- Lookup & Reference ----
+  {key:'VLOOKUP', cat:'lookup', name:'VLOOKUP',
+    usecase:'<b>Ela</b> pflegt die Traceability-Matrix für Vantera Connect. Zu jeder Anforderungs-ID soll sie schnell den Titel nachschlagen, ohne die ganze Tabelle zu durchsuchen.',
+    syntax:'=VLOOKUP(Anforderungs-ID; Tabelle; Spalte; FALSCH)',
+    norm:'IREB · Verfolgbarkeit'},
+  {key:'HLOOKUP', cat:'lookup', name:'HLOOKUP',
+    usecase:'Im MoSCoW-Workshop hat <b>Sarah</b> eine horizontale Bewertungstabelle (Must bis Won&#39;t nebeneinander). HLOOKUP holt zur gewählten Priorität den Punktwert für das Scoring.',
+    syntax:'=HLOOKUP(Priorität; Bewertungstabelle; Zeile; FALSCH)',
+    norm:'BABOK · Priorisierungstechniken'},
+  {key:'INDEXMATCH', cat:'lookup', name:'INDEX + MATCH',
+    usecase:'<b>Petra</b> braucht flexiblere Abfragen als VLOOKUP erlaubt: zu jeder Anforderungs-ID soll wahlweise Status, Verantwortliche:r oder Aufwand abrufbar sein — auch links vom Suchbegriff.',
+    syntax:'=INDEX(Spalte; MATCH(Anforderungs-ID; ID-Spalte; 0))',
+    norm:'IREB · Verfolgbarkeit'},
+  {key:'XLOOKUP', cat:'lookup', name:'XLOOKUP',
+    usecase:'Modernes Pendant zu VLOOKUP: <b>Ela</b> sucht direkt über den Anforderungstitel und erhält die Deadline zurück — ohne Spalten zu zählen, mit klarem Fallback bei fehlendem Treffer.',
+    syntax:'=XLOOKUP(Titel; Titel-Spalte; Deadline-Spalte; "nicht gefunden")',
+    norm:'IEEE 29148 · SRS-Pflege'},
+
+  // ---- Logical ----
+  {key:'IF', cat:'logical', name:'IF',
+    usecase:'<b>Petra</b> (QM) prüft pro Anforderung: Ist das Akzeptanzkriterium erfüllt? IF übersetzt den Boolean in eine lesbare Statusaussage für den Review.',
+    syntax:'=WENN(Akzeptanzkriterium_erfüllt; "✅ Akzeptiert"; "⏳ Offen")',
+    norm:'IREB · Testbarkeit'},
+  {key:'IFS', cat:'logical', name:'IFS',
+    usecase:'Für den Statusbericht an <b>Herrn Bachmeier</b> braucht <b>Ela</b> eine Ampel: mehrere Status-Werte, mehrere Ergebnisse — ohne verschachtelte WENNs.',
+    syntax:'=IFS(Status="Erledigt";"🟢"; Status="In Arbeit";"🟡"; Status="Offen";"🔴"; Status="Abgelehnt";"⚫")',
+    norm:'PMBOK · Statusberichterstattung'},
+  {key:'AND', cat:'logical', name:'AND (UND)',
+    usecase:'Eine Anforderung ist erst „review-bereit“, wenn <b>beide</b> Bedingungen gelten: Akzeptanzkriterium erfüllt UND nicht abgelehnt. AND verknüpft Bedingungen, die alle gleichzeitig wahr sein müssen.',
+    syntax:'=UND(Akzeptanzkriterium_erfüllt; Status<>"Abgelehnt")',
+    norm:'IREB · Konsistenzprüfung'},
+  {key:'IFERROR', cat:'logical', name:'IFERROR',
+    usecase:'<b>Knut</b> tippt sich beim Eintragen der Anforderungs-ID leicht mal vertippt — IFERROR fängt den #NV-Fehler von VLOOKUP ab und zeigt eine verständliche Meldung statt eines Excel-Fehlercodes.',
+    syntax:'=IFERROR(VLOOKUP(ID; Tabelle; 2; FALSCH); "Anforderung nicht gefunden")',
+    norm:'IEEE 29148 · Datenqualität'},
+
+  // ---- Text ----
+  {key:'TEXTJOIN', cat:'text', name:'TEXTJOIN',
+    usecase:'Für die Sprint-Review-Agenda baut <b>Ela</b> aus mehreren Zellen eine lesbare Zeile pro Anforderung: Titel, Verantwortliche:r und Deadline in einem Textstring.',
+    syntax:'=TEXTVERKETTEN(" · "; WAHR; Titel; Verantwortlich; Deadline)',
+    norm:'BABOK · Kommunikationsplan'},
+  {key:'LEFTMIDRIGHT', cat:'text', name:'LEFT / MID / RIGHT',
+    usecase:'Die Anforderungs-ID „REQ-001“ folgt einer festen Struktur. <b>Petra</b> zerlegt sie in Präfix, Trennzeichen und laufende Nummer — z. B. für automatische Nummernkreis-Prüfungen.',
+    syntax:'=LINKS(ID;3)   =TEIL(ID;5;3)   =RECHTS(ID;3)',
+    norm:'IEEE 29148 · Kennungsschema'},
+  {key:'TRIMPROPER', cat:'text', name:'TRIM + PROPER (GLÄTTEN + GROSS2)',
+    usecase:'Aus Interview-Notizen kommen Stakeholder-Namen oft uneinheitlich erfasst — Leerzeichen, Kleinschreibung. <b>Sarah</b> bereinigt die Stakeholder-Liste vor dem Import in die Traceability-Matrix.',
+    syntax:'=GROSS2(GLÄTTEN(Rohtext))',
+    norm:'BABOK · Stakeholder-Analyse'},
+  {key:'SUBSTITUTE', cat:'text', name:'SUBSTITUTE (WECHSELN)',
+    usecase:'<b>Ela</b> pflegt eine Lastenheft-Vorlage mit Platzhaltern. SUBSTITUTE ersetzt „[STAKEHOLDER]“ automatisch durch den konkreten Namen — praktisch für Serienbriefe an mehrere Auftraggeber.',
+    syntax:'=WECHSELN(Vorlagentext; "[STAKEHOLDER]"; Stakeholdername)',
+    norm:'IEEE 29148 · Dokumentvorlagen'},
+
+  // ---- Statistical ----
+  {key:'COUNTIF', cat:'stat', name:'COUNTIF (ZÄHLENWENN)',
+    usecase:'Für das Kanban-Board will <b>Ela</b> wissen: Wie viele Anforderungen stehen aktuell auf „Offen“? Eine Bedingung, eine Zahl.',
+    syntax:'=ZÄHLENWENN(Status-Spalte; "Offen")',
+    norm:'PMBOK · Fortschrittscontrolling'},
+  {key:'COUNTIFS', cat:'stat', name:'COUNTIFS (ZÄHLENWENNS)',
+    usecase:'<b>Herr Bachmeier</b> fragt im Steering-Meeting: Wie viele Muss-Anforderungen sind noch NICHT erledigt? Zwei Bedingungen gleichzeitig — COUNTIFS statt COUNTIF.',
+    syntax:'=ZÄHLENWENNS(MoSCoW-Spalte;"Must"; Status-Spalte;"<>Erledigt")',
+    norm:'BABOK · Priorisierung & Reporting'},
+  {key:'SUMIF', cat:'stat', name:'SUMIF (SUMMEWENN)',
+    usecase:'<b>Knut</b> will vor der Sprint-Planung wissen, wie viele Personentage bereits ihm zugewiesen sind — Summe des Aufwands, gefiltert auf seinen Namen.',
+    syntax:'=SUMMEWENN(Verantwortlich-Spalte; "Knut"; Aufwand-Spalte)',
+    norm:'PMBOK · Ressourcenplanung'},
+  {key:'AVERAGEIFS', cat:'stat', name:'AVERAGEIFS (MITTELWERTWENNS)',
+    usecase:'Für die Aufwandsschätzung neuer Muss-Anforderungen nutzt <b>Petra</b> den Durchschnittsaufwand bisheriger Muss-Anforderungen als Referenzwert.',
+    syntax:'=MITTELWERTWENNS(Aufwand-Spalte; MoSCoW-Spalte; "Must")',
+    norm:'PMBOK · Aufwandsschätzung'},
+
+  // ---- Date & Time ----
+  {key:'TODAY', cat:'date', name:'TODAY (HEUTE)',
+    usecase:'<b>Ela</b> will auf einen Blick sehen, wie viele Kalendertage bis zur nächsten Deadline verbleiben — HEUTE() liefert den dynamischen Bezugspunkt.',
+    syntax:'=Deadline − HEUTE()',
+    norm:'PMBOK · Terminüberwachung'},
+  {key:'NETWORKDAYS', cat:'date', name:'NETWORKDAYS (NETTOARBEITSTAGE)',
+    usecase:'Für die Sprint-Kapazität zählt <b>Knut</b> die verbleibenden Arbeitstage bis zur Deadline — Wochenenden und Feiertage werden automatisch ausgeschlossen.',
+    syntax:'=NETTOARBEITSTAGE(HEUTE(); Deadline; Feiertagsliste)',
+    norm:'PMBOK · Sprintplanung'},
+  {key:'WORKDAY', cat:'date', name:'WORKDAY (ARBEITSTAG)',
+    usecase:'Wenn eine Anforderung n Personentage Aufwand hat, will <b>Ela</b> direkt das realistische Zieldatum ab Startdatum berechnen — Wochenenden/Feiertage übersprungen.',
+    syntax:'=ARBEITSTAG(Start; Aufwand_PT; Feiertagsliste)',
+    norm:'PMBOK · Terminplanung'},
+  {key:'DATEDIF', cat:'date', name:'DATEDIF',
+    usecase:'<b>Petra</b> analysiert im Retro, wie lange eine Anforderung tatsächlich von Start bis Deadline lief — auf Tage, Monate oder normalisiert „x Monate, y Tage“.',
+    syntax:'=DATEDIF(Start; Deadline; "d")',
+    norm:'PMBOK · Ist-Analyse'},
+
+  // ---- Math & Dynamic Arrays ----
+  {key:'ROUND', cat:'mathdyn', name:'ROUND (RUNDEN)',
+    usecase:'Aufwandsschätzungen aus dem Planning Poker werden auf halbe Personentage gerundet — für eine realistische, nicht zu präzise wirkende Schätzung.',
+    syntax:'=RUNDEN(Aufwand_PT; 1) — kaufmännisch auf 0,5-Schritte',
+    norm:'BABOK · Schätzverfahren'},
+  {key:'RANK', cat:'mathdyn', name:'RANK (RANG)',
+    usecase:'Für die Backlog-Reihenfolge rankt <b>Ela</b> alle Anforderungen nach Aufwand oder MoSCoW-Punktwert — höchste Priorität zuerst.',
+    syntax:'=RANG(Wert; Wertebereich; 0)',
+    norm:'BABOK · Backlog-Priorisierung'},
+  {key:'UNIQUE', cat:'mathdyn', name:'UNIQUE (EINDEUTIG)',
+    usecase:'<b>Sarah</b> braucht eine schnelle Liste aller beteiligten Stakeholder ohne Duplikate — für die Einladungsliste zum Review.',
+    syntax:'=EINDEUTIG(Stakeholder-Spalte)',
+    norm:'BABOK · Stakeholder-Analyse'},
+  {key:'FILTER', cat:'mathdyn', name:'FILTER',
+    usecase:'Für die nächste Sprint-Planung will <b>Knut</b> nur die Anforderungen sehen, die „Must“ UND noch „Offen“ sind — dynamisch, ohne manuelles Filtern der Tabelle.',
+    syntax:'=FILTER(Tabelle; (MoSCoW="Must") * (Status="Offen"))',
+    norm:'BABOK · Sprint-Kandidaten'}
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let MODE = 'self';          // 'self' | 'workshop'
+let ACTIVE_CAT = 'alle';
+let BEAMER_LEVEL = 0;       // 0 normal, 1 beamer, 2 xl, 3 xxl
+let WS_STEP = 0;
+
+/* Workshop-Schrittliste: Divider + Funktionen je Kategorie */
+function buildWorkshopSteps(){
+  const steps = [];
+  CATS.forEach(cat => {
+    steps.push({type:'divider', cat});
+    FUNKTIONEN.filter(f => f.cat === cat.key).forEach(f => steps.push({type:'fn', fn:f}));
+  });
+  return steps;
+}
+const WS_STEPS = buildWorkshopSteps();
+
+function cycleBeamer(){
+  BEAMER_LEVEL = (BEAMER_LEVEL + 1) % 4;
+  const html = document.documentElement;
+  html.className = ['', 'beamer', 'beamer beamer-xl', 'beamer beamer-xl beamer-xxl'][BEAMER_LEVEL];
+  const labels = ['📽 Beamer: Normal','📽 Beamer: Stufe 1','📽 Beamer: Stufe 2 (XL)','📽 Beamer: Stufe 3 (XXL)'];
+  const btn = document.getElementById('beamerBtn');
+  btn.textContent = labels[BEAMER_LEVEL];
+  btn.classList.toggle('on', BEAMER_LEVEL > 0);
+}
+
+function setMode(m){
+  MODE = m;
+  document.getElementById('modeSelf').classList.toggle('active', m === 'self');
+  document.getElementById('modeWorkshop').classList.toggle('active', m === 'workshop');
+  document.getElementById('searchWrap').style.display = (m === 'self') ? '' : 'none';
+  renderApp();
+}
+
+/* ============================================================
+   PILLROW (Kategorie-Filter, nur Selbstlern-Modus)
+   ============================================================ */
+function renderPillrow(){
+  const row = document.getElementById('pillrow');
+  const allPill = '<button class="pill ' + (ACTIVE_CAT==='alle'?'active':'') + '" onclick="setCat(\'alle\')">Alle (' + FUNKTIONEN.length + ')</button>';
+  const catPills = CATS.map(c => {
+    const n = FUNKTIONEN.filter(f => f.cat === c.key).length;
+    return '<button class="pill ' + (ACTIVE_CAT===c.key?'active':'') + '" onclick="setCat(\'' + c.key + '\')">' + c.icon + ' ' + c.label + ' (' + n + ')</button>';
+  }).join('');
+  row.innerHTML = MODE === 'self' ? (allPill + catPills) : '';
+}
+function setCat(key){ ACTIVE_CAT = key; renderApp(); }
+
+/* ============================================================
+   KARTEN-TEMPLATE
+   ============================================================ */
+function cardHTML(fn, big){
+  const cat = CATS.find(c => c.key === fn.cat);
+  return ''
+    + '<article class="card' + (big?' ws-card':'') + '" id="card-' + fn.key + '">'
+    + '  <div class="card-head">'
+    + '    <span class="fn-name">' + fn.name + '</span>'
+    + '    <span class="badge cat">' + cat.icon + ' ' + cat.label + '</span>'
+    + '    <span class="badge norm">📎 ' + fn.norm + '</span>'
+    + '  </div>'
+    + '  <p class="fn-usecase">' + fn.usecase + '</p>'
+    + '  <code class="fn-syntax">' + fn.syntax + '</code>'
+    + '  <div class="fn-demo" data-key="' + fn.key + '"></div>'
+    + '  <div class="fn-result" id="result-' + fn.key + '">Ergebnis: —</div>'
+    + (big ? '' : '  <details class="fn-script"><summary>🎤 Sprechtext (Workshop-Modus)</summary><div class="fn-script-body">' + speakTextFor(fn.key) + '</div></details>')
+    + '</article>';
+}
+
+/* ============================================================
+   HAUPT-RENDER
+   ============================================================ */
+function renderApp(){
+  renderPillrow();
+  const app = document.getElementById('app');
+  if(MODE === 'self'){
+    renderSelfStudy(app);
+  } else {
+    renderWorkshop(app);
+  }
+}
+
+function renderSelfStudy(app){
+  const q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+  let list = FUNKTIONEN;
+  if(ACTIVE_CAT !== 'alle') list = list.filter(f => f.cat === ACTIVE_CAT);
+  if(q) list = list.filter(f =>
+    f.name.toLowerCase().includes(q) ||
+    f.usecase.toLowerCase().includes(q) ||
+    f.syntax.toLowerCase().includes(q)
+  );
+  if(list.length === 0){
+    app.innerHTML = '<div class="empty-state">Keine Funktion gefunden. Suchbegriff anpassen oder Filter zurücksetzen.</div>';
+    return;
+  }
+  app.innerHTML = '<div class="grid">' + list.map(f => cardHTML(f,false)).join('') + '</div>';
+  list.forEach(f => initDemo(f.key));
+}
+
+function renderWorkshop(app){
+  const step = WS_STEPS[WS_STEP];
+  const pct = Math.round(((WS_STEP+1) / WS_STEPS.length) * 100);
+  let inner = '<div class="workshop-wrap">';
+  inner += '<div class="progress"><div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%"></div></div><div class="progress-label">Schritt ' + (WS_STEP+1) + ' / ' + WS_STEPS.length + '</div></div>';
+
+  if(step.type === 'divider'){
+    inner += '<div class="divider-slide"><div class="cat-icon">' + step.cat.icon + '</div><h2>' + step.cat.label + '</h2><p>' + step.cat.intro + '</p></div>';
+  } else {
+    inner += cardHTML(step.fn, true);
+    inner += '<div class="ws-script"><b>Sprechtext</b>' + speakTextFor(step.fn.key) + '</div>';
+  }
+
+  inner += '<div class="navbar">'
+    + '<button class="navbtn" onclick="wsPrev()" ' + (WS_STEP===0?'disabled':'') + '>← Zurück</button>'
+    + '<button class="navbtn primary" onclick="wsNext()" ' + (WS_STEP===WS_STEPS.length-1?'disabled':'') + '>Weiter →</button>'
+    + '</div>';
+  inner += '</div>';
+  app.innerHTML = inner;
+  if(step.type === 'fn') initDemo(step.fn.key);
+}
+
+function wsNext(){ if(WS_STEP < WS_STEPS.length-1){ WS_STEP++; renderApp(); window.scrollTo({top:0, behavior:'smooth'}); } }
+function wsPrev(){ if(WS_STEP > 0){ WS_STEP--; renderApp(); window.scrollTo({top:0, behavior:'smooth'}); } }
+
+/* ============================================================
+   SPRECHTEXTE (Workshop-Modus / Companion-Datei)
+   ============================================================ */
+const SPEAK = {
+  VLOOKUP: '„Ich habe hier meine Anforderungsliste. Ich wähle eine ID — und VLOOKUP holt mir automatisch den Titel dazu. Genau das macht ihr jeden Tag in der Traceability-Matrix, nur meist per Hand.“ (Dropdown wechseln, Ergebnis zeigen lassen.)',
+  HLOOKUP: '„VLOOKUP kennt ihr — aber manchmal liegen Daten nicht untereinander, sondern nebeneinander, wie hier unsere MoSCoW-Bewertungstabelle. Dafür gibt es HLOOKUP.“ (Prioritätsstufe wechseln, Punktwert zeigen.)',
+  INDEXMATCH: '„Jetzt wird es flexibler: INDEX und MATCH zusammen können, was VLOOKUP nicht kann — auch nach links suchen und jede beliebige Spalte zurückgeben.“ (ID UND Attribut wechseln.)',
+  XLOOKUP: '„Wer neueres Excel hat: XLOOKUP ist der moderne Nachfolger von VLOOKUP — sucht in beide Richtungen und hat einen eingebauten Fallback-Text, kein #NV mehr.“ (Titel wählen, Fallback demonstrieren.)',
+  IF: '„Die einfachste und wichtigste logische Funktion: WENN. Ist das Akzeptanzkriterium erfüllt — ja oder nein? Ein Klick, eine klare Aussage.“ (Anforderung wechseln.)',
+  IFS: '„Mit IFS baue ich mir eine Ampel ohne verschachtelte WENNs — vier Status, vier Farben, eine Formel.“ (Anforderung durchklicken.)',
+  AND: '„Manchmal reicht eine Bedingung nicht. UND sagt mir: nur wenn beide Bedingungen gleichzeitig stimmen, ist die Anforderung wirklich review-bereit.“ (Anforderung wechseln, Ergebnis beobachten.)',
+  IFERROR: '„Was passiert, wenn ich eine ID eingebe, die es gar nicht gibt? Ohne IFERROR: hässlicher #NV-Fehler. Mit IFERROR: eine verständliche Meldung.“ (Ungültige ID eingeben.)',
+  TEXTJOIN: '„Für die Sprint-Review-Agenda baue ich mir aus mehreren Zellen einen lesbaren Satz — TEXTJOIN mit einem Trennzeichen meiner Wahl.“ (Anforderung wechseln.)',
+  LEFTMIDRIGHT: '„Unsere Anforderungs-IDs folgen einem festen Muster. Mit LINKS, TEIL und RECHTS zerlege ich sie in ihre Bestandteile — praktisch für automatische Prüfungen.“ (ID wechseln.)',
+  TRIMPROPER: '„Interview-Notizen sind selten sauber. GLÄTTEN entfernt überflüssige Leerzeichen, GROSS2 sorgt für einheitliche Schreibweise.“ (Rohtext eintippen lassen.)',
+  SUBSTITUTE: '„Meine Lastenheft-Vorlage hat Platzhalter in eckigen Klammern. WECHSELN ersetzt sie automatisch durch den echten Stakeholder-Namen.“ (Stakeholder wechseln.)',
+  COUNTIF: '„Wie viele Anforderungen sind gerade offen? ZÄHLENWENN mit einer Bedingung — fertig.“ (Statusfilter wechseln.)',
+  COUNTIFS: '„Jetzt zwei Bedingungen gleichzeitig: Wie viele MUSS-Anforderungen sind NICHT erledigt? Das braucht ZÄHLENWENNS.“ (Kombination durchspielen.)',
+  SUMIF: '„Wie viele Personentage sind schon verplant — pro Person? SUMMEWENN summiert nur die passenden Zeilen.“ (Person wechseln.)',
+  AVERAGEIFS: '„Für neue Schätzungen nehme ich den Durchschnittsaufwand vergleichbarer, bereits bewerteter Anforderungen als Referenz — MITTELWERTWENNS macht das automatisch.“ (MoSCoW-Stufe wechseln.)',
+  TODAY: '„HEUTE() ist eine flüchtige Funktion — sie aktualisiert sich bei jeder Neuberechnung. Kombiniert mit einer Subtraktion sehe ich sofort: wie viele Tage bleiben noch?“ (Deadline wechseln.)',
+  NETWORKDAYS: '„Für die Kapazitätsplanung zählen nicht Kalendertage, sondern Arbeitstage. NETTOARBEITSTAGE zieht Wochenenden und unsere Feiertagsliste automatisch ab.“ (Deadline wechseln.)',
+  WORKDAY: '„Umgekehrter Fall: Ich kenne den Aufwand in Personentagen und will wissen, an welchem Datum ich realistisch fertig bin. ARBEITSTAG rechnet Wochenenden und Feiertage weg.“ (Aufwand ändern.)',
+  DATEDIF: '„Wie lange lief eine Anforderung tatsächlich? DATEDIF rechnet mir die Differenz zwischen Start und Deadline in Tagen — oder normalisiert in Monaten und Tagen.“ (Anforderung wechseln.)',
+  ROUND: '„Aus dem Planning Poker kommen krumme Zahlen. RUNDEN glättet auf realistische halbe Personentage.“ (Wert eintippen.)',
+  RANK: '„Für die Backlog-Reihenfolge lasse ich mir alle Anforderungen nach Aufwand ranken — RANG gibt mir sofort die Platzierung.“ (Sortierkriterium wechseln.)',
+  UNIQUE: '„Wer sitzt eigentlich alles im Review? EINDEUTIG filtert Duplikate aus der Stakeholder-Spalte automatisch heraus — eine Formel statt manueller Bereinigung.“',
+  FILTER: '„Und zum Schluss die wohl mächtigste neue Funktion: FILTER zeigt mir live nur die Zeilen, die meine Bedingungen erfüllen — hier: MUSS und noch OFFEN, meine Sprint-Kandidaten.“ (Bedingungen an-/abwählen.)'
+};
+function speakTextFor(key){ return SPEAK[key] || ''; }
+
+/* ============================================================
+   DEMO-HELFER
+   ============================================================ */
+function demoEl(key){ return document.querySelector('#card-' + key + ' .fn-demo'); }
+function setResult(key, html, isError){
+  const r = document.getElementById('result-' + key);
+  if(!r) return;
+  r.innerHTML = 'Ergebnis: ' + html;
+  r.classList.toggle('is-error', !!isError);
+}
+function optsFromReqs(labelFn){ return REQS.map(r => '<option value="' + r.id + '">' + labelFn(r) + '</option>').join(''); }
+
+/* ============================================================
+   DEMO-DISPATCH
+   ============================================================ */
+function initDemo(key){
+  const box = demoEl(key);
+  if(!box) return;
+  switch(key){
+
+    /* ---------------- LOOKUP & REFERENCE ---------------- */
+    case 'VLOOKUP': {
+      box.innerHTML = '<label>Anforderungs-ID</label><select id="in-VLOOKUP" onchange="runVLOOKUP()">' + optsFromReqs(r => r.id + ' — ' + r.titel) + '</select>';
+      window.runVLOOKUP = function(){
+        const id = document.getElementById('in-VLOOKUP').value;
+        const r = byId(id);
+        setResult('VLOOKUP', '<b>' + r.titel + '</b>');
+      };
+      runVLOOKUP();
+      break;
+    }
+
+    case 'HLOOKUP': {
+      const levels = Object.keys(MOSCOW_SCORE);
+      box.innerHTML = '<label>Priorität (horizontale Tabelle)</label>'
+        + '<select id="in-HLOOKUP" onchange="runHLOOKUP()">' + levels.map(l => '<option value="' + l + '">' + l + '</option>').join('') + '</select>'
+        + '<table><tr><th>Ebene</th>' + levels.map(l=>'<td>'+l+'</td>').join('') + '</tr>'
+        + '<tr><th>Punkte</th>' + levels.map(l=>'<td>'+MOSCOW_SCORE[l]+'</td>').join('') + '</tr></table>';
+      window.runHLOOKUP = function(){
+        const lvl = document.getElementById('in-HLOOKUP').value;
+        setResult('HLOOKUP', '<b>' + MOSCOW_SCORE[lvl] + ' Punkte</b> für „' + lvl + '“');
+      };
+      runHLOOKUP();
+      break;
+    }
+
+    case 'INDEXMATCH': {
+      const attrs = [['titel','Titel'],['status','Status'],['verantwortlich','Verantwortlich'],['aufwand','Aufwand (PT)'],['moscow','MoSCoW']];
+      box.innerHTML = '<div class="row2">'
+        + '<div><label>Anforderungs-ID</label><select id="in-IM-id" onchange="runINDEXMATCH()">' + optsFromReqs(r=>r.id) + '</select></div>'
+        + '<div><label>Attribut</label><select id="in-IM-attr" onchange="runINDEXMATCH()">' + attrs.map(a=>'<option value="'+a[0]+'">'+a[1]+'</option>').join('') + '</select></div>'
+        + '</div>';
+      window.runINDEXMATCH = function(){
+        const id = document.getElementById('in-IM-id').value;
+        const attr = document.getElementById('in-IM-attr').value;
+        const r = byId(id);
+        setResult('INDEXMATCH', '<b>' + r[attr] + '</b>');
+      };
+      runINDEXMATCH();
+      break;
+    }
+
+    case 'XLOOKUP': {
+      box.innerHTML = '<label>Titel (Suchspalte)</label><select id="in-XLOOKUP" onchange="runXLOOKUP()">'
+        + optsFromReqs(r => r.titel)
+        + '<option value="__missing__">— nicht vorhandener Titel (Testfall) —</option>'
+        + '</select>';
+      window.runXLOOKUP = function(){
+        const val = document.getElementById('in-XLOOKUP').value;
+        const r = REQS.find(x => x.titel === val);
+        if(r) setResult('XLOOKUP', 'Deadline: <b>' + fmtDate(r.deadline) + '</b>');
+        else setResult('XLOOKUP', '„nicht gefunden“ (Fallback-Text statt #NV)', true);
+      };
+      runXLOOKUP();
+      break;
+    }
+
+    /* ---------------- LOGICAL ---------------- */
+    case 'IF': {
+      box.innerHTML = '<label>Anforderung</label><select id="in-IF" onchange="runIF()">' + optsFromReqs(r=>r.id+' — '+r.titel) + '</select>';
+      window.runIF = function(){
+        const r = byId(document.getElementById('in-IF').value);
+        setResult('IF', r.akzeptiert ? '✅ Akzeptiert' : '⏳ Offen');
+      };
+      runIF();
+      break;
+    }
+
+    case 'IFS': {
+      box.innerHTML = '<label>Anforderung</label><select id="in-IFS" onchange="runIFS()">' + optsFromReqs(r=>r.id+' — '+r.titel) + '</select>';
+      window.runIFS = function(){
+        const r = byId(document.getElementById('in-IFS').value);
+        const map = {'Erledigt':'🟢 Erledigt','In Arbeit':'🟡 In Arbeit','Offen':'🔴 Offen','Abgelehnt':'⚫ Abgelehnt'};
+        setResult('IFS', map[r.status] || r.status);
+      };
+      runIFS();
+      break;
+    }
+
+    case 'AND': {
+      box.innerHTML = '<label>Anforderung</label><select id="in-AND" onchange="runAND()">' + optsFromReqs(r=>r.id+' — '+r.titel) + '</select>';
+      window.runAND = function(){
+        const r = byId(document.getElementById('in-AND').value);
+        const ok = r.akzeptiert && r.status !== 'Abgelehnt';
+        setResult('AND', ok ? '<b>WAHR</b> — review-bereit' : '<b>FALSCH</b> — noch nicht review-bereit', !ok);
+      };
+      runAND();
+      break;
+    }
+
+    case 'IFERROR': {
+      box.innerHTML = '<label>Anforderungs-ID (auch ungültige testen)</label>'
+        + '<select id="in-IFERROR" onchange="runIFERROR()">' + optsFromReqs(r=>r.id) + '<option value="REQ-099">REQ-099 (existiert nicht)</option></select>';
+      window.runIFERROR = function(){
+        const id = document.getElementById('in-IFERROR').value;
+        const r = byId(id);
+        if(r) setResult('IFERROR', '<b>' + r.titel + '</b>');
+        else setResult('IFERROR', 'Anforderung nicht gefunden', true);
+      };
+      runIFERROR();
+      break;
+    }
+
+    /* ---------------- TEXT ---------------- */
+    case 'TEXTJOIN': {
+      box.innerHTML = '<label>Anforderung</label><select id="in-TEXTJOIN" onchange="runTEXTJOIN()">' + optsFromReqs(r=>r.id+' — '+r.titel) + '</select>';
+      window.runTEXTJOIN = function(){
+        const r = byId(document.getElementById('in-TEXTJOIN').value);
+        setResult('TEXTJOIN', '<b>' + [r.titel, r.verantwortlich, fmtDate(r.deadline)].join(' · ') + '</b>');
+      };
+      runTEXTJOIN();
+      break;
+    }
+
+    case 'LEFTMIDRIGHT': {
+      box.innerHTML = '<label>Anforderungs-ID</label><select id="in-LMR" onchange="runLMR()">' + optsFromReqs(r=>r.id) + '</select>';
+      window.runLMR = function(){
+        const id = document.getElementById('in-LMR').value;
+        const left = id.substring(0,3);
+        const mid = id.substring(4,7);
+        const right = id.substring(id.length-3);
+        setResult('LEFTMIDRIGHT', 'LINKS = <b>' + left + '</b> · TEIL = <b>' + mid + '</b> · RECHTS = <b>' + right + '</b>');
+      };
+      runLMR();
+      break;
+    }
+
+    case 'TRIMPROPER': {
+      box.innerHTML = '<label>Roh-Eingabe aus Interview-Notizen</label><input type="text" id="in-TP" value="  sarah   MEYER  " oninput="runTP()">';
+      window.runTP = function(){
+        const raw = document.getElementById('in-TP').value;
+        const trimmed = raw.trim().replace(/\s+/g,' ');
+        const proper = trimmed.replace(/\S+/g, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+        setResult('TRIMPROPER', '„<b>' + proper + '</b>“');
+      };
+      runTP();
+      break;
+    }
+
+    case 'SUBSTITUTE': {
+      const stakeholders = ['Herr Bachmeier','Petra','Sarah'];
+      box.innerHTML = '<label>Lastenheft-Vorlage</label><input type="text" id="in-SUB-tpl" value="Sehr geehrte(r) [STAKEHOLDER], bitte prüfen Sie den Anforderungsentwurf." oninput="runSUB()">'
+        + '<label>Stakeholder</label><select id="in-SUB-name" onchange="runSUB()">' + stakeholders.map(s=>'<option>'+s+'</option>').join('') + '</select>';
+      window.runSUB = function(){
+        const tpl = document.getElementById('in-SUB-tpl').value;
+        const name = document.getElementById('in-SUB-name').value;
+        setResult('SUBSTITUTE', '„' + tpl.split('[STAKEHOLDER]').join('<b>' + name + '</b>') + '“');
+      };
+      runSUB();
+      break;
+    }
+
+    /* ---------------- STATISTICAL ---------------- */
+    case 'COUNTIF': {
+      const stati = ['Offen','In Arbeit','Erledigt','Abgelehnt'];
+      box.innerHTML = '<label>Status</label><select id="in-CIF" onchange="runCIF()">' + stati.map(s=>'<option>'+s+'</option>').join('') + '</select>';
+      window.runCIF = function(){
+        const s = document.getElementById('in-CIF').value;
+        const n = REQS.filter(r => r.status === s).length;
+        setResult('COUNTIF', '<b>' + n + '</b> Anforderung(en) mit Status „' + s + '“');
+      };
+      runCIF();
+      break;
+    }
+
+    case 'COUNTIFS': {
+      box.innerHTML = '<label>MoSCoW-Stufe</label><select id="in-CIFS-m" onchange="runCIFS()">' + Object.keys(MOSCOW_SCORE).map(l=>'<option>'+l+'</option>').join('') + '</select>'
+        + '<div class="chk"><input type="checkbox" id="in-CIFS-x" checked onchange="runCIFS()"><label for="in-CIFS-x" style="margin:0;">und Status ≠ „Erledigt“</label></div>';
+      window.runCIFS = function(){
+        const m = document.getElementById('in-CIFS-m').value;
+        const exclude = document.getElementById('in-CIFS-x').checked;
+        const n = REQS.filter(r => r.moscow === m && (!exclude || r.status !== 'Erledigt')).length;
+        setResult('COUNTIFS', '<b>' + n + '</b> Anforderung(en) mit „' + m + '“' + (exclude ? ' und noch nicht erledigt' : ''));
+      };
+      runCIFS();
+      break;
+    }
+
+    case 'SUMIF': {
+      const personen = [...new Set(REQS.map(r=>r.verantwortlich))];
+      box.innerHTML = '<label>Verantwortlich</label><select id="in-SIF" onchange="runSIF()">' + personen.map(p=>'<option>'+p+'</option>').join('') + '</select>';
+      window.runSIF = function(){
+        const p = document.getElementById('in-SIF').value;
+        const sum = REQS.filter(r=>r.verantwortlich===p).reduce((a,r)=>a+r.aufwand,0);
+        setResult('SUMIF', '<b>' + sum + ' Personentage</b> für ' + p);
+      };
+      runSIF();
+      break;
+    }
+
+    case 'AVERAGEIFS': {
+      box.innerHTML = '<label>MoSCoW-Stufe</label><select id="in-AIFS" onchange="runAIFS()">' + Object.keys(MOSCOW_SCORE).map(l=>'<option>'+l+'</option>').join('') + '</select>';
+      window.runAIFS = function(){
+        const m = document.getElementById('in-AIFS').value;
+        const items = REQS.filter(r=>r.moscow===m);
+        const avg = items.length ? (items.reduce((a,r)=>a+r.aufwand,0)/items.length) : 0;
+        setResult('AVERAGEIFS', items.length ? ('Ø <b>' + avg.toFixed(1) + ' Personentage</b> (n=' + items.length + ')') : 'keine Datensätze', !items.length);
+      };
+      runAIFS();
+      break;
+    }
+
+    /* ---------------- DATE & TIME ---------------- */
+    case 'TODAY': {
+      box.innerHTML = '<label>Deadline</label><select id="in-TODAY" onchange="runTODAY()">' + optsFromReqs(r=>r.id+' — '+fmtDate(r.deadline)) + '</select>';
+      window.runTODAY = function(){
+        const r = byId(document.getElementById('in-TODAY').value);
+        const today = new Date(); today.setHours(0,0,0,0);
+        if(!r.deadline){ setResult('TODAY', 'keine Deadline hinterlegt', true); return; }
+        const dl = new Date(r.deadline+'T00:00:00');
+        const days = Math.round((dl - today) / 86400000);
+        setResult('TODAY', 'Heute: <b>' + today.toLocaleDateString('de-DE') + '</b> · ' + (days>=0 ? ('noch <b>'+days+' Kalendertage</b>') : ('<b>'+Math.abs(days)+' Tage überfällig</b>')), days<0);
+      };
+      runTODAY();
+      break;
+    }
+
+    case 'NETWORKDAYS': {
+      box.innerHTML = '<label>Deadline</label><select id="in-NWD" onchange="runNWD()">' + optsFromReqs(r=>r.id+' — '+fmtDate(r.deadline)) + '</select>';
+      window.runNWD = function(){
+        const r = byId(document.getElementById('in-NWD').value);
+        if(!r.deadline){ setResult('NETWORKDAYS', 'keine Deadline hinterlegt', true); return; }
+        const n = networkdays(new Date(), new Date(r.deadline+'T00:00:00'));
+        setResult('NETWORKDAYS', '<b>' + n + ' Arbeitstage</b> bis zur Deadline (Feiertage 2026 berücksichtigt)', n<0);
+      };
+      runNWD();
+      break;
+    }
+
+    case 'WORKDAY': {
+      box.innerHTML = '<label>Anforderung (liefert Startdatum + Aufwand)</label><select id="in-WD" onchange="runWD()">' + optsFromReqs(r=>r.id+' — '+r.titel) + '</select>';
+      window.runWD = function(){
+        const r = byId(document.getElementById('in-WD').value);
+        if(!r.start){ setResult('WORKDAY', 'kein Startdatum hinterlegt', true); return; }
+        const target = addWorkdays(new Date(r.start+'T00:00:00'), r.aufwand);
+        setResult('WORKDAY', 'Start ' + fmtDate(r.start) + ' + ' + r.aufwand + ' Arbeitstage → <b>' + target.toLocaleDateString('de-DE') + '</b>');
+      };
+      runWD();
+      break;
+    }
+
+    case 'DATEDIF': {
+      box.innerHTML = '<label>Anforderung</label><select id="in-DDF" onchange="runDDF()">' + optsFromReqs(r=>r.id+' — '+r.titel) + '</select>';
+      window.runDDF = function(){
+        const r = byId(document.getElementById('in-DDF').value);
+        if(!r.start || !r.deadline){ setResult('DATEDIF', 'Start oder Deadline fehlt', true); return; }
+        const d1 = new Date(r.start+'T00:00:00'), d2 = new Date(r.deadline+'T00:00:00');
+        const days = Math.round((d2-d1)/86400000);
+        setResult('DATEDIF', '<b>' + days + ' Tage</b> Laufzeit (' + fmtDate(r.start) + ' → ' + fmtDate(r.deadline) + ')');
+      };
+      runDDF();
+      break;
+    }
+
+    /* ---------------- MATH & DYNAMIC ARRAYS ---------------- */
+    case 'ROUND': {
+      box.innerHTML = '<label>Roh-Schätzung (Personentage)</label><input type="number" id="in-RND" value="6.3" step="0.1" oninput="runRND()">';
+      window.runRND = function(){
+        const v = parseFloat(document.getElementById('in-RND').value) || 0;
+        const rounded = Math.round(v*2)/2;
+        setResult('ROUND', v + ' PT → <b>' + rounded + ' PT</b> (auf 0,5-Schritte gerundet)');
+      };
+      runRND();
+      break;
+    }
+
+    case 'RANK': {
+      box.innerHTML = '<label>Sortierkriterium</label><select id="in-RANK" onchange="runRANK()"><option value="aufwand">Aufwand (absteigend)</option><option value="moscow">MoSCoW-Punktwert (absteigend)</option></select><div id="rank-table"></div>';
+      window.runRANK = function(){
+        const crit = document.getElementById('in-RANK').value;
+        const val = r => crit === 'aufwand' ? r.aufwand : MOSCOW_SCORE[r.moscow];
+        const sorted = [...REQS].sort((a,b) => val(b)-val(a));
+        const rows = sorted.map((r,i) => '<tr><td>' + (i+1) + '</td><td>' + r.id + '</td><td>' + r.titel + '</td><td>' + val(r) + '</td></tr>').join('');
+        document.getElementById('rank-table').innerHTML = '<table><tr><th>Rang</th><th>ID</th><th>Titel</th><th>Wert</th></tr>' + rows + '</table>';
+        setResult('RANK', 'Backlog-Reihenfolge nach <b>' + (crit==='aufwand'?'Aufwand':'MoSCoW-Punktwert') + '</b> — siehe Tabelle oben');
+      };
+      runRANK();
+      break;
+    }
+
+    case 'UNIQUE': {
+      box.innerHTML = '<div id="unique-out"></div>';
+      const uniq = [...new Set(REQS.map(r=>r.stakeholder))];
+      box.querySelector('#unique-out').innerHTML = uniq.map(s=>'<span class="badge cat" style="margin:2px;">'+s+'</span>').join(' ');
+      setResult('UNIQUE', '<b>' + uniq.length + '</b> eindeutige Stakeholder (aus ' + REQS.length + ' Zeilen)');
+      break;
+    }
+
+    case 'FILTER': {
+      box.innerHTML = '<div class="row2">'
+        + '<div class="chk"><input type="checkbox" id="in-FLT-m" checked onchange="runFLT()"><label for="in-FLT-m" style="margin:0;">MoSCoW = Must</label></div>'
+        + '<div class="chk"><input type="checkbox" id="in-FLT-s" checked onchange="runFLT()"><label for="in-FLT-s" style="margin:0;">Status = Offen</label></div>'
+        + '</div><div id="flt-table"></div>';
+      window.runFLT = function(){
+        const useM = document.getElementById('in-FLT-m').checked;
+        const useS = document.getElementById('in-FLT-s').checked;
+        const rows = REQS.filter(r => (!useM || r.moscow==='Must') && (!useS || r.status==='Offen'));
+        document.getElementById('flt-table').innerHTML = rows.length
+          ? '<table><tr><th>ID</th><th>Titel</th><th>MoSCoW</th><th>Status</th></tr>' + rows.map(r=>'<tr><td>'+r.id+'</td><td>'+r.titel+'</td><td>'+r.moscow+'</td><td>'+r.status+'</td></tr>').join('') + '</table>'
+          : '';
+        setResult('FILTER', rows.length ? ('<b>' + rows.length + ' Sprint-Kandidat(en)</b> gefunden — siehe Tabelle') : 'keine Treffer', !rows.length);
+      };
+      runFLT();
+      break;
+    }
+
+  }
+}
+
+/* Hilfsfunktionen für Datumsfunktionen */
+function isHoliday(d){
+  const iso = d.toISOString().slice(0,10);
+  return HOLIDAYS_2026.includes(iso);
+}
+function isWeekend(d){ const wd = d.getDay(); return wd === 0 || wd === 6; }
+function networkdays(start, end){
+  let s = new Date(start); s.setHours(0,0,0,0);
+  let e = new Date(end); e.setHours(0,0,0,0);
+  const dir = e >= s ? 1 : -1;
+  let count = 0;
+  let cur = new Date(s);
+  while((dir===1 && cur <= e) || (dir===-1 && cur >= e)){
+    if(!isWeekend(cur) && !isHoliday(cur)) count += dir;
+    cur.setDate(cur.getDate() + dir);
+  }
+  return count;
+}
+function addWorkdays(start, n){
+  let cur = new Date(start);
+  let added = 0;
+  while(added < n){
+    cur.setDate(cur.getDate()+1);
+    if(!isWeekend(cur) && !isHoliday(cur)) added++;
+  }
+  return cur;
+}
+
+/* ============================================================
+   START
+   ============================================================ */
+renderApp();
+</script>
+</body>
+</html>
