@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Digitale Studierendenakte — Qualität systematisch denken · Michaela Kühn</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#f6f8fc; --panel:#ffffff; --ink:#1f2937; --ink-dim:#6b7280; --line:#d9e1ea;
+    --accent:#b91c1c; --accent-soft:#fee2e2;
+    --blue:#1d4ed8; --blue-soft:#dbeafe;
+    --violet:#4f46e5; --violet-soft:#e8e6fb;
+    --green:#15803d; --green-soft:#e9f7ee;
+    --amber:#92400e; --amber-soft:#fef3c7;
+    --teal:#0f766e; --teal-soft:#ccfbf1;
+    --card:#f7f8f9;
+    --mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --shadow:0 16px 34px rgba(15,23,42,.08);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);color-scheme:light;}
+  body{font-family:var(--sans);font-size:16px;line-height:1.55;
+    background:
+      radial-gradient(circle at top left, #fff7f7 0%, transparent 22%),
+      radial-gradient(circle at top right, #eef4ff 0%, transparent 20%),
+      linear-gradient(180deg,#fbfcff 0%,#f4f6fa 100%);
+  }
+  button{touch-action:manipulation;-webkit-user-select:none;user-select:none;font-family:var(--sans);}
+  a{color:var(--blue);}
+  .app{max-width:1180px;margin:0 auto;padding:20px 24px 56px;}
+  code{font-family:var(--mono);}
+
+  /* ---------- Topbar & Signatur ---------- */
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:6px;}
+  .back-link{display:inline-block;font-size:14px;font-weight:700;color:var(--ink-dim);text-decoration:none;}
+  .back-link:hover{color:var(--accent);}
+  .signature{
+    position:fixed;top:14px;right:28px;z-index:30;
+    background:rgba(255,255,255,.92);padding:5px 10px;border-radius:10px;
+    font-size:14px;font-weight:700;color:var(--ink);text-align:right;text-decoration:none;line-height:1.4;white-space:nowrap;
+  }
+  .signature span{display:block;font-weight:500;color:var(--ink-dim);font-size:14px;}
+  .signature:hover, .signature:hover span{color:var(--accent);}
+  .beamer-btn{
+    background:transparent;border:1.5px solid var(--line);color:var(--ink-dim);
+    font-size:14px;font-weight:700;padding:9px 18px;border-radius:999px;cursor:pointer;min-height:40px;
+  }
+  .beamer-btn:hover{border-color:var(--accent);color:var(--ink);}
+  html.beamer .beamer-btn, html.beamer-xl .beamer-btn, html.beamer-xxl .beamer-btn{
+    background:var(--ink);color:#fff;border-color:var(--ink);
+  }
+  @media(max-width:900px){
+    .signature{position:static;display:block;background:none;padding:0;text-align:right;margin-bottom:6px;}
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;
+    box-shadow:var(--shadow);padding:32px 34px 28px;margin:16px 0 22px;
+  }
+  .eyebrow{display:block;font-size:14px;letter-spacing:.1em;font-weight:700;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+  .hero h1{margin:0 0 10px;font-size:clamp(26px,3.6vw,38px);line-height:1.1;
+    background:linear-gradient(100deg,var(--ink) 55%,var(--accent) 120%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero p.lead{margin:0;color:var(--ink-dim);font-size:17px;line-height:1.6;}
+
+  /* ---------- Chapter nav ---------- */
+  .chapternav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px;}
+  .chapternav a{
+    display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--line);
+    border-radius:999px;padding:8px 14px;font-size:14px;font-weight:700;color:var(--ink-dim);
+    text-decoration:none;min-height:38px;
+  }
+  .chapternav a:hover{border-color:var(--accent);color:var(--ink);}
+  .chapternav a .n{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;
+    border-radius:50%;background:var(--ink);color:#fff;font-size:14px;font-weight:800;}
+
+  /* ---------- Kapitel ---------- */
+  .kapitel{scroll-margin-top:90px;margin:0 0 50px;padding-top:6px;border-top:3px solid var(--ink);}
+  .kap-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:18px 0 6px;}
+  .kap-num{font-family:var(--mono);font-size:14px;font-weight:800;color:#fff;background:var(--ink);
+    border-radius:999px;padding:3px 12px;letter-spacing:.04em;}
+  .kap-head h2{margin:0;font-size:24px;line-height:1.25;color:var(--ink);}
+  .kap-sub{margin:0 0 20px;font-size:15.5px;color:var(--ink-dim);line-height:1.6;max-width:900px;}
+  .kap-note{margin:10px 0 20px;padding:12px 16px;background:var(--card);border-left:4px solid var(--ink-dim);
+    border-radius:6px;font-size:14.5px;color:var(--ink-dim);line-height:1.6;}
+  .kap-note strong{color:var(--ink);}
+  h3.sec-title{font-size:18.5px;margin:28px 0 6px;color:var(--ink);}
+  p.sec-sub{color:var(--ink-dim);margin:0 0 14px;font-size:14.5px;line-height:1.6;}
+
+  /* ---------- Fall A/B/C Karten ---------- */
+  .fall-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:10px;}
+  .fall-card{border:2px solid var(--line);border-radius:16px;background:#fff;padding:16px 18px;}
+  .fall-card h4{margin:0 0 8px;font-size:15px;color:var(--accent);}
+  .fall-card p{margin:0;font-size:14.5px;color:var(--ink);line-height:1.55;}
+  .fall-card .extra{margin-top:8px;font-size:14px;color:var(--ink-dim);line-height:1.55;}
+  .fall-card .extra b{color:var(--ink);}
+
+  /* ---------- Drei feste Kennzeichnungen / Tri-Card ---------- */
+  .tri-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:10px;}
+  .tri-card{border-radius:14px;padding:14px 16px;border:1px solid var(--line);}
+  .tri-card .tag{display:block;font-size:14px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px;}
+  .tri-card p{margin:0;font-size:14.5px;line-height:1.55;color:var(--ink);}
+  .tri-norm{background:var(--blue-soft);border-color:#b9c9f5;} .tri-norm .tag{color:var(--blue);}
+  .tri-bsp{background:var(--amber-soft);border-color:#e6cd9e;} .tri-bsp .tag{color:var(--amber);}
+  .tri-ent{background:var(--violet-soft);border-color:#cdc2e6;} .tri-ent .tag{color:var(--violet);}
+
+  /* ---------- 9-Merkmale Mini-Grid (Kapitel 2) ---------- */
+  .char9-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-bottom:12px;}
+  .char9-card{display:block;text-decoration:none;border:2px solid var(--line);border-radius:14px;background:#fff;
+    padding:12px 14px;transition:border-color .15s ease, transform .1s ease;}
+  .char9-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+  .char9-num{display:inline-block;font-family:var(--mono);font-size:14px;font-weight:700;color:#fff;background:var(--ink);
+    border-radius:999px;width:22px;height:22px;line-height:22px;text-align:center;margin-bottom:6px;}
+  .char9-title{margin:0 0 4px;font-size:14.5px;font-weight:700;color:var(--ink);}
+  .char9-q{margin:0;font-size:14px;color:var(--ink-dim);line-height:1.5;}
+
+  /* ---------- Entscheidungskette Flow ---------- */
+  .ek-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0 18px;font-size:14px;}
+  .ek-step{background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:7px 13px;font-weight:700;color:var(--ink);
+    text-decoration:none;scroll-margin-top:90px;}
+  .ek-step:hover{border-color:var(--accent);color:var(--accent);}
+  .ek-arrow{color:var(--ink-dim);font-weight:700;}
+
+  /* ---------- Detail-Karten Kapitel 3 ---------- */
+  .detail3{border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:0 10px 26px rgba(15,23,42,.05);
+    overflow:hidden;margin-bottom:22px;scroll-margin-top:90px;}
+  .detail3-head{background:var(--ink);color:#fff;padding:14px 22px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  .detail3-head .num{font-family:var(--mono);font-size:14px;font-weight:800;background:rgba(255,255,255,.18);
+    border-radius:999px;padding:2px 10px;}
+  .detail3-head .name{margin:0;font-size:19px;font-weight:800;}
+  .detail3-body{padding:18px 22px 20px;}
+  .detail3-extra{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);font-size:14.5px;line-height:1.65;color:var(--ink);}
+  .detail3-extra p{margin:0 0 8px;}
+  .detail3-extra p:last-child{margin-bottom:0;}
+  .detail3-extra b{color:var(--ink);}
+
+  /* ---------- Generic table ---------- */
+  .info-table-wrap{overflow-x:auto;border-radius:12px;margin-bottom:8px;}
+  table.info-table{width:100%;border-collapse:collapse;font-size:14px;}
+  table.info-table th, table.info-table td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top;}
+  table.info-table th{background:var(--ink);color:#fff;font-weight:700;font-size:14px;}
+  table.info-table tr:nth-child(even) td{background:var(--card);}
+  table.info-table a{font-weight:700;text-decoration:none;}
+  table.info-table a:hover{text-decoration:underline;}
+  .trace-ref{font-size:14px;color:var(--ink-dim);font-weight:600;text-decoration:none;}
+  .trace-ref:hover{color:var(--accent);}
+
+  /* ---------- Nutzungskontext Kapitel 4 ---------- */
+  .ctx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-bottom:8px;}
+  .ctx-card{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px 16px;}
+  .ctx-card h4{margin:0 0 6px;font-size:14.5px;color:var(--teal);}
+  .ctx-card p{margin:0 0 6px;font-size:14px;color:var(--ink);line-height:1.55;}
+  .ctx-card .risk{font-size:14px;color:var(--ink-dim);}
+
+  /* ---------- Merksatz ---------- */
+  .merksatz{margin:10px 0 4px;padding:12px 16px;background:var(--green-soft);border-left:4px solid var(--green);
+    border-radius:6px;font-size:14.5px;color:var(--ink);line-height:1.6;}
+  .merksatz b{color:var(--green);}
+
+  /* ---------- Artefaktkette Kapitel 6 ---------- */
+  .chain-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:14px 0 20px;}
+  .chain-item{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;font-size:14px;font-weight:700;}
+  .chain-arrow{color:var(--ink-dim);font-weight:700;}
+
+  /* ---------- Schnelleinstiege Kapitel 7 ---------- */
+  .quick-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;}
+  .quick-card{display:flex;flex-direction:column;gap:4px;text-decoration:none;border:2px solid var(--line);border-radius:14px;
+    background:#fff;padding:14px 16px;}
+  .quick-card:hover{border-color:var(--accent);}
+  .quick-tag{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);}
+  .quick-title{font-size:15px;font-weight:800;color:var(--ink);}
+
+  /* ---------- Glossar Kapitel 8 ---------- */
+  .glossar-index{font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:.3em;color:var(--ink-dim);margin-bottom:16px;}
+  .gl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;}
+  .gl-card{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px 16px;scroll-margin-top:90px;}
+  .gl-card dt{font-weight:800;color:var(--ink);font-size:14.5px;margin-top:8px;}
+  .gl-card dt:first-child{margin-top:0;}
+  .gl-card dd{margin:2px 0 0;color:var(--ink-dim);font-size:14px;line-height:1.55;}
+  .gl-note{margin-top:8px;font-size:14px;color:var(--ink-dim);font-style:italic;}
+
+  /* ---------- Quellen Kapitel 9 ---------- */
+  .transparenz{margin:0 0 16px;padding:12px 16px;background:var(--amber-soft);border-left:4px solid var(--amber);
+    border-radius:6px;font-size:14.5px;color:var(--ink);line-height:1.6;}
+
+  /* ---------- Exkurs Kapitel 10 ---------- */
+  .spur-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:10px;}
+  .spur-card{border:2px solid var(--line);border-radius:16px;background:#fff;padding:16px 18px;}
+  .spur-card h4{margin:0 0 8px;font-size:15px;color:var(--violet);}
+  .spur-card p{margin:0;font-size:14.5px;color:var(--ink);line-height:1.55;}
+  .invest-ok{color:var(--green);font-weight:700;}
+
+  /* ---------- Pager (Kapitel-Navigation unten) ---------- */
+  .pager{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:24px;padding-top:16px;
+    border-top:1px dashed var(--line);flex-wrap:wrap;}
+  .pager a{min-height:40px;display:inline-flex;align-items:center;padding:0 16px;border-radius:999px;
+    border:1.5px solid var(--line);text-decoration:none;font-size:14px;font-weight:700;color:var(--ink);}
+  .pager a:hover{border-color:var(--accent);color:var(--accent);}
+  .pager a.disabled{opacity:.35;pointer-events:none;}
+  .pager .progress{font-family:var(--mono);font-size:14px;color:var(--ink-dim);text-align:center;}
+
+  .crosslink{margin-top:8px;font-size:14px;color:var(--ink-dim);}
+  .crosslink a{color:var(--accent);font-weight:700;text-decoration:none;}
+  .crosslink a:hover{text-decoration:underline;}
+  .crosslink ul{margin:8px 0 0;padding-left:20px;}
+  .crosslink li{margin-bottom:4px;}
+
+  /* ---------- Footer ---------- */
+  .app-footer{margin-top:44px;border-top:3px solid var(--ink);padding-top:18px;}
+  .footer-details{display:grid;grid-template-columns:1fr;gap:0;}
+  @media(min-width:901px){.footer-details{grid-template-columns:repeat(5,1fr);gap:12px;}}
+  .footer-box{border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden;margin-bottom:10px;}
+  @media(min-width:901px){.footer-box{margin-bottom:0;}}
+  .footer-summary{cursor:pointer;font-weight:700;font-family:var(--mono);font-size:14px;text-transform:uppercase;
+    letter-spacing:.03em;color:var(--blue);min-height:44px;display:flex;align-items:center;padding:0 14px;}
+  .footer-content{padding:6px 14px 16px;max-height:440px;overflow-y:auto;}
+  .footer-content p, .footer-content li{font-size:14px;color:var(--ink-dim);line-height:1.6;}
+  .footer-content ul{padding-left:18px;margin:8px 0;}
+  .footer-mono{font-family:var(--mono);}
+  .footer-mono p{font-size:14px;}
+  .footer-sans{font-family:var(--sans);}
+  .footer-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px;}
+  .footer-table th, .footer-table td{border:1px solid var(--line);padding:6px 8px;text-align:left;}
+  .footer-table th{background:var(--card);font-weight:700;}
+  .footer-sig{margin-top:16px;font-size:14px;color:var(--ink-dim);line-height:1.6;}
+  .footer-sig strong{color:var(--ink);}
+  .footer-glossary{margin:0;}
+  .footer-glossary dt{font-weight:700;color:var(--ink);font-size:14px;margin-top:10px;}
+  .footer-glossary dt:first-child{margin-top:0;}
+  .footer-glossary dd{margin:2px 0 0;color:var(--ink-dim);font-size:14px;line-height:1.5;}
+  .schritt{margin:0 0 12px;padding-bottom:12px;border-bottom:1px dashed var(--line);}
+  .schritt:last-child{border-bottom:none;}
+  .schritt strong{display:block;color:var(--blue);margin-bottom:3px;}
+  .regie{color:var(--ink-dim);font-style:italic;}
+
+  @media(max-width:640px){
+    .app{padding:16px}
+    .hero{padding:24px 20px 20px}
+    .topbar{flex-direction:column}
+  }
+
+  /* ================= BEAMER-MODUS (vierstufig, kumulativ) ================= */
+  html.beamer{ --ink-dim:#3D4A5C; }
+  html.beamer .app-footer{ display:none; }
+  html.beamer .back-link, html.beamer .signature, html.beamer .chapternav{ display:none; }
+
+  html.beamer .hero p.lead, html.beamer .kap-sub, html.beamer p.sec-sub, html.beamer .kap-note,
+  html.beamer .fall-card p, html.beamer .tri-card p, html.beamer .char9-q, html.beamer .ek-step,
+  html.beamer .detail3-body p, html.beamer .detail3-extra, html.beamer table.info-table,
+  html.beamer .ctx-card p, html.beamer .merksatz, html.beamer .chain-item, html.beamer .quick-title,
+  html.beamer .gl-card dd, html.beamer .transparenz, html.beamer .spur-card p, html.beamer .footer-sans p{ font-size:22px; }
+  html.beamer .hero h1{ font-size:44px; }
+  html.beamer .kap-head h2{ font-size:44px; }
+  html.beamer .detail3-head .name{ font-size:34px; }
+  html.beamer .eyebrow, html.beamer .kap-num, html.beamer .char9-title, html.beamer .fall-card h4,
+  html.beamer .tri-card .tag, html.beamer .quick-tag, html.beamer .gl-card dt, html.beamer .spur-card h4,
+  html.beamer .detail3-head .num{ font-size:15px; }
+
+  html.beamer-xl .hero p.lead, html.beamer-xl .kap-sub, html.beamer-xl p.sec-sub, html.beamer-xl .kap-note,
+  html.beamer-xl .fall-card p, html.beamer-xl .tri-card p, html.beamer-xl .char9-q, html.beamer-xl .ek-step,
+  html.beamer-xl .detail3-body p, html.beamer-xl .detail3-extra, html.beamer-xl table.info-table,
+  html.beamer-xl .ctx-card p, html.beamer-xl .merksatz, html.beamer-xl .chain-item, html.beamer-xl .quick-title,
+  html.beamer-xl .gl-card dd, html.beamer-xl .transparenz, html.beamer-xl .spur-card p, html.beamer-xl .footer-sans p{ font-size:28px; }
+  html.beamer-xl .hero h1{ font-size:54px; }
+  html.beamer-xl .kap-head h2{ font-size:54px; }
+  html.beamer-xl .detail3-head .name{ font-size:40px; }
+  html.beamer-xl .eyebrow, html.beamer-xl .kap-num, html.beamer-xl .char9-title, html.beamer-xl .fall-card h4,
+  html.beamer-xl .tri-card .tag, html.beamer-xl .quick-tag, html.beamer-xl .gl-card dt, html.beamer-xl .spur-card h4,
+  html.beamer-xl .detail3-head .num{ font-size:18px; }
+
+  html.beamer-xxl .hero p.lead, html.beamer-xxl .kap-sub, html.beamer-xxl p.sec-sub, html.beamer-xxl .kap-note,
+  html.beamer-xxl .fall-card p, html.beamer-xxl .tri-card p, html.beamer-xxl .char9-q, html.beamer-xxl .ek-step,
+  html.beamer-xxl .detail3-body p, html.beamer-xxl .detail3-extra, html.beamer-xxl table.info-table,
+  html.beamer-xxl .ctx-card p, html.beamer-xxl .merksatz, html.beamer-xxl .chain-item, html.beamer-xxl .quick-title,
+  html.beamer-xxl .gl-card dd, html.beamer-xxl .transparenz, html.beamer-xxl .spur-card p, html.beamer-xxl .footer-sans p{ font-size:34px; }
+  html.beamer-xxl .hero h1{ font-size:64px; }
+  html.beamer-xxl .kap-head h2{ font-size:64px; }
+  html.beamer-xxl .detail3-head .name{ font-size:48px; }
+  html.beamer-xxl .eyebrow, html.beamer-xxl .kap-num, html.beamer-xxl .char9-title, html.beamer-xxl .fall-card h4,
+  html.beamer-xxl .tri-card .tag, html.beamer-xxl .quick-tag, html.beamer-xxl .gl-card dt, html.beamer-xxl .spur-card h4,
+  html.beamer-xxl .detail3-head .num{ font-size:21px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <button class="beamer-btn" id="beamerBtn" type="button" title="Vergrößert die Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">☀ Beamer</button>
+  </header>
+  <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer"><strong>Michaela Kühn</strong><span>www.michaela-kuehn.com</span></a>
+
+  <section class="hero">
+    <span class="eyebrow">MKU Nachschlagewerk · Digitale Studierendenakte</span>
+    <h1>Qualität systematisch denken</h1>
+    <p class="lead">Ein Fall, neun Normblickrichtungen, zehn Kapitel: Die Hochschule NOVA führt eine digitale Studierendenakte ein — anhand dieses einen Falls arbeitet das Nachschlagewerk durch, was ISO/IEC 25010:2023 tatsächlich verlangt, wer im Projekt welche Frage klärt und wie eine Anforderung vom Hochschulziel bis zur Abnahmeentscheidung rückverfolgbar bleibt. Jedes Kapitel verweist auf die Kapitel, die es voraussetzt oder vertieft.</p>
+  </section>
+
+  <nav class="chapternav" aria-label="Kapitelnavigation">
+    <a href="#kap-1"><span class="n">1</span> Fallwelt</a>
+    <a href="#kap-2"><span class="n">2</span> ISO/IEC 25010:2023</a>
+    <a href="#kap-3"><span class="n">3</span> Detailkarten</a>
+    <a href="#kap-4"><span class="n">4</span> ISO 25019 &amp; 25012</a>
+    <a href="#kap-5"><span class="n">5</span> Zentrale Matrix</a>
+    <a href="#kap-6"><span class="n">6</span> Artefakte</a>
+    <a href="#kap-7"><span class="n">7</span> Alternative Einstiege</a>
+    <a href="#kap-8"><span class="n">8</span> Glossar</a>
+    <a href="#kap-9"><span class="n">9</span> Quellen &amp; Grenzen</a>
+    <a href="#kap-10"><span class="n">10</span> Exkurs</a>
+  </nav>
+
+  <!-- ============ KAPITEL 1 · FALLWELT ============ -->
+  <section class="kapitel" id="kap-1">
+    <div class="kap-head"><span class="kap-num">KAPITEL 1</span><h2>Fallwelt</h2></div>
+    <h3 class="sec-title">Eine Funktion arbeitet – das Ergebnis ist trotzdem falsch</h3>
+    <p class="kap-sub">Die Hochschule NOVA führt eine digitale Studierendenakte ein. Ein Anerkennungsbescheid ist vorhanden, wird aber der falschen Person zugeordnet. Die Ablagefunktion arbeitet. Die Produktqualität reicht trotzdem nicht aus.</p>
+    <p class="kap-sub"><strong>Ausgangspunkt:</strong> Qualität entsteht nicht erst im Test. Sie beginnt dort, wo Stakeholder klären, welches Ergebnis unter welchen Bedingungen wirklich gebraucht wird.</p>
+    <p class="kap-sub">Die Umsetzung liegt bei einem externen IT-Dienstleister; die Hochschule NOVA bleibt Auftraggeber und trägt die fachliche Abnahme (vgl. <a href="#kap-5">Rollenmatrix, Kapitel 5</a>).</p>
+
+    <h3 class="sec-title">Drei wiederkehrende Fälle</h3>
+    <div class="fall-grid">
+      <div class="fall-card">
+        <h4>Fall A · Akte aufrufen</h4>
+        <p>Die richtige, vollständige Akte muss schnell, barrierefrei und nur für Berechtigte erscheinen.</p>
+      </div>
+      <div class="fall-card">
+        <h4>Fall B · Dokument zuordnen</h4>
+        <p>Dokumentart und Person werden erkannt. Unsichere Zuordnungen gehen an einen Menschen.</p>
+      </div>
+      <div class="fall-card">
+        <h4>Fall C · Akte wiederherstellen</h4>
+        <p>Dokumente, Metadaten, Rechte und Bearbeitungsstand werden konsistent wiederhergestellt.</p>
+      </div>
+    </div>
+
+    <h3 class="sec-title">Drei feste Kennzeichnungen</h3>
+    <div class="tri-grid">
+      <div class="tri-card tri-norm"><span class="tag">Normmodell</span><p>Was der Standard als Qualitätsdimension oder Vorgehen strukturiert.</p></div>
+      <div class="tri-card tri-bsp"><span class="tag">Studienaktenbeispiel</span><p>Unsere didaktische Übertragung auf das Hochschulprojekt.</p></div>
+      <div class="tri-card tri-ent"><span class="tag">Projektentscheidung</span><p>Was Stakeholder selbst priorisieren, messen und vereinbaren müssen.</p></div>
+    </div>
+    <p class="kap-sub">Damit wird ein Projektbeispiel nicht versehentlich als wortgetreue Normforderung verstanden.</p>
+
+    <div class="pager">
+      <a class="disabled">‹ Zurück</a>
+      <span class="progress">Kapitel 1 von 10 · Fallwelt</span>
+      <a href="#kap-2">Weiter ›</a>
+    </div>
+  </section>
+
+  <!-- ============ KAPITEL 2 · ISO/IEC 25010:2023 ============ -->
+  <section class="kapitel" id="kap-2">
+    <div class="kap-head"><span class="kap-num">KAPITEL 2</span><h2>ISO/IEC 25010:2023</h2></div>
+    <h3 class="sec-title">Neun Blickrichtungen auf die Studienakte</h3>
+    <p class="kap-sub">Die Merkmale sind ein Vollständigkeitsraster. Nicht alle sind immer gleich wichtig; ihre Relevanz entsteht aus Stakeholdern, Nutzungskontext und Risiko. Jede Karte führt zur passenden Detailkarte in <a href="#kap-3">Kapitel 3</a>.</p>
+
+    <div class="char9-grid">
+      <a class="char9-card" href="#k3-1"><span class="char9-num">1</span><p class="char9-title">Funktionale Eignung</p><p class="char9-q">Ist der Bescheid vollständig, korrekt und in der richtigen Akte?</p></a>
+      <a class="char9-card" href="#k3-2"><span class="char9-num">2</span><p class="char9-title">Leistungseffizienz</p><p class="char9-q">Bleibt die Akte unter Fristlast rechtzeitig verfügbar?</p></a>
+      <a class="char9-card" href="#k3-3"><span class="char9-num">3</span><p class="char9-title">Kompatibilität</p><p class="char9-q">Werden Identitäten, Dokumentarten und Status korrekt ausgetauscht?</p></a>
+      <a class="char9-card" href="#k3-4"><span class="char9-num">4</span><p class="char9-title">Interaktionsfähigkeit</p><p class="char9-q">Können unterschiedliche Menschen ihre Aufgaben sicher erledigen?</p></a>
+      <a class="char9-card" href="#k3-5"><span class="char9-num">5</span><p class="char9-title">Zuverlässigkeit</p><p class="char9-q">Arbeitet die Akte auch bei definierten Störungen weiter?</p></a>
+      <a class="char9-card" href="#k3-6"><span class="char9-num">6</span><p class="char9-title">Security</p><p class="char9-q">Wer darf welche Dokumentart zu welchem Zweck sehen?</p></a>
+      <a class="char9-card" href="#k3-7"><span class="char9-num">7</span><p class="char9-title">Wartbarkeit</p><p class="char9-q">Kann eine neue Dokumentart kontrolliert ergänzt werden?</p></a>
+      <a class="char9-card" href="#k3-8"><span class="char9-num">8</span><p class="char9-title">Flexibilität</p><p class="char9-q">Kann die Akte Fachbereiche, Last und Schnittstellen wechseln?</p></a>
+      <a class="char9-card" href="#k3-9"><span class="char9-num">9</span><p class="char9-title">Safety</p><p class="char9-q">Verhindert das System schädliche Entscheidungen bei unvollständigen Daten?</p></a>
+    </div>
+
+    <h3 class="sec-title" id="entscheidungskette">Entscheidungskette</h3>
+    <div class="ek-flow">
+      <a class="ek-step" id="ek-merkmal-erkennen" href="#kap-2">Merkmal erkennen</a><span class="ek-arrow">→</span>
+      <a class="ek-step" id="ek-stakeholder-kontext" href="#kap-1">Stakeholder und Kontext klären</a><span class="ek-arrow">→</span>
+      <a class="ek-step" id="ek-anforderung-formulieren" href="#kap-3">Anforderung formulieren</a><span class="ek-arrow">→</span>
+      <a class="ek-step" id="ek-messgroesse-zielwert" href="#kap-3">Messgröße und Zielwert vereinbaren</a><span class="ek-arrow">→</span>
+      <a class="ek-step" id="ek-nachweis-fuehren" href="#kap-6">Nachweis führen</a><span class="ek-arrow">→</span>
+      <a class="ek-step" id="ek-abnahme-entscheiden" href="#kap-6">Abnahme entscheiden</a>
+    </div>
+
+    <h3 class="sec-title">Einordnung in etablierte RE/BA/PM-Rahmenwerke</h3>
+    <p class="sec-sub">Die Entscheidungskette ist kein neues Vorgehensmodell, sondern eine Studienakten-Lesart bekannter Aktivitäten aus IREB CPRE, IIBA BABOK v3 und PMI PMBOK® Guide (8. Auflage, ANSI/PMI 99-001-2025).</p>
+    <div class="info-table-wrap">
+      <table class="info-table">
+        <thead><tr><th>Schritt der Entscheidungskette</th><th>IREB-CPRE-Aktivität</th><th>BABOK-v3-Wissensbereich</th><th>PMBOK-8-Performance-Domain</th></tr></thead>
+        <tbody>
+          <tr><td><a href="#ek-merkmal-erkennen">Merkmal erkennen</a></td><td>Ermittlung (Kontextabgrenzung)</td><td>Strategy Analysis</td><td>Scope</td></tr>
+          <tr><td><a href="#ek-stakeholder-kontext">Stakeholder und Kontext klären</a></td><td>Ermittlung</td><td>Elicitation and Collaboration</td><td>Stakeholders</td></tr>
+          <tr><td><a href="#ek-anforderung-formulieren">Anforderung formulieren</a></td><td>Dokumentation</td><td>Requirements Analysis and Design Definition</td><td>Scope</td></tr>
+          <tr><td><a href="#ek-messgroesse-zielwert">Messgröße und Zielwert vereinbaren</a></td><td>Dokumentation, Prüfung und Abstimmung</td><td>Requirements Analysis and Design Definition</td><td>Scope</td></tr>
+          <tr><td><a href="#ek-nachweis-fuehren">Nachweis führen</a></td><td>Prüfung und Abstimmung</td><td>Solution Evaluation</td><td>Governance</td></tr>
+          <tr><td><a href="#ek-abnahme-entscheiden">Abnahme entscheiden</a></td><td>Verwaltung</td><td>Requirements Life Cycle Management</td><td>Governance</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="kap-sub">Nutzen für die Praxis: Wer bereits IREB-, BABOK- oder PMBOK-geschult ist, muss die Studienakte nicht als neues Modell lernen — nur als neuen Anwendungsfall bekannter Aktivitäten. Warum keine eigene PMBOK-Zeile für „Finance", „Schedule", „Risk" oder „Resources"? Diese vier der sieben Performance-Domains sind für die Qualitäts-Entscheidungskette selbst nicht federführend — sie wirken erst bei der Umsetzung der beschlossenen Anforderung (<a href="#kap-6">Kapitel 6, Artefaktkette</a>).</p>
+
+    <div class="pager">
+      <a href="#kap-1">‹ Zurück</a>
+      <span class="progress">Kapitel 2 von 10 · ISO/IEC 25010:2023</span>
+      <a href="#kap-3">Weiter ›</a>
+    </div>
+  </section>
+
+  <!-- ============ KAPITEL 3 · DETAILKARTEN ============ -->
+  <section class="kapitel" id="kap-3">
+    <div class="kap-head"><span class="kap-num">KAPITEL 3</span><h2>Detailkarten</h2></div>
+    <h3 class="sec-title">Situation, Anforderung, Messung, Nachweis und Konflikt</h3>
+    <p class="kap-sub">Jede Karte übernimmt die drei Kennzeichnungen aus <a href="#kap-1">Kapitel 1</a> und ergänzt Beispielanforderung, Messung, Nachweis und Konflikt.</p>
+
+    <div class="detail3" id="k3-1">
+      <div class="detail3-head"><span class="num">1</span><span class="name">Funktionale Eignung</span></div>
+      <div class="detail3-body">
+        <div class="tri-grid">
+          <div class="tri-card tri-norm"><span class="tag">Normmodell</span><p>Vollständigkeit, Korrektheit und Angemessenheit der Funktionen.</p></div>
+          <div class="tri-card tri-bsp"><span class="tag">Studienaktenbeispiel</span><p>Ein Anerkennungsbescheid gehört zur richtigen Person, Dokumentart und Entscheidung.</p></div>
+          <div class="tri-card tri-ent"><span class="tag">Projektentscheidung</span><p>Welche Unterlagen machen einen Vorgang fachlich vollständig?</p></div>
+        </div>
+        <div class="detail3-extra">
+          <p><b>Beispielanforderung:</b> Freigegebene Bescheide müssen vollständig und unverändert in der richtigen Akte erscheinen.</p>
+          <p><b>Messung:</b> Fehlzuordnungen, fehlende Dokumente, fachlich falsche Ergebnisse. <b>Nachweis:</b> Fachtest mit vorbereiteten Aktenfällen. <b>Konflikt:</b> Mehr Automatisierung kann unbemerkte Fehlzuordnungen erhöhen.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail3" id="k3-2">
+      <div class="detail3-head"><span class="num">2</span><span class="name">Leistungseffizienz</span></div>
+      <div class="detail3-body">
+        <div class="tri-grid">
+          <div class="tri-card tri-norm"><span class="tag">Normmodell</span><p>Zeitverhalten, Ressourcennutzung und Kapazität.</p></div>
+          <div class="tri-card tri-bsp"><span class="tag">Studienaktenbeispiel</span><p>Vor Fristende greifen viele Personen gleichzeitig auf Akten zu.</p></div>
+          <div class="tri-card tri-ent"><span class="tag">Projektentscheidung</span><p>Welche Last und Anzeigezeit sind im Nutzungskontext akzeptabel?</p></div>
+        </div>
+        <div class="detail3-extra">
+          <p><b>Anforderung:</b> Die Aktenansicht muss unter vereinbarter Last innerhalb des festgelegten Zeitraums vollständig erscheinen.</p>
+          <p><b>Messung:</b> Antwortzeit, gleichzeitige Zugriffe, Ressourcen, Kapazität. <b>Nachweis:</b> Lasttest. <b>Konflikt:</b> Mehr Leistung kann höhere Betriebskosten erzeugen.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail3" id="k3-3">
+      <div class="detail3-head"><span class="num">3</span><span class="name">Kompatibilität</span></div>
+      <div class="detail3-body">
+        <div class="tri-grid">
+          <div class="tri-card tri-norm"><span class="tag">Normmodell</span><p>Koexistenz und Interoperabilität.</p></div>
+          <div class="tri-card tri-bsp"><span class="tag">Studienaktenbeispiel</span><p>Stammdaten kommen aus dem Campusmanagement; Bescheide gehen an das Portal.</p></div>
+          <div class="tri-card tri-ent"><span class="tag">Projektentscheidung</span><p>Welche Identitäten, Dokumenttypen und Status sind führend?</p></div>
+        </div>
+        <div class="detail3-extra">
+          <p><b>Anforderung:</b> Identitäten, Dokumentarten und Statuswerte müssen ohne Bedeutungsverlust ausgetauscht werden.</p>
+          <p><b>Messung:</b> Fehlübertragungen und semantische Abweichungen. <b>Nachweis:</b> Schnittstellen- und Ende-zu-Ende-Test. <b>Konflikt:</b> Enge Kopplung erleichtert Austausch, erschwert Wechsel.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail3" id="k3-4">
+      <div class="detail3-head"><span class="num">4</span><span class="name">Interaktionsfähigkeit</span></div>
+      <div class="detail3-body">
+        <div class="tri-grid">
+          <div class="tri-card tri-norm"><span class="tag">Normmodell</span><p>Erkennbarkeit, Erlernbarkeit, Bedienbarkeit, Fehlerschutz, Engagement, Inklusivität, Unterstützung und Selbstbeschreibung.</p></div>
+          <div class="tri-card tri-bsp"><span class="tag">Studienaktenbeispiel</span><p>Eine Studierende lädt mobil mit Screenreader einen Nachweis hoch.</p></div>
+          <div class="tri-card tri-ent"><span class="tag">Projektentscheidung</span><p>Welche Nutzergruppen, Assistenztechniken und Aufgaben werden getestet?</p></div>
+        </div>
+        <div class="detail3-extra">
+          <p><b>Anforderung:</b> Upload, Status und Fehlermeldungen müssen verständlich und assistenztechnisch bedienbar sein.</p>
+          <p><b>Messung:</b> Aufgabenerfolg, Bedienfehler, Abbrüche, Prüfkriterien. <b>Nachweis:</b> Usability- und Accessibility-Test. <b>Konflikt:</b> Sicherheitsabfragen können Bedienung erschweren.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail3" id="k3-5">
+      <div class="detail3-head"><span class="num">5</span><span class="name">Zuverlässigkeit</span></div>
+      <div class="detail3-body">
+        <div class="tri-grid">
+          <div class="tri-card tri-norm"><span class="tag">Normmodell</span><p>Fehlerfreiheit, Verfügbarkeit, Fehlertoleranz und Wiederherstellbarkeit.</p></div>
+          <div class="tri-card tri-bsp"><span class="tag">Studienaktenbeispiel</span><p>Während einer Sitzung fällt ein Speicherknoten aus.</p></div>
+          <div class="tri-card tri-ent"><span class="tag">Projektentscheidung</span><p>Welche Ausfälle, Zeiträume und Datenverluste sind tolerierbar?</p></div>
+        </div>
+        <div class="detail3-extra">
+          <p><b>Anforderung:</b> Freigegebene Akten müssen trotz des definierten Einzelfehlers lesbar bleiben.</p>
+          <p><b>Messung:</b> Verfügbarkeit, Ausfallzeit, Wiederherstellungszeit, Datenverlust. <b>Nachweis:</b> Failover- und Restore-Test. <b>Konflikt:</b> Redundanz erhöht Aufwand und Komplexität.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail3" id="k3-6">
+      <div class="detail3-head"><span class="num">6</span><span class="name">Security</span></div>
+      <div class="detail3-body">
+        <div class="tri-grid">
+          <div class="tri-card tri-norm"><span class="tag">Normmodell</span><p>Vertraulichkeit, Integrität, Nichtabstreitbarkeit, Verantwortungszuordnung, Authentizität und Widerstandsfähigkeit.</p></div>
+          <div class="tri-card tri-bsp"><span class="tag">Studienaktenbeispiel</span><p>Eine studentische Hilfskraft darf keine Prüfungsentscheidung sehen.</p></div>
+          <div class="tri-card tri-ent"><span class="tag">Projektentscheidung</span><p>Welche Rolle darf welche Dokumentart zu welchem Zweck bearbeiten?</p></div>
+        </div>
+        <div class="detail3-extra">
+          <p><b>Anforderung:</b> Zugriff wird nach Rolle, Organisationseinheit, Dokumentart und Bearbeitungszweck geprüft und protokolliert.</p>
+          <p><b>Messung:</b> Unberechtigte Zugriffe, Protokollvollständigkeit, Entzugszeit. <b>Nachweis:</b> Berechtigungs- und Angriffstest. <b>Konflikt:</b> Restriktive Rechte können Vertretungen behindern.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail3" id="k3-7">
+      <div class="detail3-head"><span class="num">7</span><span class="name">Wartbarkeit</span></div>
+      <div class="detail3-body">
+        <div class="tri-grid">
+          <div class="tri-card tri-norm"><span class="tag">Normmodell</span><p>Modularität, Wiederverwendbarkeit, Analysierbarkeit, Modifizierbarkeit und Testbarkeit.</p></div>
+          <div class="tri-card tri-bsp"><span class="tag">Studienaktenbeispiel</span><p>Die Dokumentart „Nachteilsausgleich" wird ergänzt.</p></div>
+          <div class="tri-card tri-ent"><span class="tag">Projektentscheidung</span><p>Welche Änderungen sollen konfigurierbar sein?</p></div>
+        </div>
+        <div class="detail3-extra">
+          <p><b>Anforderung:</b> Dokumentart, Aufbewahrung und Berechtigungen müssen ohne Änderung unbeteiligter Funktionen ergänzt werden können.</p>
+          <p><b>Messung:</b> Änderungsaufwand, betroffene Komponenten, Regressionen. <b>Nachweis:</b> Impact-Analyse und Regressionstest. <b>Konflikt:</b> Hohe Konfigurierbarkeit erschwert Test und Bedienung.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail3" id="k3-8">
+      <div class="detail3-head"><span class="num">8</span><span class="name">Flexibilität</span></div>
+      <div class="detail3-body">
+        <div class="tri-grid">
+          <div class="tri-card tri-norm"><span class="tag">Normmodell</span><p>Anpassbarkeit, Skalierbarkeit, Installierbarkeit und Austauschbarkeit.</p></div>
+          <div class="tri-card tri-bsp"><span class="tag">Studienaktenbeispiel</span><p>Ein Fachbereich und später ein anderes Campusmanagement kommen hinzu.</p></div>
+          <div class="tri-card tri-ent"><span class="tag">Projektentscheidung</span><p>Welche Veränderungen sind realistisch vorzubereiten?</p></div>
+        </div>
+        <div class="detail3-extra">
+          <p><b>Anforderung:</b> Mandant, Datenvolumen und Schnittstelle müssen innerhalb definierter Grenzen anpassbar sein.</p>
+          <p><b>Messung:</b> Einrichtungsaufwand, Skalierungsgrenze, Austauschaufwand. <b>Nachweis:</b> Migrations- und Skalierungstest. <b>Konflikt:</b> Vorbereitete Flexibilität verursacht frühen Aufwand.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail3" id="k3-9">
+      <div class="detail3-head"><span class="num">9</span><span class="name">Safety</span></div>
+      <div class="detail3-body">
+        <div class="tri-grid">
+          <div class="tri-card tri-norm"><span class="tag">Normmodell</span><p>Betriebsbegrenzung, Risikoerkennung, sicherer Fehlerzustand, Gefahrenwarnung und sichere Integration.</p></div>
+          <div class="tri-card tri-bsp"><span class="tag">Studienaktenbeispiel</span><p>Eine unvollständige Akte könnte eine falsche Prüfungsentscheidung auslösen.</p></div>
+          <div class="tri-card tri-ent"><span class="tag">Projektentscheidung</span><p>Welche Zustände sind gefährlich und müssen eine Sperre auslösen?</p></div>
+        </div>
+        <div class="detail3-extra">
+          <p><b>Anforderung:</b> Bei fehlenden entscheidungsrelevanten Unterlagen muss das System warnen und die Freigabe verhindern.</p>
+          <p><b>Messung:</b> Erkannte Risikozustände und übersehene Warnfälle. <b>Nachweis:</b> Gefahrenszenario und Fail-safe-Test. <b>Konflikt:</b> Zu viele Warnungen führen zu Warnmüdigkeit.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pager">
+      <a href="#kap-2">‹ Zurück</a>
+      <span class="progress">Kapitel 3 von 10 · Detailkarten</span>
+      <a href="#kap-4">Weiter ›</a>
+    </div>
+  </section>
+
+  <!-- ============ KAPITEL 4 · ISO 25019 UND ISO 25012 ============ -->
+  <section class="kapitel" id="kap-4">
+    <div class="kap-head"><span class="kap-num">KAPITEL 4</span><h2>ISO 25019 und ISO 25012</h2></div>
+    <h3 class="sec-title">Produkt, Nutzung und Daten sind drei verschiedene Fragen</h3>
+    <div class="tri-grid">
+      <div class="tri-card tri-norm"><span class="tag">ISO 25010</span><p>Welche Qualitätseigenschaften besitzt das Produkt? (<a href="#kap-2">Kapitel 2</a>/<a href="#kap-3">3</a>)</p></div>
+      <div class="tri-card tri-bsp"><span class="tag">ISO 25019</span><p>Welche Wirkungen entstehen im Nutzungskontext?</p></div>
+      <div class="tri-card tri-ent"><span class="tag">ISO 25012</span><p>Welche Qualität besitzen strukturierte Daten?</p></div>
+    </div>
+
+    <h3 class="sec-title">Drei Nutzungskontexte</h3>
+    <div class="ctx-grid">
+      <div class="ctx-card">
+        <h4>Studierende · mobil</h4>
+        <p>Nachweis hochladen; schwankende Verbindung; eventuell Screenreader.</p>
+        <p class="risk">Risiko: unklarer Status führt zu Doppelupload oder Fristproblem.</p>
+      </div>
+      <div class="ctx-card">
+        <h4>Studienbüro · Regelbetrieb</h4>
+        <p>Vollständigkeit prüfen; mehrere Fachverfahren.</p>
+        <p class="risk">Risiko: fehlender Kontext erzeugt Rückfragen und Nacharbeit.</p>
+      </div>
+      <div class="ctx-card">
+        <h4>Prüfungsamt · Fristdruck</h4>
+        <p>Entscheidungsunterlagen vorbereiten; hohe Fallzahl.</p>
+        <p class="risk">Risiko: Verzögerung oder Fehlzuordnung beeinflusst Entscheidungen.</p>
+      </div>
+    </div>
+
+    <h3 class="sec-title" id="k4-25012">Datenqualität als eigener Blick</h3>
+    <div class="info-table-wrap">
+      <table class="info-table">
+        <thead><tr><th>Datenfrage</th><th>Studienaktenbeispiel</th><th>Messidee</th><th>Artefakt</th></tr></thead>
+        <tbody>
+          <tr><td>Korrekt?</td><td>Matrikelnummer gehört zur richtigen Person.</td><td>Fehlerhafte Identitätszuordnungen</td><td>Datenqualitätsregel</td></tr>
+          <tr><td>Vollständig?</td><td>Dokumentart, Eingangsdatum und Status sind vorhanden.</td><td>Fehlende Pflichtmetadaten</td><td>Metadatenkatalog</td></tr>
+          <tr><td>Konsistent?</td><td>Status in Campusmanagement und Akte stimmen überein.</td><td>Abweichende Statuswerte</td><td>Abgleichsregel</td></tr>
+          <tr><td>Aktuell?</td><td>Der Status „zugelassen" wird nach Fristablauf automatisch aktualisiert, nicht erst bei manueller Nachprüfung.</td><td>Zeit bis zur Aktualisierung</td><td>Synchronisationskonzept</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="kap-sub">Eine technisch zuverlässige Studierendenakte kann fachlich schlechte oder inkonsistente Daten enthalten.</p>
+
+    <div class="pager">
+      <a href="#kap-3">‹ Zurück</a>
+      <span class="progress">Kapitel 4 von 10 · ISO 25019 und ISO 25012</span>
+      <a href="#kap-5">Weiter ›</a>
+    </div>
+  </section>
+
+  <!-- ============ KAPITEL 5 · ZENTRALE MATRIX ============ -->
+  <section class="kapitel" id="kap-5">
+    <div class="kap-head"><span class="kap-num">KAPITEL 5</span><h2>Zentrale Matrix</h2></div>
+    <h3 class="sec-title">Rolle → Frage → Norm → Artefakt → Entscheidung</h3>
+    <div class="info-table-wrap">
+      <table class="info-table">
+        <thead><tr><th>Rolle</th><th>Konkrete Frage</th><th>Normblick</th><th>Artefakt</th><th>Entscheidung</th></tr></thead>
+        <tbody>
+          <tr id="rolle-business-analysis"><td>Business Analysis</td><td>Welche Entscheidung benötigt welche Unterlagen?</td><td>25019, 9241-11, 29148</td><td>Kontextdiagramm, Prozessmodell</td><td>Nutzungskontext bestätigen</td></tr>
+          <tr id="rolle-requirements-engineering"><td>Requirements Engineering</td><td>Wann ist eine Akte vollständig und prüfbar?</td><td>25010, 25030, 29148</td><td>Qualitätsanforderung, Szenario</td><td>Anforderung freigeben</td></tr>
+          <tr id="rolle-studienbuero"><td>Studienbüro</td><td>Welche Dokumentarten und Status werden benötigt?</td><td>25010, 25012</td><td>Geschäftsregeln, Metadatenkatalog</td><td>Fachregeln validieren</td></tr>
+          <tr id="rolle-pruefungsamt"><td>Prüfungsamt</td><td>Welche Unterlagen sind entscheidungsrelevant?</td><td>25010, 25019</td><td>Vollständigkeitsmatrix</td><td>Sperrregeln festlegen</td></tr>
+          <tr id="rolle-datenschutz"><td>Datenschutz</td><td>Wer darf welchen Inhalt zu welchem Zweck verarbeiten?</td><td>Datenschutzrecht, ergänzend 25010/27001</td><td>Lösch- und Berechtigungskonzept</td><td>Verarbeitung bewerten</td></tr>
+          <tr id="rolle-infosec"><td>Informationssicherheit</td><td>Welche Folgen haben Offenlegung, Veränderung oder Ausfall?</td><td>27001, 25010</td><td>Schutzbedarf, Risikoregister</td><td>Maßnahmen festlegen</td></tr>
+          <tr id="rolle-architektur"><td>Architektur</td><td>Wie bleiben Dokumente, Metadaten und Rechte konsistent?</td><td>25010, 25012</td><td>Architekturmodell, Schnittstellenvertrag</td><td>Lösungsentscheidung treffen</td></tr>
+          <tr id="rolle-auftragnehmer"><td>Auftragnehmer (IT-Dienstleister)</td><td>Wie wird das Lastenheft technisch und vertraglich umgesetzt?</td><td>DIN 69901-5, 25010</td><td>Pflichtenheft</td><td>Umsetzungsvorschlag vorlegen</td></tr>
+          <tr id="rolle-test-qs"><td>Test / QS</td><td>Wie wird Qualität nachvollziehbar nachgewiesen?</td><td>25040, 25010</td><td>Testkonzept, Bewertungsbericht</td><td>Erfüllung bestätigen</td></tr>
+          <tr id="rolle-itbetrieb"><td>IT-Betrieb</td><td>Wie wird die Akte überwacht und wiederhergestellt?</td><td>25010, 27001</td><td>Betriebshandbuch, Restore-Plan</td><td>Betriebsfähigkeit bestätigen</td></tr>
+          <tr id="rolle-auftraggeber"><td>Auftraggeber</td><td>Welche Abweichung und welches Restrisiko sind akzeptabel?</td><td>25040, 9001</td><td>Abnahmeprotokoll</td><td>Abnahme entscheiden</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sec-title">Rollenkonflikte und Klärungsinstanz</h3>
+    <p class="sec-sub">Die Rollen priorisieren unterschiedlich. Ohne benannte Klärungsinstanz bleibt der Konflikt bis zur Abnahme ungelöst und taucht dort verspätet und teuer auf.</p>
+    <div class="info-table-wrap">
+      <table class="info-table">
+        <thead><tr><th>Rolle A</th><th>Rolle B</th><th>Typischer Zielkonflikt</th><th>Klärungsinstanz</th></tr></thead>
+        <tbody>
+          <tr><td><a href="#rolle-datenschutz">Datenschutz</a></td><td><a href="#rolle-pruefungsamt">Prüfungsamt</a></td><td>Löschfrist personenbezogener Daten vs. Nachweispflicht bei späteren Widersprüchen.</td><td>Requirements Engineering moderiert; Auftraggeber entscheidet Aufbewahrungsdauer.</td></tr>
+          <tr><td><a href="#rolle-architektur">Architektur</a></td><td><a href="#rolle-test-qs">Test / QS</a></td><td>Enge Kopplung erleichtert Datenaustausch, erschwert aber isolierte Testbarkeit.</td><td>Architektur und Test/QS klären Schnittstellenverträge gemeinsam vor Freigabe.</td></tr>
+          <tr><td><a href="#rolle-infosec">Informationssicherheit</a></td><td><a href="#rolle-business-analysis">Business Analysis</a></td><td>Mehrstufige Berechtigungsprüfung erhöht Sicherheit, senkt aber Bedienbarkeit für Studierende und Studienbüro (Interaktionsfähigkeit).</td><td>Business Analysis moderiert Abwägung; Auftraggeber legt Schutzniveau fest.</td></tr>
+          <tr><td><a href="#rolle-architektur">Architektur</a></td><td><a href="#rolle-itbetrieb">IT-Betrieb</a></td><td>Hohe Konfigurierbarkeit (Wartbarkeit) für neue Dokumentarten kostet Laufzeitperformance (Leistungseffizienz).</td><td>Architektur legt Grenzen der Konfigurierbarkeit fest; IT-Betrieb bestätigt Lastverhalten.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="merksatz">Merksatz: <b>Ein Zielkonflikt zwischen zwei Qualitätsmerkmalen ist kein Fehler im Modell</b>, sondern ein normaler Befund — er muss benannt, nicht wegdiskutiert werden.</div>
+
+    <div class="pager">
+      <a href="#kap-4">‹ Zurück</a>
+      <span class="progress">Kapitel 5 von 10 · Zentrale Matrix</span>
+      <a href="#kap-6">Weiter ›</a>
+    </div>
+  </section>
+
+  <!-- ============ KAPITEL 6 · ARTEFAKTE ============ -->
+  <section class="kapitel" id="kap-6">
+    <div class="kap-head"><span class="kap-num">KAPITEL 6</span><h2>Artefakte</h2></div>
+    <h3 class="sec-title">Vom Hochschulziel bis zur Abnahmeentscheidung</h3>
+    <div class="chain-flow">
+      <span class="chain-item">Hochschulziel</span><span class="chain-arrow">›</span>
+      <span class="chain-item">Stakeholderbedarf</span><span class="chain-arrow">›</span>
+      <span class="chain-item">Use Case</span><span class="chain-arrow">›</span>
+      <span class="chain-item">Qualitätsanforderung</span><span class="chain-arrow">›</span>
+      <span class="chain-item">Akzeptanzkriterium</span><span class="chain-arrow">›</span>
+      <span class="chain-item">Testfall</span><span class="chain-arrow">›</span>
+      <span class="chain-item">Testergebnis</span><span class="chain-arrow">›</span>
+      <span class="chain-item">Abnahmekriterium</span><span class="chain-arrow">›</span>
+      <span class="chain-item">Abnahmeentscheidung</span>
+    </div>
+
+    <h3 class="sec-title">Bezug zur Entscheidungskette aus Kapitel 2</h3>
+    <p class="sec-sub">Die Artefaktkette ist keine zweite, konkurrierende Kette — sie ist die <a href="#entscheidungskette">Entscheidungskette</a> in feinerer Auflösung. Jedes Artefakt gehört zu genau einem der sechs Schritte aus Kapitel 2.</p>
+    <div class="info-table-wrap">
+      <table class="info-table">
+        <thead><tr><th>Schritt · Entscheidungskette (Kap. 2)</th><th>Zugehörige Artefakte · Artefaktkette (Kap. 6)</th></tr></thead>
+        <tbody>
+          <tr><td><a href="#ek-merkmal-erkennen">Merkmal erkennen</a></td><td>Hochschulziel, Stakeholderbedarf</td></tr>
+          <tr><td><a href="#ek-stakeholder-kontext">Stakeholder und Kontext klären</a></td><td>Stakeholderbedarf, Use Case</td></tr>
+          <tr><td><a href="#ek-anforderung-formulieren">Anforderung formulieren</a></td><td>Qualitätsanforderung</td></tr>
+          <tr><td><a href="#ek-messgroesse-zielwert">Messgröße und Zielwert vereinbaren</a></td><td>Akzeptanzkriterium</td></tr>
+          <tr><td><a href="#ek-nachweis-fuehren">Nachweis führen</a></td><td>Testfall, Testergebnis</td></tr>
+          <tr><td><a href="#ek-abnahme-entscheiden">Abnahme entscheiden</a></td><td>Abnahmekriterium, Abnahmeentscheidung</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="merksatz">Merksatz: <b>6 Entscheidungsschritte, 9 Artefakte</b> — die Artefaktkette zerlegt manche Schritte (z. B. „Nachweis führen") in mehrere dokumentierte Zwischenergebnisse.</div>
+
+    <h3 class="sec-title">Ausgefüllter Ausschnitt · Fall A (Akte aufrufen)</h3>
+    <div class="info-table-wrap">
+      <table class="info-table">
+        <thead><tr><th>Trace-ID</th><th>Artefakt</th><th>Inhalt zur Studienakte</th><th>Rollenbezug (Kap. 5)</th></tr></thead>
+        <tbody>
+          <tr id="trace-ZIEL-A01"><td><code>ZIEL-A01</code></td><td>Hochschulziel</td><td>Prüfungsentscheidungen effizient und nachvollziehbar vorbereiten. (PMBOK: Governance/Business Case)</td><td><a href="#rolle-auftraggeber">Auftraggeber</a></td></tr>
+          <tr id="trace-SH-A01"><td><code>SH-A01</code> <a class="trace-ref" href="#trace-ZIEL-A01">← ZIEL-A01</a></td><td>Stakeholderbedarf</td><td>Das Prüfungsamt benötigt die richtige und vollständige Akte.</td><td><a href="#rolle-pruefungsamt">Prüfungsamt</a></td></tr>
+          <tr id="trace-UC-A01"><td><code>UC-A01</code> <a class="trace-ref" href="#trace-SH-A01">← SH-A01</a></td><td>Use Case</td><td>Berechtigte Person ruft die vollständige, freigegebene Akte einer Studierenden auf.</td><td><a href="#rolle-business-analysis">Business Analysis</a></td></tr>
+          <tr id="trace-REQ-A01"><td><code>REQ-A01</code> <a class="trace-ref" href="#trace-UC-A01">← UC-A01</a></td><td>Qualitätsanforderung</td><td>Nur entscheidungsrelevante, freigegebene Dokumente der gewählten Person erscheinen.</td><td><a href="#rolle-requirements-engineering">Requirements Engineering</a></td></tr>
+          <tr id="trace-AK-A01"><td><code>AK-A01</code> <a class="trace-ref" href="#trace-REQ-A01">← REQ-A01</a></td><td>Akzeptanzkriterium</td><td>Bei fehlendem Pflichtdokument wird die Freigabe gesperrt und verständlich begründet.</td><td><a href="#rolle-requirements-engineering">Requirements Engineering</a></td></tr>
+          <tr id="trace-TF-A01"><td><code>TF-A01</code> <a class="trace-ref" href="#trace-AK-A01">← AK-A01</a></td><td>Testfall</td><td>Akte ohne Pflichtnachweis zur Entscheidung vorlegen.</td><td><a href="#rolle-test-qs">Test / QS</a></td></tr>
+          <tr id="trace-TE-A01"><td><code>TE-A01</code> <a class="trace-ref" href="#trace-TF-A01">← TF-A01</a></td><td>Testergebnis</td><td>Sperre ausgelöst; Warnung angezeigt; Ereignis protokolliert.</td><td><a href="#rolle-test-qs">Test / QS</a></td></tr>
+          <tr id="trace-ABN-A01"><td><code>ABN-A01</code> <a class="trace-ref" href="#trace-TE-A01">← TE-A01</a></td><td>Abnahmekriterium</td><td>Vereinbarte Positiv- und Negativfälle wurden in der Abnahmeumgebung bestanden.</td><td><a href="#rolle-auftraggeber">Auftraggeber</a></td></tr>
+          <tr id="trace-ENT-A01"><td><code>ENT-A01</code> <a class="trace-ref" href="#trace-ABN-A01">← ABN-A01</a></td><td>Entscheidung</td><td>Abnahme oder dokumentierte Abweichung mit Restrisiko.</td><td><a href="#rolle-auftraggeber">Auftraggeber</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sec-title">Ausgefüllter Ausschnitt · Fall B (Dokument zuordnen)</h3>
+    <div class="info-table-wrap">
+      <table class="info-table">
+        <thead><tr><th>Trace-ID</th><th>Artefakt</th><th>Inhalt zur Studienakte</th><th>Rollenbezug (Kap. 5)</th></tr></thead>
+        <tbody>
+          <tr id="trace-ZIEL-B01"><td><code>ZIEL-B01</code></td><td>Hochschulziel</td><td>Eingehende Dokumente korrekt und ohne manuellen Mehraufwand zuordnen.</td><td><a href="#rolle-auftraggeber">Auftraggeber</a></td></tr>
+          <tr id="trace-SH-B01"><td><code>SH-B01</code> <a class="trace-ref" href="#trace-ZIEL-B01">← ZIEL-B01</a></td><td>Stakeholderbedarf</td><td>Das Studienbüro benötigt verlässliche Dokumentart- und Personenzuordnung ohne Nacharbeit.</td><td><a href="#rolle-studienbuero">Studienbüro</a></td></tr>
+          <tr id="trace-UC-B01"><td><code>UC-B01</code> <a class="trace-ref" href="#trace-SH-B01">← SH-B01</a></td><td>Use Case</td><td>System erkennt Dokumentart und Person automatisch aus Upload und Metadaten.</td><td><a href="#rolle-business-analysis">Business Analysis</a></td></tr>
+          <tr id="trace-REQ-B01"><td><code>REQ-B01</code> <a class="trace-ref" href="#trace-UC-B01">← UC-B01</a></td><td>Qualitätsanforderung</td><td>Zuordnungen unterhalb der vereinbarten Sicherheitsschwelle gehen an eine Sachbearbeiterin statt automatisch zu erfolgen.</td><td><a href="#rolle-requirements-engineering">Requirements Engineering</a></td></tr>
+          <tr id="trace-AK-B01"><td><code>AK-B01</code> <a class="trace-ref" href="#trace-REQ-B01">← REQ-B01</a></td><td>Akzeptanzkriterium</td><td>Bei mehrdeutiger Zuordnung wird der Fall markiert und nicht automatisch freigegeben.</td><td><a href="#rolle-requirements-engineering">Requirements Engineering</a></td></tr>
+          <tr id="trace-TF-B01"><td><code>TF-B01</code> <a class="trace-ref" href="#trace-AK-B01">← AK-B01</a></td><td>Testfall</td><td>Zwei ähnliche Namen mit unvollständiger Matrikelnummer hochladen.</td><td><a href="#rolle-test-qs">Test / QS</a></td></tr>
+          <tr id="trace-TE-B01"><td><code>TE-B01</code> <a class="trace-ref" href="#trace-TF-B01">← TF-B01</a></td><td>Testergebnis</td><td>Fall an Sachbearbeiterin weitergeleitet; keine automatische Zuordnung; Ereignis protokolliert.</td><td><a href="#rolle-test-qs">Test / QS</a></td></tr>
+          <tr id="trace-ABN-B01"><td><code>ABN-B01</code> <a class="trace-ref" href="#trace-TE-B01">← TE-B01</a></td><td>Abnahmekriterium</td><td>Kein Testfall aus dem vereinbarten Grenzfall-Katalog wurde automatisch fehlzugeordnet.</td><td><a href="#rolle-auftraggeber">Auftraggeber</a></td></tr>
+          <tr id="trace-ENT-B01"><td><code>ENT-B01</code> <a class="trace-ref" href="#trace-ABN-B01">← ABN-B01</a></td><td>Entscheidung</td><td>Abnahme mit dokumentierter Eskalationsschwelle für Grenzfälle.</td><td><a href="#rolle-auftraggeber">Auftraggeber</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="kap-sub">Unterschied zu Fall A: Hier steht nicht Vollständigkeit im Vordergrund, sondern Korrektheit unter Unsicherheit — Safety und Human Oversight werden über die Eskalationsschwelle sichtbar.</p>
+    <p class="kap-sub"><b>Traceability:</b> Jede Trace-ID referenziert explizit ihren Vorgänger (z. B. AK-A01 ← REQ-A01) — das macht die Kette vom Hochschulziel bis zur Entscheidung rückverfolgbar, statt sie nur zu behaupten. Die Spalte „Rollenbezug" verbindet jede Zeile mit der passenden Rolle aus <a href="#kap-5">Kapitel 5 (Rollenmatrix)</a> — so lässt sich von jedem Artefakt aus klären, wer dafür verantwortlich zeichnet.</p>
+
+    <div class="pager">
+      <a href="#kap-5">‹ Zurück</a>
+      <span class="progress">Kapitel 6 von 10 · Artefakte</span>
+      <a href="#kap-7">Weiter ›</a>
+    </div>
+  </section>
+
+  <!-- ============ KAPITEL 7 · ALTERNATIVE EINSTIEGE ============ -->
+  <section class="kapitel" id="kap-7">
+    <div class="kap-head"><span class="kap-num">KAPITEL 7</span><h2>Alternative Einstiege</h2></div>
+    <h3 class="sec-title">Nach Fall, Norm, Rolle oder Artefakt einsteigen</h3>
+    <div class="fall-grid">
+      <div class="fall-card">
+        <h4>Fall A · Akte aufrufen</h4>
+        <p>Merkmale: Funktionale Eignung, Leistung, Security, Interaktion.</p>
+        <p class="extra"><b>Artefakte:</b> Use Case, Berechtigungskonzept, Lasttest.<br><b>Abnahmefrage:</b> Rechtzeitig, vollständig und nur berechtigt?</p>
+      </div>
+      <div class="fall-card">
+        <h4>Fall B · Dokument zuordnen</h4>
+        <p>Merkmale: Korrektheit, Interoperabilität, Safety, Datenqualität.</p>
+        <p class="extra"><b>Artefakte:</b> Datenregeln, Grenzfälle, Human Oversight.<br><b>Abnahmefrage:</b> Verhindert das System ungeprüfte unsichere Zuordnungen?</p>
+      </div>
+      <div class="fall-card">
+        <h4>Fall C · Restore</h4>
+        <p>Merkmale: Zuverlässigkeit, Security, Safety, Wartbarkeit.</p>
+        <p class="extra"><b>Artefakte:</b> Restore-Plan, Rechtevergleich, Abnahmeprotokoll.<br><b>Abnahmefrage:</b> Sind Dokumente, Metadaten und Rechte konsistent?</p>
+      </div>
+    </div>
+
+    <h3 class="sec-title">Schnelleinstiege</h3>
+    <div class="quick-grid">
+      <a class="quick-card" href="#k3-6"><span class="quick-tag">Nach Normmerkmal</span><span class="quick-title">Security im Detail öffnen</span></a>
+      <a class="quick-card" href="#kap-5"><span class="quick-tag">Nach Rolle</span><span class="quick-title">Rollenmatrix öffnen</span></a>
+      <a class="quick-card" href="#kap-6"><span class="quick-tag">Nach Artefakt</span><span class="quick-title">Artefaktkette öffnen</span></a>
+      <a class="quick-card" href="#k4-25012"><span class="quick-tag">Nach Datenfrage</span><span class="quick-title">ISO 25012 und Metadaten öffnen</span></a>
+      <a class="quick-card" href="#kap-8"><span class="quick-tag">Nach Begriff</span><span class="quick-title">Glossar A–Z öffnen</span></a>
+      <a class="quick-card" href="#kap-9"><span class="quick-tag">Nach Quelle</span><span class="quick-title">Normenstand und Grenzen öffnen</span></a>
+      <a class="quick-card" href="#kap-10"><span class="quick-tag">Nach Spezifikationsweg</span><span class="quick-title">Klassisch, agil oder Use Case vergleichen</span></a>
+    </div>
+
+    <div class="pager">
+      <a href="#kap-6">‹ Zurück</a>
+      <span class="progress">Kapitel 7 von 10 · Alternative Einstiege</span>
+      <a href="#kap-8">Weiter ›</a>
+    </div>
+  </section>
+
+  <!-- ============ KAPITEL 8 · GLOSSAR ============ -->
+  <section class="kapitel" id="kap-8">
+    <div class="kap-head"><span class="kap-num">KAPITEL 8</span><h2>Glossar</h2></div>
+    <h3 class="sec-title">Begriffe sicher unterscheiden</h3>
+    <p class="glossar-index">A · B · D · E · F · G · I · L · M · N · P · Q · R · S · T · U · Z</p>
+
+    <div class="gl-grid">
+      <div class="gl-card" id="gl-abnahme-akzeptanz">
+        <dl class="footer-glossary">
+          <dt>Abnahmekriterium · Akzeptanzkriterium</dt>
+          <dd><b>Abnahmekriterium:</b> Bedingung für die formale Annahme. Beispiel: Der Restore-Test ist in der Abnahmeumgebung bestanden.<br><b>Akzeptanzkriterium:</b> Konkretisiert, woran die Erfüllung einer Anforderung erkannt wird. Beispiel: Ein unberechtigter Zugriff wird verweigert und protokolliert.<br><i>Nicht verwechseln:</i> Akzeptanz macht prüfbar; Abnahme trägt die formale Entscheidung.</dd>
+        </dl>
+      </div>
+      <div class="gl-card" id="gl-baseline-businesscase">
+        <dl class="footer-glossary">
+          <dt>Baseline · Business Case</dt>
+          <dd><b>Baseline:</b> Vereinbarter Stand von Anforderungen oder Artefakten, gegen den Änderungen bewertet werden. Beispiel: Freigegebener Anforderungskatalog für Release 1. Eine Baseline ist nicht unveränderlich; Änderungen werden kontrolliert.<br><b>Business Case:</b> Nutzen-Kosten-Risiko-Begründung eines Vorhabens, meist erster Schritt vor Lastenheft/Anforderungsermittlung. Beispiel: kürzere Bearbeitungszeit vs. Implementierungsaufwand bei der Studienakte.</dd>
+        </dl>
+      </div>
+      <div class="gl-card" id="gl-studierendenakte-dokumentart">
+        <dl class="footer-glossary">
+          <dt>Digitale Studierendenakte · Dokumentart</dt>
+          <dd><b>Studierendenakte:</b> Geordneter Bestand aus Dokumenten, Metadaten, Status und Nachweisen.<br><b>Dokumentart:</b> Fachliche Klasse mit Regeln für Verarbeitung, Zugriff und Aufbewahrung, etwa „Anerkennungsbescheid". Nicht mit einer konkreten Datei verwechseln.</dd>
+        </dl>
+      </div>
+      <div class="gl-card" id="gl-epic">
+        <dl class="footer-glossary">
+          <dt>Epic</dt>
+          <dd>Bündel mehrerer zusammengehöriger User Stories unter einem gemeinsamen Ziel, meist zu groß für einen einzelnen Sprint. Beispiel: „Entscheidungsreife Akte" bündelt Stories zu Aktenabruf, Zuordnung und Wiederherstellung. Nicht mit einer einzelnen User Story verwechseln.</dd>
+        </dl>
+      </div>
+      <div class="gl-card" id="gl-fa-funktionale-eignung">
+        <dl class="footer-glossary">
+          <dt>Funktionale Anforderung · Funktionale Eignung</dt>
+          <dd><b>Funktionale Anforderung:</b> Beschreibt eine bereitzustellende Funktion, etwa „Dokument zuordnen".<br><b>Funktionale Eignung:</b> Bewertet Vollständigkeit, Korrektheit und Angemessenheit der Funktionen. Bezug: ISO 25010.</dd>
+        </dl>
+      </div>
+      <div class="gl-card" id="gl-geschaeftsregel-grenzwert">
+        <dl class="footer-glossary">
+          <dt>Geschäftsregel · Grenzwert</dt>
+          <dd><b>Geschäftsregel:</b> Fachliche Vorgabe, etwa „Entscheidung erst bei vollständigen Unterlagen".<br><b>Grenzwert:</b> Wert, dessen Über- oder Unterschreitung eine Bewertung auslöst. Nicht mit Messgröße verwechseln.</dd>
+        </dl>
+      </div>
+      <div class="gl-card" id="gl-interop-invest">
+        <dl class="footer-glossary">
+          <dt>Interoperabilität · INVEST</dt>
+          <dd><b>Interoperabilität:</b> Fähigkeit zum Austausch und zur sinnvollen Nutzung von Informationen. Beispiel: Campusmanagement und Akte verstehen denselben Status gleich. Nicht mit bloßer Koexistenz verwechseln.<br><b>INVEST:</b> Prüfkriterien für gute User Stories — Independent, Negotiable, Valuable, Estimable, Small, Testable. Bezug: IREB CPRE RE@Agile (siehe <a href="#kap-10">Kapitel 10, Spur 2</a>).</dd>
+        </dl>
+      </div>
+      <div class="gl-card" id="gl-lastenheft">
+        <dl class="footer-glossary">
+          <dt>Lastenheft</dt>
+          <dd>Vom Auftraggeber festgelegte Gesamtheit der Forderungen an Lieferungen und Leistungen — das „Was/Wofür". Beispiel: Prüfungsamt fordert vollständige, freigegebene Aktenanzeige. Bezug: DIN 69901-5. Nicht mit dem Pflichtenheft (Auftragnehmer-Antwort) verwechseln — siehe <a href="#kap-10">Kapitel 10, Spur 1</a>.</dd>
+        </dl>
+      </div>
+      <div class="gl-card" id="gl-messgroesse-metadatum">
+        <dl class="footer-glossary">
+          <dt>Messgröße · Metadatum</dt>
+          <dd><b>Messgröße:</b> Beobachtbare oder berechenbare Größe, etwa Anzeigezeit. Nicht mit Zielwert verwechseln.<br><b>Metadatum:</b> Beschreibende Information wie Matrikelnummer, Dokumentart, Eingangsdatum oder Status. Nicht mit Dokumentinhalt verwechseln.</dd>
+        </dl>
+      </div>
+      <div class="gl-card" id="gl-nutzungskontext">
+        <dl class="footer-glossary">
+          <dt>Nutzungskontext</dt>
+          <dd>Zusammenspiel von Nutzern, Zielen, Aufgaben, Ressourcen und Umgebung. Beispiel: Mobiler Upload mit Screenreader bei schwankender Verbindung. Bezug: ISO 25019 und ISO 9241-11 (siehe <a href="#kap-4">Kapitel 4</a>).</dd>
+        </dl>
+      </div>
+      <div class="gl-card" id="gl-pflichtenheft-produktqualitaet">
+        <dl class="footer-glossary">
+          <dt>Pflichtenheft · Produktqualität</dt>
+          <dd><b>Pflichtenheft:</b> Vom Auftragnehmer erarbeitete Realisierungsvorgaben zum vorgegebenen Lastenheft — das „Wie/Womit". Beispiel: IT-Dienstleister schlägt rollenbasierte Zugriffsprüfung vor. Bezug: DIN 69901-5.<br><b>Produktqualität:</b> Eigenschaften des IKT-Produkts selbst, etwa Korrektheit, Antwortzeit, Zugriffsschutz und Wiederherstellbarkeit. Nicht mit Quality in Use verwechseln. Bezug: ISO 25010.</dd>
+        </dl>
+      </div>
+      <div class="gl-card" id="gl-quality-in-use">
+        <dl class="footer-glossary">
+          <dt>Quality in Use · Qualitätsanforderung · Qualitätsszenario</dt>
+          <dd><b>Quality in Use:</b> Wirkungen bei Nutzung in einem festgelegten Kontext. Bezug: ISO 25019.<br><b>Qualitätsanforderung:</b> Erwartung an eine Qualitätseigenschaft unter Bedingungen.<br><b>Qualitätsszenario:</b> Struktur aus Quelle, Auslöser, Umgebung, Reaktion und Messung. Nicht mit Use Case verwechseln.</dd>
+        </dl>
+      </div>
+      <div class="gl-card" id="gl-restrisiko">
+        <dl class="footer-glossary">
+          <dt>Restrisiko</dt>
+          <dd>Risiko, das nach geplanten Maßnahmen verbleibt. Beispiel: seltene fachliche Fehlzuordnung trotz Plausibilitätsprüfung. Nicht mit einem unbehandelten Risiko verwechseln.</dd>
+        </dl>
+      </div>
+      <div class="gl-card" id="gl-safety-security-stakeholder">
+        <dl class="footer-glossary">
+          <dt>Safety · Security · Stakeholderbedarf</dt>
+          <dd><b>Safety:</b> Vermeidung von Schäden, etwa Sperre bei fehlender Entscheidungsunterlage.<br><b>Security:</b> Schutz vor unberechtigtem Zugriff oder Veränderung. Nicht mit Datenschutzrecht oder Safety verwechseln.<br><b>Stakeholderbedarf:</b> Ziel, Problem oder Erwartung – noch keine spezifizierte Systemanforderung.</dd>
+        </dl>
+      </div>
+      <div class="gl-card" id="gl-testfall-traceability">
+        <dl class="footer-glossary">
+          <dt>Testfall · Traceability</dt>
+          <dd><b>Testfall:</b> Bedingungen, Schritte und erwartetes Ergebnis für eine Prüfung.<br><b>Traceability:</b> Verbindung zwischen Quelle, Bedarf, Anforderung, Umsetzung, Test und Entscheidung. Nicht mit bloßer Nummerierung verwechseln — siehe die Trace-ID-Ketten in <a href="#kap-6">Kapitel 6</a>.</dd>
+        </dl>
+      </div>
+      <div class="gl-card" id="gl-usecase-userstory">
+        <dl class="footer-glossary">
+          <dt>Use Case · User Story</dt>
+          <dd><b>Use Case:</b> Beschreibung, wie ein Akteur mit dem System ein fachliches Ziel erreicht, etwa „Studierendenakte aufrufen". Nicht mit Klickfolge oder Qualitätsszenario verwechseln.<br><b>User Story:</b> Kurzformat „Als … will ich …, damit …" für einen Anwenderbedarf, meist mit Akzeptanzkriterien verknüpft. Bezug: IREB CPRE RE@Agile. Beschreibt dasselbe Bedürfnis wie ein Use Case, in agiler Notation (siehe <a href="#kap-10">Kapitel 10</a>).</dd>
+        </dl>
+      </div>
+      <div class="gl-card" id="gl-zielwert">
+        <dl class="footer-glossary">
+          <dt>Zielwert</dt>
+          <dd>Vereinbarter Wert, den eine Messgröße erreichen soll, etwa eine maximale Anzeigezeit unter definierter Last. Nicht mit der Messgröße „Antwortzeit" verwechseln.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="pager">
+      <a href="#kap-7">‹ Zurück</a>
+      <span class="progress">Kapitel 8 von 10 · Glossar</span>
+      <a href="#kap-9">Weiter ›</a>
+    </div>
+  </section>
+
+  <!-- ============ KAPITEL 9 · QUELLEN UND GELTUNGSGRENZEN ============ -->
+  <section class="kapitel" id="kap-9">
+    <div class="kap-head"><span class="kap-num">KAPITEL 9</span><h2>Quellen und Geltungsgrenzen</h2></div>
+    <h3 class="sec-title">Was stammt aus dem Normmodell – was ist Projektbeispiel?</h3>
+    <div class="transparenz">Transparenzhinweis: Definitionen im Nachschlagewerk sind didaktisch paraphrasiert. Studienaktenfälle, Messgrößen und Beispielanforderungen sind keine wortgetreuen Normforderungen und enthalten bewusst keine erfundenen universellen Zielwerte.</div>
+
+    <div class="info-table-wrap">
+      <table class="info-table">
+        <thead><tr><th>Referenz</th><th>Funktion im Nachschlagewerk</th><th>Stand</th></tr></thead>
+        <tbody>
+          <tr><td>ISO/IEC 25010:2023</td><td>Produktqualitätsmodell mit neun Merkmalen</td><td>Edition 2</td></tr>
+          <tr><td>ISO/IEC 25019:2023</td><td>Quality-in-Use-Modell</td><td>2023</td></tr>
+          <tr><td>ISO/IEC 25012:2008</td><td>Datenqualitätsmodell für strukturierte Daten</td><td>2008; von ISO 2025 bestätigt</td></tr>
+          <tr><td>ISO/IEC 25030:2019</td><td>Rahmen für Qualitätsanforderungen</td><td>2019</td></tr>
+          <tr><td>ISO/IEC 25040:2024</td><td>Rahmen für Qualitätsbewertung</td><td>2024</td></tr>
+          <tr><td>ISO/IEC/IEEE 29148</td><td>Requirements Engineering und Spezifikation</td><td>projektbezogen prüfen</td></tr>
+          <tr><td>ISO/IEC 27001</td><td>Informationssicherheitsmanagement</td><td>projektbezogen prüfen</td></tr>
+          <tr><td>ISO 9001</td><td>Organisatorisches Qualitätsmanagement</td><td>projektbezogen prüfen</td></tr>
+          <tr><td>ISO 9241-11</td><td>Gebrauchstauglichkeit im Nutzungskontext</td><td>projektbezogen prüfen</td></tr>
+          <tr><td>WCAG / BITV 2.0</td><td>Konkrete Barrierefreiheitsanforderungen</td><td>Geltungsstand vor Einsatz prüfen</td></tr>
+          <tr><td>ISO/IEC 25059</td><td>Qualitätsmodell für KI-Systeme</td><td>Geltungsstand vor KI-Einsatz prüfen</td></tr>
+          <tr><td>DIN 69901-5:2009-01</td><td>Begriffsnorm Lastenheft/Pflichtenheft</td><td>2009; projektbezogen auf Aktualität prüfen</td></tr>
+          <tr><td>VDI 2519 Blatt 1</td><td>Vorgehensweise bei Erstellung von Lasten-/Pflichtenheften</td><td>projektbezogen prüfen</td></tr>
+          <tr><td>IREB CPRE Advanced Level RE@Agile</td><td>User Story, INVEST, Akzeptanzkriterien im agilen Kontext</td><td>Handbuch v2.2.0, Okt. 2025</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="kap-sub">Zuletzt fachlich überarbeitet: 26.08.2026 · Signatur: Michaela Kühn · www.michaela-kuehn.com</p>
+
+    <div class="pager">
+      <a href="#kap-8">‹ Zurück</a>
+      <span class="progress">Kapitel 9 von 10 · Quellen und Geltungsgrenzen</span>
+      <a href="#kap-10">Weiter ›</a>
+    </div>
+  </section>
+
+  <!-- ============ KAPITEL 10 · EXKURS ============ -->
+  <section class="kapitel" id="kap-10">
+    <div class="kap-head"><span class="kap-num">KAPITEL 10</span><h2>Exkurs</h2></div>
+    <h3 class="sec-title">Drei Wege zur selben Anforderung</h3>
+    <p class="kap-sub">Fall A („Akte aufrufen", <a href="#kap-6">Kapitel 6</a>) führt zur Qualitätsanforderung <a class="trace-ref" href="#trace-REQ-A01">REQ-A01</a>. Diese Anforderung lässt sich klassisch, agil oder use-case-basiert herleiten — der Prüfmaßstab (ISO/IEC 25010) bleibt gleich, nur der Weg dorthin unterscheidet sich.</p>
+
+    <div class="spur-grid">
+      <div class="spur-card">
+        <h4>Spur 1 · Klassisch</h4>
+        <p>Business Case → Lastenheft → Pflichtenheft. Auftraggeber und Auftragnehmer trennen „Was" und „Wie". Bezug: DIN 69901-5, VDI 2519 Blatt 1.</p>
+      </div>
+      <div class="spur-card">
+        <h4>Spur 2 · Agil</h4>
+        <p>Epic → User Story (INVEST-geprüft) → Akzeptanzkriterium. Bezug: IREB CPRE Advanced Level RE@Agile.</p>
+      </div>
+      <div class="spur-card">
+        <h4>Spur 3 · Use-Case-basiert</h4>
+        <p>Stakeholderbedarf → Use Case → Qualitätsanforderung. Bereits vollständig in <a href="#kap-6">Kapitel 6</a> durchdekliniert.</p>
+      </div>
+    </div>
+
+    <h3 class="sec-title">Spur 1 · Klassisch: Business Case → Lastenheft → Pflichtenheft</h3>
+    <div class="tri-grid">
+      <div class="tri-card tri-norm"><span class="tag">Normmodell</span><p>DIN 69901-5: Lastenheft = Forderungen des Auftraggebers („Was/Wofür"); Pflichtenheft = Realisierungsvorgaben des Auftragnehmers („Wie/Womit").</p></div>
+      <div class="tri-card tri-bsp"><span class="tag">Studienaktenbeispiel</span><p>Die Hochschule NOVA (Auftraggeber) beauftragt die Umsetzung; ein IT-Dienstleister (Auftragnehmer) antwortet mit dem Pflichtenheft.</p></div>
+      <div class="tri-card tri-ent"><span class="tag">Projektentscheidung</span><p>Wer trägt die Formulierungshoheit für „Was", wer für „Wie"?</p></div>
+    </div>
+    <div class="info-table-wrap">
+      <table class="info-table">
+        <thead><tr><th>Trace-ID</th><th>Artefakt</th><th>Verfasst von</th><th>Inhalt zur Studienakte</th></tr></thead>
+        <tbody>
+          <tr id="trace-BC-A01"><td><code>BC-A01</code></td><td>Business Case</td><td>Auftraggeber</td><td>Nutzen: kürzere Bearbeitungszeit pro Prüfungsentscheidung. Kosten/Risiko: Implementierungsaufwand gegen Fehlentscheidungsrisiko bei manueller Aktenprüfung abgewogen.</td></tr>
+          <tr id="trace-LH-A01"><td><code>LH-A01</code> <a class="trace-ref" href="#trace-BC-A01">← BC-A01</a></td><td>Lastenheft</td><td>Auftraggeber (Prüfungsamt)</td><td>Die Akte muss vollständig, freigegeben und nur für Berechtigte einsehbar sein. Ist-Zustand: manuelle Prüfung. Soll-Zustand: automatisierte Vollständigkeitsprüfung.</td></tr>
+          <tr id="trace-PH-A01"><td><code>PH-A01</code> <a class="trace-ref" href="#trace-LH-A01">← LH-A01</a></td><td>Pflichtenheft</td><td>Auftragnehmer (IT-Dienstleister)</td><td>Umsetzungsvorschlag: rollenbasierte Zugriffsprüfung plus automatisierte Vollständigkeitsregel gegen den Metadatenkatalog.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="kap-sub">PH-A01 mündet inhaltlich in dieselbe Qualitätsanforderung wie <a class="trace-ref" href="#trace-REQ-A01">REQ-A01 (Kapitel 6)</a> — nur mit vertraglicher statt agiler Formulierungslogik.</p>
+
+    <h3 class="sec-title">Spur 2 · Agil: Epic → User Story → Akzeptanzkriterium</h3>
+    <div class="tri-grid">
+      <div class="tri-card tri-norm"><span class="tag">Normmodell</span><p>IREB CPRE Advanced Level RE@Agile: Epics bündeln mehrere User Stories; INVEST prüft, ob eine Story „gut" ist.</p></div>
+      <div class="tri-card tri-bsp"><span class="tag">Studienaktenbeispiel</span><p>Das Prüfungsamt formuliert seinen Bedarf als User Story statt als Use Case.</p></div>
+      <div class="tri-card tri-ent"><span class="tag">Projektentscheidung</span><p>Ist die Story klein genug für einen Sprint, oder muss sie weiter zerlegt werden?</p></div>
+    </div>
+    <div class="info-table-wrap">
+      <table class="info-table">
+        <thead><tr><th>Trace-ID</th><th>Artefakt</th><th>Inhalt zur Studienakte</th></tr></thead>
+        <tbody>
+          <tr id="trace-EPIC-A01"><td><code>EPIC-A01</code></td><td>Epic</td><td>Entscheidungsreife Akte — bündelt alle Stories rund um Aktenabruf, Zuordnung und Wiederherstellung.</td></tr>
+          <tr id="trace-US-A01"><td><code>US-A01</code> <a class="trace-ref" href="#trace-EPIC-A01">← EPIC-A01</a></td><td>User Story</td><td>Als Prüfungsamt-Mitarbeiterin will ich die vollständige, freigegebene Akte einer Studierenden aufrufen, damit ich eine Prüfungsentscheidung treffen kann.</td></tr>
+          <tr id="trace-AK-US-A01"><td><code>AK-US-A01</code> <a class="trace-ref" href="#trace-US-A01">← US-A01</a></td><td>Akzeptanzkriterium (Gegeben-Wenn-Dann)</td><td>Gegeben eine Akte mit fehlendem Pflichtdokument, wenn die Freigabe angefragt wird, dann wird sie gesperrt und die fehlende Unterlage benannt.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 class="sec-title">INVEST-Check für US-A01</h3>
+    <div class="info-table-wrap">
+      <table class="info-table">
+        <thead><tr><th>Kriterium</th><th>Prüffrage</th><th>Befund</th></tr></thead>
+        <tbody>
+          <tr><td>Independent</td><td>Unabhängig von anderen Stories umsetzbar?</td><td><span class="invest-ok">Ja</span> — Aktenabruf ist von Fall B/C entkoppelt.</td></tr>
+          <tr><td>Negotiable</td><td>Verhandelbar in Umfang/Lösung?</td><td><span class="invest-ok">Ja</span> — „vollständig" wird erst im Akzeptanzkriterium konkretisiert.</td></tr>
+          <tr><td>Valuable</td><td>Erkennbarer Nutzen für Stakeholder?</td><td><span class="invest-ok">Ja</span> — direkte Prüfungsentscheidung.</td></tr>
+          <tr><td>Estimable</td><td>Aufwand grob schätzbar?</td><td><span class="invest-ok">Ja</span> — bekannte Berechtigungs- und Vollständigkeitslogik.</td></tr>
+          <tr><td>Small</td><td>In einem Sprint umsetzbar?</td><td><span class="invest-ok">Ja</span> — ein Akzeptanzkriterium, ein Berechtigungspfad.</td></tr>
+          <tr><td>Testable</td><td>Eindeutig prüfbar?</td><td><span class="invest-ok">Ja</span> — Gegeben-Wenn-Dann ist direkt in einen Testfall überführbar (vgl. <a class="trace-ref" href="#trace-TF-A01">TF-A01, Kapitel 6</a>).</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="kap-sub"><a class="trace-ref" href="#trace-AK-US-A01">AK-US-A01</a> und <a class="trace-ref" href="#trace-AK-A01">AK-A01 (Kapitel 6)</a> prüfen inhaltlich dasselbe — hier als Gegeben-Wenn-Dann, dort als Satzschablone.</p>
+
+    <h3 class="sec-title">Spur 3 · Use-Case-basiert (Recap)</h3>
+    <p class="kap-sub">Bereits vollständig in <a href="#kap-6">Kapitel 6</a> durchdekliniert: <a class="trace-ref" href="#trace-SH-A01">SH-A01</a> → <a class="trace-ref" href="#trace-UC-A01">UC-A01</a> → <a class="trace-ref" href="#trace-REQ-A01">REQ-A01</a> → <a class="trace-ref" href="#trace-AK-A01">AK-A01</a> → <a class="trace-ref" href="#trace-TF-A01">TF-A01</a> → <a class="trace-ref" href="#trace-TE-A01">TE-A01</a> → <a class="trace-ref" href="#trace-ABN-A01">ABN-A01</a> → <a class="trace-ref" href="#trace-ENT-A01">ENT-A01</a>.</p>
+    <p class="kap-sub"><a href="#kap-6">Zur Artefaktkette · Kapitel 6 mit vollständiger Trace-ID-Kette öffnen</a></p>
+
+    <div class="merksatz">Zusammenführung: Business Case/Lastenheft/Pflichtenheft, Epic/User Story/INVEST und Use Case beschreiben am Ende dieselbe Qualitätsanforderung <a class="trace-ref" href="#trace-REQ-A01">REQ-A01</a> — mit unterschiedlicher Formulierungstradition, gleichem Prüfmaßstab (ISO/IEC 25010, <a href="#kap-3">Kapitel 3</a>). Die Wahl der Spur ist eine Projektentscheidung, keine fachliche.</div>
+
+    <div class="pager">
+      <a href="#kap-9">‹ Zurück</a>
+      <span class="progress">Kapitel 10 von 10 · Exkurs</span>
+      <a href="#kap-1">Zum Anfang ›</a>
+    </div>
+  </section>
+
+  <div class="crosslink">
+    Verwandte Denkraum-Tools zu diesem Thema:
+    <ul>
+      <li><a href="./iso-25010-kompendium.html">ISO/IEC 25010:2023 Kompendium</a> — vertieft alle neun Merkmale allgemein anhand eines Kundenportal-Falls samt Vergleich 2011→2023, statt anhand des hier durchgängig genutzten Studienakten-Falls.</li>
+      <li><a href="./sarahs-weg-zum-qualitaetskuchen.html">Sarahs Weg zum Qualitätskuchen</a> — nutzt „Studienakte" als eines von vier austauschbaren Erzählszenarien für dieselben neun ISO-25010-Merkmale plus ISO 25019; hier steht die Studienakte dagegen im Zentrum eines eigenen, vollständig durchdeklinierten Nachschlagewerks mit Rollenmatrix und Artefaktkette.</li>
+      <li><a href="./fallstudie-qualitaetssystem.html">Fallstudie: Von der Idee zum Qualitätssystem</a> — erzählt, wie das K1–K19-Prüfsystem für Trainingstools selbst entstanden ist; hier geht es dagegen um Produktqualität eines Hochschul-IT-Projekts nach ISO/IEC 25010.</li>
+      <li><a href="./ba-lifecycle-lernreise.html">BA-Lifecycle-Lernreise</a> — vertieft die BABOK®-Wissensbereiche, die in Kapitel 2 nur tabellarisch der Entscheidungskette zugeordnet werden, an drei eigenen Fällen.</li>
+    </ul>
+  </div>
+
+  <footer class="app-footer">
+    <div class="footer-details">
+      <details class="footer-box" open>
+        <summary class="footer-summary">Systemprompt</summary>
+        <div class="footer-content footer-mono">
+          <p>Baue ein einzelnes HTML-Nachschlagewerk „Digitale Studierendenakte — Qualität systematisch denken", das anhand eines einzigen durchgängigen Falls (Hochschule NOVA führt eine digitale Studierendenakte ein; ein Anerkennungsbescheid wird der falschen Person zugeordnet) zeigt, wie ISO/IEC 25010:2023 in einem echten Mehr-Rollen-Projekt angewendet wird — ergänzt um ISO 25019, ISO 25012, IREB CPRE, BABOK v3, PMBOK 8 und DIN 69901-5.</p>
+          <p><strong>Struktur:</strong> Topbar (Zurück-Link, Signatur oben rechts fix, vierstufiger Beamer-Button) → Hero (Eyebrow, H1, Lead-Absatz) → horizontale Kapitelnavigation (10 Sprungmarken-Chips) → zehn fortlaufende Kapitel-Sektionen auf einer einzigen scrollbaren Seite (kein Sliding-Panel, K6) → Crosslink-Block → Footer mit fünf Boxen (Systemprompt, Handbuch, Vortrags-Skript, Normen-Register, Glossar). Jedes Kapitel endet mit einer Pager-Leiste („‹ Zurück / Kapitel X von 10 / Weiter ›"), die zum vorigen/nächsten Kapitel scrollt.</p>
+          <p><strong>Inhalt pro Kapitel:</strong> (1) Fallwelt — Ausgangsfall, drei wiederkehrende Fälle A/B/C, drei feste Kennzeichnungen Normmodell/Studienaktenbeispiel/Projektentscheidung, die durch das ganze Werk hindurch als farblich unterschiedene Tri-Card-Blöcke wiederverwendet werden. (2) ISO/IEC 25010:2023 — Neun-Merkmale-Mini-Grid mit Sprunglinks zu den Detailkarten in Kapitel 3, sechsstufige Entscheidungskette mit eigenen Anker-IDs pro Schritt, Mapping-Tabelle zu IREB/BABOK/PMBOK. (3) Detailkarten — für jedes der neun Merkmale eine eigene Karte mit Tri-Card-Block, Beispielanforderung, Messung, Nachweis, Konflikt. (4) ISO 25019/25012 — Abgrenzung Produkt/Nutzung/Daten, drei Nutzungskontext-Karten, Datenqualitäts-Tabelle. (5) Zentrale Matrix — elf Rollen mit Frage/Normblick/Artefakt/Entscheidung (jede Rolle mit eigener Anker-ID), plus Konflikttabelle, die auf die Rollen zurückverlinkt. (6) Artefakte — neunteilige Artefaktkette, Mapping-Tabelle zur Entscheidungskette aus Kapitel 2, zwei vollständig durchgetraceте Fallbeispiele (Fall A und Fall B) mit Trace-ID-Ketten, bei denen jede Trace-ID eine eigene Anker-ID trägt und auf ihren Vorgänger zurückverlinkt (klickbare Traceability statt nur Textnotation). (7) Alternative Einstiege — Fall-Rückblick-Karten plus sieben „Schnelleinstiege"-Kacheln, die auf konkrete Anker in anderen Kapiteln springen (Security-Detailkarte, Rollenmatrix, Artefaktkette, ISO-25012-Abschnitt, Glossar, Quellen, Exkurs). (8) Glossar — vollständiges A–Z-Glossar als Karten-Grid, mit Querverweisen zu den Kapiteln, in denen die Begriffe vertieft werden. (9) Quellen und Geltungsgrenzen — Transparenzhinweis plus Normentabelle. (10) Exkurs — drei Spezifikationswege (klassisch/agil/use-case-basiert) zu derselben Qualitätsanforderung REQ-A01, mit Trace-ID-Ketten für Business-Case/Lastenheft/Pflichtenheft und Epic/User-Story/Akzeptanzkriterium samt INVEST-Check-Tabelle, die per Anker auf die Artefaktkette aus Kapitel 6 zurückverlinken.</p>
+          <p><strong>Verweise/Cross-Referenzen (zentrale Anforderung):</strong> Jede Erwähnung eines anderen Kapitels, einer Rolle, eines Merkmals oder einer Trace-ID im Fließtext oder in Tabellen wird als klickbarer Anker (<code>&lt;a href="#anker-id"&gt;</code>) umgesetzt, nicht nur als Text benannt. Trace-ID-Spalten in allen Artefakt-Tabellen (Kapitel 6 und 10) verlinken jede Zeile auf ihren unmittelbaren Vorgänger. Rollen aus der Konflikttabelle in Kapitel 5 verlinken auf die zugehörige Zeile in der Rollenmatrix. Die neun Merkmal-Kacheln in Kapitel 2 verlinken auf die passende Detailkarte in Kapitel 3. Die sechs Schritte der Entscheidungskette in Kapitel 2 tragen eigene Anker-IDs, die von der Mapping-Tabelle in Kapitel 6 und vom IREB/BABOK/PMBOK-Vergleich referenziert werden.</p>
+          <p><strong>Design-Vorgaben:</strong> Gleiche Design-Sprache wie die übrigen Denkraum-ISO-Tools (radialer Verlaufshintergrund, abgerundete Karten, Akzentrot #b91c1c). Drei feste Farben für die Kennzeichnungen: Normmodell = Blau, Studienaktenbeispiel = Amber, Projektentscheidung = Violett — konsistent durch alle zehn Kapitel. Kein Sliding-Panel, keine versteckten Tabs — alle zehn Kapitel liegen permanent sichtbar untereinander auf einer scrollbaren Seite (K6), die Kapitelnavigation und die Pager-Leisten sind reine Sprungmarken-Hilfen per <code>scroll-behavior: smooth</code> und <code>scroll-margin-top</code>, keine Zustandsmaschine. Vierstufiger Beamer-Modus nach kanonischem Muster, Footer und Kapitelnavigation ab Stufe 1 ausgeblendet.</p>
+          <p><strong>Persona-Bezug:</strong> Kein Personencast (Ela/Knut/Sarah/Petra/Herr Bachmeier) — bewusst rein rollenbasiert (Business Analysis, Requirements Engineering, Studienbüro, Prüfungsamt, Datenschutz, Informationssicherheit, Architektur, Auftragnehmer, Test/QS, IT-Betrieb, Auftraggeber), weil das Nachschlagewerk ein Hochschul-/Behördenprojekt mit echten Governance-Rollen statt eines Unternehmens-Trainingsszenarios abbildet.</p>
+          <p><strong>Nicht-tun:</strong> Keine vierte oder fünfte Falldimension neben A/B/C einführen, ohne sie durch alle Kapitel konsistent zu ziehen. Keine Trace-ID ohne Rückverweis auf ihren Vorgänger. Keine Rollen- oder Merkmalsnennung im Fließtext, die auf einen tatsächlich vorhandenen Anker verweisen könnte, unverlinkt lassen. Keine erfundenen Zahlen-Zielwerte einführen, die im Originaltext bewusst offen als „Projektentscheidung" markiert sind — die Leerstelle ist didaktisch gewollt (K8 gilt hier für Beispielanforderungen selbst, nicht für die bewusst offen gelassenen Grenzwerte, die als Stakeholder-Entscheidung markiert sind). Normen-Stände nicht aus dem Gedächtnis übernehmen, sondern wie im Quellentext mit Status/Datum kennzeichnen (K17).</p>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary">Handbuch</summary>
+        <div class="footer-content footer-sans">
+          <p><strong>Framework:</strong> CO-STAR (Context – Objective – Style – Tone – Audience – Response), kombiniert mit einem klassischen Nachschlagewerk-Aufbau (ein Fall → neun Normblickrichtungen → Rollen → Artefaktkette → Glossar → Quellen → Exkurs).</p>
+          <table class="footer-table">
+            <thead><tr><th>Dimension</th><th>Ausprägung in diesem Tool</th></tr></thead>
+            <tbody>
+              <tr><td>Rolle</td><td>Norm-Nachschlagewerk für ein reales Mehr-Rollen-IT-Projekt, nicht Trainer:innen-Persona.</td></tr>
+              <tr><td>Aufgabe</td><td>Einen einzigen Fall (digitale Studierendenakte) konsequent durch neun ISO-25010-Merkmale, elf Projektrollen und zwei vollständige Artefaktketten (Fall A/B) führen — inklusive dreier alternativer Spezifikationswege zur selben Anforderung.</td></tr>
+              <tr><td>Kontext</td><td>Hochschule NOVA als Auftraggeber, externer IT-Dienstleister als Auftragnehmer — Governance-Trennung nach DIN 69901-5 bleibt durchgängig sichtbar.</td></tr>
+              <tr><td>Format</td><td>Zehn fortlaufende Kapitel-Sektionen mit Tri-Card-Blöcken, Tabellen mit anker-verlinkten Trace-IDs, Glossar-Grid, Pager-Navigation statt Tabs.</td></tr>
+              <tr><td>Eingrenzung</td><td>Nur die neun Hauptmerkmale (keine vollständige Untermerkmal-Messmethodik), nur zwei der drei Fälle (A/B) vollständig getraced, Fall C bleibt bewusst auf Kapitel 1/7-Ebene skizziert.</td></tr>
+            </tbody>
+          </table>
+          <p><strong>Zentraler Lernhinweis:</strong> Dieselbe Qualitätsanforderung entsteht auf drei völlig unterschiedlichen Wegen (klassisch, agil, use-case-basiert, Kapitel 10) — die Norm bleibt gleich, nur die Formulierungstradition und die Governance-Rollen unterscheiden sich. Und: Ohne Traceability (klickbare Trace-ID-Kette, Kapitel 6) bleibt jede noch so saubere Einzelanforderung isoliert und nicht auf ein Hochschulziel zurückführbar.</p>
+          <p><strong>Nachbau-Tipp:</strong> Erst einen einzigen, konkreten Fall mit echtem Fehler festlegen (hier: falsch zugeordneter Bescheid), dann alle neun ISO-25010-Merkmale an genau diesem Fall durchspielen, bevor Rollen und Artefaktkette ergänzt werden — nicht umgekehrt. Jede Trace-ID-Tabelle erst mit Pfeil-Notation im Text entwerfen, dann jede Zeile mit einer eigenen Anker-ID versehen und die Pfeile in echte Links umwandeln.</p>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary">Vortrags-Skript</summary>
+        <div class="footer-content footer-sans">
+          <div class="schritt"><strong>Einstieg (Kapitel 1)</strong><span class="regie">(Hero und Fallwelt-Karten zeigen, noch nicht scrollen)</span><br>„Ein Anerkennungsbescheid ist vorhanden. Er ist sogar korrekt ausgestellt. Trotzdem ist das Ergebnis falsch — weil er in der falschen Akte landet. Das ist der ganze Unterschied zwischen 'die Funktion arbeitet' und 'die Qualität stimmt'."</div>
+          <div class="schritt"><strong>Neun Merkmale (Kapitel 2, dann Klick zu einer Detailkarte in Kapitel 3)</strong><span class="regie">(auf das Neun-Merkmale-Grid zeigen, dann auf „Security" klicken)</span><br>„Neun Blickrichtungen auf denselben Fall. Nehmen wir Security: Wer darf welche Dokumentart zu welchem Zweck sehen? Schon hier sehen Sie die drei Kennzeichnungen — was die Norm sagt, was das im Studienaktenbeispiel heißt, und was das Projekt selbst entscheiden muss."</div>
+          <div class="schritt"><strong>Rollenmatrix (Kapitel 5)</strong><span class="regie">(zur Rollenmatrix scrollen, dann zur Konflikttabelle)</span><br>„Elf Rollen, elf unterschiedliche Fragen an dieselbe Akte. Und genau deshalb gibt es Zielkonflikte — schauen Sie sich Datenschutz gegen Prüfungsamt an: Löschfrist gegen Nachweispflicht. Kein Fehler im Modell, sondern ein normaler Befund, der eine benannte Klärungsinstanz braucht."</div>
+          <div class="schritt"><strong>Artefaktkette und Traceability (Kapitel 6)</strong><span class="regie">(die Fall-A-Tabelle zeigen, auf einen Trace-ID-Link klicken, um die Rückverfolgung live zu demonstrieren)</span><br>„Neun Artefakte vom Hochschulziel bis zur Abnahmeentscheidung. Und jede einzelne Trace-ID lässt sich zu ihrem Vorgänger zurückklicken — das ist keine Behauptung von Rückverfolgbarkeit, das ist tatsächlich klickbare Rückverfolgbarkeit."</div>
+          <div class="schritt"><strong>Drei Wege, eine Anforderung (Kapitel 10)</strong><span class="regie">(durch die drei Spur-Karten scrollen, dann auf den REQ-A01-Link am Ende klicken, der zurück zu Kapitel 6 führt)</span><br>„Ob Sie klassisch mit Lastenheft und Pflichtenheft arbeiten, agil mit Epic und User Story, oder use-case-basiert — am Ende landen alle drei Wege bei derselben Qualitätsanforderung. Die Norm ist der gemeinsame Prüfmaßstab, der Weg dorthin ist eine Projektentscheidung."</div>
+          <p class="regie">Allgemeine Regie-Hinweise: Nicht mit dem Glossar oder der Quellentabelle einsteigen — das sind Nachschlage-Kapitel, keine Einstiegs-Kapitel. Für einen 20-Minuten-Slot reichen Kapitel 1, ein bis zwei Detailkarten aus Kapitel 3, die Rollenmatrix aus Kapitel 5 und einmal live eine Trace-ID-Kette aus Kapitel 6 anklicken. Kapitel 4, 8 und 9 eignen sich besser zum Selbst-Erkunden im Nachgang als für den Live-Vortrag.</p>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary">Normen-Register</summary>
+        <div class="footer-content footer-sans">
+          <table class="footer-table">
+            <thead><tr><th>Framework / Quelle</th><th>Fassung / Status</th><th>Bezug im Tool</th></tr></thead>
+            <tbody>
+              <tr><td>ISO/IEC 25010:2023</td><td>Edition 2, in Kraft</td><td>Kapitel 2 &amp; 3 — alle neun Hauptmerkmale am Studienakten-Fall</td></tr>
+              <tr><td>ISO/IEC 25019:2023</td><td>2023, in Kraft</td><td>Kapitel 4 — Quality-in-Use / Nutzungskontexte</td></tr>
+              <tr><td>ISO/IEC 25012:2008</td><td>2008, von ISO 2025 bestätigt</td><td>Kapitel 4 — Datenqualitätstabelle</td></tr>
+              <tr><td>ISO/IEC 25030:2019</td><td>2019</td><td>Kapitel 5 — Rollenmatrix (Requirements Engineering)</td></tr>
+              <tr><td>ISO/IEC 25040:2024</td><td>2024</td><td>Kapitel 5 — Rollenmatrix (Test/QS, Auftraggeber)</td></tr>
+              <tr><td>ISO/IEC/IEEE 29148</td><td>projektbezogen prüfen</td><td>Kapitel 2 &amp; 5 — Entscheidungskette, Rollenmatrix</td></tr>
+              <tr><td>ISO/IEC 27001</td><td>projektbezogen prüfen</td><td>Kapitel 5 — Rollenmatrix (Informationssicherheit, IT-Betrieb)</td></tr>
+              <tr><td>ISO 9001</td><td>projektbezogen prüfen</td><td>Kapitel 5 — Rollenmatrix (Auftraggeber)</td></tr>
+              <tr><td>ISO 9241-11</td><td>projektbezogen prüfen</td><td>Kapitel 4 &amp; 5 — Nutzungskontext</td></tr>
+              <tr><td>WCAG / BITV 2.0</td><td>Geltungsstand vor Einsatz prüfen</td><td>Kapitel 3 — Detailkarte Interaktionsfähigkeit</td></tr>
+              <tr><td>ISO/IEC 25059</td><td>Geltungsstand vor KI-Einsatz prüfen</td><td>Kapitel 9 — Quellentabelle (informativ, im Fall nicht genutzt)</td></tr>
+              <tr><td>DIN 69901-5:2009-01</td><td>2009, projektbezogen auf Aktualität prüfen</td><td>Kapitel 5 &amp; 10 — Rollenmatrix Auftragnehmer, Spur 1 Klassisch</td></tr>
+              <tr><td>VDI 2519 Blatt 1</td><td>projektbezogen prüfen</td><td>Kapitel 10 — Spur 1 Klassisch</td></tr>
+              <tr><td>IREB CPRE Advanced Level RE@Agile</td><td>Handbuch v2.2.0, Okt. 2025</td><td>Kapitel 10 — Spur 2 Agil, INVEST-Check</td></tr>
+              <tr><td>IIBA BABOK v3</td><td>projektbezogen prüfen</td><td>Kapitel 2 — Mapping-Tabelle Entscheidungskette</td></tr>
+              <tr><td>PMI PMBOK® Guide, 8. Auflage (ANSI/PMI 99-001-2025)</td><td>2025, aktuell gültig</td><td>Kapitel 2 — Mapping-Tabelle Entscheidungskette</td></tr>
+            </tbody>
+          </table>
+          <p>Stand vor Einsatz in neuen Trainingsmaterialien prüfen (K17) — insbesondere ISO/IEC-25010-Folgeausgaben, Änderungen an DIN 69901-5 und den Stand der IREB-CPRE-RE@Agile-Handbuchversion.</p>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary">📖 Glossar</summary>
+        <div class="footer-content footer-sans">
+          <p>Das vollständige A–Z-Glossar mit allen 17 Begriffsgruppen steht direkt im Tool in <a href="#kap-8">Kapitel 8</a> — dort mit Querverweisen zu den Kapiteln, in denen jeder Begriff vertieft wird. Diese Box verweist bewusst nur dorthin, statt den Inhalt zu duplizieren, weil das Glossar hier bereits ein eigenständiges Hauptkapitel ist, kein Zusatzmaterial im Footer.</p>
+          <p><a href="#kap-8">→ Kapitel 8 · Glossar öffnen</a></p>
+        </div>
+      </details>
+    </div>
+    <div class="footer-sig">
+      <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a> — Referenzrahmen: ISO/IEC 25010:2023, ISO/IEC 25019:2023, ISO/IEC 25012:2008, IREB CPRE, BABOK v3 (IIBA), PMBOK 8 (PMI), DIN 69901-5
+      <span style="display:block;margin-top:4px;">Zuletzt geprüft: 26.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var BEAMER_LEVELS = [
+    { classes: [],                                    label: '☀ Beamer' },
+    { classes: ['beamer'],                             label: '☀ Beamer XL' },
+    { classes: ['beamer', 'beamer-xl'],                label: '☀ Beamer XXL' },
+    { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: '☀ Normal' }
+  ];
+  var STORAGE_KEY = 'denkraumStudierendenakteQualitaet';
+  var beamerLevel = 0;
+  try{
+    var saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || 'null');
+    if(saved && typeof saved.beamerLevel === 'number') beamerLevel = saved.beamerLevel;
+  }catch(e){}
+
+  function applyBeamerLevel(){
+    document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    document.getElementById('beamerBtn').textContent = BEAMER_LEVELS[beamerLevel].label;
+  }
+  applyBeamerLevel();
+
+  document.getElementById('beamerBtn').addEventListener('click', function(){
+    beamerLevel = (beamerLevel + 1) % 4;
+    applyBeamerLevel();
+    try{ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ beamerLevel: beamerLevel })); }catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
