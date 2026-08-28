@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>ISO/IEC 25010:2023 Banklabor · Michaela Kühn</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#f4f7fb; --panel:#ffffff; --ink:#132339; --ink-dim:#5a6b82; --line:#d7e0ec;
+    --accent:#0b5cab; --accent-soft:#dbe9fb;
+    --blue:#1d4ed8; --blue-soft:#dbeafe;
+    --violet:#4f46e5; --violet-soft:#e8e6fb;
+    --green:#15803d; --green-soft:#e9f7ee;
+    --amber:#92400e; --amber-soft:#fef3c7;
+    --teal:#0f766e; --teal-soft:#ccfbf1;
+    --card:#f2f6fb;
+    --mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --shadow:0 16px 34px rgba(15,35,60,.08);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);color-scheme:light;}
+  body{font-family:var(--sans);font-size:16px;line-height:1.55;
+    background:
+      radial-gradient(circle at top left, #eef6ff 0%, transparent 22%),
+      radial-gradient(circle at top right, #eefaf8 0%, transparent 20%),
+      linear-gradient(180deg,#fbfcff 0%,#f2f6fb 100%);
+  }
+  button{touch-action:manipulation;-webkit-user-select:none;user-select:none;font-family:var(--sans);}
+  .app{max-width:1180px;margin:0 auto;padding:20px 24px 56px;}
+
+  /* ---------- Topbar & Signatur ---------- */
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:6px;}
+  .back-link{display:inline-block;font-size:14px;font-weight:700;color:var(--ink-dim);text-decoration:none;}
+  .back-link:hover{color:var(--accent);}
+  .signature{
+    position:fixed;top:14px;right:28px;z-index:30;
+    background:rgba(255,255,255,.92);padding:5px 10px;border-radius:10px;
+    font-size:14px;font-weight:700;color:var(--ink);text-align:right;text-decoration:none;line-height:1.4;white-space:nowrap;
+  }
+  .signature span{display:block;font-weight:500;color:var(--ink-dim);font-size:14px;}
+  .signature:hover, .signature:hover span{color:var(--accent);}
+  .beamer-btn{
+    background:transparent;border:1.5px solid var(--line);color:var(--ink-dim);
+    font-size:14px;font-weight:700;padding:9px 18px;border-radius:999px;cursor:pointer;min-height:40px;
+  }
+  .beamer-btn:hover{border-color:var(--accent);color:var(--ink);}
+  html.beamer .beamer-btn, html.beamer-xl .beamer-btn, html.beamer-xxl .beamer-btn{
+    background:var(--ink);color:#fff;border-color:var(--ink);
+  }
+  @media(max-width:900px){
+    .signature{position:static;display:block;background:none;padding:0;text-align:right;margin-bottom:6px;}
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;
+    box-shadow:var(--shadow);padding:32px 34px 28px;margin:16px 0 18px;
+  }
+  .eyebrow{display:block;font-size:14px;letter-spacing:.12em;font-weight:700;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+  .hero h1{margin:0 0 10px;font-size:clamp(26px,3.6vw,38px);line-height:1.1;
+    background:linear-gradient(100deg,var(--ink) 55%,var(--accent) 120%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero p.lead{margin:0;color:var(--ink-dim);font-size:17px;line-height:1.6;}
+
+  /* ---------- Disclaimer & Referenz-Story ---------- */
+  .disclaimer-box{
+    display:flex;gap:12px;align-items:flex-start;background:var(--amber-soft);border:1px solid #f0d9a8;
+    border-radius:16px;padding:14px 18px;margin-bottom:14px;
+  }
+  .disclaimer-box .ic{font-size:20px;flex:0 0 auto;line-height:1.3;}
+  .disclaimer-box p{margin:0;font-size:14.5px;color:var(--amber);line-height:1.55;}
+  .disclaimer-box strong{color:var(--amber);}
+
+  .story-box{
+    background:var(--ink);color:#fff;border-radius:16px;padding:18px 22px;margin-bottom:26px;
+    display:flex;gap:14px;align-items:flex-start;
+  }
+  .story-box .ic{font-size:20px;flex:0 0 auto;}
+  .story-box .story-label{display:block;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#93c5fd;margin-bottom:4px;}
+  .story-box p{margin:0;font-size:16px;line-height:1.6;font-weight:600;}
+
+  /* ---------- Sektions-Navigation (0-9) ---------- */
+  .section-nav-wrap{margin-bottom:22px;}
+  .section-nav-label{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:8px;}
+  .section-nav{display:flex;flex-wrap:wrap;gap:8px;}
+  .section-chip{
+    min-width:44px;min-height:44px;border-radius:12px;border:2px solid var(--line);background:#fff;
+    color:var(--ink-dim);font-family:var(--mono);font-weight:700;font-size:15px;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;padding:0 6px;
+    transition:border-color .15s ease, background .15s ease, color .15s ease;
+  }
+  .section-chip:hover{border-color:var(--accent);color:var(--ink);}
+  .section-chip.active{border-color:var(--accent);background:var(--accent);color:#fff;}
+
+  /* ---------- Abschnitts-Überschrift ---------- */
+  h2.section-title{font-size:22px;margin:8px 0 6px;}
+  p.section-sub{color:var(--ink-dim);margin:0 0 18px;font-size:15px;line-height:1.6;}
+
+  /* ---------- Orientierung (Abschnitt 0) ---------- */
+  .orientation-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:10px;}
+  .ori-card{border:1px solid var(--line);border-radius:18px;background:#fff;padding:18px 20px;box-shadow:0 6px 16px rgba(15,35,60,.03);}
+  .ori-num{display:inline-block;font-family:var(--mono);font-size:14px;font-weight:700;color:#fff;background:var(--accent);
+    border-radius:999px;width:24px;height:24px;line-height:24px;text-align:center;margin-bottom:8px;}
+  .ori-title{margin:0 0 6px;font-size:16.5px;font-weight:700;color:var(--ink);}
+  .ori-en{font-weight:500;font-style:italic;color:var(--ink-dim);font-size:13.5px;}
+  .ori-intro{margin:0 0 10px;font-size:14px;color:var(--ink-dim);line-height:1.55;}
+  .ori-sub{list-style:none;margin:0;padding:0;}
+  .ori-sub li{background:var(--card);border-radius:8px;padding:7px 10px;font-size:13.5px;line-height:1.5;margin-bottom:6px;color:var(--ink);}
+  .ori-sub li:last-child{margin-bottom:0;}
+  .ori-sub b{color:var(--accent);}
+
+  /* ---------- Merkmal-Kopf (Abschnitt 1-9) ---------- */
+  .merkmal-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:18px;}
+  .merkmal-num{
+    flex:0 0 auto;width:48px;height:48px;border-radius:14px;background:var(--accent);color:#fff;
+    font-family:var(--mono);font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center;
+  }
+  .merkmal-title{margin:0 0 6px;font-size:24px;}
+  .merkmal-en{font-size:14px;font-weight:500;font-style:italic;color:var(--ink-dim);margin-left:8px;}
+  .merkmal-intro{margin:0;color:var(--ink-dim);font-size:15.5px;line-height:1.6;}
+
+  /* ---------- Sub-Pillrow ---------- */
+  .sub-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+  .sub-pill{
+    border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;
+    padding:9px 16px;font-size:14px;font-weight:700;cursor:pointer;min-height:44px;text-align:left;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .sub-pill:hover{border-color:var(--accent);}
+  .sub-pill.active{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);}
+
+  /* ---------- Tab-Panel ---------- */
+  .tab-panel{border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:0 10px 26px rgba(15,35,60,.05);overflow:hidden;margin-bottom:16px;}
+  .tab-panel-head{background:var(--ink);color:#fff;padding:18px 24px;}
+  .sub-num{display:inline-block;font-family:var(--mono);font-size:13px;font-weight:700;color:#93c5fd;margin-bottom:4px;}
+  .p-name{margin:0 0 6px;font-size:22px;font-weight:800;}
+  .frage-badge{display:inline-block;font-size:14px;color:#cbd5e1;font-style:italic;}
+
+  .tab-bar{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid var(--line);background:var(--card);}
+  .tab-btn{
+    flex:1 1 auto;min-width:130px;min-height:48px;border:none;background:transparent;cursor:pointer;
+    font-size:14px;font-weight:700;color:var(--ink-dim);padding:12px 14px;border-bottom:3px solid transparent;
+    transition:color .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .tab-btn:hover{color:var(--ink);}
+  .tab-btn.active{color:var(--ink);background:#fff;}
+  .tab-btn[data-tab="anforderung"].active{border-color:var(--blue);}
+  .tab-btn[data-tab="baseline"].active{border-color:var(--teal);}
+  .tab-btn[data-tab="gherkin"].active{border-color:var(--violet);}
+  .tab-btn[data-tab="testfall"].active{border-color:var(--green);}
+
+  .tab-content{padding:22px 24px;}
+  .content-text{margin:0;font-size:16px;line-height:1.65;color:var(--ink);}
+
+  .baseline-value{
+    display:block;background:var(--teal-soft);border:1px solid #9fdfd7;border-radius:12px;
+    padding:14px 18px;font-size:16px;line-height:1.6;color:#0b4a44;font-weight:600;
+  }
+
+  .gherkin-block{font-family:var(--mono);font-size:14.5px;line-height:1.85;background:var(--card);
+    border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  .gherkin-line{margin:0;}
+  .gherkin-line b{color:var(--violet);}
+
+  .testfall-block p{margin:0 0 8px;font-size:15px;color:var(--ink);line-height:1.6;}
+  .testfall-block p b{color:var(--green);}
+  .testfall-block ol{margin:0 0 10px;padding-left:22px;font-size:15px;color:var(--ink);line-height:1.6;}
+  .testfall-block ol li{margin-bottom:4px;}
+
+  /* ---------- Prev/Next Merkmal ---------- */
+  .merkmal-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0 30px;}
+  .navbtn{
+    border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;
+    padding:0 20px;min-height:48px;font-size:15px;font-weight:700;cursor:pointer;
+  }
+  .navbtn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+  .navbtn:disabled{opacity:.35;cursor:default;}
+
+  .crosslink{margin-top:20px;font-size:14px;color:var(--ink-dim);}
+  .crosslink a{color:var(--accent);font-weight:700;text-decoration:none;}
+  .crosslink a:hover{text-decoration:underline;}
+  .crosslink ul{margin:8px 0 0;padding-left:20px;}
+  .crosslink li{margin-bottom:4px;}
+
+  /* ---------- Footer ---------- */
+  .app-footer{margin-top:44px;border-top:3px solid var(--ink);padding-top:18px;}
+  .footer-details{display:flex;flex-direction:column;}
+  .footer-box{border-bottom:1px solid var(--line);padding:10px 0;}
+  .footer-summary{cursor:pointer;font-weight:700;font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:.04em;color:var(--blue);min-height:44px;display:flex;align-items:center;}
+  .footer-content{padding:6px 0 14px;}
+  .footer-content p, .footer-content li{font-size:14px;color:var(--ink-dim);line-height:1.6;}
+  .footer-content ul{padding-left:20px;margin:8px 0;}
+  .footer-mono{font-family:var(--mono);}
+  .footer-mono p{font-size:14px;}
+  .footer-sans{font-family:var(--sans);}
+  .footer-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px;}
+  .footer-table th, .footer-table td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top;}
+  .footer-table th{background:var(--card);font-weight:700;}
+  .footer-sig{margin-top:16px;font-size:14px;color:var(--ink-dim);line-height:1.6;}
+  .footer-sig strong{color:var(--ink);}
+  .footer-sig .audit{display:block;margin-top:4px;}
+
+  @media(max-width:640px){
+    .app{padding:16px}
+    .hero{padding:24px 20px 20px}
+    .topbar{flex-direction:column}
+    .merkmal-head{flex-direction:column;}
+  }
+
+  /* ================= BEAMER-MODUS (vierstufig, kumulativ) ================= */
+  html.beamer{ --ink-dim:#3D4A5C; }
+  html.beamer .app-footer{ display:none; }
+  html.beamer .back-link, html.beamer .signature{ display:none; }
+
+  html.beamer .hero p.lead, html.beamer .disclaimer-box p, html.beamer .story-box p,
+  html.beamer .ori-intro, html.beamer .ori-sub li, html.beamer .merkmal-intro,
+  html.beamer .content-text, html.beamer .baseline-value, html.beamer .gherkin-block,
+  html.beamer .testfall-block p, html.beamer .testfall-block ol, html.beamer .sub-pill,
+  html.beamer p.section-sub, html.beamer .tab-btn{ font-size:22px; }
+  html.beamer .hero h1{ font-size:44px; }
+  html.beamer .p-name{ font-size:44px; }
+  html.beamer .ori-en, html.beamer .frage-badge, html.beamer .merkmal-en{ font-size:26px; }
+  html.beamer .eyebrow, html.beamer .ori-num, html.beamer .section-chip, html.beamer .sub-num{ font-size:15px; }
+
+  html.beamer-xl .hero p.lead, html.beamer-xl .disclaimer-box p, html.beamer-xl .story-box p,
+  html.beamer-xl .ori-intro, html.beamer-xl .ori-sub li, html.beamer-xl .merkmal-intro,
+  html.beamer-xl .content-text, html.beamer-xl .baseline-value, html.beamer-xl .gherkin-block,
+  html.beamer-xl .testfall-block p, html.beamer-xl .testfall-block ol, html.beamer-xl .sub-pill,
+  html.beamer-xl p.section-sub, html.beamer-xl .tab-btn{ font-size:28px; }
+  html.beamer-xl .hero h1{ font-size:54px; }
+  html.beamer-xl .p-name{ font-size:54px; }
+  html.beamer-xl .ori-en, html.beamer-xl .frage-badge, html.beamer-xl .merkmal-en{ font-size:32px; }
+  html.beamer-xl .eyebrow, html.beamer-xl .ori-num, html.beamer-xl .section-chip, html.beamer-xl .sub-num{ font-size:18px; }
+
+  html.beamer-xxl .hero p.lead, html.beamer-xxl .disclaimer-box p, html.beamer-xxl .story-box p,
+  html.beamer-xxl .ori-intro, html.beamer-xxl .ori-sub li, html.beamer-xxl .merkmal-intro,
+  html.beamer-xxl .content-text, html.beamer-xxl .baseline-value, html.beamer-xxl .gherkin-block,
+  html.beamer-xxl .testfall-block p, html.beamer-xxl .testfall-block ol, html.beamer-xxl .sub-pill,
+  html.beamer-xxl p.section-sub, html.beamer-xxl .tab-btn{ font-size:34px; }
+  html.beamer-xxl .hero h1{ font-size:64px; }
+  html.beamer-xxl .p-name{ font-size:64px; }
+  html.beamer-xxl .ori-en, html.beamer-xxl .frage-badge, html.beamer-xxl .merkmal-en{ font-size:38px; }
+  html.beamer-xxl .eyebrow, html.beamer-xxl .ori-num, html.beamer-xxl .section-chip, html.beamer-xxl .sub-num{ font-size:21px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <button class="beamer-btn" id="beamerBtn" type="button" title="Vergrößert die Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">☀ Beamer</button>
+  </header>
+  <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer"><strong>Michaela Kühn</strong><span>www.michaela-kuehn.com</span></a>
+
+  <section class="hero">
+    <span class="eyebrow">ISO/IEC 25010:2023 · Praxislabor</span>
+    <h1>ISO-25010-Banklabor</h1>
+    <p class="lead">Eine Onlineüberweisung · neun Qualitätsbrillen · 40 prüfbare Untermerkmale. Ein einziger fachlicher Fall — die SEPA-Überweisung einer Privatkundin — wird nacheinander durch alle neun Hauptmerkmale des ISO/IEC-25010-Produktqualitätsmodells geführt. Zu jedem der 40 Untermerkmale entsteht dieselbe Kette: eine konkrete Anforderung, ein prüfbarer Baselinewert, ein Gherkin-Akzeptanzkriterium und ein ausführbarer Testfall.</p>
+  </section>
+
+  <div class="disclaimer-box">
+    <span class="ic">⚠️</span>
+    <p><strong>Schulungsbaseline:</strong> Alle Zahlen und Grenzwerte in diesem Tool sind bewusst erfunden. Sie dienen ausschließlich dem didaktischen Durchlauf und sind keine regulatorischen Vorgaben oder allgemeinen Bankenstandards.</p>
+  </div>
+
+  <div class="story-box">
+    <span class="ic">📝</span>
+    <div>
+      <span class="story-label">Referenz-User-Story</span>
+      <p>Als Privatkundin möchte ich eine SEPA-Überweisung erfassen, prüfen und freigeben können, damit der gewünschte Betrag fristgerecht beim richtigen Empfänger eingeht.</p>
+    </div>
+  </div>
+
+  <div class="section-nav-wrap">
+    <div class="section-nav-label" id="sectionNavLabel">Abschnitt 0 von 9</div>
+    <div class="section-nav" id="sectionNav"></div>
+  </div>
+
+  <div id="sectionContent"></div>
+
+  <div class="crosslink">
+    Verwandte Denkraum-Tools zu diesem Thema:
+    <ul>
+      <li><a href="./iso-25010-kompendium.html">ISO/IEC 25010:2023 Kompendium</a> — erklärt alle neun Merkmale allgemein anhand von drei austauschbaren FAs mit je einer NFA pro Merkmal; das Banklabor vertieft stattdessen einen einzigen Fall bis auf alle 40 Untermerkmale mit Baselinewert, Gherkin und Testfall.</li>
+      <li><a href="./anforderungsboard-iso.html">Anforderungs-Board · ISO 25010 &amp; ISO 27001</a> — klassifiziert 17 fertige Anforderungskarten eines Kundenportal-Falls per Drag-and-Drop, statt wie hier je Untermerkmal eine neue Anforderung von Grund auf abzuleiten.</li>
+      <li><a href="./requirements-to-code-explorer.html">Requirements-to-Code Explorer</a> — führt eine einzelne Anforderung neun Stufen weiter bis zu Gherkin und Code; ISO 25010 ist dort nur eine von neun Stationen, hier der alleinige Fokus über alle 40 Untermerkmale.</li>
+      <li><a href="./studierendenakte-qualitaet.html">Digitale Studierendenakte — Qualität systematisch denken</a> — dieselbe Trainingslogik (ein Fall, alle neun Merkmale) am Beispiel einer Hochschulverwaltung statt einer Bank.</li>
+    </ul>
+  </div>
+
+  <footer class="app-footer">
+    <div class="footer-details">
+      <details class="footer-box" open>
+        <summary class="footer-summary">Systemprompt</summary>
+        <div class="footer-content footer-mono">
+          <p>Baue ein einzelnes HTML-Trainingstool „ISO-25010-Banklabor", das einen einzigen fachlichen Fall — eine SEPA-Online-Überweisung einer Privatkundin — durch alle neun Hauptmerkmale des ISO/IEC-25010:2023-Produktqualitätsmodells (Functional Suitability, Performance Efficiency, Compatibility, Interaction Capability, Reliability, Security, Maintainability, Flexibility, Safety) mit allen 40 Untermerkmalen führt. Referenz-User-Story: „Als Privatkundin möchte ich eine SEPA-Überweisung erfassen, prüfen und freigeben können, damit der gewünschte Betrag fristgerecht beim richtigen Empfänger eingeht." Zu jedem der 40 Untermerkmale entsteht dieselbe vierteilige Kette: eine konkrete Anforderung → ein prüfbarer Baselinewert (Zahl/Schwellenwert statt „angemessen") → ein Gherkin-Akzeptanzkriterium (Given/When/Then) → ein strukturierter Testfall (Vorbedingung/Schritte/Erwartetes Ergebnis).</p>
+          <p><strong>Struktur:</strong> Topbar (Zurück-Link, Signatur oben rechts fix, vierstufiger Beamer-Button) → Hero (Eyebrow, H1, Lead-Absatz) → Schulungsbaseline-Disclaimer-Box (auffällig, amber) → Referenz-User-Story-Box (dunkel abgesetzt) → Sektions-Navigation (10 Chips 0–9 mit Label „Abschnitt X von 9") → Inhaltsbereich, der sich je nach gewähltem Abschnitt komplett neu rendert: Abschnitt 0 zeigt ein 9er-Grid „Die neun Qualitätsbrillen" (Kurzdefinition je Hauptmerkmal + Liste aller Untermerkmale mit Prüffrage, rein informativ, keine Tabs); Abschnitt 1–9 zeigt je ein Hauptmerkmal mit Kopfzeile (Nummer, Name DE/EN, Kurzdefinition), darunter eine Pillrow der zugehörigen Untermerkmale (3 bis 8 je nach Merkmal) und darunter ein festes Tab-Panel mit vier Tabs (📋 Anforderung, 📏 Baselinewert, 🥒 Gherkin, ✅ Testfall), das bei Wechsel von Untermerkmal oder Tab aktualisiert wird → Prev/Next-Navigation „← Vorheriges Merkmal / Nächstes Merkmal →" am Ende jedes Abschnitts, die durch alle 10 Abschnitte (0–9) blättert → Crosslink-Liste zu verwandten Denkraum-Tools → Footer mit vier Boxen (Systemprompt, Handbuch, Vortrags-Skript, Normen-Register).</p>
+          <p><strong>Inhalt pro Untermerkmal (40×):</strong> Anforderung als vollständiger, auf die Überweisungsfunktion bezogener Anforderungssatz; Baselinewert als konkrete Zahl/Prozentsatz/Zeitwert mit Bezugsgröße (nie „ausreichend" oder „schnell genug" ohne Zahl, K8); Gherkin als klassisches Given/When/Then mit genau einem Szenario; Testfall mit Vorbedingung, 2–3 nummerierten Schritten und einem eindeutigen erwarteten Ergebnis. Alle 40 Einträge bleiben durchgängig auf denselben Fall (SEPA-Überweisung, Privatkundin, ggf. Support-/Betriebsrollen) bezogen — keine Vermischung mit anderen Bankprodukten.</p>
+          <p><strong>Design-Vorgaben:</strong> Gleiche Design-Sprache wie die übrigen Denkraum-Tools, hier mit einer Bank-Farbwelt (Blau als Hauptakzent statt Rot, Teal für Baselinewerte, Violett für Gherkin, Grün für Testfälle als Tab-Unterstreichung). Kein Drag-and-Drop, keine Sliding-Panels — die Auswahl von Abschnitt, Untermerkmal und Tab aktualisiert einen permanent sichtbaren Bereich per Klick (K6). Vierstufiger Beamer-Modus nach kanonischem Muster (Normal → Beamer → Beamer XL → Beamer XXL), Footer ab Stufe 1 ausgeblendet, Panel-Überschrift (Untermerkmal-Name) mit eigenem Größen-Floor (44/54/64px).</p>
+          <p><strong>Persona-Bezug:</strong> Bewusst kein fester Denkraum-Personencast (Ela/Knut/Sarah/Petra/Herr Bachmeier) — die Referenzrolle ist durchgängig eine anonyme „Privatkundin" plus bei Bedarf Support-/Betriebsteam-Rollen, weil das Tool als eigenständiges ISO-25010-Nachschlagewerk zu einem bankfachlichen Beispiel funktionieren soll, unabhängig vom sonstigen Denkraum-Personenkreis.</p>
+          <p><strong>Nicht-tun:</strong> Keine zweite fachliche Domäne neben der SEPA-Überweisung einführen, um die 40 Untermerkmale „aufzufüllen" — lieber ein Fall vollständig als mehrere Fälle lückenhaft. Keine generischen Anforderungs- oder Baselinewert-Formulierungen ohne Zahl/Schwellenwert. Keine echten, tatsächlich geltenden Bankenstandards oder Aufsichtsvorgaben als Baselinewerte ausgeben — alle Zahlen sind erfunden und müssen als Schulungsbaseline gekennzeichnet bleiben (siehe Disclaimer-Box). Kein Weglassen der Disclaimer-Box bei künftigen Überarbeitungen. Kein Ersatz der festen Vierer-Tab-Reihenfolge (Anforderung → Baseline → Gherkin → Testfall) durch eine andere Reihenfolge oder zusätzliche Tabs ohne Rücksprache.</p>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary">Handbuch</summary>
+        <div class="footer-content footer-sans">
+          <p><strong>Framework:</strong> RTF (Rolle – Aufgabe – Format), angewandt auf ein durchgängiges Fallbeispiel statt auf mehrere Einzelbeispiele.</p>
+          <table class="footer-table">
+            <thead><tr><th>Dimension</th><th>Ausprägung in diesem Tool</th></tr></thead>
+            <tbody>
+              <tr><td>Rolle</td><td>RE-Trainerin, die an einem einzigen, bankfachlich plausiblen Fall zeigt, wie aus einer Norm testbare Anforderungen entstehen.</td></tr>
+              <tr><td>Aufgabe</td><td>Alle 40 Untermerkmale von ISO/IEC 25010:2023 an einer SEPA-Überweisung durchspielen: Anforderung → Baselinewert → Gherkin → Testfall.</td></tr>
+              <tr><td>Kontext</td><td>Ein Fall (Privatkundin, SEPA-Überweisung), keine wechselnden Szenarien — Tiefe statt Breite.</td></tr>
+              <tr><td>Format</td><td>10 Abschnitte (Orientierung + 9 Hauptmerkmale), je Hauptmerkmal eine Pillrow der Untermerkmale plus ein Vier-Tab-Panel.</td></tr>
+              <tr><td>Eingrenzung</td><td>Nur die neun Hauptmerkmale der Edition 2023 mit ihren 40 Untermerkmalen; keine Messmethodik nach ISO/IEC 25023, keine echten Bankenstandards.</td></tr>
+            </tbody>
+          </table>
+          <p><strong>Zentraler Lernhinweis:</strong> Eine einzige fachliche Funktion — „Überweisung erfassen, prüfen, freigeben" — erzeugt 40 unterschiedliche, gleichwertig prüfbare Anforderungen. Qualität ist kein Bauchgefühl „läuft doch", sondern eine Liste konkreter, testbarer Zusagen. Und: Eine Anforderung ohne Zahl ist noch keine Anforderung, sie ist eine Absichtserklärung.</p>
+          <p><strong>Nachbau-Tipp:</strong> Erst die 40 Untermerkmalsnamen und -fragen aus der aktuellen ISO/IEC 25010 sauber recherchieren (K17), dann für einen einzigen, alltagsnahen Fall alle vier Inhaltsarten (Anforderung/Baseline/Gherkin/Testfall) konsequent durchspielen, bevor ein zweiter Fall ergänzt wird. Erfundene Zahlen immer klar als Schulungsbaseline kennzeichnen, nie als echten Standard ausgeben.</p>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary">Vortrags-Skript</summary>
+        <div class="footer-content footer-sans">
+          <p><strong>Einsatzdauer:</strong> ca. 20–30 Minuten als vertiefende Übung nach einer ISO-25010-Einführung, z. B. im Anschluss an das ISO/IEC-25010:2023-Kompendium.</p>
+          <p><strong>Ablauf:</strong></p>
+          <p>(1) <em>(Hero, Disclaimer-Box und Referenz-User-Story vorlesen)</em> „Wir bleiben heute bei einer einzigen Aufgabe: eine Überweisung erfassen, prüfen, freigeben. Ganz bewusst nur ein Fall — damit wir ihn wirklich bis zum Ende durchdenken können. Und: alle Zahlen, die gleich kommen, sind erfunden — für den Trainingszweck plausibel, aber kein echter Bankenstandard." Übergang: Jetzt schauen wir uns an, wie viele verschiedene Qualitätsfragen in dieser einen Aufgabe stecken.</p>
+          <p>(2) <em>(Klick auf Abschnitt „0", durch das 9er-Grid scrollen)</em> „Neun Qualitätsbrillen, insgesamt vierzig Untermerkmale — das ist mehr, als die meisten bei einer simplen Überweisung vermuten würden." <em>(auf ein bis zwei Karten zeigen)</em> „Schon bei ‚Funktionale Eignung' stecken drei eigene Fragen drin: Sind alle Angaben da? Stimmt das Ergebnis? Ist der Weg dahin sinnvoll?"</p>
+          <p>(3) <em>(Klick auf Abschnitt „1", dann auf den ersten Untermerkmal-Pill „Funktionale Vollständigkeit")</em> „Für jedes Untermerkmal gehen wir denselben Weg: erst die Anforderung." <em>(Tab „Anforderung" zeigen, vorlesen)</em> „Dann die Zahl, an der wir sie später prüfen." <em>(Tab „Baselinewert" zeigen)</em> „Dann das Gherkin-Kriterium — Given, When, Then." <em>(Tab „Gherkin" zeigen)</em> „Und zuletzt der Testfall, mit dem wir das tatsächlich nachprüfen könnten." <em>(Tab „Testfall" zeigen)</em></p>
+          <p>(4) <em>(Weitere Untermerkmale desselben Abschnitts anklicken, dann mit „Nächstes Merkmal →" zu Abschnitt 5 oder 6 springen)</em> „Springen wir vor zu Zuverlässigkeit oder Informationssicherheit — hier wird es besonders konkret: Was passiert, wenn die Verbindung genau nach der TAN-Eingabe abbricht? Wie stellen wir sicher, dass niemand eine Freigabe im Nachhinein abstreiten kann?"</p>
+          <p>(5) <em>(Abschnitt 9 „Betriebssicherheit" zeigen)</em> „Und zum Schluss die Frage, die in klassischen Pflichtenheften oft fehlt: Was tut das System, wenn etwas schiefgeht — warnt es rechtzeitig, oder merkt es der Kunde erst am Kontoauszug?"</p>
+          <p><strong>Regie-Hinweise:</strong> Nicht alle 40 Untermerkmale live vorlesen — das sprengt jeden Zeitrahmen. Drei bis fünf exemplarisch vertiefen, den Rest zum Selbst-Erkunden freigeben. Die Disclaimer-Box nicht überspringen — sie ist Teil der didaktischen Botschaft, nicht nur ein rechtlicher Hinweis: erfundene, aber realistische Zahlen sind gutes Training, echte, aber falsch zitierte Zahlen sind schlechtes Training. Bei zeitknappen Formaten (unter 15 Minuten) nur Abschnitt 0 und ein bis zwei vollständige Untermerkmale zeigen, nicht durch alle neun Abschnitte hetzen.</p>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary">Normen-Register</summary>
+        <div class="footer-content footer-sans">
+          <table class="footer-table">
+            <thead><tr><th>Framework / Quelle</th><th>Fassung / Status</th><th>Bezug im Tool</th></tr></thead>
+            <tbody>
+              <tr><td>ISO/IEC 25010</td><td>Edition 2 (2023-11), in Kraft</td><td>Zentrales Modell: alle neun Hauptmerkmale und 40 Untermerkmale, je Untermerkmal eine eigene Anforderung</td></tr>
+              <tr><td>ISO 20022 (pain.001)</td><td>laufend gepflegter internationaler Nachrichtenstandard</td><td>Erwähnt bei Interoperabilität (Abschnitt 3) als Format der SEPA-Auftragsübergabe</td></tr>
+              <tr><td>Gherkin / BDD</td><td>De-facto-Standard, keine ISO-Norm</td><td>Given/When/Then-Format in jedem Gherkin-Tab</td></tr>
+              <tr><td>WCAG 2.2</td><td>W3C-Empfehlung, in Kraft</td><td>Baselinewert bei Inklusivität (Abschnitt 4)</td></tr>
+              <tr><td>Zwei-Faktor-/Starke-Kundenauthentifizierung (Konzept, angelehnt an PSD2-Prinzip)</td><td>didaktisch vereinfacht, kein Zitat einer konkreten Rechtsnorm</td><td>Baselinewert bei Authentizität (Abschnitt 6)</td></tr>
+            </tbody>
+          </table>
+          <p>Alle übrigen Zahlenwerte in diesem Tool (Antwortzeiten, Fehlerquoten, Verfügbarkeiten, Limits) sind erfundene Schulungsbaselines ohne Normbezug — siehe Disclaimer-Box im Kopf des Tools. Stand vor Einsatz in neuen Trainingsmaterialien prüfen (K17), insbesondere ob zwischenzeitlich eine neue ISO/IEC-25010-Fassung veröffentlicht wurde.</p>
+        </div>
+      </details>
+    </div>
+    <p class="footer-sig">
+      <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" style="color:inherit;">www.michaela-kuehn.com</a> · Referenzmodell: ISO/IEC 25010:2023 · Produktqualität
+      <span class="audit">Zuletzt geprüft: 28.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+    </p>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   DATENGRUNDLAGE — 9 Hauptmerkmale × 40 Untermerkmale
+   Fall: SEPA-Online-Überweisung einer Privatkundin
+   ============================================================ */
+const MERKMALE = [
+  {
+    num:1, name:'Funktionale Eignung', en:'Functional Suitability',
+    intro:'Hier wird betrachtet, ob die Überweisung die fachliche Aufgabe vollständig, korrekt und zweckmäßig erfüllt.',
+    unter:[
+      { name:'Funktionale Vollständigkeit', frage:'Sind alle notwendigen Funktionen und Angaben vorhanden?',
+        anforderung:'Die Überweisungsmaske erfasst alle SEPA-Pflichtfelder (IBAN, BIC bei Bedarf, Empfängername, Betrag, Verwendungszweck, Ausführungsdatum) sowie optionale Angaben, sodass keine Angabe nachträglich in einem Medienbruch nachgereicht werden muss.',
+        baseline:'100% der SEPA-Pflichtfelder sind im Formular abbildbar; 0 Pflichtangaben erfordern einen Kanalwechsel (Telefon/Filiale).',
+        given:'eine Kundin öffnet die Überweisungsmaske', when:'sie alle Pflichtfelder inkl. Verwendungszweck ausfüllt', then:'akzeptiert das System den Auftrag ohne weitere Rückfrage nach fehlenden Angaben.',
+        vor:'Eingeloggte Kundin, leeres Formular.', schritte:['Alle Pflichtfelder befüllen.','Formular absenden.'], ergebnis:'Auftrag wird zur Prüfung übernommen, kein Feld wird nachträglich nachgefordert.' },
+      { name:'Funktionale Korrektheit', frage:'Werden die richtigen Ergebnisse erzeugt?',
+        anforderung:'Der eingegebene Betrag wird exakt (auf den Cent) und ohne Rundungsfehler auf dem Empfängerkonto gutgeschrieben.',
+        baseline:'Abweichung zwischen Sende- und Gutschriftsbetrag = 0,00 € bei 100% der Testtransaktionen (Stichprobe n=500).',
+        given:'eine Überweisung über 128,47 € ist freigegeben', when:'die Buchung verarbeitet wird', then:'beträgt die Gutschrift beim Empfänger exakt 128,47 €.',
+        vor:'Freigegebener Auftrag mit Centbetrag.', schritte:['Verarbeitung abwarten.','Kontoauszug beider Seiten prüfen.'], ergebnis:'Belastung und Gutschrift stimmen exakt überein.' },
+      { name:'Funktionale Angemessenheit', frage:'Unterstützt die Funktion das Ziel ohne unnötige Umwege?',
+        anforderung:'Der Überweisungsprozess führt die Kundin in maximal drei Schritten (Erfassen → Prüfen → Freigeben) zum Ziel, ohne fachfremde Zusatzfunktionen einzublenden.',
+        baseline:'≤3 Klick-Schritte vom Formular bis zur Freigabe; 0 Werbe- oder Cross-Selling-Einblendungen im Freigabe-Schritt.',
+        given:'die Kundin hat die Eingabe abgeschlossen', when:'sie zur Prüfseite wechselt', then:'sieht sie ausschließlich prüfungsrelevante Daten ohne Werbe- oder Cross-Selling-Elemente.',
+        vor:'Ausgefülltes Formular.', schritte:['„Weiter zu Prüfen" klicken.','Bildschirminhalt erfassen.'], ergebnis:'Nur auftragsbezogene Inhalte sichtbar, Schrittanzahl ≤3.' }
+    ]
+  },
+  {
+    num:2, name:'Leistungseffizienz', en:'Performance Efficiency',
+    intro:'Hier wird betrachtet, wie schnell und ressourcenschonend die Überweisung unter festgelegten Bedingungen arbeitet.',
+    unter:[
+      { name:'Zeitverhalten', frage:'Werden vereinbarte Antwort- und Verarbeitungszeiten eingehalten?',
+        anforderung:'Die Plausibilitätsprüfung der IBAN erfolgt in Echtzeit während der Eingabe, die Freigabe-Bestätigung unmittelbar nach TAN-Eingabe.',
+        baseline:'IBAN-Prüfsummen-Feedback in ≤300ms (P95); Freigabe-Bestätigung in ≤2s (P95) nach TAN-Eingabe.',
+        given:'die Kundin tippt eine vollständige IBAN', when:'die Eingabe endet', then:'erscheint die Gültigkeitsprüfung innerhalb von 300ms.',
+        vor:'Formular geöffnet, Performance-Messung aktiv.', schritte:['Gültige und ungültige IBAN eingeben.','Zeit bis Feedback messen.'], ergebnis:'P95 ≤300ms in beiden Fällen.' },
+      { name:'Ressourcennutzung', frage:'Bleibt der Verbrauch technischer Ressourcen angemessen?',
+        anforderung:'Die Überweisungsmaske belastet mobile Endgeräte auch bei schwacher Hardware nicht spürbar.',
+        baseline:'≤80MB Arbeitsspeicher-Peak während des Überweisungsflows; ≤5% CPU-Dauerlast im Ruhezustand des Formulars.',
+        given:'die App läuft auf einem Einsteiger-Smartphone', when:'die Überweisungsmaske geöffnet ist', then:'bleibt der Speicherverbrauch unter 80MB.',
+        vor:'Referenzgerät mit Profiling-Tool.', schritte:['Formular öffnen.','5 Minuten offen halten, Speicher/CPU protokollieren.'], ergebnis:'Werte bleiben innerhalb der Baseline.' },
+      { name:'Kapazität', frage:'Kann die festgelegte Nutzungs- und Transaktionsmenge verarbeitet werden?',
+        anforderung:'Das System verarbeitet den monatlichen Überweisungsspitzenwert (Gehaltslauf-Wochenende) ohne Warteschlangenbildung für Einzelkund:innen.',
+        baseline:'≥5.000 gleichzeitige Überweisungsvorgänge ohne Antwortzeitverschlechterung >20% gegenüber Normallast.',
+        given:'es ist Monatserster mit erhöhtem Überweisungsaufkommen', when:'5.000 Kund:innen gleichzeitig Aufträge freigeben', then:'bleibt die Antwortzeit im vereinbarten Toleranzband.',
+        vor:'Lasttest-Umgebung.', schritte:['5.000 parallele Freigaben simulieren.','Antwortzeiten auswerten.'], ergebnis:'Keine „System überlastet"-Meldung, Verschlechterung ≤20%.' }
+    ]
+  },
+  {
+    num:3, name:'Kompatibilität', en:'Compatibility',
+    intro:'Hier wird betrachtet, ob die Überweisung störungsfrei mit anderen Bankfunktionen und Systemen zusammenarbeitet.',
+    unter:[
+      { name:'Koexistenz', frage:'Beeinträchtigt sie parallel betriebene Systeme nicht unzulässig?',
+        anforderung:'Der Überweisungsprozess beeinträchtigt parallel laufende Funktionen (z. B. Depotübersicht, Kartensperrung) im selben Online-Banking nicht.',
+        baseline:'0 gemeldete Störungen anderer Module während einer laufenden Überweisungssitzung (Regressionstest über 12 Kernfunktionen).',
+        given:'eine Kundin führt in einem Tab eine Überweisung aus', when:'sie parallel in einem zweiten Tab die Depotübersicht öffnet', then:'funktionieren beide Bereiche unabhängig voneinander fehlerfrei.',
+        vor:'Zwei parallele Sitzungen.', schritte:['Überweisung starten.','Parallel Depot öffnen, beide Vorgänge abschließen.'], ergebnis:'Keine gegenseitige Störung, beide Vorgänge erfolgreich.' },
+      { name:'Interoperabilität', frage:'Können beteiligte Systeme Daten korrekt austauschen und verwenden?',
+        anforderung:'Der Überweisungsauftrag wird korrekt im SEPA-Format (ISO 20022 pain.001) an das Kernbankensystem und weiter an die Empfängerbank übergeben.',
+        baseline:'100% Schema-Validität der erzeugten pain.001-Nachrichten gegen das aktuelle ISO-20022-Schema.',
+        given:'ein Überweisungsauftrag ist freigegeben', when:'er an das Kernbankensystem übergeben wird', then:'entspricht die erzeugte Nachricht vollständig dem pain.001-Schema.',
+        vor:'Freigegebener Auftrag.', schritte:['Erzeugte XML-Nachricht exportieren.','Gegen offizielles XSD-Schema validieren.'], ergebnis:'Validierung ohne Schemafehler.' }
+    ]
+  },
+  {
+    num:4, name:'Interaktionsfähigkeit', en:'Interaction Capability',
+    intro:'Hier wird betrachtet, ob unterschiedliche Menschen die Überweisung erkennen, verstehen und sicher bedienen können.',
+    unter:[
+      { name:'Erkennbarkeit der Angemessenheit', frage:'Ist der Zweck der Funktion erkennbar?',
+        anforderung:'Schon auf der Startseite des Online-Bankings ist die Funktion „Überweisung" durch Icon und Beschriftung eindeutig als eigenständige Funktion erkennbar.',
+        baseline:'≥90% der Testnutzer:innen finden die Funktion in ≤5 Sekunden ohne Hilfetext (Usability-Test, n=20).',
+        given:'eine neue Nutzerin sieht das Dashboard zum ersten Mal', when:'sie eine Überweisung tätigen möchte', then:'erkennt sie die passende Funktion ohne Erklärung.',
+        vor:'Unbekanntes Dashboard, Testperson ohne Vorwissen.', schritte:['Aufgabe „Überweise 50€" stellen.','Zeit bis Klick auf die Funktion messen.'], ergebnis:'≤5 Sekunden bei ≥90% der Testpersonen.' },
+      { name:'Erlernbarkeit', frage:'Kann die Bedienung schnell erlernt werden?',
+        anforderung:'Eine Erstnutzerin kann eine einfache Überweisung ohne Schulung oder Handbuch abschließen.',
+        baseline:'≥85% Erfolgsquote beim ersten Versuch ohne Hilfestellung (Usability-Test, n=20); ≤2 Fehlversuche im Schnitt.',
+        given:'eine Erstnutzerin ohne Vorerfahrung startet den Prozess', when:'sie ihn ohne externe Hilfe durchläuft', then:'schließt sie die Überweisung erfolgreich ab.',
+        vor:'Testperson ohne App-Erfahrung.', schritte:['Aufgabe geben.','Verhalten beobachten, Fehlversuche zählen.'], ergebnis:'Abschluss ohne Abbruch, ≤2 Fehlversuche.' },
+      { name:'Bedienbarkeit', frage:'Lässt sich der Vorgang gut steuern?',
+        anforderung:'Alle Eingabeschritte lassen sich sowohl per Touch als auch per Tastatur/Tab-Reihenfolge steuern, inkl. Korrektur bereits eingegebener Werte.',
+        baseline:'100% der Formularfelder per Tab erreichbar; Korrektur eines Feldes in ≤2 Klicks möglich, ohne das Formular neu zu starten.',
+        given:'die Kundin hat einen Tippfehler im Betrag bemerkt', when:'sie zum Betragsfeld zurückspringt', then:'kann sie den Wert korrigieren, ohne die übrigen Angaben zu verlieren.',
+        vor:'Teilweise ausgefülltes Formular.', schritte:['Ein Feld nachträglich ändern.','Übrige Felder prüfen.'], ergebnis:'Übrige Felder bleiben erhalten, Korrektur in ≤2 Klicks.' },
+      { name:'Schutz vor Benutzerfehlern', frage:'Werden typische Fehler verhindert oder abgefangen?',
+        anforderung:'Das System warnt vor ungewöhnlichen Aufträgen (z. B. Betrag deutlich über dem üblichen Muster, neuer Empfänger) vor der finalen Freigabe.',
+        baseline:'100% der Aufträge >2.000 € an einen erstmaligen Empfänger lösen eine zusätzliche Sicherheitswarnung mit Bestätigungsschritt aus.',
+        given:'eine Kundin überweist erstmals 3.000 € an einen neuen Empfänger', when:'sie zur Freigabe wechselt', then:'zeigt das System eine explizite Warnung mit Bestätigungspflicht.',
+        vor:'Neuer Empfänger, hoher Betrag.', schritte:['Auftrag bis Freigabe durchklicken.'], ergebnis:'Warnhinweis erscheint, Freigabe erfordert aktive Bestätigung.' },
+      { name:'Benutzerengagement', frage:'Unterstützt die Gestaltung eine klare, angenehme Interaktion?',
+        anforderung:'Die Bestätigungsseite nach erfolgreicher Überweisung gibt eine klare, positive Rückmeldung mit den wichtigsten Auftragsdaten auf einen Blick.',
+        baseline:'Bestätigung enthält Betrag, Empfänger, Ausführungsdatum und Referenznummer in ≤1 Bildschirmseite ohne Scrollen (Desktop und Mobile).',
+        given:'eine Überweisung wurde erfolgreich freigegeben', when:'die Bestätigungsseite lädt', then:'sind alle Kerndaten ohne Scrollen sichtbar.',
+        vor:'Abgeschlossener Auftrag.', schritte:['Bestätigungsseite auf Desktop prüfen.','Bestätigungsseite auf Mobile prüfen.'], ergebnis:'Keine der Kerninformationen erfordert Scrollen.' },
+      { name:'Inklusivität', frage:'Werden unterschiedliche Fähigkeiten und Voraussetzungen berücksichtigt?',
+        anforderung:'Die Überweisungsmaske ist mit Screenreadern bedienbar und erfüllt Mindestkontrast- sowie Schriftgrößen-Anforderungen.',
+        baseline:'WCAG 2.2 AA erfüllt: Kontrastverhältnis ≥4,5:1, alle Formularfelder mit ARIA-Labels, vollständige Screenreader-Durchlaufbarkeit ohne Sackgassen.',
+        given:'eine Nutzerin verwendet einen Screenreader', when:'sie das Überweisungsformular durchläuft', then:'werden alle Felder und Fehlermeldungen korrekt vorgelesen.',
+        vor:'Screenreader aktiv (z. B. NVDA).', schritte:['Kompletten Prozess per Screenreader durchlaufen.'], ergebnis:'Keine unbenannten oder unerreichbaren Elemente.' },
+      { name:'Benutzerunterstützung', frage:'Gibt es passende Hilfe im Nutzungskontext?',
+        anforderung:'Zu jedem Pflichtfeld ist eine kontextbezogene Hilfe (z. B. „Was ist eine IBAN?") ohne Verlassen des Formulars abrufbar.',
+        baseline:'100% der Pflichtfelder mit Inline-Hilfetext oder Tooltip; Support-Kontakt in ≤2 Klicks aus dem Formular erreichbar.',
+        given:'eine Kundin ist unsicher, was ins BIC-Feld gehört', when:'sie das Hilfe-Icon anklickt', then:'erhält sie eine verständliche Erklärung, ohne das Formular zu verlassen.',
+        vor:'Formular geöffnet.', schritte:['Hilfe-Icons aller Pflichtfelder anklicken.'], ergebnis:'Jedes Feld liefert kontextbezogene Hilfe im Formular.' },
+      { name:'Selbstbeschreibungsfähigkeit', frage:'Erklärt sich die Oberfläche aus sich selbst?',
+        anforderung:'Jeder Schritt des Prozesses (Erfassen, Prüfen, Freigeben) ist eindeutig beschriftet und der aktuelle Status ist jederzeit erkennbar.',
+        baseline:'Fortschrittsanzeige mit drei benannten Schritten durchgängig sichtbar; 0 unbeschriftete Icons ohne Textlabel.',
+        given:'die Kundin befindet sich im Prüfschritt', when:'sie die Fortschrittsanzeige betrachtet', then:'erkennt sie eindeutig, dass sie sich in Schritt 2 von 3 befindet.',
+        vor:'Laufender Auftrag in Schritt 2.', schritte:['Fortschrittsanzeige prüfen.','Beschriftungen prüfen.'], ergebnis:'Aktueller Schritt eindeutig hervorgehoben und benannt.' }
+    ]
+  },
+  {
+    num:5, name:'Zuverlässigkeit', en:'Reliability',
+    intro:'Hier wird betrachtet, ob die Überweisung verlässlich funktioniert und nach Störungen einen eindeutigen Zustand behält.',
+    unter:[
+      { name:'Fehlerfreiheit', frage:'Arbeitet die Funktion ohne unerwartete Fehler?',
+        anforderung:'Der Überweisungsprozess produziert bei Standardabläufen keine unerwarteten Systemfehler.',
+        baseline:'<0,1% Fehlerquote bei Standardüberweisungen (Referenzzeitraum 30 Tage, Schulungswert).',
+        given:'1.000 Standardüberweisungen werden im Testzeitraum ausgeführt', when:'alle Vorgänge ausgewertet werden', then:'treten in weniger als 0,1% unerwartete Fehler auf.',
+        vor:'Testumgebung mit Fehlerprotokoll.', schritte:['1.000 Standardaufträge automatisiert durchlaufen lassen.','Fehlerprotokoll auswerten.'], ergebnis:'Fehlerquote <0,1%.' },
+      { name:'Verfügbarkeit', frage:'Ist sie zu den vereinbarten Zeiten nutzbar?',
+        anforderung:'Die Überweisungsfunktion ist innerhalb der vereinbarten Servicezeiten durchgehend erreichbar.',
+        baseline:'≥99,5% Verfügbarkeit im Monatsmittel, angekündigte Wartungsfenster (≥48h vorher) ausgenommen.',
+        given:'die vereinbarte Servicezeit läuft', when:'eine Kundin die Überweisungsfunktion aufruft', then:'ist sie erreichbar, sofern kein angekündigtes Wartungsfenster aktiv ist.',
+        vor:'Verfügbarkeits-Monitoring über 30 Tage.', schritte:['Ausfallzeiten außerhalb angekündigter Wartung auswerten.'], ergebnis:'Verfügbarkeit ≥99,5%.' },
+      { name:'Fehlertoleranz', frage:'Bleibt der Auftrag bei Teilstörungen konsistent?',
+        anforderung:'Bricht die Verbindung nach TAN-Eingabe, aber vor Bestätigung ab, wird der Auftrag weder doppelt noch inkonsistent gebucht.',
+        baseline:'0 Doppelbuchungen und 0 „hängende" Aufträge bei simuliertem Verbindungsabbruch (100 Testfälle).',
+        given:'die TAN wurde bestätigt', when:'die Verbindung unmittelbar danach abbricht', then:'wird der Auftrag genau einmal korrekt gebucht oder eindeutig als fehlgeschlagen markiert.',
+        vor:'Testumgebung mit simuliertem Verbindungsabbruch nach TAN.', schritte:['Abbruch an definiertem Punkt auslösen.','Kontostand und Auftragsstatus prüfen.'], ergebnis:'Eindeutiger, einmaliger Buchungsstatus ohne Dopplung.' },
+      { name:'Wiederherstellbarkeit', frage:'Können Dienst und Status nach Ausfällen wiederhergestellt werden?',
+        anforderung:'Nach einem Systemausfall wird der Verarbeitungsstatus offener Überweisungen korrekt wiederhergestellt.',
+        baseline:'Wiederanlauf des Überweisungsdienstes in ≤15 Minuten nach Ausfall, mit vollständig konsistentem Auftragsstatus.',
+        given:'ein Systemausfall unterbricht die Verarbeitung offener Aufträge', when:'das System wieder hochfährt', then:'zeigt jeder Auftrag exakt den Status, den er vor dem Ausfall hatte.',
+        vor:'Offene Aufträge, simulierter Serverausfall.', schritte:['Ausfall auslösen.','System neu starten, Auftragsstatus vergleichen.'], ergebnis:'Wiederanlauf ≤15 Min., keine Statusabweichung.' }
+    ]
+  },
+  {
+    num:6, name:'Informationssicherheit', en:'Security',
+    intro:'Hier wird betrachtet, ob Identitäten, Überweisungsdaten und Transaktionen angemessen geschützt und nachweisbar sind.',
+    unter:[
+      { name:'Vertraulichkeit', frage:'Sehen nur Berechtigte die Daten?',
+        anforderung:'Kontodaten und Transaktionsdetails sind ausschließlich für die berechtigte Kundin und autorisiertes Bankpersonal einsehbar.',
+        baseline:'Ende-zu-Ende-Verschlüsselung TLS 1.3 für alle Übertragungswege; 0 unautorisierte Zugriffe im Penetrationstest.',
+        given:'eine Kundin ruft ihre Überweisungshistorie ab', when:'die Daten übertragen werden', then:'sind sie durchgehend verschlüsselt und für Dritte nicht einsehbar.',
+        vor:'Netzwerk-Traffic-Analyse während einer Sitzung.', schritte:['Datenverkehr mitschneiden.','Auf Klartext-Kontodaten prüfen.'], ergebnis:'Keine Klartext-Kontodaten im Traffic.' },
+      { name:'Integrität', frage:'Bleiben Daten vor unbemerkter Änderung geschützt?',
+        anforderung:'Einmal freigegebene Auftragsdaten (Betrag, Empfänger) können nicht unbemerkt verändert werden.',
+        baseline:'Kryptographische Signatur pro Auftrag; 100% Erkennungsquote manipulierter Testnachrichten im Integritätscheck.',
+        given:'ein Auftrag wurde mit gültiger Signatur freigegeben', when:'die Auftragsdaten nachträglich manipuliert werden', then:'erkennt das System die Abweichung und lehnt die Verarbeitung ab.',
+        vor:'Signierter Testauftrag.', schritte:['Betrag nach Signierung manuell verändern.','Verarbeitung anstoßen.'], ergebnis:'Ablehnung wegen Signaturfehler.' },
+      { name:'Nichtabstreitbarkeit', frage:'Kann die Freigabe belastbar nachgewiesen werden?',
+        anforderung:'Die Freigabe einer Überweisung durch die Kundin ist im Nachhinein nachweisbar und kann nicht bestritten werden.',
+        baseline:'Jede Freigabe wird mit Zeitstempel, TAN-Referenz und Gerätekennung revisionssicher protokolliert (Aufbewahrung 10 Jahre, interne Vorgabe).',
+        given:'eine Kundin bestreitet später, eine Überweisung freigegeben zu haben', when:'das Freigabeprotokoll geprüft wird', then:'belegt es TAN-Bestätigung, Zeitstempel und Gerät eindeutig.',
+        vor:'Abgeschlossener Auftrag mit Freigabeprotokoll.', schritte:['Protokolleintrag zum Auftrag abrufen.'], ergebnis:'Vollständiger, unveränderbarer Nachweis vorhanden.' },
+      { name:'Zurechenbarkeit', frage:'Ist jede Aktion einem Akteur zugeordnet?',
+        anforderung:'Jede Aktion im Überweisungsprozess (Erfassen, Ändern, Freigeben) ist eindeutig einem angemeldeten Konto zugeordnet.',
+        baseline:'100% der protokollierten Aktionen enthalten Benutzer-ID, Zeitstempel und Aktionstyp; 0 anonyme Änderungen möglich.',
+        given:'mehrere Personen haben Zugriff auf ein Gemeinschaftskonto', when:'eine Überweisung geändert wird', then:'ist im Protokoll eindeutig erkennbar, welches Nutzerkonto die Änderung vorgenommen hat.',
+        vor:'Gemeinschaftskonto mit zwei Zugängen.', schritte:['Auftrag mit Zugang A anlegen.','Mit Zugang B ändern.'], ergebnis:'Protokoll weist beide Aktionen den jeweils korrekten Konten zu.' },
+      { name:'Authentizität', frage:'Ist die behauptete Identität echt?',
+        anforderung:'Vor der Freigabe wird zweifelsfrei bestätigt, dass die auftraggebende Person tatsächlich die berechtigte Kontoinhaberin ist.',
+        baseline:'Zwei-Faktor-Authentifizierung (Passwort + TAN/App-Freigabe) verpflichtend für jede Freigabe, 0 Freigaben mit nur einem Faktor.',
+        given:'eine Kundin hat den Auftrag erfasst', when:'sie zur Freigabe kommt', then:'verlangt das System zusätzlich zum Login einen zweiten, unabhängigen Faktor.',
+        vor:'Erfasster Auftrag, aktive Sitzung.', schritte:['Freigabe ohne zweiten Faktor versuchen.'], ergebnis:'Freigabe wird verweigert, zweiter Faktor zwingend erforderlich.' },
+      { name:'Widerstandsfähigkeit', frage:'Hält die Funktion definierten Angriffen stand?',
+        anforderung:'Der Überweisungsprozess hält automatisierten Angriffsversuchen (z. B. Brute-Force auf die TAN) stand.',
+        baseline:'Sperrung nach 3 fehlgeschlagenen TAN-Versuchen; 0 erfolgreiche automatisierte Angriffe im simulierten Penetrationstest.',
+        given:'eine dritte fehlerhafte TAN wird eingegeben', when:'der Versuch ausgewertet wird', then:'sperrt das System den Freigabekanal und fordert eine erneute Authentifizierung über einen sicheren Weg.',
+        vor:'Aktiver Freigabeprozess.', schritte:['Dreimal falsche TAN eingeben.'], ergebnis:'Kanal wird nach dem dritten Fehlversuch gesperrt.' }
+    ]
+  },
+  {
+    num:7, name:'Wartbarkeit', en:'Maintainability',
+    intro:'Hier wird betrachtet, wie gut die Überweisungsfunktion verstanden, geändert und geprüft werden kann.',
+    unter:[
+      { name:'Modularität', frage:'Sind Verantwortungsbereiche sauber getrennt?',
+        anforderung:'Die Überweisungslogik (Validierung, Buchung, Benachrichtigung) ist in unabhängig austauschbaren Komponenten organisiert.',
+        baseline:'Validierungs-, Buchungs- und Benachrichtigungsmodul über definierte Schnittstellen entkoppelt; 0 Codeänderungen in den anderen Modulen bei Änderung eines Moduls.',
+        given:'das Benachrichtigungsmodul wird auf einen neuen Anbieter umgestellt', when:'die Umstellung erfolgt', then:'bleiben Validierung und Buchung unverändert lauffähig.',
+        vor:'Testumgebung mit Modulgrenzen.', schritte:['Benachrichtigungsmodul austauschen.','Übrige Module unverändert lassen.'], ergebnis:'Buchung und Validierung funktionieren weiterhin ohne Anpassung.' },
+      { name:'Wiederverwendbarkeit', frage:'Lassen sich geeignete Komponenten mehrfach nutzen?',
+        anforderung:'Die IBAN-Prüfsummen-Validierung ist als eigenständige Komponente auch in anderen Formularen (z. B. Daueraufträge, Empfängerverwaltung) nutzbar.',
+        baseline:'IBAN-Validierungskomponente in ≥3 weiteren Funktionsbereichen ohne Codeduplikation eingebunden.',
+        given:'eine neue Funktion „Dauerauftrag anlegen" wird entwickelt', when:'die IBAN-Eingabe implementiert wird', then:'wird dieselbe Validierungskomponente wie bei der Einzelüberweisung wiederverwendet.',
+        vor:'Bestehende IBAN-Validierungskomponente.', schritte:['Einbindung in einer zweiten Funktion prüfen.'], ergebnis:'Keine Duplizierung der Prüflogik im Code.' },
+      { name:'Analysierbarkeit', frage:'Können Fehler und Änderungsfolgen eingegrenzt werden?',
+        anforderung:'Bei einer fehlgeschlagenen Buchung lässt sich die Ursache anhand von Logs eindeutig und schnell eingrenzen.',
+        baseline:'Fehlerursache in ≥90% der Testfälle in ≤15 Minuten anhand strukturierter Logs identifizierbar (Referenzmessung mit Support-Team).',
+        given:'eine Überweisung schlägt fehl', when:'das Support-Team die Logs auswertet', then:'ist die Fehlerursache in unter 15 Minuten eindeutig identifiziert.',
+        vor:'Künstlich erzeugter Buchungsfehler.', schritte:['Support-Team ohne Vorwissen Logs analysieren lassen.','Zeit stoppen.'], ergebnis:'Ursache in ≤15 Minuten gefunden.' },
+      { name:'Modifizierbarkeit', frage:'Sind Änderungen kontrolliert möglich?',
+        anforderung:'Eine Änderung des Tageslimits für Überweisungen lässt sich konfigurativ vornehmen, ohne Quellcode anzupassen.',
+        baseline:'Limitänderung über Konfiguration in ≤30 Minuten produktiv wirksam, ohne Deployment eines neuen Softwarestands.',
+        given:'das Tageslimit soll von 5.000 € auf 7.500 € angehoben werden', when:'die Konfiguration angepasst wird', then:'gilt das neue Limit ohne Codeänderung oder Neuinstallation.',
+        vor:'Bestehende Limit-Konfiguration.', schritte:['Wert in der Konfiguration ändern.','Wirksamkeit testen.'], ergebnis:'Neues Limit greift ohne Deployment.' },
+      { name:'Testbarkeit', frage:'Lassen sich Regeln und Ergebnisse zuverlässig prüfen?',
+        anforderung:'Alle Regeln der Betragsprüfung (Limit, Dispo, Plausibilität) sind durch automatisierte Tests einzeln überprüfbar.',
+        baseline:'≥95% Testabdeckung der Validierungsregeln durch automatisierte Unit-Tests, Testlauf in ≤10 Minuten.',
+        given:'eine neue Validierungsregel wird ergänzt', when:'die automatisierte Testsuite läuft', then:'wird die neue Regel durch mindestens einen eigenen Testfall abgedeckt.',
+        vor:'Bestehende Testsuite.', schritte:['Testsuite ausführen.','Abdeckung der Validierungsregeln auswerten.'], ergebnis:'Abdeckung ≥95%, Laufzeit ≤10 Minuten.' }
+    ]
+  },
+  {
+    num:8, name:'Flexibilität', en:'Flexibility',
+    intro:'Hier wird betrachtet, ob sich die Überweisung an neue Umgebungen, Lasten und Komponenten anpassen lässt.',
+    unter:[
+      { name:'Anpassbarkeit', frage:'Funktioniert sie in festgelegten Zielumgebungen?',
+        anforderung:'Die Überweisungsfunktion läuft unverändert korrekt auf allen freigegebenen Zielumgebungen (aktuelle Browser, iOS- und Android-App).',
+        baseline:'Funktionsgleichheit auf 100% der 6 definierten Referenzumgebungen (3 Browser, 2 App-Plattformen, 1 responsives Web).',
+        given:'eine Kundin nutzt die iOS-App statt des Desktop-Browsers', when:'sie eine Überweisung durchführt', then:'verläuft der Prozess funktional identisch zur Desktop-Variante.',
+        vor:'Identischer Testauftrag auf allen Referenzumgebungen.', schritte:['Prozess auf jeder Umgebung durchführen.'], ergebnis:'Identisches Ergebnis auf allen 6 Umgebungen.' },
+      { name:'Skalierbarkeit', frage:'Kann die Verarbeitungskapazität verändert werden?',
+        anforderung:'Die Verarbeitungskapazität des Überweisungsdienstes lässt sich bei steigendem Kundenwachstum horizontal erweitern.',
+        baseline:'Kapazitätserhöhung um 50% durch Hinzufügen weiterer Verarbeitungsknoten in ≤2 Stunden, ohne Downtime.',
+        given:'das Transaktionsvolumen steigt dauerhaft um 40%', when:'zusätzliche Verarbeitungsknoten hinzugefügt werden', then:'verarbeitet das System die erhöhte Last ohne Downtime.',
+        vor:'Lasttest-Umgebung mit Skalierungsfunktion.', schritte:['Last um 40% erhöhen.','Knoten hinzufügen, Verfügbarkeit prüfen.'], ergebnis:'Keine Downtime, Kapazität steigt messbar.' },
+      { name:'Installierbarkeit', frage:'Können Versionen sicher installiert und zurückgenommen werden?',
+        anforderung:'Ein neues Release der Überweisungsfunktion lässt sich installieren und im Fehlerfall rückstandsfrei auf die Vorgängerversion zurücknehmen.',
+        baseline:'Rollback auf Vorgängerversion in ≤10 Minuten, 0 Datenverlust bei bereits abgeschlossenen Transaktionen.',
+        given:'ein neues Release verursacht nach dem Deployment Fehler', when:'ein Rollback ausgelöst wird', then:'läuft die vorherige Version innerhalb von 10 Minuten wieder fehlerfrei.',
+        vor:'Laufendes Release, Rollback-Mechanismus.', schritte:['Fehlerfall simulieren.','Rollback auslösen.'], ergebnis:'Vorgängerversion in ≤10 Minuten wiederhergestellt, keine Datenverluste.' },
+      { name:'Ersetzbarkeit', frage:'Können Komponenten kontrolliert ausgetauscht werden?',
+        anforderung:'Der TAN-Verfahren-Anbieter lässt sich durch einen alternativen Anbieter ersetzen, ohne die Überweisungslogik selbst zu ändern.',
+        baseline:'TAN-Anbieterwechsel über austauschbare Schnittstellenkomponente, 0 Codeänderungen in Buchungs- und Validierungslogik.',
+        given:'die Bank wechselt den TAN-Verfahren-Anbieter', when:'die neue Schnittstellenkomponente eingebunden wird', then:'bleibt der übrige Überweisungsprozess unverändert funktionsfähig.',
+        vor:'Bestehende TAN-Schnittstelle.', schritte:['Komponente durch alternativen Anbieter ersetzen.','Gesamtprozess testen.'], ergebnis:'Keine Anpassung außerhalb der TAN-Komponente nötig.' }
+    ]
+  },
+  {
+    num:9, name:'Betriebssicherheit', en:'Safety',
+    intro:'Hier wird betrachtet, ob das System schädliche oder unkontrollierte Zahlungszustände verhindert.',
+    unter:[
+      { name:'Betriebsbeschränkung', frage:'Bleibt der Betrieb innerhalb sicherer Grenzen?',
+        anforderung:'Überweisungen außerhalb definierter Grenzwerte (z. B. negativer Betrag, Betrag über Tageslimit) werden vor der Verarbeitung sicher blockiert.',
+        baseline:'100% der Testfälle mit Grenzwertverletzung (negativer Betrag, Limitüberschreitung) werden vor Buchung abgelehnt.',
+        given:'eine Kundin versucht, einen negativen Betrag einzugeben', when:'sie den Auftrag absenden möchte', then:'verhindert das System die Erfassung mit einer klaren Fehlermeldung.',
+        vor:'Formular geöffnet.', schritte:['Negativen Betrag eingeben.','Betrag über Limit eingeben.'], ergebnis:'Beide Fälle werden vor Buchung abgewiesen.' },
+      { name:'Risikoidentifikation', frage:'Werden gefährliche Konstellationen erkannt?',
+        anforderung:'Auffällige Muster (z. B. mehrere Überweisungen in kurzer Zeit an wechselnde neue Empfänger) werden automatisiert als potenzielles Betrugsrisiko erkannt.',
+        baseline:'Risiko-Scoring-Regel erkennt ≥95% der simulierten Betrugsmuster im Testkatalog (Referenzkatalog mit 100 Mustern, Schulungswert).',
+        given:'innerhalb von 10 Minuten werden drei Überweisungen an drei neue Empfänger ausgelöst', when:'das Risiko-Scoring läuft', then:'wird der dritte Auftrag als prüfungswürdig markiert.',
+        vor:'Testkatalog simulierter Betrugsmuster.', schritte:['Muster einspielen.','Scoring-Ergebnis auswerten.'], ergebnis:'Erkennungsquote ≥95%.' },
+      { name:'Sicheres Verhalten bei Ausfällen', frage:'Wechselt das System in einen kontrollierten Zustand?',
+        anforderung:'Fällt die Verbindung zum Kernbankensystem während der Buchung aus, wird der Auftrag in einen eindeutig erkennbaren, sicheren Wartezustand versetzt statt inkonsistent gebucht.',
+        baseline:'100% der simulierten Ausfälle während der Buchung enden im Status „in Prüfung", 0 Fälle mit unklarem oder falschem Buchungsstatus.',
+        given:'die Verbindung zum Kernbankensystem bricht während der Buchung ab', when:'der Auftrag ausgewertet wird', then:'zeigt das System eindeutig den Status „in Prüfung" statt eines falschen Erfolgs- oder Fehlerstatus.',
+        vor:'Simulierter Verbindungsabbruch während Buchung.', schritte:['Abbruch auslösen.','Auftragsstatus prüfen.'], ergebnis:'Eindeutiger, sicherer Zwischenstatus statt Fehlinterpretation.' },
+      { name:'Gefahrenwarnung', frage:'Werden Betroffene rechtzeitig gewarnt?',
+        anforderung:'Erkennt das System eine wahrscheinliche Betrugssituation, wird die Kundin vor der finalen Freigabe aktiv gewarnt.',
+        baseline:'100% der als hochriskant eingestuften Aufträge erhalten eine explizite Warnung vor der Freigabe, verständlich formuliert ohne Fachjargon.',
+        given:'ein Auftrag wird vom Risiko-Scoring als hochriskant eingestuft', when:'die Kundin zur Freigabe gelangt', then:'wird ihr eine deutliche Warnung mit Handlungsempfehlung angezeigt, bevor sie fortfahren kann.',
+        vor:'Als hochriskant markierter Testauftrag.', schritte:['Bis zur Freigabe durchklicken.'], ergebnis:'Warnung erscheint vor Freigabemöglichkeit, verständlich formuliert.' },
+      { name:'Sichere Integration', frage:'Bleibt die Sicherheit an Systemübergängen erhalten?',
+        anforderung:'An der Schnittstelle zwischen Online-Banking und Kernbankensystem bleiben alle Sicherheitsprüfungen (Limit, Signatur, Risiko-Score) durchgängig erhalten.',
+        baseline:'100% der Aufträge durchlaufen alle drei Prüfschritte an der Schnittstelle serverseitig, 0 Aufträge, die eine Prüfung umgehen können.',
+        given:'ein Auftrag wird vom Online-Banking an das Kernbankensystem übergeben', when:'die Übergabe erfolgt', then:'werden Limitprüfung, Signaturprüfung und Risiko-Score erneut serverseitig validiert, nicht nur clientseitig.',
+        vor:'Manipulierter Client-Request, der clientseitige Prüfungen umgeht.', schritte:['Request direkt an die Schnittstelle senden.'], ergebnis:'Serverseitige Prüfung blockiert den nicht validierten Auftrag.' }
+    ]
+  }
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let currentSection = 0;   // 0 = Orientierung, 1-9 = Merkmale
+let currentSub = {};      // { merkmalNum: subIndex }
+let currentTab = 'anforderung';
+let beamerLevel = 0;
+
+function merkmalByNum(n){ return MERKMALE.find(m => m.num === n); }
+
+/* ============================================================
+   SEKTIONS-NAVIGATION
+   ============================================================ */
+function renderSectionNav(){
+  const nav = document.getElementById('sectionNav');
+  let html = '';
+  for(let i = 0; i <= 9; i++){
+    html += '<button class="section-chip' + (i === currentSection ? ' active' : '') + '" onclick="goSection(' + i + ')">' + i + '</button>';
+  }
+  nav.innerHTML = html;
+  document.getElementById('sectionNavLabel').textContent = 'Abschnitt ' + currentSection + ' von 9';
+}
+
+function goSection(n){
+  if(n < 0 || n > 9) return;
+  currentSection = n;
+  currentTab = 'anforderung';
+  renderSectionNav();
+  renderContent();
+  window.scrollTo({top: document.querySelector('.section-nav-wrap').offsetTop - 10, behavior:'smooth'});
+}
+
+/* ============================================================
+   INHALTSBEREICH
+   ============================================================ */
+function renderContent(){
+  const el = document.getElementById('sectionContent');
+  if(currentSection === 0){
+    el.innerHTML = renderOrientation();
+  } else {
+    el.innerHTML = renderMerkmal(merkmalByNum(currentSection));
+    bindTabs();
+    bindSubPills();
+  }
+}
+
+function renderOrientation(){
+  let cards = MERKMALE.map(m => {
+    const subs = m.unter.map(u => '<li><b>' + u.name + ':</b> ' + u.frage + '</li>').join('');
+    return '<div class="ori-card">'
+      + '<span class="ori-num">' + m.num + '</span>'
+      + '<h3 class="ori-title">' + m.name + ' <span class="ori-en">' + m.en + '</span></h3>'
+      + '<p class="ori-intro">Merkmal: ' + m.intro + '</p>'
+      + '<ul class="ori-sub">' + subs + '</ul>'
+      + '</div>';
+  }).join('');
+  return '<h2 class="section-title">Abschnitt 0 · Orientierung</h2>'
+    + '<p class="section-sub">Die neun Qualitätsbrillen: Hauptmerkmal = was grundsätzlich betrachtet wird, Untermerkmal = was darin konkret geprüft wird. 9 Merkmale · 40 Untermerkmale.</p>'
+    + '<div class="orientation-grid">' + cards + '</div>'
+    + renderMerkmalNav();
+}
+
+function renderMerkmal(m){
+  if(currentSub[m.num] === undefined) currentSub[m.num] = 0;
+  const subIdx = currentSub[m.num];
+  const u = m.unter[subIdx];
+
+  const pills = m.unter.map((s, i) =>
+    '<button class="sub-pill' + (i === subIdx ? ' active' : '') + '" data-sub="' + i + '">' + s.name + '</button>'
+  ).join('');
+
+  return '<h2 class="section-title">Abschnitt ' + m.num + ' · ' + m.name + '</h2>'
+    + '<div class="merkmal-head">'
+    + '  <span class="merkmal-num">' + m.num + '</span>'
+    + '  <div><h3 class="merkmal-title" style="display:inline">' + m.name + '<span class="merkmal-en">' + m.en + '</span></h3>'
+    + '  <p class="merkmal-intro">' + m.intro + '</p></div>'
+    + '</div>'
+    + '<div class="sub-pills" id="subPills">' + pills + '</div>'
+    + '<div class="tab-panel">'
+    + '  <div class="tab-panel-head">'
+    + '    <span class="sub-num">' + m.num + '.' + (subIdx + 1) + '</span>'
+    + '    <p class="p-name">' + u.name + '</p>'
+    + '    <span class="frage-badge">' + u.frage + '</span>'
+    + '  </div>'
+    + '  <div class="tab-bar" role="tablist">'
+    + '    <button class="tab-btn' + (currentTab==='anforderung'?' active':'') + '" data-tab="anforderung">📋 Anforderung</button>'
+    + '    <button class="tab-btn' + (currentTab==='baseline'?' active':'') + '" data-tab="baseline">📏 Baselinewert</button>'
+    + '    <button class="tab-btn' + (currentTab==='gherkin'?' active':'') + '" data-tab="gherkin">🥒 Gherkin</button>'
+    + '    <button class="tab-btn' + (currentTab==='testfall'?' active':'') + '" data-tab="testfall">✅ Testfall</button>'
+    + '  </div>'
+    + '  <div class="tab-content" id="tabContent">' + renderTabContent(u) + '</div>'
+    + '</div>'
+    + renderMerkmalNav();
+}
+
+function renderTabContent(u){
+  if(currentTab === 'anforderung'){
+    return '<p class="content-text">' + u.anforderung + '</p>';
+  }
+  if(currentTab === 'baseline'){
+    return '<span class="baseline-value">' + u.baseline + '</span>';
+  }
+  if(currentTab === 'gherkin'){
+    return '<div class="gherkin-block">'
+      + '<p class="gherkin-line"><b>Given</b> ' + u.given + '</p>'
+      + '<p class="gherkin-line"><b>When</b> ' + u.when + '</p>'
+      + '<p class="gherkin-line"><b>Then</b> ' + u.then + '</p>'
+      + '</div>';
+  }
+  if(currentTab === 'testfall'){
+    const steps = u.schritte.map(s => '<li>' + s + '</li>').join('');
+    return '<div class="testfall-block">'
+      + '<p><b>Vorbedingung:</b> ' + u.vor + '</p>'
+      + '<p><b>Schritte:</b></p>'
+      + '<ol>' + steps + '</ol>'
+      + '<p><b>Erwartetes Ergebnis:</b> ' + u.ergebnis + '</p>'
+      + '</div>';
+  }
+  return '';
+}
+
+function renderMerkmalNav(){
+  return '<div class="merkmal-nav">'
+    + '<button class="navbtn" onclick="goSection(' + (currentSection - 1) + ')" ' + (currentSection === 0 ? 'disabled' : '') + '>← Vorheriges Merkmal</button>'
+    + '<button class="navbtn" onclick="goSection(' + (currentSection + 1) + ')" ' + (currentSection === 9 ? 'disabled' : '') + '>Nächstes Merkmal →</button>'
+    + '</div>';
+}
+
+function bindTabs(){
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', function(){
+      currentTab = this.getAttribute('data-tab');
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const m = merkmalByNum(currentSection);
+      const u = m.unter[currentSub[m.num]];
+      document.getElementById('tabContent').innerHTML = renderTabContent(u);
+    });
+  });
+}
+
+function bindSubPills(){
+  document.querySelectorAll('.sub-pill').forEach(btn => {
+    btn.addEventListener('click', function(){
+      const m = merkmalByNum(currentSection);
+      currentSub[m.num] = parseInt(this.getAttribute('data-sub'), 10);
+      currentTab = 'anforderung';
+      document.getElementById('sectionContent').innerHTML = renderMerkmal(m);
+      bindTabs();
+      bindSubPills();
+    });
+  });
+}
+
+/* ============================================================
+   BEAMER-MODUS
+   ============================================================ */
+const BEAMER_LEVELS = [
+  { classes: [],                                    label: '☀ Beamer' },
+  { classes: ['beamer'],                             label: '☀ Beamer XL' },
+  { classes: ['beamer', 'beamer-xl'],                label: '☀ Beamer XXL' },
+  { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: '☀ Normal' }
+];
+document.getElementById('beamerBtn').addEventListener('click', function(){
+  beamerLevel = (beamerLevel + 1) % 4;
+  document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+  BEAMER_LEVELS[beamerLevel].classes.forEach(c => document.documentElement.classList.add(c));
+  this.textContent = BEAMER_LEVELS[beamerLevel].label;
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+renderSectionNav();
+renderContent();
+</script>
+</body>
+</html>
