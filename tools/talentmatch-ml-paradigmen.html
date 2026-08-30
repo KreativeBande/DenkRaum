@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="de" class="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TalentMatch AI — Vier ML-Paradigmen im RE/BA-Blick</title>
+<style>
+  :root{
+    --indigo:#4338CA; --indigo-bg:#EEF0FD;
+    --teal:#0F766E; --teal-bg:#E6F5F3;
+    --amber:#92400E; --amber-bg:#FEF3E0;
+    --violet:#6D28D9; --violet-bg:#F2ECFC;
+    --slate:#334155; --slate-bg:#EEF1F4;
+    --accent:#1D4ED8; --accent-bg:#EAF0FE;
+    --ink:#1A1F2B; --muted:#5B6270; --faint:#8A90A0;
+    --line:#DDE1E8; --paper:#FFFFFF; --panel:#F7F8FA;
+    --ok:#166534; --ok-bg:#E7F6EB;
+    --norm:#9A3412; --norm-bg:#FDECE2;
+  }
+  html,body{color-scheme:light;background:#FFFFFF;margin:0;padding:0;height:100%;}
+  html{font-size:16px;}
+  html.beamer{font-size:20px;}
+  html.beamer.beamer-xl{font-size:24px;}
+  html.beamer.beamer-xl.beamer-xxl{font-size:28px;}
+  *{box-sizing:border-box;}
+
+  /* Fließtext/Hauptinhalt: rem-Skalierung über html-font-size allein erreicht die
+     Beamer-Floors (>=22/28/34px) nicht (16->20->24->28px ist proportional zu flach für die
+     Zielwerte) — deshalb hier zusätzlich explizite px-Floors je Beamer-Stufe. */
+  html.beamer .komponente p, html.beamer .box p, html.beamer .frage p, html.beamer .uebung p,
+  html.beamer .uebung .loesung, html.beamer .quote, html.beamer .kette-step p,
+  html.beamer .prompt-text, html.beamer .vergleich-table td, html.beamer .merksatz{
+    font-size:22px;
+  }
+  html.beamer.beamer-xl .komponente p, html.beamer.beamer-xl .box p, html.beamer.beamer-xl .frage p,
+  html.beamer.beamer-xl .uebung p, html.beamer.beamer-xl .uebung .loesung, html.beamer.beamer-xl .quote,
+  html.beamer.beamer-xl .kette-step p, html.beamer.beamer-xl .prompt-text,
+  html.beamer.beamer-xl .vergleich-table td, html.beamer.beamer-xl .merksatz{
+    font-size:28px;
+  }
+  html.beamer.beamer-xl.beamer-xxl .komponente p, html.beamer.beamer-xl.beamer-xxl .box p,
+  html.beamer.beamer-xl.beamer-xxl .frage p, html.beamer.beamer-xl.beamer-xxl .uebung p,
+  html.beamer.beamer-xl.beamer-xxl .uebung .loesung, html.beamer.beamer-xl.beamer-xxl .quote,
+  html.beamer.beamer-xl.beamer-xxl .kette-step p, html.beamer.beamer-xl.beamer-xxl .prompt-text,
+  html.beamer.beamer-xl.beamer-xxl .vergleich-table td, html.beamer.beamer-xl.beamer-xxl .merksatz{
+    font-size:34px;
+  }
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    color:var(--ink); background:#FFFFFF; min-height:100vh;
+    overflow-y:auto; overflow-x:hidden;
+  }
+  .signature{
+    position:fixed; top:14px; right:28px; z-index:200; text-align:right;
+    font-size:0.9rem; line-height:1.3; background:rgba(255,255,255,.9);
+    padding:4px 8px; border-radius:8px;
+  }
+  .signature strong{display:block; font-size:0.95rem; color:var(--ink);}
+  .signature a{color:var(--accent); text-decoration:none; font-size:0.875rem;}
+  @media (max-width:900px){
+    .signature{position:static; text-align:right; margin:10px 20px 0 auto; width:fit-content; margin-left:auto;}
+  }
+
+  header.appbar{
+    padding:18px 24px 14px 24px; border-bottom:2px solid var(--line);
+    display:flex; flex-wrap:wrap; align-items:center; gap:14px 20px;
+  }
+  header.appbar h1{
+    font-size:1.15rem; margin:0; font-weight:800; color:var(--ink);
+    flex:1 1 320px; min-width:260px;
+  }
+  header.appbar .sub{font-size:0.875rem; color:var(--muted); font-weight:500; display:block; margin-top:2px;}
+
+  .pillnav{display:flex; flex-wrap:wrap; gap:8px;}
+  .pill{
+    border:2px solid var(--line); background:#FFFFFF; border-radius:999px;
+    padding:9px 16px; font-size:0.9rem; font-weight:700; cursor:pointer;
+    color:var(--muted); min-height:44px; touch-action:manipulation;
+  }
+  .pill.active{border-color:var(--accent); background:var(--accent-bg); color:var(--accent);}
+  .pill.vergleich{border-style:dashed;}
+
+  .beamerBtn{
+    border:2px solid var(--ink); background:var(--ink); color:#fff; border-radius:10px;
+    padding:9px 16px; font-size:0.875rem; font-weight:700; cursor:pointer; min-height:44px;
+    touch-action:manipulation;
+  }
+
+  .layout{display:flex; flex-wrap:wrap; gap:0; align-items:flex-start;}
+  .panel-left{
+    flex:0 0 40%; max-width:40%; padding:22px 22px 22px 24px;
+    border-right:2px solid var(--line); background:var(--panel);
+  }
+  .panel-right{flex:1 1 55%; min-width:320px; padding:22px 28px 40px 28px;}
+  @media (max-width:900px){
+    .panel-left, .panel-right{flex:1 1 100%; max-width:100%; border-right:none;}
+    .panel-left{border-bottom:2px solid var(--line);}
+  }
+
+  .steckbrief{
+    background:#FFFFFF; border:1px solid var(--line); border-radius:12px;
+    padding:16px 16px; margin-bottom:16px;
+  }
+  .steckbrief h2{font-size:1rem; margin:0 0 8px 0; font-weight:800;}
+  .steckbrief dl{margin:0; font-size:0.9rem; color:var(--muted);}
+  .steckbrief dt{font-weight:700; color:var(--ink); margin-top:6px;}
+  .steckbrief dd{margin:0 0 2px 0;}
+
+  .reg-badge{
+    background:var(--norm-bg); border:1px solid var(--norm); border-radius:10px;
+    padding:10px 12px; font-size:0.875rem; color:var(--norm); line-height:1.45; margin-bottom:16px;
+  }
+  .reg-badge strong{display:block; margin-bottom:3px; font-size:0.9rem;}
+
+  .stufe-badge{
+    display:inline-flex; align-items:center; gap:8px; background:#FFFFFF; border:2px solid;
+    border-radius:999px; padding:6px 14px; font-size:0.875rem; font-weight:800; margin-bottom:14px;
+  }
+  .stufe-badge .nr{
+    display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px;
+    border-radius:50%; background:currentColor; color:#fff; font-size:0.875rem;
+  }
+
+  .komponente{
+    background:#FFFFFF; border-radius:12px; border:1px solid var(--line);
+    padding:16px; margin-bottom:16px;
+  }
+  .komponente h3{margin:0 0 8px 0; font-size:1rem; font-weight:800;}
+  .komponente p{margin:0; font-size:1rem; line-height:1.55; color:var(--ink);}
+  .komponente .zahl{font-weight:700; color:var(--accent);}
+
+  .personabar{display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;}
+  .pbadge{
+    border-radius:999px; padding:6px 12px; font-size:0.875rem; font-weight:700;
+    border:2px solid transparent; opacity:.55;
+  }
+  .pbadge.on{opacity:1; border-color:currentColor;}
+  .p-ela{background:var(--indigo-bg); color:var(--indigo);}
+  .p-knut{background:var(--teal-bg); color:var(--teal);}
+  .p-sarah{background:var(--amber-bg); color:var(--amber);}
+  .p-petra{background:var(--violet-bg); color:var(--violet);}
+  .p-bach{background:var(--slate-bg); color:var(--slate);}
+
+  .oekosystem{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin-top:14px;
+  }
+  .oekosystem h5{margin:0 0 8px 0; font-size:0.95rem;}
+  .oekosystem ul{margin:0; padding-left:20px;}
+  .oekosystem li{margin-bottom:6px; font-size:0.9rem; line-height:1.5;}
+  .oekosystem a{color:var(--accent); font-weight:700; text-decoration:none;}
+  .oekosystem a:hover{text-decoration:underline;}
+
+  .tabnav{display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap;}
+  .tabbtn{
+    flex:1 1 140px; border:2px solid var(--line); background:#FFFFFF; border-radius:10px;
+    padding:12px 10px; font-size:0.9rem; font-weight:800; cursor:pointer; color:var(--muted);
+    min-height:44px; touch-action:manipulation; text-align:center;
+  }
+  .tabbtn.active{border-color:var(--accent); background:var(--accent-bg); color:var(--accent);}
+
+  .quote{
+    border-left:4px solid; border-radius:0 10px 10px 0; padding:12px 14px;
+    font-size:1rem; line-height:1.5; margin:0 0 20px 0; font-style:italic;
+  }
+  .quote .who{font-style:normal; font-weight:800; display:block; margin-bottom:4px; font-size:0.875rem;}
+
+  .badgerow{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .isobadge{
+    background:var(--accent-bg); color:var(--accent); border:2px solid transparent; border-radius:8px;
+    padding:6px 11px; font-size:0.875rem; font-weight:700; cursor:pointer; min-height:44px; touch-action:manipulation;
+  }
+  .isobadge.tapped{border-color:var(--accent);}
+  .iso-erklaerung{
+    background:var(--panel); border:1px dashed var(--faint); border-radius:8px; padding:10px 12px;
+    font-size:0.9rem; margin-bottom:18px; color:var(--ink); display:none;
+  }
+  .iso-erklaerung.show{display:block;}
+
+  .box{
+    border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin-bottom:16px;
+  }
+  .box h4{
+    margin:0 0 8px 0; font-size:0.95rem; font-weight:800; display:flex; align-items:center; gap:8px;
+  }
+  .box h4 .tag{
+    font-size:0.875rem; font-weight:800; padding:2px 8px; border-radius:6px; color:#fff;
+  }
+  .tag-re{background:var(--indigo);}
+  .tag-ba{background:var(--teal);}
+  .box p{margin:0 0 8px 0; font-size:1rem; line-height:1.55; color:var(--ink);}
+  .box p:last-child{margin-bottom:0;}
+  .ba-ref{font-size:0.875rem; color:var(--muted); margin-top:8px;}
+
+  .frage{
+    background:var(--panel); border:1px dashed var(--faint); border-radius:12px;
+    padding:16px 18px; margin-bottom:16px;
+  }
+  .frage h4{margin:0 0 6px 0; font-size:0.95rem; font-weight:800; color:var(--ink);}
+  .frage p{margin:0; font-size:1rem; line-height:1.55;}
+
+  .uebung{
+    background:var(--ok-bg); border:1px solid var(--ok); border-radius:12px;
+    padding:16px 18px; margin-bottom:16px;
+  }
+  .uebung h4{margin:0 0 8px 0; font-size:0.95rem; font-weight:800; color:var(--ok);}
+  .uebung p{margin:0 0 10px 0; font-size:1rem; line-height:1.55; color:var(--ink);}
+  .uebung details{
+    background:#FFFFFF; border:1px solid var(--ok); border-radius:8px; padding:10px 12px;
+  }
+  .uebung summary{
+    cursor:pointer; font-weight:700; font-size:0.9rem; color:var(--ok); min-height:44px;
+    display:flex; align-items:center; touch-action:manipulation;
+  }
+  .uebung .loesung{margin-top:8px; font-size:1rem; line-height:1.55; color:var(--ink);}
+  .uebung .quelle{display:block; margin-top:6px; font-size:0.875rem; color:var(--muted);}
+
+  .kette{display:flex; flex-direction:column; gap:0; margin-bottom:20px;}
+  .kette-step{
+    border:1px solid var(--line); border-radius:10px; padding:12px 14px; position:relative; background:#FFFFFF;
+  }
+  .kette-step + .kette-step{margin-top:18px;}
+  .kette-step::before{
+    content:"↓"; position:absolute; top:-18px; left:16px; font-size:1rem; color:var(--faint); font-weight:800;
+  }
+  .kette-step:first-child::before{content:none;}
+  .kette-step .kette-label{
+    font-size:0.875rem; font-weight:800; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); display:block; margin-bottom:4px;
+  }
+  .kette-step p{margin:0; font-size:1rem; line-height:1.5;}
+  .kette-step.req{background:var(--accent-bg); border-color:var(--accent);}
+  .kette-step.akz{background:var(--ok-bg); border-color:var(--ok);}
+  .annahme-tag{
+    display:inline-block; margin-top:8px; font-size:0.875rem; font-weight:700; color:var(--norm);
+    background:var(--norm-bg); border-radius:6px; padding:2px 8px;
+  }
+
+  .promptbox{
+    background:var(--accent-bg); border:1px solid var(--accent); border-radius:12px;
+    padding:16px 18px; margin-bottom:8px;
+  }
+  .promptbox h4{margin:0 0 10px 0; font-size:0.95rem; font-weight:800; color:var(--accent);}
+  .prompt-framework{width:100%; border-collapse:collapse; margin-bottom:12px;}
+  .prompt-framework th,.prompt-framework td{
+    border:1px solid var(--line); padding:6px 9px; text-align:left; vertical-align:top; font-size:0.875rem;
+  }
+  .prompt-framework th{background:#FFFFFF; width:130px; font-weight:800; color:var(--accent);}
+  .prompt-framework td{background:#FFFFFF;}
+  .prompt-framework tr.qm th, .prompt-framework tr.qm td{background:var(--ok-bg);}
+  .prompt-text{
+    font-family:"SFMono-Regular",Consolas,Menlo,monospace; font-size:1rem; line-height:1.6;
+    white-space:pre-wrap; background:#101522; color:#E5E9F2; border-radius:8px; padding:14px;
+  }
+
+  .vergleich-table{width:100%; border-collapse:collapse;}
+  .table-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch; margin-bottom:8px;}
+  .table-scroll table{min-width:640px;}
+  .vergleich-table th,.vergleich-table td{
+    border:1px solid var(--line); padding:10px 12px; text-align:left; vertical-align:top; font-size:1rem; line-height:1.5;
+  }
+  .vergleich-table th{background:#EEF1F6; font-size:0.9rem;}
+  .vergleich-table td.paradigma{font-weight:800; white-space:nowrap;}
+  .vergleich-table .stufe-mini{display:block; font-weight:400; font-size:0.875rem; color:var(--muted);}
+  .merksatz{
+    margin-top:18px; background:var(--ink); color:#fff; border-radius:12px; padding:18px 20px;
+    font-size:1.1rem; line-height:1.5; font-weight:700;
+  }
+
+  footer{margin-top:10px; border-top:2px solid var(--line); padding:20px 24px 40px 24px;}
+  html.beamer footer, html.beamer.beamer-xl footer, html.beamer.beamer-xl.beamer-xxl footer{display:none;}
+  .footer-sig{font-size:0.875rem; color:var(--muted); margin-bottom:14px; line-height:1.6;}
+  .footer-sig strong{color:var(--ink); font-size:0.95rem;}
+  .footer-sig a{color:var(--accent);}
+  .footer-status{display:block; margin-top:4px; color:var(--muted); font-size:0.875rem;}
+
+  .footer-grid{display:flex; flex-wrap:wrap; gap:14px;}
+  .footer-box{
+    flex:1 1 260px; border:1px solid var(--line); border-radius:12px; background:var(--panel);
+  }
+  .footer-box summary{
+    cursor:pointer; padding:12px 16px; font-weight:800; font-size:0.95rem; list-style:none;
+    display:flex; align-items:center; justify-content:space-between; min-height:44px;
+    touch-action:manipulation;
+  }
+  .footer-box summary::-webkit-details-marker{display:none;}
+  .footer-box summary::after{content:"+"; font-size:1.1rem; color:var(--muted);}
+  .footer-box[open] summary::after{content:"–";}
+  .footer-content{padding:0 16px 16px 16px;}
+  .footer-mono{
+    font-family:"SFMono-Regular",Consolas,Menlo,monospace; font-size:0.875rem; line-height:1.6;
+    white-space:pre-wrap; background:#101522; color:#E5E9F2; border-radius:8px; padding:14px;
+  }
+  .footer-sans{font-size:1rem; line-height:1.6;}
+  .footer-sans h5{font-size:0.95rem; margin:14px 0 4px 0;}
+  .footer-sans ol,.footer-sans ul{padding-left:20px; margin:6px 0;}
+  .footer-sans li{margin-bottom:6px;}
+  .footer-table{width:100%; border-collapse:collapse; font-size:0.88rem;}
+  .footer-table th,.footer-table td{border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top;}
+  .footer-table th{background:#EEF1F6; font-size:0.875rem;}
+
+  ::selection{background:var(--accent-bg);}
+
+  .topbar{padding:10px 24px 0 24px;}
+  .back-link{font-size:0.875rem; font-weight:600; color:var(--muted); text-decoration:none;}
+  .back-link:hover{color:var(--accent);}
+</style>
+</head>
+<body>
+
+<div class="signature">
+  <strong>Michaela Kühn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<div class="topbar">
+  <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+</div>
+
+<header class="appbar">
+  <h1>TalentMatch AI — Vier ML-Paradigmen im RE/BA-Blick
+    <span class="sub">Requirements Engineering &amp; Business Analyse für KI-Systeme · Fallstudie Vantera Systemtechnik GmbH</span>
+  </h1>
+  <nav class="pillnav" id="pillnav" aria-label="Baustein wählen"></nav>
+  <button class="beamerBtn" id="beamerBtn" type="button">Beamer-Modus: Normal</button>
+</header>
+
+<main class="layout">
+  <section class="panel-left" id="panelLeft"></section>
+  <section class="panel-right" id="panelRight"></section>
+</main>
+
+<footer>
+  <div class="footer-sig">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a><br>
+    Referenzrahmen: IREB CPRE-Glossar · IIBA BABOK Guide v3 (2015, unverändert aktuell) ·
+    ISO/IEC 25010:2023 · EU AI Act (Verordnung (EU) 2024/1689) i. d. F. der
+    Digital-Omnibus-Verordnung (EU) 2026/1744
+    <span class="footer-status">Zuletzt geprüft: 30.08.2026 · Version 3 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+  </div>
+
+  <div class="footer-grid">
+    <details class="footer-box">
+      <summary>Systemprompt</summary>
+      <div class="footer-content footer-mono" id="systemprompt-box"></div>
+    </details>
+
+    <details class="footer-box">
+      <summary>Handbuch</summary>
+      <div class="footer-content footer-sans" id="handbuch-box"></div>
+    </details>
+
+    <details class="footer-box">
+      <summary>Vortrags-Skript</summary>
+      <div class="footer-content footer-sans" id="vortrag-box"></div>
+    </details>
+
+    <details class="footer-box">
+      <summary>Normen-Register</summary>
+      <div class="footer-content" id="normen-box"></div>
+    </details>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var PERSONAS = {
+    ela:   {name:"Ela",   rolle:"Projektleitung",  cls:"p-ela"},
+    knut:  {name:"Knut",  rolle:"Entwicklung",     cls:"p-knut"},
+    sarah: {name:"Sarah", rolle:"Vertrieb",        cls:"p-sarah"},
+    petra: {name:"Petra", rolle:"QM",              cls:"p-petra"},
+    bach:  {name:"Herr Bachmeier", rolle:"Geschäftsführung", cls:"p-bach"}
+  };
+
+var STATES = [{"id": "supervised", "pill": "Supervised", "color": "var(--indigo)", "bg": "var(--indigo-bg)", "stufe": {"nr": 1, "label": "Erkennen", "leitsatz": "Wo steckt das Risiko?", "hinweis": "Diese Stufe verlangt: eine fehlende Information erkennen — noch keine fertige Anforderung formulieren."}, "komponenteTitel": "CV-Screening", "komponenteText": "TalentMatch AI bewertet eingehende Bewerbungen automatisiert. Trainingsbasis: <span class=\"zahl\">5.000</span> historische Einstellungsentscheidungen der letzten <span class=\"zahl\">4</span> Jahre, gelabelt als „eingestellt“ / „nicht eingestellt“. Ausgabe: Eignungs-Score (Klassifikation) je neuer Bewerbung.", "fragePersona": "knut", "quote": "Die Auswertung der letzten vier Jahre zeigt: 78 % der eingestellten Vertriebspositionen gingen an Bewerber unter 35 Jahren — bei einem Bewerbungspool, der nur zu 52 % aus unter 35-Jährigen bestand. Das steckt jetzt im Trainingsset.", "isoBadges": [{"label": "Functional Suitability (Correctness)", "erklaerung": "Weil eine falsche Eignungsvorhersage direkt eine Bewerbungsentscheidung beeinflusst."}, {"label": "Safety (neu 2023)", "erklaerung": "Weil eine fehlerhafte Vorhersage gesellschaftliche Folgen für Bewerbende haben kann."}], "re": {"titel": "Datenanforderung als eigene Anforderungsklasse", "text": "Herkunft, Zeitraum und Repräsentativität der Trainingsdaten müssen als eigenständige, prüfbare Anforderung dokumentiert werden — nicht als technisches Implementierungsdetail. IREB-Qualitätskriterium „Eindeutigkeit“ gilt hier für die Datenbasis selbst: Ohne dokumentierte Zusammensetzung ist nicht überprüfbar, ob eine Anforderung an „faire Vorhersage“ überhaupt erfüllbar ist. Methodischer Hinweis: Der Anteil unter den Eingestellten allein (hier 78 % unter 35) ist kein Bias-Nachweis — erst der Vergleich mit dem Anteil im Bewerbungspool (hier 52 %) macht die Diskrepanz aussagekräftig. Das ist das Grundprinzip jeder Adverse-Impact-Analyse."}, "ba": {"frage": "Wer trägt das Risiko einer verzerrten Trainingsdatenbasis?", "aufgabe": "In der Fallstudie übernimmt Petra (QM) die Rolle der Risikoeignerin, Herr Bachmeier (Geschäftsführung) trägt die Außenhaftung. Die Stakeholder-Landkarte muss diese Verantwortlichkeit vor Freigabe des Trainingssets festhalten.", "titel": "Knowledge Area 3 — Stakeholder-Analyse (BABOK v3)"}, "frage": "Warum reicht der Wert „78 % der Eingestellten unter 35“ allein nicht aus, um von einer Verzerrung zu sprechen?", "uebung": {"aufgabe": "Aufgabe für Petra (QM), 5 Min. — Erkennen: Bevor du irgendetwas formulierst — welche Information fehlt dir, um zu beurteilen, ob hier überhaupt eine Verzerrung vorliegt?", "loesung": "Es fehlt die Zusammensetzung des Bewerbungspools als Vergleichsgröße. Ohne den Anteil unter 35-Jähriger unter allen Bewerbenden (hier 52 %) ist der Wert „78 % der Eingestellten unter 35“ nicht interpretierbar — er könnte die Bewerberstruktur einfach nur widerspiegeln. Erst der Vergleich beider Werte macht die Diskrepanz zu einem Anhaltspunkt für mögliche Verzerrung. Stretch-Ziel: Formuliere anschließend ein Akzeptanzkriterium, das diese Diskrepanz in eine prüfbare Grenze übersetzt (z. B. Equal Opportunity Difference ≤ 0,05 bei gleicher Qualifikation, gemessen quartalsweise auf Basis der letzten 500 Screening-Vorgänge).", "quelle": "Erkennen-Ebene: Fehlende Vergleichsgröße identifizieren, nicht sofort formalisieren. Die formale Metrik ist ein Stretch-Ziel, keine Pflichtantwort auf dieser Stufe — Schwellenwert ist ein Fallstudien-Beispiel, keine Rechtsnorm."}, "kette": {"problem": "Die 5.000 historischen Einstellungsentscheidungen der letzten 4 Jahre zeigen: 78 % der Eingestellten sind unter 35 Jahre, obwohl der zugrunde liegende Bewerbungspool nur zu 52 % aus unter 35-Jährigen bestand — ein Hinweis auf mögliche Altersverzerrung (Adverse Impact), noch kein Bias-Beweis an sich.", "qualitaetsziel": "Altersbezogene Verzerrungen in der Vorhersage sollen erkannt und auf ein tolerierbares Maß begrenzt werden.", "requirement": "Das System MUSS die Herkunft, den Erhebungszeitraum und den Umfang der Trainingsdaten für das CV-Screening dokumentieren und bei jeder Neuschulung des Modells aktualisieren.", "akzeptanzkriterium": "Die Trefferquote (True Positive Rate) darf zwischen den Gruppen „unter 35“ und „35 und älter“ bei gleichem Qualifikationsprofil höchstens 5 Prozentpunkte abweichen (Equal Opportunity Difference ≤ 0,05).", "pruefung": "Quartalsweises Bias-Audit auf Basis der letzten 500 Screening-Vorgänge, durchgeführt von Petra (QM).", "annahme": "Fallstudienannahme — kein normativer Schwellenwert. Weder IREB noch BABOK schreiben einen konkreten TPR- oder Fairness-Grenzwert vor."}, "req": {"kicker": "Ziel-Anforderung (problemorientiert)", "text": "Das System MUSS die Herkunft, den Erhebungszeitraum und den Umfang der Trainingsdaten für das CV-Screening dokumentieren und bei jeder Neuschulung des Modells aktualisieren."}, "prompt": {"rolle": "Requirements Engineerin nach IREB-Standard", "aufgabe": "Trainingsdatenbeschreibung auf Bias-Risiken prüfen und ein testbares Akzeptanzkriterium formulieren", "kontext": "5.000 historische Einstellungsentscheidungen, 4 Jahre, Vertriebspositionen; 78 % der Eingestellten unter 35 Jahre, obwohl der Bewerbungspool nur zu 52 % aus unter 35-Jährigen bestand", "format": "IREB-konforme Anforderung nach Schema Bedingung + Systemreaktion + Messgröße, max. 3 Sätze", "eingrenzung": "Kein konkretes technisches Verfahren nennen (z. B. kein Reweighting) — nur die Anforderung selbst", "qualitaetsmassstab": "Die Trefferquote darf zwischen den Altersgruppen höchstens 5 Prozentpunkte abweichen (Equal Opportunity Difference ≤ 0,05) — das ist das Akzeptanzkriterium, an dem sich die Prompt-Antwort messen lassen muss.", "text": "Du bist eine erfahrene Requirements Engineerin nach IREB-Standard.\nAufgabe: Prüfe die folgende Trainingsdatenbeschreibung auf Bias-Risiken und\nformuliere ein testbares Akzeptanzkriterium für eine faire Vorhersage.\nKontext: 5.000 historische Einstellungsentscheidungen der letzten 4 Jahre,\nVertriebspositionen; 78 % der Eingestellten sind unter 35 Jahre alt, obwohl\nder Bewerbungspool nur zu 52 % aus unter 35-Jährigen bestand.\nFormat: Eine IREB-konforme Anforderung nach dem Schema \"Bedingung +\nSystemreaktion + Messgröße\", maximal 3 Sätze.\nEingrenzung: Nenne kein konkretes technisches Verfahren (z. B. kein\nReweighting) — nur die Anforderung selbst, keine Lösung.\nQualitätsmaßstab: Die Trefferquote darf zwischen den Altersgruppen höchstens\n5 Prozentpunkte abweichen (Equal Opportunity Difference ≤ 0,05)."}}, {"id": "unsupervised", "pill": "Unsupervised", "color": "var(--teal)", "bg": "var(--teal-bg)", "stufe": {"nr": 2, "label": "Formulieren", "leitsatz": "Formuliere daraus ein NFR.", "hinweis": "Diese Stufe verlangt: aus einem erkannten Problem eine eigene, neue Anforderung formulieren."}, "komponenteTitel": "Kandidaten-Clustering (Talent Pools)", "komponenteText": "TalentMatch AI gruppiert rund <span class=\"zahl\">1.200</span> Initiativbewerbungen pro Quartal automatisch nach Skill-Profilen — ohne vorgegebene Kategorien. Das System bildet die Cluster selbst; welche Gruppen entstehen, ist vorab nicht bekannt.", "fragePersona": "sarah", "quote": "Ein Kunde fragt mich, warum das System seinen Wunschkandidaten in „Cluster 4“ einsortiert hat. Ich habe keine Antwort — und das ist ein Vertrauensproblem im Verkaufsgespräch.", "isoBadges": [{"label": "Interaction Capability (Self-descriptiveness)", "erklaerung": "Weil Sarah und der Kunde verstehen müssen, wodurch ein Cluster charakterisiert wird."}, {"label": "Maintainability (Analysability)", "erklaerung": "Weil Knut die Cluster-Logik später analysieren und anpassen können muss."}], "re": {"titel": "Nachvollziehbarkeit als nicht-funktionale Anforderung", "text": "Explainability ist hier keine „nice-to-have“-Eigenschaft, sondern eine eigenständige NFR, weil das funktionale Ergebnis (die Cluster) vorab nicht spezifizierbar ist. ISO/IEC 25010:2023 ordnet das der Subcharakteristik „Self-descriptiveness“ innerhalb Interaction Capability zu (2023 neu benannt, vormals Teil von Usability)."}, "ba": {"frage": "Wie verifizierst du eine Anforderung an ein Ergebnis, das du vorher nicht kennst?", "aufgabe": "Technik: iterative Elicitation über Prototyping — die Cluster-Ergebnisse selbst werden zum Gesprächsgegenstand mit Sarah und den Kunden, nicht die vorab spezifizierte Kategorienliste.", "titel": "Knowledge Area 4 — Elicitation & Collaboration (BABOK v3)"}, "frage": "Wie schreibst du ein Akzeptanzkriterium für ein Ergebnis, das du vorher nicht kennst?", "uebung": {"aufgabe": "Aufgabe für Knut (Entwicklung), 5 Min.: Formuliere eine NFR zur Nachvollziehbarkeit der gebildeten Cluster.", "loesung": "Für jeden gebildeten Cluster MUSS das System mindestens 3 dominante Merkmale (z. B. Skill-Tags, Erfahrungsjahre, Branchenschwerpunkt) als Kurz-Erklärung ausgeben, abrufbar innerhalb von 2 Sekunden nach Klick auf einen Bewerber-Datensatz in der Recruiter-Oberfläche.", "quelle": "NFR-Formulierung nach IREB-Vorlage „Bedingung + Systemreaktion + Messgröße“."}, "kette": {"problem": "Rund 1.200 Initiativbewerbungen pro Quartal werden zu Talent Pools gruppiert, ohne dass die entstehenden Kategorien vorab bekannt sind.", "qualitaetsziel": "Vertrieb und Kunden sollen nachvollziehen können, wodurch ein Cluster charakterisiert ist.", "requirement": "Das System MUSS für jeden Talent-Pool eine für Vertrieb und Kunden verständliche Kurzbeschreibung der clusterbildenden Merkmale bereitstellen.", "akzeptanzkriterium": "Für jeden Cluster werden mindestens 3 dominante Merkmale ausgegeben, abrufbar innerhalb von 2 Sekunden nach Klick auf einen Bewerber-Datensatz.", "pruefung": "Stichprobenprüfung durch Knut (Entwicklung): 10 zufällige Cluster pro Release auf Verständlichkeit der Merkmalsbeschreibung testen.", "annahme": "Projektentscheidung — der Schwellenwert „3 Merkmale, 2 Sekunden“ ist kein Normwert, sondern eine im Team festgelegte Konvention."}, "req": {"kicker": "Ziel-Anforderung (problemorientiert)", "text": "Das System MUSS für jeden Talent-Pool eine für Vertrieb und Kunden verständliche Kurzbeschreibung der clusterbildenden Merkmale bereitstellen."}, "prompt": {"rolle": "Business-Analystin nach BABOK v3", "aufgabe": "Nicht-funktionale Anforderung zur Nachvollziehbarkeit automatisch gebildeter Cluster formulieren", "kontext": "Clustering-System für Talent Pools, Zielgruppe sind Vertrieb (Sarah) und deren Kunden, keine vorgegebenen Kategorien", "format": "Ein NFR-Satz nach Schema Bedingung + Systemreaktion + Messgröße", "eingrenzung": "Verständlich für Nicht-Techniker formulieren, keine ML-Fachbegriffe wie Feature-Vektor oder Distanzmaß", "qualitaetsmassstab": "Mindestens 3 dominante Merkmale je Cluster, abrufbar innerhalb von 2 Sekunden — daran wird die Prompt-Antwort gemessen.", "text": "Du bist eine Business-Analystin nach BABOK v3.\nAufgabe: Formuliere eine nicht-funktionale Anforderung zur Nachvollziehbarkeit\nautomatisch gebildeter Cluster.\nKontext: Ein Clustering-System gruppiert Initiativbewerbungen zu Talent Pools,\nohne vorgegebene Kategorien. Zielgruppe der Erklärung sind Vertrieb und dessen\nKunden, nicht die Entwicklung.\nFormat: Ein NFR-Satz nach dem Schema \"Bedingung + Systemreaktion +\nMessgröße\".\nEingrenzung: Verständlich für Nicht-Techniker — keine ML-Fachbegriffe wie\nFeature-Vektor oder Distanzmaß verwenden.\nQualitätsmaßstab: Mindestens 3 dominante Merkmale je Cluster, abrufbar\ninnerhalb von 2 Sekunden."}}, {"id": "semisupervised", "pill": "Semi-Supervised", "color": "var(--violet)", "bg": "var(--violet-bg)", "stufe": {"nr": 3, "label": "Prüfen", "leitsatz": "Ist dieses Requirement überhaupt belastbar/testbar?", "hinweis": "Diese Stufe verlangt: eine gegebene Anforderung kritisch bewerten und ihre Lücken benennen — nicht neu formulieren."}, "komponenteTitel": "Interviewbewertung", "komponenteText": "Nur <span class=\"zahl\">60</span> Interviews pro Quartal werden von zwei erfahrenen Recruiterinnen vollständig auf einer 5-Punkte-Skala gelabelt. Das Modell nutzt diese als Anker, um die übrigen rund <span class=\"zahl\">340</span> unbewerteten Interviewaufzeichnungen automatisch einzuordnen.", "fragePersona": "petra", "quote": "Reichen 60 Experten-Labels wirklich aus, um 340 automatische Bewertungen zu rechtfertigen? Und was, wenn sich die beiden Recruiterinnen bei denselben Interviews uneinig sind?", "isoBadges": [{"label": "Functional Suitability (Appropriateness)", "erklaerung": "Weil die automatischen Bewertungen für den tatsächlichen Einsatzzweck — die Vorauswahl — geeignet sein müssen."}, {"label": "Reliability (Faultlessness)", "erklaerung": "Weil eine fehlerhafte automatische Bewertung unentdeckt in die nächste Interviewrunde gelangen kann."}], "re": {"titel": "Traceability (IREB)", "text": "Jede automatische Bewertung muss auf mindestens ein gelabeltes Ankerbeispiel rückführbar sein — sonst ist die Anforderung „nachvollziehbare Bewertung“ nicht erfüllbar. Traceability wird hier zur technischen Pflicht, nicht nur zur Dokumentationsdisziplin."}, "ba": {"frage": "Reicht die Stichprobe der gelabelten Daten für eine valide Anforderung?", "aufgabe": "Bei n = 60 Ankerbeispielen ist die statistische Aussagekraft explizit zu prüfen, bevor die 340 automatischen Bewertungen als vertrauenswürdig gelten.", "titel": "Knowledge Area 6 — Requirements Validation (BABOK v3)"}, "frage": "Wer definiert die „Wahrheit“ hinter den 60 Labels — und wie wird Uneinigkeit zwischen den beiden Recruiterinnen (Inter-Rater-Reliabilität) behandelt?", "uebung": {"aufgabe": "Aufgabe für Petra (QM), 5 Min. — Prüfen: Ein Kollege schlägt vor: „Wir akzeptieren die automatischen Bewertungen, sobald Cohen's Kappa zwischen den beiden Recruiterinnen einmalig über 0,7 lag.“ Ist dieser Vorschlag als Anforderung ausreichend testbar? Was fehlt?", "loesung": "Nein, nicht ausreichend: Ein einmaliger Kappa-Wert sagt nichts über die Stabilität über die Zeit. Es fehlen: (1) eine Wiederholungsfrequenz — bei jeder Neuschulung erneut prüfen, (2) eine Konsequenz bei Unterschreitung — z. B. Drittbewertung, und (3) die Stichprobe, auf der Kappa berechnet wird — hier alle 60 gelabelten Interviews pro Quartal, nicht nur eine Teilmenge. Vollständige Anforderung: Die Übereinstimmung MUSS bei jeder Neuschulung auf Basis aller im Quartal gelabelten Interviews erneut berechnet werden und mindestens 0,7 betragen; bei Unterschreitung MUSS eine dritte, unabhängige Person nachbewerten.", "quelle": "Prüfen-Ebene: Eine gegebene, unvollständige Formulierung kritisch bewerten — Kernkompetenz der Requirements Validation (BABOK v3, KA 6). Kappa ≥ 0,7 ist Fallstudien-Schwellenwert, keine externe Norm."}, "kette": {"problem": "Nur 60 von rund 400 Interviews sind von 2 Recruiterinnen gelabelt; die übrigen 340 Bewertungen entstehen automatisch auf dieser Basis.", "qualitaetsziel": "Die automatischen Bewertungen sollen auf einer belastbaren, konsistenten Referenz beruhen.", "requirement": "Das System MUSS für jede automatisch erzeugte Interviewbewertung das zugrunde liegende Ankerbeispiel und dessen Label-Herkunft dokumentieren.", "akzeptanzkriterium": "Die Übereinstimmung der beiden labelnden Recruiterinnen (Cohen's Kappa) beträgt mindestens 0,7, bevor ein Label-Set als Trainingsanker verwendet wird.", "pruefung": "Kappa-Berechnung durch Petra (QM) vor jeder Neuschulung; bei Unterschreitung Nachbewertung durch eine dritte, unabhängige Person.", "annahme": "Fallstudienannahme — Kappa ≥ 0,7 ist eine gängige Forschungsschwelle für substanzielle Übereinstimmung, keine IREB- oder BABOK-Vorgabe."}, "req": {"kicker": "Ziel-Anforderung (problemorientiert)", "text": "Das System MUSS für jede automatisch erzeugte Interviewbewertung das zugrunde liegende Ankerbeispiel und dessen Label-Herkunft dokumentieren."}, "prompt": {"rolle": "QM-Analystin mit Fokus auf Requirements Validation", "aufgabe": "Bewerten, ob die Stichprobe der Experten-Labels ausreicht, und eine Mindestanforderung an Inter-Rater-Reliabilität ableiten", "kontext": "60 gelabelte Interviews (2 Recruiterinnen, 5-Punkte-Skala) als Anker für 340 automatische Bewertungen", "format": "Kurze Risikoeinschätzung (max. 2 Sätze) plus eine formale Anforderung mit konkretem Schwellenwert", "eingrenzung": "Konkrete Zahl/Metrik nennen, keine vagen Aussagen wie „ausreichend“ oder „repräsentativ genug“", "qualitaetsmassstab": "Cohen's Kappa ≥ 0,7 zwischen den beiden Recruiterinnen — daran wird die Prompt-Antwort gemessen.", "text": "Du bist eine QM-Analystin mit Fokus auf Requirements Validation.\nAufgabe: Bewerte, ob 60 Experten-Labels ausreichen, um 340 automatische\nBewertungen zu rechtfertigen, und leite eine Mindestanforderung an die\nInter-Rater-Reliabilität ab.\nKontext: 2 Recruiterinnen labeln unabhängig voneinander auf einer\n5-Punkte-Skala.\nFormat: Eine kurze Risikoeinschätzung (max. 2 Sätze), danach eine formale\nAnforderung mit konkretem Schwellenwert.\nEingrenzung: Nenne eine konkrete Zahl/Metrik — keine vagen Aussagen wie\n\"ausreichend groß\" oder \"repräsentativ genug\".\nQualitätsmaßstab: Cohen's Kappa zwischen den beiden Recruiterinnen muss\nmindestens 0,7 betragen."}}, {"id": "reinforcement", "pill": "Reinforcement", "color": "var(--amber)", "bg": "var(--amber-bg)", "stufe": {"nr": 4, "label": "Beherrschen", "leitsatz": "Wie muss Requirements Management aussehen, wenn sich das System verändert?", "hinweis": "Diese Stufe verlangt: mehrere Anforderungselemente zu einem konsistenten Regime verbinden."}, "komponenteTitel": "Matching-Optimierung", "komponenteText": "Das Matching-Modul passt die Gewichtung seiner Kriterien (Skills, Standort, Gehaltsvorstellung) fortlaufend an — auf Basis von Recruiter-Feedback. Reward: erfolgreiche Einstellung nach 6 Monaten Betriebszugehörigkeit. Penalty: Kündigung in der Probezeit.", "fragePersona": "ela", "quote": "Wenn sich das Modell nach Go-live durch Lernen selbst verändert — welche Anforderung gilt dann eigentlich noch am Tag 200?", "isoBadges": [{"label": "Reliability (Maturity)", "erklaerung": "Weil ein sich selbst veränderndes System auch nach Anpassungen stabil bleiben muss."}, {"label": "Safety (neu 2023)", "erklaerung": "Weil eine unkontrollierte Gewichtsverschiebung Bewerbergruppen systematisch benachteiligen könnte."}, {"label": "Maintainability (Modifiability)", "erklaerung": "Weil jede Gewichtsänderung nachvollziehbar und rückführbar bleiben muss."}], "re": {"titel": "Anforderungsstabilität &amp; Change-Traceability", "text": "Die Baseline-Anforderung zum Zeitpunkt des Go-live (X₀) muss dokumentiert werden. Jede spätere Änderung der Reward-Gewichtung ist als Change Request zu behandeln, nicht als „normales“ Systemverhalten — sonst verliert die ursprüngliche Anforderung ihre Prüfbarkeit."}, "ba": {"frage": "Wer darf eigentlich festlegen, was „erfolgreiches Matching“ bedeutet?", "aufgabe": "BA-Aufgabe: Die Reward-Funktion als fachliche Erfolgsdefinition identifizieren, einen Owner festlegen und Änderungen nachvollziehbar machen — nicht als reine Modellkonfiguration behandeln.", "titel": "Knowledge Area 5 — Requirements Life Cycle Management (BABOK v3)"}, "frage": "Wie überwachst du ein System, das sich nach Go-live durch Lernen weiter verändert — im Rahmen der EU-AI-Act-Pflicht zum Post-Market-Monitoring?", "uebung": {"aufgabe": "Aufgabe für Petra (QM) und Ela (Projektleitung) gemeinsam, 8 Min. — Beherrschen: Entwirf ein vollständiges Monitoring-Regime für die Reward-Gewichtung — nicht nur einen einzelnen Anforderungssatz. Dein Regime muss mindestens vier Elemente enthalten: Baseline-Referenz, Prüf-Turnus, Schwellenwert, Eskalationsweg.", "loesung": "1) Baseline: dokumentierter Stand der Gewichtung zum Zeitpunkt des Go-live (X₀). 2) Prüf-Turnus: mindestens quartalsweise Abgleich durch Petra (QM). 3) Schwellenwert: Abweichung von mehr als 15 % in der Gewichtung eines Einzelkriteriums. 4) Eskalationsweg: bei Überschreitung verpflichtende Change-Request-Prüfung durch Ela (Projektleitung), inklusive Dokumentationspflicht nach Art. 72 EU AI Act. Das Zusammenspiel aller vier Elemente — nicht ein einzelner Satz — ist die eigentliche Anforderung an Requirements Management für sich verändernde Systeme.", "quelle": "Beherrschen-Ebene: mehrere Anforderungselemente zu einem konsistenten Regime verbinden (Requirements Life Cycle Management, BABOK v3 KA 5). Rechtsgrundlage: EU AI Act (Verordnung (EU) 2024/1689), Art. 72 Post-Market-Monitoring-Pflicht; anwendbar für Annex-III-Systeme ab 02.12.2027 gem. Digital-Omnibus-Verordnung (EU) 2026/1744 (in Kraft seit 27.07.2026)."}, "kette": {"problem": "Die Matching-Gewichtung verändert sich nach Go-live fortlaufend durch Recruiter-Feedback — die ursprüngliche Anforderung ist nach einiger Zeit nicht mehr ohne Weiteres erkennbar.", "qualitaetsziel": "Änderungen der Reward-Gewichtung sollen gegenüber der Baseline nachvollziehbar und kontrollierbar bleiben.", "requirement": "Das System MUSS jede Änderung der Matching-Gewichtung mit Zeitstempel, Ursache und verantwortlicher Person protokollieren und diese Historie für mindestens 3 Jahre nach Systemabschaltung aufbewahren.", "akzeptanzkriterium": "Abweichungen von mehr als 15 % in der Gewichtung eines Einzelkriteriums lösen eine verpflichtende Change-Request-Prüfung aus.", "pruefung": "Mindestens quartalsweise Prüfung durch Petra (QM) gegen die Baseline (Stand Go-live), Eskalation an Ela (Projektleitung) bei Schwellenwertüberschreitung.", "annahme": "Projektentscheidung — die 15-%-Schwelle ist ein Fallstudienwert. EU AI Act Art. 72 schreibt die Pflicht zum Monitoring vor, aber keinen konkreten Prozentsatz."}, "req": {"kicker": "Ziel-Anforderung (problemorientiert)", "text": "Das System MUSS jede Änderung der Matching-Gewichtung mit Zeitstempel, Ursache und verantwortlicher Person protokollieren und diese Historie für mindestens 3 Jahre nach Systemabschaltung aufbewahren."}, "prompt": {"rolle": "Projektleiterin mit EU-AI-Act-Kenntnis", "aufgabe": "Post-Market-Monitoring-Anforderung für ein sich selbst veränderndes Matching-Modul formulieren", "kontext": "Reward = erfolgreiche Einstellung nach 6 Monaten, Penalty = Kündigung in der Probezeit, Gewichtung ändert sich fortlaufend", "format": "Anforderung mit klarer Verantwortlichkeit, Prüf-Frequenz und Eskalationsschwelle", "eingrenzung": "Muss auf Art. 72 EU AI Act rückführbar sein, keine Formulierung ohne benannte verantwortliche Person", "qualitaetsmassstab": "Abweichungen über 15 % pro Kriterium lösen eine Change-Request-Prüfung aus — daran wird die Prompt-Antwort gemessen.", "text": "Du bist eine Projektleiterin mit Kenntnis des EU AI Act.\nAufgabe: Formuliere eine Post-Market-Monitoring-Anforderung für ein\nMatching-Modul, das sich nach Go-live durch Reinforcement Learning selbst\nverändert.\nKontext: Reward = erfolgreiche Einstellung nach 6 Monaten Betriebs-\nzugehörigkeit, Penalty = Kündigung in der Probezeit. Die Gewichtung der\nMatching-Kriterien ändert sich fortlaufend.\nFormat: Eine Anforderung mit klarer Verantwortlichkeit, Prüf-Frequenz und\nEskalationsschwelle.\nEingrenzung: Muss auf Art. 72 EU AI Act (Post-Market-Monitoring-Pflicht)\nrückführbar sein — keine Formulierung ohne benannte verantwortliche Person.\nQualitätsmaßstab: Abweichungen über 15 % in der Gewichtung eines\nEinzelkriteriums müssen eine Change-Request-Prüfung auslösen."}}];
+
+var VERGLEICH = {"merksatz": "Das ML-Paradigma bestimmt nicht nur, wie die KI lernt. Es verändert, was wir spezifizieren, prüfen und überwachen müssen.", "rows": [{"paradigma": "Supervised", "color": "var(--indigo)", "stufe": "1 · Erkennen", "lernt": "aus gelabelten historischen Einstellungsentscheidungen", "nichtVoraussetzen": "dass die Labels selbst korrekt und neutral sind", "frage": "Woher kommt die „Wahrheit“ in den Trainingsdaten?", "anforderung": "Datenqualität & Fairness-Grenzwert"}, {"paradigma": "Unsupervised", "color": "var(--teal)", "stufe": "2 · Formulieren", "lernt": "aus Mustern ohne vorgegebene Kategorien", "nichtVoraussetzen": "dass die Ergebnisstruktur vorher bekannt oder erwartbar ist", "frage": "Wie machen wir ein unbekanntes Ergebnis verständlich?", "anforderung": "Explainability (NFR)"}, {"paradigma": "Semi-Supervised", "color": "var(--violet)", "stufe": "3 · Prüfen", "lernt": "aus wenigen Labels + vielen ungelabelten Daten", "nichtVoraussetzen": "dass wenige Labels als Referenz automatisch ausreichen", "frage": "Wie belastbar sind die Anker, auf die sich alles stützt?", "anforderung": "Validität & Traceability"}, {"paradigma": "Reinforcement", "color": "var(--amber)", "stufe": "4 · Beherrschen", "lernt": "aus Feedback/Rewards nach Go-live", "nichtVoraussetzen": "dass das Systemverhalten nach Go-live stabil bleibt", "frage": "Was bedeutet „Erfolg“, und wer kontrolliert Veränderung?", "anforderung": "Monitoring & Change Management"}]};
+
+
+  var active = 0;
+  var vergleichMode = false;
+  var activeTab = 1;
+  var beamerLevel = 0;
+  var BEAMER_LABELS = ["Normal","Beamer","Beamer XL","Beamer XXL"];
+  var BEAMER_LEVELS = ["", "beamer", "beamer beamer-xl", "beamer beamer-xl beamer-xxl"];
+
+  function personaBar(activeKey){
+    var order = ["ela","knut","sarah","petra","bach"];
+    var html = '<div class="personabar">';
+    order.forEach(function(k){
+      var p = PERSONAS[k];
+      var on = (k === activeKey) ? " on" : "";
+      html += '<span class="pbadge '+p.cls+on+'">'+p.name+' · '+p.rolle+'</span>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function renderLeft(s){
+    var el = document.getElementById("panelLeft");
+    el.innerHTML =
+      '<div class="stufe-badge" style="color:'+s.color+'; border-color:'+s.color+';">' +
+        '<span class="nr">'+s.stufe.nr+'</span> Stufe '+s.stufe.nr+' · '+s.stufe.label +
+      '</div>' +
+      '<p style="font-size:0.875rem;color:var(--muted);margin:-8px 0 14px 0;line-height:1.45;">'+s.stufe.hinweis+'</p>' +
+      '<div class="steckbrief">' +
+        '<h2>TalentMatch AI — Steckbrief</h2>' +
+        '<dl>' +
+          '<dt>Betreiber</dt><dd>Vantera Systemtechnik GmbH</dd>' +
+          '<dt>System</dt><dd>KI-gestütztes Recruiting-System</dd>' +
+          '<dt>EU-AI-Act-Einstufung</dt><dd>Hochrisiko, Anhang III Nr. 4 (Beschäftigung/Personalmanagement)</dd>' +
+        '</dl>' +
+      '</div>' +
+      '<div class="reg-badge">' +
+        '<strong>Regulatorik-Status</strong>' +
+        'Hochrisiko-Einstufung unverändert. Frist für die vollen Betreiberpflichten ' +
+        'verschoben von 02.08.2026 auf <strong>02.12.2027</strong> durch die Digital-Omnibus-Verordnung ' +
+        '(EU) 2026/1744 — verabschiedet vom Rat am 29.06.2026, veröffentlicht im Amtsblatt am 24.07.2026, ' +
+        'in Kraft seit 27.07.2026.' +
+      '</div>' +
+      '<div class="komponente">' +
+        '<h3 style="color:'+s.color+'">'+s.komponenteTitel+'</h3>' +
+        '<p>'+s.komponenteText+'</p>' +
+      '</div>' +
+      personaBar(s.fragePersona);
+  }
+
+  function renderVergleichLeft(){
+    var el = document.getElementById("panelLeft");
+    el.innerHTML =
+      '<div class="steckbrief">' +
+        '<h2>TalentMatch AI — Steckbrief</h2>' +
+        '<dl>' +
+          '<dt>Betreiber</dt><dd>Vantera Systemtechnik GmbH</dd>' +
+          '<dt>System</dt><dd>KI-gestütztes Recruiting-System</dd>' +
+          '<dt>EU-AI-Act-Einstufung</dt><dd>Hochrisiko, Anhang III Nr. 4 (Beschäftigung/Personalmanagement)</dd>' +
+        '</dl>' +
+      '</div>' +
+      '<div class="reg-badge">' +
+        '<strong>Regulatorik-Status</strong>' +
+        'Hochrisiko-Einstufung unverändert. Frist verschoben auf <strong>02.12.2027</strong> ' +
+        'durch die Digital-Omnibus-Verordnung (EU) 2026/1744, in Kraft seit 27.07.2026.' +
+      '</div>' +
+      '<div class="oekosystem">' +
+        '<h5>Bezüge im PromptSchule-Tool-Ökosystem</h5>' +
+        '<ul>' +
+          '<li><a href="./talentmatch-ai-sufficiency-gate.html"><strong>TalentMatch AI vor dem Sufficiency-Gate</strong></a> ' +
+          '(RSGA-Framework, IEEE RE 2026): bindet dieselbe Vantera-Fallwelt an ein konkretes Gate-Szenario mit vier ' +
+          'Intent-Dimensionen — eine eigenständige „RSGA-Sufficiency-Ampel" zum freien Scoring eigener Anforderungen ' +
+          'ist laut diesem Tool noch nicht als separates Denkraum-Tool veröffentlicht.</li>' +
+          '<li><a href="./ba-lifecycle-lernreise.html"><strong>BA-Lifecycle-Lernreise</strong></a> (BABOK v3, ' +
+          'Querverweise IEEE 29148): vertieft die Qualitätsattribute hinter Anforderungsspezifikationen anhand ' +
+          'derselben TalentMatch-AI-Station — eine eigenständige, nur auf IEEE 29148 fokussierte Lernreise gibt es ' +
+          'bislang nicht.</li>' +
+          '<li><strong>BetrVG-Mitbestimmungs-Simulator:</strong> Der Reinforcement-Baustein berührt die ' +
+          'Mitbestimmung nach § 87 BetrVG bei Systemen zur Verhaltens-/Leistungskontrolle — als eigenständiges ' +
+          'Denkraum-Tool noch nicht gebaut, daher hier ohne Link.</li>' +
+          '<li><a href="./se-lifecycle-lernreise.html"><strong>SE-Lifecycle-Lernreise</strong></a> (SWEBOK): nutzt ' +
+          'dieselbe Vantera-Fallwelt aus Entwicklungsperspektive.</li>' +
+        '</ul>' +
+      '</div>';
+  }
+
+  function renderTabNav(){
+    var labels = ["1 · Verstehen", "2 · Arbeiten", "3 · Transfer"];
+    var html = '<div class="tabnav">';
+    labels.forEach(function(l, i){
+      html += '<button type="button" class="tabbtn'+(activeTab === i+1 ? " active" : "")+'" data-tab="'+(i+1)+'">'+l+'</button>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function renderVerstehenTab(s){
+    var pQuote = PERSONAS[s.fragePersona];
+    var badgeHtml = s.isoBadges.map(function(b, i){
+      return '<button type="button" class="isobadge" data-iso="'+i+'">ISO/IEC 25010: '+b.label+'</button>';
+    }).join("");
+    return (
+      '<div class="badgerow">'+badgeHtml+'</div>' +
+      '<div class="iso-erklaerung" id="isoErklaerung"></div>' +
+      '<div class="quote" style="border-color:'+s.color+'; background:'+s.bg+';">' +
+        '<span class="who">'+pQuote.name+' ('+pQuote.rolle+')</span>„'+s.quote+'“' +
+      '</div>' +
+      '<div class="box">' +
+        '<h4><span class="tag tag-re">RE</span> '+s.re.titel+'</h4>' +
+        '<p>'+s.re.text+'</p>' +
+      '</div>' +
+      '<div class="box">' +
+        '<h4><span class="tag tag-ba">BA</span> Business-Frage</h4>' +
+        '<p><strong>'+s.ba.frage+'</strong></p>' +
+        '<p>'+s.ba.aufgabe+'</p>' +
+        '<div class="ba-ref">BABOK v3 — '+s.ba.titel+'</div>' +
+      '</div>'
+    );
+  }
+
+  function renderArbeitenTab(s){
+    return (
+      '<div class="frage">' +
+        '<h4>Kritische Frage — '+s.stufe.leitsatz+'</h4>' +
+        '<p>'+s.frage+'</p>' +
+      '</div>' +
+      '<div class="uebung">' +
+        '<h4>Übungsaufgabe (Workshop)</h4>' +
+        '<p>'+s.uebung.aufgabe+'</p>' +
+        '<details><summary>Musterlösung anzeigen</summary>' +
+          '<div class="loesung">'+s.uebung.loesung+
+            '<span class="quelle">'+s.uebung.quelle+'</span>' +
+          '</div>' +
+        '</details>' +
+      '</div>'
+    );
+  }
+
+  function renderTransferTab(s){
+    return (
+      '<div class="kette">' +
+        '<div class="kette-step"><span class="kette-label">Problem</span><p>'+s.kette.problem+'</p></div>' +
+        '<div class="kette-step"><span class="kette-label">Qualitätsziel</span><p>'+s.kette.qualitaetsziel+'</p></div>' +
+        '<div class="kette-step req"><span class="kette-label">Requirement</span><p>'+s.kette.requirement+'</p></div>' +
+        '<div class="kette-step akz"><span class="kette-label">Akzeptanzkriterium</span><p>'+s.kette.akzeptanzkriterium+
+          '</p><span class="annahme-tag">'+s.kette.annahme+'</span></div>' +
+        '<div class="kette-step"><span class="kette-label">Prüfung</span><p>'+s.kette.pruefung+'</p></div>' +
+      '</div>' +
+      '<div class="promptbox">' +
+        '<h4>Prompt-Beispiel (PromptSchule) — Prompt Engineering ist Requirements Engineering</h4>' +
+        '<table class="prompt-framework">' +
+          '<tr><th>Rolle</th><td>'+s.prompt.rolle+'</td></tr>' +
+          '<tr><th>Aufgabe</th><td>'+s.prompt.aufgabe+'</td></tr>' +
+          '<tr><th>Kontext</th><td>'+s.prompt.kontext+'</td></tr>' +
+          '<tr><th>Format</th><td>'+s.prompt.format+'</td></tr>' +
+          '<tr><th>Eingrenzung</th><td>'+s.prompt.eingrenzung+'</td></tr>' +
+          '<tr class="qm"><th>Qualitätsmaßstab</th><td>'+s.prompt.qualitaetsmassstab+'</td></tr>' +
+        '</table>' +
+        '<div class="prompt-text">'+s.prompt.text+'</div>' +
+      '</div>'
+    );
+  }
+
+  function renderRight(s){
+    var el = document.getElementById("panelRight");
+    var body = "";
+    if (activeTab === 1) body = renderVerstehenTab(s);
+    else if (activeTab === 2) body = renderArbeitenTab(s);
+    else body = renderTransferTab(s);
+    el.innerHTML = renderTabNav() + body;
+
+    document.querySelectorAll(".tabbtn").forEach(function(btn){
+      btn.addEventListener("pointerup", function(){
+        activeTab = parseInt(btn.getAttribute("data-tab"), 10);
+        renderRight(s);
+      });
+    });
+    document.querySelectorAll(".isobadge").forEach(function(btn){
+      btn.addEventListener("pointerup", function(){
+        var idx = parseInt(btn.getAttribute("data-iso"), 10);
+        var box = document.getElementById("isoErklaerung");
+        var already = btn.classList.contains("tapped");
+        document.querySelectorAll(".isobadge").forEach(function(b){ b.classList.remove("tapped"); });
+        if (already) {
+          box.classList.remove("show");
+          box.textContent = "";
+        } else {
+          btn.classList.add("tapped");
+          box.textContent = s.isoBadges[idx].erklaerung;
+          box.classList.add("show");
+        }
+      });
+    });
+  }
+
+  function renderVergleichRight(){
+    var el = document.getElementById("panelRight");
+    var rows = VERGLEICH.rows.map(function(r){
+      return '<tr>' +
+        '<td class="paradigma" style="color:'+r.color+'">'+r.paradigma+'<span class="stufe-mini">'+r.stufe+'</span></td>' +
+        '<td>'+r.lernt+'</td>' +
+        '<td>'+r.nichtVoraussetzen+'</td>' +
+        '<td>'+r.frage+'</td>' +
+        '<td>'+r.anforderung+'</td>' +
+      '</tr>';
+    }).join("");
+    el.innerHTML =
+      '<div class="table-scroll"><table class="vergleich-table">' +
+        '<thead><tr><th>Paradigma</th><th>Was lernt das System aus?</th>' +
+        '<th>Was kann RE/BA nicht voraussetzen?</th><th>Zentrale RE/BA-Frage</th>' +
+        '<th>Typische Anforderung</th></tr></thead>' +
+        '<tbody>'+rows+'</tbody>' +
+      '</table></div>' +
+      '<div class="merksatz">'+VERGLEICH.merksatz+'</div>';
+  }
+
+  function renderPills(){
+    var nav = document.getElementById("pillnav");
+    nav.innerHTML = "";
+    STATES.forEach(function(s, i){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "pill" + (!vergleichMode && i === active ? " active" : "");
+      b.textContent = s.pill;
+      b.addEventListener("pointerup", function(){ setActive(i); });
+      nav.appendChild(b);
+    });
+    var vb = document.createElement("button");
+    vb.type = "button";
+    vb.className = "pill vergleich" + (vergleichMode ? " active" : "");
+    vb.textContent = "Vergleich";
+    vb.addEventListener("pointerup", function(){ setVergleich(); });
+    nav.appendChild(vb);
+  }
+
+  function setActive(i){
+    active = i;
+    vergleichMode = false;
+    activeTab = 1;
+    renderPills();
+    renderLeft(STATES[i]);
+    renderRight(STATES[i]);
+  }
+
+  function setVergleich(){
+    vergleichMode = true;
+    renderPills();
+    renderVergleichLeft();
+    renderVergleichRight();
+  }
+
+  function cycleBeamer(){
+    beamerLevel = (beamerLevel + 1) % 4;
+    document.documentElement.className = BEAMER_LEVELS[beamerLevel];
+    document.getElementById("beamerBtn").textContent = "Beamer-Modus: " + BEAMER_LABELS[beamerLevel];
+  }
+
+  document.getElementById("beamerBtn").addEventListener("pointerup", cycleBeamer);
+
+  // --- Footer-Inhalte ---
+document.getElementById("systemprompt-box").textContent = "MASTER-BAU-PROMPT: TalentMatch AI — Vier ML-Paradigmen im RE/BA-Blick (v2)\n\nZWECK\nInteraktives Workshop-Tool, das die vier klassischen ML-Paradigmen (Supervised,\nUnsupervised, Semi-Supervised, Reinforcement Learning) nicht als ML-Erklärung mit\nRE/BA-Dekoration vermittelt, sondern umgekehrt: jedes Paradigma ist Anlass für eine\nechte RE/BA-Analyseaufgabe innerhalb EINER durchgängigen Fallstudie. Version 2\nführt zusätzlich eine Kompetenzprogression und eine Synthese-Ansicht ein.\n\nSTRUKTUR\n- Split-Screen 40/60 (links: fixer Kontext, rechts: Detailbereich mit 3 Tabs)\n- Header: Titel + 5 Pill-Buttons (4 Bausteine + \"Vergleich\") + Beamer-Toggle\n- Links: Steckbrief TalentMatch AI, Regulatorik-Status-Badge, Kompetenzstufen-Badge,\n  Systemkomponente des aktiven Bausteins, Persona-Leiste\n- Rechts: drei touchfähige Tabs \"1 Verstehen\" / \"2 Arbeiten\" / \"3 Transfer\"\n  · Verstehen: interaktive ISO-25010-Badges (Tap zeigt Erklärung), Zitat der\n    fragenden Persona, RE-Box (IREB), BA-Box (Business-Frage zuerst, dann\n    BA-Aufgabe, BABOK-Knowledge-Area erst am Ende als kleine Referenzzeile)\n  · Arbeiten: Kritische Frage, Übungsaufgabe mit aufklappbarer Musterlösung\n  · Transfer: fünfstufige Requirements-Kette (Problem → Qualitätsziel →\n    Requirement → Akzeptanzkriterium → Prüfung, inkl. Fallstudienannahme-\n    Kennzeichnung an jedem Schwellenwert) + Prompt-Beispiel-Box (Rolle/Aufgabe/\n    Kontext/Format/Eingrenzung/Qualitätsmaßstab + fertiger Prompt)\n- 5. Pill \"Vergleich\": Synthese-Matrix aller vier Paradigmen (Was lernt das\n  System aus? / Was kann RE/BA nicht voraussetzen? / zentrale Frage / typische\n  Anforderung) plus ein Merksatz als Kernbotschaft des gesamten Tools\n\nINHALT PRO SPUR (4 Spuren, EIN Fall: TalentMatch AI)\n1. Supervised — CV-Screening — Kompetenzstufe 1: Erkennen\n2. Unsupervised — Kandidaten-Clustering / Talent Pools — Kompetenzstufe 2: Formulieren\n3. Semi-Supervised — Interviewbewertung — Kompetenzstufe 3: Prüfen\n4. Reinforcement — Matching-Optimierung — Kompetenzstufe 4: Beherrschen\nJede Spur folgt demselben Dreiklang (Verstehen/Arbeiten/Transfer), aber die\nkognitive Anforderung steigt von Baustein zu Baustein.\n\nDESIGN-VORGABEN\n- Weißer Hintergrund, color-scheme: light, kein Dark Mode\n- Beamer-Tauglichkeit: Fließtext >= 16px, Sekundärtext >= 14px (Basis, skaliert\n  über vierstufigen Beamer-Toggle per html-Klassen kumulativ)\n- Signatur oben rechts, position:fixed, Name + Website-Link\n- Footer: vier Pflicht-Boxen (Systemprompt, Handbuch, Vortrags-Skript,\n  Normen-Register)\n- Persona-Farbcodierung konsistent: Ela=Indigo, Knut=Teal, Sarah=Amber,\n  Petra=Violett, Herr Bachmeier=Slate-Grau\n- Pointer-Events (pointerup) statt click, keine HTML5-Drag-and-Drop-Events —\n  bewusst beibehalten (nicht auf \"click\" umgestellt), da pointerup gezielt\n  Ghost-Click- und 300ms-Delay-Probleme bei gemischten Touch/Maus-Szenarien\n  (Beamer + Referentenlaptop) vermeidet\n- Keine externen Ressourcen, kein fetch(), vollständig offlinefähig\n- Alle Schwellenwerte in der Requirements-Kette tragen eine sichtbare\n  \"Fallstudienannahme\" bzw. \"Projektentscheidung\"-Kennzeichnung, um den\n  Fehlschluss \"Norm X schreibt Wert Y vor\" zu verhindern\n\nPERSONA-BEZUG\nEla=Projektleitung, Knut=Entwicklung, Sarah=Vertrieb (nicht \"Fachbereich\"),\nPetra=QM, Herr Bachmeier=Geschäftsführung. Jede Spur ordnet einer Persona die\nfragende Rolle zu, einer (ggf. anderen) Persona die Anforderungs-Owner-Rolle.\nKeine Vermischung mit dem Marmorkuchen-Bäckerei-Universum.\n\nNICHT-TUN-LISTE\n- Keine Lösungsvorschläge als \"Anforderung\" ohne Kennzeichnung, wenn sie ein\n  konkretes technisches Mittel vorschreiben, das nicht normativ vorgegeben ist\n- Keine zweite oder dritte Fallstudie parallel einführen (bewusst EIN Fall,\n  vier Facetten — didaktische Entscheidung, nicht Vereinfachung)\n- Keine Persona außerhalb der fünf etablierten Rollen einführen\n- Keine Regulatorik-Referenz ohne Status + Datum bei sich entwickelndem Recht\n- Kein Dark Mode, keine Sliding-Panel-Verstecke für Kerninhalte\n- Kein localStorage/sessionStorage ohne try/catch (hier: gar nicht verwendet)\n- Fallstudien-Schwellenwerte nie ohne explizite Kennzeichnung als solche\n  präsentieren\n- GEPRUEFTER PUNKT (zuletzt 30.08.2026): Die Bewerbungspool-Kennzahl \"52 % unter 35-Jährige\"\n  (Supervised-Baustein) ist eine lokale, tool-eigene Fallstudienannahme, um die Bias-Diskrepanz\n  plausibel zu machen. Repo-weiter Abgleich gegen alle anderen TalentMatch-AI/Vantera-Tools\n  (talentmatch-ai-sufficiency-gate.html, ba-lifecycle-lernreise.html, se-lifecycle-lernreise.html,\n  sarahs-weg-zum-qualitaetskuchen.html, ba-rollenwandel-explorer.html) ergab: keines dieser Tools\n  nennt eine eigene Bewerbungspool-Zusammensetzung oder einen abweichenden Prozentwert für dasselbe\n  CV-Screening-Szenario — kein Widerspruch gefunden. Der Wert bleibt dennoch eine Fallstudienannahme\n  dieses Tools, keine über mehrere Tools hinweg fest verankerte Kennzahl; bei einer künftigen\n  Neufassung eines der anderen Tools erneut gegenprüfen.\n\nÄNDERUNGSHISTORIE\nv1: Grundstruktur (4 Bausteine, Split-Screen, Prompt-Beispiele, Überblick-Button)\nv2: Externes konzeptionelles Feedback eingearbeitet — 5. Pill \"Vergleich\" statt\n    separatem Button, Kompetenzprogression Erkennen->Formulieren->Prüfen->\n    Beherrschen, Requirements-Kette statt Einzelsatz, Verstehen/Arbeiten/\n    Transfer-Tabs zur Reduktion der Scrolllast, interaktive ISO-Badges,\n    BA-Box mit Business-Frage voran, Prompt-Framework um Qualitätsmaßstab\n    ergänzt, Fallstudienannahme-Kennzeichnung an Schwellenwerten. Bewusst NICHT\n    übernommen: Umstellung von pointerup auf click (Begründung siehe oben).\nv3: Review gegen die Denkraum-Qualitätskriterien (K1-K19). Zurück-Link zur Startseite ergänzt\n    (fehlte in v2). Ökosystem-Verweise im Vergleich-Modus von reinem Text auf echte relative\n    Links auf tatsächlich existierende Denkraum-Tools umgestellt (talentmatch-ai-sufficiency-\n    gate.html, ba-lifecycle-lernreise.html, se-lifecycle-lernreise.html); die beiden Verweise ohne\n    passendes eigenständiges Tool (RSGA-Sufficiency-Ampel als reines Scoring-Tool, BetrVG-\n    Mitbestimmungs-Simulator) bleiben unverlinkter Text mit Hinweis, dass es dieses Tool noch\n    nicht separat gibt. 52-%-Bewerbungspool-Kennzahl gegen alle anderen TalentMatch-AI/Vantera-\n    Tools im Repo abgeglichen, kein Widerspruch gefunden (Details siehe GEPRUEFTER PUNKT unten).";
+  document.getElementById("handbuch-box").innerHTML = "<p>Dieses Tool ist kein reiner ML-Erklärer — es nutzt die vier ML-Paradigmen als\nAufhänger für echte RE/BA-Analysearbeit an einem einzigen, den Teilnehmenden\nbereits bekannten Fall (TalentMatch AI, Vantera).</p>\n<h5>Framework-Analyse (CO-STAR)</h5>\n<ul>\n<li><strong>Context:</strong> Ein Hochrisiko-KI-Recruiting-System mit vier unterschiedlichen ML-Bausteinen, die jeweils eigene RE/BA-Herausforderungen erzeugen.</li>\n<li><strong>Objective:</strong> Teilnehmende sollen erkennen, dass jedes ML-Paradigma spezifische Anforderungsarten erzwingt — und dass die kognitive Anforderung von Baustein zu Baustein steigt (Erkennen -> Formulieren -> Prüfen -> Beherrschen).</li>\n<li><strong>Style:</strong> Ein Fall, vier Facetten, statt vier Fälle — reduziert kognitive Last.</li>\n<li><strong>Tone:</strong> Persona-Zitat als Einstieg, dann sachlich-analytisch, dann handlungsorientiert.</li>\n<li><strong>Audience:</strong> RE/BA/PM-Fachpersonen ohne tiefes ML-Vorwissen.</li>\n<li><strong>Response:</strong> Fünf navigierbare Spuren (vier Bausteine + Vergleich), je Baustein-Spur identischer Dreiklang Verstehen/Arbeiten/Transfer.</li>\n</ul>\n<h5>Verstehen / Arbeiten / Transfer</h5>\n<p>Die rechte Spalte war in Version 1 eine durchgängige Lernstrecke von ISO-Badges\nbis Prompt — zu viel vertikaler Umfang für einen Zustand. Version 2 gliedert\ndieselben Inhalte in drei touchfähige Tabs, sodass die Lehrperson die\nInformationsmenge kontrolliert, ohne Inhalt zu streichen.</p>\n<h5>Requirements-Kette statt Einzelsatz</h5>\n<p>Statt einer isolierten Ziel-Anforderung zeigt der Transfer-Tab die Kette\nProblem -> Qualitätsziel -> Requirement -> Akzeptanzkriterium -> Prüfung. Das\nmacht sichtbar: Ein Qualitätswunsch ist noch keine prüfbare Anforderung. Jeder\nkonkrete Schwellenwert trägt zusätzlich eine \"Fallstudienannahme\"- bzw.\n\"Projektentscheidung\"-Kennzeichnung, damit kein Fehlschluss der Art \"IREB\nschreibt Kappa >= 0,7 vor\" entsteht.</p>\n<h5>Prompt-Beispiel-Box: die zweite Ebene der Analogie</h5>\n<p>Jeder Baustein zeigt einen Prompt, der dieselbe Analyseaufgabe an eine KI\nrichtet. Der Aufbau folgt demselben Muster wie die RE-Analyse: Rolle, Aufgabe,\nKontext, Format, Eingrenzung — und seit Version 2 zusätzlich Qualitätsmaßstab,\ndas direkte Pendant zum Akzeptanzkriterium. Damit ist die Analogie vollständig:\nein Prompt ist eine Anforderung an ein anderes \"System\".</p>\n<h5>Vergleich-Pill: die Synthese</h5>\n<p>Der fünfte Pill zeigt keinen neuen Baustein, sondern die Synthese-Matrix\naller vier Paradigmen nebeneinander, mit einem Merksatz als Kernbotschaft:\nDas ML-Paradigma bestimmt nicht nur, wie die KI lernt, sondern was wir\nspezifizieren, prüfen und überwachen müssen. Dieser Moment fehlte in Version 1\nvollständig und ist jetzt die eigentliche Pointe des Tools.</p>\n<h5>Nachbau-Tipp</h5>\n<p>Für ein Analogie-Tool zu anderen KI-Systemtypen: Struktur 1:1 übernehmen,\naber die vier Bausteine durch die tatsächlich im Zielsystem vorkommenden\nML-Ansätze ersetzen — nicht künstlich alle vier Paradigmen erzwingen, wenn ein\nSystem z. B. nur Supervised Learning nutzt.</p>";
+  document.getElementById("vortrag-box").innerHTML = "<ol>\n<li><em>(Tool öffnen, Pill \"Supervised\" ist aktiv, Tab \"Verstehen\")</em> Wir bleiben bei TalentMatch AI — ihr kennt Ela, Knut, Sarah, Petra und Herrn Bachmeier schon. Neu ist: Ein System wie dieses kombiniert in Wirklichkeit oft mehrere ML-Ansätze gleichzeitig. Wir gehen sie einzeln durch — und die Aufgabe wird von Baustein zu Baustein anspruchsvoller.</li>\n<li><em>(Knuts Zitat vorlesen)</em> Knut hat gerade festgestellt: 78 % der letzten Einstellungen im Vertrieb gingen an unter 35-Jährige — bei einem Bewerbungspool mit nur 52 % unter 35-Jährigen. Das steckt jetzt im Trainingsset. <em>(auf ISO-Badge \"Safety\" tippen, Erklärung erscheint)</em> Deshalb ist das nicht nur ein Korrektheits-, sondern ein Sicherheitsthema.</li>\n<li><em>(Tab \"Arbeiten\" öffnen)</em> Wer hier an \"wir fixen das im Code\" denkt, ist zu schnell — das ist zuerst eine RE-Frage. <em>(Übungsaufgabe öffnen, Musterlösung erst nach Diskussion aufklappen)</em></li>\n<li><em>(Tab \"Transfer\" öffnen)</em> Hier seht ihr die ganze Kette: vom Problem bis zur Prüfung. Achtet auf das kleine Fallstudienannahme-Etikett am Schwellenwert — das ist kein Normwert, das haben wir für diese Fallstudie festgelegt. <em>(auf Prompt-Beispiel-Box scrollen)</em> Und jetzt der Clou: Genau dieselbe Aufgabe, nur an eine KI gerichtet — inklusive Qualitätsmaßstab, dem Pendant zum Akzeptanzkriterium.</li>\n<li><em>(Pill \"Unsupervised\" klicken)</em> Zweiter Baustein, Stufe 2: Formulieren. Hier gibt's keine vorgegebenen Kategorien. <em>(Sarahs Zitat vorlesen)</em> Sarah kann ihrem Kunden nicht erklären, warum ein Bewerber in Cluster 4 landet.</li>\n<li><em>(Pill \"Semi-Supervised\" klicken)</em> Stufe 3: Prüfen. Nur 60 von 400 Interviews sind von Menschen bewertet. Petra fragt zu Recht: Reicht das?</li>\n<li><em>(Pill \"Reinforcement\" klicken)</em> Stufe 4: Beherrschen. Ein System, das sich nach Go-live selbst verändert. Elas Frage — welche Anforderung gilt an Tag 200 noch?</li>\n<li><em>(Pill \"Vergleich\" klicken)</em> Und jetzt der Zusammenschluss: vier Paradigmen nebeneinander. <em>(Merksatz vorlesen)</em> Das ML-Paradigma bestimmt nicht nur, wie die KI lernt — es verändert, was wir spezifizieren, prüfen und überwachen müssen. Das ist die eigentliche Botschaft des Tools.</li>\n</ol>\n<h5>Regie-Hinweise</h5>\n<ul>\n<li>Zeitbudget: ca. 5-6 Minuten je Baustein inkl. aller drei Tabs, gesamt 25-30 Minuten, plus 5 Minuten für den Vergleich am Ende.</li>\n<li>Nicht zuerst die Musterlösung zeigen — Teilnehmende zuerst selbst formulieren lassen, dann vergleichen.</li>\n<li>Die Tabs \"Verstehen/Arbeiten/Transfer\" erlauben es, bei knapper Zeit einen Tab (meist Transfer) für später zu überspringen, ohne die Struktur zu brechen.</li>\n<li>Bei technisch versierten Gruppen: Diskussion um Cohen's Kappa und Equal Opportunity Difference vertiefen. Bei Führungskräfte-Publikum: Governance-Aspekt betonen.</li>\n</ul>";
+  document.getElementById("normen-box").innerHTML = "<table class=\"footer-table\">\n<thead><tr><th>Norm/Framework</th><th>Version/Stand</th><th>Status</th><th>Verwendung im Tool</th></tr></thead>\n<tbody>\n<tr><td>IREB CPRE-Glossar</td><td>laufend gepflegt</td><td>Aktiv</td><td>Qualitätskriterien (Eindeutigkeit), Traceability-Begriff</td></tr>\n<tr><td>IIBA BABOK Guide</td><td>Version 3 (2015)</td><td>Aktiv, unverändert aktuell</td><td>Knowledge Areas 3-6</td></tr>\n<tr><td>ISO/IEC 25010</td><td>Fassung 2023</td><td>Aktiv (International standard, current)</td><td>Functional Suitability, Interaction Capability, Reliability, Maintainability, Safety</td></tr>\n<tr><td>EU AI Act</td><td>Verordnung (EU) 2024/1689</td><td>In Kraft seit 01.08.2024, gestaffelte Anwendbarkeit</td><td>Hochrisiko Anhang III Nr. 4, Art. 72 Post-Market-Monitoring</td></tr>\n<tr><td>Digital-Omnibus-Verordnung</td><td>(EU) 2026/1744</td><td>Verabschiedet (Rat) 29.06.2026, veröffentlicht 24.07.2026, in Kraft seit 27.07.2026</td><td>Verschiebt Anhang-III-Betreiberpflichten auf 02.12.2027</td></tr>\n</tbody></table>\n<p style=\"font-size:0.875rem;color:var(--muted);margin-top:8px;\">Stand der Recherche: 30.08.2026, per gezielter Websuche verifiziert.</p>";
+
+  renderPills();
+  renderLeft(STATES[active]);
+  renderRight(STATES[active]);
+})();
+</script>
+</body>
+</html>
