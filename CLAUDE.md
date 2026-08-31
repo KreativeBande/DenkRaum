@@ -13,6 +13,27 @@ Der vollständige, verbindliche Prüfkatalog für alle Tools ist die Notion-Seit
 
 Kurzfassung der Siegel-Logik: ❌ Nicht zertifiziert, wenn mindestens ein Muss-Kriterium (K1–K10, K15, K17, K18, K19) fehlschlägt · ✅ Zertifiziert, wenn alle Muss-Kriterien bestehen · ⭐ Zertifiziert mit Auszeichnung, wenn zusätzlich alle Kann-Kriterien (K11–K14, K16) bestehen.
 
+## Design-System: Struktur-Tokens (Radius, Schatten, Buttons)
+
+Referenzimplementierung weiterhin `tools/steckbrief.html`. Diese Tokens gelten für die *Form* von Karten/Boxen/Buttons — **nicht** für Farben: Die Farbpalette bleibt pro Tool eigenständig und thematisch passend (z. B. dunkles Blueprint-Grid bei `stakeholder-memory.html`, warme Werkstatt-Töne im `priorisierungslabor.html`, die vier Themenfarben in `fallstudie-qualitaetssystem.html`). Ziel ist ein wiedererkennbarer, weicher Griff über alle Tools hinweg — keine Vereinheitlichung der Farbwelt, das würde die inhaltliche Unterscheidbarkeit der Tools zerstören.
+
+Radius-Skala (nach Bauteil-Gewicht, an `tools/steckbrief.html` abgelesen):
+
+| Radius | Verwendung |
+|---|---|
+| 4px | kleine Akzent-/Zitat-Boxen (z. B. farbiger linker Rand + Hervorhebung) |
+| 8px | Code-/Mono-Boxen |
+| 12px | Buttons, Auswahl-Optionen, Chips |
+| 16px | Karten/Panels — Standardfall für die meisten Content-Boxen |
+| 20–28px | herausgehobene Hero-/Hauptkarte, falls das Tool eine solche hat |
+| 999px (voller Pill) | Beamer-Button, Badges, Status-Pills — bereits bestehende Konvention |
+
+Schatten: Karten/Panels bekommen einen dezenten Schatten statt hart am Hintergrund zu kleben, z. B. `box-shadow:0 6px 16px rgba(0,0,0,.03)` für normale Karten bis `0 16px 34px rgba(0,0,0,.08)` für die Hero-/Hauptkarte. Wert an die `--ink`-Farbe des jeweiligen Tools anpassen (`rgba(<ink-rgb>,.03–.08)`), nicht stur `rgba(0,0,0,…)` kopieren, wenn das Tool eine eigene dunkle Grundfarbe hat.
+
+Buttons: Primär-/Sekundär-Aktionsbuttons 12px Radius; Meta-Controls (Beamer-Button, Badges, Status-Pills) voller Pill (999px) — deckt sich mit dem bereits bestehenden Beamer-Button-Muster oben.
+
+Umsetzung: Bestehende Tools werden schrittweise nachgezogen (nicht als Ad-hoc-Blitzumbau bei jeder Kleinigkeit), aber aktiv im Rahmen von Design-Audits — nicht erst warten, bis ohnehin ein inhaltliches Update ansteht.
+
 ## Konventionen für jedes Tool
 
 Jedes Tool bekommt im Header:
