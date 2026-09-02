@@ -91,7 +91,7 @@ body{
 .filter-chips{display:flex;gap:8px;flex-wrap:wrap}
 .filter-chip{
   border:1.5px solid var(--line);background:var(--bg);color:var(--muted);
-  padding:8px 16px;border-radius:999px;font-size:13.5px;font-weight:700;cursor:pointer;
+  padding:8px 16px;border-radius:999px;font-size:13.5px;font-weight:700;font-family:inherit;cursor:pointer;
   text-decoration:none;display:inline-flex;align-items:center;
   transition:all .15s ease; white-space:nowrap;
 }
@@ -208,13 +208,14 @@ body{
       <input type="text" id="searchInput" placeholder="Tool suchen … (z. B. „ISO“, „Priorisierung“, „Beamer“)" autocomplete="off">
       <span class="kbd-hint" id="kbdHint">/</span>
     </div>
-    <nav class="filter-chips" id="filterChips" aria-label="Rubriken (Sprungmarken)">
-      <a href="#section-about" class="filter-chip" data-filter="about">Über mich</a>
-      <a href="#section-re-ba" class="filter-chip" data-filter="re-ba">Requirements &amp; Business-Analyse</a>
-      <a href="#section-agile-pm" class="filter-chip" data-filter="agile-pm">Agiles Arbeiten &amp; PM</a>
-      <a href="#section-ki" class="filter-chip" data-filter="ki">KI</a>
-      <a href="#section-didaktik" class="filter-chip" data-filter="didaktik">Didaktik</a>
-      <a href="#section-spiele" class="filter-chip" data-filter="spiele">Spiele</a>
+    <nav class="filter-chips" id="filterChips" role="tablist" aria-label="Rubriken">
+      <button type="button" class="filter-chip active" data-filter="all" role="tab" aria-selected="true">Alle</button>
+      <button type="button" class="filter-chip" data-filter="about" role="tab" aria-selected="false">Über mich</button>
+      <button type="button" class="filter-chip" data-filter="re-ba" role="tab" aria-selected="false">Requirements &amp; Business-Analyse</button>
+      <button type="button" class="filter-chip" data-filter="agile-pm" role="tab" aria-selected="false">Agiles Arbeiten &amp; PM</button>
+      <button type="button" class="filter-chip" data-filter="ki" role="tab" aria-selected="false">KI</button>
+      <button type="button" class="filter-chip" data-filter="didaktik" role="tab" aria-selected="false">Didaktik</button>
+      <button type="button" class="filter-chip" data-filter="spiele" role="tab" aria-selected="false">Spiele</button>
     </nav>
     <span class="result-count" id="resultCount"></span>
   </div>
@@ -729,14 +730,35 @@ body{
     return card.dataset.text;
   }
 
-  // Alle Rubriken sind immer sichtbar; die Suche blendet nur nicht-passende
-  // Karten/Rubriken vorübergehend aus, sie versteckt nichts standardmäßig.
+  var activeTab = "all";
+  var tabBeforeSearch = null;
+
+  function setActiveTab(filter){
+    activeTab = filter;
+    chips.forEach(function(c){
+      var isActive = c.dataset.filter === filter;
+      c.classList.toggle("active", isActive);
+      c.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+  }
+
+  // Tabs bestimmen, welche Rubrik sichtbar ist ("Alle" zeigt alle); die
+  // Suche filtert zusätzlich innerhalb der jeweils sichtbaren Rubrik(en).
   function applyFilters(){
     var query = searchInput.value.trim().toLowerCase();
     var visibleTotal = 0;
     var allTotal = 0;
 
     sections.forEach(function(section){
+      var tabVisible = activeTab === "all" || section.dataset.cat === activeTab;
+      var countEl = section.querySelector(".section-count");
+
+      if(!tabVisible){
+        section.classList.add("hidden-by-filter");
+        if(countEl) countEl.textContent = "";
+        return;
+      }
+
       var sectionCards = section.querySelectorAll(".tool-card");
       allTotal += sectionCards.length;
 
@@ -750,7 +772,6 @@ body{
 
       section.classList.toggle("hidden-by-filter", !!query && visibleInSection === 0);
 
-      var countEl = section.querySelector(".section-count");
       if(countEl){
         countEl.textContent = query
           ? visibleInSection + " Treffer"
@@ -762,10 +783,38 @@ body{
     resultCount.textContent = query ? visibleTotal + " von " + allTotal + " Tools" : "";
   }
 
-  searchInput.addEventListener("input", applyFilters);
+  chips.forEach(function(chip){
+    chip.addEventListener("click", function(){
+      tabBeforeSearch = null;
+      if(searchInput.value){ searchInput.value = ""; }
+      setActiveTab(chip.dataset.filter);
+      applyFilters();
+    });
+  });
+
+  // Beim Tippen springt die Suche auf den Tab "Alle", damit sie wie gewohnt
+  // über alle Tools sucht; nach dem Leeren des Suchfelds geht's zurück zum
+  // zuvor gewählten Tab.
+  searchInput.addEventListener("input", function(){
+    var query = searchInput.value.trim();
+    if(query){
+      if(tabBeforeSearch === null && activeTab !== "all"){
+        tabBeforeSearch = activeTab;
+      }
+      if(activeTab !== "all"){ setActiveTab("all"); }
+    } else if(tabBeforeSearch !== null){
+      setActiveTab(tabBeforeSearch);
+      tabBeforeSearch = null;
+    }
+    applyFilters();
+  });
 
   document.getElementById("resetFilters").addEventListener("click", function(){
     searchInput.value = "";
+    if(tabBeforeSearch !== null){
+      setActiveTab(tabBeforeSearch);
+      tabBeforeSearch = null;
+    }
     applyFilters();
     searchInput.focus();
   });
@@ -784,21 +833,6 @@ body{
   });
 
   applyFilters();
-
-  // Scrollspy: markiert die Sprungmarke der Rubrik, die gerade im Viewport
-  // ist — reine Orientierungshilfe, blendet nichts aus/ein.
-  if("IntersectionObserver" in window){
-    var chipByCat = {};
-    chips.forEach(function(c){ chipByCat[c.dataset.filter] = c; });
-    var observer = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        var chip = chipByCat[entry.target.dataset.cat];
-        if(!chip) return;
-        chip.classList.toggle("active", entry.isIntersecting);
-      });
-    }, { rootMargin: "-40% 0px -55% 0px" });
-    sections.forEach(function(s){ observer.observe(s); });
-  }
 })();
 </script>
 
