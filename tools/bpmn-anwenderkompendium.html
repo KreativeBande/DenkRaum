@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="de" style="color-scheme: light;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPMN 2.0 in der Praxis &ndash; Wann, was und wie modellieren</title>
+<style>
+  :root{
+    --ink:#1a2233; --sub:#4a5568; --muted:#6b7280; --faint:#9ca3af;
+    --line:#e2e5ea; --panel:#f7f8fa; --white:#ffffff;
+    --accent:#b45309; --accent-soft:#fdf1e3; --accent-dark:#8a3f06;
+    --ok:#0f7a3d; --ok-soft:#e6f6ec; --bad:#b3261e; --bad-soft:#fdecea;
+    --gold:#8a6a00; --gold-soft:#fff6da;
+  }
+  html,body{color-scheme: light; background:var(--white); margin:0; padding:0;}
+  *{box-sizing:border-box;}
+  body{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color:var(--ink); background:var(--white); font-size:16px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);}
+  strong{color:var(--ink);}
+
+  .signature{
+    position:fixed; top:14px; right:28px; z-index:500; text-align:right;
+    font-size:14px; line-height:1.35; background:rgba(255,255,255,.92);
+    padding:4px 8px; border-radius:8px;
+  }
+  .signature strong{display:block; font-size:14px;}
+  .signature a{font-size:14px; text-decoration:none;}
+  @media (max-width:900px){ .signature{position:static; text-align:right; margin:8px 16px 0 0;} }
+
+  header.top{
+    padding:20px 28px 16px 28px; border-bottom:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:14px; align-items:flex-start; justify-content:space-between;
+  }
+  @media (min-width:901px){
+    header.top{ padding-right:240px; }
+  }
+  .back-link{display:block; font-size:14px; font-weight:700; color:var(--muted); text-decoration:none; margin:0 0 8px 0;}
+  .back-link:hover{color:var(--accent);}
+  .top-titleblock h1{font-size:22px; margin:0 0 4px 0; letter-spacing:-.01em;}
+  .top-titleblock .subtitle{font-size:14px; color:var(--sub); margin:0;}
+  .top-controls{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+  .ctrl-btn{
+    font-size:14px; padding:8px 14px; border-radius:999px; border:1px solid var(--line);
+    background:var(--white); color:var(--ink); cursor:pointer; min-height:44px; min-width:44px;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .ctrl-btn:hover{background:var(--panel);}
+  .ctrl-btn.active{background:var(--accent); color:var(--white); border-color:var(--accent);}
+
+  .layout{display:flex; gap:0; align-items:flex-start;}
+  nav.sidebar{
+    width:34%; min-width:260px; max-width:420px; border-right:1px solid var(--line);
+    padding:18px 14px; position:sticky; top:0;
+  }
+  .passport{display:flex; gap:6px; justify-content:center; margin-bottom:14px; flex-wrap:wrap;}
+  .passport .p-dot{width:14px; height:14px; border-radius:50%; background:var(--line); border:1px solid var(--faint);}
+  .passport .p-dot.filled{background:var(--ok); border-color:var(--ok);}
+  .passport-label{font-size:14px; color:var(--muted); text-align:center; margin:0 0 14px 0;}
+
+  .nav-item{
+    display:flex; align-items:center; gap:10px; width:100%; text-align:left;
+    padding:12px 12px; border-radius:12px; border:1px solid transparent;
+    background:transparent; cursor:pointer; margin-bottom:4px; min-height:44px;
+  }
+  .nav-item:hover{background:var(--panel);}
+  .nav-item.current{background:var(--accent-soft); border-color:var(--accent);}
+  .nav-stamp{font-size:14px; color:var(--faint); flex-shrink:0;}
+  .nav-item.stamped .nav-stamp{color:var(--ok);}
+  .nav-num{font-size:14px; font-weight:700; color:var(--accent); flex-shrink:0; min-width:24px;}
+  .nav-title{font-size:14px; color:var(--ink);}
+
+  main.content{flex:1; min-width:0; padding:22px 28px 40px 28px;}
+  .station-panel{display:none;}
+  .station-panel.active{display:block;}
+
+  .station-head{display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap;}
+  .badge{font-size:14px; padding:4px 10px; border-radius:999px; font-weight:700;}
+  .badge-num{background:var(--accent); color:var(--white);}
+  .badge-weight{background:var(--gold-soft); color:var(--gold); border:1px solid var(--gold);}
+
+  .station-panel h2{font-size:21px; margin:6px 0 14px 0; letter-spacing:-.01em;}
+  .station-panel h3{font-size:15px; margin:20px 0 8px 0; color:var(--sub); text-transform:uppercase; letter-spacing:.04em;}
+  .station-panel h4{font-size:15px; margin:0 0 8px 0;}
+  .begriffe{font-size:15px; color:var(--sub); margin:4px 0;}
+  .kern-list{margin:0; padding-left:20px;}
+  .kern-list li{margin-bottom:10px; font-size:15px; line-height:1.55;}
+
+  .req-table{width:100%; border-collapse:collapse; margin:14px 0 20px 0;}
+  .req-table th, .req-table td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); font-size:15px; vertical-align:top;}
+  .req-table th{font-size:14px; color:var(--muted); font-weight:700;}
+
+  .beispiel-box{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin:18px 0;}
+  .beispiel-box p{font-size:15px; margin:0 0 12px 0;}
+  .persona-line{display:flex; gap:10px; align-items:flex-start; background:var(--white); border:1px solid var(--line); border-radius:10px; padding:10px 12px;}
+  .persona-name{font-weight:700; color:var(--accent-dark); font-size:14px; flex-shrink:0; white-space:nowrap;}
+  .persona-quote{font-size:14px; color:var(--sub); font-style:italic;}
+
+  .quiz-box{background:var(--white); border:1.5px solid var(--accent); border-radius:14px; padding:16px 18px; margin:18px 0;}
+  .quiz-q{font-size:15px; margin:0 0 12px 0;}
+  .quiz-opts{display:flex; flex-direction:column; gap:8px;}
+  .quiz-opt{text-align:left; font-size:14.5px; padding:12px 14px; border-radius:10px; border:1px solid var(--line); background:var(--panel); cursor:pointer; min-height:44px;}
+  .quiz-opt:hover{border-color:var(--accent);}
+  .quiz-opt.correct{background:var(--ok-soft); border-color:var(--ok); font-weight:700;}
+  .quiz-opt.wrong{background:var(--bad-soft); border-color:var(--bad);}
+  .quiz-opt[disabled]{cursor:default;}
+  .quiz-feedback{font-size:14.5px; font-weight:700; margin:12px 0 4px 0;}
+  .quiz-feedback.ok{color:var(--ok);}
+  .quiz-feedback.bad{color:var(--bad);}
+  .quiz-expl{font-size:14px; color:var(--sub); margin:0;}
+
+  .station-footer-nav{display:flex; justify-content:space-between; margin-top:22px;}
+  .nav-btn{font-size:14px; padding:10px 16px; border-radius:10px; border:1px solid var(--line); background:var(--white); cursor:pointer; min-height:44px;}
+  .nav-btn:hover:not([disabled]){background:var(--panel);}
+  .nav-btn[disabled]{opacity:.35; cursor:default;}
+
+  html.beamer .station-panel h2{font-size:26px;}
+  html.beamer .kern-list li, html.beamer .begriffe, html.beamer .beispiel-box p,
+  html.beamer .quiz-q, html.beamer .quiz-opt, html.beamer .nav-title,
+  html.beamer .req-table th, html.beamer .req-table td{font-size:18px;}
+  html.beamer .persona-quote{font-size:17px;}
+  html.beamer .nav-btn, html.beamer .ctrl-btn{font-size:16px; padding:12px 18px;}
+  html.beamer footer.tool-footer{display:none;}
+
+  html.beamer.beamer-xl .station-panel h2{font-size:30px;}
+  html.beamer.beamer-xl .kern-list li, html.beamer.beamer-xl .begriffe,
+  html.beamer.beamer-xl .beispiel-box p, html.beamer.beamer-xl .quiz-q,
+  html.beamer.beamer-xl .quiz-opt, html.beamer.beamer-xl .nav-title,
+  html.beamer.beamer-xl .req-table th, html.beamer.beamer-xl .req-table td{font-size:21px;}
+  html.beamer.beamer-xl .persona-quote{font-size:20px;}
+
+  html.beamer.beamer-xl.beamer-xxl .station-panel h2{font-size:34px;}
+  html.beamer.beamer-xl.beamer-xxl .kern-list li, html.beamer.beamer-xl.beamer-xxl .begriffe,
+  html.beamer.beamer-xl.beamer-xxl .beispiel-box p, html.beamer.beamer-xl.beamer-xxl .quiz-q,
+  html.beamer.beamer-xl.beamer-xxl .quiz-opt, html.beamer.beamer-xl.beamer-xxl .nav-title,
+  html.beamer.beamer-xl.beamer-xxl .req-table th, html.beamer.beamer-xl.beamer-xxl .req-table td{font-size:24px;}
+  html.beamer.beamer-xl.beamer-xxl .persona-quote{font-size:23px;}
+
+  @media (max-width:900px){
+    .layout{flex-direction:column;}
+    nav.sidebar{width:100%; max-width:none; border-right:none; border-bottom:1px solid var(--line); position:static;}
+  }
+
+  footer.tool-footer{border-top:1px solid var(--line); padding:22px 28px 40px 28px; background:var(--panel);}
+  .footer-grid{display:flex; gap:14px; flex-wrap:wrap;}
+  .footer-box{flex:1 1 260px; background:var(--white); border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+  .footer-box summary{cursor:pointer; padding:12px 14px; font-weight:700; font-size:14px; list-style:none; display:flex; align-items:center; gap:6px; min-height:44px;}
+  .footer-box summary::-webkit-details-marker{display:none;}
+  .footer-box summary::before{content:"\25B8"; color:var(--accent);}
+  .footer-box[open] summary::before{content:"\25BE";}
+  .footer-content{padding:0 14px 14px 14px;}
+  .footer-mono{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:14px; white-space:pre-wrap; line-height:1.55; color:var(--sub);}
+  .footer-sans{font-size:16px; line-height:1.6; color:var(--sub);}
+  .footer-sans p{margin:0 0 10px 0;}
+  .footer-sans .regie{font-style:italic; color:var(--muted);}
+  .footer-table{width:100%; border-collapse:collapse; font-size:14px;}
+  .footer-table th, .footer-table td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); font-size:14px;}
+  .footer-table th{color:var(--muted); font-weight:700;}
+  @media (max-width:900px){ .footer-grid{flex-direction:column;} }
+
+  .footer-sig{font-size:14px; color:var(--muted); text-align:center; padding:16px 28px 0 28px;}
+  .footer-sig strong{color:var(--ink);}
+  .footer-sig .audit{display:block; margin-top:6px; font-size:14px; color:var(--muted);}
+</style>
+</head>
+<body>
+
+<div class="signature">
+  <strong>Michaela K&uuml;hn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<header class="top">
+  <div class="top-titleblock">
+    <a class="back-link" href="../index.html" data-i18n data-en="&larr; Back to homepage">&larr; Zur&uuml;ck zur Startseite</a>
+    <h1 data-i18n data-en="BPMN 2.0 in Practice &ndash; When, What and How to Model">BPMN 2.0 in der Praxis &ndash; Wann, was und wie modellieren</h1>
+    <p class="subtitle" data-i18n data-en="Practitioner guide, not an exam compendium: 5 stations on choosing, scoping and drawing BPMN diagrams &middot; anchored in the TalentMatch AI case study">Anwender-Leitfaden, kein Pruefungs-Kompendium: 5 Stationen zur Auswahl, Abgrenzung und praktischen Erstellung von BPMN-Diagrammen &middot; verankert im Fallbeispiel TalentMatch AI</p>
+  </div>
+  <div class="top-controls">
+    <button type="button" class="ctrl-btn" id="langBtn">DE / EN</button>
+    <button type="button" class="ctrl-btn" id="beamerBtn">&#9728; Beamer</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Stationen">
+    <div class="passport" id="passport"></div>
+    <p class="passport-label" id="passportLabel" data-i18n data-en="0 / 5 stations completed">0 / 5 Stationen abgeschlossen</p>
+    <button type="button" class="nav-item" data-target="s1" id="nav-s1">
+        <span class="nav-stamp" id="stamp-s1" aria-hidden="true">&#9679;</span>
+        <span class="nav-num">1</span>
+        <span class="nav-title" data-i18n data-en="When do I need which process type?">Wann brauche ich welchen Prozess-Typ?</span>
+      </button>
+
+      <button type="button" class="nav-item" data-target="s2" id="nav-s2">
+        <span class="nav-stamp" id="stamp-s2" aria-hidden="true">&#9679;</span>
+        <span class="nav-num">2</span>
+        <span class="nav-title" data-i18n data-en="What do I actually model? (Scope &amp; level of detail)">Was modelliere ich ueberhaupt? (Scope & Detailtiefe)</span>
+      </button>
+
+      <button type="button" class="nav-item" data-target="s3" id="nav-s3">
+        <span class="nav-stamp" id="stamp-s3" aria-hidden="true">&#9679;</span>
+        <span class="nav-num">3</span>
+        <span class="nav-title" data-i18n data-en="How do I model correctly? (Practical rules)">Wie modelliere ich richtig? (Praxisregeln)</span>
+      </button>
+
+      <button type="button" class="nav-item" data-target="s4" id="nav-s4">
+        <span class="nav-stamp" id="stamp-s4" aria-hidden="true">&#9679;</span>
+        <span class="nav-num">4</span>
+        <span class="nav-title" data-i18n data-en="Practical example: pool and swimlane">Praxisbeispiel: Pool und Swimlane</span>
+      </button>
+
+      <button type="button" class="nav-item" data-target="s5" id="nav-s5">
+        <span class="nav-stamp" id="stamp-s5" aria-hidden="true">&#9679;</span>
+        <span class="nav-num">5</span>
+        <span class="nav-title" data-i18n data-en="Further artifacts: data object, data store, group, annotation">Weitere Artefakte: Data Object, Data Store, Group, Annotation</span>
+      </button>
+  </nav>
+  <main class="content">
+    <section class="station-panel active" id="panel-s1" data-station="s1">
+      <div class="station-head">
+        <span class="badge badge-num">1 <span data-i18n data-en="of 5">von 5</span></span>
+      </div>
+      <h2 data-i18n data-en="When do I need which process type?">Wann brauche ich welchen Prozess-Typ?</h2>
+      <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="Process diagram, collaboration diagram, choreography diagram, pool">Prozessdiagramm, Collaboration Diagram, Choreography Diagram, Pool</span></p>
+      <h3><span data-i18n data-en="Key points">Kerninhalte</span></h3>
+      <ul class="kern-list">
+        <li><span data-i18n data-en="&lt;strong&gt;Process diagram&lt;/strong&gt;: shows the internal flow of ONE process participant (one pool) in detail - the standard case for purely internal flows."><strong>Prozessdiagramm</strong>: zeigt den internen Ablauf EINES Prozessteilnehmers (ein Pool) im Detail - der Standardfall fuer rein interne Ablaeufe.</span></li>
+        <li><span data-i18n data-en="&lt;strong&gt;Collaboration diagram&lt;/strong&gt;: shows several process participants (several pools) AND their interaction via message flows - needed as soon as external parties are involved."><strong>Collaboration Diagram</strong>: zeigt mehrere Prozessteilnehmer (mehrere Pools) UND ihre Interaktion ueber Message Flows - noetig, sobald externe Parteien beteiligt sind.</span></li>
+        <li><span data-i18n data-en="&lt;strong&gt;Choreography diagram&lt;/strong&gt;: shows only the sequence of messages between parties, without their internal flows - rarely used, useful for pure interface agreements between organisations."><strong>Choreography Diagram</strong>: zeigt nur die Abfolge der Nachrichten zwischen Parteien, ohne deren interne Ablaeufe - selten genutzt, sinnvoll bei reinen Schnittstellenvereinbarungen zwischen Organisationen.</span></li>
+      </ul>
+      <div class="beispiel-box">
+        <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
+        <p><span data-i18n data-en="The internal scoring flow at Vantera needs a plain &lt;strong&gt;process diagram&lt;/strong&gt;. As soon as applicants themselves interact (submitting an application, receiving feedback), it becomes a &lt;strong&gt;collaboration diagram&lt;/strong&gt; with two pools: Vantera and the applicant.">Der interne Scoring-Ablauf bei Vantera braucht ein reines <strong>Prozessdiagramm</strong>. Sobald Bewerbende selbst interagieren (Bewerbung einreichen, Rueckmeldung erhalten), wird daraus ein <strong>Collaboration Diagram</strong> mit zwei Pools: Vantera und Bewerbende Person.</span></p>
+        <div class="persona-line">
+          <span class="persona-name">Knut</span>
+          <span class="persona-quote"><span data-i18n data-en="“We do not need a collaboration diagram as long as we only want to show our own flow - that would be overkill.“">„Wir brauchen kein Collaboration Diagram, solange wir nur unseren eigenen Ablauf zeigen wollen - das waere Overkill.“</span></span>
+        </div>
+      </div>
+      <div class="quiz-box" data-correct="1">
+        <h4>&#10067; <span data-i18n data-en="Mini quiz">Mini-Quiz</span></h4>
+        <p class="quiz-q"><span data-i18n data-en="When do you need a collaboration diagram instead of a plain process diagram?">Wann brauchst Du statt eines reinen Prozessdiagramms ein Collaboration Diagram?</span></p>
+        <div class="quiz-opts">
+          <button type="button" class="quiz-opt" data-idx="0"><span data-i18n data-en="Always, regardless of the process">Immer, unabhaengig vom Prozess</span></button>
+          <button type="button" class="quiz-opt" data-idx="1"><span data-i18n data-en="As soon as several independent process participants (pools) interact with each other">Sobald mehrere eigenstaendige Prozessteilnehmer (Pools) miteinander interagieren</span></button>
+          <button type="button" class="quiz-opt" data-idx="2"><span data-i18n data-en="Only when the process has more than 15 elements">Nur wenn der Prozess mehr als 15 Elemente hat</span></button>
+        </div>
+        <p class="quiz-feedback" hidden></p>
+        <p class="quiz-expl" hidden><span data-i18n data-en="A collaboration diagram is only needed once the interaction between several independent pools (e.g. your organisation and an external party) itself needs to be shown.">Ein Collaboration Diagram wird erst noetig, wenn die Interaktion zwischen mehreren eigenstaendigen Pools (z.B. Deiner Organisation und einer externen Partei) selbst dargestellt werden soll.</span></p>
+      </div>
+      <div class="station-footer-nav">
+        <button type="button" class="nav-btn prev-btn" disabled><span data-i18n data-en="&amp;larr; Back">&larr; Zurueck</span></button>
+        <button type="button" class="nav-btn next-btn" ><span data-i18n data-en="Next &amp;rarr;">Weiter &rarr;</span></button>
+      </div>
+    </section>
+
+    <section class="station-panel" id="panel-s2" data-station="s2">
+      <div class="station-head">
+        <span class="badge badge-num">2 <span data-i18n data-en="of 5">von 5</span></span>
+      </div>
+      <h2 data-i18n data-en="What do I actually model? (Scope &amp; level of detail)">Was modelliere ich ueberhaupt? (Scope & Detailtiefe)</h2>
+      <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="End-to-end process, level of detail, descriptive conformance sub-class, analytic conformance sub-class">End-to-End-Prozess, Detailtiefe, deskriptive Konformitaetsklasse, analytische Konformitaetsklasse</span></p>
+      <h3><span data-i18n data-en="Key points">Kerninhalte</span></h3>
+      <ul class="kern-list">
+        <li><span data-i18n data-en="First decision: where does the process start, where does it end? A &lt;strong&gt;true end-to-end process&lt;/strong&gt; starts/ends at a real business event (e.g. “application received“ through “candidate hired/rejected“), not at an arbitrary internal sub-task.">Erste Entscheidung: Wo faengt der Prozess an, wo hoert er auf? Ein <strong>End-to-End-Prozess</strong> beginnt/endet an einem echten Geschaeftsereignis (z.B. „Bewerbung eingegangen“ bis „Kandidat eingestellt/abgelehnt“), nicht an einer beliebigen internen Teilaufgabe.</span></li>
+        <li><span data-i18n data-en="Deliberately choose the level of detail: a rough overview (few activities, for management) vs. a detailed work instruction (every step, for people performing the work) - both are legitimate BPMN diagrams, but for different audiences.">Detailtiefe bewusst waehlen: grobe Uebersicht (wenige Aktivitaeten, fuer Fuehrungskraefte) vs. detaillierte Arbeitsanweisung (jeder Schritt, fuer Ausfuehrende) - beides sind legitime BPMN-Diagramme, aber fuer unterschiedliche Zielgruppen.</span></li>
+        <li><span data-i18n data-en="BPMN 2.0 has a &lt;strong&gt;descriptive&lt;/strong&gt; (simple, readable subset of the notation) and an &lt;strong&gt;analytic conformance sub-class&lt;/strong&gt; (more precise, closer to executability) - for most practical purposes, descriptive is entirely sufficient.">BPMN 2.0 kennt eine <strong>deskriptive</strong> (einfache, gut lesbare Teilmenge der Notation) und eine <strong>analytische Konformitaetsklasse</strong> (praeziser, naeher an Ausfuehrbarkeit) - fuer die meisten Praxiszwecke reicht deskriptiv voellig aus.</span></li>
+      </ul>
+      <div class="beispiel-box">
+        <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
+        <p><span data-i18n data-en="For the slide deck to management, Ela models the TalentMatch AI process descriptively with 6 elements; for the technical implementation, Knut creates a more detailed, analytic variant with all error paths.">Fuer den Foliensatz an die Geschaeftsfuehrung modelliert Ela den TalentMatch-AI-Prozess deskriptiv mit 6 Elementen; fuer die technische Umsetzung erstellt Knut eine detailliertere, analytische Variante mit allen Fehlerpfaden.</span></p>
+        <div class="persona-line">
+          <span class="persona-name">Ela</span>
+          <span class="persona-quote"><span data-i18n data-en="“Management needs six boxes, not forty - otherwise we lose the audience in the first minute.“">„Die Fuehrungskraefte brauchen sechs Kaestchen, keine vierzig - sonst verlieren wir die Zuhoerer in der ersten Minute.“</span></span>
+        </div>
+      </div>
+      <div class="quiz-box" data-correct="1">
+        <h4>&#10067; <span data-i18n data-en="Mini quiz">Mini-Quiz</span></h4>
+        <p class="quiz-q"><span data-i18n data-en="What characterises a true end-to-end process?">Was zeichnet einen echten End-to-End-Prozess aus?</span></p>
+        <div class="quiz-opts">
+          <button type="button" class="quiz-opt" data-idx="0"><span data-i18n data-en="It always has exactly 10 elements">Er hat immer genau 10 Elemente</span></button>
+          <button type="button" class="quiz-opt" data-idx="1"><span data-i18n data-en="It starts/ends at a real business event, not at an arbitrary internal sub-task">Er beginnt/endet an einem realen Geschaeftsereignis, nicht an einer beliebigen internen Teilaufgabe</span></button>
+          <button type="button" class="quiz-opt" data-idx="2"><span data-i18n data-en="It must not contain any gateways">Er darf keine Gateways enthalten</span></button>
+        </div>
+        <p class="quiz-feedback" hidden></p>
+        <p class="quiz-expl" hidden><span data-i18n data-en="End-to-end refers to the business relevance of the boundaries, not the element count - start and end must be real events meaningful to the stakeholder.">End-to-End bezieht sich auf den Geschaeftsbezug der Grenzen, nicht auf die Elementanzahl - Start und Ende muessen echte, fuer den Auftraggeber bedeutsame Ereignisse sein.</span></p>
+      </div>
+      <div class="station-footer-nav">
+        <button type="button" class="nav-btn prev-btn" ><span data-i18n data-en="&amp;larr; Back">&larr; Zurueck</span></button>
+        <button type="button" class="nav-btn next-btn" ><span data-i18n data-en="Next &amp;rarr;">Weiter &rarr;</span></button>
+      </div>
+    </section>
+
+    <section class="station-panel" id="panel-s3" data-station="s3">
+      <div class="station-head">
+        <span class="badge badge-num">3 <span data-i18n data-en="of 5">von 5</span></span>
+      </div>
+      <h2 data-i18n data-en="How do I model correctly? (Practical rules)">Wie modelliere ich richtig? (Praxisregeln)</h2>
+      <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="Happy path, activity naming, element count, gateway discipline">Happy Path, Aktivitaetsbenennung, Elementanzahl, Gateway-Disziplin</span></p>
+      <h3><span data-i18n data-en="Key points">Kerninhalte</span></h3>
+      <ul class="kern-list">
+        <li><span data-i18n data-en="Always model the &lt;strong&gt;happy path&lt;/strong&gt; (the standard flow without exceptions) first, then add exception/error paths - this keeps the diagram readable from the start.">Immer zuerst den <strong>Happy Path</strong> (Standardablauf ohne Ausnahmen) modellieren, danach Ausnahme-/Fehlerpfade ergaenzen - so bleibt das Diagramm von Anfang an lesbar.</span></li>
+        <li><span data-i18n data-en="Always name activities as &lt;strong&gt;verb + object&lt;/strong&gt; (e.g. “calculate score“, not “scoring“ or “processing“) - this immediately clarifies what is being done.">Aktivitaeten immer als <strong>Verb + Objekt</strong> benennen (z.B. „Score berechnen“, nicht „Scoring“ oder „Verarbeitung“) - macht sofort klar, was getan wird.</span></li>
+        <li><span data-i18n data-en="Rule of thumb: no more than about 15 elements per diagram - if it grows larger, split it into sub-processes.">Faustregel: nicht mehr als ca. 15 Elemente pro Diagramm - wird es groesser, in Teilprozesse (Sub-Processes) aufteilen.</span></li>
+        <li><span data-i18n data-en="Every gateway needs an unambiguous question with clearly labelled outputs (e.g. “bias threshold exceeded? Yes/No“) - unlabelled arrows out of a gateway are a common modelling mistake.">Jedes Gateway braucht eine eindeutige Frage mit klar benannten Ausgaengen (z.B. „Bias-Schwellenwert ueberschritten? Ja/Nein“) - unbenannte Pfeile aus einem Gateway sind ein haeufiger Modellierungsfehler.</span></li>
+      </ul>
+      <div class="beispiel-box">
+        <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
+        <p><span data-i18n data-en="The first draft of the TalentMatch AI process had 22 elements in a single diagram; Knut split it into a main process (7 elements) and a sub-process “bias review“ (6 elements).">Der erste Entwurf des TalentMatch-AI-Prozesses hatte 22 Elemente in einem einzigen Diagramm; Knut teilte ihn in einen Hauptprozess (7 Elemente) und einen Sub-Process „Bias-Pruefung“ (6 Elemente) auf.</span></p>
+        <div class="persona-line">
+          <span class="persona-name">Knut</span>
+          <span class="persona-quote"><span data-i18n data-en="“Once I lose the overview myself while drawing it, the diagram is too big - that is when a sub-process comes in.“">„Sobald ich beim Zeichnen selbst den Ueberblick verliere, ist das Diagramm zu gross - dann kommt ein Sub-Process rein.“</span></span>
+        </div>
+      </div>
+      <div class="quiz-box" data-correct="1">
+        <h4>&#10067; <span data-i18n data-en="Mini quiz">Mini-Quiz</span></h4>
+        <p class="quiz-q"><span data-i18n data-en="Why should you model the happy path first, before adding exception paths?">Warum sollte man zuerst den Happy Path modellieren, bevor man Ausnahmepfade ergaenzt?</span></p>
+        <div class="quiz-opts">
+          <button type="button" class="quiz-opt" data-idx="0"><span data-i18n data-en="Because BPMN generally forbids exception paths">Weil BPMN Ausnahmepfade generell verbietet</span></button>
+          <button type="button" class="quiz-opt" data-idx="1"><span data-i18n data-en="Because the diagram would otherwise become unclear from the start and the core logic gets lost">Weil das Diagramm sonst von Anfang an unuebersichtlich wird und die Kernlogik untergeht</span></button>
+          <button type="button" class="quiz-opt" data-idx="2"><span data-i18n data-en="Because exception paths must never be documented">Weil Ausnahmepfade nie dokumentiert werden duerfen</span></button>
+        </div>
+        <p class="quiz-feedback" hidden></p>
+        <p class="quiz-expl" hidden><span data-i18n data-en="Starting directly with every exception makes the diagram lose readability early on - the standard flow must be clearly recognisable first.">Startet man direkt mit allen Ausnahmen, verliert das Diagramm fruehzeitig seine Lesbarkeit - der Standardablauf muss zuerst klar erkennbar sein.</span></p>
+      </div>
+      <div class="station-footer-nav">
+        <button type="button" class="nav-btn prev-btn" ><span data-i18n data-en="&amp;larr; Back">&larr; Zurueck</span></button>
+        <button type="button" class="nav-btn next-btn" ><span data-i18n data-en="Next &amp;rarr;">Weiter &rarr;</span></button>
+      </div>
+    </section>
+
+    <section class="station-panel" id="panel-s4" data-station="s4">
+      <div class="station-head">
+        <span class="badge badge-num">4 <span data-i18n data-en="of 5">von 5</span></span>
+      </div>
+      <h2 data-i18n data-en="Practical example: pool and swimlane">Praxisbeispiel: Pool und Swimlane</h2>
+      <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="Pool, lane (swimlane), sequence flow, message flow">Pool, Lane (Swimlane), Sequence Flow, Message Flow</span></p>
+      <h3><span data-i18n data-en="Key points">Kerninhalte</span></h3>
+      <ul class="kern-list">
+        <li><span data-i18n data-en="A &lt;strong&gt;pool&lt;/strong&gt; represents an independent process participant (e.g. an organisation); &lt;strong&gt;lanes&lt;/strong&gt; (swimlanes) subdivide a pool internally by role, department or system.">Ein <strong>Pool</strong> repraesentiert einen eigenstaendigen Prozessteilnehmer (z.B. eine Organisation); <strong>Lanes</strong> (Swimlanes) unterteilen einen Pool intern nach Rolle, Abteilung oder System.</span></li>
+        <li><span data-i18n data-en="Within a pool, the &lt;strong&gt;sequence flow&lt;/strong&gt; (solid arrow) connects activities; between two pools, the &lt;strong&gt;message flow&lt;/strong&gt; (dashed arrow) connects the exchange of messages.">Innerhalb eines Pools verbindet der <strong>Sequence Flow</strong> (durchgezogener Pfeil) Aktivitaeten; zwischen zwei Pools verbindet der <strong>Message Flow</strong> (gestrichelter Pfeil) den Nachrichtenaustausch.</span></li>
+        <li><span data-i18n data-en="Rule of thumb: one lane per clearly distinguishable responsibility - more than 4-5 lanes usually makes a diagram unclear.">Faustregel: eine Lane pro klar abgrenzbarer Verantwortlichkeit - mehr als 4-5 Lanes machen ein Diagramm meist unuebersichtlich.</span></li>
+      </ul>
+      <table class="req-table">
+        <thead><tr>
+          <th data-i18n data-en="Element">Element</th>
+          <th data-i18n data-en="Notation">Notation</th>
+          <th data-i18n data-en="TalentMatch AI example">TalentMatch-AI-Beispiel</th>
+        </tr></thead>
+        <tbody>
+            <tr><td><span data-i18n data-en="Pool">Pool</span></td><td><span data-i18n data-en="Rectangle with title bar, full process width">Rechteck mit Titelleiste, ganze Prozessbreite</span></td><td><span data-i18n data-en="Vantera Systemtechnik GmbH">Vantera Systemtechnik GmbH</span></td></tr>
+            <tr><td><span data-i18n data-en="Lane 1 (in pool Vantera)">Lane 1 (in Pool Vantera)</span></td><td><span data-i18n data-en="Horizontal strip within the pool">Horizontaler Streifen im Pool</span></td><td><span data-i18n data-en="Recruiter">Recruiterin</span></td></tr>
+            <tr><td><span data-i18n data-en="Lane 2 (in pool Vantera)">Lane 2 (in Pool Vantera)</span></td><td><span data-i18n data-en="Horizontal strip within the pool">Horizontaler Streifen im Pool</span></td><td><span data-i18n data-en="TalentMatch AI (system)">TalentMatch AI (System)</span></td></tr>
+            <tr><td><span data-i18n data-en="Second pool">Zweiter Pool</span></td><td><span data-i18n data-en="Own rectangle, connected via message flow">Eigenes Rechteck, per Message Flow verbunden</span></td><td><span data-i18n data-en="Applicant">Bewerbende Person</span></td></tr>
+        </tbody>
+      </table>
+      <div class="beispiel-box">
+        <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
+        <p><span data-i18n data-en="In the TalentMatch AI diagram there is the pool “Vantera“ with two lanes (“recruiter“, “TalentMatch AI“), plus a second pool “applicant“. The application itself runs as a &lt;strong&gt;message flow&lt;/strong&gt; from the external pool into the recruiter lane.">Im TalentMatch-AI-Diagramm gibt es den Pool „Vantera“ mit zwei Lanes („Recruiterin“, „TalentMatch AI“), sowie einen zweiten Pool „Bewerbende Person“. Die Bewerbung selbst laeuft als <strong>Message Flow</strong> vom externen Pool in die Recruiterin-Lane hinein.</span></p>
+        <div class="persona-line">
+          <span class="persona-name">Sarah</span>
+          <span class="persona-quote"><span data-i18n data-en="“The swimlane makes it immediately visible who does what - that is great when I have to show it in a client conversation.“">„Die Swimlane macht sofort sichtbar, wer was macht - das ist super, wenn ich das im Kundengespraech zeigen muss.“</span></span>
+        </div>
+      </div>
+      <div class="quiz-box" data-correct="1">
+        <h4>&#10067; <span data-i18n data-en="Mini quiz">Mini-Quiz</span></h4>
+        <p class="quiz-q"><span data-i18n data-en="What connects two different pools with each other?">Was verbindet zwei unterschiedliche Pools miteinander?</span></p>
+        <div class="quiz-opts">
+          <button type="button" class="quiz-opt" data-idx="0"><span data-i18n data-en="Sequence flow (solid arrow)">Sequence Flow (durchgezogener Pfeil)</span></button>
+          <button type="button" class="quiz-opt" data-idx="1"><span data-i18n data-en="Message flow (dashed arrow)">Message Flow (gestrichelter Pfeil)</span></button>
+          <button type="button" class="quiz-opt" data-idx="2"><span data-i18n data-en="A shared lane">Eine gemeinsame Lane</span></button>
+        </div>
+        <p class="quiz-feedback" hidden></p>
+        <p class="quiz-expl" hidden><span data-i18n data-en="Sequence flow connects activities WITHIN a pool; BETWEEN pools, only message flow (dashed line) is used.">Sequence Flow verbindet Aktivitaeten INNERHALB eines Pools; ZWISCHEN Pools wird ausschliesslich der Message Flow (gestrichelte Linie) verwendet.</span></p>
+      </div>
+      <div class="station-footer-nav">
+        <button type="button" class="nav-btn prev-btn" ><span data-i18n data-en="&amp;larr; Back">&larr; Zurueck</span></button>
+        <button type="button" class="nav-btn next-btn" ><span data-i18n data-en="Next &amp;rarr;">Weiter &rarr;</span></button>
+      </div>
+    </section>
+
+    <section class="station-panel" id="panel-s5" data-station="s5">
+      <div class="station-head">
+        <span class="badge badge-num">5 <span data-i18n data-en="of 5">von 5</span></span>
+      </div>
+      <h2 data-i18n data-en="Further artifacts: data object, data store, group, annotation">Weitere Artefakte: Data Object, Data Store, Group, Annotation</h2>
+      <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="Data object, data store, group, text annotation">Data Object, Data Store, Group, Text Annotation</span></p>
+      <h3><span data-i18n data-en="Key points">Kerninhalte</span></h3>
+      <ul class="kern-list">
+        <li><span data-i18n data-en="&lt;strong&gt;Data object&lt;/strong&gt;: represents a piece of information created or used during the process (e.g. “application documents“, “score profile“) - it flows along with a single process instance."><strong>Data Object</strong>: repraesentiert eine Information, die waehrend des Prozesses erzeugt oder verwendet wird (z.B. „Bewerbungsunterlagen“, „Score-Profil“) - sie fliesst mit dem einzelnen Prozessdurchlauf mit.</span></li>
+        <li><span data-i18n data-en="&lt;strong&gt;Data store&lt;/strong&gt;: represents persistent storage outside the process flow (e.g. “candidate database“) - exists independently of any single instance and is used by several activities."><strong>Data Store</strong>: repraesentiert einen dauerhaften Speicher ausserhalb des Prozessflusses (z.B. „Kandidatendatenbank“) - existiert unabhaengig vom einzelnen Durchlauf und wird von mehreren Aktivitaeten genutzt.</span></li>
+        <li><span data-i18n data-en="&lt;strong&gt;Group&lt;/strong&gt;: a purely visual grouping element with no flow logic of its own - visually collects related activities (e.g. “bias review phase“)."><strong>Group</strong>: rein visuelles Gruppierungselement ohne eigene Ablauflogik - fasst zusammengehoerige Aktivitaeten optisch zusammen (z.B. „Bias-Pruefungsphase“).</span></li>
+        <li><span data-i18n data-en="&lt;strong&gt;Text annotation&lt;/strong&gt;: a free-form comment attached to any element - for explanations that are not part of the formal notation."><strong>Text Annotation</strong>: freier Kommentar an einem beliebigen Element - fuer Erlaeuterungen, die nicht Teil der formalen Notation sind.</span></li>
+      </ul>
+      <div class="beispiel-box">
+        <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
+        <p><span data-i18n data-en="In the TalentMatch AI diagram, the “score profile“ is a data object attached to the task “calculate score“; the “candidate database“ is a data store accessed independently by several activities; a text annotation on the exclusive gateway explains the bias threshold in one sentence.">Im TalentMatch-AI-Diagramm ist das „Score-Profil“ ein Data Object an der Aufgabe „Score berechnen“; die „Kandidatendatenbank“ ist ein Data Store, auf den mehrere Aktivitaeten unabhaengig voneinander zugreifen; eine Text Annotation am exklusiven Gateway erklaert den Bias-Schwellenwert in einem Satz.</span></p>
+        <div class="persona-line">
+          <span class="persona-name">Petra</span>
+          <span class="persona-quote"><span data-i18n data-en="“The data store makes it visible that the candidate database is not just for one run - that matters for traceability in the audit.“">„Der Data Store macht sichtbar, dass die Kandidatendatenbank nicht nur fuer einen Durchlauf existiert - das ist wichtig fuer die Verfolgbarkeit im Audit.“</span></span>
+        </div>
+      </div>
+      <div class="quiz-box" data-correct="1">
+        <h4>&#10067; <span data-i18n data-en="Mini quiz">Mini-Quiz</span></h4>
+        <p class="quiz-q"><span data-i18n data-en="What distinguishes a data object from a data store?">Was unterscheidet ein Data Object von einem Data Store?</span></p>
+        <div class="quiz-opts">
+          <button type="button" class="quiz-opt" data-idx="0"><span data-i18n data-en="There is no difference, they are synonyms">Es gibt keinen Unterschied, beide sind Synonyme</span></button>
+          <button type="button" class="quiz-opt" data-idx="1"><span data-i18n data-en="A data object flows with a single process instance, a data store is persistent and instance-independent">Data Object fliesst mit einem einzelnen Prozessdurchlauf mit, Data Store ist ein dauerhafter, durchlaufunabhaengiger Speicher</span></button>
+          <button type="button" class="quiz-opt" data-idx="2"><span data-i18n data-en="A data store may only appear once per diagram">Data Store darf nur einmal pro Diagramm vorkommen</span></button>
+        </div>
+        <p class="quiz-feedback" hidden></p>
+        <p class="quiz-expl" hidden><span data-i18n data-en="Data objects are instance-bound (they belong to one specific process run); data stores persist independently of that and are used across many runs.">Data Objects sind instanzgebunden (sie gehoeren zu einem konkreten Prozessdurchlauf); Data Stores bestehen unabhaengig davon fort und werden ueber viele Durchlaeufe hinweg genutzt.</span></p>
+      </div>
+      <div class="station-footer-nav">
+        <button type="button" class="nav-btn prev-btn" ><span data-i18n data-en="&amp;larr; Back">&larr; Zurueck</span></button>
+        <button type="button" class="nav-btn next-btn" disabled><span data-i18n data-en="Next &amp;rarr;">Weiter &rarr;</span></button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer class="tool-footer">
+  <div class="footer-grid">
+
+    <details class="footer-box">
+      <summary data-i18n data-en="System prompt">Systemprompt</summary>
+      <div class="footer-content footer-mono">Baue ein einzelnes, offlinef&auml;higes HTML-Trainingstool &ldquo;BPMN 2.0 in der Praxis &ndash; Wann, was und wie modellieren&rdquo;, als bewusst schlankstes der drei Business-Process-Tools (nach IREB-Kompendium und OCEB2-Kompendium).
+
+AUSLOESER
+Nutzerin fand IREB/BABOK/OCEB2-Kompendien zu umfangreich (&ldquo;Hm, das ist schon viel&rdquo;) und wollte stattdessen einen praktischen Anwender-Leitfaden zu vier konkreten Fragen: Wann brauche ich welchen Prozess? Wie sollte ich modellieren? Was modelliere ich ueberhaupt? Mit Beispielen wie Swimlane und anderen Artefakten.
+
+STRUKTUR
+- Gleiches Split-Screen-Layout wie IREB/OCEB2: linke Sidebar + rechter Inhaltsbereich, gestapelt unter 900px.
+- NUR 5 Stationen (keine Lehrplan- oder Pruefungs-Blueprint-Bindung, daher kein Verifizierungsaufwand fuer Kapitelanzahl/Gewichtung noetig) - eine Station pro Praxisfrage:
+  1. Wann brauche ich welchen Prozess-Typ? (Prozess- vs. Collaboration- vs. Choreography-Diagramm)
+  2. Was modelliere ich ueberhaupt? (Scope, Detailtiefe, deskriptive/analytische Konformitaetsklasse)
+  3. Wie modelliere ich richtig? (Happy Path zuerst, Aktivitaetsbenennung, Elementanzahl, Gateway-Disziplin)
+  4. Praxisbeispiel Pool & Swimlane (inkl. Notationstabelle)
+  5. Weitere Artefakte (Data Object, Data Store, Group, Text Annotation)
+- Stempel-Pass mit 5 Punkten, sessionStorage (try/catch).
+
+VEREINFACHUNGEN GEGENUEBER OCEB2/IREB (bewusst)
+- Kein Gewichtungs-/K-Stufen-Badge, nur Stationsnummer &ndash; da keine Pruefungsordnung zugrunde liegt.
+- Kein Anhang, keine Cross-Reference-Box.
+- Alle BPMN-Elementbegriffe bleiben trotzdem spezifikationstreu (BPMN 2.0.2 / ISO/IEC 19510) &ndash; &bdquo;einfach&ldquo; bezieht sich auf Struktur und Umfang, nicht auf fachliche Korrektheit.
+
+INHALT PRO STATION
+1. Kopfzeile: Stationsnummer.
+2. Titel (die jeweilige Praxisfrage).
+3. Begriffe.
+4. Kerninhalte: 3-4 Bullet-Points.
+5. TalentMatch-AI-Praxisbeispiel.
+6. Persona-Reaktionszeile (Ela/Knut/Sarah/Petra/Herr Bachmeier).
+7. Mini-Quiz: 1 Frage, 3 Optionen, mit Erklaerung.
+8. Vor-/Zurueck-Navigation.
+
+DESIGN-VORGABEN (identisch zu allen Michaela-Tools)
+- Hintergrund immer Wei&szlig;, color-scheme:light, kein Dark Mode.
+- Eigene Akzentfarbe (Amber/Bernstein) zur visuellen Unterscheidung von IREB (Blau) und OCEB2 (Tuerkis) im Tool-Set.
+- pointerup-Events statt click, keine HTML5-Drag-and-Drop-API.
+- Schriftgr&ouml;&szlig;en: Flie&szlig;text &ge;16px, Sekund&auml;rtext &ge;14px, in allen vier Beamer-Stufen weiter hochskaliert.
+- Signatur oben rechts, position:fixed, Name + Website-Link.
+- Vierstufiger kumulativer Beamer-Toggle, Footer ab Stufe 1 ausgeblendet.
+- Sprach-Toggle DE/EN ohne Reload: deutscher Text statisch im HTML.
+- Vier Pflicht-Footer-Boxen: Systemprompt, Handbuch, Vortrags-Skript, Normen-Register.
+
+NICHT TUN
+- Keine externen Ressourcen (fetch, CDN, Web Fonts).
+- Kein localStorage, nur sessionStorage mit try/catch.
+- Keine erfundene Pruefungs-/Lehrplanstruktur, wo keine existiert (bewusster Unterschied zu IREB/OCEB2) - BPMN-Elementdefinitionen bleiben trotzdem spezifikationstreu.</div>
+    </details>
+
+    <details class="footer-box">
+      <summary data-i18n data-en="Handbook">Handbuch</summary>
+      <div class="footer-content footer-sans" data-i18n data-en="&lt;p&gt;&lt;strong&gt;Framework used: RTF (Role &amp;middot; Task &amp;middot; Format).&lt;/strong&gt; The trigger was a sign of fatigue with the previous tools: &amp;ldquo;Hm, that is already a lot&amp;rdquo; &amp;ndash; followed by four very concrete practical questions rather than a syllabus request: when which process, how to model, what to model, with examples like swimlanes and artifacts.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Role:&lt;/strong&gt; the trainer, who after two exam-oriented compendiums (IREB, OCEB2) now explicitly wants a pure practitioner guide with no exam connection &amp;ndash; for participants who apply BPMN directly in practice, not those seeking certification.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Task:&lt;/strong&gt; the four questions asked mapped 1:1 onto the first three stations (When? What? How?), supplemented by two explicitly requested example stations (swimlane, further artifacts). No derivation from an external blueprint was needed &amp;ndash; the structure came directly from the user&#x27;s own phrasing.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Format:&lt;/strong&gt; implicitly set by the contrast to the previous tools: deliberately the leanest of the three BPM tools, with no weighting badges, no appendix, no cross-reference box &amp;ndash; just the four questions plus examples, cleanly organised into five stations.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key teaching point:&lt;/strong&gt; &amp;ldquo;that is already a lot&amp;rdquo; is itself an important requirement, even though it does not sound like a specification &amp;ndash; it means: think smaller for the next tool, not just less text within an identical structure, but a genuine reduction in station count and layout.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Rebuild tip:&lt;/strong&gt; when a user says &amp;ldquo;that is already a lot&amp;rdquo; after several extensive tools and then makes a new, simpler request, that is a signal to actively cut scope (station count, badges, extra boxes) &amp;ndash; not just repeat the same blueprint with fewer bullet points.&lt;/p&gt;"><p><strong>Verwendetes Framework: RTF (Rolle &middot; Task &middot; Format).</strong> Ausl&ouml;ser war eine Ersch&ouml;pfungsreaktion auf die bisherigen Tools: &bdquo;Hm, das ist schon viel&ldquo; &ndash; gefolgt von vier sehr konkreten Praxisfragen statt eines Lehrplan-Wunsches: wann welcher Prozess, wie modellieren, was modellieren, mit Beispielen wie Swimlane und Artefakten.</p>
+<p><strong>Rolle:</strong> die Trainerin, die nach zwei pr&uuml;fungsnahen Kompendien (IREB, OCEB2) jetzt explizit einen reinen Anwender-Leitfaden ohne Pr&uuml;fungsbezug will &ndash; f&uuml;r Teilnehmende, die BPMN direkt in der Praxis einsetzen, nicht daf&uuml;r zertifiziert werden wollen.</p>
+<p><strong>Task:</strong> Die vier gestellten Fragen wurden 1:1 zu den ersten drei Stationen (Wann? Was? Wie?), erg&auml;nzt um zwei explizit angeforderte Beispiel-Stationen (Swimlane, weitere Artefakte). Keine Ableitung aus einem externen Blueprint n&ouml;tig &ndash; die Struktur kam direkt aus der Formulierung der Nutzerin.</p>
+<p><strong>Format:</strong> Implizit durch den Kontrast zu den vorherigen Tools vorgegeben: bewusst das schlankeste der drei BPM-Tools, ohne Gewichtungs-Badges, ohne Anhang, ohne Cross-Reference-Box &ndash; nur die vier Fragen plus Beispiele, sauber in fuenf Stationen gegliedert.</p>
+<p><strong>Zentraler Lernhinweis:</strong> &bdquo;Das ist schon viel&ldquo; ist selbst eine wichtige Anforderung, auch wenn sie nicht wie eine Spezifikation klingt &ndash; sie bedeutet: n&auml;chstes Tool bewusst kleiner denken, nicht nur weniger Text pro identischer Struktur, sondern eine echte Reduktion in Stationsanzahl und Aufbau.</p>
+<p><strong>Nachbau-Tipp:</strong> Wenn eine Nutzerin nach mehreren umfangreichen Tools &bdquo;das ist schon viel&ldquo; sagt und danach eine neue, einfachere Anfrage stellt, ist das ein Signal, aktiv Umfang zu reduzieren (Stationsanzahl, Badges, Zusatzboxen) &ndash; nicht nur denselben Bauplan mit weniger Bulletpoints zu wiederholen.</p></div>
+    </details>
+
+    <details class="footer-box">
+      <summary data-i18n data-en="Speaker script">Vortrags-Skript</summary>
+      <div class="footer-content footer-sans" data-i18n data-en="&lt;p&gt;&lt;em&gt;(Direction: open the tool in presenter mode. Very short format, about 6-8 minutes &amp;ndash; usable as a practitioner guide directly after a BPMN introduction.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Opening:&lt;/strong&gt; &amp;ldquo;After the theory, now the practice: five stations that walk you through the four most important questions that come up when drawing your first own BPMN diagram.&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(Click through stations 1-2.)&lt;/em&gt; &amp;ldquo;First the diagram choice: a plain process diagram or a collaboration diagram? Then the scope: where does my process really start, where does it end?&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(Click to station 3.)&lt;/em&gt; &amp;ldquo;The four rules of thumb here are what I most often correct in every review: happy path first, meaningful names, not too many elements, clear gateway questions.&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(Click to station 4 &amp;ndash; the heart of the demo.)&lt;/em&gt; &amp;ldquo;And here the example that sticks the most: pool and swimlane live on the TalentMatch AI process &amp;ndash; who does what, and where the message goes outward.&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(Click to station 5.)&lt;/em&gt; &amp;ldquo;Finally the four artifacts most often confused in practice &amp;ndash; data object versus data store is the classic one.&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Closing:&lt;/strong&gt; &amp;ldquo;That is it &amp;ndash; five stations, directly applicable the next time you draw your own diagram.&amp;rdquo;&lt;/p&gt;
+&lt;p class=&quot;regie&quot;&gt;Direction note: this tool does not replace BPMN fundamentals training &amp;ndash; it is the practical follow-up. If needed, point to the OCEB2 compendium (station 4, BPMN 2.0) for the formal notation basis.&lt;/p&gt;"><p><em>(Regie: Tool im Beamer-Modus &ouml;ffnen. Sehr kurzes Format, ca. 6-8 Minuten &ndash; als Anwender-Leitfaden direkt im Anschluss an eine BPMN-Einf&uuml;hrung nutzbar.)</em></p>
+<p><strong>Einstieg:</strong> &bdquo;Nach der Theorie jetzt die Praxis: f&uuml;nf Stationen, die Euch durch die vier wichtigsten Fragen f&uuml;hren, die beim ersten eigenen BPMN-Diagramm auftauchen.&ldquo;</p>
+<p><em>(Klick durch Station 1-2.)</em> &bdquo;Erst die Diagrammwahl: reines Prozessdiagramm oder Collaboration? Dann der Scope: Wo f&auml;ngt mein Prozess wirklich an, wo h&ouml;rt er auf?&ldquo;</p>
+<p><em>(Klick zu Station 3.)</em> &bdquo;Die vier Faustregeln hier sind das, was ich in jedem Review am h&auml;ufigsten korrigiere: Happy Path zuerst, sprechende Namen, nicht zu viele Elemente, klare Gateway-Fragen.&ldquo;</p>
+<p><em>(Klick zu Station 4 &ndash; Kernst&uuml;ck der Demo.)</em> &bdquo;Und hier das Beispiel, das am meisten h&auml;ngen bleibt: Pool und Swimlane live am TalentMatch-AI-Prozess &ndash; wer macht was, und wo geht die Nachricht nach au&szlig;en.&ldquo;</p>
+<p><em>(Klick zu Station 5.)</em> &bdquo;Zum Schluss die vier Artefakte, die in der Praxis am h&auml;ufigsten verwechselt werden &ndash; Data Object versus Data Store ist der Klassiker.&ldquo;</p>
+<p><strong>Abschluss:</strong> &bdquo;Das war's schon &ndash; f&uuml;nf Stationen, direkt anwendbar beim n&auml;chsten eigenen Diagramm.&ldquo;</p>
+<p class="regie">Regie-Hinweis: Dieses Tool ersetzt keine BPMN-Grundlagenschulung &ndash; es ist der Praxis-Nachschlag danach. Bei Bedarf auf das OCEB2-Kompendium (Station 4, BPMN 2.0) f&uuml;r die formale Notationsbasis verweisen.</p></div>
+    </details>
+
+    <details class="footer-box">
+      <summary data-i18n data-en="Standards register">Normen-Register</summary>
+      <div class="footer-content">
+        <table class="footer-table">
+          <thead><tr>
+            <th data-i18n data-en="Standard / framework">Norm / Framework</th>
+            <th data-i18n data-en="Status">Status</th>
+            <th data-i18n data-en="Checked on">Gepr&uuml;ft am</th>
+          </tr></thead>
+          <tbody>
+            <tr><td>BPMN 2.0.2 (OMG) / ISO/IEC 19510</td><td data-i18n data-en="In force &ndash; published January 2014, unchanged since (verified: no newer major version)">In Kraft &ndash; ver&ouml;ffentlicht Januar 2014, seither unver&auml;ndert (verifiziert: keine neuere Hauptversion)</td><td>02.09.2026</td></tr>
+            <tr><td>EU AI Act (Verordnung (EU) 2024/1689)</td><td data-i18n data-en="In force &ndash; TalentMatch AI classified as high-risk under Annex III No. 4">In Kraft &ndash; TalentMatch AI eingestuft als Hochrisiko-System nach Anhang III Nr. 4</td><td>02.09.2026</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+  </div>
+
+  <p class="footer-sig">
+    <strong>Michaela K&uuml;hn</strong> &middot; <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a><br>
+    <span data-i18n data-en="Based on: BPMN 2.0.2 (ISO/IEC 19510), EU AI Act">Basierend auf: BPMN 2.0.2 (ISO/IEC 19510), EU AI Act</span>
+    <span class="audit">Zuletzt gepr&uuml;ft: 02.09.2026 &middot; Status: &#9989; Zertifiziert &middot; Details siehe Audit-Protokoll</span>
+  </p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var STATIONS = ["s1", "s2", "s3", "s4", "s5"];
+  var current = STATIONS[0];
+  var stamped = {};
+  var lang = "de";
+
+  function safeGet(key){ try{ return sessionStorage.getItem(key); }catch(e){ return null; } }
+  function safeSet(key, val){ try{ sessionStorage.setItem(key, val); }catch(e){} }
+
+  function loadState(){
+    var s = safeGet("bpmn_anwender_stamped");
+    if(s){ try{ stamped = JSON.parse(s); }catch(e){ stamped = {}; } }
+    var c = safeGet("bpmn_anwender_current");
+    if(c && STATIONS.indexOf(c) !== -1){ current = c; }
+    var l = safeGet("bpmn_anwender_lang");
+    if(l === "en"){ lang = "en"; }
+  }
+  function saveStamped(){ safeSet("bpmn_anwender_stamped", JSON.stringify(stamped)); }
+  function saveCurrent(){ safeSet("bpmn_anwender_current", current); }
+  function saveLang(){ safeSet("bpmn_anwender_lang", lang); }
+
+  function renderPassport(){
+    var wrap = document.getElementById("passport");
+    wrap.innerHTML = "";
+    var count = 0;
+    STATIONS.forEach(function(id){
+      var dot = document.createElement("span");
+      dot.className = "p-dot" + (stamped[id] ? " filled" : "");
+      wrap.appendChild(dot);
+      if(stamped[id]) count++;
+      var navStamp = document.getElementById("nav-" + id);
+      if(navStamp){
+        if(stamped[id]) navStamp.classList.add("stamped");
+        else navStamp.classList.remove("stamped");
+      }
+    });
+    var label = document.getElementById("passportLabel");
+    var txt_de = count + " / " + STATIONS.length + " Themenbereiche abgeschlossen";
+    var txt_en = count + " / " + STATIONS.length + " topic areas completed";
+    label.setAttribute("data-en", txt_en);
+    label.textContent = (lang === "en") ? txt_en : txt_de;
+  }
+
+  function showStation(id){
+    current = id;
+    STATIONS.forEach(function(sid){
+      var panel = document.getElementById("panel-" + sid);
+      var nav = document.getElementById("nav-" + sid);
+      if(panel) panel.classList.toggle("active", sid === id);
+      if(nav) nav.classList.toggle("current", sid === id);
+    });
+    saveCurrent();
+    window.scrollTo(0,0);
+  }
+
+  function wireNav(){
+    STATIONS.forEach(function(id){
+      var btn = document.getElementById("nav-" + id);
+      if(btn){ btn.addEventListener("pointerup", function(){ showStation(id); }); }
+    });
+    document.querySelectorAll(".station-panel").forEach(function(panel){
+      var id = panel.getAttribute("data-station");
+      var idx = STATIONS.indexOf(id);
+      var prev = panel.querySelector(".prev-btn");
+      var next = panel.querySelector(".next-btn");
+      if(prev){ prev.addEventListener("pointerup", function(){ if(idx > 0) showStation(STATIONS[idx-1]); }); }
+      if(next){ next.addEventListener("pointerup", function(){ if(idx < STATIONS.length-1) showStation(STATIONS[idx+1]); }); }
+    });
+  }
+
+  function wireQuizzes(){
+    document.querySelectorAll(".quiz-box").forEach(function(box){
+      var correct = parseInt(box.getAttribute("data-correct"), 10);
+      var opts = box.querySelectorAll(".quiz-opt");
+      var feedback = box.querySelector(".quiz-feedback");
+      var expl = box.querySelector(".quiz-expl");
+      var stationId = box.closest(".station-panel").getAttribute("data-station");
+      opts.forEach(function(opt, idx){
+        opt.addEventListener("pointerup", function(){
+          if(opt.hasAttribute("data-answered")) return;
+          opts.forEach(function(o){ o.setAttribute("data-answered","1"); o.disabled = true; });
+          opts[correct].classList.add("correct");
+          if(idx !== correct){ opt.classList.add("wrong"); }
+          feedback.hidden = false;
+          expl.hidden = false;
+          var isCorrect = (idx === correct);
+          var fb_de = isCorrect ? "Richtig!" : "Nicht ganz &ndash; die richtige Antwort ist markiert.";
+          var fb_en = isCorrect ? "Correct!" : "Not quite &ndash; the correct answer is highlighted.";
+          feedback.setAttribute("data-en", fb_en);
+          feedback.innerHTML = (lang === "en") ? fb_en : fb_de;
+          feedback.className = "quiz-feedback " + (isCorrect ? "ok" : "bad");
+          if(isCorrect){
+            stamped[stationId] = true;
+            saveStamped();
+            renderPassport();
+          }
+        });
+      });
+    });
+  }
+
+  function applyLang(){
+    document.querySelectorAll("[data-i18n]").forEach(function(el){
+      var en = el.getAttribute("data-en");
+      if(en === null) return;
+      if(!el.hasAttribute("data-de-cache")){
+        el.setAttribute("data-de-cache", el.innerHTML);
+      }
+      if(lang === "en"){
+        el.innerHTML = en;
+      }else{
+        el.innerHTML = el.getAttribute("data-de-cache");
+      }
+    });
+    document.documentElement.setAttribute("lang", lang);
+    renderPassport();
+  }
+
+  function wireLangToggle(){
+    document.getElementById("langBtn").addEventListener("pointerup", function(){
+      lang = (lang === "de") ? "en" : "de";
+      saveLang();
+      applyLang();
+    });
+  }
+
+  function wireBeamer(){
+    var BEAMER_LEVELS = [
+      { classes: "",                                    label: "☀ Beamer" },
+      { classes: "beamer",                               label: "☀ Beamer XL" },
+      { classes: "beamer beamer-xl",                     label: "☀ Beamer XXL" },
+      { classes: "beamer beamer-xl beamer-xxl",          label: "☀ Normal" }
+    ];
+    var stage = 0;
+    var s = safeGet("bpmn_anwender_beamer");
+    if(s){ var n = parseInt(s,10); if(!isNaN(n) && n>=0 && n<BEAMER_LEVELS.length){ stage = n; } }
+    function apply(){
+      document.documentElement.className = BEAMER_LEVELS[stage].classes;
+      var btn = document.getElementById("beamerBtn");
+      btn.textContent = BEAMER_LEVELS[stage].label;
+      btn.classList.toggle("active", stage > 0);
+    }
+    apply();
+    document.getElementById("beamerBtn").addEventListener("pointerup", function(){
+      stage = (stage + 1) % BEAMER_LEVELS.length;
+      safeSet("bpmn_anwender_beamer", String(stage));
+      apply();
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function(){
+    loadState();
+    wireNav();
+    wireQuizzes();
+    wireBeamer();
+    wireLangToggle();
+    showStation(current);
+    applyLang();
+  });
+})();
+</script>
+</body>
+</html>
