@@ -209,13 +209,13 @@ body{
       <span class="kbd-hint" id="kbdHint">/</span>
     </div>
     <nav class="filter-chips" id="filterChips" role="tablist" aria-label="Rubriken">
-      <button type="button" class="filter-chip active" data-filter="all" role="tab" aria-selected="true">Alle</button>
-      <button type="button" class="filter-chip" data-filter="about" role="tab" aria-selected="false">Über mich</button>
-      <button type="button" class="filter-chip" data-filter="re-ba" role="tab" aria-selected="false">Requirements &amp; Business-Analyse</button>
-      <button type="button" class="filter-chip" data-filter="agile-pm" role="tab" aria-selected="false">Agiles Arbeiten &amp; PM</button>
-      <button type="button" class="filter-chip" data-filter="ki" role="tab" aria-selected="false">KI</button>
-      <button type="button" class="filter-chip" data-filter="didaktik" role="tab" aria-selected="false">Didaktik</button>
-      <button type="button" class="filter-chip" data-filter="spiele" role="tab" aria-selected="false">Spiele</button>
+      <button type="button" class="filter-chip" data-filter="all" role="tab" aria-selected="false">Alle</button>
+      <button type="button" class="filter-chip" data-filter="about" role="tab" aria-selected="false">🙋 Über mich</button>
+      <button type="button" class="filter-chip active" data-filter="re-ba" role="tab" aria-selected="true">📋 Requirements &amp; Business-Analyse</button>
+      <button type="button" class="filter-chip" data-filter="agile-pm" role="tab" aria-selected="false">🔄 Agiles Arbeiten &amp; PM</button>
+      <button type="button" class="filter-chip" data-filter="ki" role="tab" aria-selected="false">🤖 KI</button>
+      <button type="button" class="filter-chip" data-filter="didaktik" role="tab" aria-selected="false">🎓 Didaktik</button>
+      <button type="button" class="filter-chip" data-filter="spiele" role="tab" aria-selected="false">🎮 Spiele</button>
     </nav>
     <span class="result-count" id="resultCount"></span>
   </div>
@@ -723,6 +723,17 @@ body{
     document.getElementById("statNew").textContent = "🆕 " + newCount + " heute neu";
   }
 
+  // Anzahl je Rubrik hinter das Chip-Label schreiben, z. B. "Alle (68)" —
+  // nach dem Muster der Kategorie-Pillrow im Excel Lab.
+  var countByCat = { all: cards.length };
+  sections.forEach(function(section){
+    countByCat[section.dataset.cat] = section.querySelectorAll(".tool-card").length;
+  });
+  chips.forEach(function(chip){
+    var n = countByCat[chip.dataset.filter] || 0;
+    chip.textContent = chip.textContent + " (" + n + ")";
+  });
+
   function cardText(card){
     if(!card.dataset.text){
       card.dataset.text = card.textContent.toLowerCase();
@@ -730,7 +741,10 @@ body{
     return card.dataset.text;
   }
 
-  var activeTab = "all";
+  // Start-Tab: die zentrale Rubrik ist direkt aktiv, kein initialer
+  // Rundum-Scroll durch alle Rubriken mehr. "Alle" bleibt über den Chip
+  // erreichbar, ist aber nicht mehr die Startansicht.
+  var activeTab = "re-ba";
   var tabBeforeSearch = null;
 
   function setActiveTab(filter){
