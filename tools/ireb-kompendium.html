@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="de" style="color-scheme: light;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IREB CPRE Foundation Level &ndash; Die Kernaussagen des Requirements Engineering</title>
+<style>
+  :root{
+    --ink:#1a2233; --sub:#4a5568; --muted:#6b7280; --faint:#9ca3af;
+    --line:#e2e5ea; --panel:#f7f8fa; --white:#ffffff;
+    --accent:#1d4ed8; --accent-soft:#e8efff; --accent-dark:#173f9e;
+    --ok:#0f7a3d; --ok-soft:#e6f6ec; --bad:#b3261e; --bad-soft:#fdecea;
+    --gold:#8a6a00; --gold-soft:#fff6da;
+  }
+  html,body{color-scheme: light; background:var(--white); margin:0; padding:0;}
+  *{box-sizing:border-box;}
+  body{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color:var(--ink); background:var(--white); font-size:16px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);}
+  strong{color:var(--ink);}
+
+  /* Signature */
+  .signature{
+    position:fixed; top:14px; right:28px; z-index:500; text-align:right;
+    font-size:14px; line-height:1.35; background:rgba(255,255,255,.92);
+    padding:4px 8px; border-radius:8px;
+  }
+  .signature strong{display:block; font-size:14px;}
+  .signature a{font-size:14px; text-decoration:none;}
+  @media (max-width:900px){
+    .signature{position:static; text-align:right; margin:8px 16px 0 0;}
+  }
+
+  /* Header */
+  header.top{
+    padding:20px 28px 16px 28px; border-bottom:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:14px; align-items:flex-start; justify-content:space-between;
+  }
+  /* Ab 901px ist die Signatur fixed oben rechts (siehe .signature) - genug Platz reservieren,
+     damit Beamer-/Sprach-Button nicht darunter liegen und Klicks blockiert werden. */
+  @media (min-width:901px){
+    header.top{ padding-right:240px; }
+  }
+  .back-link{display:block; font-size:14px; font-weight:700; color:var(--muted); text-decoration:none; margin:0 0 8px 0;}
+  .back-link:hover{color:var(--accent);}
+  .top-titleblock h1{font-size:22px; margin:0 0 4px 0; letter-spacing:-.01em;}
+  .top-titleblock .subtitle{font-size:14px; color:var(--sub); margin:0;}
+  .top-controls{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+  .ctrl-btn{
+    font-size:14px; padding:8px 14px; border-radius:999px; border:1px solid var(--line);
+    background:var(--white); color:var(--ink); cursor:pointer; min-height:44px; min-width:44px;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .ctrl-btn:hover{background:var(--panel);}
+  .ctrl-btn.active{background:var(--accent); color:var(--white); border-color:var(--accent);}
+
+  /* Layout */
+  .layout{display:flex; gap:0; align-items:flex-start;}
+  nav.sidebar{
+    width:34%; min-width:260px; max-width:420px; border-right:1px solid var(--line);
+    padding:18px 14px; position:sticky; top:0;
+  }
+  .passport{
+    display:flex; gap:6px; justify-content:center; margin-bottom:14px; flex-wrap:wrap;
+  }
+  .passport .p-dot{
+    width:14px; height:14px; border-radius:50%; background:var(--line); border:1px solid var(--faint);
+  }
+  .passport .p-dot.filled{background:var(--ok); border-color:var(--ok);}
+  .passport-label{font-size:14px; color:var(--muted); text-align:center; margin:0 0 14px 0;}
+
+  .nav-item{
+    display:flex; align-items:center; gap:10px; width:100%; text-align:left;
+    padding:12px 12px; border-radius:12px; border:1px solid transparent;
+    background:transparent; cursor:pointer; margin-bottom:4px; min-height:44px;
+  }
+  .nav-item:hover{background:var(--panel);}
+  .nav-item.current{background:var(--accent-soft); border-color:var(--accent);}
+  .nav-stamp{font-size:14px; color:var(--faint); flex-shrink:0;}
+  .nav-item.stamped .nav-stamp{color:var(--ok);}
+  .nav-num{font-size:14px; font-weight:700; color:var(--accent); flex-shrink:0; min-width:38px;}
+  .nav-title{font-size:14px; color:var(--ink);}
+  .nav-divider{height:1px; background:var(--line); margin:10px 4px 10px 4px;}
+  .nav-item-appendix .nav-num{color:var(--gold);}
+  .nav-stamp-appendix{font-size:14px;}
+
+  .req-table{width:100%; border-collapse:collapse; margin:12px 0 20px 0;}
+  .req-table th, .req-table td{
+    text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); font-size:15px; vertical-align:top;
+  }
+  .req-table th{font-size:14px; color:var(--muted); font-weight:700; white-space:nowrap;}
+  .req-table code{
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:14px;
+    background:var(--panel); padding:2px 6px; border-radius:6px;
+  }
+  .compare-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:14px 0 22px 0;}
+  @media (max-width:700px){ .compare-grid{grid-template-columns:1fr;} }
+  .compare-card{border-radius:12px; padding:14px 16px; font-size:15px;}
+  .compare-card.bad{background:var(--bad-soft); border:1px solid var(--bad);}
+  .compare-card.good{background:var(--ok-soft); border:1px solid var(--ok);}
+  .compare-card .compare-label{font-size:14px; font-weight:700; margin:0 0 8px 0; display:block;}
+  .compare-card.bad .compare-label{color:var(--bad);}
+  .compare-card.good .compare-label{color:var(--ok);}
+  .compare-card .compare-issue{font-size:14px; color:var(--sub); margin:8px 0 0 0; font-style:italic;}
+  .uc-form{border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:12px 0 20px 0;}
+  .uc-row{display:flex; border-bottom:1px solid var(--line);}
+  .uc-row:last-child{border-bottom:none;}
+  .uc-label{width:180px; flex-shrink:0; background:var(--panel); padding:10px 12px; font-size:14px; font-weight:700; color:var(--sub);}
+  .uc-value{padding:10px 12px; font-size:15px; flex:1;}
+  html.beamer .req-table th, html.beamer .req-table td, html.beamer .compare-card, html.beamer .uc-label, html.beamer .uc-value{font-size:17px;}
+  html.beamer.beamer-xl .req-table th, html.beamer.beamer-xl .req-table td, html.beamer.beamer-xl .compare-card, html.beamer.beamer-xl .uc-label, html.beamer.beamer-xl .uc-value{font-size:19px;}
+  html.beamer.beamer-xl.beamer-xxl .req-table th, html.beamer.beamer-xl.beamer-xxl .req-table td, html.beamer.beamer-xl.beamer-xxl .compare-card, html.beamer.beamer-xl.beamer-xxl .uc-label, html.beamer.beamer-xl.beamer-xxl .uc-value{font-size:21px;}
+
+  main.content{flex:1; min-width:0; padding:22px 28px 40px 28px;}
+  .station-panel{display:none;}
+  .station-panel.active{display:block;}
+
+  .station-head{display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap;}
+  .badge{font-size:14px; padding:4px 10px; border-radius:999px; font-weight:700;}
+  .badge-num{background:var(--accent); color:var(--white);}
+  .badge-k{background:var(--gold-soft); color:var(--gold); border:1px solid var(--gold);}
+  .badge-dauer{background:var(--panel); color:var(--sub); border:1px solid var(--line);}
+
+  .station-panel h2{font-size:21px; margin:6px 0 14px 0; letter-spacing:-.01em;}
+  .station-panel h3{font-size:15px; margin:20px 0 8px 0; color:var(--sub); text-transform:uppercase; letter-spacing:.04em;}
+  .station-panel h4{font-size:15px; margin:0 0 8px 0;}
+  .lernziel, .begriffe{font-size:15px; color:var(--sub); margin:4px 0;}
+  .kern-list{margin:0; padding-left:20px;}
+  .kern-list li{margin-bottom:10px; font-size:15px; line-height:1.55;}
+
+  .beispiel-box{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    padding:16px 18px; margin:18px 0;
+  }
+  .beispiel-box p{font-size:15px; margin:0 0 12px 0;}
+
+  .babok-box{
+    background:#f5f0ff; border:1px solid #b39ddb; border-radius:14px;
+    padding:16px 18px; margin:18px 0;
+  }
+  .babok-box h4{color:#5e35b1;}
+  .babok-box p{font-size:15px; margin:0 0 12px 0;}
+  .babok-box .req-table{margin:10px 0 14px 0;}
+  html.beamer .babok-box p, html.beamer .babok-box th, html.beamer .babok-box td{font-size:17px;}
+  html.beamer.beamer-xl .babok-box p, html.beamer.beamer-xl .babok-box th, html.beamer.beamer-xl .babok-box td{font-size:19px;}
+  html.beamer.beamer-xl.beamer-xxl .babok-box p, html.beamer.beamer-xl.beamer-xxl .babok-box th, html.beamer.beamer-xl.beamer-xxl .babok-box td{font-size:21px;}
+  .persona-line{
+    display:flex; gap:10px; align-items:flex-start; background:var(--white);
+    border:1px solid var(--line); border-radius:10px; padding:10px 12px;
+  }
+  .persona-name{font-weight:700; color:var(--accent-dark); font-size:14px; flex-shrink:0; white-space:nowrap;}
+  .persona-quote{font-size:14px; color:var(--sub); font-style:italic;}
+
+  .quiz-box{
+    background:var(--white); border:1.5px solid var(--accent); border-radius:14px;
+    padding:16px 18px; margin:18px 0;
+  }
+  .quiz-q{font-size:15px; margin:0 0 12px 0;}
+  .quiz-opts{display:flex; flex-direction:column; gap:8px;}
+  .quiz-opt{
+    text-align:left; font-size:14.5px; padding:12px 14px; border-radius:10px;
+    border:1px solid var(--line); background:var(--panel); cursor:pointer; min-height:44px;
+  }
+  .quiz-opt:hover{border-color:var(--accent);}
+  .quiz-opt.correct{background:var(--ok-soft); border-color:var(--ok); font-weight:700;}
+  .quiz-opt.wrong{background:var(--bad-soft); border-color:var(--bad);}
+  .quiz-opt[disabled]{cursor:default;}
+  .quiz-feedback{font-size:14.5px; font-weight:700; margin:12px 0 4px 0;}
+  .quiz-feedback.ok{color:var(--ok);}
+  .quiz-feedback.bad{color:var(--bad);}
+  .quiz-expl{font-size:14px; color:var(--sub); margin:0;}
+
+  .station-footer-nav{display:flex; justify-content:space-between; margin-top:22px;}
+  .nav-btn{
+    font-size:14px; padding:10px 16px; border-radius:10px; border:1px solid var(--line);
+    background:var(--white); cursor:pointer; min-height:44px;
+  }
+  .nav-btn:hover:not([disabled]){background:var(--panel);}
+  .nav-btn[disabled]{opacity:.35; cursor:default;}
+
+  /* Beamer mode (cumulative) */
+  html.beamer .station-panel h2{font-size:26px;}
+  html.beamer .kern-list li, html.beamer .lernziel, html.beamer .begriffe,
+  html.beamer .beispiel-box p, html.beamer .quiz-q, html.beamer .quiz-opt,
+  html.beamer .nav-title{font-size:18px;}
+  html.beamer .persona-quote{font-size:17px;}
+  html.beamer .nav-btn, html.beamer .ctrl-btn{font-size:16px; padding:12px 18px;}
+  html.beamer footer.tool-footer{display:none;}
+
+  html.beamer.beamer-xl .station-panel h2{font-size:30px;}
+  html.beamer.beamer-xl .kern-list li, html.beamer.beamer-xl .lernziel,
+  html.beamer.beamer-xl .begriffe, html.beamer.beamer-xl .beispiel-box p,
+  html.beamer.beamer-xl .quiz-q, html.beamer.beamer-xl .quiz-opt,
+  html.beamer.beamer-xl .nav-title{font-size:21px;}
+  html.beamer.beamer-xl .persona-quote{font-size:20px;}
+
+  html.beamer.beamer-xl.beamer-xxl .station-panel h2{font-size:34px;}
+  html.beamer.beamer-xl.beamer-xxl .kern-list li, html.beamer.beamer-xl.beamer-xxl .lernziel,
+  html.beamer.beamer-xl.beamer-xxl .begriffe, html.beamer.beamer-xl.beamer-xxl .beispiel-box p,
+  html.beamer.beamer-xl.beamer-xxl .quiz-q, html.beamer.beamer-xl.beamer-xxl .quiz-opt,
+  html.beamer.beamer-xl.beamer-xxl .nav-title{font-size:24px;}
+  html.beamer.beamer-xl.beamer-xxl .persona-quote{font-size:23px;}
+
+  @media (max-width:900px){
+    .layout{flex-direction:column;}
+    nav.sidebar{width:100%; max-width:none; border-right:none; border-bottom:1px solid var(--line); position:static;}
+  }
+
+  /* Crosslink */
+  .crosslink{margin:0 28px 20px 28px; font-size:14px; color:var(--muted);}
+  .crosslink a{color:var(--accent);font-weight:700;text-decoration:none;}
+  .crosslink a:hover{text-decoration:underline;}
+  .crosslink ul{margin:8px 0 0;padding-left:20px;}
+  .crosslink li{margin-bottom:4px;}
+  html.beamer .crosslink{display:none;}
+
+  /* Footer */
+  footer.tool-footer{border-top:1px solid var(--line); padding:22px 28px 40px 28px; background:var(--panel);}
+  .footer-grid{display:flex; gap:14px; flex-wrap:wrap;}
+  .footer-box{
+    flex:1 1 260px; background:var(--white); border:1px solid var(--line); border-radius:12px;
+    overflow:hidden;
+  }
+  .footer-box summary{
+    cursor:pointer; padding:12px 14px; font-weight:700; font-size:14px; list-style:none;
+    display:flex; align-items:center; gap:6px; min-height:44px;
+  }
+  .footer-box summary::-webkit-details-marker{display:none;}
+  .footer-box summary::before{content:"\25B8"; color:var(--accent);}
+  .footer-box[open] summary::before{content:"\25BE";}
+  .footer-content{padding:0 14px 14px 14px;}
+  .footer-mono{
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size:14px; white-space:pre-wrap; line-height:1.55; color:var(--sub);
+  }
+  .footer-sans{font-size:16px; line-height:1.6; color:var(--sub);}
+  .footer-sans p{margin:0 0 10px 0;}
+  .footer-sans .regie{font-style:italic; color:var(--muted);}
+  .footer-table{width:100%; border-collapse:collapse; font-size:14px;}
+  .footer-table th, .footer-table td{
+    text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); font-size:14px;
+  }
+  .footer-table th{color:var(--muted); font-weight:700;}
+  @media (max-width:900px){ .footer-grid{flex-direction:column;} }
+
+  .footer-sig{font-size:14px; color:var(--muted); text-align:center; padding:16px 28px 0 28px;}
+  .footer-sig strong{color:var(--ink);}
+  .footer-sig .audit{display:block; margin-top:6px; font-size:14px; color:var(--muted);}
+</style>
+</head>
+<body>
+
+<div class="signature">
+  <strong>Michaela K&uuml;hn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<header class="top">
+  <div class="top-titleblock">
+    <a class="back-link" href="../index.html" data-i18n data-en="&larr; Back to homepage">&larr; Zur&uuml;ck zur Startseite</a>
+    <h1 data-i18n data-en="IREB CPRE Foundation Level &ndash; The Key Statements of Requirements Engineering">IREB CPRE Foundation Level &ndash; Die Kernaussagen des Requirements Engineering</h1>
+    <p class="subtitle" data-i18n data-en="7 learning units per CPRE Foundation Level Syllabus v3.3.0 (1 April 2026) &middot; anchored in the TalentMatch AI case study">7 Lerneinheiten nach CPRE Foundation Level Lehrplan v3.3.0 (1. April 2026) &middot; verankert im Fallbeispiel TalentMatch AI</p>
+  </div>
+  <div class="top-controls">
+    <button type="button" class="ctrl-btn" id="langBtn">DE / EN</button>
+    <button type="button" class="ctrl-btn" id="beamerBtn">&#9728; Beamer</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Lerneinheiten">
+    <div class="passport" id="passport"></div>
+    <p class="passport-label" id="passportLabel" data-i18n data-en="0 / 7 learning units completed">0 / 7 Lerneinheiten abgeschlossen</p>
+    <button type="button" class="nav-item" data-target="le1" id="nav-le1">
+        <span class="nav-stamp" id="stamp-le1" aria-hidden="true">&#9679;</span>
+        <span class="nav-num">LE 1</span>
+        <span class="nav-title" data-i18n data-en="Introduction and Overview of Requirements Engineering">Einfuehrung und Ueberblick zum Requirements Engineering</span>
+      </button>
+
+      <button type="button" class="nav-item" data-target="le2" id="nav-le2">
+        <span class="nav-stamp" id="stamp-le2" aria-hidden="true">&#9679;</span>
+        <span class="nav-num">LE 2</span>
+        <span class="nav-title" data-i18n data-en="Fundamental Principles of Requirements Engineering">Grundlegende Prinzipien des Requirements Engineering</span>
+      </button>
+
+      <button type="button" class="nav-item" data-target="le3" id="nav-le3">
+        <span class="nav-stamp" id="stamp-le3" aria-hidden="true">&#9679;</span>
+        <span class="nav-num">LE 3</span>
+        <span class="nav-title" data-i18n data-en="Work Products and Documentation Practices">Arbeitsprodukte und Dokumentationspraktiken</span>
+      </button>
+
+      <button type="button" class="nav-item" data-target="le4" id="nav-le4">
+        <span class="nav-stamp" id="stamp-le4" aria-hidden="true">&#9679;</span>
+        <span class="nav-num">LE 4</span>
+        <span class="nav-title" data-i18n data-en="Practices for Requirements Elicitation">Praktiken fuer die Erarbeitung von Anforderungen</span>
+      </button>
+
+      <button type="button" class="nav-item" data-target="le5" id="nav-le5">
+        <span class="nav-stamp" id="stamp-le5" aria-hidden="true">&#9679;</span>
+        <span class="nav-num">LE 5</span>
+        <span class="nav-title" data-i18n data-en="Process and Work Structure">Prozess und Arbeitsstruktur</span>
+      </button>
+
+      <button type="button" class="nav-item" data-target="le6" id="nav-le6">
+        <span class="nav-stamp" id="stamp-le6" aria-hidden="true">&#9679;</span>
+        <span class="nav-num">LE 6</span>
+        <span class="nav-title" data-i18n data-en="Practices for Requirements Management">Praktiken fuer das Requirements Management</span>
+      </button>
+
+      <button type="button" class="nav-item" data-target="le7" id="nav-le7">
+        <span class="nav-stamp" id="stamp-le7" aria-hidden="true">&#9679;</span>
+        <span class="nav-num">LE 7</span>
+        <span class="nav-title" data-i18n data-en="Tool Support">Werkzeugunterstuetzung</span>
+      </button>
+
+      <div class="nav-divider" aria-hidden="true"></div>
+
+      <button type="button" class="nav-item nav-item-appendix" data-target="anhang" id="nav-anhang">
+        <span class="nav-stamp nav-stamp-appendix" aria-hidden="true">&#128220;</span>
+        <span class="nav-num" data-i18n data-en="App.">Anh.</span>
+        <span class="nav-title" data-i18n data-en="Appendix: Writing requirements">Anhang: Anforderungen schreiben</span>
+      </button>
+  </nav>
+  <main class="content">
+    <section class="station-panel active" id="panel-le1" data-station="le1">
+      <div class="station-head">
+        <span class="badge badge-num">LE 1</span>
+        <span class="badge badge-k">K2</span>
+        <span class="badge badge-dauer" data-i18n data-en="1 h">1 Std.</span>
+      </div>
+      <h2 data-i18n data-en="Introduction and Overview of Requirements Engineering">Einfuehrung und Ueberblick zum Requirements Engineering</h2>
+      <p class="lernziel"><strong><span data-i18n data-en="Learning objective:">Lernziel:</span></strong> <span data-i18n data-en="Know what RE is about and understand the value of RE.">Wissen, worum es bei RE geht, und den Wert von RE verstehen.</span></p>
+      <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="Requirement, requirements specification, Requirements Engineering (RE), stakeholder, system, requirements engineer">Anforderung, Anforderungsspezifikation, Requirements Engineering (RE), Stakeholder, System, Requirements Engineer</span></p>
+      <h3><span data-i18n data-en="Key points">Kerninhalte</span></h3>
+      <ul class="kern-list">
+        <li><span data-i18n data-en="Three requirement types: &lt;strong&gt;functional requirements&lt;/strong&gt; (behaviour/outcome of a function), &lt;strong&gt;quality requirements&lt;/strong&gt; (e.g. performance, availability, security) and &lt;strong&gt;constraints&lt;/strong&gt; (limit the solution space).">Drei Anforderungsarten: <strong>funktionale Anforderungen</strong> (Verhalten/Ergebnis einer Funktion), <strong>Qualitaetsanforderungen</strong> (z.B. Performance, Verfuegbarkeit, Sicherheit) und <strong>Constraints</strong> (Randbedingungen, die den Loesungsraum einschraenken).</span></li>
+        <li><span data-i18n data-en="Value of RE: reduces the risk of building the wrong system, creates problem understanding, is the basis for effort estimation and testability.">Wert von RE: verringert das Risiko, das falsche System zu bauen, schafft Problemverstaendnis, ist Grundlage fuer Aufwandsschaetzung und Testbarkeit.</span></li>
+        <li><span data-i18n data-en="Typical symptoms of poor RE: starting development immediately, communication problems, assuming implicit knowledge, insufficient RE training.">Typische Symptome mangelhaften RE: sofort mit der Entwicklung beginnen, Kommunikationsprobleme, Annahme impliziten Wissens, unzureichende RE-Ausbildung.</span></li>
+        <li><span data-i18n data-en="Requirements engineer is not a job title but a &lt;strong&gt;role&lt;/strong&gt; - performed by business analysts, product owners, systems engineers, sometimes developers.">RE ist keine Berufsbezeichnung, sondern eine <strong>Rolle</strong> - ausgeuebt von Business-Analysten, Product Ownern, Systemingenieuren, teils auch Entwicklern.</span></li>
+        <li><span data-i18n data-en="Four main RE tasks: elicitation, documentation, validation, management - supported by tools.">Vier Hauptaufgaben im RE: Ermittlung, Dokumentation, Validierung, Verwaltung - unterstuetzt durch Werkzeuge.</span></li>
+      </ul>
+      <div class="beispiel-box">
+        <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
+        <p><span data-i18n data-en="At &lt;strong&gt;TalentMatch AI&lt;/strong&gt; (Vantera Systemtechnik GmbH), the symptoms of poor RE show up early: HR lead Ms. Yildiz wants “an AI tool that pre-sorts applications“ - an implicit, unspecified requirement. Only by cleanly separating this into a functional requirement (pre-sorting by defined criteria), a quality requirement (freedom from bias, traceability) and a constraint (EU AI Act Annex III No. 4 - high-risk classification) does the system become tangible.">Bei <strong>TalentMatch AI</strong> (Vantera Systemtechnik GmbH) zeigt sich frueh die Symptomatik mangelhaften RE: HR-Leitung Frau Yildiz wuenscht sich „ein KI-Tool, das Bewerbungen vorsortiert“ - eine implizite, nicht spezifizierte Anforderung. Erst die saubere Trennung in funktionale Anforderung (Vorsortierung nach definierten Kriterien), Qualitaetsanforderung (Bias-Freiheit, Nachvollziehbarkeit) und Constraint (EU AI Act Annex III Nr. 4 - Hochrisiko-Einstufung) macht das System greifbar.</span></p>
+        <div class="persona-line">
+          <span class="persona-name">Ela</span>
+          <span class="persona-quote"><span data-i18n data-en="“Before we write a single line of code, we first separate: what should the system do, how well should it do it, and what are we not allowed to do differently?“">„Bevor wir auch nur eine Zeile Code schreiben, trennen wir erstmal: Was soll das System tun, wie gut soll es das tun, und was duerfen wir gar nicht anders machen?“</span></span>
+        </div>
+      </div>
+      <div class="quiz-box" data-correct="1">
+        <h4>&#10067; <span data-i18n data-en="Mini quiz">Mini-Quiz</span></h4>
+        <p class="quiz-q"><span data-i18n data-en="Ms. Yildiz says: “The system must not disadvantage applicants based on their gender.“ Which requirement type does this primarily represent under IREB classification?">Frau Yildiz sagt: „Das System darf keine Bewerbenden aufgrund ihres Geschlechts benachteiligen.“ Um welche Anforderungsart handelt es sich nach IREB-Klassifikation vorrangig?</span></p>
+        <div class="quiz-opts">
+          <button type="button" class="quiz-opt" data-idx="0"><span data-i18n data-en="Functional requirement">Funktionale Anforderung</span></button>
+          <button type="button" class="quiz-opt" data-idx="1"><span data-i18n data-en="Quality requirement">Qualitaetsanforderung</span></button>
+          <button type="button" class="quiz-opt" data-idx="2"><span data-i18n data-en="Constraint">Constraint (Randbedingung)</span></button>
+        </div>
+        <p class="quiz-feedback" hidden></p>
+        <p class="quiz-expl" hidden><span data-i18n data-en="Freedom from discrimination is a quality aspect (here: fairness/non-discrimination) not covered by a single function - hence a quality requirement.">Diskriminierungsfreiheit betrifft einen Qualitaetsaspekt (hier: Fairness/Nicht-Diskriminierung), der nicht durch eine einzelne Funktion abgedeckt wird - daher Qualitaetsanforderung.</span></p>
+      </div>
+      <div class="station-footer-nav">
+        <button type="button" class="nav-btn prev-btn" disabled><span data-i18n data-en="&amp;larr; Back">&larr; Zurueck</span></button>
+        <button type="button" class="nav-btn next-btn" ><span data-i18n data-en="Next &amp;rarr;">Weiter &rarr;</span></button>
+      </div>
+    </section>
+
+    <section class="station-panel" id="panel-le2" data-station="le2">
+      <div class="station-head">
+        <span class="badge badge-num">LE 2</span>
+        <span class="badge badge-k">K2</span>
+        <span class="badge badge-dauer" data-i18n data-en="1 h 30 min">1 Std. 30 Min.</span>
+      </div>
+      <h2 data-i18n data-en="Fundamental Principles of Requirements Engineering">Grundlegende Prinzipien des Requirements Engineering</h2>
+      <p class="lernziel"><strong><span data-i18n data-en="Learning objective:">Lernziel:</span></strong> <span data-i18n data-en="Know and understand the nine RE principles.">Die neun Prinzipien des RE kennen und verstehen.</span></p>
+      <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="Context, requirement, Requirements Engineering (RE), stakeholder, shared understanding, validation">Kontext, Anforderung, Requirements Engineering (RE), Stakeholder, gemeinsames Verstaendnis, Validierung</span></p>
+      <h3><span data-i18n data-en="Key points">Kerninhalte</span></h3>
+      <ul class="kern-list">
+        <li><span data-i18n data-en="Nine principles: &lt;strong&gt;1&lt;/strong&gt; value orientation, &lt;strong&gt;2&lt;/strong&gt; stakeholders, &lt;strong&gt;3&lt;/strong&gt; shared understanding, &lt;strong&gt;4&lt;/strong&gt; context, &lt;strong&gt;5&lt;/strong&gt; problem-requirement-solution, &lt;strong&gt;6&lt;/strong&gt; validation, &lt;strong&gt;7&lt;/strong&gt; evolution, &lt;strong&gt;8&lt;/strong&gt; innovation, &lt;strong&gt;9&lt;/strong&gt; systematic and disciplined work.">Neun Prinzipien: <strong>1</strong> Wertorientierung, <strong>2</strong> Stakeholder, <strong>3</strong> gemeinsames Verstaendnis, <strong>4</strong> Kontext, <strong>5</strong> Problem-Anforderung-Loesung, <strong>6</strong> Validierung, <strong>7</strong> Evolution, <strong>8</strong> Innovation, <strong>9</strong> systematische und disziplinierte Arbeit.</span></li>
+        <li><span data-i18n data-en="Principle 3 distinguishes &lt;strong&gt;explicit&lt;/strong&gt; (documented/agreed) and &lt;strong&gt;implicit&lt;/strong&gt; shared understanding (shared knowledge, context).">Prinzip 3 unterscheidet <strong>explizites</strong> (dokumentiert/vereinbart) und <strong>implizites</strong> gemeinsames Verstaendnis (geteiltes Wissen, Kontext).</span></li>
+        <li><span data-i18n data-en="Principle 4: system boundary and context boundary separate the RE-relevant part of the environment from the rest of the world - both are often initially unclear and change over time.">Prinzip 4: Systemgrenze und Kontextgrenze trennen den RE-relevanten Teil der Umgebung vom Rest der Welt - beide sind anfangs oft unscharf und aendern sich.</span></li>
+        <li><span data-i18n data-en="Principle 7: changing requirements are the normal case, not an accident - requirements engineers must both allow change AND keep requirements stable.">Prinzip 7: Sich aendernde Anforderungen sind der Normalfall, nicht der Unfall - Requirements Engineers muessen Aenderung zulassen UND Anforderungen stabil halten.</span></li>
+        <li><span data-i18n data-en="Principle 9: there is no one-size-fits-all process - processes and practices must be tailored to problem, context and working environment.">Prinzip 9: Es gibt keinen „one-size-fits-all“-Prozess - Prozesse und Praktiken muessen an Problem, Kontext und Arbeitsumgebung angepasst werden.</span></li>
+      </ul>
+      <div class="beispiel-box">
+        <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
+        <p><span data-i18n data-en="Principle 5 (problem-requirement-solution) is clearly visible at TalentMatch AI: the &lt;strong&gt;problem&lt;/strong&gt; (too-long time-to-hire, subjective pre-selection), the &lt;strong&gt;requirement&lt;/strong&gt; (objectified, traceable pre-sorting) and the &lt;strong&gt;solution&lt;/strong&gt; (ML-based scoring) must not be conflated - Petra (QA) insists the problem is sharpened first before the AI solution is discussed.">Prinzip 5 (Problem-Anforderung-Loesung) zeigt sich bei TalentMatch AI deutlich: Das <strong>Problem</strong> (zu lange Time-to-Hire, subjektive Vorauswahl), die <strong>Anforderung</strong> (objektivierte, nachvollziehbare Vorsortierung) und die <strong>Loesung</strong> (ML-gestuetztes Scoring) duerfen nicht vermischt werden - Petra (QM) besteht darauf, dass zuerst das Problem geschaerft wird, bevor ueber die KI-Loesung gesprochen wird.</span></p>
+        <div class="persona-line">
+          <span class="persona-name">Petra</span>
+          <span class="persona-quote"><span data-i18n data-en="“We are talking about a solution before we have even cleanly stated the problem. Problem first, then the requirement - the solution comes last.“">„Wir reden hier ueber eine Loesung, bevor wir das Problem ueberhaupt sauber formuliert haben. Erst das Problem, dann die Anforderung - die Loesung kommt zuletzt.“</span></span>
+        </div>
+      </div>
+      <div class="quiz-box" data-correct="0">
+        <h4>&#10067; <span data-i18n data-en="Mini quiz">Mini-Quiz</span></h4>
+        <p class="quiz-q"><span data-i18n data-en="Mr. Bachmeier wants to start implementing a scoring algorithm directly, without first clarifying stakeholder needs. Which principle does this primarily violate?">Herr Bachmeier will direkt mit der Implementierung eines Scoring-Algorithmus beginnen, ohne vorher Stakeholder-Beduerfnisse zu klaeren. Gegen welches Prinzip verstoesst das primaer?</span></p>
+        <div class="quiz-opts">
+          <button type="button" class="quiz-opt" data-idx="0"><span data-i18n data-en="Principle 2 - Stakeholders">Prinzip 2 - Stakeholder</span></button>
+          <button type="button" class="quiz-opt" data-idx="1"><span data-i18n data-en="Principle 8 - Innovation">Prinzip 8 - Innovation</span></button>
+          <button type="button" class="quiz-opt" data-idx="2"><span data-i18n data-en="Principle 6 - Validation">Prinzip 6 - Validierung</span></button>
+        </div>
+        <p class="quiz-feedback" hidden></p>
+        <p class="quiz-expl" hidden><span data-i18n data-en="RE is about satisfying stakeholders&#x27; wishes and needs (Principle 2) - without clarifying them, there is no basis for any further RE activity.">Im RE geht es darum, die Wuensche und Beduerfnisse der Stakeholder zu befriedigen (Prinzip 2) - ohne deren Klaerung fehlt die Grundlage fuer jede weitere RE-Taetigkeit.</span></p>
+      </div>
+      <div class="station-footer-nav">
+        <button type="button" class="nav-btn prev-btn" ><span data-i18n data-en="&amp;larr; Back">&larr; Zurueck</span></button>
+        <button type="button" class="nav-btn next-btn" ><span data-i18n data-en="Next &amp;rarr;">Weiter &rarr;</span></button>
+      </div>
+    </section>
+
+    <section class="station-panel" id="panel-le3" data-station="le3">
+      <div class="station-head">
+        <span class="badge badge-num">LE 3</span>
+        <span class="badge badge-k">K3</span>
+        <span class="badge badge-dauer" data-i18n data-en="7 h">7 Std.</span>
+      </div>
+      <h2 data-i18n data-en="Work Products and Documentation Practices">Arbeitsprodukte und Dokumentationspraktiken</h2>
+      <p class="lernziel"><strong><span data-i18n data-en="Learning objective:">Lernziel:</span></strong> <span data-i18n data-en="Understand the role of work products in RE and be able to create work products.">Die Rolle von Arbeitsprodukten im RE verstehen und in der Lage sein, Arbeitsprodukte zu erstellen.</span></p>
+      <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="Work product, natural-language work products, template-based work products, model-based work products, glossary, quality criteria, requirements specification">Arbeitsprodukt, natuerlichsprachige Arbeitsprodukte, vorlagenbasierte Arbeitsprodukte, modellbasierte Arbeitsprodukte, Glossar, Qualitaetskriterien, Anforderungsspezifikation</span></p>
+      <h3><span data-i18n data-en="Key points">Kerninhalte</span></h3>
+      <ul class="kern-list">
+        <li><span data-i18n data-en="Three representation forms: &lt;strong&gt;natural language&lt;/strong&gt; (expressive but ambiguous), &lt;strong&gt;template-based&lt;/strong&gt; (sentence templates, form templates, document templates) and &lt;strong&gt;model-based&lt;/strong&gt; (context, structure/data, function/flow, state models).">Drei Darstellungsformen: <strong>natuerlichsprachig</strong> (ausdrucksstark, aber mehrdeutig), <strong>vorlagenbasiert</strong> (Satzschablonen, Formularvorlagen, Dokumentvorlagen) und <strong>modellbasiert</strong> (Kontext-, Struktur/Daten-, Funktion/Ablauf-, Zustandsmodelle).</span></li>
+        <li><span data-i18n data-en="Sentence templates for individual requirements/user stories, form templates for use cases - reduce the shortcomings of natural language, but risk making form more important than content.">Satzschablonen fuer Einzelanforderungen/User Storys, Formularvorlagen fuer Use Cases - reduzieren Unzulaenglichkeiten natuerlicher Sprache, bergen aber die Gefahr, dass die Form wichtiger wird als der Inhalt.</span></li>
+        <li><span data-i18n data-en="UML model types: class diagram (structure/data), activity diagram (function/flow), state diagram/statechart (state/behaviour), use case diagram, context diagram.">Modelltypen (UML): Klassendiagramm (Struktur/Daten), Aktivitaetsdiagramm (Funktion/Ablauf), Zustandsdiagramm/Statechart (Zustand/Verhalten), Use-Case-Diagramm, Kontextdiagramm.</span></li>
+        <li><span data-i18n data-en="&lt;strong&gt;Glossary&lt;/strong&gt;: a central, maintained collection of term definitions - flag synonyms, avoid homonyms, single point of ownership, mandatory use across the project."><strong>Glossar</strong>: zentrale, gepflegte Sammlung von Begriffsdefinitionen - Synonyme kennzeichnen, Homonyme vermeiden, zentral verantwortlich, verpflichtend im Projekt.</span></li>
+        <li><span data-i18n data-en="Quality criteria for individual requirements: adequate, necessary, unambiguous, complete, understandable, verifiable. For work products covering several requirements, additionally: consistent, non-redundant, modifiable, traceable, conforming.">Qualitaetskriterien fuer Einzelanforderungen: adaequat, notwendig, eindeutig, vollstaendig, verstaendlich, pruefbar. Fuer Arbeitsprodukte mit mehreren Anforderungen zusaetzlich: konsistent, nicht redundant, modifizierbar, verfolgbar, konform.</span></li>
+      </ul>
+      <div class="beispiel-box">
+        <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
+        <p><span data-i18n data-en="For TalentMatch AI, Knut documents the core function as a user story via sentence template: “As a recruiter, I want to see pre-sorted candidate profiles with a score rationale, so that I can make my pre-selection traceably.“ In parallel, a context diagram is created (system TalentMatch AI, actors: recruiter, applicant system, ATS interface) along with a project-wide &lt;strong&gt;glossary&lt;/strong&gt; containing terms such as “score“, “bias threshold“ and “high-risk AI system“ (EU AI Act terminology).">Fuer TalentMatch AI dokumentiert Knut die Kernfunktion als User Story per Satzschablone: „Als Recruiterin moechte ich vorsortierte Kandidatenprofile mit Score-Begruendung sehen, damit ich meine Vorauswahl nachvollziehbar treffen kann.“ Parallel entsteht ein Kontextdiagramm (System TalentMatch AI, Akteure: Recruiter, Bewerbendensystem, ATS-Schnittstelle) sowie ein projektweites <strong>Glossar</strong> mit Begriffen wie „Score“, „Bias-Schwellenwert“ und „Hochrisiko-KI-System“ (EU-AI-Act-Terminologie).</span></p>
+        <div class="persona-line">
+          <span class="persona-name">Knut</span>
+          <span class="persona-quote"><span data-i18n data-en="“The user story alone is not enough for me - without the context diagram I do not even know which ATS interface I need to build.“">„Die User Story allein reicht mir nicht - ohne das Kontextdiagramm weiss ich nicht, welche Schnittstelle zum ATS ich ueberhaupt bauen muss.“</span></span>
+        </div>
+      </div>
+      <div class="quiz-box" data-correct="1">
+        <h4>&#10067; <span data-i18n data-en="Mini quiz">Mini-Quiz</span></h4>
+        <p class="quiz-q"><span data-i18n data-en="Which quality criterion does IREB consider one of the two most important for an individual requirement, without which it is “useless or even harmful“?">Welches Qualitaetskriterium gilt laut IREB als eines der zwei wichtigsten fuer eine Einzelanforderung, ohne das sie „nutzlos oder sogar schaedlich“ ist?</span></p>
+        <div class="quiz-opts">
+          <button type="button" class="quiz-opt" data-idx="0"><span data-i18n data-en="Conforming">Konform</span></button>
+          <button type="button" class="quiz-opt" data-idx="1"><span data-i18n data-en="Adequate / Understandable">Adaequat / Verstaendlich</span></button>
+          <button type="button" class="quiz-opt" data-idx="2"><span data-i18n data-en="Modifiable">Modifizierbar</span></button>
+        </div>
+        <p class="quiz-feedback" hidden></p>
+        <p class="quiz-expl" hidden><span data-i18n data-en="Per the syllabus, adequacy and understandability are the most important criteria for individual requirements - without them a requirement is useless or even harmful, regardless of the other criteria.">Adaequatheit und Verstaendlichkeit sind laut Lehrplan die wichtigsten Kriterien fuer einzelne Anforderungen - ohne sie ist eine Anforderung nutzlos oder sogar schaedlich, unabhaengig von den uebrigen Kriterien.</span></p>
+      </div>
+      <div class="station-footer-nav">
+        <button type="button" class="nav-btn prev-btn" ><span data-i18n data-en="&amp;larr; Back">&larr; Zurueck</span></button>
+        <button type="button" class="nav-btn next-btn" ><span data-i18n data-en="Next &amp;rarr;">Weiter &rarr;</span></button>
+      </div>
+    </section>
+
+    <section class="station-panel" id="panel-le4" data-station="le4">
+      <div class="station-head">
+        <span class="badge badge-num">LE 4</span>
+        <span class="badge badge-k">K3</span>
+        <span class="badge badge-dauer" data-i18n data-en="4 h 30 min">4 Std. 30 Min.</span>
+      </div>
+      <h2 data-i18n data-en="Practices for Requirements Elicitation">Praktiken fuer die Erarbeitung von Anforderungen</h2>
+      <p class="lernziel"><strong><span data-i18n data-en="Learning objective:">Lernziel:</span></strong> <span data-i18n data-en="Be able to apply practices to identify requirement sources, elicit requirements, resolve conflicts and validate requirements.">Praktiken zur Identifizierung von Anforderungsquellen, zur Ermittlung, zur Konfliktloesung und zur Validierung anwenden koennen.</span></p>
+      <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="Requirements source, system boundary, system context, requirements elicitation, requirements validation, stakeholder, Kano model, conflict, conflict resolution">Anforderungsquelle, Systemgrenze, Systemkontext, Anforderungsermittlung, Anforderungsvalidierung, Stakeholder, Kano-Modell, Konflikt, Konfliktloesung</span></p>
+      <h3><span data-i18n data-en="Key points">Kerninhalte</span></h3>
+      <ul class="kern-list">
+        <li><span data-i18n data-en="Three source types: &lt;strong&gt;stakeholders&lt;/strong&gt;, &lt;strong&gt;documents&lt;/strong&gt; (process documents, legal/regulatory documents), &lt;strong&gt;systems&lt;/strong&gt; (legacy/existing systems).">Drei Quelltypen: <strong>Stakeholder</strong>, <strong>Dokumente</strong> (Prozessdokumente, rechtliche/regulatorische Dokumente), <strong>Systeme</strong> (Alt-/Bestandssysteme).</span></li>
+        <li><span data-i18n data-en="&lt;strong&gt;Kano model&lt;/strong&gt; classifies requirements into delighters, satisfiers (performance factors) and dissatisfiers (basic factors)."><strong>Kano-Modell</strong> klassifiziert Anforderungen in Begeisterungsfaktoren (Delighters), Leistungsfaktoren (Satisfiers) und Basisfaktoren (Dissatisfiers).</span></li>
+        <li><span data-i18n data-en="Elicitation techniques (four categories: questioning, collaboration, observation, artefact-based techniques) vs. design and idea-generation techniques (brainstorming, prototyping, design thinking).">Erhebungstechniken (vier Kategorien: Frage-, Kollaborations-, Beobachtungs-, artefaktbasierte Techniken) vs. Entwurfs- und Ideenfindungstechniken (Brainstorming, Prototyping, Design Thinking).</span></li>
+        <li><span data-i18n data-en="Six conflict types: fact, data, interest, value, relationship, structural conflict. Resolution techniques: agreement, compromise, voting, higher authority, variant creation.">Sechs Konflikttypen: Sach-, Daten-, Interessen-, Werte-, Beziehungs-, Strukturkonflikt. Loesungstechniken: Einigung, Kompromiss, Abstimmung, Ober-sticht-Unter, Variantenbildung.</span></li>
+        <li><span data-i18n data-en="Validation checks four aspects: involving the right stakeholders, separating defect detection from correction, validating from different views, repeated validation.">Validierung prueft vier Aspekte: Beteiligung der richtigen Stakeholder, Trennung von Fehlererkennung/-korrektur, Validierung aus unterschiedlichen Sichten, wiederholte Validierung.</span></li>
+      </ul>
+      <div class="beispiel-box">
+        <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
+        <p><span data-i18n data-en="Sarah (Sales) and Petra (QA) run into an &lt;strong&gt;interest conflict&lt;/strong&gt;: Sarah wants fast time-to-market, Petra insists on thorough bias testing before go-live. The resolution uses a &lt;strong&gt;decision matrix&lt;/strong&gt; (a supporting technique), resulting in a staged rollout with mandatory bias review before every new user group - a compromise that partially satisfies both interests.">Sarah (Vertrieb) und Petra (QM) geraten in einen <strong>Interessenkonflikt</strong>: Sarah will schnelle Time-to-Market, Petra besteht auf ausfuehrlicher Bias-Testung vor Go-Live. Die Loesung erfolgt ueber eine <strong>Entscheidungsmatrix</strong> (unterstuetzende Technik) mit dem Ergebnis: gestufter Rollout mit verpflichtender Bias-Pruefung vor jeder neuen Nutzergruppe - ein Kompromiss, der beiden Interessen teilweise gerecht wird.</span></p>
+        <div class="persona-line">
+          <span class="persona-name">Sarah</span>
+          <span class="persona-quote"><span data-i18n data-en="“I get Petra&#x27;s point, but if we wait another week, the competition gets there first. Let us build a matrix and decide objectively.“">„Ich verstehe Petras Punkt, aber wenn wir jede Woche warten, ist der Wettbewerb schneller. Lass uns eine Matrix bauen und objektiv entscheiden.“</span></span>
+        </div>
+      </div>
+      <div class="quiz-box" data-correct="1">
+        <h4>&#10067; <span data-i18n data-en="Mini quiz">Mini-Quiz</span></h4>
+        <p class="quiz-q"><span data-i18n data-en="Under IREB classification, the conflict between Sarah (time-to-market) and Petra (bias testing) is primarily a:">Der Konflikt zwischen Sarah (Time-to-Market) und Petra (Bias-Testung) ist laut IREB-Klassifikation primaer ein:</span></p>
+        <div class="quiz-opts">
+          <button type="button" class="quiz-opt" data-idx="0"><span data-i18n data-en="Data conflict">Datenkonflikt</span></button>
+          <button type="button" class="quiz-opt" data-idx="1"><span data-i18n data-en="Interest conflict">Interessenkonflikt</span></button>
+          <button type="button" class="quiz-opt" data-idx="2"><span data-i18n data-en="Structural conflict">Strukturkonflikt</span></button>
+        </div>
+        <p class="quiz-feedback" hidden></p>
+        <p class="quiz-expl" hidden><span data-i18n data-en="Both sides agree on the facts but pursue different, partly opposing goals/priorities - this is the definition of an interest conflict.">Beide Seiten sind sich ueber Fakten einig, verfolgen aber unterschiedliche, teils gegensaetzliche Ziele/Prioritaeten - das ist die Definition eines Interessenkonflikts.</span></p>
+      </div>
+      <div class="station-footer-nav">
+        <button type="button" class="nav-btn prev-btn" ><span data-i18n data-en="&amp;larr; Back">&larr; Zurueck</span></button>
+        <button type="button" class="nav-btn next-btn" ><span data-i18n data-en="Next &amp;rarr;">Weiter &rarr;</span></button>
+      </div>
+    </section>
+
+    <section class="station-panel" id="panel-le5" data-station="le5">
+      <div class="station-head">
+        <span class="badge badge-num">LE 5</span>
+        <span class="badge badge-k">K3</span>
+        <span class="badge badge-dauer" data-i18n data-en="1 h 15 min">1 Std. 15 Min.</span>
+      </div>
+      <h2 data-i18n data-en="Process and Work Structure">Prozess und Arbeitsstruktur</h2>
+      <p class="lernziel"><strong><span data-i18n data-en="Learning objective:">Lernziel:</span></strong> <span data-i18n data-en="Be able to explain the concepts of an RE process and apply suitable process configurations.">Die Konzepte eines RE-Prozesses erklaeren und geeignete Prozesskonfigurationen anwenden koennen.</span></p>
+      <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="Process, RE process">Prozess, RE-Prozess</span></p>
+      <h3><span data-i18n data-en="Key points">Kerninhalte</span></h3>
+      <ul class="kern-list">
+        <li><span data-i18n data-en="Three process-design facets: &lt;strong&gt;time facet&lt;/strong&gt; (linear vs. iterative), &lt;strong&gt;purpose facet&lt;/strong&gt; (prescriptive vs. exploratory), &lt;strong&gt;target facet&lt;/strong&gt; (customer-specific vs. market-oriented).">Drei Facetten der Prozessgestaltung: <strong>Zeitfacette</strong> (linear vs. iterativ), <strong>Zweckfacette</strong> (praeskriptiv vs. explorativ), <strong>Zielfacette</strong> (kundenspezifisch vs. marktorientiert).</span></li>
+        <li><span data-i18n data-en="Three typical process configurations: &lt;strong&gt;participatory&lt;/strong&gt; (iterative - exploratory - customer-specific), &lt;strong&gt;contractual&lt;/strong&gt; (linear - prescriptive - customer-specific), &lt;strong&gt;product-oriented&lt;/strong&gt; (iterative - exploratory - market-oriented).">Drei typische Prozesskonfigurationen: <strong>Partizipativ</strong> (iterativ - explorativ - kundenspezifisch), <strong>Vertraglich</strong> (linear - praeskriptiv - kundenspezifisch), <strong>Produktorientiert</strong> (iterativ - explorativ - marktorientiert).</span></li>
+        <li><span data-i18n data-en="Influencing factors on the RE process: fit with the overall process, development context, stakeholder availability, complexity/criticality, time/budget, requirements volatility.">Einflussfaktoren auf den RE-Prozess: Passung zum Gesamtprozess, Entwicklungskontext, Stakeholder-Verfuegbarkeit, Komplexitaet/Kritikalitaet, Zeit/Budget, Volatilitaet der Anforderungen.</span></li>
+        <li><span data-i18n data-en="Five steps to configure a process: analyse influencing factors, assess facet criteria, configure the process, determine work products, select practices.">Fuenf Schritte zur Konfiguration: Einflussfaktoren analysieren, Facettenkriterien beurteilen, Prozess konfigurieren, Arbeitsprodukte bestimmen, Praktiken auswaehlen.</span></li>
+        <li><span data-i18n data-en="Important note: the criteria are heuristics, not fixed rules - e.g. an outsourcing contract can also be negotiated on an exploratory basis.">Wichtiger Hinweis: Kriterien sind Heuristiken, keine festen Regeln - z.B. kann auch ein Outsourcing-Vertrag auf explorativer Basis verhandelt werden.</span></li>
+      </ul>
+      <div class="beispiel-box">
+        <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
+        <p><span data-i18n data-en="For TalentMatch AI, Vantera chooses a &lt;strong&gt;participatory RE process&lt;/strong&gt; (iterative - exploratory - customer-specific): the ML model parameters are not fully known upfront, Mr. Bachmeier and Petra provide continuous feedback in short sprints, and the high level of regulation (EU AI Act) requires close-meshed validation rather than a one-off contractual specification.">Vantera waehlt fuer TalentMatch AI einen <strong>partizipativen RE-Prozess</strong> (iterativ - explorativ - kundenspezifisch): Die ML-Modellparameter sind zu Beginn nicht abschliessend bekannt, Herr Bachmeier und Petra liefern kontinuierliches Feedback in kurzen Sprints, und der hohe Regulierungsgrad (EU AI Act) erfordert engmaschige Validierung statt einer einmaligen Vertragsspezifikation.</span></p>
+        <div class="persona-line">
+          <span class="persona-name">Ela</span>
+          <span class="persona-quote"><span data-i18n data-en="“A contractual, linear process would fail here - at the start, we simply do not yet know exactly how the model will behave.“">„Ein vertraglicher, linearer Prozess wuerde hier scheitern - wir wissen zu Beginn schlicht nicht genau, wie das Modell sich verhalten wird.“</span></span>
+        </div>
+      </div>
+      <div class="quiz-box" data-correct="1">
+        <h4>&#10067; <span data-i18n data-en="Mini quiz">Mini-Quiz</span></h4>
+        <p class="quiz-q"><span data-i18n data-en="Why is a contractual RE process (linear - prescriptive - customer-specific) unsuitable for TalentMatch AI?">Warum ist ein vertraglicher RE-Prozess (linear - praeskriptiv - kundenspezifisch) fuer TalentMatch AI ungeeignet?</span></p>
+        <div class="quiz-opts">
+          <button type="button" class="quiz-opt" data-idx="0"><span data-i18n data-en="Because Vantera has no customer">Weil Vantera keinen Kunden hat</span></button>
+          <button type="button" class="quiz-opt" data-idx="1"><span data-i18n data-en="Because ML model behaviour and requirements only emerge iteratively">Weil ML-Modellverhalten und Anforderungen sich erst iterativ herausbilden</span></button>
+          <button type="button" class="quiz-opt" data-idx="2"><span data-i18n data-en="Because the project is market-oriented">Weil das Projekt marktorientiert ist</span></button>
+        </div>
+        <p class="quiz-feedback" hidden></p>
+        <p class="quiz-expl" hidden><span data-i18n data-en="A contractual, linear process assumes requirements are fully known upfront - for ML systems with uncertain model behaviour, that is not the case.">Ein vertraglicher, linearer Prozess setzt voraus, dass Anforderungen im Voraus vollstaendig bekannt sind - bei ML-Systemen mit unsicherem Modellverhalten ist das nicht gegeben.</span></p>
+      </div>
+      <div class="station-footer-nav">
+        <button type="button" class="nav-btn prev-btn" ><span data-i18n data-en="&amp;larr; Back">&larr; Zurueck</span></button>
+        <button type="button" class="nav-btn next-btn" ><span data-i18n data-en="Next &amp;rarr;">Weiter &rarr;</span></button>
+      </div>
+    </section>
+
+    <section class="station-panel" id="panel-le6" data-station="le6">
+      <div class="station-head">
+        <span class="badge badge-num">LE 6</span>
+        <span class="badge badge-k">K2</span>
+        <span class="badge badge-dauer" data-i18n data-en="2 h">2 Std.</span>
+      </div>
+      <h2 data-i18n data-en="Practices for Requirements Management">Praktiken fuer das Requirements Management</h2>
+      <p class="lernziel"><strong><span data-i18n data-en="Learning objective:">Lernziel:</span></strong> <span data-i18n data-en="Understand the need for and benefit of requirements management.">Notwendigkeit und Nutzen von Requirements Management verstehen.</span></p>
+      <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="Requirements management, change management, traceability, requirement attributes, requirements lifecycle, prioritization">Requirements Management, Aenderungsmanagement, Verfolgbarkeit (Traceability), Anforderungsattribute, Anforderungslebenszyklus, Priorisierung</span></p>
+      <h3><span data-i18n data-en="Key points">Kerninhalte</span></h3>
+      <ul class="kern-list">
+        <li><span data-i18n data-en="&lt;strong&gt;Lifecycle management&lt;/strong&gt;: every work product has its own lifecycle (created, evaluated/refined, reviewed, revised, consolidated, agreed)."><strong>Lebenszyklusverwaltung</strong>: jedes Arbeitsprodukt hat einen eigenen Lebenszyklus (erstellt, bewertet/verfeinert, ueberprueft, ueberarbeitet, konsolidiert, vereinbart).</span></li>
+        <li><span data-i18n data-en="&lt;strong&gt;Configuration&lt;/strong&gt; (a consistent collection, at most one version per work product) vs. &lt;strong&gt;baseline&lt;/strong&gt; (a stable, change-controlled configuration for release planning)."><strong>Konfiguration</strong> (konsistente Zusammenstellung, hoechstens eine Version je Arbeitsprodukt) vs. <strong>Basislinie</strong> (stabile, aenderungskontrollierte Konfiguration fuer Release-Planung).</span></li>
+        <li><span data-i18n data-en="&lt;strong&gt;Traceability&lt;/strong&gt;: tracing a requirement back to its origin and forward to test cases/successor work products - implicit (structure/standardisation) or explicit (references, matrices, links)."><strong>Verfolgbarkeit</strong>: Anforderung zurueck zum Ursprung und weiter zu Testfaellen/Nachfolge-Arbeitsprodukten nachverfolgen - implizit (Struktur/Standardisierung) oder explizit (Referenzen, Matrizen, Links).</span></li>
+        <li><span data-i18n data-en="Three view types: selective, projective, condensing - usually combined for reporting.">Drei Sichtentypen: selektiv, projektiv, verdichtend - meist als Kombination fuer Berichte genutzt.</span></li>
+        <li><span data-i18n data-en="Prioritization: ad-hoc vs. analytical techniques; steps from clarifying goals through defining criteria to execution.">Priorisierung: Ad-hoc- vs. analytische Techniken; Schritte von Zielklaerung ueber Kriteriendefinition bis Durchfuehrung.</span></li>
+      </ul>
+      <div class="babok-box">
+        <h4>&#128279; <span data-i18n data-en="Cross-reference: BABOK&reg; Guide v3 &ndash; Knowledge Area 5">Querverweis: BABOK&reg; Guide v3 &ndash; Wissensbereich 5</span></h4>
+        <p><span data-i18n data-en="BABOK&reg; Guide v3 (IIBA) covers largely the same subject matter in Knowledge Area 5, &quot;Requirements Life Cycle Management&quot; (Tasks 5.1&ndash;5.5, unchanged since 2015). The concepts map closely, but not one-to-one:">Der BABOK&reg; Guide v3 (IIBA) behandelt weitgehend denselben Gegenstand im Wissensbereich 5, &bdquo;Requirements Life Cycle Management&ldquo; (Tasks 5.1&ndash;5.5, unveraendert seit 2015). Die Konzepte sind eng verwandt, aber nicht deckungsgleich:</span></p>
+        <table class="req-table">
+          <thead><tr>
+            <th data-i18n data-en="IREB (LE6)">IREB (LE6)</th>
+            <th data-i18n data-en="BABOK v3 (KA5)">BABOK v3 (WB5)</th>
+          </tr></thead>
+          <tbody>
+            <tr><td data-i18n data-en="Traceability">Verfolgbarkeit</td><td><span data-i18n data-en="5.1 Trace Requirements">5.1 Trace Requirements</span></td></tr>
+            <tr><td data-i18n data-en="Lifecycle management / version control / configurations">Lebenszyklusverwaltung / Versionskontrolle / Konfigurationen</td><td><span data-i18n data-en="5.2 Maintain Requirements">5.2 Maintain Requirements</span></td></tr>
+            <tr><td data-i18n data-en="Prioritization">Priorisierung</td><td><span data-i18n data-en="5.3 Prioritize Requirements">5.3 Prioritize Requirements</span></td></tr>
+            <tr><td data-i18n data-en="Handling changes">Umgang mit Aenderungen</td><td><span data-i18n data-en="5.4 Assess Requirements Changes">5.4 Assess Requirements Changes</span></td></tr>
+            <tr><td data-i18n data-en="No dedicated equivalent &ndash; handled implicitly under baselines">Kein eigenstaendiges Pendant &ndash; wird implizit unter Basislinien mitbehandelt</td><td><span data-i18n data-en="5.5 Approve Requirements">5.5 Approve Requirements</span></td></tr>
+          </tbody>
+        </table>
+        <p><span data-i18n data-en="Key difference: BABOK defines an explicit, separate approval step (5.5) as its own task with dedicated techniques (e.g. sign-off, decision records). The IREB Foundation Level syllabus does not name a comparable standalone sub-chapter &ndash; approval is addressed implicitly as part of baselining (LE6.4) and view management (LE6.5), not as its own practice.">Wesentlicher Unterschied: BABOK definiert mit 5.5 einen expliziten, eigenstaendigen Freigabeschritt als eigene Task mit dedizierten Techniken (z.&nbsp;B. Sign-off, Entscheidungsprotokolle). Der IREB-Foundation-Level-Lehrplan benennt kein vergleichbares eigenstaendiges Unterkapitel &ndash; Freigabe wird implizit im Rahmen von Basislinien (LE6.4) und Sichtenverwaltung (LE6.5) mitbehandelt, nicht als eigene Praktik.</span></p>
+      </div>
+        <div class="beispiel-box">
+        <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
+        <p><span data-i18n data-en="Because of the high-risk classification under the EU AI Act, Vantera must demonstrate &lt;strong&gt;explicit traceability&lt;/strong&gt; between requirements, training-data documentation and test cases for TalentMatch AI. Petra maintains a traceability matrix for this; every requirement gets attributes such as risk class, owner and baseline version - the basis for the required conformity documentation.">Wegen der Hochrisiko-Einstufung nach EU AI Act muss Vantera fuer TalentMatch AI <strong>explizite Verfolgbarkeit</strong> zwischen Anforderungen, Trainingsdaten-Dokumentation und Testfaellen nachweisen. Petra fuehrt dazu eine Verfolgbarkeitsmatrix; jede Anforderung erhaelt Attribute wie Risikoklasse, Verantwortliche/r und Basislinien-Version - Grundlage fuer die geforderte Konformitaetsdokumentation.</span></p>
+        <div class="persona-line">
+          <span class="persona-name">Petra</span>
+          <span class="persona-quote"><span data-i18n data-en="“Without explicit traceability, I cannot show in an audit which test cases actually cover which requirement - for a high-risk system that is not negotiable.“">„Ohne explizite Verfolgbarkeit kann ich im Audit nicht zeigen, welche Testfaelle welche Anforderung tatsaechlich abdecken - das ist bei einem Hochrisiko-System nicht verhandelbar.“</span></span>
+        </div>
+      </div>
+      <div class="quiz-box" data-correct="1">
+        <h4>&#10067; <span data-i18n data-en="Mini quiz">Mini-Quiz</span></h4>
+        <p class="quiz-q"><span data-i18n data-en="Why does Petra choose explicit rather than implicit traceability for TalentMatch AI?">Warum waehlt Petra fuer TalentMatch AI explizite statt impliziter Verfolgbarkeit?</span></p>
+        <div class="quiz-opts">
+          <button type="button" class="quiz-opt" data-idx="0"><span data-i18n data-en="Because implicit traceability is generally forbidden">Weil implizite Verfolgbarkeit generell verboten ist</span></button>
+          <button type="button" class="quiz-opt" data-idx="1"><span data-i18n data-en="Because the EU AI Act requires demonstrable, documented tracing for high-risk systems">Weil der EU AI Act fuer Hochrisiko-Systeme eine nachweisbare, dokumentierte Nachverfolgung verlangt</span></button>
+          <button type="button" class="quiz-opt" data-idx="2"><span data-i18n data-en="Because Sarah prefers it for sales purposes">Weil Sarah das fuer den Vertrieb bevorzugt</span></button>
+        </div>
+        <p class="quiz-feedback" hidden></p>
+        <p class="quiz-expl" hidden><span data-i18n data-en="Regulatory requirements (here: EU AI Act, high-risk class) demand explicitly documented, auditable traceability - implicit traceability is not sufficient for this.">Regulatorische Anforderungen (hier EU AI Act, Hochrisiko-Klasse) verlangen explizit dokumentierte, pruefbare Verfolgbarkeit - implizite Verfolgbarkeit reicht dafuer nicht aus.</span></p>
+      </div>
+      <div class="station-footer-nav">
+        <button type="button" class="nav-btn prev-btn" ><span data-i18n data-en="&amp;larr; Back">&larr; Zurueck</span></button>
+        <button type="button" class="nav-btn next-btn" ><span data-i18n data-en="Next &amp;rarr;">Weiter &rarr;</span></button>
+      </div>
+    </section>
+
+    <section class="station-panel" id="panel-le7" data-station="le7">
+      <div class="station-head">
+        <span class="badge badge-num">LE 7</span>
+        <span class="badge badge-k">K2</span>
+        <span class="badge badge-dauer" data-i18n data-en="30 min">30 Min.</span>
+      </div>
+      <h2 data-i18n data-en="Tool Support">Werkzeugunterstuetzung</h2>
+      <p class="lernziel"><strong><span data-i18n data-en="Learning objective:">Lernziel:</span></strong> <span data-i18n data-en="Give an overview of the role of RE tools and aspects of their introduction.">Einen Ueberblick ueber die Rolle von RE-Werkzeugen und Aspekte der Einfuehrung geben.</span></p>
+      <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="Tool, RE tool">Werkzeug, RE-Werkzeug</span></p>
+      <h3><span data-i18n data-en="Key points">Kerninhalte</span></h3>
+      <ul class="kern-list">
+        <li><span data-i18n data-en="Three support areas: &lt;strong&gt;requirements management&lt;/strong&gt; (attributes, prioritization, versions, tracing, changes), &lt;strong&gt;RE process control&lt;/strong&gt; (measurement, reporting, workflow), &lt;strong&gt;documenting the state of knowledge&lt;/strong&gt; (sharing, shared understanding, modelling, collaboration, testing/simulation).">Drei Unterstuetzungsbereiche: <strong>Verwaltung von Anforderungen</strong> (Attribute, Priorisierung, Versionen, Verfolgung, Aenderungen), <strong>Steuerung des RE-Prozesses</strong> (Messung, Berichterstattung, Workflow), <strong>Dokumentation des Kenntnisstands</strong> (Teilen, gemeinsames Verstaendnis, Modellierung, Zusammenarbeit, Testen/Simulieren).</span></li>
+        <li><span data-i18n data-en="Tools rarely cover all RE activities completely - a combination of several tools is often needed.">Werkzeuge decken selten alle RE-Aktivitaeten vollstaendig ab - haeufig ist eine Kombination mehrerer Tools noetig.</span></li>
+        <li><span data-i18n data-en="Office and issue-tracking tools are also used for RE but have their limits and should only be used once the RE process is mastered and stable.">Office- und Issue-Tracking-Tools werden ebenfalls fuer RE genutzt, haben aber Grenzen und sollten nur bei beherrschtem, stabilem RE-Prozess eingesetzt werden.</span></li>
+        <li><span data-i18n data-en="Tool selection follows the same logic as any tool selection: describe the goal, context and requirements first.">Werkzeugauswahl folgt derselben Logik wie jede Werkzeugauswahl: Ziel, Kontext und Anforderungen zuerst beschreiben.</span></li>
+        <li><span data-i18n data-en="Tool introduction requires: considering full lifecycle costs (not just license costs), resource planning, pilot projects, defined evaluation criteria, staff training.">Werkzeugeinfuehrung erfordert: Beruecksichtigung der Lebenszykluskosten (nicht nur Lizenzkosten), Ressourcenplanung, Pilotprojekte, definierte Bewertungskriterien, Mitarbeiterschulung.</span></li>
+      </ul>
+      <div class="beispiel-box">
+        <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
+        <p><span data-i18n data-en="For TalentMatch AI, Vantera does not introduce a single RE tool but combines an RE management tool for traceability/attributes with the existing Confluence/Jira setup for collaboration - Ela justifies this with the required lifecycle costs: a new specialist tool would have caused training overhead the pilot project&#x27;s timeline cannot bear.">Vantera fuehrt fuer TalentMatch AI kein einzelnes RE-Tool ein, sondern kombiniert ein RE-Management-Tool fuer Verfolgbarkeit/Attribute mit dem bestehenden Confluence/Jira-Setup fuer Zusammenarbeit - Ela begruendet dies mit den erforderlichen Lebenszykluskosten: ein neues Spezialtool haette Schulungsaufwand verursacht, den das Pilotprojekt zeitlich nicht traegt.</span></p>
+        <div class="persona-line">
+          <span class="persona-name">Ela</span>
+          <span class="persona-quote"><span data-i18n data-en="“Introducing a new tool costs us time we do not have in the pilot project. We combine tools rather than buying a new one.“">„Ein neues Tool einzufuehren kostet uns Zeit, die wir im Pilotprojekt nicht haben. Wir kombinieren, statt neu zu kaufen.“</span></span>
+        </div>
+      </div>
+      <div class="quiz-box" data-correct="1">
+        <h4>&#10067; <span data-i18n data-en="Mini quiz">Mini-Quiz</span></h4>
+        <p class="quiz-q"><span data-i18n data-en="According to the syllabus, which aspect of tool introduction is often overlooked besides license costs?">Welcher Aspekt der Werkzeugeinfuehrung wird laut Lehrplan neben den Lizenzkosten oft uebersehen?</span></p>
+        <div class="quiz-opts">
+          <button type="button" class="quiz-opt" data-idx="0"><span data-i18n data-en="Screen resolution">Die Bildschirmaufloesung</span></button>
+          <button type="button" class="quiz-opt" data-idx="1"><span data-i18n data-en="The full lifecycle costs">Die vollstaendigen Lebenszykluskosten</span></button>
+          <button type="button" class="quiz-opt" data-idx="2"><span data-i18n data-en="The number of available keyboard shortcuts">Die Anzahl verfuegbarer Tastenkombinationen</span></button>
+        </div>
+        <p class="quiz-feedback" hidden></p>
+        <p class="quiz-expl" hidden><span data-i18n data-en="The syllabus explicitly stresses that full lifecycle costs must be considered in addition to license costs - a frequently underestimated factor in tool introduction.">Der Lehrplan betont ausdruecklich, dass saemtliche Lebenszykluskosten zusaetzlich zu den Lizenzkosten beruecksichtigt werden muessen - ein haeufig unterschaetzter Faktor bei der Werkzeugeinfuehrung.</span></p>
+      </div>
+      <div class="station-footer-nav">
+        <button type="button" class="nav-btn prev-btn" ><span data-i18n data-en="&amp;larr; Back">&larr; Zurueck</span></button>
+        <button type="button" class="nav-btn next-btn" ><span data-i18n data-en="Appendix &amp;rarr;">Anhang &rarr;</span></button>
+      </div>
+    </section>
+
+    <section class="station-panel" id="panel-anhang" data-station="anhang">
+      <div class="station-head">
+        <span class="badge badge-num" style="background:var(--gold); color:#fff;">&#128220; <span data-i18n data-en="Appendix">Anhang</span></span>
+        <span class="badge badge-dauer" data-i18n data-en="Reference material, not part of the syllabus stamp count">Referenzmaterial, nicht Teil der Lehrplan-Zaehlung</span>
+      </div>
+      <h2 data-i18n data-en="Writing requirements &ndash; examples from TalentMatch AI">Anforderungen schreiben &ndash; Beispiele aus TalentMatch AI</h2>
+      <p class="lernziel"><span data-i18n data-en="This appendix supplements LE3 (work products) and LE4 (elicitation practices) with concrete, ready-to-use templates and TalentMatch AI examples for writing requirements &ndash; it is reference material, not additional syllabus content.">Dieser Anhang erg&auml;nzt LE3 (Arbeitsprodukte) und LE4 (Erarbeitungspraktiken) um konkrete, direkt verwendbare Schablonen und TalentMatch-AI-Beispiele zum Schreiben von Anforderungen &ndash; er ist Referenzmaterial, kein zus&auml;tzlicher Lehrplaninhalt.</span></p>
+
+      <h3 data-i18n data-en="1. Sentence templates for individual requirements &ndash; EARS (Mavin, Wilkinson, Harwood &amp; Novak)">1. Satzschablonen f&uuml;r Einzelanforderungen &ndash; EARS (Mavin, Wilkinson, Harwood &amp; Novak)</h3>
+      <p><span data-i18n data-en="EARS (Easy Approach to Requirements Syntax) is the sentence-template approach referenced in the syllabus bibliography [MWHN2009]. It defines five basic patterns:">EARS (Easy Approach to Requirements Syntax) ist der im Lehrplan-Literaturverzeichnis referenzierte Satzschablonen-Ansatz [MWHN2009]. Er definiert f&uuml;nf Grundmuster:</span></p>
+      <table class="req-table">
+        <thead><tr>
+          <th data-i18n data-en="Pattern">Muster</th>
+          <th data-i18n data-en="Template">Schablone</th>
+          <th data-i18n data-en="TalentMatch AI example">TalentMatch-AI-Beispiel</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td data-i18n data-en="Ubiquitous">Allgemeing&uuml;ltig</td>
+            <td><code data-i18n data-en="The &lt;system&gt; shall &lt;function&gt;.">Das &lt;System&gt; muss &lt;Funktion&gt;.</code></td>
+            <td><span data-i18n data-en="TalentMatch AI must provide a traceable rationale for every scoring decision.">TalentMatch AI muss jede Scoring-Entscheidung mit einer nachvollziehbaren Begr&uuml;ndung versehen.</span></td>
+          </tr>
+          <tr>
+            <td data-i18n data-en="Event-driven">Ereignisgetrieben</td>
+            <td><code data-i18n data-en="When &lt;trigger&gt;, the &lt;system&gt; shall &lt;response&gt;.">Wenn &lt;Ausl&ouml;ser&gt;, muss das &lt;System&gt; &lt;Reaktion&gt;.</code></td>
+            <td><span data-i18n data-en="When a new application arrives in the ATS, TalentMatch AI must generate a score profile within 5 minutes.">Wenn eine neue Bewerbung im ATS eingeht, muss TalentMatch AI innerhalb von 5 Minuten ein Score-Profil erzeugen.</span></td>
+          </tr>
+          <tr>
+            <td data-i18n data-en="State-driven">Zustandsgetrieben</td>
+            <td><code data-i18n data-en="While &lt;state&gt;, the &lt;system&gt; shall &lt;response&gt;.">W&auml;hrend &lt;Zustand&gt;, muss das &lt;System&gt; &lt;Reaktion&gt;.</code></td>
+            <td><span data-i18n data-en="While the bias-review phase is active, TalentMatch AI must hold back all automated scoring decisions.">W&auml;hrend der Bias-Pr&uuml;fungsphase muss TalentMatch AI alle automatisierten Scoring-Entscheidungen zur&uuml;ckhalten.</span></td>
+          </tr>
+          <tr>
+            <td data-i18n data-en="Unwanted behaviour">Unerw&uuml;nschtes Verhalten</td>
+            <td><code data-i18n data-en="If &lt;trigger&gt;, then the &lt;system&gt; shall &lt;response&gt;.">Falls &lt;Ausl&ouml;ser&gt;, dann muss das &lt;System&gt; &lt;Reaktion&gt;.</code></td>
+            <td><span data-i18n data-en="If a candidate profile&#x27;s bias threshold is exceeded, then TalentMatch AI must escalate the case to a human recruiter.">Falls der Bias-Schwellenwert eines Kandidatenprofils &uuml;berschritten wird, dann muss TalentMatch AI den Fall an eine menschliche Recruiterin eskalieren.</span></td>
+          </tr>
+          <tr>
+            <td data-i18n data-en="Optional feature">Optionales Feature</td>
+            <td><code data-i18n data-en="Where &lt;feature present&gt;, the &lt;system&gt; shall &lt;response&gt;.">Wo &lt;Feature vorhanden&gt;, muss das &lt;System&gt; &lt;Reaktion&gt;.</code></td>
+            <td><span data-i18n data-en="Where an application is submitted in multiple languages, TalentMatch AI must run language detection before scoring.">Wo eine mehrsprachige Bewerbung vorliegt, muss TalentMatch AI die Spracherkennung vor dem Scoring durchf&uuml;hren.</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 data-i18n data-en="2. Sentence template for user stories (Cohn)">2. Satzschablone f&uuml;r User Storys (Cohn)</h3>
+      <p><span data-i18n data-en="The widely used sentence template referenced in the syllabus bibliography [Cohn2004]:">Die im Lehrplan-Literaturverzeichnis referenzierte, weit verbreitete Satzschablone [Cohn2004]:</span></p>
+      <p><code data-i18n data-en="As a &lt;role&gt;, I want &lt;goal&gt;, so that &lt;benefit&gt;.">Als &lt;Rolle&gt; m&ouml;chte ich &lt;Ziel&gt;, damit &lt;Nutzen&gt;.</code></p>
+      <ul class="kern-list">
+        <li><span data-i18n data-en="&quot;As a recruiter, I want to see pre-sorted candidate profiles with a score rationale, so that I can make my pre-selection traceably.&quot; (see LE3)">&bdquo;Als Recruiterin m&ouml;chte ich vorsortierte Kandidatenprofile mit Score-Begr&uuml;ndung sehen, damit ich meine Vorauswahl nachvollziehbar treffen kann.&ldquo; (siehe LE3)</span></li>
+        <li><span data-i18n data-en="&quot;As Petra (QA), I want to export a traceability matrix per candidate profile, so that I can demonstrate EU AI Act conformity during an audit.&quot;">&bdquo;Als Petra (QM) m&ouml;chte ich eine Verfolgbarkeitsmatrix je Kandidatenprofil exportieren, damit ich die EU-AI-Act-Konformit&auml;t im Audit nachweisen kann.&ldquo;</span></li>
+      </ul>
+
+      <h3 data-i18n data-en="3. Form template for use cases (Cockburn)">3. Formularvorlage f&uuml;r Use Cases (Cockburn)</h3>
+      <p><span data-i18n data-en="Structure per the syllabus bibliography [Cock2001], filled in for TalentMatch AI:">Struktur nach dem Lehrplan-Literaturverzeichnis [Cock2001], ausgef&uuml;llt f&uuml;r TalentMatch AI:</span></p>
+      <div class="uc-form">
+        <div class="uc-row"><div class="uc-label" data-i18n data-en="Use case">Use Case</div><div class="uc-value">UC-01 &ndash; <span data-i18n data-en="Score candidate profile">Kandidatenprofil scoren</span></div></div>
+        <div class="uc-row"><div class="uc-label" data-i18n data-en="Primary actor">Prim&auml;rer Akteur</div><div class="uc-value" data-i18n data-en="Recruiter">Recruiterin</div></div>
+        <div class="uc-row"><div class="uc-label" data-i18n data-en="Precondition">Vorbedingung</div><div class="uc-value" data-i18n data-en="Application has been received and validated in the ATS.">Bewerbung ist im ATS eingegangen und validiert.</div></div>
+        <div class="uc-row"><div class="uc-label" data-i18n data-en="Main scenario">Hauptszenario</div><div class="uc-value" data-i18n data-en="1. System reads application data. 2. System calculates score against the 12 defined criteria. 3. System generates a rationale. 4. Recruiter views score and rationale.">1. System liest Bewerbungsdaten ein. 2. System berechnet Score anhand der 12 definierten Kriterien. 3. System erzeugt Begr&uuml;ndung. 4. Recruiterin sieht Score und Begr&uuml;ndung ein.</div></div>
+        <div class="uc-row"><div class="uc-label" data-i18n data-en="Extension">Erweiterung</div><div class="uc-value" data-i18n data-en="3a. Bias threshold exceeded &rarr; case is escalated to a human decision (see EARS example above).">3a. Bias-Schwellenwert &uuml;berschritten &rarr; Fall wird zur menschlichen Entscheidung eskaliert (siehe EARS-Beispiel oben).</div></div>
+      </div>
+
+      <h3 data-i18n data-en="4. Good vs. poor requirement &ndash; quality criteria from LE3.8">4. Gute vs. schlechte Anforderung &ndash; Qualit&auml;tskriterien aus LE3.8</h3>
+      <div class="compare-grid">
+        <div class="compare-card bad">
+          <span class="compare-label" data-i18n data-en="Poor">Schlecht</span>
+          <span data-i18n data-en="&quot;The system shall be fast and user-friendly.&quot;">&bdquo;Das System soll schnell und benutzerfreundlich sein.&ldquo;</span>
+          <p class="compare-issue" data-i18n data-en="Not verifiable: vague nouns (&quot;fast&quot;, &quot;user-friendly&quot;) without a measurable threshold.">Nicht pr&uuml;fbar: unspezifische Substantive (&bdquo;schnell&ldquo;, &bdquo;benutzerfreundlich&ldquo;) ohne messbaren Schwellenwert.</p>
+        </div>
+        <div class="compare-card good">
+          <span class="compare-label" data-i18n data-en="Good">Gut</span>
+          <span data-i18n data-en="&quot;TalentMatch AI must display a score profile within 5 seconds of application selection.&quot;">&bdquo;TalentMatch AI muss das Score-Profil einer Bewerbung innerhalb von 5 Sekunden nach Auswahl anzeigen.&ldquo;</span>
+          <p class="compare-issue" data-i18n data-en="Verifiable, unambiguous: concrete threshold, concrete trigger.">Pr&uuml;fbar, eindeutig: konkreter Schwellenwert, konkreter Ausl&ouml;ser.</p>
+        </div>
+        <div class="compare-card bad">
+          <span class="compare-label" data-i18n data-en="Poor">Schlecht</span>
+          <span data-i18n data-en="&quot;All applications are treated fairly.&quot;">&bdquo;Alle Bewerbungen werden fair behandelt.&ldquo;</span>
+          <p class="compare-issue" data-i18n data-en="Pitfall from LE3.2: universal quantifier (&quot;all&quot;) plus vague noun (&quot;fairly&quot;) &ndash; not testable.">Fallstrick aus LE3.2: Universalquantor (&bdquo;alle&ldquo;) plus unspezifisches Substantiv (&bdquo;fair&ldquo;) &ndash; nicht testbar.</p>
+        </div>
+        <div class="compare-card good">
+          <span class="compare-label" data-i18n data-en="Good">Gut</span>
+          <span data-i18n data-en="&quot;TalentMatch AI must apply the same set of 12 defined scoring criteria to every application, regardless of the applicant&#x27;s gender, age or origin.&quot;">&bdquo;TalentMatch AI muss f&uuml;r jede Bewerbung denselben Satz von 12 definierten Scoring-Kriterien anwenden, unabh&auml;ngig von Geschlecht, Alter oder Herkunft der bewerbenden Person.&ldquo;</span>
+          <p class="compare-issue" data-i18n data-en="Verifiable, adequate: concrete criteria set, concrete non-discrimination scope.">Pr&uuml;fbar, ad&auml;quat: konkreter Kriteriensatz, konkreter Diskriminierungsfreiheits-Umfang.</p>
+        </div>
+      </div>
+
+      <div class="beispiel-box">
+        <h4>&#128204; <span data-i18n data-en="Note">Hinweis</span></h4>
+        <p><span data-i18n data-en="This appendix is a supplement, not a replacement for LE3/LE4 &ndash; the templates shown are examples referenced in the syllabus literature ([ISO29148], [MWHN2009], [Rupp2014], [Cohn2004], [Cock2001]), not the only valid notation.">Dieser Anhang ist eine Erg&auml;nzung, kein Ersatz f&uuml;r LE3/LE4 &ndash; die gezeigten Schablonen sind Beispiele aus der Lehrplan-Literatur ([ISO29148], [MWHN2009], [Rupp2014], [Cohn2004], [Cock2001]), nicht die einzig g&uuml;ltige Notation.</span></p>
+      </div>
+
+      <div class="station-footer-nav">
+        <button type="button" class="nav-btn prev-btn"><span data-i18n data-en="&amp;larr; Back">&larr; Zurueck</span></button>
+        <span></span>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="crosslink">
+  <span data-i18n data-en="Related Denkraum tools on this topic:">Verwandte Denkraum-Tools zu diesem Thema:</span>
+  <ul>
+    <li><a href="./babok-kompendium.html" data-i18n data-en="BABOK&reg; Kompendium">BABOK&reg; Kompendium</a> &ndash; <span data-i18n data-en="the direct counterpart on the business-analysis side (BABOK&reg; Guide v3) &ndash; this IREB tool cross-references its Knowledge Area 5 directly in LE6.">das direkte Pendant auf der Business-Analysis-Seite (BABOK&reg; Guide v3) &ndash; dieses IREB-Tool referenziert dessen Wissensbereich 5 direkt in LE6.</span></li>
+    <li><a href="./klarheits-sprint/index.html" data-i18n data-en="Klarheits-Sprint">Klarheits-Sprint</a> &ndash; <span data-i18n data-en="applies IREB/ISO quality criteria (see LE3) live to a single vague requirement sentence, instead of covering the full syllabus.">wendet IREB-/ISO-Qualit&auml;tskriterien (siehe LE3) live auf einen einzelnen unscharfen Anforderungssatz an, statt den gesamten Lehrplan abzudecken.</span></li>
+    <li><a href="./iso-25010-kompendium.html" data-i18n data-en="ISO/IEC 25010:2023 Kompendium">ISO/IEC 25010:2023 Kompendium</a> &ndash; <span data-i18n data-en="deepens the quality-requirements side (LE1, LE3) that this compendium only outlines &ndash; all nine ISO/IEC 25010:2023 quality characteristics in detail.">vertieft die Qualit&auml;tsanforderungs-Seite (LE1, LE3), die dieses Kompendium nur umrei&szlig;t &ndash; alle neun ISO/IEC-25010:2023-Qualit&auml;tsmerkmale im Detail.</span></li>
+  </ul>
+</div>
+
+<footer class="tool-footer">
+  <div class="footer-grid">
+
+    <details class="footer-box">
+      <summary data-i18n data-en="System prompt">Systemprompt</summary>
+      <div class="footer-content footer-mono">Baue ein einzelnes, offlinef&auml;higes HTML-Trainingstool &ldquo;IREB CPRE Foundation Level &ndash; Die Kernaussagen des Requirements Engineering&rdquo;, analog zu einem bestehenden BABOK-Kompendium-Tool.
+
+STRUKTUR
+- Split-Screen-Layout: linke Sidebar (Stationsliste, ca. 34% Breite) + rechter Inhaltsbereich (Detailpanel), gestapelt unter 900px.
+- 7 Stationen = 7 Lerneinheiten (LE1-LE7) des aktuellen CPRE Foundation Level Lehrplans (IREB, jeweils mit realer Kapitelnummer, kognitiver Stufe K1-K3 und Original-Dauerangabe aus dem Lehrplan).
+- Stempel-Pass oben in der Sidebar: 7 Punkte, f&uuml;llen sich bei korrekt beantwortetem Mini-Quiz je Station; Fortschritt in sessionStorage (try/catch).
+- Zus&auml;tzliches 8. Panel &bdquo;Anhang: Anforderungen schreiben&ldquo;, per Divider optisch von LE1-LE7 abgesetzt, NICHT Teil der Stempel-Pass-Z&auml;hlung (kein Quiz, reines Referenzmaterial: EARS-Satzschablonen, User-Story-Schablone, Use-Case-Formularvorlage, Gute-vs-schlechte-Anforderung-Vergleich &ndash; alle Quellen aus dem Lehrplan-Literaturverzeichnis, keine erfundenen Notationen).
+- BABOK-Br&uuml;cken-Box in LE6 (Requirements Management): Mapping-Tabelle IREB-Konzept &harr; BABOK-v3-Task (Wissensbereich 5, Tasks 5.1-5.5), plus expliziter Hinweis auf den Unterschied (BABOK 5.5 Approve Requirements hat kein eigenst&auml;ndiges IREB-Pendant). Bewusst punktuell an der fachlich einschl&auml;gigen Stelle platziert, nicht als durchg&auml;ngige Zweitperspektive im ganzen Tool (Abgrenzung zum separaten BABOK-Kompendium-Tool).
+
+INHALT PRO STATION
+1. Kopfzeile: LE-Nummer, K-Stufe-Badge, Original-Dauer aus Lehrplan.
+2. Titel (echter Kapiteltitel).
+3. Lernziel (1 Satz, aus dem Lehrplanziel destilliert).
+4. Begriffe (Original-Begriffsliste aus dem Lehrplankapitel).
+5. Kerninhalte: 5 Bullet-Points, die die tats&auml;chlichen Lehrplaninhalte akkurat wiedergeben (keine erfundenen Fakten).
+6. TalentMatch-AI-Praxisbeispiel: 1 Absatz, der den Lehrplaninhalt am festen Fallbeispiel (Vantera Systemtechnik GmbH, Hochrisiko-KI-Recruiting-Tool nach EU AI Act Annex III Nr. 4) konkretisiert.
+7. Persona-Reaktionszeile (feste Rollen: Ela/Projektleitung, Knut/Entwicklung, Sarah/Vertrieb, Petra/QM, Herr Bachmeier/Gesch&auml;ftsf&uuml;hrung) mit einem thematisch passenden Zitat.
+8. Mini-Quiz: 1 Frage mit 3 Antwortoptionen, eine richtig, mit Erkl&auml;rung nach Beantwortung.
+9. Vor-/Zur&uuml;ck-Navigation am Stationsende.
+
+DESIGN-VORGABEN
+- Hintergrund immer Wei&szlig;, color-scheme:light, kein Dark Mode.
+- pointerup-Events statt click, keine HTML5-Drag-and-Drop-API.
+- Schriftgr&ouml;&szlig;en: Flie&szlig;text &ge;16px, Sekund&auml;rtext &ge;14px, in allen vier Beamer-Stufen weiter hochskaliert.
+- Signatur oben rechts, position:fixed, Name + Website-Link.
+- Vierstufiger kumulativer Beamer-Toggle (Normal &rarr; Beamer &rarr; Beamer XL &rarr; Beamer XXL), Footer ab Stufe 1 ausgeblendet.
+- Sprach-Toggle DE/EN ohne Reload: deutscher Text statisch im HTML (Fallback ohne JS-Ausf&uuml;hrung), JS ersetzt nur textContent/innerHTML bereits vorhandener [data-i18n]-Elemente per data-en-Attribut &ndash; niemals Inhalt ausschlie&szlig;lich zur Laufzeit per JS generieren.
+- Vier Pflicht-Footer-Boxen (Details-Elemente): Systemprompt (Monospace), Handbuch (Sans-Serif), Vortrags-Skript (Sans-Serif), Normen-Register (Tabelle).
+
+NICHT TUN
+- Keine externen Ressourcen (fetch, CDN, Web Fonts).
+- Kein localStorage, nur sessionStorage mit try/catch.
+- Keine erfundenen IREB-Lehrplaninhalte oder -Begriffe.
+- Keine Vermischung der Personas mit fremden Rollenbezeichnungen (Sarah = Vertrieb, nie &ldquo;Fachbereich&rdquo;).</div>
+    </details>
+
+    <details class="footer-box">
+      <summary data-i18n data-en="Handbook">Handbuch</summary>
+      <div class="footer-content footer-sans" data-i18n data-en="&lt;p&gt;&lt;strong&gt;Framework used: RTF (Role &amp;middot; Task &amp;middot; Format).&lt;/strong&gt; The original request was brief: &amp;ldquo;Build me an IREB compendium analogous to the BA compendium.&amp;rdquo; That exact three-part shape is what makes RTF the fitting analysis framework for this prompt.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Role:&lt;/strong&gt; not explicitly named but implicitly clear &amp;ndash; the trainer herself, who needs a second flagship reference tool for her RE/BA workshops.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Task:&lt;/strong&gt; &amp;ldquo;analogous to the BA compendium&amp;rdquo; is the key phrase &amp;ndash; not inventing a new structure, but transferring a proven architecture (station-based learning journey, stamp passport, mini quiz, fixed case study) onto a new syllabus. The real work was recognising the analogy correctly: BABOK v3 has six knowledge areas, IREB CPRE Foundation Level has seven learning units (LE1&amp;ndash;LE7) &amp;ndash; the structure had to be adapted to the actual syllabus outline, not copied rigidly one-to-one.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Format:&lt;/strong&gt; implicitly set by the reference tool &amp;ndash; single-file HTML, K1&amp;ndash;K20-compliant.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key teaching point:&lt;/strong&gt; in &amp;ldquo;analogous to X&amp;rdquo; requests, the real work is not copying the form but recognising where the analogy holds and where the source material (here: the real IREB syllabus with seven rather than six chapters) forces its own structure. Before building, the current CPRE Foundation Level Syllabus (v3.3.0, 1 April 2026) was therefore verified via web search rather than taken from training knowledge.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Rebuild tip:&lt;/strong&gt; for every &amp;ldquo;compendium&amp;rdquo; tool, first obtain and check the official syllabus/standard outline (number of chapters, original titles, original cognitive levels), and only then map the proven tool architecture (stations, stamp passport, quiz, case study) onto it.&lt;/p&gt;"><p><strong>Verwendetes Framework: RTF (Rolle &middot; Task &middot; Format).</strong> Der Ausgangsauftrag war knapp: &bdquo;Baue mir analog zum BA-Kompendium ein IREB-Kompendium.&ldquo; Genau dieser Dreischritt macht RTF zum passenden Analyse-Framework fuer diesen Prompt.</p>
+<p><strong>Rolle:</strong> nicht explizit benannt, aber implizit klar &ndash; die Trainerin selbst, die ein zweites Standardwerk-Tool fuer ihre RE/BA-Workshops braucht.</p>
+<p><strong>Task:</strong> &bdquo;analog zum BA-Kompendium&ldquo; ist der Schluessel &ndash; keine neue Struktur erfinden, sondern eine bewaehrte Architektur (Stationen-Lernreise, Stempel-Pass, Mini-Quiz, festes Fallbeispiel) auf einen neuen Lehrplan uebertragen. Die eigentliche Arbeit lag darin, die Analogie korrekt zu erkennen: BABOK v3 hat sechs Wissensbereiche, IREB CPRE Foundation Level hat sieben Lerneinheiten (LE1&ndash;LE7) &ndash; die Struktur musste an die tatsaechliche Lehrplan-Gliederung angepasst werden, nicht stur eins-zu-eins kopiert werden.</p>
+<p><strong>Format:</strong> implizit durch das Referenztool vorgegeben &ndash; single-file HTML, K1&ndash;K20-konform.</p>
+<p><strong>Zentraler Lernhinweis:</strong> Bei &bdquo;analog zu X&ldquo;-Auftraegen liegt die eigentliche Arbeit nicht im Kopieren der Form, sondern im Erkennen, wo die Analogie greift und wo die Quelldaten (hier: der reale IREB-Lehrplan mit sieben statt sechs Kapiteln) eine eigene Struktur erzwingen. Vor dem Bau wurde daher der aktuelle CPRE Foundation Level Lehrplan (v3.3.0, 1. April 2026) per Websuche verifiziert, statt die Kapitelstruktur aus Trainingswissen zu uebernehmen.</p>
+<p><strong>Nachbau-Tipp:</strong> Bei jedem &bdquo;Kompendium&ldquo;-Tool zuerst die offizielle Lehrplan-/Standard-Gliederung besorgen und pruefen (Anzahl Kapitel, Originaltitel, Original-Kognitionsstufen), dann erst die bewaehrte Tool-Architektur (Stationen, Stempel-Pass, Quiz, Fallbeispiel) darueberlegen.</p></div>
+    </details>
+
+    <details class="footer-box">
+      <summary data-i18n data-en="Speaker script">Vortrags-Skript</summary>
+      <div class="footer-content footer-sans" data-i18n data-en="&lt;p&gt;&lt;em&gt;(Direction: open the tool in presenter mode, level &amp;ldquo;Beamer&amp;rdquo; or higher depending on room size.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Opening:&lt;/strong&gt; &amp;ldquo;With the BABOK compendium we covered the business analysis side &amp;ndash; today we look at the counterpart for requirements engineering: the current IREB CPRE Foundation Level Syllabus, version 3.3.0 from 1 April 2026, in seven learning units.&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(Click: keep LE1 active.)&lt;/em&gt; &amp;ldquo;We start with the basics &amp;ndash; what RE is, why we need it. Already here, using the TalentMatch AI example, we see how quickly a vague wish must become a precise requirement.&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(Click through LE2&amp;ndash;LE3.)&lt;/em&gt; &amp;ldquo;The nine principles in LE2 are the foundation &amp;ndash; they apply to every practice that follows. At seven hours of syllabus time, LE3 is the largest unit &amp;ndash; this is about the actual work products: natural-language, template-based, model-based.&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(Click through LE4&amp;ndash;LE7, optionally run individual mini quizzes live depending on time budget.)&lt;/em&gt; &amp;ldquo;From here it gets practical: elicitation, process design, requirements management, tools &amp;ndash; all worked through the same case, so it becomes visible how the syllabus chapters interlock in a real project.&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Closing:&lt;/strong&gt; &amp;ldquo;The stamp passport on the left shows at the end which learning units have already been worked through &amp;ndash; feel free to use it as a self-test before the CPRE exam.&amp;rdquo;&lt;/p&gt;
+&lt;p class=&quot;regie&quot;&gt;General direction notes: do not start with the nine principles (LE2) without at least briefly showing LE1 first &amp;ndash; otherwise the context for why RE creates value is missing. Time budget: LE3 typically needs the most explanation time, so plan a buffer.&lt;/p&gt;"><p><em>(Regie: Tool im Beamer-Modus oeffnen, Stufe &bdquo;Beamer&ldquo; oder h&ouml;her je nach Raumgroesse.)</em></p>
+<p><strong>Einstieg:</strong> &bdquo;Wir haben mit dem BABOK-Kompendium die Business-Analysis-Seite abgedeckt &ndash; heute schauen wir uns das Pendant fuer Requirements Engineering an: den aktuellen IREB CPRE Foundation Level Lehrplan, Version 3.3.0 vom 1. April 2026, in sieben Lerneinheiten.&ldquo;</p>
+<p><em>(Klick: LE1 aktiv lassen.)</em> &bdquo;Wir starten mit den Grundlagen &ndash; was ist RE, warum brauchen wir es. Schon hier sehen wir am Beispiel TalentMatch AI, wie schnell aus einem vagen Wunsch eine praezise Anforderung werden muss.&ldquo;</p>
+<p><em>(Klick durch LE2&ndash;LE3.)</em> &bdquo;Die neun Prinzipien in LE2 sind das Fundament &ndash; sie gelten fuer jede Praktik, die danach kommt. LE3 ist mit sieben Stunden Lehrplan-Dauer die umfangreichste Einheit &ndash; hier geht es um die eigentlichen Arbeitsprodukte: natuerlichsprachig, vorlagenbasiert, modellbasiert.&ldquo;</p>
+<p><em>(Klick durch LE4&ndash;LE7, je nach Zeitbudget einzelne Mini-Quiz live durchklicken lassen.)</em> &bdquo;Ab hier wird es praktisch: Ermittlung, Prozessgestaltung, Requirements Management, Werkzeuge &ndash; immer am selben Fall durchdekliniert, damit sichtbar wird, wie die Lehrplan-Kapitel im echten Projekt ineinandergreifen.&ldquo;</p>
+<p><strong>Abschluss:</strong> &bdquo;Der Stempel-Pass links zeigt am Ende, welche Lerneinheiten schon bearbeitet sind &ndash; nutzt das gern als Selbsttest vor der CPRE-Pruefung.&ldquo;</p>
+<p class="regie">Allgemeine Regie-Hinweise: Nicht mit den neun Prinzipien (LE2) beginnen, ohne vorher LE1 zumindest kurz zu zeigen &ndash; sonst fehlt der Kontext, warum RE ueberhaupt Wert schafft. Zeitbudget: LE3 braucht erfahrungsgemaess am meisten Erklaerzeit, dafuer Puffer einplanen.</p></div>
+    </details>
+
+    <details class="footer-box">
+      <summary data-i18n data-en="Standards register">Normen-Register</summary>
+      <div class="footer-content">
+        <table class="footer-table">
+          <thead><tr>
+            <th data-i18n data-en="Standard / framework">Norm / Framework</th>
+            <th data-i18n data-en="Status">Status</th>
+            <th data-i18n data-en="Checked on">Gepr&uuml;ft am</th>
+          </tr></thead>
+          <tbody>
+            <tr><td>IREB CPRE Foundation Level Lehrplan</td><td data-i18n data-en="In force &ndash; v3.3.0 (1 April 2026, current version)">In Kraft &ndash; v3.3.0 (1. April 2026, aktuelle Version)</td><td>02.09.2026</td></tr>
+            <tr><td>IREB CPRE Glossar (W&ouml;rterbuch der RE-Terminologie)</td><td data-i18n data-en="In force &ndash; v2.2, referenced by the Foundation Level Syllabus">In Kraft &ndash; v2.2, referenziert durch den Foundation-Level-Lehrplan</td><td>02.09.2026</td></tr>
+            <tr><td>ISO/IEC/IEEE 29148:2018</td><td data-i18n data-en="In force">In Kraft</td><td>02.09.2026</td></tr>
+            <tr><td>EU AI Act (Verordnung (EU) 2024/1689)</td><td data-i18n data-en="In force &ndash; TalentMatch AI classified as high-risk under Annex III No. 4">In Kraft &ndash; TalentMatch AI eingestuft als Hochrisiko-System nach Anhang III Nr. 4</td><td>02.09.2026</td></tr>
+            <tr><td>BABOK&reg; Guide v3 (IIBA)</td><td data-i18n data-en="In force &ndash; current main version since 2015, referenced as cross-framework context">In Kraft &ndash; aktuellste Hauptversion seit 2015, referenziert als framework&uuml;bergreifender Kontext</td><td>02.09.2026</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+  </div>
+
+  <p class="footer-sig">
+    <strong>Michaela K&uuml;hn</strong> &middot; <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a><br>
+    <span data-i18n data-en="Based on: IREB CPRE Foundation Level Syllabus v3.3.0, ISO/IEC/IEEE 29148:2018, EU AI Act">Basierend auf: IREB CPRE Foundation Level Lehrplan v3.3.0, ISO/IEC/IEEE 29148:2018, EU AI Act</span>
+    <span class="audit">Zuletzt gepr&uuml;ft: 02.09.2026 &middot; Status: &#9989; Zertifiziert &middot; Details siehe Audit-Protokoll</span>
+  </p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var LE_STATIONS = ["le1", "le2", "le3", "le4", "le5", "le6", "le7"];
+  var ALL_PANELS = LE_STATIONS.concat(["anhang"]);
+  var current = ALL_PANELS[0];
+  var stamped = {};
+  var lang = "de";
+
+  function safeGet(key){
+    try{ return sessionStorage.getItem(key); }catch(e){ return null; }
+  }
+  function safeSet(key, val){
+    try{ sessionStorage.setItem(key, val); }catch(e){}
+  }
+
+  function loadState(){
+    var s = safeGet("ireb_kompendium_stamped");
+    if(s){ try{ stamped = JSON.parse(s); }catch(e){ stamped = {}; } }
+    var c = safeGet("ireb_kompendium_current");
+    if(c && ALL_PANELS.indexOf(c) !== -1){ current = c; }
+    var l = safeGet("ireb_kompendium_lang");
+    if(l === "en"){ lang = "en"; }
+  }
+  function saveStamped(){ safeSet("ireb_kompendium_stamped", JSON.stringify(stamped)); }
+  function saveCurrent(){ safeSet("ireb_kompendium_current", current); }
+  function saveLang(){ safeSet("ireb_kompendium_lang", lang); }
+
+  function renderPassport(){
+    var wrap = document.getElementById("passport");
+    wrap.innerHTML = "";
+    var count = 0;
+    LE_STATIONS.forEach(function(id){
+      var dot = document.createElement("span");
+      dot.className = "p-dot" + (stamped[id] ? " filled" : "");
+      wrap.appendChild(dot);
+      if(stamped[id]) count++;
+      var navStamp = document.getElementById("nav-" + id);
+      if(navStamp){
+        if(stamped[id]) navStamp.classList.add("stamped");
+        else navStamp.classList.remove("stamped");
+      }
+    });
+    var label = document.getElementById("passportLabel");
+    var txt_de = count + " / " + LE_STATIONS.length + " Lerneinheiten abgeschlossen";
+    var txt_en = count + " / " + LE_STATIONS.length + " learning units completed";
+    label.setAttribute("data-en", txt_en);
+    label.textContent = (lang === "en") ? txt_en : txt_de;
+  }
+
+  function showStation(id){
+    current = id;
+    ALL_PANELS.forEach(function(sid){
+      var panel = document.getElementById("panel-" + sid);
+      var nav = document.getElementById("nav-" + sid);
+      if(panel) panel.classList.toggle("active", sid === id);
+      if(nav) nav.classList.toggle("current", sid === id);
+    });
+    saveCurrent();
+    var main = document.querySelector("main.content");
+    if(main) main.scrollTop = 0;
+    window.scrollTo(0,0);
+  }
+
+  function wireNav(){
+    ALL_PANELS.forEach(function(id){
+      var btn = document.getElementById("nav-" + id);
+      if(btn){ btn.addEventListener("pointerup", function(){ showStation(id); }); }
+    });
+    document.querySelectorAll(".station-panel").forEach(function(panel){
+      var id = panel.getAttribute("data-station");
+      var idx = ALL_PANELS.indexOf(id);
+      var prev = panel.querySelector(".prev-btn");
+      var next = panel.querySelector(".next-btn");
+      if(prev){ prev.addEventListener("pointerup", function(){ if(idx > 0) showStation(ALL_PANELS[idx-1]); }); }
+      if(next){ next.addEventListener("pointerup", function(){ if(idx < ALL_PANELS.length-1) showStation(ALL_PANELS[idx+1]); }); }
+    });
+  }
+
+  function wireQuizzes(){
+    document.querySelectorAll(".quiz-box").forEach(function(box){
+      var correct = parseInt(box.getAttribute("data-correct"), 10);
+      var opts = box.querySelectorAll(".quiz-opt");
+      var feedback = box.querySelector(".quiz-feedback");
+      var expl = box.querySelector(".quiz-expl");
+      var stationId = box.closest(".station-panel").getAttribute("data-station");
+      opts.forEach(function(opt, idx){
+        opt.addEventListener("pointerup", function(){
+          if(opt.hasAttribute("data-answered")) return;
+          opts.forEach(function(o){ o.setAttribute("data-answered","1"); o.disabled = true; });
+          opts[correct].classList.add("correct");
+          if(idx !== correct){ opt.classList.add("wrong"); }
+          feedback.hidden = false;
+          expl.hidden = false;
+          var isCorrect = (idx === correct);
+          var fb_de = isCorrect ? "Richtig!" : "Nicht ganz &ndash; die richtige Antwort ist markiert.";
+          var fb_en = isCorrect ? "Correct!" : "Not quite &ndash; the correct answer is highlighted.";
+          feedback.setAttribute("data-en", fb_en);
+          feedback.innerHTML = (lang === "en") ? fb_en : fb_de;
+          feedback.className = "quiz-feedback " + (isCorrect ? "ok" : "bad");
+          if(isCorrect){
+            stamped[stationId] = true;
+            saveStamped();
+            renderPassport();
+          }
+        });
+      });
+    });
+  }
+
+  function applyLang(){
+    document.querySelectorAll("[data-i18n]").forEach(function(el){
+      var en = el.getAttribute("data-en");
+      if(en === null) return;
+      if(!el.hasAttribute("data-de-cache")){
+        el.setAttribute("data-de-cache", el.innerHTML);
+      }
+      if(lang === "en"){
+        el.innerHTML = en;
+      }else{
+        el.innerHTML = el.getAttribute("data-de-cache");
+      }
+    });
+    document.documentElement.setAttribute("lang", lang);
+    renderPassport();
+  }
+
+  function wireLangToggle(){
+    document.getElementById("langBtn").addEventListener("pointerup", function(){
+      lang = (lang === "de") ? "en" : "de";
+      saveLang();
+      applyLang();
+    });
+  }
+
+  function wireBeamer(){
+    var BEAMER_LEVELS = [
+      { classes: "",                                    label: "☀ Beamer" },
+      { classes: "beamer",                               label: "☀ Beamer XL" },
+      { classes: "beamer beamer-xl",                     label: "☀ Beamer XXL" },
+      { classes: "beamer beamer-xl beamer-xxl",          label: "☀ Normal" }
+    ];
+    var stage = 0;
+    var s = safeGet("ireb_kompendium_beamer");
+    if(s){ var n = parseInt(s,10); if(!isNaN(n) && n>=0 && n<BEAMER_LEVELS.length){ stage = n; } }
+    function apply(){
+      document.documentElement.className = BEAMER_LEVELS[stage].classes;
+      var btn = document.getElementById("beamerBtn");
+      btn.textContent = BEAMER_LEVELS[stage].label;
+      btn.classList.toggle("active", stage > 0);
+    }
+    apply();
+    document.getElementById("beamerBtn").addEventListener("pointerup", function(){
+      stage = (stage + 1) % BEAMER_LEVELS.length;
+      safeSet("ireb_kompendium_beamer", String(stage));
+      apply();
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function(){
+    loadState();
+    wireNav();
+    wireQuizzes();
+    wireBeamer();
+    wireLangToggle();
+    showStation(current);
+    applyLang();
+  });
+})();
+</script>
+</body>
+</html>
