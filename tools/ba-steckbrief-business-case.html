@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>BA-Steckbrief &amp; Business Case — Velaris Clearing AG</title>
+<style>
+  :root{
+    --accent: #0f6e5c;
+    --accent2: #c98a2b;
+    --dark: #1a2b3c;
+    --lightbg: #f4f6f5;
+    --amberbg: #fbf3e6;
+    --border: #c9d2ce;
+    --grey: #5a6a66;
+  }
+  html{ color-scheme: light; }
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    padding:0 0 40px 0;
+    background:#ffffff;
+    color:#1a1a1a;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    font-size:16px;
+    line-height:1.5;
+  }
+
+  /* ---------- Topbar: Zurück-Link + Meta-Controls (Pflicht) ---------- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+    padding:16px 24px 0 24px;
+  }
+  .back-link{
+    display:inline-block;
+    font-size:14px;
+    font-weight:700;
+    color:var(--grey);
+    text-decoration:none;
+  }
+  .back-link:hover{ color:var(--accent); }
+  .meta-controls{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+  /* ---------- Signatur oben rechts (Pflicht) ---------- */
+  .sig{
+    position:fixed;
+    top:14px;
+    right:28px;
+    font-size:14px;
+    line-height:1.3;
+    color:var(--grey);
+    background:#ffffff;
+    padding:4px 10px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    z-index:500;
+  }
+  .sig strong{ display:block; color:var(--dark); font-size:15px; }
+  .sig a{ color:var(--accent); text-decoration:none; font-weight:600; }
+  @media (max-width:900px){
+    .sig{ position:static; text-align:right; margin:8px 24px 0 auto; width:fit-content; }
+    .topbar{ padding:16px 24px 0 24px; }
+  }
+
+  .btn-ghost{
+    min-height:44px; min-width:44px;
+    padding:9px 20px;
+    font-size:15px;
+    font-weight:700;
+    border-radius:999px;
+    border:1.5px solid var(--border);
+    background:#ffffff;
+    color:var(--grey);
+    cursor:pointer;
+  }
+  .btn-ghost:hover{ border-color:var(--accent); color:var(--accent); }
+
+  /* ---------- Beamer-Modus-Button (K18, vierstufig, kanonisches Muster) ---------- */
+  .beamer-btn{
+    background:transparent; border:1.5px solid var(--border);
+    color:var(--grey); font-size:15px; font-weight:700;
+    padding:9px 20px; min-height:44px;
+    border-radius:999px; cursor:pointer;
+  }
+  .beamer-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  html.beamer .beamer-btn,
+  html.beamer-xl .beamer-btn,
+  html.beamer-xxl .beamer-btn{ background:var(--dark); color:#fff; border-color:var(--dark); }
+
+  header.hero{
+    background:var(--dark);
+    color:#ffffff;
+    padding:22px 24px 22px 24px;
+    margin-top:12px;
+  }
+  header.hero h1{
+    margin:0 0 6px 0;
+    font-size:26px;
+    font-weight:800;
+  }
+  header.hero p{
+    margin:0;
+    font-size:15px;
+    color:#cfd8d5;
+  }
+
+  nav.tabs{
+    display:flex;
+    gap:8px;
+    padding:14px 24px 0 24px;
+    border-bottom:2px solid var(--border);
+    flex-wrap:wrap;
+  }
+  .tab-btn{
+    min-height:44px;
+    padding:10px 20px;
+    font-size:16px;
+    font-weight:700;
+    border:none;
+    background:none;
+    color:var(--grey);
+    cursor:pointer;
+    border-bottom:4px solid transparent;
+  }
+  .tab-btn.active{
+    color:var(--accent);
+    border-bottom:4px solid var(--accent);
+  }
+
+  main{ padding:24px; max-width:1200px; margin:0 auto; }
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; }
+
+  h2{
+    color:var(--accent);
+    font-size:20px;
+    margin:28px 0 10px 0;
+  }
+  h2:first-child{ margin-top:0; }
+  p{ font-size:16px; }
+  .subtitle{
+    color:var(--accent);
+    font-style:italic;
+    font-size:16px;
+    margin-bottom:18px;
+  }
+
+  /* ---- Steckbrief-Formular ---- */
+  .identity-row{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:14px;
+    margin-bottom:18px;
+  }
+  .field-box{
+    background:var(--lightbg);
+    border:1px solid var(--border);
+    border-radius:16px;
+    box-shadow:0 6px 16px rgba(26,43,60,.03);
+    padding:14px 16px;
+  }
+  .field-box label{
+    display:block;
+    font-weight:700;
+    color:var(--accent);
+    font-size:14px;
+    margin-bottom:4px;
+  }
+  .field-box .hint{
+    display:block;
+    font-style:italic;
+    color:var(--grey);
+    font-size:14px;
+    margin-bottom:6px;
+  }
+  .field-box input, .field-box textarea{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:8px;
+    font-family:inherit;
+    font-size:15px;
+    resize:vertical;
+    min-height:44px;
+  }
+  .grid-fields{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:14px;
+    margin-bottom:18px;
+  }
+  .grid-fields .field-box textarea{ min-height:110px; }
+  .closing-box{
+    background:var(--amberbg);
+    border:1px solid #e6cfa0;
+    border-left:6px solid var(--accent2);
+    border-radius:4px;
+    padding:14px 18px;
+  }
+  .closing-box label{ color:var(--accent2); font-weight:700; font-size:15px; }
+  .closing-box input{
+    width:100%; margin-top:8px; padding:10px; border:1px solid var(--border); border-radius:8px;
+    font-size:16px; min-height:44px;
+  }
+  @media (max-width: 900px){
+    .identity-row{ grid-template-columns: 1fr; }
+    .grid-fields{ grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px){
+    .grid-fields{ grid-template-columns: 1fr; }
+  }
+
+  /* ---- Musterlösung ---- */
+  .muster-toggle-row{ margin: 4px 0 20px 0; }
+  #museBtn{
+    min-height:44px;
+    padding:9px 18px;
+    font-size:15px;
+    font-weight:700;
+    border:2px solid var(--accent2);
+    background:#ffffff;
+    color:var(--accent2);
+    border-radius:12px;
+    cursor:pointer;
+  }
+  #museBtn:hover{ background:var(--amberbg); }
+  .muster-panel{
+    border:2px dashed var(--accent2);
+    background:#fffdf8;
+    border-radius:16px;
+    padding:16px 18px 6px 18px;
+    margin-bottom:26px;
+  }
+  .muster-panel[hidden]{ display:none; }
+  .muster-badge{
+    display:inline-block;
+    background:var(--accent2);
+    color:#ffffff;
+    font-size:14px;
+    font-weight:700;
+    padding:3px 10px;
+    border-radius:999px;
+    margin-bottom:10px;
+  }
+  .muster-grid{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:14px;
+    margin-bottom:10px;
+  }
+  .muster-identity{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:14px;
+    margin-bottom:14px;
+  }
+  .muster-field{
+    background:#ffffff;
+    border:1px solid #e6cfa0;
+    border-radius:16px;
+    padding:10px 12px;
+  }
+  .muster-field .m-label{
+    display:block;
+    font-weight:700;
+    color:var(--accent2);
+    font-size:14px;
+    margin-bottom:4px;
+  }
+  .muster-field .m-value{
+    font-size:15px;
+    color:#333;
+  }
+  .muster-closing{
+    background:var(--amberbg);
+    border:1px solid #e6cfa0;
+    border-left:6px solid var(--accent2);
+    border-radius:4px;
+    padding:12px 14px;
+    margin-bottom:14px;
+    font-weight:700;
+    font-style:italic;
+    color:var(--accent2);
+    font-size:16px;
+  }
+  @media (max-width: 900px){
+    .muster-grid{ grid-template-columns: 1fr 1fr; }
+    .muster-identity{ grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px){
+    .muster-grid{ grid-template-columns: 1fr; }
+  }
+
+  /* ---- Business Case ---- */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:22px;
+    font-size:15px;
+  }
+  th, td{
+    border:1px solid var(--border);
+    padding:10px 12px;
+    text-align:left;
+    vertical-align:top;
+  }
+  th{
+    background:var(--dark);
+    color:#ffffff;
+    font-size:14px;
+  }
+  td.rowlabel{ background:var(--lightbg); font-weight:700; }
+  tr.total td{ background:var(--amberbg); font-weight:700; }
+  ul.impact-list{ font-size:16px; }
+  .quote-box{
+    border-left:6px solid var(--accent2);
+    background:var(--amberbg);
+    border-radius:4px;
+    padding:14px 18px;
+    font-size:18px;
+    font-weight:700;
+    font-style:italic;
+    color:var(--accent2);
+    margin:14px 0 8px 0;
+  }
+  .note{
+    font-style:italic;
+    color:var(--grey);
+    font-size:14px;
+  }
+
+  /* ---- Crosslink ---- */
+  .crosslink{ margin:0 24px 20px 24px; font-size:14px; color:var(--grey); max-width:1152px; }
+  .crosslink a{ color:var(--accent); font-weight:700; text-decoration:none; }
+  .crosslink a:hover{ text-decoration:underline; }
+  .crosslink ul{ margin:8px 0 0; padding-left:20px; }
+  .crosslink li{ margin-bottom:4px; }
+
+  /* ---- Footer ---- */
+  footer{
+    margin-top:16px;
+    padding:20px 24px 30px 24px;
+    max-width:1200px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .footer-sig{
+    font-size:14px; color:var(--grey); margin-bottom:16px; line-height:1.6;
+  }
+  .footer-sig strong{ color:var(--dark); font-size:15px; }
+  .footer-details{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:14px;
+  }
+  @media (max-width: 900px){ .footer-details{ grid-template-columns: 1fr; } }
+  .footer-box{
+    background:var(--lightbg);
+    border:1px solid var(--border);
+    border-radius:16px;
+    overflow:hidden;
+  }
+  .footer-summary{
+    cursor:pointer; font-weight:700; font-size:16px; padding:12px 14px;
+    min-height:44px; display:flex; align-items:center; color:var(--dark);
+  }
+  .footer-content{ padding:0 14px 14px 14px; font-size:16px; color:#333; }
+  .footer-mono{ font-family: Consolas, "Courier New", monospace; white-space:pre-wrap; font-size:14px; line-height:1.5; }
+  .footer-sans{ font-size:16px; line-height:1.55; }
+  .footer-table{ width:100%; border-collapse:collapse; font-size:14px; }
+  .footer-table td, .footer-table th{
+    border-bottom:1px solid var(--border); padding:6px 6px; text-align:left; vertical-align:top;
+  }
+
+  /* ---------- Beamer-Modus (K18, vierstufig, kumulativ) ---------- */
+  html.beamer body,
+  html.beamer p, html.beamer li,
+  html.beamer .field-box textarea, html.beamer .field-box input,
+  html.beamer .muster-field .m-value, html.beamer .closing-box input,
+  html.beamer .quote-box, html.beamer .muster-closing,
+  html.beamer td{ font-size:22px; }
+  html.beamer h2{ font-size:44px; }
+  html.beamer .subtitle, html.beamer .field-box label, html.beamer .field-box .hint,
+  html.beamer .muster-badge, html.beamer .muster-field .m-label, html.beamer th,
+  html.beamer .tab-btn, html.beamer .closing-box label{ font-size:15px; }
+  html.beamer .beamer-btn, html.beamer .btn-ghost, html.beamer #museBtn{ font-size:16px; min-height:52px; }
+  html.beamer header.hero h1{ font-size:34px; }
+  html.beamer header.hero p{ font-size:18px; }
+
+  html.beamer-xl body,
+  html.beamer-xl p, html.beamer-xl li,
+  html.beamer-xl .field-box textarea, html.beamer-xl .field-box input,
+  html.beamer-xl .muster-field .m-value, html.beamer-xl .closing-box input,
+  html.beamer-xl .quote-box, html.beamer-xl .muster-closing,
+  html.beamer-xl td{ font-size:28px; }
+  html.beamer-xl h2{ font-size:54px; }
+  html.beamer-xl .subtitle, html.beamer-xl .field-box label, html.beamer-xl .field-box .hint,
+  html.beamer-xl .muster-badge, html.beamer-xl .muster-field .m-label, html.beamer-xl th,
+  html.beamer-xl .tab-btn, html.beamer-xl .closing-box label{ font-size:18px; }
+  html.beamer-xl .beamer-btn, html.beamer-xl .btn-ghost, html.beamer-xl #museBtn{ font-size:18px; min-height:56px; }
+  html.beamer-xl header.hero h1{ font-size:40px; }
+  html.beamer-xl header.hero p{ font-size:21px; }
+
+  html.beamer-xxl body,
+  html.beamer-xxl p, html.beamer-xxl li,
+  html.beamer-xxl .field-box textarea, html.beamer-xxl .field-box input,
+  html.beamer-xxl .muster-field .m-value, html.beamer-xxl .closing-box input,
+  html.beamer-xxl .quote-box, html.beamer-xxl .muster-closing,
+  html.beamer-xxl td{ font-size:34px; }
+  html.beamer-xxl h2{ font-size:64px; }
+  html.beamer-xxl .subtitle, html.beamer-xxl .field-box label, html.beamer-xxl .field-box .hint,
+  html.beamer-xxl .muster-badge, html.beamer-xxl .muster-field .m-label, html.beamer-xxl th,
+  html.beamer-xxl .tab-btn, html.beamer-xxl .closing-box label{ font-size:21px; }
+  html.beamer-xxl .beamer-btn, html.beamer-xxl .btn-ghost, html.beamer-xxl #museBtn{ font-size:20px; min-height:60px; }
+  html.beamer-xxl header.hero h1{ font-size:46px; }
+  html.beamer-xxl header.hero p{ font-size:24px; }
+
+  html.beamer{ --grey:#3D4A5C; }
+  html.beamer-xl{ --grey:#3D4A5C; }
+  html.beamer-xxl{ --grey:#3D4A5C; }
+
+  html.beamer footer, html.beamer-xl footer, html.beamer-xxl footer,
+  html.beamer .crosslink, html.beamer-xl .crosslink, html.beamer-xxl .crosslink{ display:none; }
+  html.beamer .back-link, html.beamer-xl .back-link, html.beamer-xxl .back-link,
+  html.beamer .sig, html.beamer-xl .sig, html.beamer-xxl .sig{ display:none; }
+</style>
+</head>
+<body>
+
+<div class="sig"><strong data-i18n="sigName">Michaela Kühn</strong><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener">www.michaela-kuehn.com</a></div>
+
+<header class="topbar">
+  <a class="back-link" href="../index.html" data-i18n="backlink">← Zurück zur Startseite</a>
+  <div class="meta-controls">
+    <button id="langBtn" type="button" class="btn-ghost">EN</button>
+    <button id="beamerBtn" type="button" class="beamer-btn" title="Vergrößert die Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">☀ Beamer</button>
+  </div>
+</header>
+
+<header class="hero">
+  <h1 data-i18n="pageTitle">BA-Steckbrief &amp; Business Case — Velaris Clearing AG</h1>
+  <p data-i18n="pageSubtitle">Trainingsmaterial Business Analyse · Fallstudienwelt Velaris Clearing AG (fiktiv)</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="steckbrief" type="button" data-i18n="tabSteckbrief">BA-Steckbrief</button>
+  <button class="tab-btn" data-tab="businesscase" type="button" data-i18n="tabBusinessCase">Business Case</button>
+</nav>
+
+<main>
+
+  <!-- ============ TAB 1: BA-STECKBRIEF ============ -->
+  <section id="steckbrief" class="tab-panel active">
+    <h2 data-i18n="sbHeading">BA-Steckbrief — Velaris Clearing AG</h2>
+    <p class="subtitle" data-i18n="sbSubtitle">Teil der Solendra Energy Exchange (SOEX) Group · Fürstenbach · Clearinghaus für Energie- und Rohstoffprodukte</p>
+
+    <div class="muster-toggle-row">
+      <button id="museBtn" type="button" data-i18n="museBtnShow">Musterlösung anzeigen</button>
+    </div>
+
+    <div id="musterPanel" class="muster-panel" hidden>
+      <span class="muster-badge" data-i18n="museBadge">BEISPIEL — kein eigenes Formularfeld</span>
+
+      <div class="muster-identity">
+        <div class="muster-field">
+          <span class="m-label" data-i18n="sbName">Name</span>
+          <span class="m-value" data-i18n="mName">Anna Petrikowski (Beispiel)</span>
+        </div>
+        <div class="muster-field">
+          <span class="m-label" data-i18n="sbTeam">Team / Bereich bei Velaris Clearing</span>
+          <span class="m-value" data-i18n="mTeam">Regulatory Affairs</span>
+        </div>
+        <div class="muster-field">
+          <span class="m-label" data-i18n="sbRoleType">Rollentyp (Selbsteinschätzung)</span>
+          <span class="m-value" data-i18n="mRoleType">Regulatory/Risk</span>
+        </div>
+      </div>
+
+      <div class="muster-grid">
+        <div class="muster-field">
+          <span class="m-label" data-i18n="sbActivities">Haupttätigkeiten</span>
+          <span class="m-value" data-i18n="mActivities">Prüft neue Produkte und Prozesse vor Go-Live auf REMIT-, EMIR- und MiFID-II-Meldepflichten; erstellt Compliance-Mappings; berät Product und IT zu regulatorischen Anforderungen.</span>
+        </div>
+        <div class="muster-field">
+          <span class="m-label" data-i18n="sbArtefacts">Wichtigste Artefakte</span>
+          <span class="m-value" data-i18n="mArtefacts">Regulatorische Anforderungsmappings, Meldewesen-Spezifikationen, Compliance-Checklisten, Stellungnahmen zu neuen ESMA-/ACER-Vorgaben.</span>
+        </div>
+        <div class="muster-field">
+          <span class="m-label" data-i18n="sbDomain">Domänenwissen</span>
+          <span class="m-value" data-i18n="mDomain">EMIR (inkl. EMIR 3.0), REMIT, MiFID II/MiFIR, CSDR, Clearing-Grundlagen (CCP, Margining).</span>
+        </div>
+        <div class="muster-field">
+          <span class="m-label" data-i18n="sbStakeholder">Wichtigste Stakeholder</span>
+          <span class="m-value" data-i18n="mStakeholder">BaFin, ESMA, ACER, interne Compliance-Abteilung, Product Owner, IT-Schnittstellenteam.</span>
+        </div>
+        <div class="muster-field">
+          <span class="m-label" data-i18n="sbTools">Tools</span>
+          <span class="m-value" data-i18n="mTools">Interne Meldewesen-Plattform, Confluence für Compliance-Dokumentation, Excel für Gap-Analysen.</span>
+        </div>
+        <div class="muster-field">
+          <span class="m-label" data-i18n="sbWorkstyle">Arbeitsweise</span>
+          <span class="m-value" data-i18n="mWorkstyle">Klassisch/dokumentationsgetrieben bei regulatorischen Fristen, arbeitet aber aktiv in den agilen Refinements des Produktteams mit.</span>
+        </div>
+        <div class="muster-field">
+          <span class="m-label" data-i18n="sbChallenge">Größte Herausforderung</span>
+          <span class="m-value" data-i18n="mChallenge">Regulatorische Fristen ändern sich häufig kurzfristig (z. B. neue RTS-Entwürfe), während Entwicklungs-Roadmaps langfristig fixiert sind.</span>
+        </div>
+        <div class="muster-field">
+          <span class="m-label" data-i18n="sbMisconception">Häufiges Missverständnis</span>
+          <span class="m-value" data-i18n="mMisconception">Es wird angenommen, ich sei nur "Prüferin am Ende" — tatsächlich bin ich von Beginn der Anforderungsanalyse an eingebunden.</span>
+        </div>
+      </div>
+
+      <div class="muster-closing" data-i18n="mClosing">„Ich übersetze Verordnungstext in prüfbare Anforderungen, bevor er zum Problem wird.“</div>
+    </div>
+
+    <div class="identity-row">
+      <div class="field-box">
+        <label data-i18n="sbName">Name</label>
+        <input type="text">
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbTeam">Team / Bereich bei Velaris Clearing</label>
+        <span class="hint" data-i18n="sbTeamHint">z. B. Product, IT-Schnittstelle, Risk Management, Regulatory Affairs, Clearing Operations</span>
+        <input type="text">
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbRoleType">Rollentyp (Selbsteinschätzung)</label>
+        <span class="hint" data-i18n="sbRoleTypeHint">IT/Systemanalyse · Agile/User Stories · Fachbereich/Prozess · Regulatory/Risk · Mischform</span>
+        <input type="text">
+      </div>
+    </div>
+
+    <div class="grid-fields">
+      <div class="field-box">
+        <label data-i18n="sbActivities">Haupttätigkeiten</label>
+        <span class="hint" data-i18n="sbActivitiesHint">Was machst du in einer typischen Woche wirklich?</span>
+        <textarea></textarea>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbArtefacts">Wichtigste Artefakte</label>
+        <span class="hint" data-i18n="sbArtefactsHint">User Stories, BPMN, Lastenheft/BRD, Meldewesen-Spezifikationen ...</span>
+        <textarea></textarea>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbDomain">Domänenwissen</label>
+        <span class="hint" data-i18n="sbDomainHint">Clearing (CCP/Margining), Energiemarkt, Regulatorik (EMIR/MiFID II/REMIT) ...</span>
+        <textarea></textarea>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbStakeholder">Wichtigste Stakeholder</label>
+        <span class="hint" data-i18n="sbStakeholderHint">Clearing-Mitglieder, Partnerbörsen, IT, BaFin/ESMA, Fachbereich ...</span>
+        <textarea></textarea>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbTools">Tools</label>
+        <span class="hint" data-i18n="sbToolsHint">Welche Tools nutzt du täglich?</span>
+        <textarea></textarea>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbWorkstyle">Arbeitsweise</label>
+        <span class="hint" data-i18n="sbWorkstyleHint">Klassisch, agil, hybrid — woran zeigt sich das konkret?</span>
+        <textarea></textarea>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbChallenge">Größte Herausforderung</label>
+        <span class="hint" data-i18n="sbChallengeHint">in der eigenen Rolle</span>
+        <textarea></textarea>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbMisconception">Häufiges Missverständnis</label>
+        <span class="hint" data-i18n="sbMisconceptionHint">Das wird mir oft zugeschrieben, gehört aber NICHT zu meiner Rolle</span>
+        <textarea></textarea>
+      </div>
+    </div>
+
+    <div class="closing-box">
+      <label data-i18n="sbClosing">Ein Satz, der meine Rolle auf den Punkt bringt</label>
+      <input type="text">
+    </div>
+  </section>
+
+  <!-- ============ TAB 2: BUSINESS CASE ============ -->
+  <section id="businesscase" class="tab-panel">
+    <h2 data-i18n="bcTitle">Business Case: Der Value des Business Analysten</h2>
+    <p class="subtitle" data-i18n="bcSubtitle">Partnerbörsen-Onboarding bei Velaris Clearing AG</p>
+
+    <h2 data-i18n="bcH1">Ausgangssituation</h2>
+    <p data-i18n="bcIntro">Velaris Clearing bindet eine neue Partnerbörse an ihr Clearing-System an (fiktives Beispiel: „NordPower Exchange“, nordeuropäischer Stromhandelsplatz). Das Projekt umfasst neue Trade-Feeds, Margin-Berechnung für das neue Produktsegment und Anpassung der Settlement-Schnittstellen zu den Verwahrstellen.</p>
+
+    <h2 data-i18n="bcH2">Szenarienvergleich</h2>
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="thBlank">&nbsp;</th>
+          <th data-i18n="thScenarioA">Szenario A – Ohne dedizierten BA</th>
+          <th data-i18n="thScenarioB">Szenario B – Mit dediziertem BA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rowlabel" data-i18n="r1label">Anforderungsaufnahme</td>
+          <td data-i18n="r1a">Fachbereich (Risk, Settlement) sendet Anforderungen direkt per E-Mail/Meeting-Notizen an IT</td>
+          <td data-i18n="r1b">BA moderiert strukturierte Workshops, dokumentiert nach IREB-Standard, erstellt Prozessmodell (BPMN) End-to-End</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="r2label">Ergebnis Anforderungsanalyse</td>
+          <td data-i18n="r2a">Trade-Feed-Format wird erst in der Testphase als unvollständig erkannt (fehlende Felder für Intraday-Positionen)</td>
+          <td data-i18n="r2b">Lücke wird in Analysephase durch Traceability-Check gegen bestehende Settlement-Logik identifiziert</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="r3label">Auswirkung</td>
+          <td data-i18n="r3a">3 Wochen Verzögerung, Nacharbeit an bereits entwickelter Schnittstelle, Re-Test-Zyklus</td>
+          <td data-i18n="r3b">Anforderung wird vor Entwicklungsstart korrigiert, kein Rework</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="r4label">Regulatorischer Aspekt</td>
+          <td data-i18n="r4a">REMIT-Meldepflicht für neue Produktklasse wird erst spät im Projekt entdeckt → Risiko einer verspäteten Meldung an die Aufsicht</td>
+          <td data-i18n="r4b">BA prüft regulatorische Anforderungen (REMIT, EMIR) parallel zur fachlichen Analyse, Meldepflicht ist von Anfang an im Scope</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="r5label">Stakeholder-Effekt</td>
+          <td data-i18n="r5a">Fachbereich und IT geben sich gegenseitig die Schuld für Missverständnisse</td>
+          <td data-i18n="r5b">Gemeinsames, abgestimmtes Verständnis dokumentiert und von allen Seiten bestätigt</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 data-i18n="bcH3">Quantifizierter Impact (illustrative Rechnung für die Trainingsübung)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="thCost">Kostenfaktor</th>
+          <th data-i18n="thWithout">Ohne BA</th>
+          <th data-i18n="thWith">Mit BA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rowlabel" data-i18n="i1label">Entwicklerstunden für Rework</td>
+          <td data-i18n="i1a">120 Std. à 95 € = 11.400 €</td>
+          <td data-i18n="i1b">0 €</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="i2label">Projektverzögerung</td>
+          <td data-i18n="i2a">3 Wochen → verzögerter Go-Live mit Partnerbörse, entgangene Clearing-Gebühren</td>
+          <td data-i18n="i2b">kein Verzug</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="i3label">Risiko verspätete REMIT-Meldung</td>
+          <td data-i18n="i3a">Mögliches Bußgeld-/Reputationsrisiko bei Aufsicht (BaFin/ACER)</td>
+          <td data-i18n="i3b">vermieden</td>
+        </tr>
+        <tr class="total">
+          <td class="rowlabel" data-i18n="totlabel">Geschätzte Gesamtersparnis</td>
+          <td data-i18n="totdash">—</td>
+          <td data-i18n="totval">~15.000–20.000 € + vermiedenes Compliance-Risiko (pro Onboarding-Projekt)</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note" data-i18n="bcNote">Hinweis: Zahlen sind bewusst plausibel-realistisch für die Trainingsdiskussion gewählt, keine echten Unternehmenszahlen – gut geeignet, um Teilnehmer eigene Schätzungen aus ihrem Arbeitsalltag ergänzen zu lassen.</p>
+
+    <h2 data-i18n="bcH4">Weicher Impact</h2>
+    <ul class="impact-list">
+      <li data-i18n="soft1">Audit-Fähigkeit: Nachvollziehbare Traceability zwischen Anforderung und Meldepflicht</li>
+      <li data-i18n="soft2">Wissenstransfer: Neue Partnerbörsen-Onboardings künftig schneller, da Vorlage/Prozessmodell wiederverwendbar</li>
+      <li data-i18n="soft3">Vertrauen zwischen Fachbereich und IT steigt messbar (weniger Eskalationen)</li>
+    </ul>
+
+    <h2 data-i18n="bcH5">Kernaussage</h2>
+    <div class="quote-box" data-i18n="bcQuote">„Der BA kostet ein Gehalt – ein fehlender BA kostet ein Projekt.“</div>
+  </section>
+
+</main>
+
+<div class="crosslink">
+  <span data-i18n="cl-intro">Verwandte Denkraum-Tools zu diesem Thema:</span>
+  <ul>
+    <li><a href="./ba-rollenwandel-explorer.html" data-i18n="cl-1-name">BA-Rollenwandel-Explorer</a> — <span data-i18n="cl-1-desc">beleuchtet den Rollenwandel des BA anhand des Fallbeispiels TalentMatch AI/Vantera als 6-Stufen-Modell, statt Selbstreflexion und Business Case für die eigene Rolle bei Velaris Clearing zu verbinden.</span></li>
+    <li><a href="./ba-lifecycle-lernreise.html" data-i18n="cl-2-name">BA-Lifecycle-Lernreise</a> — <span data-i18n="cl-2-desc">durchläuft die sechs BABOK-Wissensbereiche als Stationenweg an drei Fällen, statt den Wertbeitrag des BA an einem einzigen Projekt zu quantifizieren.</span></li>
+    <li><a href="./babok-kompendium.html" data-i18n="cl-3-name">BABOK® Kompendium</a> — liefert das <span data-i18n="cl-3-desc">Nachschlagewerk zu den BABOK-Grundlagen (Wissensbereiche, BACCM, Kompetenzen), auf die sich sowohl der Steckbrief als auch der Business Case beziehen.</span></li>
+  </ul>
+</div>
+
+<footer>
+  <div class="footer-sig">
+    <strong data-i18n="sigName">Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" data-i18n="sigLink">www.michaela-kuehn.com</a><br>
+    <span data-i18n="normList">IREB CPRE · BABOK v3 · EMIR (inkl. EMIR 3.0) · REMIT · MiFID II/MiFIR · CSDR</span><br>
+    <span data-i18n="auditLine">Zuletzt geprüft: 01.09.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+  </div>
+  <div class="footer-details">
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="fSystemHead">Systemprompt</summary>
+      <div class="footer-content footer-mono" data-i18n="fSystemBody">Baue ein einzelnes, offlinefähiges HTML-Trainingstool mit zwei Reitern: (1) "BA-Steckbrief" — ausfüllbares 8-Felder-Formular (plus Name/Team/Rollentyp) zur Selbstreflexion unterschiedlicher BA-Rollentypen (IT/Systemanalyse, Agile/User Stories, Fachbereich/Prozess, Regulatory/Risk); (2) "Business Case" — Vorher/Nachher-Szenariovergleich zum Wertbeitrag des BA anhand eines Partnerbörsen-Onboarding-Projekts.
+
+STRUKTUR
+- Topbar (eigene Zeile) mit Zurück-Link links, Sprachtoggle (DE/EN) und vierstufigem Beamer-Toggle rechts.
+- Fixe Signatur oben rechts (Name + Website-Link, position:fixed), unabhängig von der Topbar.
+- Dunkler Hero-Header mit Titel und Untertitel, darunter Tab-Navigation (BA-Steckbrief / Business Case), nur ein Tab gleichzeitig sichtbar (kein Reload).
+- Tab "BA-Steckbrief": Button "Musterlösung anzeigen" blendet ein vollständig ausgefülltes Beispiel (Regulatory/Risk-Persona Anna Petrikowski) in einer optisch abgesetzten Box ein/aus, danach das leere Formular mit denselben Feldern.
+- Tab "Business Case": zwei Tabellen (Szenarienvergleich, quantifizierter Impact), eine Liste "weicher Impact", abschließendes Zitat als hervorgehobene Box.
+- Crosslink-Block mit 2-3 kuratierten Links zu verwandten Denkraum-Tools vor dem Footer.
+- Vierspaltiger Footer mit vier Aufklapp-Boxen: Systemprompt, Handbuch, Vortrags-Skript, Normen-Register.
+
+FALLSTUDIENWELT
+Fiktive "Velaris Clearing AG" (Teil der fiktiven Solendra Energy Exchange/SOEX Group, Standort Fürstenbach), Clearinghaus für Energie-/Rohstoffprodukte. Keine realen Unternehmensbezüge. Musterlösung: Persona "Anna Petrikowski", Regulatory Affairs.
+
+DESIGN-VORGABEN
+- Weißer Grundhintergrund, color-scheme: light, kein Dark Mode.
+- Sachlich-seriöse Palette: dunkles Petrol/Navy für Header und Tabellenköpfe, Grün als Akzent, Amber/Gold für Musterlösung und Kernaussage-Box.
+- Radius-Skala: 16px für Karten/Panels (Formularfelder, Musterlösungs-Felder, Footer-Boxen), 12px für Buttons, 999px für Meta-Controls (Beamer-Button, Sprachtoggle, Badges), 4px für schmale Akzent-/Zitat-Boxen mit farbigem linkem Rand (Kernaussage, Rollen-Einzeiler, Musterlösungs-Zitat).
+- Mindestschriftgrößen 16px Fließtext / 14px Sekundärtext; Touch-Ziele mind. 44px.
+- Vierstufiger kumulativer Beamer-Modus (Normal→Beamer→Beamer XL→Beamer XXL) nach kanonischem Denkraum-Muster: kumulative Klassen auf <html>, Button-Label zeigt immer die nächste Stufe, Footer und Crosslink-Block ab Stufe 1 ausgeblendet.
+
+PFLICHT
+DE/EN-Sprachtoggle ohne Reload und ohne externen Übersetzungsdienst (data-i18n-Attribute + JS-Objekt mit den Übersetzungen), deutscher Inhalt muss auch ohne JS lesbar sein; nur click-Events auf Buttons, kein HTML5-Drag-and-Drop; keine fetch()-Aufrufe, kein externes CDN.
+
+NICHT TUN
+- Keine Speicherung der Formulareingaben (bewusst: Reflexionsübung, nicht Datenerfassung) — nicht nachträglich sessionStorage/localStorage für die Formularfelder einbauen, ohne das im Handbuch zu dokumentieren.
+- Keine echten Firmen-/Börsennamen verwenden, auch nicht als "Beispiel, das echten Firmen ähnelt".
+- Zahlen im Business Case nicht als reale Unternehmenskennzahlen ausgeben — Hinweistext auf "illustrativ" nicht entfernen.
+- Kein Sliding-Panel für die Musterlösung — sie bleibt nach dem Öffnen dauerhaft sichtbar (kein Auto-Close).</div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="fHandbuchHead">Handbuch</summary>
+      <div class="footer-content footer-sans" data-i18n="fHandbuchBody">Reiter "BA-Steckbrief": Teilnehmer füllen die Felder direkt im Browser aus (keine Speicherung, Inhalte gehen beim Schließen verloren — für eine Miro-Weiterverarbeitung stattdessen ein separates PDF-Canvas nutzen). Über "Musterlösung anzeigen" lässt sich ein vollständig ausgefülltes Beispiel (Regulatory/Risk-Persona) einblenden — erst nach der eigenen Bearbeitung zeigen, sonst verzerrt es die Selbstreflexion. Reiter "Business Case": als Diskussionsgrundlage im Plenum nutzen — Teilnehmer schätzen die Zahlen der mittleren Spalte, bevor die rechte Spalte aufgedeckt wird. Sprachumschaltung oben rechts wirkt sofort auf beide Reiter inkl. Footer und Musterlösung. Beamer-Button vergrößert die Schrift stufenweise für Projektion; Footer und Crosslink-Block werden dabei ausgeblendet.</div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="fVortragHead">Vortrags-Skript</summary>
+      <div class="footer-content footer-sans" data-i18n="fVortragBody">(Reiter "BA-Steckbrief" ist aktiv, Musterlösung noch nicht geöffnet.) Einstieg: „Bevor wir über den Wert des BA sprechen, füllt bitte euren eigenen Steckbrief aus — wir vergleichen danach, wie unterschiedlich 'BA' in unserem Haus gelebt wird." Teilnehmer bearbeiten die Felder ca. 10 Minuten. (Auf "Musterlösung anzeigen" klicken.) „Zum Vergleich hier ein ausgefülltes Beispiel aus der Regulatory-Perspektive — nicht als Norm, sondern als Kontrastfolie." 3–4 eigene Steckbriefe im Plenum vorstellen, Kontraste markieren. (Auf den Tab "Business Case" klicken.) Überleitung: „Genau diese Vielfalt zeigt sich auch im Wertbeitrag — schauen wir uns ein konkretes Projekt an." Szenario A aus der Tabelle vorlesen, Teilnehmer raten die Auswirkung. Szenario B und die Zahlen der rechten Spalte auflösen. Abschluss mit der Kernaussage am Ende der Seite als Merksatz. Regie-Hinweis: Nicht mit der Kernaussage beginnen — sie wirkt nur nach dem eigenen Aha-Moment im Szenarienvergleich. Zeitbudget: 20–25 Minuten für beide Reiter.</div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="fNormenHead">Normen-Register</summary>
+      <div class="footer-content">
+        <table class="footer-table">
+          <thead><tr><th data-i18n="nrCol1">Framework/Quelle</th><th data-i18n="nrCol2">Fassung/Status</th><th data-i18n="nrCol3">Bezug im Tool</th></tr></thead>
+          <tbody>
+            <tr><td>IREB CPRE</td><td data-i18n="nrIREB">Aktuell</td><td data-i18n="nrIREBUse">Anforderungsdokumentation im Business-Case-Szenario B</td></tr>
+            <tr><td>BABOK® Guide v3 (IIBA)</td><td data-i18n="nrBABOK">Aktuell (v3.0, 2015)</td><td data-i18n="nrBABOKUse">Rollentyp-Kategorien, fachliche Einordnung der Steckbrief-Felder</td></tr>
+            <tr><td>EMIR / EMIR 3.0</td><td data-i18n="nrEMIR">VO (EU) 2024/2987, in Kraft seit 24.12.2024; Aktives-Konto-Pflicht seit 24.06.2025 anwendbar, konkretisierende RTS in Kraft seit 26.02.2026, erste AAR-Meldung fällig 31.07.2026</td><td data-i18n="nrEMIRUse">Domänenwissen-Feld, Musterlösung, Business-Case-Regulatorik</td></tr>
+            <tr><td>REMIT / REMIT II</td><td data-i18n="nrREMIT">Durchführungs- und delegierte Verordnung von der EU-Kommission veröffentlicht 09.04.2026, in Kraft seit 29.04.2026, weitere Pflichten gestaffelt nach 8/18/24 Monaten</td><td data-i18n="nrREMITUse">Business-Case-Regulatorik (Szenario A/B, Impact-Tabelle)</td></tr>
+            <tr><td>MiFID II/MiFIR</td><td data-i18n="nrMiFID">Aktuell</td><td data-i18n="nrMiFIDUse">Domänenwissen-Feld, Musterlösung</td></tr>
+            <tr><td>CSDR</td><td data-i18n="nrCSDR">Aktuell</td><td data-i18n="nrCSDRUse">Domänenwissen-Feld, Musterlösung</td></tr>
+          </tbody>
+        </table>
+        <p data-i18n="nrNote">Stand der Prüfung: 01.09.2026, Quelle: gezielte Websuche zu EMIR-3.0-Aktives-Konto und REMIT-II-Durchführungsrecht — bei Weiterverwendung in neuen Materialien erneut gegen aktuellen Stand prüfen.</p>
+      </div>
+    </details>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var i18n = {
+    backlink: {en:"← Back to homepage"},
+    sigLink: {en:"www.michaela-kuehn.com"},
+    normList: {en:"IREB CPRE · BABOK v3 · EMIR (incl. EMIR 3.0) · REMIT · MiFID II/MiFIR · CSDR"},
+    auditLine: {en:"Last reviewed: 1 Sept 2026 · Status: ✅ Certified · See audit log for details"},
+
+    pageTitle: {en:"BA Profile Card &amp; Business Case — Velaris Clearing AG"},
+    pageSubtitle: {en:"Business Analysis training material · Velaris Clearing AG case study world (fictional)"},
+    tabSteckbrief: {en:"BA Profile Card"},
+    tabBusinessCase: {en:"Business Case"},
+
+    sbHeading: {en:"BA Profile Card — Velaris Clearing AG"},
+    sbSubtitle: {en:"Part of Solendra Energy Exchange (SOEX) Group · Fürstenbach · Clearing house for energy and commodity products"},
+    sbName: {en:"Name"},
+    sbTeam: {en:"Team / Area at Velaris Clearing"},
+    sbTeamHint: {en:"e.g. Product, IT liaison, Risk Management, Regulatory Affairs, Clearing Operations"},
+    sbRoleType: {en:"Role Type (self-assessment)"},
+    sbRoleTypeHint: {en:"IT/Systems Analysis · Agile/User Stories · Business/Process · Regulatory/Risk · Mixed"},
+    sbActivities: {en:"Key Activities"},
+    sbActivitiesHint: {en:"What do you actually do in a typical week?"},
+    sbArtefacts: {en:"Key Artefacts"},
+    sbArtefactsHint: {en:"User stories, BPMN, business/functional specs, regulatory reporting specs ..."},
+    sbDomain: {en:"Domain Knowledge"},
+    sbDomainHint: {en:"Clearing (CCP/margining), energy markets, regulation (EMIR/MiFID II/REMIT) ..."},
+    sbStakeholder: {en:"Key Stakeholders"},
+    sbStakeholderHint: {en:"Clearing members, partner exchanges, IT, BaFin/ESMA, business units ..."},
+    sbTools: {en:"Tools"},
+    sbToolsHint: {en:"Which tools do you use daily?"},
+    sbWorkstyle: {en:"Way of Working"},
+    sbWorkstyleHint: {en:"Classic, agile, hybrid — what shows this in practice?"},
+    sbChallenge: {en:"Biggest Challenge"},
+    sbChallengeHint: {en:"in your current role"},
+    sbMisconception: {en:"Common Misconception"},
+    sbMisconceptionHint: {en:"This is often assumed to be part of my role, but is NOT"},
+    sbClosing: {en:"One sentence that sums up my role"},
+
+    museBtnShow: {en:"Show sample solution"},
+    museBtnHide: {en:"Hide sample solution"},
+    museBadge: {en:"SAMPLE — not one of your form fields"},
+    mName: {en:"Anna Petrikowski (sample)"},
+    mTeam: {en:"Regulatory Affairs"},
+    mRoleType: {en:"Regulatory/Risk"},
+    mActivities: {en:"Reviews new products and processes before go-live for REMIT, EMIR and MiFID II reporting obligations; builds compliance mappings; advises Product and IT on regulatory requirements."},
+    mArtefacts: {en:"Regulatory requirement mappings, reporting specifications, compliance checklists, position papers on new ESMA/ACER requirements."},
+    mDomain: {en:"EMIR (incl. EMIR 3.0), REMIT, MiFID II/MiFIR, CSDR, clearing fundamentals (CCP, margining)."},
+    mStakeholder: {en:"BaFin, ESMA, ACER, internal compliance department, product owner, IT liaison team."},
+    mTools: {en:"Internal regulatory reporting platform, Confluence for compliance documentation, Excel for gap analyses."},
+    mWorkstyle: {en:"Classic/documentation-driven around regulatory deadlines, but actively participates in the product team's agile refinements."},
+    mChallenge: {en:"Regulatory deadlines often shift at short notice (e.g. new draft RTS), while development roadmaps are fixed further in advance."},
+    mMisconception: {en:"People assume I'm just the “reviewer at the end” — in reality I'm involved from the very start of requirements analysis."},
+    mClosing: {en:"“I translate regulatory text into testable requirements before it becomes a problem.”"},
+
+    bcTitle: {en:"Business Case: The Value of the Business Analyst"},
+    bcSubtitle: {en:"Partner Exchange Onboarding at Velaris Clearing AG"},
+    bcH1: {en:"Starting Situation"},
+    bcIntro: {en:"Velaris Clearing is connecting a new partner exchange to its clearing system (fictional example: “NordPower Exchange”, a Northern European power trading venue). The project covers new trade feeds, margin calculation for the new product segment, and adjustments to the settlement interfaces with the depositories."},
+    bcH2: {en:"Scenario Comparison"},
+    thBlank: {en:"&nbsp;"},
+    thScenarioA: {en:"Scenario A – Without a Dedicated BA"},
+    thScenarioB: {en:"Scenario B – With a Dedicated BA"},
+    r1label: {en:"Requirements elicitation"},
+    r1a: {en:"Business units (Risk, Settlement) send requirements directly to IT via email/meeting notes"},
+    r1b: {en:"BA facilitates structured workshops, documents to IREB standard, builds an end-to-end process model (BPMN)"},
+    r2label: {en:"Requirements analysis outcome"},
+    r2a: {en:"The trade feed format is found incomplete only during the test phase (missing fields for intraday positions)"},
+    r2b: {en:"The gap is identified during analysis via a traceability check against existing settlement logic"},
+    r3label: {en:"Impact"},
+    r3a: {en:"3 weeks of delay, rework on an interface already built, re-test cycle"},
+    r3b: {en:"Requirement is corrected before development starts, no rework"},
+    r4label: {en:"Regulatory aspect"},
+    r4a: {en:"The REMIT reporting obligation for the new product class is discovered late in the project → risk of a late report to the regulator"},
+    r4b: {en:"BA checks regulatory requirements (REMIT, EMIR) alongside the business analysis; the reporting obligation is in scope from day one"},
+    r5label: {en:"Stakeholder effect"},
+    r5a: {en:"Business and IT blame each other for misunderstandings"},
+    r5b: {en:"A shared, agreed understanding is documented and confirmed by all sides"},
+    bcH3: {en:"Quantified Impact (illustrative figures for the training exercise)"},
+    thCost: {en:"Cost factor"},
+    thWithout: {en:"Without BA"},
+    thWith: {en:"With BA"},
+    i1label: {en:"Developer hours for rework"},
+    i1a: {en:"120 hrs at €95 = €11,400"},
+    i1b: {en:"€0"},
+    i2label: {en:"Project delay"},
+    i2a: {en:"3 weeks → delayed go-live with partner exchange, lost clearing fees"},
+    i2b: {en:"no delay"},
+    i3label: {en:"Risk of late REMIT reporting"},
+    i3a: {en:"Possible fine/reputational risk with the regulator (BaFin/ACER)"},
+    i3b: {en:"avoided"},
+    totlabel: {en:"Estimated total saving"},
+    totdash: {en:"—"},
+    totval: {en:"~€15,000–20,000 + avoided compliance risk (per onboarding project)"},
+    bcNote: {en:"Note: figures are deliberately plausible-realistic for training discussion, not actual company figures – well suited for letting participants add their own estimates from their day-to-day work."},
+    bcH4: {en:"Soft Impact"},
+    soft1: {en:"Audit readiness: traceable link between requirement and reporting obligation"},
+    soft2: {en:"Knowledge transfer: future partner exchange onboardings are faster, since the template/process model is reusable"},
+    soft3: {en:"Trust between business and IT increases measurably (fewer escalations)"},
+    bcH5: {en:"Key Message"},
+    bcQuote: {en:"“A BA costs a salary – a missing BA costs a project.”"},
+
+    "cl-intro": {en:"Related Denkraum tools on this topic:"},
+    "cl-1-name": {en:"BA-Rollenwandel-Explorer"},
+    "cl-1-desc": {en:"explores the BA role shift through the TalentMatch AI/Vantera case as a 6-stage model, instead of connecting self-reflection and a business case for one's own role at Velaris Clearing."},
+    "cl-2-name": {en:"BA-Lifecycle-Lernreise"},
+    "cl-2-desc": {en:"walks through the six BABOK knowledge areas as a station journey across three cases, instead of quantifying the BA's value on a single project."},
+    "cl-3-name": {en:"BABOK® Kompendium"},
+    "cl-3-desc": {en:"provides the reference work on the BABOK fundamentals (knowledge areas, BACCM, competencies) that both the profile card and the business case draw on."},
+
+    fSystemHead: {en:"System Prompt"},
+    fSystemBody: {en:"Build a single, offline-capable HTML training tool with two tabs: (1) \"BA Profile Card\" — a fillable 8-field form (plus name/team/role type) for self-reflection on different BA role types (IT/Systems Analysis, Agile/User Stories, Business/Process, Regulatory/Risk); (2) \"Business Case\" — a before/after scenario comparison of BA value using a partner-exchange onboarding project.\n\nSTRUCTURE\n- Topbar (its own row) with a back link on the left, a language toggle (DE/EN) and a four-stage beamer toggle on the right.\n- Fixed signature top-right (name + website link, position:fixed), independent of the topbar.\n- Dark hero header with title and subtitle, followed by tab navigation (BA Profile Card / Business Case), only one tab visible at a time (no reload).\n- \"BA Profile Card\" tab: a \"Show sample solution\" button reveals a fully filled-in example (Regulatory/Risk persona Anna Petrikowski) in a visually distinct box, followed by the empty form with the same fields.\n- \"Business Case\" tab: two tables (scenario comparison, quantified impact), a \"soft impact\" list, a closing quote as a highlighted box.\n- Crosslink block with 2-3 curated links to related Denkraum tools before the footer.\n- Four-column footer with four collapsible boxes: System Prompt, Handbook, Presenter Script, Standards Register.\n\nCASE STUDY WORLD\nFictional \"Velaris Clearing AG\" (part of the fictional Solendra Energy Exchange/SOEX Group, based in Fürstenbach), a clearing house for energy/commodity products. No real company references. Sample solution: persona \"Anna Petrikowski\", Regulatory Affairs.\n\nDESIGN REQUIREMENTS\n- White background, color-scheme: light, no dark mode.\n- Sober, professional palette: dark petrol/navy for header and table heads, green as accent, amber/gold for the sample solution and key-message box.\n- Radius scale: 16px for cards/panels (form fields, sample-solution fields, footer boxes), 12px for buttons, 999px for meta-controls (beamer button, language toggle, badges), 4px for narrow accent/quote boxes with a colored left border (key message, one-sentence role summary, sample-solution quote).\n- Minimum font sizes 16px body / 14px secondary text; touch targets at least 44px.\n- Four-stage cumulative beamer mode (Normal→Beamer→Beamer XL→Beamer XXL) per the canonical Denkraum pattern: cumulative classes on <html>, button label always shows the next stage, footer and crosslink block hidden from stage one onward.\n\nREQUIRED\nDE/EN language toggle with no reload and no external translation service (data-i18n attributes plus a JS object with the translations); German content must remain readable without JS; click events only on buttons, no HTML5 drag-and-drop; no fetch() calls, no external CDN.\n\nDO NOT\n- Persist form input (deliberate: a reflection exercise, not data collection) — do not add sessionStorage/localStorage for the form fields later without documenting it in the handbook.\n- Use real company/exchange names, even as \"an example resembling a real company\".\n- Present the business case figures as real company numbers — keep the \"illustrative\" disclaimer.\n- Use a sliding panel for the sample solution — once opened it stays visible (no auto-close)."},
+    fHandbuchHead: {en:"Handbook"},
+    fHandbuchBody: {en:"\"BA Profile Card\" tab: participants fill in the fields directly in the browser (no storage — content is lost on close; for Miro use a separate PDF canvas instead). \"Show sample solution\" reveals a fully filled-in example (Regulatory/Risk persona) — only show it after participants have completed their own card, otherwise it skews the self-reflection. \"Business Case\" tab: use as a discussion basis in plenary — participants estimate the middle column's figures before the right-hand column is revealed. The language toggle top-right affects both tabs including the footer and the sample solution immediately. The Beamer button enlarges text stepwise for projection; the footer and crosslink block are hidden while active."},
+    fVortragHead: {en:"Presenter Script"},
+    fVortragBody: {en:"(The \"BA Profile Card\" tab is active, sample solution not yet opened.) Opening: “Before we talk about the value of the BA, please fill in your own profile card — afterwards we'll compare how differently 'BA' is lived out in our organisation.” Participants work on the fields for about 10 minutes. (Click “Show sample solution”.) “For comparison, here's a filled-in example from the regulatory perspective — not as a norm, but as a contrast.” Present 3–4 own profile cards in plenary, highlight the contrasts. (Click the “Business Case” tab.) Transition: “That same diversity also shows up in the value a BA adds — let's look at a concrete project.” Read out Scenario A from the table, have participants guess the impact. Reveal Scenario B and the right-hand column's figures. Close with the key message at the bottom of the page as a takeaway. Directing note: don't open with the key message — it only lands after the participants' own aha-moment in the scenario comparison. Time budget: 20–25 minutes for both tabs."},
+    fNormenHead: {en:"Standards Register"},
+    fNormenBody: {en:"IREB CPRE (requirements documentation) · BABOK® Guide v3 (IIBA) · EMIR incl. EMIR 3.0 (Regulation (EU) 2024/2987, in force since 24 Dec 2024; active-account obligation applicable since 24 June 2025, implementing RTS in force since 26 Feb 2026, first active-account report due 31 July 2026) · REMIT II (implementing and delegated regulation published by the European Commission on 9 April 2026, in force since 29 April 2026, further obligations phasing in over 8/18/24 months) · MiFID II/MiFIR · CSDR. Reviewed: 1 Sept 2026, source: targeted web search on the EMIR 3.0 active account requirement and REMIT II implementing law — re-verify against current status before further use."},
+    nrCol1: {en:"Framework/Source"},
+    nrCol2: {en:"Version/Status"},
+    nrCol3: {en:"Used in tool for"},
+    nrIREB: {en:"Current"},
+    nrIREBUse: {en:"Requirements documentation in Business Case Scenario B"},
+    nrBABOK: {en:"Current (v3.0, 2015)"},
+    nrBABOKUse: {en:"Role-type categories, professional framing of the profile-card fields"},
+    nrEMIR: {en:"Regulation (EU) 2024/2987, in force since 24 Dec 2024; active-account obligation applicable since 24 June 2025, implementing RTS in force since 26 Feb 2026, first AAR report due 31 July 2026"},
+    nrEMIRUse: {en:"Domain-knowledge field, sample solution, business-case regulatory row"},
+    nrREMIT: {en:"Implementing and delegated regulation published by the European Commission on 9 April 2026, in force since 29 April 2026, further obligations phasing in over 8/18/24 months"},
+    nrREMITUse: {en:"Business-case regulatory row (Scenario A/B, impact table)"},
+    nrMiFID: {en:"Current"},
+    nrMiFIDUse: {en:"Domain-knowledge field, sample solution"},
+    nrCSDR: {en:"Current"},
+    nrCSDRUse: {en:"Domain-knowledge field, sample solution"},
+    nrNote: {en:"Reviewed: 1 Sept 2026, source: targeted web search on the EMIR 3.0 active account requirement and REMIT II implementing law — re-verify against current status before further use."}
+  };
+
+  var currentLang = "de";
+  var deCache = {};
+
+  function collectGerman(){
+    var els = document.querySelectorAll("[data-i18n]");
+    els.forEach(function(el){
+      var key = el.getAttribute("data-i18n");
+      if (!(key in deCache)) deCache[key] = el.innerHTML;
+    });
+  }
+
+  function applyLang(lang){
+    var els = document.querySelectorAll("[data-i18n]");
+    els.forEach(function(el){
+      var key = el.getAttribute("data-i18n");
+      if (lang === "en" && i18n[key] && i18n[key].en !== undefined){
+        el.innerHTML = i18n[key].en;
+      } else if (deCache[key] !== undefined){
+        el.innerHTML = deCache[key];
+      }
+    });
+    document.documentElement.lang = lang;
+  }
+
+  var langBtn = document.getElementById("langBtn");
+  langBtn.addEventListener("click", function(){
+    collectGerman();
+    currentLang = (currentLang === "de") ? "en" : "de";
+    langBtn.textContent = (currentLang === "de") ? "EN" : "DE";
+    applyLang(currentLang);
+    applyMuseLabel();
+  });
+
+  var BEAMER_LEVELS = [
+    { classes: [],                                    label: "☀ Beamer" },
+    { classes: ["beamer"],                             label: "☀ Beamer XL" },
+    { classes: ["beamer", "beamer-xl"],                label: "☀ Beamer XXL" },
+    { classes: ["beamer", "beamer-xl", "beamer-xxl"],  label: "☀ Normal" }
+  ];
+  var beamerLevel = 0;
+  var beamerBtn = document.getElementById("beamerBtn");
+
+  beamerBtn.addEventListener("click", function(){
+    beamerLevel = (beamerLevel + 1) % BEAMER_LEVELS.length;
+    document.documentElement.classList.remove("beamer", "beamer-xl", "beamer-xxl");
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    beamerBtn.textContent = BEAMER_LEVELS[beamerLevel].label;
+  });
+
+  var museBtn = document.getElementById("museBtn");
+  var musterPanel = document.getElementById("musterPanel");
+  var museVisible = false;
+
+  function applyMuseLabel(){
+    var key = museVisible ? "museBtnHide" : "museBtnShow";
+    if (currentLang === "en" && i18n[key] && i18n[key].en !== undefined){
+      museBtn.textContent = i18n[key].en;
+    } else {
+      museBtn.textContent = (key === "museBtnShow") ? "Musterlösung anzeigen" : "Musterlösung ausblenden";
+    }
+  }
+
+  museBtn.addEventListener("click", function(){
+    museVisible = !museVisible;
+    musterPanel.hidden = !museVisible;
+    applyMuseLabel();
+  });
+
+  var tabBtns = document.querySelectorAll(".tab-btn");
+  tabBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      tabBtns.forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      var target = btn.getAttribute("data-tab");
+      document.querySelectorAll(".tab-panel").forEach(function(panel){
+        panel.classList.toggle("active", panel.id === target);
+      });
+    });
+  });
+
+  collectGerman();
+  applyMuseLabel();
+})();
+</script>
+
+</body>
+</html>
