@@ -50,7 +50,6 @@ body{
   padding:32px 32px 26px;
   margin-bottom:20px;
 }
-.hero-top{display:flex;justify-content:flex-end;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:14px}
 .hero h1{margin:0 0 10px 0;font-size:clamp(28px,4vw,42px);line-height:1.05;
   background:linear-gradient(100deg,var(--ink) 55%,var(--accent) 120%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
@@ -60,8 +59,11 @@ body{
 .stat-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-size:12.5px;font-weight:700;color:var(--muted)}
 .stat-pill strong{color:var(--ink);font-size:13.5px}
 .signature{
+  position:fixed;top:14px;right:28px;z-index:500;
   text-align:right;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;
-  line-height:1.4;white-space:nowrap;flex-shrink:0
+  line-height:1.4;white-space:nowrap;
+  background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:12px;
+  padding:6px 13px;box-shadow:0 6px 16px rgba(15,23,42,.08)
 }
 .signature span{display:block;font-weight:500;color:var(--muted);font-size:12px}
 .signature:hover{color:var(--accent)}
@@ -178,8 +180,7 @@ body{
 @media(max-width:640px){
   .wrap{padding:16px}
   .hero{padding:24px 20px 20px}
-  .hero-top{flex-direction:column}
-  .signature{text-align:left}
+  .signature{top:8px;right:12px;padding:5px 10px;font-size:11px}
   .finder{flex-direction:column;align-items:stretch}
   .result-count{margin-left:0}
   .kbd-hint{display:none}
@@ -188,11 +189,10 @@ body{
 </head>
 <body>
 
+<a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
+
 <div class="wrap">
   <section class="hero">
-    <div class="hero-top">
-      <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
-    </div>
     <h1>Michaelas Denkraum</h1>
     <p>Interaktive Werkzeuge rund um Requirements Engineering und den kompetenten Umgang mit KI. Jede App führt spielerisch durch strukturierte Fragen, macht Denkprozesse sichtbar und übersetzt vage Fragestellungen Schritt für Schritt in belastbare Ergebnisse.</p>
     <div class="hero-stats">
