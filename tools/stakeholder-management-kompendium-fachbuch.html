@@ -1,0 +1,1206 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#123a63">
+  <title>Stakeholder Management Kompendium – MKU</title>
+  <style>
+    :root{--navy:#123a63;--blue:#2167a5;--sky:#dfeffc;--ink:#162536;--muted:#5b6d7e;--line:#ccd9e5;--paper:#fff;--wash:#f3f7fb;--red:#c9464d;--amber:#d98c1f;--teal:#168b8c;--violet:#7258a8;--shadow:0 8px 24px rgba(22,48,76,.10);--radius:18px}
+    *{box-sizing:border-box}html,body{color-scheme:light}html{scroll-behavior:smooth}body{margin:0;background:var(--wash);color:var(--ink);font:17px/1.58 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-text-size-adjust:100%}
+    button,input,select{font:inherit}button{touch-action:manipulation}.skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;z-index:50;background:#fff;padding:10px}
+    header{background:linear-gradient(125deg,#0d2f51,#1e5f98);color:#fff;padding:calc(20px + env(safe-area-inset-top)) 22px 22px}.brand{max-width:1500px;margin:auto;display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.eyebrow{letter-spacing:.1em;text-transform:uppercase;font-size:.88rem;font-weight:800;opacity:.78}.brand h1{margin:.25rem 0 0;font-size:clamp(1.55rem,4vw,2.65rem);line-height:1.1}.subtitle{margin:.5rem 0 0;color:#dcecf9;max-width:850px}.signature{position:fixed;top:14px;right:28px;z-index:500;text-align:right;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:12px;padding:6px 13px;white-space:nowrap;font-size:14px;line-height:1.3;box-shadow:var(--shadow)}.signature strong{display:block;color:var(--navy);font-size:14px}.signature a{color:var(--blue);text-decoration:none;font-size:14px}
+    .toolbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);padding:10px 16px}.toolbar-inner{max-width:1500px;margin:auto;display:grid;grid-template-columns:minmax(220px,1fr) auto auto;gap:10px}.search{display:flex;border:1px solid #aebfce;border-radius:12px;overflow:hidden;background:#fff}.search input{width:100%;border:0;padding:11px 13px;outline:none}.search button{border:0;background:var(--navy);color:#fff;padding:10px 14px}.mode-switch,.tools{display:flex;gap:6px;align-items:center}.chip{min-height:44px;border:1px solid #b9c9d8;background:#fff;border-radius:12px;padding:8px 11px;color:var(--navy);font-weight:750;cursor:pointer}.chip.active,.chip[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+    .layout{max-width:1500px;margin:0 auto;display:grid;grid-template-columns:290px minmax(0,1fr);gap:22px;padding:22px}.sidebar{position:sticky;top:76px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:13px;box-shadow:var(--shadow)}.progress-wrap{padding:8px}.progress-head{display:flex;justify-content:space-between;font-size:.88rem;font-weight:800;color:var(--muted)}.progress{height:8px;background:#e5edf4;border-radius:99px;overflow:hidden;margin-top:7px}.progress i{display:block;height:100%;width:0;background:var(--teal);transition:width .25s}.nav-title{font-size:.88rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:850;padding:14px 8px 5px}.chapter-nav{display:grid;gap:5px}.nav-btn{width:100%;display:grid;grid-template-columns:30px 1fr;gap:8px;text-align:left;border:0;background:transparent;border-radius:11px;padding:9px 8px;color:var(--ink);cursor:pointer}.nav-btn:hover,.nav-btn.active{background:var(--sky);color:var(--navy)}.nav-btn .num{display:grid;place-items:center;width:27px;height:27px;border-radius:9px;background:#e9f0f6;font-size:.88rem;font-weight:850}.nav-btn.done .num{background:var(--teal);color:#fff}
+    main{min-width:0}.chapter{display:none}.chapter.active{display:block;animation:fade .22s ease}@keyframes fade{from{opacity:.35;transform:translateY(4px)}}.hero,.panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.hero{padding:clamp(22px,4vw,44px);margin-bottom:18px;position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:230px;height:230px;border-radius:50%;background:var(--sky);right:-90px;top:-100px;z-index:0}
+    .hero>*{position:relative;z-index:1}.kicker{color:var(--blue);font-size:.88rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.hero h2{font-size:clamp(1.7rem,4vw,3rem);line-height:1.1;margin:.35rem 0 .7rem;max-width:920px}.lead{font-size:1.12rem;color:#3e5366;max-width:920px}.objectives{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.objective{background:#edf5fb;color:#164e7c;border-radius:99px;padding:7px 11px;font-size:.88rem;font-weight:750}.panel{padding:clamp(18px,3vw,30px);margin:0 0 18px}.panel h3{margin:0 0 12px;color:var(--navy);font-size:1.35rem}.panel h4{color:var(--navy);margin:1.2rem 0 .35rem}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.card{border:1px solid var(--line);border-radius:15px;padding:17px;background:#fff}.card h4{margin:0 0 6px}.card p:last-child{margin-bottom:0}.accent{border-left:5px solid var(--blue)}.accent.red{border-color:var(--red)}.accent.amber{border-color:var(--amber)}.accent.teal{border-color:var(--teal)}.accent.violet{border-color:var(--violet)}
+    .think{background:#eef6fc;border:1px solid #b9d7ef;border-radius:15px;padding:18px 20px;margin:15px 0}.think strong{display:block;color:var(--navy);margin-bottom:4px}.definition{font-size:1.08rem;border-left:6px solid var(--blue);padding:12px 18px;background:#f5faff}.chain{display:flex;align-items:stretch;gap:8px;overflow:auto;padding:6px 0 10px}.step{min-width:145px;flex:1;background:#edf4fa;border-radius:13px;padding:14px;text-align:center;font-weight:800;color:var(--navy)}.arrow{align-self:center;color:var(--blue);font-weight:900}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{border-collapse:collapse;width:100%;min-width:660px;background:#fff}th,td{text-align:left;vertical-align:top;padding:12px 14px;border-bottom:1px solid var(--line)}th{background:#eaf2f8;color:var(--navy)}tr:last-child td{border-bottom:0}
+    details{border:1px solid var(--line);border-radius:14px;background:#fff;margin:10px 0;overflow:hidden}summary{cursor:pointer;min-height:50px;padding:14px 16px;font-weight:850;color:var(--navy);touch-action:manipulation}details>div{padding:0 16px 17px}.method{border-top:5px solid var(--blue)}.method-meta{display:flex;gap:8px;flex-wrap:wrap}.tag{background:#edf3f8;border-radius:99px;padding:5px 9px;font-size:.88rem;font-weight:800;color:#425b70}.method-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.method-grid div{background:#f6f9fc;border-radius:11px;padding:12px}.method-grid b{display:block;color:var(--navy);font-size:.88rem;text-transform:uppercase;letter-spacing:.04em}
+    .exercise{border:2px solid #aac8df;background:#fbfdff}.exercise summary:before{content:"LERNLABOR · ";color:var(--red);font-size:.88rem;letter-spacing:.06em}.solution{display:none;background:#eef8f6;border-left:5px solid var(--teal);padding:15px;margin-top:12px}.solution.open{display:block}.solution-btn,.action{border:0;background:var(--navy);color:#fff;min-height:44px;border-radius:11px;padding:9px 14px;font-weight:800;cursor:pointer}.action.secondary{background:#fff;color:var(--navy);border:1px solid #a9bdce}.bookmark{float:right;border:1px solid #b9cad8;background:#fff;color:var(--navy);border-radius:10px;min-width:44px;min-height:44px;cursor:pointer}.bookmark.saved{background:#f6e7b7;border-color:#e2b94f}
+    .checklist{display:grid;gap:8px}.check{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:11px;background:#fff}.check input{width:22px;height:22px;flex:0 0 auto}.case{background:linear-gradient(135deg,#173d63,#235f92);color:#fff}.case h3,.case h4{color:#fff}.case .tag{background:rgba(255,255,255,.14);color:#fff}.case p{color:#edf6fd}.role{display:inline-block;border:1px solid rgba(255,255,255,.35);border-radius:11px;padding:8px 10px;margin:4px}
+    .footer-nav{display:flex;justify-content:space-between;gap:10px;margin:24px 0}.empty{display:none;text-align:center;padding:32px;background:#fff;border-radius:15px}.searching .chapter{display:block}.searching .chapter.no-match{display:none}.search-hit{outline:4px solid #f4ce66}.trainer-note{border:1px dashed var(--violet);background:#f7f3fc;border-radius:13px;padding:14px}.mode-lesen [data-modes]:not([data-modes*="lesen"]),.mode-trainieren [data-modes]:not([data-modes*="trainieren"]){display:none!important}.print-only{display:none}
+    .mobile-nav{display:none}.drawer-backdrop{display:none}.source-list li{margin:.45rem 0}.muted{color:var(--muted)}.small{font-size:.88rem}.pill-row{display:flex;flex-wrap:wrap;gap:7px}.danger{color:#9b252c}.good{color:#087270}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em}
+    @media(max-width:900px){.toolbar-inner{grid-template-columns:1fr auto}.mode-switch{grid-column:1/-1;overflow:auto}.layout{display:block;padding:14px}.sidebar{position:fixed;z-index:40;left:0;top:0;bottom:0;max-height:none;width:min(88vw,340px);border-radius:0;transform:translateX(-105%);transition:transform .2s;padding-top:calc(16px + env(safe-area-inset-top))}.sidebar.open{transform:none}.drawer-backdrop.open{display:block;position:fixed;z-index:35;inset:0;background:rgba(8,29,46,.45)}.mobile-nav{display:inline-flex}.signature{position:static;text-align:right;margin:6px 0 0 0;box-shadow:none}.grid.three{grid-template-columns:1fr 1fr}}
+    @media(max-width:620px){body{font-size:16px}.grid,.grid.three,.method-grid{grid-template-columns:1fr}.tools .print-btn{display:none}.toolbar{padding:8px}.hero{padding:22px}.hero:after{width:120px;height:120px;right:-40px;top:-50px}.chain{gap:5px}.step{min-width:125px}.footer-nav .action{font-size:.88rem}.brand{display:block}}
+    @media print{body{background:#fff;font-size:11pt}.toolbar,.sidebar,.footer-nav,.bookmark,.solution-btn,.drawer-backdrop{display:none!important}.layout{display:block;padding:0}.chapter{display:block!important;page-break-before:always}.chapter:first-child{page-break-before:auto}.hero,.panel{box-shadow:none}.solution{display:block}.print-only{display:block}header{background:#fff;color:#111;border-bottom:2px solid #123a63}.subtitle{color:#333}.signature{display:block;border-color:#777}.mode-lesen [data-modes],.mode-trainieren [data-modes]{display:block!important}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+    .tool-footer{max-width:1500px;margin:30px auto 10px auto;padding:0 16px 40px 16px}
+    .praxistipp{background:#fff7ed;border:1.5px solid #d97706;border-radius:10px;padding:14px 18px;margin:14px 0;font-size:16px;line-height:1.55}
+    .praxistipp .ptlabel{display:block;font-weight:800;color:#92400e;margin-bottom:4px;font-size:14px;text-transform:uppercase;letter-spacing:.03em}
+    .mku-callout{background:#ecfeff;border:1.5px solid #0e7490;border-radius:10px;padding:14px 18px;margin:14px 0;font-size:16px;line-height:1.55}
+    .mku-callout .cclabel{display:block;font-weight:800;color:#155e75;margin-bottom:4px;font-size:14px;text-transform:uppercase;letter-spacing:.03em}
+    .footer-sig{font-size:14px;color:var(--muted);margin-bottom:16px;line-height:1.6}
+    .footer-sig strong{color:var(--ink);display:inline}
+    .footer-sig a{color:var(--blue)}
+    .footer-audit{color:var(--muted);font-size:14px;display:block;margin-top:4px}
+    .footer-boxes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+    .footer-details{border:1px solid var(--line);border-radius:14px;background:#fff}
+    .footer-summary{padding:14px 16px;font-weight:850;color:var(--navy);cursor:pointer;list-style:none;min-height:44px}
+    .footer-summary::-webkit-details-marker{display:none}
+    .footer-content{padding:0 16px 16px 16px}
+    .footer-mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;white-space:pre-wrap;line-height:1.5}
+    .footer-sans{font-size:16px;line-height:1.6}
+    .footer-sans em{font-style:italic;color:var(--muted)}
+    .footer-table{width:100%;border-collapse:collapse;font-size:14px}
+    .footer-table th,.footer-table td{border:1px solid var(--line);padding:6px 8px;text-align:left}
+    @media(max-width:900px){.footer-boxes{grid-template-columns:1fr}}
+    @media print{.tool-footer{display:none!important}}
+    html.beamer body{font-size:19px}html.beamer{font-size:19px}html.beamer .chip{font-size:.95rem;padding:10px 14px}html.beamer .search input{font-size:16px}
+    html.beamer.beamer-xl body{font-size:21px}html.beamer.beamer-xl{font-size:21px}html.beamer.beamer-xl .search input{font-size:16px}
+    html.beamer.beamer-xl.beamer-xxl body{font-size:24px}html.beamer.beamer-xl.beamer-xxl{font-size:24px}html.beamer.beamer-xl.beamer-xxl .search input{font-size:16px}
+    html.beamer .tool-footer{display:none}
+  </style>
+</head>
+<body class="mode-lesen">
+<a class="skip" href="#content">Zum Inhalt springen</a>
+<header><div class="brand"><div><div class="eyebrow" data-i18n="eyebrow">Interaktives Fachbuch · Seminar Edition</div><h1 data-i18n="mainTitle">Stakeholder Management Kompendium</h1><p class="subtitle" data-i18n="subtitle">Menschen verstehen · Interessen klären · Beziehungen gestalten · Entscheidungen ermöglichen</p></div><div class="signature"><strong>Michaela Kühn</strong><a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a></div></div></header>
+<div class="toolbar"><div class="toolbar-inner">
+  <div class="search"><input id="searchInput" type="search" placeholder="Begriff, Methode oder Situation suchen …" aria-label="Kompendium durchsuchen" data-i18n-placeholder="searchPlaceholder"><button id="searchBtn" data-i18n="searchBtn">Suchen</button></div>
+  <div class="tools"><button class="chip mobile-nav" id="menuBtn" aria-controls="sidebar" aria-expanded="false" data-i18n="menuBtnLabel">Kapitel</button><button class="chip" id="langBtn" data-i18n="langBtnLabel">EN</button><button class="chip" id="beamerBtn" data-i18n="beamerBtnLabel">Beamer: Normal</button><button class="chip print-btn" id="printBtn" data-i18n="printBtnLabel">Drucken</button><button class="chip" id="resetBtn" title="Lernstand zurücksetzen" data-i18n="resetBtnLabel">Reset</button></div>
+  <div class="mode-switch" aria-label="Ansichtsmodus"><button class="chip active" data-mode="lesen" data-i18n="modeLesen">Lesen</button><button class="chip" data-mode="trainieren" data-i18n="modeTrainieren">Trainieren</button></div>
+</div></div>
+<div class="drawer-backdrop" id="backdrop"></div>
+<div class="layout">
+<aside class="sidebar" id="sidebar"><div class="progress-wrap"><div class="progress-head"><span data-i18n="progressLabel">Lernfortschritt</span><span id="progressText">0 / 16</span></div><div class="progress"><i id="progressBar"></i></div></div><div class="nav-title" data-i18n="navTitleChapters">Kapitel</div><nav class="chapter-nav" id="chapterNav"></nav><div class="nav-title" data-i18n="navTitleSaved">Meine Merkliste</div><div id="savedList" class="small muted" style="padding:8px" data-i18n="savedEmpty">Noch keine Inhalte gemerkt.</div></aside>
+<main id="content">
+
+<section class="chapter active" data-id="grundlagen" data-title="Grundlagen" data-title-en="Fundamentals">
+ <div class="hero"><span class="kicker" data-i18n="ch1-kicker">Kapitel 01 · Orientierung</span><button class="bookmark" aria-label="Kapitel merken">＋</button><h2 data-i18n="ch1-h2">Stakeholder Management beginnt mit Perspektivwechsel</h2><p class="lead" data-i18n="ch1-lead">Nicht Menschen verwalten, sondern Beziehungen, Erwartungen, Einfluss und Betroffenheit so verstehen, dass tragfähige Entscheidungen möglich werden.</p><div class="objectives"><span class="objective" data-i18n="ch1-obj1">Begriffe unterscheiden</span><span class="objective" data-i18n="ch1-obj2">Systemisch denken</span><span class="objective" data-i18n="ch1-obj3">Engagement einordnen</span></div></div>
+<div class="praxistipp"><span class="ptlabel" data-i18n="praxistippLabel">💡 Aus der Praxis</span><span data-i18n="ch1-praxistipp">Wenn ein Auftraggeber sagt „Die Stakeholder kennen wir schon“, frage ich immer zurück: „Seit wann steht zuletzt jemand Neues auf der Liste?“ Meistens lautet die Antwort „keine Ahnung“ – und genau das ist die eigentliche Antwort.</span></div>
+<div class="mku-callout"><span class="cclabel" data-i18n="calloutNebelLabel">Mein Denkraum-Modell</span><span data-i18n="ch1-nebel">In meinem Denkraum-Modell nenne ich das den Stakeholder-Nebel – einer von vier Nebel-Typen, die eine Anforderung unscharf halten, neben Absichtsnebel, Lösungsnebel und Qualitätsnebel. Dieses Kompendium ist im Kern nichts anderes als die systematische Arbeit daran, genau diesen Nebel zu lichten.</span></div>
+<div class="mku-callout"><span class="cclabel" data-i18n="calloutMarmorLabel">Ein Bild dazu</span><span data-i18n="ch1-marmor">Ich vergleiche Stakeholder Management gerne mit einem Marmorkuchen: Man kann den hellen und den dunklen Teig nicht sauber trennen, ohne den Kuchen zu zerstören. Genauso wenig lässt sich Beteiligung nachträglich als Zutat ins Projekt rühren – sie ist von Anfang an mit eingebacken.</span></div>
+ <div class="panel" data-modes="lesen"><h3 data-i18n="ch1-h3a">Die Kernbegriffe</h3><p class="definition" data-i18n="ch1-def"><strong>Stakeholder</strong> sind Personen, Gruppen oder Organisationen, die ein Vorhaben beeinflussen können, von ihm betroffen sind oder sich als betroffen wahrnehmen.</p><div class="grid"><div class="card accent"><h4 data-i18n="ch1-c1h">Stakeholder Management</h4><p data-i18n="ch1-c1p">Der bewusste Prozess des Identifizierens, Analysierens, Planens, Einbindens und Beobachtens.</p></div><div class="card accent teal"><h4 data-i18n="ch1-c2h">Stakeholder Engagement</h4><p data-i18n="ch1-c2p">Die tatsächliche Qualität der Beteiligung und Beziehung: vom Informieren über Konsultieren bis zum gemeinsamen Entscheiden.</p></div><div class="card accent amber"><h4 data-i18n="ch1-c3h">Kommunikation</h4><p data-i18n="ch1-c3p">Ein Instrument des Engagements. Ein Kommunikationsplan allein ersetzt keine Beziehungsgestaltung.</p></div><div class="card accent violet"><h4 data-i18n="ch1-c4h">Stakeholder Governance</h4><p data-i18n="ch1-c4p">Regelt Rollen, Entscheidungsrechte, Verantwortlichkeiten, Eskalationen und nachvollziehbare Beteiligung.</p></div></div><div class="think"><strong data-i18n="ch1-think-h">Merksatz</strong><span data-i18n="ch1-think-p">Ein Stakeholderregister beschreibt, wer relevant ist. Engagement zeigt, wie die Zusammenarbeit wirklich funktioniert.</span></div></div>
+ <div class="panel" data-modes="lesen"><h3 data-i18n="ch1-h3b">Die fünf Leitfragen</h3><div class="chain"><div class="step" data-i18n="ch1-q1">WER ist relevant?</div><div class="arrow">›</div><div class="step" data-i18n="ch1-q2">WARUM ist die Person relevant?</div><div class="arrow">›</div><div class="step" data-i18n="ch1-q3">WAS braucht sie?</div><div class="arrow">›</div><div class="step" data-i18n="ch1-q4">WIE binden wir sie ein?</div><div class="arrow">›</div><div class="step" data-i18n="ch1-q5">WAS verändert sich?</div></div></div>
+ <details class="exercise" data-modes="lesen trainieren"><summary data-i18n="ch1-ex-title">Begriffsklärung: Mehr als eine Kontaktliste</summary><div><p data-i18n="ch1-ex-p">Ein Projektleiter sagt: „Wir haben Stakeholder Management erledigt – alle Namen stehen im Verteiler.“ Formuliere eine fachlich klare Antwort.</p><button class="solution-btn">Musterlösung zeigen</button><div class="solution" data-i18n="ch1-ex-sol"><strong>Musterlösung:</strong> Der Verteiler dokumentiert Kontakte. Stakeholder Management verlangt zusätzlich eine begründete Analyse von Einfluss, Betroffenheit, Interessen, Erwartungen und Beziehungen. Daraus entstehen passende Engagementmaßnahmen, Verantwortlichkeiten und regelmäßige Neubewertungen.</div></div></details>
+</section>
+
+<section class="chapter" data-id="identifizieren" data-title="Stakeholder identifizieren" data-title-en="Identifying Stakeholders">
+<div class="hero"><span class="kicker" data-i18n="ch2-001">Kapitel 02 · Entdecken</span><button aria-label="Kapitel merken" class="bookmark">＋</button><h2 data-i18n="ch2-002">Wer fehlt, kann später trotzdem entscheiden</h2><p class="lead" data-i18n="ch2-003">Gute Identifikation schaut über Organigramm und Auftraggeber hinaus: auf Betroffene, Wissensquellen, Gatekeeper, Regulierer und Menschen ohne formale Stimme.</p><div class="objectives"><span class="objective" data-i18n="ch2-004">Suchräume nutzen</span><span class="objective" data-i18n="ch2-005">Blinde Flecken erkennen</span><span class="objective" data-i18n="ch2-006">Kontext abgrenzen</span></div></div>
+<div class="praxistipp"><span class="ptlabel" data-i18n="praxistippLabel">💡 Aus der Praxis</span><span data-i18n="ch2-praxistipp">In Workshops setze ich die Schneeball-Frage bewusst ans Ende der Agenda, nie an den Anfang. Am Anfang kennen sich die Teilnehmenden noch nicht gut genug, um offen zuzugeben, wen sie vergessen haben.</span></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch2-007">Sieben Suchräume</h3><div class="grid three"><div class="card"><h4 data-i18n="ch2-008">Entscheidung</h4><p data-i18n="ch2-009">Wer beauftragt, finanziert, priorisiert, genehmigt oder nimmt ab?</p></div><div class="card"><h4 data-i18n="ch2-010">Nutzung</h4><p data-i18n="ch2-011">Wer nutzt, bedient, administriert, unterstützt oder verlässt das System?</p></div><div class="card"><h4 data-i18n="ch2-012">Betroffenheit</h4><p data-i18n="ch2-013">Wessen Arbeit, Rechte, Risiken oder Alltag verändern sich?</p></div><div class="card"><h4 data-i18n="ch2-014">Wissen</h4><p data-i18n="ch2-015">Wer kennt Prozesse, Ausnahmen, Daten, Technik oder Vorgeschichte?</p></div><div class="card"><h4 data-i18n="ch2-016">Lieferung</h4><p data-i18n="ch2-017">Wer entwickelt, betreibt, beschafft, prüft oder wartet?</p></div><div class="card"><h4 data-i18n="ch2-018">Regelwerk</h4><p data-i18n="ch2-019">Wer vertritt Recht, Datenschutz, Sicherheit, Mitbestimmung oder Aufsicht?</p></div><div class="card"><h4 data-i18n="ch2-020">Umfeld</h4><p data-i18n="ch2-021">Wer beeinflusst Akzeptanz, öffentliche Wahrnehmung, Schnittstellen oder Folgeprozesse?</p></div></div></div>
+<details class="method" data-modes="lesen"><summary data-i18n="ch2-022">Onion Model / Stakeholder-Zwiebel (nach Robertson &amp; Robertson, Volere)</summary><div><div class="method-meta"><span class="tag" data-i18n="ch2-023">Identifikation</span><span class="tag" data-i18n="ch2-024">Systemkontext</span><span class="tag" data-i18n="ch2-025">Workshop</span></div><div class="method-grid"><div data-i18n="ch2-026"><b>Beantwortet</b>Wie nah steht ein Stakeholder zur Nutzung, zum System oder zum Umfeld?</div><div data-i18n="ch2-027"><b>Vorgehen</b>Kernsystem, direkte Nutzer, betriebliches Umfeld und äußeres Umfeld in Ringen anordnen.</div><div data-i18n="ch2-028"><b>Stärke</b>Erweitert den Blick über das Projektteam hinaus.</div><div data-i18n="ch2-029"><b>Grenze</b>Nähe ist nicht automatisch Einfluss oder Wichtigkeit.</div></div></div></details>
+<details class="method" data-modes="lesen"><summary data-i18n="ch2-030">Kontextdiagramm</summary><div><div class="method-grid"><div data-i18n="ch2-031"><b>Beantwortet</b>Welche Personen, Systeme und Organisationen tauschen Informationen oder Leistungen mit dem Betrachtungsgegenstand aus?</div><div data-i18n="ch2-032"><b>Vorgehen</b>Systemgrenze setzen, Nachbarn eintragen, Schnittstellen und Flüsse benennen.</div><div data-i18n="ch2-033"><b>Stolperstein</b>Nur technische Systeme erfassen und menschliche Akteure vergessen.</div><div data-i18n="ch2-034"><b>Folgeartefakt</b>Stakeholderregister und Quellenzuordnung der Anforderungen.</div></div></div></details>
+<div class="panel case" data-modes="lesen trainieren"><h3 data-i18n="ch2-035">Fall: Digitale Studierendenakte mit KI-Unterstützung (Hochschule Nordwest)</h3><p data-i18n="ch2-036">Die Hochschule Nordwest möchte eingehende Dokumente klassifizieren, Vorgänge priorisieren und Mitarbeitende durch KI-Vorschläge unterstützen. Entscheidungen mit Rechtswirkung bleiben beim Menschen.</p><div class="pill-row"><span class="role" data-i18n="ch2-037">Studierende</span><span class="role" data-i18n="ch2-038">Sachbearbeitung</span><span class="role" data-i18n="ch2-039">Prüfungsamt</span><span class="role" data-i18n="ch2-040">IT-Betrieb</span><span class="role" data-i18n="ch2-041">Datenschutz</span><span class="role" data-i18n="ch2-042">Informationssicherheit</span><span class="role" data-i18n="ch2-043">Personalrat</span><span class="role" data-i18n="ch2-044">Hochschulleitung</span><span class="role" data-i18n="ch2-045">Anbieter</span><span class="role" data-i18n="ch2-046">Archiv</span><span class="role" data-i18n="ch2-047">Aufsicht</span></div></div>
+<details class="exercise" data-modes="trainieren"><summary data-i18n="ch2-048">Hidden Stakeholders finden</summary><div><p data-i18n="ch2-049">Ergänze zum Fall mindestens drei leicht übersehene Stakeholder und begründe ihre Relevanz.</p><button class="solution-btn">Musterlösung zeigen</button><div class="solution"><ul><li data-i18n="ch2-050"><strong>Barrierefreiheitsbeauftragte:</strong> Zugänglichkeit der Nutzung und Kommunikation.</li><li data-i18n="ch2-051"><strong>First-Level-Support:</strong> erkennt wiederkehrende Fehlermuster und Verständnishürden.</li><li data-i18n="ch2-052"><strong>Betroffene fehlerhafter Klassifikation:</strong> tragen Folgen, obwohl sie nicht aktiv am Projekt beteiligt sind.</li><li data-i18n="ch2-053"><strong>Lösch- und Archivverantwortliche:</strong> sichern Aufbewahrung und fristgerechte Löschung.</li></ul></div></div></details>
+</section>
+
+<section class="chapter" data-id="analysieren" data-title="Stakeholder analysieren" data-title-en="Analyzing Stakeholders">
+<div class="hero"><span class="kicker" data-i18n="ch3-001">Kapitel 03 · Verstehen</span><button aria-label="Kapitel merken" class="bookmark">＋</button><h2 data-i18n="ch3-002">Eine Matrix ist eine Denkfläche, kein Urteil</h2><p class="lead" data-i18n="ch3-003">Analyse macht Annahmen sichtbar. Sie darf Menschen weder etikettieren noch auf einen Punkt reduzieren – und muss bei Veränderungen überprüft werden.</p></div>
+<div class="praxistipp"><span class="ptlabel" data-i18n="praxistippLabel">💡 Aus der Praxis</span><span data-i18n="ch3-praxistipp">Ich lasse jede Positionierung in der Matrix laut begründen, bevor sie eingetragen wird. Sobald jemand nur zeigt statt spricht, ist die Einschätzung meist eine Bauchentscheidung – und die gehört nicht unkommentiert ins Dokument.</span></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch3-004">Analyse-Dimensionen</h3><div class="table-wrap"><table><thead><tr><th data-i18n="ch3-005">Dimension</th><th data-i18n="ch3-006">Leitfrage</th><th data-i18n="ch3-007">Beobachtbarer Hinweis</th></tr></thead><tbody><tr><td data-i18n="ch3-008">Einfluss</td><td data-i18n="ch3-009">Wodurch kann der Stakeholder Entscheidungen oder Umsetzung verändern?</td><td data-i18n="ch3-010">Budget, Freigabe, Fachautorität, Netzwerk, Vetorecht</td></tr><tr><td data-i18n="ch3-011">Betroffenheit</td><td data-i18n="ch3-012">Welche Folgen trägt der Stakeholder?</td><td data-i18n="ch3-013">Arbeitsablauf, Rechte, Aufwand, Risiko, Nutzen</td></tr><tr><td data-i18n="ch3-014">Interesse</td><td data-i18n="ch3-015">Wie relevant ist das Vorhaben aus seiner Perspektive?</td><td data-i18n="ch3-016">Zeitinvestition, Nachfragen, eigene Ziele</td></tr><tr><td data-i18n="ch3-017">Haltung</td><td data-i18n="ch3-018">Wie positioniert er sich aktuell – und weshalb?</td><td data-i18n="ch3-019">Aussagen, Verhalten, Bedingungen</td></tr><tr><td data-i18n="ch3-020">Legitimität</td><td data-i18n="ch3-021">Worauf beruht sein Anspruch auf Beteiligung?</td><td data-i18n="ch3-022">Mandat, Recht, Betroffenheit, Expertise</td></tr><tr><td data-i18n="ch3-023">Dringlichkeit</td><td data-i18n="ch3-024">Welche Anliegen erfordern zeitnahe Behandlung?</td><td data-i18n="ch3-025">Fristen, Schaden, Eskalation, Abhängigkeiten</td></tr><tr><td data-i18n="ch3-026">Beziehung</td><td data-i18n="ch3-027">Wie belastbar sind Vertrauen und Zusammenarbeit?</td><td data-i18n="ch3-028">Verlässlichkeit, Offenheit, Konfliktgeschichte</td></tr></tbody></table></div></div>
+<details class="method" data-modes="lesen"><summary data-i18n="ch3-029">Macht–Interesse-Matrix (Mendelow, 1981)</summary><div><div class="method-grid"><div data-i18n="ch3-030"><b>Beantwortet</b>Wie intensiv braucht die Beziehung Aufmerksamkeit?</div><div data-i18n="ch3-031"><b>Vorgehen</b>Einfluss und Interesse getrennt begründen, dann positionieren.</div><div data-i18n="ch3-032"><b>Nicht verwechseln</b>Geringes Interesse bedeutet nicht geringe Betroffenheit.</div><div data-i18n="ch3-033"><b>Update-Trigger</b>Entscheidung, Konflikt, Rollenwechsel, Projektphase.</div></div></div></details>
+<details class="method" data-modes="lesen"><summary data-i18n="ch3-034">Einfluss–Betroffenheits-Matrix</summary><div><p data-i18n="ch3-035">Diese Variante schützt vor einem typischen blinden Fleck: stark betroffene Menschen mit wenig formaler Macht. Sie verlangt eine bewusste Strategie, wie ihre Perspektiven Gehör finden.</p></div></details>
+<details class="method" data-modes="lesen"><summary data-i18n="ch3-036">Salience Model (Mitchell, Agle &amp; Wood, 1997)</summary><div><p data-i18n="ch3-037">Betrachtet <strong>Macht</strong>, <strong>Legitimität</strong> und <strong>Dringlichkeit</strong>. Die Kombination hilft, konkurrierende Ansprüche zu reflektieren. Das Modell ersetzt keine ethische oder rechtliche Prüfung.</p></div></details>
+<details class="method" data-modes="lesen"><summary data-i18n="ch3-038">Stakeholder-Netzwerk</summary><div><p data-i18n="ch3-039">Visualisiert formale und informelle Beziehungen, Informationswege, Vertrauensbrücken, Gatekeeper und mögliche Koalitionen. Besonders nützlich, wenn der formale Entscheidungsweg die tatsächliche Einflussnahme nicht erklärt.</p></div></details>
+<details class="exercise" data-modes="trainieren"><summary data-i18n="ch3-040">Matrix mit Begründung</summary><div><p data-i18n="ch3-041">Ordne im Hochschulfall Datenschutz, Studierende und Anbieter ein. Formuliere je Stakeholder eine begründete Hypothese und eine offene Validierungsfrage.</p><button class="solution-btn">Musterlösung zeigen</button><div class="solution"><p data-i18n="ch3-042"><strong>Datenschutz:</strong> hoher formaler Einfluss, hohes fachliches Interesse. Frage: Welche Verarbeitungsschritte benötigen aus Ihrer Sicht die früheste Klärung?</p><p data-i18n="ch3-043"><strong>Studierende:</strong> hohe Betroffenheit, heterogener direkter Einfluss. Frage: In welchen Situationen wäre ein KI-Fehler für Sie besonders folgenreich?</p><p data-i18n="ch3-044"><strong>Anbieter:</strong> hoher technischer Einfluss, kommerzielles Interesse. Frage: Welche Grenzen bestehen bei Erklärbarkeit, Export und Anbieterwechsel?</p></div></div></details>
+</section>
+
+<section class="chapter" data-id="interessen" data-title="Interessen &amp; Erwartungen" data-title-en="Interests &amp; Expectations">
+<div class="hero"><span class="kicker" data-i18n="ch4-001">Kapitel 04 · Hinter Positionen schauen</span><button aria-label="Kapitel merken" class="bookmark">＋</button><h2 data-i18n="ch4-002">„Ich will Lösung X“ ist noch kein Bedarf</h2><p class="lead" data-i18n="ch4-003">Positionen benennen gewünschte Lösungen. Interessen erklären, welches Ziel, Bedürfnis oder Risiko dahintersteht.</p></div>
+<div class="praxistipp"><span class="ptlabel" data-i18n="praxistippLabel">💡 Aus der Praxis</span><span data-i18n="ch4-praxistipp">Meine Faustregel: Beginnt eine Forderung mit „Das System muss...“ oder „Die KI soll...“, ist es fast immer eine Position. Interessen klingen eher nach „Mir ist wichtig, dass...“ oder „Ich brauche...“. Dieses Sprachmuster übe ich mit Teams gezielt ein.</span></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch4-004">Die Tiefenbohrung</h3><div class="chain"><div class="step" data-i18n="ch4-005">Aussage</div><div class="arrow">›</div><div class="step" data-i18n="ch4-006">Position</div><div class="arrow">›</div><div class="step" data-i18n="ch4-007">Interesse</div><div class="arrow">›</div><div class="step" data-i18n="ch4-008">Bedürfnis / Sorge</div><div class="arrow">›</div><div class="step" data-i18n="ch4-009">prüfbare Anforderung</div></div><div class="think" data-i18n="ch4-010"><strong>Beispiel</strong>„Die KI muss alles automatisch entscheiden.“ → Position. Dahinter könnte das Interesse stehen, Bearbeitungszeiten zu verkürzen. Erst die Klärung von Ziel, Risiko und Entscheidungsklasse ermöglicht eine passende Anforderung.</div></div>
+<div class="panel" data-modes="lesen trainieren"><h3 data-i18n="ch4-011">Fragenkatalog</h3><div class="grid"><div class="card"><h4 data-i18n="ch4-012">Ziel</h4><ul><li data-i18n="ch4-013">Was soll dadurch besser werden?</li><li data-i18n="ch4-014">Woran würden Sie einen Nutzen erkennen?</li></ul></div><div class="card"><h4 data-i18n="ch4-015">Sorge</h4><ul><li data-i18n="ch4-016">Was darf auf keinen Fall passieren?</li><li data-i18n="ch4-017">Welche Erfahrung prägt Ihre Haltung?</li></ul></div><div class="card"><h4 data-i18n="ch4-018">Kontext</h4><ul><li data-i18n="ch4-019">Wann gilt diese Aussage – und wann nicht?</li><li data-i18n="ch4-020">Welche Ausnahmen gibt es?</li></ul></div><div class="card"><h4 data-i18n="ch4-021">Nachweis</h4><ul><li data-i18n="ch4-022">Woran prüfen wir die Erfüllung?</li><li data-i18n="ch4-023">Wer darf das Ergebnis bestätigen?</li></ul></div></div></div>
+ <details class="method" data-modes="lesen"><summary data-i18n="ch4-027">Prospect Theory (Kahneman &amp; Tversky, 1979)</summary><div><p data-i18n="ch4-028">Menschen bewerten einen drohenden Verlust systematisch schwerer als einen gleich großen Gewinn (Verlustaversion). Das erklärt, warum Stakeholder bei Veränderungen oft zuerst das Risiko sehen, selbst wenn der erwartete Nutzen objektiv überwiegt.</p><div class="method-grid"><div><b data-i18n="ch4-031">Beantwortet</b><span data-i18n="ch4-029">Warum wirkt ein Widerstand emotional stärker, als die Faktenlage nahelegt?</span></div><div><b data-i18n="ch4-032">Vorsicht</b><span data-i18n="ch4-030">Erklärt eine Reaktion, rechtfertigt sie aber nicht automatisch als sachlich richtig oder falsch.</span></div></div></div></details>
+ <details class="exercise" data-modes="trainieren"><summary data-i18n="ch4-024">Position in Interesse übersetzen</summary><div><p data-i18n="ch4-025">Der Personalrat fordert: „Keine KI im Prüfungsamt.“ Welche Interessen könnten dahinterstehen? Formuliere Fragen, ohne die Forderung vorschnell umzudeuten.</p><button class="solution-btn">Musterlösung zeigen</button><div class="solution"><p data-i18n="ch4-026">Mögliche Hypothesen: Schutz vor Leistungsüberwachung, Sorge um Arbeitsplatzveränderung, unklare Verantwortung, fehlende Nachvollziehbarkeit. Validierungsfragen: „Welche konkreten Einsatzsituationen bereiten Ihnen Sorge?“ und „Welche Bedingungen müssten erfüllt sein, damit eine unterstützende Nutzung überhaupt diskutierbar wäre?“</p></div></div></details>
+</section>
+
+<section class="chapter" data-id="priorisieren" data-title="Stakeholder priorisieren" data-title-en="Prioritizing Stakeholders">
+<div class="hero"><span class="kicker" data-i18n="ch5-001">Kapitel 05 · Aufmerksamkeit steuern</span><button aria-label="Kapitel merken" class="bookmark">＋</button><h2 data-i18n="ch5-002">Priorisieren heißt Aufmerksamkeit gestalten – nicht Menschen bewerten</h2><p class="lead" data-i18n="ch5-003">Die Priorität beschreibt den aktuellen Bedarf an Management und Beteiligung. Sie ist kontext-, phasen- und risikobezogen.</p></div>
+<div class="praxistipp"><span class="ptlabel" data-i18n="praxistippLabel">💡 Aus der Praxis</span><span data-i18n="ch5-praxistipp">Ich misstraue jeder Priorisierung, die kein Datum trägt. Eine Einstufung von vor drei Monaten ist keine Tatsache mehr, sondern eine Erinnerung – und genau so sollte man sie auch kennzeichnen.</span></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch5-004">Qualitative Priorisierung</h3><div class="grid three"><div class="card"><h4 data-i18n="ch5-005">Einfluss</h4><p data-i18n="ch5-006">Kann Entscheidungen, Ressourcen oder Akzeptanz verändern.</p></div><div class="card"><h4 data-i18n="ch5-007">Betroffenheit</h4><p data-i18n="ch5-008">Trägt Nutzen, Aufwand, Risiko oder Rechtsfolgen.</p></div><div class="card"><h4 data-i18n="ch5-009">Legitimität</h4><p data-i18n="ch5-010">Hat einen begründeten Anspruch auf Beteiligung.</p></div><div class="card"><h4 data-i18n="ch5-011">Dringlichkeit</h4><p data-i18n="ch5-012">Anliegen ist zeitkritisch oder schadensrelevant.</p></div><div class="card"><h4 data-i18n="ch5-013">Wissenswert</h4><p data-i18n="ch5-014">Verfügt über schwer ersetzbares Kontextwissen.</p></div><div class="card"><h4 data-i18n="ch5-015">Beziehungsrisiko</h4><p data-i18n="ch5-016">Vertrauen oder Kooperation sind gefährdet.</p></div></div><div class="think" data-i18n="ch5-017"><strong>Dokumentationsregel</strong>Nicht nur „hoch / mittel / gering“ notieren. Jede Einstufung braucht eine kurze Begründung, Quelle, Unsicherheit und einen Zeitpunkt zur Neubewertung.</div></div>
+<details class="exercise" data-modes="lesen trainieren"><summary data-i18n="ch5-018">Wer braucht zuerst Aufmerksamkeit?</summary><div><p data-i18n="ch5-019">Der Anbieter wartet auf eine Architekturentscheidung, Studierendenvertretungen kritisieren mangelnde Transparenz, die Leitung erwartet einen Terminplan. Lege eine Reihenfolge fest und begründe sie, ohne Zahlen zu erfinden.</p><button class="solution-btn">Musterlösung zeigen</button><div class="solution"><p data-i18n="ch5-020">Eine plausible Reihenfolge beginnt mit der Transparenz- und Beteiligungsfrage der Studierendenvertretungen, wenn Akzeptanz und Rechte unmittelbar betroffen sind; parallel kann die Architekturentscheidung vorbereitet werden. Die Leitung erhält eine transparente Statusinformation mit offenen Entscheidungsabhängigkeiten. Entscheidend ist nicht eine universelle Reihenfolge, sondern die explizite Begründung anhand Betroffenheit, Dringlichkeit, Blockadewirkung und Legitimität.</p></div></div></details>
+</section>
+
+<section class="chapter" data-id="engagement" data-title="Engagement gestalten" data-title-en="Shaping Engagement">
+<div class="hero"><span class="kicker" data-i18n="ch6-001">Kapitel 06 · Beziehung in Handlung übersetzen</span><button aria-label="Kapitel merken" class="bookmark">＋</button><h2 data-i18n="ch6-002">Nicht jeder Stakeholder braucht dieselbe Beteiligung</h2><p class="lead" data-i18n="ch6-003">Gutes Engagement ist angemessen: weder symbolische Beteiligung noch unnötige Dauerabstimmung.</p></div>
+<div class="praxistipp"><span class="ptlabel" data-i18n="praxistippLabel">💡 Aus der Praxis</span><span data-i18n="ch6-praxistipp">Bevor ich einen Workshop ansetze, frage ich mich: Hätte eine gute E-Mail auch gereicht? Wenn ja, spare ich allen Beteiligten die Zeit. Beteiligung ohne zusätzlichen Erkenntniswert ist keine Wertschätzung, sondern Verschwendung.</span></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch6-004">Beteiligungsstufen</h3><div class="table-wrap"><table><thead><tr><th data-i18n="ch6-005">Stufe</th><th data-i18n="ch6-006">Zweck</th><th data-i18n="ch6-007">Geeignete Form</th><th data-i18n="ch6-008">Versprechen</th></tr></thead><tbody><tr><td data-i18n="ch6-009">Informieren</td><td data-i18n="ch6-010">Verständnis ermöglichen</td><td data-i18n="ch6-011">Status, FAQ, Entscheidungsnotiz</td><td data-i18n="ch6-012">Information ist aktuell und verständlich.</td></tr><tr><td data-i18n="ch6-013">Konsultieren</td><td data-i18n="ch6-014">Perspektiven einholen</td><td data-i18n="ch6-015">Interview, Befragung, Review</td><td data-i18n="ch6-016">Rückmeldung wird geprüft und beantwortet.</td></tr><tr><td data-i18n="ch6-017">Einbeziehen</td><td data-i18n="ch6-018">Lösung gemeinsam verbessern</td><td data-i18n="ch6-019">Workshop, Prototypentest</td><td data-i18n="ch6-020">Perspektiven fließen sichtbar ein.</td></tr><tr><td data-i18n="ch6-021">Kooperieren</td><td data-i18n="ch6-022">Gemeinsam gestalten</td><td data-i18n="ch6-023">Arbeitsgruppe, Co-Creation</td><td data-i18n="ch6-024">Entscheidungen werden gemeinsam vorbereitet.</td></tr><tr><td data-i18n="ch6-025">Mitentscheiden</td><td data-i18n="ch6-026">Entscheidungsrecht teilen</td><td data-i18n="ch6-027">Gremium, delegierte Entscheidung</td><td data-i18n="ch6-028">Mandat und Grenzen sind transparent.</td></tr></tbody></table></div></div>
+<details class="method" data-modes="lesen"><summary data-i18n="ch6-029">Stakeholder Engagement Assessment Matrix (PMBOK® Guide, PMI)</summary><div><p data-i18n="ch6-030">Vergleicht aktuelle und gewünschte Haltung, zum Beispiel nicht bekannt, ablehnend, neutral, unterstützend oder führend. Entscheidend ist die Lücke und ihre Ursache – nicht das Etikett.</p><div class="method-grid"><div data-i18n="ch6-031"><b>Frage</b>Welche Haltung ist für den nächsten Schritt notwendig?</div><div data-i18n="ch6-032"><b>Maßnahme</b>Was kann Verständnis, Vertrauen oder Mitwirkung realistisch verbessern?</div><div data-i18n="ch6-033"><b>Nachweis</b>Woran erkennen wir eine Veränderung im Verhalten?</div><div data-i18n="ch6-034"><b>Grenze</b>Unterstützung darf nicht durch Manipulation erzeugt werden.</div></div></div></details>
+ <details class="method" data-modes="lesen"><summary data-i18n="ch6-042">Sechs Prinzipien der Beeinflussung (Cialdini, 1984)</summary><div><p data-i18n="ch6-043">Reziprozität, Konsistenz, sozialer Beweis, Sympathie, Autorität und Knappheit wirken auf Zustimmung – unabhängig davon, ob man sie bewusst einsetzt. Wer sie kennt, kann eigenes Verhalten reflektieren und fremden Einfluss auf sich selbst leichter erkennen.</p><div class="think"><strong data-i18n="ch6-044">Ethische Grenze</strong><span data-i18n="ch6-045">Diese Prinzipien dienen dem Verständnis von Wirkung, nicht der gezielten Manipulation von Stakeholdern – siehe den Grundsatz „Keine Manipulation" in Kapitel 12.</span></div></div></details>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch6-035">Engagementplan – Mindestinhalt</h3><div class="checklist"><label class="check"><input type="checkbox"/><span data-i18n="ch6-036">Ziel der Beteiligung ist konkret beschrieben.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch6-037">Aktuelle und gewünschte Beziehung sind begründet.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch6-038">Format, Zeitpunkt und Verantwortlichkeit sind festgelegt.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch6-039">Rückkopplung ist vorgesehen: Was geschah mit dem Feedback?</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch6-040">Entscheidungsrechte und Grenzen sind transparent.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch6-041">Barrieren für Beteiligung wurden berücksichtigt.</span></label></div></div>
+<details class="method" data-modes="lesen"><summary data-i18n="ch6-046">Stakeholder-Engagement-Canvas</summary><div><p data-i18n="ch6-047">Eine Vorbereitungsvorlage für ein konkretes, reales Gespräch mit einer namentlich bekannten Person: Team (wer sind sie, wie sieht ihre Welt aus), Needs (Anforderungen), Context (Ertrag der gemeinsamen Arbeit), Activities (geplante Interaktionen), Ich (eigene Wahrnehmung dieser Person), Goals &amp; Objectives (Ziele), Outcome (Ergebnis), Engagement Risks und Engagement Practices (Risiken und Gegenmaßnahmen).</p><div class="method-grid"><div><b data-i18n="ch6-048">Beantwortet</b><span data-i18n="ch6-049">Wie bereite ich mich konkret auf ein Gespräch mit einer schwierigen oder einflussreichen Person vor?</span></div><div><b data-i18n="ch6-050">Vorsicht</b><span data-i18n="ch6-051">Die „Ich"-Spalte enthält Hypothesen der beobachtenden Person, keine Tatsachen über den Stakeholder – siehe Kapitel 3, Attributionsfehler. Nie unkommentiert an Dritte weitergeben.</span></div></div></div></details>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch6-052">Drei Persona-Typen nicht verwechseln</h3><p data-i18n="ch6-053">„Persona" wird in der Praxis für drei unterschiedliche Zwecke verwendet. Wer sie vermischt, verwechselt Vorbereitung auf eine reale Person mit Zielgruppenkommunikation oder mit Anforderungsarbeit.</p><div class="table-wrap"><table><thead><tr><th data-i18n="ch6-th1">Persona-Typ</th><th data-i18n="ch6-th2">Zweck</th><th data-i18n="ch6-th3">Passendes Werkzeug</th></tr></thead><tbody>
+<tr><td data-i18n="ch6-054">Stakeholder-Engagement-Persona</td><td data-i18n="ch6-055">Vorbereitung auf eine konkrete, reale, namentlich bekannte Person vor einer Interaktion</td><td data-i18n="ch6-056">Stakeholder-Engagement-Canvas (oben)</td></tr>
+<tr><td data-i18n="ch6-057">Publikums-Persona</td><td data-i18n="ch6-058">Kommunikation zielgruppengerecht gestalten – Rolle oder Gruppe, keine Einzelperson</td><td data-i18n="ch6-059">Kommunikationsmatrix (Kapitel 7)</td></tr>
+<tr><td data-i18n="ch6-060">Key-User-Persona</td><td data-i18n="ch6-061">Typische Nutzerbedürfnisse für Anforderungen und Design repräsentieren</td><td data-i18n="ch6-062">Stakeholder–Anforderungs-Matrix (Kapitel 9)</td></tr>
+</tbody></table></div></div>
+<details class="exercise" data-modes="trainieren"><summary data-i18n="ch6-063">Engagementstufe wählen</summary><div><p data-i18n="ch6-064">Für die Einführung der digitalen Studierendenakte plant die Projektleitung das Beteiligungsniveau für die studentische Vertretung. Wähle eine Stufe aus Kapitel 6 und begründe sie in zwei Sätzen.</p><button class="solution-btn">Musterlösung zeigen</button><div class="solution" data-i18n="ch6-065"><strong>Musterlösung:</strong> Mindestens „Involve" (gemeinsame Verbesserung der Lösung), da direkte Betroffenheit und berechtigtes Mitspracheinteresse vorliegen, aber keine formale Entscheidungskompetenz über die Systemarchitektur besteht. „Collaborate" wäre vertretbar, wenn die Vertretung Teil des Steuerungsgremiums ist.</div></div></details>
+</section>
+
+<section class="chapter" data-id="kommunikation" data-title="Kommunikation" data-title-en="Communication">
+<div class="hero"><span class="kicker" data-i18n="ch7-001">Kapitel 07 · Verständigung</span><button aria-label="Kapitel merken" class="bookmark">＋</button><h2 data-i18n="ch7-002">Gesendet ist nicht verstanden</h2><p class="lead" data-i18n="ch7-003">Stakeholdergerechte Kommunikation verbindet Informationsbedarf, Kontext, Sprache, Kanal, Zeitpunkt und Rückkopplung.</p></div>
+<div class="praxistipp"><span class="ptlabel" data-i18n="praxistippLabel">💡 Aus der Praxis</span><span data-i18n="ch7-praxistipp">Ich formuliere jede Kernbotschaft zuerst für die Person im Raum mit der wenigsten Geduld. Ist sie dort verständlich, funktioniert sie fast immer auch für alle anderen.</span></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch7-004">Die Kommunikationsformel</h3><div class="chain"><div class="step" data-i18n="ch7-005">Zweck</div><div class="arrow">+</div><div class="step" data-i18n="ch7-006">Zielgruppe</div><div class="arrow">+</div><div class="step" data-i18n="ch7-007">Kernbotschaft</div><div class="arrow">+</div><div class="step" data-i18n="ch7-008">Kanal &amp; Zeitpunkt</div><div class="arrow">+</div><div class="step" data-i18n="ch7-009">Feedback</div></div></div>
+<details class="method" data-modes="lesen"><summary data-i18n="ch7-031">Vier-Seiten-Modell (Schulz von Thun, 1981)</summary><div><p data-i18n="ch7-032">Jede Nachricht hat vier Seiten – Sachinhalt, Selbstoffenbarung, Beziehung, Appell – und kann mit vier verschiedenen „Ohren" gehört werden. Stakeholder-Kommunikation scheitert selten am Sachinhalt, meist am Beziehungs- oder Appell-Ohr.</p><div class="method-grid"><div><b data-i18n="ch7-033">Beantwortet</b><span data-i18n="ch7-034">Warum wird eine sachliche Aussage manchmal als Vorwurf gehört?</span></div><div><b data-i18n="ch7-035">Bezug</b><span data-i18n="ch7-036">Ergänzt die „Ich"-Spalte im Stakeholder-Canvas: Mit welchem Ohr höre ich diesen Stakeholder gerade?</span></div></div></div></details>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch7-010">Kommunikationsmatrix</h3><div class="table-wrap"><table><thead><tr><th data-i18n="ch7-011">Stakeholder</th><th data-i18n="ch7-012">Informationsbedarf</th><th data-i18n="ch7-013">Zweck</th><th data-i18n="ch7-014">Format</th><th data-i18n="ch7-015">Rhythmus / Trigger</th><th data-i18n="ch7-016">Verantwortlich</th><th data-i18n="ch7-017">Rückkanal</th></tr></thead><tbody><tr><td data-i18n="ch7-018">Beispiel: Studierendenvertretung</td><td data-i18n="ch7-019">Einsatzgrenzen, Rechte, Änderungen</td><td data-i18n="ch7-020">Transparenz und Mitwirkung</td><td data-i18n="ch7-021">Dialogformat + verständliche Notiz</td><td data-i18n="ch7-022">vor Grundsatzentscheidung; bei Änderung</td><td data-i18n="ch7-023">Product Owner</td><td data-i18n="ch7-024">Review und dokumentierte Antwort</td></tr><tr><td class="muted" colspan="7" data-i18n="ch7-025">Eigene Zeile ergänzen …</td></tr></tbody></table></div></div>
+<details class="exercise" data-modes="trainieren"><summary data-i18n="ch7-026">Eine Botschaft für drei Perspektiven</summary><div><p data-i18n="ch7-027">Formuliere die Einführung eines KI-Klassifikationsvorschlags für Hochschulleitung, Sachbearbeitung und Studierende jeweils mit passendem Fokus.</p><button class="solution-btn">Musterlösung zeigen</button><div class="solution"><ul><li data-i18n="ch7-028"><strong>Leitung:</strong> erwarteter Beitrag, Risiken, Entscheidungsbedarf und Governance.</li><li data-i18n="ch7-029"><strong>Sachbearbeitung:</strong> konkrete Änderung im Ablauf, menschliche Entscheidung, Qualifizierung und Feedbackweg.</li><li data-i18n="ch7-030"><strong>Studierende:</strong> welche Daten verarbeitet werden, wofür die KI eingesetzt wird, welche Rechte und Ansprechwege bestehen.</li></ul></div></div></details>
+</section>
+
+<section class="chapter" data-id="konflikte" data-title="Konflikte, Widerstand &amp; Macht" data-title-en="Conflict, Resistance &amp; Power">
+<div class="hero"><span class="kicker" data-i18n="ch8-001">Kapitel 08 · Spannungen bearbeiten</span><button aria-label="Kapitel merken" class="bookmark">＋</button><h2 data-i18n="ch8-002">Widerstand ist häufig eine noch unverstandene Anforderung</h2><p class="lead" data-i18n="ch8-003">Er kann auf Risiken, Verluste, fehlende Beteiligung, Werteverletzungen oder schlechte Erfahrungen hinweisen. Er ist Information – aber nicht automatisch berechtigt oder unberechtigt.</p></div>
+<div class="praxistipp"><span class="ptlabel" data-i18n="praxistippLabel">💡 Aus der Praxis</span><span data-i18n="ch8-praxistipp">Meine erste Frage in jedem Konflikt lautet nie „Wer hat recht?“, sondern „Welcher der sechs Konflikttypen liegt hier eigentlich vor?“ Oft zeigt sich dabei, dass zwei Seiten über zwei verschiedene Konflikte reden, ohne es zu merken.</span></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch8-004">Konfliktdiagnose</h3><div class="grid three"><div class="card accent"><h4 data-i18n="ch8-005">Sachkonflikt</h4><p data-i18n="ch8-006">Unterschiedliche Fakten, Ziele oder Lösungsbewertungen.</p></div><div class="card accent amber"><h4 data-i18n="ch8-007">Interessenkonflikt</h4><p data-i18n="ch8-008">Nutzen, Kosten, Risiken oder Ressourcen sind ungleich verteilt.</p></div><div class="card accent red"><h4 data-i18n="ch8-009">Beziehungskonflikt</h4><p data-i18n="ch8-010">Vertrauen, Anerkennung oder Kommunikation sind beschädigt.</p></div><div class="card accent violet"><h4 data-i18n="ch8-011">Wertekonflikt</h4><p data-i18n="ch8-012">Grundhaltungen oder ethische Maßstäbe kollidieren.</p></div><div class="card accent teal"><h4 data-i18n="ch8-013">Strukturkonflikt</h4><p data-i18n="ch8-014">Rollen, Mandate und Entscheidungsrechte sind widersprüchlich.</p></div><div class="card"><h4 data-i18n="ch8-015">Verteilungskonflikt</h4><p data-i18n="ch8-016">Aufwand, Chancen oder Nachteile werden als unfair erlebt.</p></div></div></div>
+<details class="method" data-modes="lesen"><summary data-i18n="ch8-017">Harvard-Prinzipien für Verhandlungen (Fisher &amp; Ury, 1981)</summary><div><ul><li data-i18n="ch8-018">Menschen und Problem getrennt betrachten.</li><li data-i18n="ch8-019">Interessen statt Positionen untersuchen.</li><li data-i18n="ch8-020">Mehrere Optionen zum beiderseitigen Vorteil entwickeln.</li><li data-i18n="ch8-021">Nachvollziehbare Kriterien für Entscheidungen verwenden.</li></ul><p class="small muted" data-i18n="ch8-022">Die Methode setzt Gesprächs- und Verhandlungsspielraum voraus. Rechtliche Pflichten oder Schutzrechte werden nicht „wegverhandelt“.</p></div></details>
+<details class="method" data-modes="lesen"><summary data-i18n="ch8-026">Teamphasenmodell (Tuckman, 1965/1977)</summary><div><p data-i18n="ch8-027">Gruppen durchlaufen Forming, Storming, Norming, Performing und – bei Auflösung – Adjourning. Wichtig für wiederkehrende Stakeholder-Gremien wie Lenkungsausschüsse: Storming ist eine erwartbare Phase, kein Fehlersignal.</p><div class="method-grid"><div><b data-i18n="ch8-028">Beantwortet</b><span data-i18n="ch8-029">Ist ein aufkeimender Konflikt im Gremium eine Ausnahme oder eine normale Entwicklungsphase?</span></div><div><b data-i18n="ch8-030">Vorsicht</b><span data-i18n="ch8-031">Gilt für wiederkehrende Gruppen/Gremien, nicht für einzelne Stakeholder-Beziehungen.</span></div></div></div></details>
+<details class="exercise" data-modes="trainieren"><summary data-i18n="ch8-023">Eskalieren oder weiter klären?</summary><div><p data-i18n="ch8-024">IT und Datenschutz blockieren sich gegenseitig. Beide behaupten, die jeweils andere Seite verhindere den Projektfortschritt. Entscheide über den nächsten Schritt.</p><button class="solution-btn">Musterlösung zeigen</button><div class="solution"><p data-i18n="ch8-025">Zuerst Konflikttyp, strittige Entscheidungen und Mandate explizit machen. Fakten, Annahmen und offene Rechts-/Architekturfragen trennen. Wenn Mandate unklar sind oder eine fristgebundene Entscheidung außerhalb der Kompetenzen liegt, wird mit einer präzisen Entscheidungsfrage eskaliert – nicht mit einer pauschalen Schuldzuweisung.</p></div></div></details>
+</section>
+
+<section class="chapter" data-id="requirements" data-title="Stakeholder &amp; Requirements Engineering" data-title-en="Stakeholders &amp; Requirements Engineering">
+<div class="hero"><span class="kicker" data-i18n="ch9-001">Kapitel 09 · Vom Bedürfnis zum Nachweis</span><button aria-label="Kapitel merken" class="bookmark">＋</button><h2 data-i18n="ch9-002">Stakeholder sind Anforderungsquellen – nicht Bestellzettel</h2><p class="lead" data-i18n="ch9-003">Ihre Aussagen müssen verstanden, geprüft, abgegrenzt, verhandelt und in nachvollziehbare Anforderungen übersetzt werden.</p></div>
+<div class="praxistipp"><span class="ptlabel" data-i18n="praxistippLabel">💡 Aus der Praxis</span><span data-i18n="ch9-praxistipp">Ich lasse mir keine Anforderung ohne ihre Quelle zeigen. Kann niemand sagen, welcher Stakeholder dahintersteht, ist es meist eine stille Annahme des Teams – und die gehört offen benannt, nicht versteckt.</span></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch9-004">Traceability-Denkkette</h3><div class="chain"><div class="step" data-i18n="ch9-005">Stakeholder</div><div class="arrow">›</div><div class="step" data-i18n="ch9-006">Ziel / Bedürfnis</div><div class="arrow">›</div><div class="step" data-i18n="ch9-007">Anforderung</div><div class="arrow">›</div><div class="step" data-i18n="ch9-008">Lösungselement</div><div class="arrow">›</div><div class="step" data-i18n="ch9-009">Akzeptanzkriterium</div><div class="arrow">›</div><div class="step" data-i18n="ch9-010">Nachweis / Abnahme</div></div><div class="think" data-i18n="ch9-011"><strong>Prüffrage</strong>Kann jede relevante Anforderung zu ihrer Quelle und Begründung zurückverfolgt werden – und jede Abnahme zu einem vereinbarten Kriterium?</div></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch9-012">Vom Rohsatz zur prüfbaren Anforderung</h3><div class="table-wrap"><table><thead><tr><th data-i18n="ch9-013">Stufe</th><th data-i18n="ch9-014">Beispiel</th><th data-i18n="ch9-015">Klärbedarf</th></tr></thead><tbody><tr><td data-i18n="ch9-016">Rohsatz</td><td data-i18n="ch9-017">„Die KI soll zuverlässig sortieren.“</td><td data-i18n="ch9-018">Welche Dokumente? Was bedeutet zuverlässig? Welche Folgen haben Fehler?</td></tr><tr><td data-i18n="ch9-019">Stakeholderziel</td><td data-i18n="ch9-020">Sachbearbeitung möchte Fehlzuordnungen früh erkennen und korrigieren.</td><td data-i18n="ch9-021">Arbeitsablauf, Verantwortlichkeit, Rückmeldung</td></tr><tr><td data-i18n="ch9-022">Funktionale Anforderung</td><td data-i18n="ch9-023">Das System muss der Sachbearbeitung für jedes klassifizierte Dokument die vorgeschlagene Dokumentart anzeigen.</td><td data-i18n="ch9-024">Rolle, Ereignis, Objekt, Systemgrenze</td></tr><tr><td data-i18n="ch9-025">Qualitätsanforderung</td><td data-i18n="ch9-026">Der Vorschlag muss für die Sachbearbeitung nachvollziehbar dargestellt werden.</td><td data-i18n="ch9-027">konkretes Qualitätsmaß und Prüfszenario vereinbaren</td></tr><tr><td data-i18n="ch9-028">Akzeptanzkriterium</td><td data-i18n="ch9-029">Gegeben ein klassifiziertes Dokument, wenn die Sachbearbeitung den Vorgang öffnet, dann sieht sie Vorschlag, relevante Begründungsinformation und Korrekturmöglichkeit.</td><td data-i18n="ch9-030">Testdaten, Rechte, Randfälle</td></tr></tbody></table></div></div>
+<details class="method" data-modes="lesen"><summary data-i18n="ch9-031">Stakeholder–Anforderungs-Matrix</summary><div><p data-i18n="ch9-032">Verknüpft Stakeholder, Ziel, Anforderung, Beteiligungsrolle, Validierungsstatus und Abnahmeverantwortung. Sie verhindert, dass eine Anforderung ohne Quelle oder eine Perspektive ohne Berücksichtigung bleibt.</p></div></details>
+<details class="exercise" data-modes="trainieren"><summary data-i18n="ch9-033">Widersprüchliche Anforderungen</summary><div><p data-i18n="ch9-034">Die Leitung fordert Automatisierung, Sachbearbeitung fordert Kontrolle, Studierende fordern Transparenz. Formuliere eine integrierende Lösungsrichtung, ohne eine Perspektive zu löschen.</p><button class="solution-btn">Musterlösung zeigen</button><div class="solution"><p data-i18n="ch9-035">Die KI erzeugt priorisierte Klassifikationsvorschläge. Für definierte risikoreiche oder unklare Fälle ist menschliche Prüfung verpflichtend. Betroffene erhalten verständliche Informationen über Einsatz, Zweck und Ansprechwege. Korrekturen werden nachvollziehbar protokolliert und zur Qualitätsbeobachtung genutzt. Die konkrete Ausgestaltung benötigt noch messbare Qualitäts-, Sicherheits- und Transparenzkriterien.</p></div></div></details>
+</section>
+
+<section class="chapter" data-id="vorgehen" data-title="Klassisch, agil &amp; hybrid" data-title-en="Classic, Agile &amp; Hybrid">
+<div class="hero"><span class="kicker" data-i18n="ch10-001">Kapitel 10 · Vorgehensmodelle</span><button aria-label="Kapitel merken" class="bookmark">＋</button><h2 data-i18n="ch10-002">Agilität ersetzt Stakeholder Management nicht</h2><p class="lead" data-i18n="ch10-003">Sie verändert Rhythmus, Artefakte und Nähe der Beteiligung. Auch ein Team, das agil arbeitet, braucht Klarheit über Einfluss, Betroffenheit und Entscheidungsrechte.</p></div>
+<div class="praxistipp"><span class="ptlabel" data-i18n="praxistippLabel">💡 Aus der Praxis</span><span data-i18n="ch10-praxistipp">Agilität wird in vielen Teams als Ausrede genutzt, um Stakeholder Management zu überspringen – „wir liefern doch iterativ, das reicht schon.“ Iteration ersetzt aber keine Klarheit darüber, wer eigentlich entscheidet.</span></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch10-004">Drei Logiken</h3><div class="table-wrap"><table><thead><tr><th data-i18n="ch10-005">Aspekt</th><th data-i18n="ch10-006">Klassisch</th><th data-i18n="ch10-007">Agil</th><th data-i18n="ch10-008">Hybrid</th></tr></thead><tbody><tr><td data-i18n="ch10-009">Planung</td><td data-i18n="ch10-010">frühe Grundanalyse und geplanter Kommunikationsrahmen</td><td data-i18n="ch10-011">kontinuierliches Lernen und häufige Rückkopplung</td><td data-i18n="ch10-012">Grundstruktur plus adaptive Vertiefung</td></tr><tr><td data-i18n="ch10-013">Einbindung</td><td data-i18n="ch10-014">Meilensteine, Gremien, Freigaben</td><td data-i18n="ch10-015">Reviews, Discovery, Refinement, Tests</td><td data-i18n="ch10-016">formale Entscheidungen plus iterative Validierung</td></tr><tr><td data-i18n="ch10-017">Artefakte</td><td data-i18n="ch10-018">Register, Plan, Bericht</td><td data-i18n="ch10-019">Stakeholder Map, Backlog, Feedback</td><td data-i18n="ch10-020">gemeinsames Register mit lebenden Ergänzungen</td></tr><tr><td data-i18n="ch10-021">Risiko</td><td data-i18n="ch10-022">späte Einbindung zwischen Meilensteinen</td><td data-i18n="ch10-023">laute, verfügbare Stakeholder dominieren</td><td data-i18n="ch10-024">doppelte oder widersprüchliche Governance</td></tr></tbody></table></div></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch10-025">Agile Mindestfragen</h3><div class="checklist"><label class="check"><input type="checkbox"/><span data-i18n="ch10-026">Wer vertritt welche Perspektive im Product Backlog?</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch10-027">Welche Stakeholder fehlen regelmäßig in Reviews?</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch10-028">Wer darf Prioritäten ändern?</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch10-029">Wie werden stark Betroffene mit wenig Einfluss beteiligt?</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch10-030">Wie fließt Feedback nachvollziehbar in Entscheidungen ein?</span></label></div></div>
+<details class="exercise" data-modes="trainieren"><summary data-i18n="ch10-031">Klassisch, agil oder hybrid?</summary><div><p data-i18n="ch10-032">Die digitale Studierendenakte hat feste regulatorische Meilensteine (Datenschutz-Freigabe, Sicherheitsaudit) und gleichzeitig UX-Tests mit Studierenden, die iterativ verbessert werden sollen. Wähle ein Vorgehen aus Kapitel 10 und begründe es.</p><button class="solution-btn">Musterlösung zeigen</button><div class="solution" data-i18n="ch10-033"><strong>Musterlösung:</strong> Hybrid ist naheliegend: Die regulatorischen Freigaben (Datenschutz, Sicherheit) verlangen eine belastbare Ausgangsbasis mit formalen Meilensteinen, während die Nutzungsqualität für Studierende iterativ über Reviews validiert werden kann. Entscheidend ist, dass beide Governance-Ebenen nicht in Konkurrenz geraten, sondern im gemeinsamen Register zusammengeführt werden.</div></div></details>
+</section>
+
+<section class="chapter" data-id="kontexte" data-title="Besondere Kontexte" data-title-en="Special Contexts">
+<div class="hero"><span class="kicker" data-i18n="ch11-001">Kapitel 11 · Kontext entscheidet</span><button aria-label="Kapitel merken" class="bookmark">＋</button><h2 data-i18n="ch11-002">Die Methode bleibt nicht gleich, wenn das Risiko steigt</h2><p class="lead" data-i18n="ch11-003">Regulierung, öffentliche Wirkung, Kultur, Veränderungstiefe und Kritikalität bestimmen, wie sorgfältig Beteiligung und Nachweis gestaltet werden müssen.</p></div>
+<div class="praxistipp"><span class="ptlabel" data-i18n="praxistippLabel">💡 Aus der Praxis</span><span data-i18n="ch11-praxistipp">Je höher das regulatorische Risiko, desto mehr Zeit stecke ich vorab in eine einzige Frage: Wer prüft uns eigentlich, und wonach? Diese Antwort verändert oft die gesamte Beteiligungsstruktur.</span></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch11-004">Kontext-Linsen</h3><div class="grid three"><div class="card"><h4 data-i18n="ch11-005">Transformation</h4><p data-i18n="ch11-006">Identität, Rollen, Verlustängste, Führung und informelle Netzwerke.</p></div><div class="card"><h4 data-i18n="ch11-007">Öffentliche Verwaltung</h4><p data-i18n="ch11-008">Rechtsbindung, Beteiligungsrechte, politische Ebenen, Öffentlichkeit.</p></div><div class="card"><h4 data-i18n="ch11-009">KI-Systeme</h4><p data-i18n="ch11-010">Betroffene Personen, Datenrollen, Anbieter, menschliche Aufsicht, Transparenz.</p></div><div class="card"><h4 data-i18n="ch11-011">Informationssicherheit</h4><p data-i18n="ch11-012">Asset Owner, Risikoeigner, Betrieb, Notfallrollen und Lieferkette.</p></div><div class="card"><h4 data-i18n="ch11-013">International</h4><p data-i18n="ch11-014">Kultur, Sprache, Zeitzonen, lokale Regeln und Machtverständnis.</p></div><div class="card"><h4 data-i18n="ch11-015">Krise</h4><p data-i18n="ch11-016">Zeitdruck, Lagebild, klare Mandate, kurze Feedbackwege und Dokumentation.</p></div></div></div>
+<div class="mku-callout"><span class="cclabel" data-i18n="calloutLichtwerkLabel">Beispiel aus der Praxis</span><span data-i18n="ch11-lichtwerk">Bei LichtWerk, einem fiktiven Energieversorger und KRITIS-Betreiber, zeigt sich die Linse „Informationssicherheit" konkret: Die Bundesnetzagentur als Regulierungsbehörde und das BSI als Meldestelle für IT-Sicherheitsvorfälle sind Stakeholder mit hoher Legitimität und – bei einem Vorfall – extremer Dringlichkeit. Die Netzleitstellen-Mitarbeitenden tragen operative Verantwortung, ohne formale Entscheidungsmacht über die Sicherheitsarchitektur zu haben; genau diese Lücke muss das Engagement schließen.</span></div>
+<div class="panel case" data-modes="lesen trainieren"><h3 data-i18n="ch11-case-h">Fall: Baltoris Bank AG (PaySprint)</h3><p data-i18n="ch11-case-p">PaySprint ist die SEPA-Instant-Payments-Lösung der Baltoris Bank AG, grenzüberschreitend in mehreren Eurozone-Ländern im Einsatz (Umsetzung der EU-Verordnung (EU) 2024/886). Ela verantwortet als Programmleitung die IPR-Umsetzung, Sarah betreut als Firmenkundenberaterin Erwartungen über Ländergrenzen hinweg, Petra prüft als Compliance/QM die Einhaltung je nationaler Aufsichtsbehörde, und Herr Bachmeier trägt als Vorstand die Gesamtverantwortung. Aufsicht liegt gleichzeitig bei mehreren nationalen Zentralbanken – genau die Situation, die die Kontextlinse „International" oben beschreibt.</p><div class="pill-row"><span class="role" data-i18n="ch11-role1">Firmenkunden (mehrere Länder)</span><span class="role" data-i18n="ch11-role2">Ela – Programmleitung IPR</span><span class="role" data-i18n="ch11-role3">Sarah – Firmenkundenberatung</span><span class="role" data-i18n="ch11-role4">Petra – Compliance/QM</span><span class="role" data-i18n="ch11-role5">Herr Bachmeier – Vorstand</span><span class="role" data-i18n="ch11-role6">Nationale Aufsichtsbehörden (mehrere)</span></div></div>
+<details class="exercise" data-modes="trainieren"><summary data-i18n="ch11-017">Kontextwechsel</summary><div><p data-i18n="ch11-018">Wie verändert sich die Stakeholderarbeit, wenn die digitale Akte nicht nur an der Hochschule Nordwest, sondern landesweit eingeführt wird?</p><button class="solution-btn">Musterlösung zeigen</button><div class="solution"><p data-i18n="ch11-019">Zusätzliche Ebenen entstehen: Ministerium, weitere Hochschulen, landesweite Gremien, gemeinsame IT-Dienstleister, Aufsicht, Verbände und unterschiedliche lokale Nutzergruppen. Governance, Repräsentation und Entscheidungsrechte müssen skaliert werden. Ein lokales Stakeholderbild darf nicht einfach vervielfältigt werden; Unterschiede der Hochschulen und Betroffenengruppen brauchen eigene Validierung.</p></div></div></details>
+</section>
+
+<section class="chapter" data-id="governance" data-title="Governance, Ethik &amp; Regulierung" data-title-en="Governance, Ethics &amp; Regulation">
+<div class="hero"><span class="kicker" data-i18n="ch12-001">Kapitel 12 · Verantwortung</span><button aria-label="Kapitel merken" class="bookmark">＋</button><h2 data-i18n="ch12-002">Beteiligung braucht Rechte, Grenzen und Nachvollziehbarkeit</h2><p class="lead" data-i18n="ch12-003">Stakeholder Management ist nicht bloß Einflussarbeit. Es muss legitime Ansprüche, Schutzbedarfe, Transparenz und verantwortliche Entscheidungen sichern.</p></div>
+<div class="praxistipp"><span class="ptlabel" data-i18n="praxistippLabel">💡 Aus der Praxis</span><span data-i18n="ch12-praxistipp">Ich frage bei jedem KI-Projekt so früh wie möglich: Wer genau ist Aufsichtsstelle, und was passiert, wenn sie widerspricht? Diese Antwort sollte auf einem Blatt stehen – nicht erst gesucht werden, wenn es kritisch wird.</span></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch12-004">Ethische Leitplanken</h3><div class="grid"><div class="card accent red"><h4 data-i18n="ch12-005">Keine Manipulation</h4><p data-i18n="ch12-006">Engagement dient Verständnis und tragfähigen Entscheidungen, nicht verdeckter Steuerung.</p></div><div class="card accent teal"><h4 data-i18n="ch12-007">Faire Repräsentation</h4><p data-i18n="ch12-008">Stark Betroffene ohne formale Macht brauchen geeignete Beteiligungsmöglichkeiten.</p></div><div class="card accent amber"><h4 data-i18n="ch12-009">Transparente Grenzen</h4><p data-i18n="ch12-010">Nicht jede Konsultation bedeutet Mitentscheidung. Das Mandat wird vorher erklärt.</p></div><div class="card accent violet"><h4 data-i18n="ch12-011">Nachvollziehbarkeit</h4><p data-i18n="ch12-012">Feedback, Abwägung und Entscheidung werden in angemessener Form dokumentiert.</p></div></div></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch12-013">Governance-Canvas</h3><div class="checklist"><label class="check"><input type="checkbox"/><span data-i18n="ch12-014">Entscheidungsgegenstand und Entscheider sind benannt.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch12-015">Konsultations- und Mitentscheidungsrechte sind geklärt.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch12-016">Interessenkonflikte werden offengelegt.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch12-017">Eskalations- und Beschwerdewege sind bekannt.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch12-018">Betroffene Gruppen werden angemessen repräsentiert.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch12-019">Abwägungen und Änderungen bleiben nachvollziehbar.</span></label></div></div>
+<div class="think" data-i18n="ch12-020" data-modes="lesen"><strong>KI-Kontext</strong>Bei KI-Systemen erweitert sich das Stakeholderbild um betroffene Personen, Datenverantwortliche, Modell-/Systemanbieter, menschliche Aufsicht, Compliance, Risikomanagement und gegebenenfalls Aufsichtsstellen. Die konkrete Pflicht hängt von Rolle und Risikoklasse ab.</div>
+<div class="panel case" data-modes="lesen trainieren"><h3 data-i18n="ch12-case-h">Fall: TalentMatch AI (Vantera Systemtechnik GmbH)</h3><p data-i18n="ch12-case-p">TalentMatch AI ist ein Hochrisiko-KI-System für die Bewerberauswahl (EU AI Act, Annex III Nr. 4). Bei Vantera trägt Ela als Projektleitung die operative Steuerung, Petra als QM-Verantwortliche die Konformitätsprüfung, und Herr Bachmeier als Geschäftsführung die Freigabe- und Letztverantwortung. Aufsichtsstelle ist die zuständige Marktüberwachungsbehörde.</p><div class="pill-row"><span class="role" data-i18n="ch12-role1">Betroffene Bewerber:innen</span><span class="role" data-i18n="ch12-role2">Ela – Projektleitung</span><span class="role" data-i18n="ch12-role3">Petra – Konformität/QM</span><span class="role" data-i18n="ch12-role4">Herr Bachmeier – Geschäftsführung</span><span class="role" data-i18n="ch12-role5">Marktüberwachungsbehörde</span></div></div>
+<details class="method" data-modes="lesen"><summary data-i18n="ch12-021">Grenzen der Registerführung: Datenschutz und Mitbestimmung</summary><div><p data-i18n="ch12-022">Ein Stakeholder-Register oder Engagement-Canvas, das Einschätzungen über eine identifizierbare reale Person enthält – etwa „hat Angst, Einfluss zu verlieren" –, verarbeitet personenbezogene Daten im Sinne der DSGVO. Eine Rechtsgrundlage nach Art. 6 DSGVO ist erforderlich; enthält die Einschätzung Rückschlüsse auf Gesundheit, Weltanschauung oder Ähnliches, greift zusätzlich Art. 9 DSGVO. Wird ein solches Register systematisch zur Bewertung von Verhalten oder Leistung von Mitarbeitenden genutzt, kann es nach § 87 Abs. 1 Nr. 6 BetrVG mitbestimmungspflichtig sein.</p><div class="method-grid"><div><b data-i18n="ch12-023">Beantwortet</b><span data-i18n="ch12-024">Darf ich diese Einschätzung über eine reale, namentlich bekannte Person so dokumentieren und speichern?</span></div><div><b data-i18n="ch12-025">Vorsicht</b><span data-i18n="ch12-026">Diese Kurzeinordnung ersetzt keine rechtliche Prüfung im Einzelfall.</span></div></div><ul><li data-i18n="ch12-027">Wo möglich pseudonymisieren – Rolle statt Name.</li><li data-i18n="ch12-028">Nur projektbezogen relevante Einschätzungen dokumentieren, keine privaten Werturteile.</li><li data-i18n="ch12-029">Zugriff auf das Register einschränken und begründen.</li><li data-i18n="ch12-030">Bei systematischer Verhaltens- oder Leistungsbewertung Betriebs- oder Personalrat frühzeitig einbinden.</li></ul></div></details>
+</section>
+
+<section class="chapter" data-id="labor" data-title="Stakeholder-Labor" data-title-en="Stakeholder Lab">
+<div class="hero"><span class="kicker" data-i18n="ch13-001">Kapitel 13 · Lernreise</span><button aria-label="Kapitel merken" class="bookmark">＋</button><h2 data-i18n="ch13-002">Von der Liste zur tragfähigen Beziehung</h2><p class="lead" data-i18n="ch13-003">Zwölf Stationen führen durch einen vollständigen Stakeholder-Zyklus. Jede Station funktioniert mit einer, zwei oder drei Gruppen.</p></div>
+<div class="praxistipp"><span class="ptlabel" data-i18n="praxistippLabel">💡 Aus der Praxis</span><span data-i18n="ch13-praxistipp">In diesem Kapitel erlebe ich am häufigsten, dass Gruppen die Perspektive „Governance und Risiko“ am liebsten überspringen – sie wirkt trocken. Genau deshalb bestehe ich in Präsenztrainings darauf, dass jede Gruppe sie mindestens einmal übernimmt.</span></div>
+<div class="panel" data-modes="lesen trainieren"><h3 data-i18n="ch13-004">Arbeitsauftrag für Gruppen</h3><p data-i18n="ch13-005">Alle Gruppen arbeiten am selben Hochschulfall. Bei mehreren Gruppen können Perspektiven verteilt werden: <strong>Steuerung</strong>, <strong>Nutzung und Betroffenheit</strong>, <strong>Governance und Risiko</strong>. Anschließend werden Unterschiede verhandelt.</p><div class="grid three"><div class="card"><h4 data-i18n="ch13-006">1 · Entdecken</h4><p data-i18n="ch13-007">Stakeholder und Suchraum begründen.</p></div><div class="card"><h4 data-i18n="ch13-008">2 · Kontext</h4><p data-i18n="ch13-009">Systemgrenze und Schnittstellen klären.</p></div><div class="card"><h4 data-i18n="ch13-010">3 · Interessen</h4><p data-i18n="ch13-011">Positionen von Bedürfnissen trennen.</p></div><div class="card"><h4 data-i18n="ch13-012">4 · Einfluss</h4><p data-i18n="ch13-013">Einflussquellen und Betroffenheit erfassen.</p></div><div class="card"><h4 data-i18n="ch13-014">5 · Konflikte</h4><p data-i18n="ch13-015">Spannungen diagnostizieren.</p></div><div class="card"><h4 data-i18n="ch13-016">6 · Priorität</h4><p data-i18n="ch13-017">Aufmerksamkeitsbedarf begründen.</p></div><div class="card"><h4 data-i18n="ch13-018">7 · Engagement</h4><p data-i18n="ch13-019">Beteiligungsstufe wählen.</p></div><div class="card"><h4 data-i18n="ch13-020">8 · Kommunikation</h4><p data-i18n="ch13-021">Botschaft und Rückkanal planen.</p></div><div class="card"><h4 data-i18n="ch13-022">9 · Requirements</h4><p data-i18n="ch13-023">Bedarf in Anforderungen übersetzen.</p></div><div class="card"><h4 data-i18n="ch13-024">10 · Risiken</h4><p data-i18n="ch13-025">Stakeholderrisiken behandeln.</p></div><div class="card"><h4 data-i18n="ch13-026">11 · Monitoring</h4><p data-i18n="ch13-027">Signale und Trigger festlegen.</p></div><div class="card"><h4 data-i18n="ch13-028">12 · Retrospektive</h4><p data-i18n="ch13-029">Beziehungen und Entscheidungen reflektieren.</p></div></div></div>
+<details class="exercise" data-modes="trainieren"><summary data-i18n="ch13-030">Gesamtfall: Projektfreigabe vorbereiten</summary><div><p data-i18n="ch13-031">Erstellt eine einseitige Entscheidungsvorlage: relevantes Stakeholderbild, drei zentrale Spannungen, Beteiligungsplan für die nächste Phase und zwei offene Entscheidungen. Markiert Fakten, Annahmen und offene Fragen getrennt.</p><button class="solution-btn">Bewertungsraster zeigen</button><div class="solution"><ul><li data-i18n="ch13-032">Stakeholderauswahl ist begründet und berücksichtigt Betroffenheit.</li><li data-i18n="ch13-033">Positionen und Interessen werden nicht vermischt.</li><li data-i18n="ch13-034">Engagementmaßnahmen passen zu Ziel und Mandat.</li><li data-i18n="ch13-035">Entscheidungsrechte und Rückkopplung sind sichtbar.</li><li data-i18n="ch13-036">Unsicherheiten werden offengelegt statt erfunden.</li><li data-i18n="ch13-037">Requirements und Stakeholderziele sind rückverfolgbar.</li></ul></div></div></details>
+<div class="trainer-note" data-i18n="ch13-038" data-modes="trainieren"><strong>Trainerhinweis:</strong> Nicht die „richtige“ Matrix ist das Lernziel. Entscheidend ist, ob die Gruppen ihre Hypothesen begründen, Perspektivenlücken entdecken und aus der Analyse konkrete Entscheidungen ableiten.</div>
+<div class="mku-callout" data-modes="trainieren"><span class="cclabel" data-i18n="calloutTuckmanLabel">Bezug zu Kapitel 8</span><span data-i18n="ch13-tuckman">Wenn eine Gruppe im Labor selbst in Konflikt gerät, ist das oft schlicht Storming nach Tuckman – eine normale Phase, kein Grund, die Übung abzubrechen.</span></div>
+</section>
+
+<section class="chapter" data-id="werkzeugkasten" data-title="Werkzeugkasten" data-title-en="Toolbox">
+<div class="hero"><span class="kicker" data-i18n="ch14-001">Kapitel 14 · Methodenfinder</span><button aria-label="Kapitel merken" class="bookmark">＋</button><h2 data-i18n="ch14-002">Die Methode folgt der Frage</h2><p class="lead" data-i18n="ch14-003">Wähle kein Werkzeug, weil es bekannt aussieht. Beginne mit der Entscheidung, die du vorbereiten musst.</p></div>
+<div class="praxistipp"><span class="ptlabel" data-i18n="praxistippLabel">💡 Aus der Praxis</span><span data-i18n="ch14-praxistipp">Ich beobachte oft, dass Teams die Methode wählen, die sie schon kennen, statt die, die zur Frage passt. RACI wird zum Beispiel gern für Dinge genutzt, für die es nie gedacht war.</span></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch14-004">Situationsbezogener Methodenfinder</h3><div class="table-wrap"><table><thead><tr><th data-i18n="ch14-005">Situation / Frage</th><th data-i18n="ch14-006">Passendes Werkzeug</th><th data-i18n="ch14-007">Ergebnis</th><th data-i18n="ch14-008">Achtung</th></tr></thead><tbody><tr><td data-i18n="ch14-009">Wer fehlt?</td><td data-i18n="ch14-010">Suchräume, Onion Model, Kontextdiagramm</td><td data-i18n="ch14-011">begründete Kandidatenliste</td><td data-i18n="ch14-012">nicht beim Organigramm enden</td></tr><tr><td data-i18n="ch14-013">Wer braucht Aufmerksamkeit?</td><td data-i18n="ch14-014">Einfluss–Betroffenheit, Salience</td><td data-i18n="ch14-015">Prioritätshypothese</td><td data-i18n="ch14-016">Betroffenheit nicht mit Macht verwechseln</td></tr><tr><td data-i18n="ch14-017">Was steckt hinter Forderungen?</td><td data-i18n="ch14-018">Interessenanalyse, Interview</td><td data-i18n="ch14-019">Ziele, Sorgen, Bedingungen</td><td data-i18n="ch14-020">Hypothesen validieren</td></tr><tr><td data-i18n="ch14-021">Wer beeinflusst wen?</td><td data-i18n="ch14-022">Netzwerkanalyse</td><td data-i18n="ch14-023">Beziehungen, Gatekeeper, Koalitionen</td><td data-i18n="ch14-024">vertraulich behandeln</td></tr><tr><td data-i18n="ch14-025">Wie beteiligen?</td><td data-i18n="ch14-026">Engagement Assessment, Beteiligungsstufen</td><td data-i18n="ch14-027">passende Strategie</td><td data-i18n="ch14-028">keine Scheinbeteiligung</td></tr><tr><td data-i18n="ch14-029">Wer macht oder entscheidet?</td><td data-i18n="ch14-030">RACI / Verantwortungsmatrix</td><td data-i18n="ch14-031">Rollenklärung</td><td data-i18n="ch14-032">RACI ist keine Stakeholderanalyse</td></tr><tr><td data-i18n="ch14-033">Wie kommunizieren?</td><td data-i18n="ch14-034">Kommunikationsmatrix</td><td data-i18n="ch14-035">Botschaft, Kanal, Rhythmus, Rückkanal</td><td data-i18n="ch14-036">Senden ist nicht Dialog</td></tr><tr><td data-i18n="ch14-037">Wo droht Konflikt?</td><td data-i18n="ch14-038">Kraftfeld-, Konflikt- und Interessenanalyse</td><td data-i18n="ch14-039">Ursachen und Interventionen</td><td data-i18n="ch14-040">Person und Problem trennen</td></tr><tr><td data-i18n="ch14-041">Woher kommt eine Anforderung?</td><td data-i18n="ch14-042">Stakeholder–Anforderungs-Matrix</td><td data-i18n="ch14-043">Traceability</td><td data-i18n="ch14-044">Quelle und Abnahme trennen</td></tr><tr><td data-i18n="ch14-045">Was hat sich verändert?</td><td data-i18n="ch14-046">Health Check, Review-Trigger</td><td data-i18n="ch14-047">aktualisiertes Lagebild</td><td data-i18n="ch14-048">Register nicht statisch behandeln</td></tr></tbody></table></div></div>
+<details class="method" data-modes="lesen"><summary data-i18n="ch14-049">RACI – Responsible, Accountable, Consulted, Informed</summary><div><p data-i18n="ch14-050">Klärt Verantwortungsrollen je Aufgabe oder Ergebnis. <strong>Responsible</strong> führt aus, <strong>Accountable</strong> trägt die Ergebnisverantwortung, <strong>Consulted</strong> wird dialogisch einbezogen, <strong>Informed</strong> erhält Information. RACI zeigt nicht automatisch Interessen, Haltung oder Betroffenheit.</p></div></details>
+<details class="method" data-modes="lesen"><summary data-i18n="ch14-051">Empathy Map (Dave Gray / XPLANE, Gamestorming)</summary><div><p data-i18n="ch14-052">Strukturiert Hypothesen darüber, was eine Zielperson sagt, denkt, tut und fühlt sowie welche Gewinne und Schmerzen relevant sein könnten. Ergebnisse sind keine Fakten, bis sie mit echten Stakeholdern überprüft wurden.</p></div></details>
+<details class="method" data-modes="lesen"><summary data-i18n="ch14-053">Stakeholder Journey</summary><div><p data-i18n="ch14-054">Zeigt Kontaktpunkte, Aufgaben, Erwartungen, Erlebnisse und Brüche entlang eines Prozesses. Nützlich für Service- und Veränderungskontexte; weniger geeignet zur Analyse formaler Macht.</p></div></details>
+<details class="method" data-modes="lesen"><summary data-i18n="ch14-055">Kraftfeldanalyse (Kurt Lewin, 1947)</summary><div><p data-i18n="ch14-056">Stellt fördernde und hemmende Kräfte einer Veränderung gegenüber. Die Stärke liegt im Gespräch über Ursachen und veränderbare Bedingungen, nicht in einer scheinpräzisen Punktesumme.</p></div></details>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch14-057">Stakeholder-Register – Vorlage zum Ausfüllen</h3><p class="small muted" data-i18n="ch14-058">Eine Zeile pro Stakeholder oder Stakeholder-Gruppe. Bei jedem Trigger-Ereignis aktualisieren (siehe Kapitel 15).</p><div class="table-wrap"><table><thead><tr><th data-i18n="ch14-059">Name/Gruppe</th><th data-i18n="ch14-060">Rolle</th><th data-i18n="ch14-061">Macht</th><th data-i18n="ch14-062">Interesse</th><th data-i18n="ch14-063">Salience-Typ</th><th data-i18n="ch14-064">Engagement IST</th><th data-i18n="ch14-065">Engagement SOLL</th><th data-i18n="ch14-066">Kommunikationsformat</th><th data-i18n="ch14-067">Owner</th><th data-i18n="ch14-068">Letzte Aktualisierung</th></tr></thead><tbody><tr><td>…</td><td>…</td><td data-i18n="ch14-069">hoch/niedrig</td><td data-i18n="ch14-069b">hoch/niedrig</td><td data-i18n="ch14-070">Definitive/Dominant/…</td><td data-i18n="ch14-071">Unaware…Leading</td><td data-i18n="ch14-071b">Unaware…Leading</td><td>…</td><td>…</td><td data-i18n="ch14-072">TT.MM.JJJJ</td></tr></tbody></table></div></div>
+
+<div class="trainer-note" data-modes="trainieren"><strong data-i18n="refOnlyLabel">Reines Nachschlagekapitel:</strong> <span data-i18n="refOnlyText">Dieses Kapitel enthält bewusst keine Übung. Wechsle in den Lese-Modus, um die Inhalte zu sehen.</span></div>
+</section>
+
+<section class="chapter" data-id="checklisten" data-title="Checklisten &amp; Health Check" data-title-en="Checklists &amp; Health Check">
+<div class="hero"><span class="kicker" data-i18n="ch15-001">Kapitel 15 · Qualität sichern</span><button aria-label="Kapitel merken" class="bookmark">＋</button><h2 data-i18n="ch15-002">Ein aktuelles Stakeholderbild ist wertvoller als ein perfektes altes Register</h2><p class="lead" data-i18n="ch15-003">Checklisten unterstützen Denken. Sie ersetzen weder Urteilskraft noch Gespräch und Beobachtung.</p></div>
+<div class="praxistipp"><span class="ptlabel" data-i18n="praxistippLabel">💡 Aus der Praxis</span><span data-i18n="ch15-praxistipp">Eine Checkliste, die nie „Nein“ ergibt, ist entweder perfekt gepflegt – oder wird nicht ehrlich beantwortet. Bei jedem Review-Termin schaue ich zuerst auf die offenen Punkte, nicht auf die erledigten.</span></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch15-004">Master-Checkliste</h3><div class="checklist"><label class="check"><input type="checkbox"/><span data-i18n="ch15-005">Projekt-, Produkt- oder Systemgrenze ist klar.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch15-006">Formale und informelle Stakeholder wurden betrachtet.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch15-007">Stark Betroffene mit wenig Einfluss sind sichtbar.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch15-008">Interessen wurden von Positionen getrennt.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch15-009">Analyseannahmen haben Quelle und Validierungsfrage.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch15-010">Einflussquellen sind konkret benannt.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch15-011">Prioritäten sind begründet und zeitbezogen.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch15-012">Beteiligungsstufe und Entscheidungsmandat passen zusammen.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch15-013">Kommunikation besitzt einen Rückkanal.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch15-014">Konflikte werden nach Ursache statt Person eingeordnet.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch15-015">Stakeholderziele sind mit Anforderungen verknüpft.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch15-016">Relevante Anforderungen haben Validierungs- und Abnahmeverantwortung.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch15-017">Datenschutz, Sicherheit, Ethik und Regulierung sind berücksichtigt.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch15-018">Review-Trigger und Verantwortliche sind festgelegt.</span></label><label class="check"><input type="checkbox"/><span data-i18n="ch15-019">Beziehungsqualität wird beim Abschluss reflektiert.</span></label></div></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch15-020">Stakeholder Health Check</h3><div class="grid"><div class="card"><h4 data-i18n="ch15-021">Orientierung</h4><p data-i18n="ch15-022">Verstehen Stakeholder Ziel, Status, Grenzen und offene Entscheidungen?</p></div><div class="card"><h4 data-i18n="ch15-023">Vertrauen</h4><p data-i18n="ch15-024">Werden Zusagen eingehalten und Probleme früh angesprochen?</p></div><div class="card"><h4 data-i18n="ch15-025">Beteiligung</h4><p data-i18n="ch15-026">Können relevante Perspektiven wirksam beitragen?</p></div><div class="card"><h4 data-i18n="ch15-027">Entscheidung</h4><p data-i18n="ch15-028">Sind Mandat, Begründung und Folgen nachvollziehbar?</p></div></div><div class="think" data-i18n="ch15-029"><strong>Review-Trigger</strong>Phasenwechsel, Rollenwechsel, neue Regulierung, erheblicher Scope-Wechsel, Konflikt, Verzögerung, Qualitätsproblem, Anbieterwechsel oder veränderte öffentliche Aufmerksamkeit.</div></div>
+
+<div class="trainer-note" data-modes="trainieren"><strong data-i18n="refOnlyLabel">Reines Nachschlagekapitel:</strong> <span data-i18n="refOnlyText">Dieses Kapitel enthält bewusst keine Übung. Wechsle in den Lese-Modus, um die Inhalte zu sehen.</span></div>
+</section>
+
+<section class="chapter" data-id="glossar" data-title="Glossar &amp; Referenzen" data-title-en="Glossary &amp; References">
+<div class="hero"><span class="kicker" data-i18n="ch16-001">Kapitel 16 · Nachschlagen</span><button aria-label="Kapitel merken" class="bookmark">＋</button><h2 data-i18n="ch16-002">Begriffe, Abgrenzungen und Referenzrahmen</h2><p class="lead" data-i18n="ch16-003">Ein gemeinsames Vokabular verhindert, dass Beteiligung, Verantwortung und Kommunikation durcheinandergeraten.</p></div>
+<div class="praxistipp"><span class="ptlabel" data-i18n="praxistippLabel">💡 Aus der Praxis</span><span data-i18n="ch16-praxistipp">Neue Teammitglieder lasse ich nie mit dem Werkzeugkasten beginnen, sondern immer mit dem Glossar. Ein gemeinsames Vokabular verhindert mehr Missverständnisse als jede Methode.</span></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch16-004">Kompaktglossar</h3><div class="grid"><div class="card"><h4 data-i18n="ch16-005">Betroffenheit</h4><p data-i18n="ch16-006">Art und Ausmaß der Folgen, die ein Vorhaben für einen Stakeholder hat.</p></div><div class="card"><h4 data-i18n="ch16-007">Engagement</h4><p data-i18n="ch16-008">Qualität und Intensität der tatsächlichen Einbindung und Beziehung.</p></div><div class="card"><h4 data-i18n="ch16-009">Einfluss</h4><p data-i18n="ch16-010">Fähigkeit, Entscheidungen, Ressourcen, Akzeptanz oder Umsetzung zu verändern.</p></div><div class="card"><h4 data-i18n="ch16-011">Gatekeeper</h4><p data-i18n="ch16-012">Person oder Rolle, die Zugang zu Informationen, Personen oder Entscheidungen ermöglicht oder begrenzt.</p></div><div class="card"><h4 data-i18n="ch16-013">Interesse</h4><p data-i18n="ch16-014">Ziel, Bedürfnis, Sorge oder Nutzenvorstellung hinter einer Position.</p></div><div class="card"><h4 data-i18n="ch16-015">Legitimität</h4><p data-i18n="ch16-016">Begründeter Anspruch darauf, berücksichtigt oder beteiligt zu werden.</p></div><div class="card"><h4 data-i18n="ch16-017">Position</h4><p data-i18n="ch16-018">Geäußerte Forderung oder bevorzugte Lösung.</p></div><div class="card"><h4 data-i18n="ch16-019">Stakeholderregister</h4><p data-i18n="ch16-020">Gepflegte Übersicht relevanter Stakeholder und begründeter Analyseinformationen.</p></div><div class="card"><h4 data-i18n="ch16-021">Traceability</h4><p data-i18n="ch16-022">Nachvollziehbare Verbindung zwischen Quelle, Ziel, Anforderung, Umsetzung und Nachweis.</p></div><div class="card"><h4 data-i18n="ch16-023">Validierung</h4><p data-i18n="ch16-024">Prüfung, ob Anforderungen und Ergebnisse den beabsichtigten Bedarf treffen.</p></div></div></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch16-025">Fachliche Referenzrahmen</h3><p data-i18n="ch16-026">Das Kompendium verbindet Perspektiven aus Projektmanagement, Business Analysis, Requirements Engineering, agiler Produktarbeit und Governance. Die konkrete Anwendung muss stets gegen die im Vorhaben gültigen Ausgaben, Verträge und Regelwerke geprüft werden.</p><ul class="source-list"><li data-i18n="ch16-027"><a href="https://www.pmi.org/standards/pmbok" rel="noopener" target="_blank">Project Management Institute – PMBOK® Guide</a> <span class="small muted">– in Kraft, aktuell 8. Auflage, November 2025</span></li><li data-i18n="ch16-028"><a href="https://www.iiba.org/standards-and-resources/babok/" rel="noopener" target="_blank">IIBA – BABOK® Guide v3</a> <span class="small muted">– in Kraft, aktuelle Ausgabe, 2015</span></li><li data-i18n="ch16-029"><a href="https://ireb.org/en/cpre/foundation/handbook" rel="noopener" target="_blank">IREB – CPRE Foundation Level Handbook</a> <span class="small muted">– in Kraft, v3.3.0, 01.04.2026</span></li><li data-i18n="ch16-030"><a href="https://www.iso.org/standard/74947.html" rel="noopener" target="_blank">ISO 21502 – Guidance on project management</a> <span class="small muted">– in Kraft, 2020</span></li><li data-i18n="ch16-031"><a href="https://www.iso.org/standard/72089.html" rel="noopener" target="_blank">ISO/IEC/IEEE 29148 – Requirements engineering</a> <span class="small muted">– in Kraft, 2018</span></li><li data-i18n="ch16-032"><a href="https://scrumguides.org/" rel="noopener" target="_blank">The Scrum Guide</a> <span class="small muted">– in Kraft, aktuelle Ausgabe, 2020</span></li><li data-i18n="ch16-033"><a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" rel="noopener" target="_blank">Verordnung (EU) 2024/1689 – EU AI Act</a> <span class="small muted">– in Kraft; Annex-III-Vollpflichten auf 02.12.2027 verschoben (Digital-Omnibus-VO (EU) 2026/1744), Klassifikation unverändert</span></li></ul><p class="small muted" data-i18n="ch16-034">Stand der Linkprüfung: September 2026. Das Kompendium ist ein didaktisches Fachwerkzeug und keine Rechtsberatung.</p></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch16-066">Werkzeug- und Denkschulen-Verzeichnis</h3><p data-i18n="ch16-067">Jedes im Kompendium verwendete Werkzeug, Modell oder Denkbild an einem Ort – mit Fundstelle und, wo eindeutig zuordenbar, Urheber:in. Wo kein einzelnes Urheber-Team gesichert benennbar ist, steht das ehrlich so da, statt eine Zuordnung zu erfinden.</p><div class="table-wrap"><table><thead><tr><th data-i18n="ch16-th4">Werkzeug/Modell</th><th data-i18n="ch16-th5">Kapitel</th><th data-i18n="ch16-th6">Urheber:in / Jahr</th><th data-i18n="ch16-th7">Kurzfunktion</th></tr></thead><tbody>
+<tr><td data-i18n="ch16-068">Sieben Suchräume</td><td>2</td><td data-i18n="ch16-069">Eigene Systematik</td><td data-i18n="ch16-070">Identifikation strukturieren</td></tr>
+<tr><td data-i18n="ch16-071">Onion Model / Stakeholder-Zwiebel</td><td>2</td><td data-i18n="ch16-072">nach Robertson &amp; Robertson (Volere)</td><td data-i18n="ch16-073">Nähe zum System einordnen</td></tr>
+<tr><td data-i18n="ch16-074">Kontextdiagramm</td><td>2</td><td data-i18n="ch16-075">Systemanalyse, kein Einzelurheber gesichert</td><td data-i18n="ch16-076">Systemgrenze und Schnittstellen klären</td></tr>
+<tr><td data-i18n="ch16-077">Macht–Interesse-Matrix</td><td>3</td><td data-i18n="ch16-078">Mendelow (1981)</td><td data-i18n="ch16-079">Betreuungsintensität ableiten</td></tr>
+<tr><td data-i18n="ch16-080">Einfluss–Betroffenheits-Matrix</td><td>3</td><td data-i18n="ch16-081">Adaption der Mendelow-Matrix</td><td data-i18n="ch16-082">Betroffenheit ohne Macht sichtbar machen</td></tr>
+<tr><td data-i18n="ch16-083">Salience Model</td><td>3</td><td data-i18n="ch16-084">Mitchell, Agle &amp; Wood (1997)</td><td data-i18n="ch16-085">Konkurrierende Ansprüche gewichten</td></tr>
+<tr><td data-i18n="ch16-086">Stakeholder-Netzwerk</td><td>3</td><td data-i18n="ch16-087">Soziale Netzwerkanalyse, kein Einzelurheber gesichert</td><td data-i18n="ch16-088">Informelle Beziehungen sichtbar machen</td></tr>
+<tr><td data-i18n="ch16-089">Prospect Theory</td><td>4</td><td data-i18n="ch16-090">Kahneman &amp; Tversky (1979)</td><td data-i18n="ch16-091">Verlustaversion erklären</td></tr>
+<tr><td data-i18n="ch16-092">Stakeholder Engagement Assessment Matrix</td><td>6</td><td data-i18n="ch16-093">PMBOK® Guide (PMI)</td><td data-i18n="ch16-094">Ist/Soll-Haltung abgleichen</td></tr>
+<tr><td data-i18n="ch16-095">Sechs Prinzipien der Beeinflussung</td><td>6</td><td data-i18n="ch16-096">Cialdini (1984)</td><td data-i18n="ch16-097">Wirkung erkennen, nicht manipulieren</td></tr>
+<tr><td data-i18n="ch16-098">Kommunikationsformel</td><td>7</td><td data-i18n="ch16-069b">Eigene Systematik</td><td data-i18n="ch16-099">Botschaft strukturieren</td></tr>
+<tr><td data-i18n="ch16-100">Vier-Seiten-Modell</td><td>7</td><td data-i18n="ch16-101">Schulz von Thun (1981)</td><td data-i18n="ch16-102">Warum Senden ≠ Verstehen ist</td></tr>
+<tr><td data-i18n="ch16-103">Harvard-Prinzipien</td><td>8</td><td data-i18n="ch16-104">Fisher &amp; Ury (1981)</td><td data-i18n="ch16-105">Sachlich verhandeln</td></tr>
+<tr><td data-i18n="ch16-106">Teamphasenmodell</td><td>8, 13</td><td data-i18n="ch16-107">Tuckman (1965/1977)</td><td data-i18n="ch16-108">Gremien-Dynamik einordnen</td></tr>
+<tr><td data-i18n="ch16-109">Stakeholder–Anforderungs-Matrix</td><td>9</td><td data-i18n="ch16-110">Eigene Systematik</td><td data-i18n="ch16-111">Traceability sichern</td></tr>
+<tr><td data-i18n="ch16-112">Governance Canvas</td><td>12</td><td data-i18n="ch16-113">Eigene Systematik</td><td data-i18n="ch16-114">Entscheidungsrechte klären</td></tr>
+<tr><td data-i18n="ch16-115">RACI</td><td>14</td><td data-i18n="ch16-116">Managementpraxis, kein Einzelurheber gesichert</td><td data-i18n="ch16-117">Verantwortungsrollen klären</td></tr>
+<tr><td data-i18n="ch16-118">Empathy Map</td><td>14</td><td data-i18n="ch16-119">Dave Gray / XPLANE (Gamestorming)</td><td data-i18n="ch16-120">Hypothesen über Zielpersonen strukturieren</td></tr>
+<tr><td data-i18n="ch16-121">Stakeholder Journey</td><td>14</td><td data-i18n="ch16-122">Service-Design/UX-Feld, kein Einzelurheber gesichert</td><td data-i18n="ch16-123">Touchpoints entlang eines Prozesses zeigen</td></tr>
+<tr><td data-i18n="ch16-124">Kraftfeldanalyse</td><td>14</td><td data-i18n="ch16-125">Kurt Lewin (1947)</td><td data-i18n="ch16-126">Treibende/hemmende Kräfte gegenüberstellen</td></tr>
+<tr><td data-i18n="ch16-127">Stakeholder Health Check</td><td>15</td><td data-i18n="ch16-128">Eigene Systematik</td><td data-i18n="ch16-129">Beziehungsqualität prüfen</td></tr>
+<tr><td data-i18n="ch16-131">Stakeholder-Engagement-Canvas</td><td>6</td><td data-i18n="ch16-132">Eigene Systematik</td><td data-i18n="ch16-133">Vorbereitung auf ein konkretes Gespräch</td></tr>
+<tr><td data-i18n="ch16-134">Stakeholder-Register (Vorlage)</td><td>14</td><td data-i18n="ch16-135">Eigene Systematik</td><td data-i18n="ch16-136">Laufende Übersicht führen</td></tr>
+<tr><td data-i18n="ch16-137">Grenzen der Registerführung (DSGVO/BetrVG)</td><td>12</td><td data-i18n="ch16-138">Eigene Systematik, gestützt auf DSGVO/BetrVG</td><td data-i18n="ch16-139">Rechtliche Grenzen der Personendokumentation prüfen</td></tr>
+</tbody></table></div><p class="small muted" data-i18n="ch16-130">Neun weitere Denk- und Verhaltensmodelle, die im Kompendium nicht vertieft, aber als Anschlusslektüre empfohlen werden, stehen im nächsten Abschnitt.</p></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch16-037">Anhang: Weitere Denk- und Verhaltensmodelle</h3><p data-i18n="ch16-038">Diese Modelle werden im Kompendium nicht vertieft behandelt, sind aber fachlich anschlussfähig und für die vertiefende Lektüre empfehlenswert.</p><div class="table-wrap"><table><thead><tr><th data-i18n="ch16-th1">Forscher:in</th><th data-i18n="ch16-th2">Modell</th><th data-i18n="ch16-th3">Kernaussage</th></tr></thead><tbody>
+<tr><td data-i18n="ch16-039">Fritz Heider (1958)</td><td data-i18n="ch16-040">Attributionstheorie</td><td data-i18n="ch16-041">Fremdes Verhalten wird eher mit Charakter erklärt, eigenes eher mit Umständen – Grundlage jeder Ich-Hypothese über einen Stakeholder.</td></tr>
+<tr><td data-i18n="ch16-042">Chris Argyris (1990)</td><td data-i18n="ch16-043">Ladder of Inference</td><td data-i18n="ch16-044">Vom beobachteten Verhalten zur Handlungsentscheidung – jede Sprosse ist eine Interpretation, die offengelegt werden sollte.</td></tr>
+<tr><td data-i18n="ch16-045">Paul Watzlawick (1967)</td><td data-i18n="ch16-046">Fünf Kommunikationsaxiome</td><td data-i18n="ch16-047">„Man kann nicht nicht kommunizieren" – auch Schweigen eines Stakeholders ist eine Botschaft.</td></tr>
+<tr><td data-i18n="ch16-048">Marshall Rosenberg (2003)</td><td data-i18n="ch16-049">Gewaltfreie Kommunikation</td><td data-i18n="ch16-050">Beobachtung, Gefühl, Bedürfnis und Bitte trennen – ergänzt die Tiefenbohrung von Position zu Interesse.</td></tr>
+<tr><td data-i18n="ch16-051">Meredith Belbin (1981)</td><td data-i18n="ch16-052">Teamrollen</td><td data-i18n="ch16-053">Erklärt, warum ein fachlich starkes Gremium trotzdem dysfunktional zusammenarbeiten kann.</td></tr>
+<tr><td data-i18n="ch16-054">Amy Edmondson (1999)</td><td data-i18n="ch16-055">Psychologische Sicherheit</td><td data-i18n="ch16-056">Ohne sie äußern Stakeholder Kritik seltener offen – eine mögliche Erklärung für stillen Widerstand.</td></tr>
+<tr><td data-i18n="ch16-057">Elisabeth Kübler-Ross (1969, für Change Management adaptiert)</td><td data-i18n="ch16-058">Veränderungskurve</td><td data-i18n="ch16-059">Emotionale Phasen bei Veränderung; ursprünglich für Trauerverarbeitung entwickelt, die Übertragung auf Projekte ist in der Forschung umstritten.</td></tr>
+<tr><td data-i18n="ch16-060">William Bridges (1991)</td><td data-i18n="ch16-061">Transition-Modell</td><td data-i18n="ch16-062">Unterscheidet den äußeren Change vom inneren Übergang (Ending – Neutral Zone – New Beginning).</td></tr>
+<tr><td data-i18n="ch16-063">Geert Hofstede (1980)</td><td data-i18n="ch16-064">Kulturdimensionen</td><td data-i18n="ch16-065">Machtdistanz, Individualismus u. a. erklären unterschiedliches Machtverständnis in internationalen Projekten.</td></tr>
+</tbody></table></div></div>
+<div class="panel" data-modes="lesen"><h3 data-i18n="ch16-035">Schlussgedanke</h3><p class="definition" data-i18n="ch16-036">Stakeholder Management ist dann wirksam, wenn aus Perspektiven bessere Entscheidungen, aus Beteiligung nachvollziehbare Anforderungen und aus Kommunikation belastbare Beziehungen entstehen.</p><div class="mku-callout"><span class="cclabel" data-i18n="calloutMarmorCloseLabel">Zurück zum Bild aus Kapitel 1</span><span data-i18n="ch16-marmor">Der Marmorkuchen hat noch einen zweiten Sinn: Man schmeckt erst beim Anschneiden, wie gut die Teige tatsächlich verbunden sind. Genauso zeigt sich gute Stakeholder-Arbeit nicht im Plan, sondern erst im echten Projektverlauf.</span></div></div>
+
+<div class="trainer-note" data-modes="trainieren"><strong data-i18n="refOnlyLabel">Reines Nachschlagekapitel:</strong> <span data-i18n="refOnlyText">Dieses Kapitel enthält bewusst keine Übung. Wechsle in den Lese-Modus, um die Inhalte zu sehen.</span></div>
+</section>
+
+<div class="empty" id="empty" data-i18n="emptyState">Kein Treffer. Versuche einen anderen Begriff oder öffne ein Kapitel über die Navigation.</div>
+<div class="footer-nav"><button class="action secondary" id="prevBtn" data-i18n="prevBtnLabel">← Vorheriges Kapitel</button><button class="action" id="completeBtn" data-i18n="completeBtnLabel">Kapitel als bearbeitet markieren</button><button class="action secondary" id="nextBtn" data-i18n="nextBtnLabel">Nächstes Kapitel →</button></div>
+</main></div>
+
+<footer class="tool-footer">
+  <div class="footer-sig">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a><br>
+    Referenzierte Normen/Standards: PMBOK® Guide (PMI) · BABOK® Guide v3 (IIBA) · IREB CPRE Foundation Level Handbook · ISO 21502 · ISO/IEC/IEEE 29148 · The Scrum Guide · Verordnung (EU) 2024/1689 (EU AI Act) · DSGVO · § 87 BetrVG · Verordnung (EU) 2024/886 (SEPA Instant Payments) — Detailstatus siehe Normen-Register
+    <span class="footer-audit">Zuletzt geprüft: 04.09.2026 · Status: an K1–K20 angepasst (Nachrüstung), noch kein formales Audit-Protokoll gegen Notion-Checkliste v1.8 · Stage-1-Greps ausgeführt</span>
+  </div>
+  <div class="footer-boxes">
+    <details class="footer-details">
+      <summary class="footer-summary">📋 Systemprompt</summary>
+      <div class="footer-content footer-mono">Baue ein interaktives HTML-Nachschlagewerk "Stakeholder Management Kompendium" im Fachbuch-Format (16 Kapitel), nicht als Stations-Vortragstool.
+
+STRUKTUR
+- Sticky Toolbar: Suche, Kapitel-Menü (mobil), Sprach-Toggle DE/EN, 4-stufiger Beamer-Toggle, Drucken, Reset
+- Zwei Ansichtsmodi (Lesen/Trainieren) über body-Klasse, Inhalte je Panel mit data-modes gefiltert. Ursprünglich vier Modi (Lernen/Nachschlagen/Anwenden/Trainieren); zusammengelegt, weil über 60 % der Inhalte ohnehin mehrfach zugeordnet waren und die Trennung keine echte inhaltliche Grenze abbildete
+- Sidebar: Fortschrittsanzeige (X/16), Kapitel-Navigation, Merkliste
+- Jedes Kapitel: Hero (Kicker, Titel, Lead, Lernziele, Merken-Button), mehrere Panels (Kernbegriffe, Methoden als &lt;details&gt;, Übungen als &lt;details class="exercise"&gt; mit Musterlösung, ggf. Fallbeispiel-Panel, ggf. Checkliste)
+- Druckmodus: alle Kapitel sequenziell sichtbar, Lösungen aufgeklappt
+- Footer: Signatur + 4 Pflicht-Boxen (Systemprompt/Handbuch/Vortrags-Skript/Normen-Register)
+
+DESIGN
+- Weißer/heller Hintergrund (var(--wash) sehr hell), color-scheme:light, kein Dark Mode
+- pointerup statt click, min. 44px Touch-Targets (Chips/Buttons)
+- 16-17px Fließtext, 14px Sekundärtext minimum
+- Signatur oben rechts fixed, Name + Website-Link, Fallback position:static unter 900px (nicht ausblenden)
+- Beamer-Toggle: Normal→Beamer→Beamer XL→Beamer XXL am Root-Element, Footer ab Stufe 1 ausgeblendet
+- Sprach-Toggle: deutscher Text statisch im HTML als Fallback, JS ersetzt via data-i18n-Wörterbuch, kein Reload
+
+NICHT TUN
+- Kein localStorage (nur sessionStorage mit try/catch)
+- Keine Vermischung mit der TalentMatch-AI-/Vantera-Personenwelt, wenn ein eigenständiges Fallszenario (hier: Hochschule Nordwest) verwendet wird
+- Kein fetch(), kein CDN
+- Analyse-Matrizen (Macht/Interesse, Salience) nie als endgültiges Urteil über Personen darstellen, immer als Hypothese mit Validierungsfrage</div>
+    </details>
+    <details class="footer-details">
+      <summary class="footer-summary">📘 Handbuch</summary>
+      <div class="footer-content footer-sans">
+        <strong>Framework:</strong> PACT (Persona/Audience/Context/Task) für das Gesamtformat, kombiniert mit RTF (Rolle/Task/Format) für die einzelnen Kapitel-Bausteine (Definition → Methode → Übung → Musterlösung).<br><br>
+        <strong>Analyse entlang RAKFE:</strong><br>
+        <em>Rolle:</em> Trainerin, die ein Nachschlagewerk für Selbststudium UND Präsenztraining zugleich braucht.<br>
+        <em>Aufgabe:</em> 16 Kapitel, die von Grundlagen bis Governance/Ethik reichen, in vier Nutzungsmodi filterbar.<br>
+        <em>Kontext:</em> bestehende K1–K20-Qualitätsstandards, etabliertes Studierendenakte-Fallszenario.<br>
+        <em>Format:</em> Ein-Seiten-Kapitel mit Hero + Panels + <code>&lt;details&gt;</code>-Methoden + Übungen.<br>
+        <em>Eingrenzung:</em> keine neue Persona-Welt erfinden, Analyse-Modelle nie als Personenurteil formulieren.<br><br>
+        <strong>Zentraler Lernhinweis:</strong> Das Tool trennt bewusst Position von Interesse (Kapitel 4) und Betroffenheit von Einfluss (Kapitel 3) — zwei Verwechslungen, die in der Praxis die häufigsten Fehlurteile in der Stakeholder-Analyse verursachen.<br><br>
+        <strong>Nachbau-Tipp:</strong> Der Modus-Filter (<code>data-modes</code>) ist der eigentliche Clou: Ein Kapitelinhalt existiert nur einmal im HTML, wird aber je nach gewähltem Modus ein- oder ausgeblendet — kein Duplizieren von Inhalten für unterschiedliche Nutzungsszenarien nötig. <strong>Wichtig aus Erfahrung:</strong> Nicht mehr als zwei Modi anlegen, wenn nicht mindestens 80 % des Inhalts eindeutig einem einzigen Modus zuordenbar sind — sonst entsteht eine Schein-Trennung, die beim Bauen selbst schon nicht durchzuhalten ist (in der ersten Version trugen 62 % der Blöcke mehrere Modi gleichzeitig).
+      </div>
+    </details>
+    <details class="footer-details">
+      <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+      <div class="footer-content footer-sans">
+        <em>(Vor dem Öffnen)</em> Kurz die zwei Modi erklären: "Lesen zeigt alles zum Verstehen und Nachschlagen, Trainieren zeigt nur die Übungen." Werkzeugkasten, Checklisten und Glossar sind reine Nachschlagekapitel ohne Übung.<br><br>
+        <em>(Kapitel 1 öffnen)</em> Mit dem Merksatz beginnen: "Ein Register beschreibt, wer relevant ist. Engagement zeigt, wie es wirklich läuft." Das ist der rote Faden für alle 16 Kapitel.<br><br>
+        <em>(Kapitel 2–3 durchgehen)</em> Sieben Suchräume vor der Macht/Interesse-Matrix zeigen — Reihenfolge betonen: erst breit identifizieren, dann erst bewerten.<br><br>
+        <em>(Kapitel 8 Konflikte)</em> Die sechs Konflikttypen sind der Moment im Vortrag, an dem meist die meisten Wortmeldungen kommen — Zeit einplanen.<br><br>
+        <em>(Kapitel 15 Checklisten)</em> Mit dem Merksatz schließen: "Ein aktuelles Stakeholderbild ist wertvoller als ein perfektes altes Register."<br><br>
+        <strong>Allgemeine Regie-Hinweise:</strong> Nicht alle 16 Kapitel in einer Sitzung vorführen — je nach Zielgruppe 4–6 Kapitel auswählen und die anderen als Selbststudium ankündigen. Der Trainieren-Modus eignet sich für Workshop-Phasen, nicht für den Frontalvortrag.
+      </div>
+    </details>
+    <details class="footer-details">
+      <summary class="footer-summary">⚖ Normen-Register</summary>
+      <div class="footer-content">
+        <table class="footer-table">
+          <tr><th>Norm/Quelle</th><th>Status</th><th>Stand</th></tr>
+          <tr><td>PMBOK® Guide (PMI)</td><td>In Kraft, aktuell 8. Auflage</td><td>November 2025</td></tr>
+          <tr><td>BABOK® Guide v3 (IIBA)</td><td>In Kraft, aktuelle Ausgabe</td><td>2015</td></tr>
+          <tr><td>IREB CPRE Foundation Level Handbook</td><td>In Kraft</td><td>v3.3.0, 01.04.2026</td></tr>
+          <tr><td>ISO 21502 – Guidance on project management</td><td>In Kraft</td><td>2020</td></tr>
+          <tr><td>ISO/IEC/IEEE 29148 – Requirements engineering</td><td>In Kraft</td><td>2018</td></tr>
+          <tr><td>The Scrum Guide</td><td>In Kraft, aktuelle Ausgabe</td><td>2020</td></tr>
+          <tr><td>Verordnung (EU) 2024/1689 (EU AI Act)</td><td>In Kraft; Annex-III-Vollpflichten verschoben</td><td>Vollpflichten ab 02.12.2027 (Digital-Omnibus-VO (EU) 2026/1744)</td></tr>
+          <tr><td>DSGVO (Verordnung (EU) 2016/679)</td><td>In Kraft</td><td>Fortlaufend</td></tr>
+          <tr><td>§ 87 Abs. 1 Nr. 6 BetrVG</td><td>In Kraft</td><td>Fortlaufend</td></tr>
+          <tr><td>Verordnung (EU) 2024/886 (SEPA Instant Payments)</td><td>In Kraft</td><td>2024</td></tr>
+        </table>
+      </div>
+    </details>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var chapters=Array.prototype.slice.call(document.querySelectorAll(".chapter"));
+  var nav=document.getElementById("chapterNav");
+  var activeIndex=0;
+  var currentLang="de";
+  var storageKey="mku-stakeholder-kompendium-v1";
+  var state={done:[],saved:[],checks:{},mode:"lesen"};
+  try{var raw=sessionStorage.getItem(storageKey);if(raw){state=Object.assign(state,JSON.parse(raw));}}catch(e){}
+  function save(){try{sessionStorage.setItem(storageKey,JSON.stringify(state));}catch(e){}}
+  function chapterTitle(ch){return currentLang==="de"?ch.getAttribute("data-title"):(ch.getAttribute("data-title-en")||ch.getAttribute("data-title"));}
+  chapters.forEach(function(ch,i){
+    var b=document.createElement("button");b.className="nav-btn";b.setAttribute("data-index",String(i));b.innerHTML="<span class='num'>"+String(i+1).padStart(2,"0")+"</span><span class='navlabel'>"+chapterTitle(ch)+"</span>";b.addEventListener("pointerup",function(){show(i);closeMenu();});nav.appendChild(b);
+  });
+  function refreshChapterTitles(){
+    Array.prototype.forEach.call(nav.children,function(b,n){var lbl=b.querySelector(".navlabel");if(lbl)lbl.textContent=chapterTitle(chapters[n]);});
+    updateSaved();
+  }
+  function show(i){
+    if(i<0||i>=chapters.length)return;activeIndex=i;
+    chapters.forEach(function(ch,n){ch.classList.toggle("active",n===i);});
+    Array.prototype.forEach.call(nav.children,function(b,n){b.classList.toggle("active",n===i);b.classList.toggle("done",state.done.indexOf(chapters[n].getAttribute("data-id"))>-1);});
+    document.getElementById("prevBtn").disabled=i===0;document.getElementById("nextBtn").disabled=i===chapters.length-1;
+    updateComplete();window.scrollTo(0,0);
+  }
+  function updateComplete(){var id=chapters[activeIndex].getAttribute("data-id");var yes=state.done.indexOf(id)>-1;var deTxt=yes?"Bearbeitung zur\u00fccknehmen":"Kapitel als bearbeitet markieren";var enTxt=yes?"Unmark as completed":"Mark chapter as completed";document.getElementById("completeBtn").textContent=currentLang==="de"?deTxt:enTxt;}
+  function updateProgress(){var count=state.done.length;document.getElementById("progressText").textContent=count+" / "+chapters.length;document.getElementById("progressBar").style.width=(count/chapters.length*100)+"%";Array.prototype.forEach.call(nav.children,function(b,n){b.classList.toggle("done",state.done.indexOf(chapters[n].getAttribute("data-id"))>-1);});}
+  function updateSaved(){var box=document.getElementById("savedList");box.innerHTML="";if(!state.saved.length){box.textContent=currentLang==="de"?"Noch keine Inhalte gemerkt.":"No bookmarks yet.";return;}state.saved.forEach(function(id){var ch=document.querySelector(".chapter[data-id='"+id+"']");if(!ch)return;var b=document.createElement("button");b.className="nav-btn";b.textContent=chapterTitle(ch);b.addEventListener("pointerup",function(){show(chapters.indexOf(ch));closeMenu();});box.appendChild(b);});document.querySelectorAll(".bookmark").forEach(function(b){var id=b.closest(".chapter").getAttribute("data-id");var yes=state.saved.indexOf(id)>-1;b.classList.toggle("saved",yes);b.textContent=yes?"\u2713":"\uff0b";});}
+  document.getElementById("prevBtn").addEventListener("pointerup",function(){show(activeIndex-1);});document.getElementById("nextBtn").addEventListener("pointerup",function(){show(activeIndex+1);});
+  document.getElementById("completeBtn").addEventListener("pointerup",function(){var id=chapters[activeIndex].getAttribute("data-id");var p=state.done.indexOf(id);if(p>-1)state.done.splice(p,1);else state.done.push(id);save();updateProgress();updateComplete();});
+  document.querySelectorAll(".bookmark").forEach(function(b){b.addEventListener("pointerup",function(){var id=b.closest(".chapter").getAttribute("data-id");var p=state.saved.indexOf(id);if(p>-1)state.saved.splice(p,1);else state.saved.push(id);save();updateSaved();});});
+  document.querySelectorAll(".solution-btn").forEach(function(b){b.addEventListener("pointerup",function(){var s=b.nextElementSibling;var open=s.classList.toggle("open");var deTxt=open?"Musterl\u00f6sung verbergen":"Musterl\u00f6sung zeigen";var enTxt=open?"Hide sample solution":"Show sample solution";b.textContent=currentLang==="de"?deTxt:enTxt;});});
+  document.querySelectorAll(".check input").forEach(function(c,i){var key="c"+i;c.checked=!!state.checks[key];c.addEventListener("change",function(){state.checks[key]=c.checked;save();});});
+  function setMode(mode){state.mode=mode;document.body.className="mode-"+mode;document.querySelectorAll("[data-mode]").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-mode")===mode);});save();}
+  document.querySelectorAll("[data-mode]").forEach(function(b){b.addEventListener("pointerup",function(){setMode(b.getAttribute("data-mode"));});});
+  function search(){var q=document.getElementById("searchInput").value.trim().toLowerCase();chapters.forEach(function(ch){ch.classList.remove("no-match","search-hit");});if(!q){document.body.classList.remove("searching");show(activeIndex);document.getElementById("empty").style.display="none";return;}document.body.classList.add("searching");var hits=0;chapters.forEach(function(ch){var yes=ch.textContent.toLowerCase().indexOf(q)>-1;ch.classList.toggle("no-match",!yes);if(yes){hits++;ch.classList.add("search-hit");}});document.getElementById("empty").style.display=hits?"none":"block";closeMenu();window.scrollTo(0,0);}
+  document.getElementById("searchBtn").addEventListener("pointerup",search);document.getElementById("searchInput").addEventListener("search",search);document.getElementById("searchInput").addEventListener("keydown",function(e){if(e.key==="Enter")search();});
+  document.getElementById("printBtn").addEventListener("pointerup",function(){window.print();});document.getElementById("resetBtn").addEventListener("pointerup",function(){var msg=currentLang==="de"?"Lernstand, Merkliste und Checklisten zur\u00fccksetzen?":"Reset progress, bookmarks and checklists?";if(window.confirm(msg)){state={done:[],saved:[],checks:{},mode:"lesen"};save();location.reload();}});
+  var side=document.getElementById("sidebar"),back=document.getElementById("backdrop"),menu=document.getElementById("menuBtn");function closeMenu(){side.classList.remove("open");back.classList.remove("open");menu.setAttribute("aria-expanded","false");}menu.addEventListener("pointerup",function(){var open=side.classList.toggle("open");back.classList.toggle("open",open);menu.setAttribute("aria-expanded",String(open));});back.addEventListener("pointerup",closeMenu);
+  var i18nEn={
+    "eyebrow":"Interactive Reference Book \u00b7 Seminar Edition",
+    "mainTitle":"Stakeholder Management Compendium",
+    "subtitle":"Understand people \u00b7 clarify interests \u00b7 shape relationships \u00b7 enable decisions",
+    "searchPlaceholder":"Search a term, method, or situation \u2026",
+    "searchBtn":"Search",
+    "menuBtnLabel":"Chapters",
+    "langBtnLabel":"DE",
+    "beamerBtnLabel":"Beamer: Normal",
+    "printBtnLabel":"Print",
+    "resetBtnLabel":"Reset",
+    "modeLesen":"Read",
+    "modeTrainieren":"Practice",
+    "refOnlyLabel":"Reference-only chapter:",
+    "refOnlyText":"This chapter deliberately has no exercise. Switch to Read mode to see its content.",
+    "progressLabel":"Progress",
+    "navTitleChapters":"Chapters",
+    "navTitleSaved":"My Bookmarks",
+    "savedEmpty":"No bookmarks yet.",
+    "emptyState":"No match. Try a different term or open a chapter via the navigation.",
+    "prevBtnLabel":"\u2190 Previous chapter",
+    "completeBtnLabel":"Mark chapter as completed",
+    "nextBtnLabel":"Next chapter \u2192",
+    "ch1-kicker":"Chapter 01 \u00b7 Orientation",
+    "ch1-h2":"Stakeholder management begins with a shift in perspective",
+    "ch1-lead":"Not managing people, but understanding relationships, expectations, influence and impact well enough to enable sound decisions.",
+    "ch1-obj1":"Distinguish key terms",
+    "ch1-obj2":"Think systemically",
+    "ch1-obj3":"Classify engagement",
+    "ch1-h3a":"The core terms",
+    "ch1-def":"<strong>Stakeholders</strong> are people, groups or organizations that can influence an initiative, are affected by it, or perceive themselves as affected.",
+    "ch1-c1h":"Stakeholder Management",
+    "ch1-c1p":"The deliberate process of identifying, analyzing, planning, engaging and monitoring.",
+    "ch1-c2h":"Stakeholder Engagement",
+    "ch1-c2p":"The actual quality of involvement and relationship: from informing through consulting to joint decision-making.",
+    "ch1-c3h":"Communication",
+    "ch1-c3p":"An instrument of engagement. A communication plan alone does not replace relationship-building.",
+    "ch1-c4h":"Stakeholder Governance",
+    "ch1-c4p":"Governs roles, decision rights, responsibilities, escalations and traceable participation.",
+    "ch1-think-h":"Key takeaway",
+    "ch1-think-p":"A stakeholder register describes who is relevant. Engagement shows how the collaboration actually works.",
+    "ch1-h3b":"The five guiding questions",
+    "ch1-q1":"WHO is relevant?",
+    "ch1-q2":"WHY is this person relevant?",
+    "ch1-q3":"WHAT do they need?",
+    "ch1-q4":"HOW do we involve them?",
+    "ch1-q5":"WHAT changes?",
+    "ch1-ex-title":"Clarifying terms: more than a contact list",
+    "ch1-ex-p":"A project manager says: \u201eWe've handled stakeholder management \u2013 all the names are in the distribution list.\u201c Formulate a professionally sound response.",
+    "ch1-ex-sol":"<strong>Sample solution:</strong> The distribution list documents contacts. Stakeholder management additionally requires a reasoned analysis of influence, impact, interests, expectations and relationships. From this, suitable engagement measures, responsibilities and regular reassessments emerge.",
+    "ch2-001":"Chapter 02 · Discovering",
+    "ch2-002":"Whoever is missing can still make decisions later",
+    "ch2-003":"Good identification looks beyond the org chart and the client: at affected parties, sources of knowledge, gatekeepers, regulators, and people without a formal voice.",
+    "ch2-004":"Use search spaces",
+    "ch2-005":"Spot blind spots",
+    "ch2-006":"Delimit context",
+    "ch2-007":"Seven search spaces",
+    "ch2-008":"Decision",
+    "ch2-009":"Who commissions, funds, prioritizes, approves, or signs off?",
+    "ch2-010":"Usage",
+    "ch2-011":"Who uses, operates, administers, supports, or leaves the system?",
+    "ch2-012":"Impact",
+    "ch2-013":"Whose work, rights, risks, or daily routine change?",
+    "ch2-014":"Knowledge",
+    "ch2-015":"Who knows the processes, exceptions, data, technology, or history?",
+    "ch2-016":"Delivery",
+    "ch2-017":"Who develops, operates, procures, tests, or maintains?",
+    "ch2-018":"Regulatory framework",
+    "ch2-019":"Who represents law, data protection, security, co-determination, or oversight?",
+    "ch2-020":"Environment",
+    "ch2-021":"Who influences acceptance, public perception, interfaces, or downstream processes?",
+    "ch2-022":"Onion Model / Stakeholder Onion (after Robertson &amp; Robertson, Volere)",
+    "ch2-023":"Identification",
+    "ch2-024":"System context",
+    "ch2-025":"Workshop",
+    "ch2-026":"<b>Answers</b>How close is a stakeholder to usage, to the system, or to the environment?",
+    "ch2-027":"<b>Approach</b>Arrange core system, direct users, operational environment, and outer environment in rings.",
+    "ch2-028":"<b>Strength</b>Extends the view beyond the project team.",
+    "ch2-029":"<b>Limitation</b>Closeness does not automatically mean influence or importance.",
+    "ch2-030":"Context diagram",
+    "ch2-031":"<b>Answers</b>Which people, systems, and organizations exchange information or services with the subject under consideration?",
+    "ch2-032":"<b>Approach</b>Set the system boundary, list neighbors, name interfaces and flows.",
+    "ch2-033":"<b>Pitfall</b>Capturing only technical systems and forgetting human actors.",
+    "ch2-034":"<b>Follow-on artifact</b>Stakeholder register and source mapping of requirements.",
+    "ch2-035":"Case: Digital student record with AI support (Nordwest University)",
+    "ch2-036":"Nordwest University wants to classify incoming documents, prioritize cases, and support staff with AI suggestions. Decisions with legal effect remain with humans.",
+    "ch2-037":"Students",
+    "ch2-038":"Case handling",
+    "ch2-039":"Examinations office",
+    "ch2-040":"IT operations",
+    "ch2-041":"Data protection",
+    "ch2-042":"Information security",
+    "ch2-043":"Staff council",
+    "ch2-044":"University leadership",
+    "ch2-045":"Vendor",
+    "ch2-046":"Archive",
+    "ch2-047":"Oversight authority",
+    "ch2-048":"Finding hidden stakeholders",
+    "ch2-049":"Add at least three easily overlooked stakeholders to the case and justify their relevance.",
+    "ch2-050":"<strong>Accessibility officer:</strong> accessibility of use and communication.",
+    "ch2-051":"<strong>First-level support:</strong> recognizes recurring error patterns and comprehension barriers.",
+    "ch2-052":"<strong>People affected by faulty classification:</strong> bear the consequences even though they are not actively involved in the project.",
+    "ch2-053":"<strong>Deletion and archive owners:</strong> ensure retention and timely deletion.",
+    "ch3-001":"Chapter 03 · Understanding",
+    "ch3-002":"A matrix is a thinking surface, not a verdict",
+    "ch3-003":"Analysis makes assumptions visible. It must neither label people nor reduce them to a single point — and must be reviewed whenever things change.",
+    "ch3-004":"Dimensions of analysis",
+    "ch3-005":"Dimension",
+    "ch3-006":"Guiding question",
+    "ch3-007":"Observable indicator",
+    "ch3-008":"Influence",
+    "ch3-009":"What lets this stakeholder change decisions or implementation?",
+    "ch3-010":"Budget, sign-off, professional authority, network, veto right",
+    "ch3-011":"Impact",
+    "ch3-012":"What consequences does the stakeholder bear?",
+    "ch3-013":"Workflow, rights, effort, risk, benefit",
+    "ch3-014":"Interest",
+    "ch3-015":"How relevant is the initiative from their perspective?",
+    "ch3-016":"Time invested, follow-up questions, own goals",
+    "ch3-017":"Stance",
+    "ch3-018":"How are they currently positioned — and why?",
+    "ch3-019":"Statements, behavior, conditions",
+    "ch3-020":"Legitimacy",
+    "ch3-021":"What is their claim to participation based on?",
+    "ch3-022":"Mandate, law, impact, expertise",
+    "ch3-023":"Urgency",
+    "ch3-024":"Which concerns require timely handling?",
+    "ch3-025":"Deadlines, damage, escalation, dependencies",
+    "ch3-026":"Relationship",
+    "ch3-027":"How resilient are trust and collaboration?",
+    "ch3-028":"Reliability, openness, history of conflict",
+    "ch3-029":"Power–Interest Matrix (Mendelow, 1981)",
+    "ch3-030":"<b>Answers</b>How intensively does this relationship need attention?",
+    "ch3-031":"<b>Approach</b>Justify influence and interest separately, then position them.",
+    "ch3-032":"<b>Don't confuse</b>Low interest does not mean low impact.",
+    "ch3-033":"<b>Update trigger</b>Decision, conflict, role change, project phase.",
+    "ch3-034":"Influence–Impact Matrix",
+    "ch3-035":"This variant guards against a typical blind spot: heavily affected people with little formal power. It requires a deliberate strategy for how their perspectives get heard.",
+    "ch3-036":"Salience Model (Mitchell, Agle &amp; Wood, 1997)",
+    "ch3-037":"Looks at <strong>power</strong>, <strong>legitimacy</strong>, and <strong>urgency</strong>. The combination helps reflect on competing claims. The model does not replace an ethical or legal review.",
+    "ch3-038":"Stakeholder network",
+    "ch3-039":"Visualizes formal and informal relationships, information paths, trust bridges, gatekeepers, and possible coalitions. Especially useful when the formal decision path doesn't explain actual influence.",
+    "ch3-040":"Matrix with rationale",
+    "ch3-041":"Place data protection, students, and the vendor in the university case. Formulate a reasoned hypothesis and an open validation question for each stakeholder.",
+    "ch3-042":"<strong>Data protection:</strong> high formal influence, high professional interest. Question: Which processing steps, from your view, need the earliest clarification?",
+    "ch3-043":"<strong>Students:</strong> high impact, heterogeneous direct influence. Question: In which situations would an AI error be especially consequential for you?",
+    "ch3-044":"<strong>Vendor:</strong> high technical influence, commercial interest. Question: What limits exist regarding explainability, export, and vendor switching?",
+    "ch4-001":"Chapter 04 · Looking behind positions",
+    "ch4-002":"„I want solution X“ is not yet a need",
+    "ch4-003":"Positions name a desired solution. Interests explain the goal, need, or risk behind it.",
+    "ch4-004":"The deep drill",
+    "ch4-005":"Statement",
+    "ch4-006":"Position",
+    "ch4-007":"Interest",
+    "ch4-008":"Need / concern",
+    "ch4-009":"testable requirement",
+    "ch4-010":"<strong>Example</strong>„The AI must decide everything automatically.“ → Position. Behind it could be the interest of shortening processing times. Only clarifying the goal, the risk, and the decision class enables a suitable requirement.",
+    "ch4-011":"Question catalog",
+    "ch4-012":"Goal",
+    "ch4-013":"What should get better as a result?",
+    "ch4-014":"How would you recognize a benefit?",
+    "ch4-015":"Concern",
+    "ch4-016":"What must never happen?",
+    "ch4-017":"What experience shapes your stance?",
+    "ch4-018":"Context",
+    "ch4-019":"When does this statement apply — and when not?",
+    "ch4-020":"What exceptions exist?",
+    "ch4-021":"Evidence",
+    "ch4-022":"How do we verify that this is fulfilled?",
+    "ch4-023":"Who is authorized to confirm the result?",
+    "ch4-024":"Translating position into interest",
+    "ch4-025":"The staff council demands: „No AI in the examinations office.“ What interests might be behind that? Formulate questions without prematurely reinterpreting the demand.",
+    "ch4-026":"Possible hypotheses: protection from performance monitoring, concern about job change, unclear responsibility, lack of traceability. Validation questions: „Which specific use situations concern you?“ and „What conditions would need to be met for a supportive use to even be up for discussion?“",
+    "ch5-001":"Chapter 05 · Steering attention",
+    "ch5-002":"Prioritizing means shaping attention — not judging people",
+    "ch5-003":"Priority describes the current need for management and involvement. It is context-, phase-, and risk-dependent.",
+    "ch5-004":"Qualitative prioritization",
+    "ch5-005":"Influence",
+    "ch5-006":"Can change decisions, resources, or acceptance.",
+    "ch5-007":"Impact",
+    "ch5-008":"Bears benefit, effort, risk, or legal consequences.",
+    "ch5-009":"Legitimacy",
+    "ch5-010":"Has a justified claim to participation.",
+    "ch5-011":"Urgency",
+    "ch5-012":"Concern is time-critical or damage-relevant.",
+    "ch5-013":"Worth knowing",
+    "ch5-014":"Holds hard-to-replace context knowledge.",
+    "ch5-015":"Relationship risk",
+    "ch5-016":"Trust or cooperation are at risk.",
+    "ch5-017":"<strong>Documentation rule</strong>Don't just note „high / medium / low.“ Every rating needs a brief rationale, source, uncertainty note, and a date for reassessment.",
+    "ch5-018":"Who needs attention first?",
+    "ch5-019":"The vendor is waiting on an architecture decision, student representatives criticize a lack of transparency, and leadership expects a timeline. Set a sequence and justify it without inventing numbers.",
+    "ch5-020":"A plausible sequence starts with the student representatives' transparency and participation question, since acceptance and rights are directly affected; the architecture decision can be prepared in parallel. Leadership receives transparent status information with open decision dependencies. What matters is not a universal order, but explicit justification based on impact, urgency, blocking effect, and legitimacy.",
+    "ch6-001":"Chapter 06 · Turning relationship into action",
+    "ch6-002":"Not every stakeholder needs the same level of involvement",
+    "ch6-003":"Good engagement is proportionate: neither token participation nor unnecessary constant alignment.",
+    "ch6-004":"Levels of participation",
+    "ch6-005":"Level",
+    "ch6-006":"Purpose",
+    "ch6-007":"Suitable form",
+    "ch6-008":"Promise",
+    "ch6-009":"Inform",
+    "ch6-010":"Enable understanding",
+    "ch6-011":"Status update, FAQ, decision note",
+    "ch6-012":"Information is current and understandable.",
+    "ch6-013":"Consult",
+    "ch6-014":"Gather perspectives",
+    "ch6-015":"Interview, survey, review",
+    "ch6-016":"Feedback is reviewed and answered.",
+    "ch6-017":"Involve",
+    "ch6-018":"Improve the solution together",
+    "ch6-019":"Workshop, prototype test",
+    "ch6-020":"Perspectives visibly feed in.",
+    "ch6-021":"Collaborate",
+    "ch6-022":"Shape together",
+    "ch6-023":"Working group, co-creation",
+    "ch6-024":"Decisions are prepared jointly.",
+    "ch6-025":"Co-decide",
+    "ch6-026":"Share decision rights",
+    "ch6-027":"Committee, delegated decision",
+    "ch6-028":"Mandate and boundaries are transparent.",
+    "ch6-029":"Stakeholder Engagement Assessment Matrix (PMBOK® Guide, PMI)",
+    "ch6-030":"Compares current and desired stance, e.g. unaware, resistant, neutral, supportive, or leading. What matters is the gap and its cause — not the label.",
+    "ch6-031":"<b>Question</b>Which stance is necessary for the next step?",
+    "ch6-032":"<b>Measure</b>What can realistically improve understanding, trust, or participation?",
+    "ch6-033":"<b>Evidence</b>How do we recognize a change in behavior?",
+    "ch6-034":"<b>Limit</b>Support must not be produced through manipulation.",
+    "ch6-035":"Engagement plan — minimum content",
+    "ch6-036":"The purpose of the involvement is concretely described.",
+    "ch6-037":"Current and desired relationship are justified.",
+    "ch6-038":"Format, timing, and responsibility are defined.",
+    "ch6-039":"Feedback loop is planned: what happened with the feedback?",
+    "ch6-040":"Decision rights and limits are transparent.",
+    "ch6-041":"Barriers to participation have been considered.",
+    "ch7-001":"Chapter 07 · Making sense together",
+    "ch7-002":"Sent is not understood",
+    "ch7-003":"Stakeholder-appropriate communication connects information needs, context, language, channel, timing, and feedback.",
+    "ch7-004":"The communication formula",
+    "ch7-005":"Purpose",
+    "ch7-006":"Target audience",
+    "ch7-007":"Core message",
+    "ch7-008":"Channel &amp; timing",
+    "ch7-009":"Feedback",
+    "ch7-010":"Communication matrix",
+    "ch7-011":"Stakeholder",
+    "ch7-012":"Information need",
+    "ch7-013":"Purpose",
+    "ch7-014":"Format",
+    "ch7-015":"Rhythm / trigger",
+    "ch7-016":"Responsible",
+    "ch7-017":"Feedback channel",
+    "ch7-018":"Example: student representation",
+    "ch7-019":"Usage limits, rights, changes",
+    "ch7-020":"Transparency and participation",
+    "ch7-021":"Dialogue format + plain-language note",
+    "ch7-022":"before the fundamental decision; on any change",
+    "ch7-023":"Product Owner",
+    "ch7-024":"Review and documented reply",
+    "ch7-025":"Add your own row …",
+    "ch7-026":"One message for three perspectives",
+    "ch7-027":"Formulate the introduction of an AI classification suggestion for university leadership, case handling, and students, each with the appropriate focus.",
+    "ch7-028":"<strong>Leadership:</strong> expected contribution, risks, decision needs, and governance.",
+    "ch7-029":"<strong>Case handling:</strong> concrete change in the workflow, human decision, training, and feedback path.",
+    "ch7-030":"<strong>Students:</strong> what data is processed, what the AI is used for, and what rights and contact channels exist.",
+    "ch8-001":"Chapter 08 · Handling tensions",
+    "ch8-002":"Resistance is often a requirement that isn't understood yet",
+    "ch8-003":"It can point to risks, losses, lack of participation, value violations, or bad experiences. It is information — but not automatically justified or unjustified.",
+    "ch8-004":"Conflict diagnosis",
+    "ch8-005":"Fact-based conflict",
+    "ch8-006":"Different facts, goals, or solution assessments.",
+    "ch8-007":"Interest conflict",
+    "ch8-008":"Benefits, costs, risks, or resources are unequally distributed.",
+    "ch8-009":"Relationship conflict",
+    "ch8-010":"Trust, recognition, or communication are damaged.",
+    "ch8-011":"Value conflict",
+    "ch8-012":"Basic attitudes or ethical standards collide.",
+    "ch8-013":"Structural conflict",
+    "ch8-014":"Roles, mandates, and decision rights are contradictory.",
+    "ch8-015":"Distribution conflict",
+    "ch8-016":"Effort, opportunities, or disadvantages are experienced as unfair.",
+    "ch8-017":"Harvard Principles for negotiation (Fisher &amp; Ury, 1981)",
+    "ch8-018":"Separate the people from the problem.",
+    "ch8-019":"Focus on interests, not positions.",
+    "ch8-020":"Develop multiple options for mutual gain.",
+    "ch8-021":"Use traceable criteria for decisions.",
+    "ch8-022":"The method assumes room for discussion and negotiation. Legal obligations or protective rights are not „negotiated away.“",
+    "ch8-023":"Escalate or keep clarifying?",
+    "ch8-024":"IT and data protection are blocking each other. Both claim the other side is preventing project progress. Decide on the next step.",
+    "ch8-025":"First make the conflict type, the contested decisions, and the mandates explicit. Separate facts, assumptions, and open legal/architecture questions. If mandates are unclear or a time-bound decision falls outside the given authority, escalate with a precise decision question — not with a blanket assignment of blame.",
+    "ch9-001":"Chapter 09 · From need to evidence",
+    "ch9-002":"Stakeholders are requirement sources — not order slips",
+    "ch9-003":"Their statements must be understood, checked, scoped, negotiated, and translated into traceable requirements.",
+    "ch9-004":"Traceability chain of thought",
+    "ch9-005":"Stakeholder",
+    "ch9-006":"Goal / need",
+    "ch9-007":"Requirement",
+    "ch9-008":"Solution element",
+    "ch9-009":"Acceptance criterion",
+    "ch9-010":"Evidence / acceptance",
+    "ch9-011":"<strong>Check question</strong>Can every relevant requirement be traced back to its source and rationale — and every acceptance to an agreed criterion?",
+    "ch9-012":"From raw statement to testable requirement",
+    "ch9-013":"Stage",
+    "ch9-014":"Example",
+    "ch9-015":"Clarification needed",
+    "ch9-016":"Raw statement",
+    "ch9-017":"„The AI should sort reliably.“",
+    "ch9-018":"Which documents? What does „reliably“ mean? What are the consequences of errors?",
+    "ch9-019":"Stakeholder goal",
+    "ch9-020":"Case handling wants to recognize and correct misclassifications early.",
+    "ch9-021":"Workflow, responsibility, feedback",
+    "ch9-022":"Functional requirement",
+    "ch9-023":"The system must display the suggested document type to case handling for every classified document.",
+    "ch9-024":"Role, event, object, system boundary",
+    "ch9-025":"Quality requirement",
+    "ch9-026":"The suggestion must be presented to case handling in a comprehensible way.",
+    "ch9-027":"agree on a concrete quality metric and test scenario",
+    "ch9-028":"Acceptance criterion",
+    "ch9-029":"Given a classified document, when case handling opens the case, then they see the suggestion, relevant rationale information, and a correction option.",
+    "ch9-030":"Test data, rights, edge cases",
+    "ch9-031":"Stakeholder–Requirements Matrix",
+    "ch9-032":"Links stakeholder, goal, requirement, participation role, validation status, and acceptance responsibility. It prevents a requirement from being left without a source, or a perspective from being left unconsidered.",
+    "ch9-033":"Conflicting requirements",
+    "ch9-034":"Leadership demands automation, case handling demands control, students demand transparency. Formulate an integrating solution direction without deleting any perspective.",
+    "ch9-035":"The AI generates prioritized classification suggestions. For defined high-risk or unclear cases, human review is mandatory. Affected individuals receive understandable information about use, purpose, and contact channels. Corrections are logged traceably and used for quality monitoring. The concrete design still needs measurable quality, security, and transparency criteria.",
+    "ch10-001":"Chapter 10 · Delivery approaches",
+    "ch10-002":"Agility does not replace stakeholder management",
+    "ch10-003":"It changes the rhythm, artifacts, and closeness of involvement. Even a team working in an agile way needs clarity about influence, impact, and decision rights.",
+    "ch10-004":"Three logics",
+    "ch10-005":"Aspect",
+    "ch10-006":"Classic",
+    "ch10-007":"Agile",
+    "ch10-008":"Hybrid",
+    "ch10-009":"Planning",
+    "ch10-010":"early baseline analysis and a planned communication framework",
+    "ch10-011":"continuous learning and frequent feedback",
+    "ch10-012":"baseline structure plus adaptive deepening",
+    "ch10-013":"Involvement",
+    "ch10-014":"milestones, committees, sign-offs",
+    "ch10-015":"reviews, discovery, refinement, tests",
+    "ch10-016":"formal decisions plus iterative validation",
+    "ch10-017":"Artifacts",
+    "ch10-018":"register, plan, report",
+    "ch10-019":"stakeholder map, backlog, feedback",
+    "ch10-020":"shared register with living additions",
+    "ch10-021":"Risk",
+    "ch10-022":"late involvement between milestones",
+    "ch10-023":"loud, available stakeholders dominate",
+    "ch10-024":"duplicate or contradictory governance",
+    "ch10-025":"Minimum agile questions",
+    "ch10-026":"Who represents which perspective in the product backlog?",
+    "ch10-027":"Which stakeholders are regularly missing from reviews?",
+    "ch10-028":"Who is allowed to change priorities?",
+    "ch10-029":"How are heavily affected people with little influence involved?",
+    "ch10-030":"How does feedback traceably flow into decisions?",
+    "ch11-001":"Chapter 11 · Context decides",
+    "ch11-002":"The method doesn't stay the same as risk increases",
+    "ch11-003":"Regulation, public impact, culture, depth of change, and criticality determine how carefully involvement and evidence must be designed.",
+    "ch11-004":"Context lenses",
+    "ch11-005":"Transformation",
+    "ch11-006":"Identity, roles, fear of loss, leadership, and informal networks.",
+    "ch11-007":"Public administration",
+    "ch11-008":"Legal bindingness, participation rights, political levels, the public.",
+    "ch11-009":"AI systems",
+    "ch11-010":"Affected individuals, data roles, vendors, human oversight, transparency.",
+    "ch11-011":"Information security",
+    "ch11-012":"Asset owners, risk owners, operations, emergency roles, and supply chain.",
+    "ch11-013":"International",
+    "ch11-014":"Culture, language, time zones, local rules, and understanding of power.",
+    "ch11-015":"Crisis",
+    "ch11-016":"Time pressure, situational picture, clear mandates, short feedback loops, and documentation.",
+    "ch11-017":"Context shift",
+    "ch11-018":"How does stakeholder work change if the digital record isn't introduced only at Nordwest University, but nationwide?",
+    "ch11-019":"Additional layers emerge: ministry, other universities, nationwide committees, shared IT providers, oversight bodies, associations, and different local user groups. Governance, representation, and decision rights must be scaled up. A local stakeholder picture must not simply be duplicated; differences between universities and affected groups need their own validation.",
+    "ch12-001":"Chapter 12 · Responsibility",
+    "ch12-002":"Participation needs rights, limits, and traceability",
+    "ch12-003":"Stakeholder management is not merely influence work. It must safeguard legitimate claims, protection needs, transparency, and accountable decisions.",
+    "ch12-004":"Ethical guardrails",
+    "ch12-005":"No manipulation",
+    "ch12-006":"Engagement serves understanding and sound decisions, not covert steering.",
+    "ch12-007":"Fair representation",
+    "ch12-008":"Heavily affected people without formal power need suitable participation options.",
+    "ch12-009":"Transparent limits",
+    "ch12-010":"Not every consultation means co-decision. The mandate is explained beforehand.",
+    "ch12-011":"Traceability",
+    "ch12-012":"Feedback, deliberation, and decision are documented in an appropriate form.",
+    "ch12-013":"Governance canvas",
+    "ch12-014":"The decision subject and decision-maker are named.",
+    "ch12-015":"Consultation and co-decision rights are clarified.",
+    "ch12-016":"Conflicts of interest are disclosed.",
+    "ch12-017":"Escalation and complaint channels are known.",
+    "ch12-018":"Affected groups are appropriately represented.",
+    "ch12-019":"Deliberations and changes remain traceable.",
+    "ch12-020":"<strong>AI context</strong>For AI systems, the stakeholder picture expands to include affected individuals, data owners, model/system vendors, human oversight, compliance, risk management, and, where applicable, oversight bodies. The concrete obligation depends on role and risk class.",
+    "ch13-001":"Chapter 13 · Learning journey",
+    "ch13-002":"From the list to a resilient relationship",
+    "ch13-003":"Twelve stations guide you through a complete stakeholder cycle. Each station works with one, two, or three groups.",
+    "ch13-004":"Assignment for groups",
+    "ch13-005":"All groups work on the same university case. With multiple groups, perspectives can be distributed: <strong>steering</strong>, <strong>usage and impact</strong>, <strong>governance and risk</strong>. Differences are then negotiated.",
+    "ch13-006":"1 · Discover",
+    "ch13-007":"Justify stakeholders and search space.",
+    "ch13-008":"2 · Context",
+    "ch13-009":"Clarify system boundary and interfaces.",
+    "ch13-010":"3 · Interests",
+    "ch13-011":"Separate positions from needs.",
+    "ch13-012":"4 · Influence",
+    "ch13-013":"Capture sources of influence and impact.",
+    "ch13-014":"5 · Conflicts",
+    "ch13-015":"Diagnose tensions.",
+    "ch13-016":"6 · Priority",
+    "ch13-017":"Justify the need for attention.",
+    "ch13-018":"7 · Engagement",
+    "ch13-019":"Choose the level of participation.",
+    "ch13-020":"8 · Communication",
+    "ch13-021":"Plan message and feedback channel.",
+    "ch13-022":"9 · Requirements",
+    "ch13-023":"Translate need into requirements.",
+    "ch13-024":"10 · Risks",
+    "ch13-025":"Address stakeholder risks.",
+    "ch13-026":"11 · Monitoring",
+    "ch13-027":"Define signals and triggers.",
+    "ch13-028":"12 · Retrospective",
+    "ch13-029":"Reflect on relationships and decisions.",
+    "ch13-030":"Overall case: preparing a project approval",
+    "ch13-031":"Create a one-page decision brief: relevant stakeholder picture, three central tensions, participation plan for the next phase, and two open decisions. Mark facts, assumptions, and open questions separately.",
+    "ch13-032":"Stakeholder selection is justified and takes impact into account.",
+    "ch13-033":"Positions and interests are not mixed up.",
+    "ch13-034":"Engagement measures fit the goal and mandate.",
+    "ch13-035":"Decision rights and feedback loops are visible.",
+    "ch13-036":"Uncertainties are disclosed rather than invented.",
+    "ch13-037":"Requirements and stakeholder goals are traceable.",
+    "ch13-038":"<strong>Trainer note:</strong> The „right“ matrix is not the learning goal. What matters is whether groups justify their hypotheses, discover gaps in perspective, and derive concrete decisions from the analysis.",
+    "ch14-001":"Chapter 14 · Method finder",
+    "ch14-002":"The method follows the question",
+    "ch14-003":"Don't choose a tool because it looks familiar. Start with the decision you need to prepare.",
+    "ch14-004":"Situation-based method finder",
+    "ch14-005":"Situation / question",
+    "ch14-006":"Suitable tool",
+    "ch14-007":"Result",
+    "ch14-008":"Watch out",
+    "ch14-009":"Who is missing?",
+    "ch14-010":"Search spaces, onion model, context diagram",
+    "ch14-011":"justified candidate list",
+    "ch14-012":"don't stop at the org chart",
+    "ch14-013":"Who needs attention?",
+    "ch14-014":"Influence–impact, salience",
+    "ch14-015":"priority hypothesis",
+    "ch14-016":"don't confuse impact with power",
+    "ch14-017":"What's behind the demands?",
+    "ch14-018":"Interest analysis, interview",
+    "ch14-019":"goals, concerns, conditions",
+    "ch14-020":"validate hypotheses",
+    "ch14-021":"Who influences whom?",
+    "ch14-022":"Network analysis",
+    "ch14-023":"relationships, gatekeepers, coalitions",
+    "ch14-024":"handle confidentially",
+    "ch14-025":"How to involve?",
+    "ch14-026":"Engagement assessment, participation levels",
+    "ch14-027":"suitable strategy",
+    "ch14-028":"no token participation",
+    "ch14-029":"Who does or decides?",
+    "ch14-030":"RACI / responsibility matrix",
+    "ch14-031":"role clarification",
+    "ch14-032":"RACI is not a stakeholder analysis",
+    "ch14-033":"How to communicate?",
+    "ch14-034":"Communication matrix",
+    "ch14-035":"message, channel, rhythm, feedback channel",
+    "ch14-036":"sending is not dialogue",
+    "ch14-037":"Where does conflict threaten?",
+    "ch14-038":"Force-field, conflict, and interest analysis",
+    "ch14-039":"causes and interventions",
+    "ch14-040":"separate person and problem",
+    "ch14-041":"Where does a requirement come from?",
+    "ch14-042":"Stakeholder–requirements matrix",
+    "ch14-043":"traceability",
+    "ch14-044":"separate source and acceptance",
+    "ch14-045":"What has changed?",
+    "ch14-046":"Health check, review triggers",
+    "ch14-047":"updated situational picture",
+    "ch14-048":"don't treat the register as static",
+    "ch14-049":"RACI – Responsible, Accountable, Consulted, Informed",
+    "ch14-050":"Clarifies responsibility roles per task or outcome. <strong>Responsible</strong> carries out the work, <strong>Accountable</strong> owns the outcome, <strong>Consulted</strong> is engaged in dialogue, <strong>Informed</strong> receives information. RACI does not automatically show interests, stance, or impact.",
+    "ch14-051":"Empathy Map (Dave Gray / XPLANE, Gamestorming)",
+    "ch14-052":"Structures hypotheses about what a target person says, thinks, does, and feels, as well as which gains and pains might be relevant. Results are not facts until validated with real stakeholders.",
+    "ch14-053":"Stakeholder journey",
+    "ch14-054":"Shows touchpoints, tasks, expectations, experiences, and breakdowns along a process. Useful for service and change contexts; less suited to analyzing formal power.",
+    "ch14-055":"Force-field analysis (Kurt Lewin, 1947)",
+    "ch14-056":"Contrasts driving and restraining forces of a change. Its strength lies in the conversation about causes and changeable conditions, not in a falsely precise point total.",
+    "ch15-001":"Chapter 15 · Ensuring quality",
+    "ch15-002":"An up-to-date stakeholder picture is worth more than a perfect old register",
+    "ch15-003":"Checklists support thinking. They replace neither judgment nor conversation and observation.",
+    "ch15-004":"Master checklist",
+    "ch15-005":"Project, product, or system boundary is clear.",
+    "ch15-006":"Formal and informal stakeholders have been considered.",
+    "ch15-007":"Heavily affected people with little influence are visible.",
+    "ch15-008":"Interests have been separated from positions.",
+    "ch15-009":"Analysis assumptions have a source and a validation question.",
+    "ch15-010":"Sources of influence are named concretely.",
+    "ch15-011":"Priorities are justified and time-bound.",
+    "ch15-012":"Participation level and decision mandate match.",
+    "ch15-013":"Communication has a feedback channel.",
+    "ch15-014":"Conflicts are classified by cause, not by person.",
+    "ch15-015":"Stakeholder goals are linked to requirements.",
+    "ch15-016":"Relevant requirements have validation and acceptance ownership.",
+    "ch15-017":"Data protection, security, ethics, and regulation are considered.",
+    "ch15-018":"Review triggers and owners are defined.",
+    "ch15-019":"Relationship quality is reflected on at closure.",
+    "ch15-020":"Stakeholder health check",
+    "ch15-021":"Orientation",
+    "ch15-022":"Do stakeholders understand the goal, status, limits, and open decisions?",
+    "ch15-023":"Trust",
+    "ch15-024":"Are commitments kept and problems raised early?",
+    "ch15-025":"Participation",
+    "ch15-026":"Can relevant perspectives contribute effectively?",
+    "ch15-027":"Decision",
+    "ch15-028":"Are mandate, rationale, and consequences traceable?",
+    "ch15-029":"<strong>Review triggers</strong>Phase change, role change, new regulation, significant scope change, conflict, delay, quality issue, vendor change, or shifting public attention.",
+    "ch16-001":"Chapter 16 · Looking up",
+    "ch16-002":"Terms, distinctions, and reference frameworks",
+    "ch16-003":"A shared vocabulary prevents participation, responsibility, and communication from getting muddled.",
+    "ch16-004":"Compact glossary",
+    "ch16-005":"Impact",
+    "ch16-006":"The type and extent of consequences an initiative has for a stakeholder.",
+    "ch16-007":"Engagement",
+    "ch16-008":"The quality and intensity of actual involvement and relationship.",
+    "ch16-009":"Influence",
+    "ch16-010":"The ability to change decisions, resources, acceptance, or implementation.",
+    "ch16-011":"Gatekeeper",
+    "ch16-012":"A person or role that enables or restricts access to information, people, or decisions.",
+    "ch16-013":"Interest",
+    "ch16-014":"The goal, need, concern, or notion of benefit behind a position.",
+    "ch16-015":"Legitimacy",
+    "ch16-016":"A justified claim to being considered or involved.",
+    "ch16-017":"Position",
+    "ch16-018":"An expressed demand or preferred solution.",
+    "ch16-019":"Stakeholder register",
+    "ch16-020":"A maintained overview of relevant stakeholders and reasoned analysis information.",
+    "ch16-021":"Traceability",
+    "ch16-022":"A traceable link between source, goal, requirement, implementation, and evidence.",
+    "ch16-023":"Validation",
+    "ch16-024":"Checking whether requirements and results meet the intended need.",
+    "ch16-025":"Professional reference frameworks",
+    "ch16-026":"The compendium combines perspectives from project management, business analysis, requirements engineering, agile product work, and governance. The concrete application must always be checked against the editions, contracts, and regulations valid for the initiative.",
+    "ch16-027":"<a href=\"https://www.pmi.org/standards/pmbok\" rel=\"noopener\" target=\"_blank\">Project Management Institute – PMBOK® Guide</a> <span class=\"small muted\">– in force, currently 8th Edition, November 2025</span>",
+    "ch16-028":"<a href=\"https://www.iiba.org/standards-and-resources/babok/\" rel=\"noopener\" target=\"_blank\">IIBA – BABOK® Guide v3</a> <span class=\"small muted\">– in force, current edition, 2015</span>",
+    "ch16-029":"<a href=\"https://ireb.org/en/cpre/foundation/handbook\" rel=\"noopener\" target=\"_blank\">IREB – CPRE Foundation Level Handbook</a> <span class=\"small muted\">– in force, v3.3.0, 01 Apr 2026</span>",
+    "ch16-030":"<a href=\"https://www.iso.org/standard/74947.html\" rel=\"noopener\" target=\"_blank\">ISO 21502 – Guidance on project management</a> <span class=\"small muted\">– in force, 2020</span>",
+    "ch16-031":"<a href=\"https://www.iso.org/standard/72089.html\" rel=\"noopener\" target=\"_blank\">ISO/IEC/IEEE 29148 – Requirements engineering</a> <span class=\"small muted\">– in force, 2018</span>",
+    "ch16-032":"<a href=\"https://scrumguides.org/\" rel=\"noopener\" target=\"_blank\">The Scrum Guide</a> <span class=\"small muted\">– in force, current edition, 2020</span>",
+    "ch16-033":"<a href=\"https://eur-lex.europa.eu/eli/reg/2024/1689/oj\" rel=\"noopener\" target=\"_blank\">Regulation (EU) 2024/1689 – EU AI Act</a> <span class=\"small muted\">– in force; Annex III full obligations shifted to 02 Dec 2027 (Digital Omnibus Regulation (EU) 2026/1744), classification unchanged</span>",
+    "ch16-034":"Link check as of: September 2026. The compendium is a didactic professional tool, not legal advice.",
+    "ch16-035":"Closing thought",
+    "ch16-036":"Stakeholder management is effective when perspectives lead to better decisions, participation leads to traceable requirements, and communication leads to resilient relationships.",
+    "ch4-027":"Prospect Theory (Kahneman &amp; Tversky, 1979)",
+    "ch4-028":"People systematically weigh a looming loss more heavily than an equally large gain (loss aversion). This explains why stakeholders facing change often see the risk first, even when the expected benefit objectively outweighs it.",
+    "ch4-029":"Why does resistance feel emotionally stronger than the facts alone would suggest?",
+    "ch4-030":"Explains a reaction, but does not automatically make it objectively right or wrong.",
+    "ch4-031":"Answers",
+    "ch4-032":"Caution",
+    "ch6-042":"Six Principles of Influence (Cialdini, 1984)",
+    "ch6-043":"Reciprocity, consistency, social proof, liking, authority, and scarcity all affect agreement — whether or not one uses them deliberately. Knowing them helps you reflect on your own behavior and more easily recognize others' influence on you.",
+    "ch6-044":"Ethical limit",
+    "ch6-045":"These principles serve to understand influence, not to deliberately manipulate stakeholders — see the „No manipulation“ principle in Chapter 12.",
+    "ch16-037":"Appendix: Further models of thought and behavior",
+    "ch16-038":"These models are not covered in depth in the compendium, but are professionally relevant and recommended for further reading.",
+    "ch16-th1":"Researcher",
+    "ch16-th2":"Model",
+    "ch16-th3":"Key insight",
+    "ch16-039":"Fritz Heider (1958)",
+    "ch16-040":"Attribution theory",
+    "ch16-041":"Other people's behavior tends to be explained by character, one's own by circumstance — the basis of every „I“-hypothesis about a stakeholder.",
+    "ch16-042":"Chris Argyris (1990)",
+    "ch16-043":"Ladder of Inference",
+    "ch16-044":"From observed behavior to a decision to act — every rung is an interpretation that should be made explicit.",
+    "ch16-045":"Paul Watzlawick (1967)",
+    "ch16-046":"Five axioms of communication",
+    "ch16-047":"„One cannot not communicate“ — a stakeholder's silence is also a message.",
+    "ch16-048":"Marshall Rosenberg (2003)",
+    "ch16-049":"Nonviolent Communication",
+    "ch16-050":"Separates observation, feeling, need, and request — complements the deep-drill from position to interest.",
+    "ch16-051":"Meredith Belbin (1981)",
+    "ch16-052":"Team roles",
+    "ch16-053":"Explains why a professionally strong committee can still work dysfunctionally together.",
+    "ch16-054":"Amy Edmondson (1999)",
+    "ch16-055":"Psychological safety",
+    "ch16-056":"Without it, stakeholders voice criticism less openly — a possible explanation for silent resistance.",
+    "ch16-057":"Elisabeth Kübler-Ross (1969, adapted for change management)",
+    "ch16-058":"Change curve",
+    "ch16-059":"Emotional phases during change; originally developed for grief processing — its transfer to projects is contested in the research.",
+    "ch16-060":"William Bridges (1991)",
+    "ch16-061":"Transition model",
+    "ch16-062":"Distinguishes external change from the internal transition (ending – neutral zone – new beginning).",
+    "ch16-063":"Geert Hofstede (1980)",
+    "ch16-064":"Cultural dimensions",
+    "ch16-065":"Power distance, individualism, and others explain differing understandings of power in international projects.",
+    "praxistippLabel":"💡 From practice",
+    "calloutNebelLabel":"My Denkraum model",
+    "calloutMarmorLabel":"A mental image for this",
+    "calloutMarmorCloseLabel":"Back to the image from Chapter 1",
+    "calloutLichtwerkLabel":"Example from practice",
+    "ch1-praxistipp":"When a client says „We already know our stakeholders,“ I always ask back: „When did someone new last get added to the list?“ The answer is usually „no idea“ — and that is the real answer.",
+    "ch1-nebel":"In my Denkraum model, I call this the stakeholder fog — one of four types of fog that keep a requirement unclear, alongside intent fog, solution fog, and quality fog. At its core, this compendium is nothing other than the systematic work of clearing exactly this fog.",
+    "ch1-marmor":"I like to compare stakeholder management to a marble cake: you can't cleanly separate the light and dark batter without destroying the cake. In the same way, participation can't be stirred in afterward as an ingredient — it's baked in from the start.",
+    "ch2-praxistipp":"In workshops, I deliberately put the snowball question at the end of the agenda, never at the start. At the start, participants don't yet know each other well enough to openly admit who they forgot.",
+    "ch3-praxistipp":"I have every position in the matrix justified out loud before it gets entered. The moment someone just points instead of speaking, the rating is usually a gut call — and that doesn't belong in a document unremarked.",
+    "ch4-praxistipp":"My rule of thumb: if a demand starts with „The system must...“ or „The AI should...“, it's almost always a position. Interests sound more like „What matters to me is...“ or „I need...“. I deliberately train teams to listen for this pattern.",
+    "ch5-praxistipp":"I distrust any prioritization that carries no date. A rating from three months ago is no longer a fact, just a memory — and it should be labeled as such.",
+    "ch6-praxistipp":"Before I schedule a workshop, I ask myself: would a good email have been enough? If yes, I save everyone's time. Participation that adds no additional insight isn't appreciation — it's waste.",
+    "ch7-praxistipp":"I write every core message first for the person in the room with the least patience. If it's understandable there, it almost always works for everyone else too.",
+    "ch8-praxistipp":"My first question in any conflict is never „Who's right?“ but „Which of the six conflict types are we actually dealing with here?“ Often that alone reveals that two sides are talking about two different conflicts without realizing it.",
+    "ch9-praxistipp":"I won't accept a requirement without its source. If nobody can say which stakeholder is behind it, it's usually a silent assumption by the team — and that needs to be named openly, not hidden.",
+    "ch10-praxistipp":"In many teams, agility gets used as an excuse to skip stakeholder management — „we deliver iteratively, that's enough.“ But iteration doesn't replace clarity about who actually decides.",
+    "ch11-praxistipp":"The higher the regulatory risk, the more time I spend upfront on a single question: who actually reviews us, and against what? That answer often reshapes the entire participation structure.",
+    "ch12-praxistipp":"For every AI project, I ask as early as possible: who exactly is the oversight body, and what happens if they object? That answer should be on one page — not something you have to go looking for once things get critical.",
+    "ch13-praxistipp":"In this chapter I most often see groups skip the „governance and risk“ perspective — it feels dry. That's exactly why, in in-person training, I insist that every group takes it on at least once.",
+    "ch14-praxistipp":"I often see teams pick the method they already know instead of the one that fits the question. RACI, for instance, frequently gets used for things it was never meant for.",
+    "ch15-praxistipp":"A checklist that never turns up a „no“ is either perfectly maintained — or not being answered honestly. At every review, I look first at what's still open, not at what's done.",
+    "ch16-praxistipp":"I never let new team members start with the toolbox — always with the glossary. A shared vocabulary prevents more misunderstandings than any method.",
+    "ch16-marmor":"The marble cake has a second meaning too: you only really taste how well the batters are combined once you cut into it. Good stakeholder work shows itself the same way — not in the plan, but in the actual course of the project.",
+    "ch12-case-h":"Case: TalentMatch AI (Vantera Systemtechnik GmbH)",
+    "ch12-case-p":"TalentMatch AI is a high-risk AI system for candidate selection (EU AI Act, Annex III No. 4). At Vantera, Ela as project lead carries operational steering, Petra as QA owner carries the conformity review, and Herr Bachmeier as managing director carries sign-off and ultimate responsibility. The oversight body is the responsible market surveillance authority.",
+    "ch12-role1":"Affected applicants",
+    "ch12-role2":"Ela – project lead",
+    "ch12-role3":"Petra – conformity/QA",
+    "ch12-role4":"Herr Bachmeier – managing director",
+    "ch12-role5":"Market surveillance authority",
+    "ch11-lichtwerk":"At LichtWerk, a fictional energy utility and critical-infrastructure (KRITIS) operator, the „information security“ lens becomes concrete: the Bundesnetzagentur as the regulator and the BSI as the reporting body for IT security incidents are stakeholders with high legitimacy and — during an incident — extreme urgency. Grid control room staff carry operational responsibility without formal decision-making power over the security architecture; closing exactly that gap is what engagement has to achieve.",
+    "ch7-031":"Four-Sides Model (Schulz von Thun, 1981)",
+    "ch7-032":"Every message has four sides — factual content, self-revelation, relationship, appeal — and can be heard with four different „ears.“ Stakeholder communication rarely fails on the factual content; it usually fails on the relationship or appeal ear.",
+    "ch7-033":"Answers",
+    "ch7-034":"Why does a factual statement sometimes get heard as an accusation?",
+    "ch7-035":"Link",
+    "ch7-036":"Complements the „I“ column of the stakeholder canvas: which ear am I currently listening to this stakeholder with?",
+    "ch8-026":"Team Stages Model (Tuckman, 1965/1977)",
+    "ch8-027":"Groups move through forming, storming, norming, performing and — when disbanding — adjourning. Important for recurring stakeholder committees such as steering committees: storming is an expected phase, not a warning sign.",
+    "ch8-028":"Answers",
+    "ch8-029":"Is emerging conflict in a committee an exception, or a normal developmental phase?",
+    "ch8-030":"Caution",
+    "ch8-031":"Applies to recurring groups/committees, not to individual stakeholder relationships.",
+    "calloutTuckmanLabel":"Link to Chapter 8",
+    "ch13-tuckman":"If a group in the lab runs into conflict itself, that's often simply storming per Tuckman — a normal phase, not a reason to abandon the exercise.",
+    "ch16-066":"Tools and Schools-of-Thought Directory",
+    "ch16-067":"Every tool, model, or mental image used in the compendium, in one place — with its location and, where clearly attributable, its originator. Where no single originating author can be reliably named, that is stated honestly rather than inventing an attribution.",
+    "ch16-th4":"Tool/Model",
+    "ch16-th5":"Chapter(s)",
+    "ch16-th6":"Originator / Year",
+    "ch16-th7":"Function",
+    "ch16-068":"Seven search spaces",
+    "ch16-069":"Original framework",
+    "ch16-069b":"Original framework",
+    "ch16-070":"Structure identification",
+    "ch16-071":"Onion Model / Stakeholder Onion",
+    "ch16-072":"after Robertson &amp; Robertson (Volere)",
+    "ch16-073":"Classify closeness to the system",
+    "ch16-074":"Context diagram",
+    "ch16-075":"Systems analysis, no single originator reliably established",
+    "ch16-076":"Clarify system boundary and interfaces",
+    "ch16-077":"Power–Interest Matrix",
+    "ch16-078":"Mendelow (1981)",
+    "ch16-079":"Derive level of attention needed",
+    "ch16-080":"Influence–Impact Matrix",
+    "ch16-081":"Adaptation of the Mendelow Matrix",
+    "ch16-082":"Make impact visible without power",
+    "ch16-083":"Salience Model",
+    "ch16-084":"Mitchell, Agle &amp; Wood (1997)",
+    "ch16-085":"Weigh competing claims",
+    "ch16-086":"Stakeholder network",
+    "ch16-087":"Social network analysis, no single originator reliably established",
+    "ch16-088":"Make informal relationships visible",
+    "ch16-089":"Prospect Theory",
+    "ch16-090":"Kahneman &amp; Tversky (1979)",
+    "ch16-091":"Explain loss aversion",
+    "ch16-092":"Stakeholder Engagement Assessment Matrix",
+    "ch16-093":"PMBOK® Guide (PMI)",
+    "ch16-094":"Compare current and desired stance",
+    "ch16-095":"Six Principles of Influence",
+    "ch16-096":"Cialdini (1984)",
+    "ch16-097":"Recognize influence, not manipulate it",
+    "ch16-098":"Communication formula",
+    "ch16-099":"Structure a message",
+    "ch16-100":"Four-Sides Model",
+    "ch16-101":"Schulz von Thun (1981)",
+    "ch16-102":"Why sent ≠ understood",
+    "ch16-103":"Harvard Principles",
+    "ch16-104":"Fisher &amp; Ury (1981)",
+    "ch16-105":"Negotiate on the merits",
+    "ch16-106":"Team Stages Model",
+    "ch16-107":"Tuckman (1965/1977)",
+    "ch16-108":"Classify committee dynamics",
+    "ch16-109":"Stakeholder–Requirements Matrix",
+    "ch16-110":"Original framework",
+    "ch16-111":"Secure traceability",
+    "ch16-112":"Governance Canvas",
+    "ch16-113":"Original framework",
+    "ch16-114":"Clarify decision rights",
+    "ch16-115":"RACI",
+    "ch16-116":"Management practice, no single originator reliably established",
+    "ch16-117":"Clarify responsibility roles",
+    "ch16-118":"Empathy Map",
+    "ch16-119":"Dave Gray / XPLANE (Gamestorming)",
+    "ch16-120":"Structure hypotheses about target persons",
+    "ch16-121":"Stakeholder Journey",
+    "ch16-122":"Service design/UX field, no single originator reliably established",
+    "ch16-123":"Show touchpoints along a process",
+    "ch16-124":"Force-field analysis",
+    "ch16-125":"Kurt Lewin (1947)",
+    "ch16-126":"Contrast driving and restraining forces",
+    "ch16-127":"Stakeholder Health Check",
+    "ch16-128":"Original framework",
+    "ch16-129":"Check relationship quality",
+    "ch16-130":"Nine further models of thought and behavior, not covered in depth in the compendium but recommended for further reading, appear in the next section.",
+    "ch6-046":"Stakeholder Engagement Canvas",
+    "ch6-047":"A preparation template for a concrete, real conversation with a named individual: Team (who are they, what does their world look like), Needs (requirements), Context (payoff of the joint work), Activities (planned interactions), Me (my own perception of this person), Goals &amp; Objectives, Outcome, and Engagement Risks and Engagement Practices (risks and countermeasures).",
+    "ch6-048":"Answers",
+    "ch6-049":"How do I concretely prepare for a conversation with a difficult or influential person?",
+    "ch6-050":"Caution",
+    "ch6-051":"The „Me“ column contains the observer's hypotheses, not facts about the stakeholder — see Chapter 3, attribution error. Never pass it on to third parties unremarked.",
+    "ch6-052":"Don't confuse three types of persona",
+    "ch6-053":"„Persona“ is used in practice for three different purposes. Mixing them up confuses preparing for a real person with audience communication or with requirements work.",
+    "ch6-th1":"Persona type",
+    "ch6-th2":"Purpose",
+    "ch6-th3":"Suitable tool",
+    "ch6-054":"Stakeholder Engagement Persona",
+    "ch6-055":"Preparing for a concrete, real, named individual before an interaction",
+    "ch6-056":"Stakeholder Engagement Canvas (above)",
+    "ch6-057":"Audience Persona",
+    "ch6-058":"Shaping communication for a target audience — a role or group, not an individual",
+    "ch6-059":"Communication matrix (Chapter 7)",
+    "ch6-060":"Key User Persona",
+    "ch6-061":"Representing typical user needs for requirements and design",
+    "ch6-062":"Stakeholder–Requirements Matrix (Chapter 9)",
+    "ch6-063":"Choosing an engagement level",
+    "ch6-064":"For the introduction of the digital student record, the project lead is planning the participation level for student representation. Choose a level from Chapter 6 and justify it in two sentences.",
+    "ch6-065":"<strong>Sample solution:</strong> At least „Involve“ (improving the solution together), since there is direct impact and a legitimate interest in having a say, but no formal decision-making authority over the system architecture. „Collaborate“ would also be defensible if the representation is part of the steering committee.",
+    "ch10-031":"Classic, agile, or hybrid?",
+    "ch10-032":"The digital student record has fixed regulatory milestones (data protection sign-off, security audit) and, at the same time, UX tests with students meant to be improved iteratively. Choose an approach from Chapter 10 and justify it.",
+    "ch10-033":"<strong>Sample solution:</strong> Hybrid is the natural choice: the regulatory approvals (data protection, security) require a solid baseline with formal milestones, while usability for students can be validated iteratively through reviews. What matters is that the two governance layers don't compete, but are brought together in a shared register.",
+    "ch14-057":"Stakeholder Register – Fillable Template",
+    "ch14-058":"One row per stakeholder or stakeholder group. Update on every trigger event (see Chapter 15).",
+    "ch14-059":"Name/Group",
+    "ch14-060":"Role",
+    "ch14-061":"Power",
+    "ch14-062":"Interest",
+    "ch14-063":"Salience Type",
+    "ch14-064":"Engagement AS-IS",
+    "ch14-065":"Engagement TO-BE",
+    "ch14-066":"Communication Format",
+    "ch14-067":"Owner",
+    "ch14-068":"Last Updated",
+    "ch14-069":"high/low",
+    "ch14-069b":"high/low",
+    "ch14-070":"Definitive/Dominant/…",
+    "ch14-071":"Unaware…Leading",
+    "ch14-071b":"Unaware…Leading",
+    "ch14-072":"DD.MM.YYYY",
+    "ch12-021":"Limits of register-keeping: data protection and co-determination",
+    "ch12-022":"A stakeholder register or engagement canvas that contains assessments of an identifiable real person — such as „afraid of losing influence“ — processes personal data within the meaning of the GDPR. A legal basis under Art. 6 GDPR is required; if the assessment allows inferences about health, beliefs, or similar, Art. 9 GDPR also applies. If such a register is used systematically to assess employee behavior or performance, it may be subject to co-determination under § 87(1) No. 6 of the German Works Constitution Act (BetrVG).",
+    "ch12-023":"Answers",
+    "ch12-024":"Am I allowed to document and store this assessment of a real, named individual this way?",
+    "ch12-025":"Caution",
+    "ch12-026":"This brief orientation does not replace a case-by-case legal review.",
+    "ch12-027":"Pseudonymize where possible — role instead of name.",
+    "ch12-028":"Document only project-relevant assessments, not private value judgments.",
+    "ch12-029":"Restrict and justify access to the register.",
+    "ch12-030":"Involve the works or staff council early for systematic behavior or performance assessment.",
+    "ch11-case-h":"Case: Baltoris Bank AG (PaySprint)",
+    "ch11-case-p":"PaySprint is Baltoris Bank AG's SEPA Instant Payments solution, deployed cross-border across several eurozone countries (implementing Regulation (EU) 2024/886). Ela, as program lead, owns the IPR rollout; Sarah, as corporate client advisor, manages expectations across country borders; Petra, as compliance/QA owner, checks compliance against each national supervisory authority; and Herr Bachmeier, as a board member, carries overall responsibility. Oversight sits with several national central banks simultaneously — exactly the situation the „International“ context lens above describes.",
+    "ch11-role1":"Corporate clients (multiple countries)",
+    "ch11-role2":"Ela – program lead IPR",
+    "ch11-role3":"Sarah – corporate client advisory",
+    "ch11-role4":"Petra – compliance/QA",
+    "ch11-role5":"Herr Bachmeier – board member",
+    "ch11-role6":"National supervisory authorities (multiple)",
+    "ch16-131":"Stakeholder Engagement Canvas",
+    "ch16-132":"Original framework",
+    "ch16-133":"Prepare for a concrete conversation",
+    "ch16-134":"Stakeholder Register (template)",
+    "ch16-135":"Original framework",
+    "ch16-136":"Maintain an ongoing overview",
+    "ch16-137":"Limits of register-keeping (GDPR/BetrVG)",
+    "ch16-138":"Original framework, grounded in GDPR/BetrVG",
+    "ch16-139":"Check legal limits of documenting individuals"
+  };
+  var i18nEls=[];var i18nSnapshot={};
+  function collectI18n(){
+    i18nEls=Array.prototype.slice.call(document.querySelectorAll("[data-i18n]"));
+    i18nEls.forEach(function(el,idx){el.setAttribute("data-i18n-idx",String(idx));i18nSnapshot[idx]=el.innerHTML;});
+    Array.prototype.slice.call(document.querySelectorAll("[data-i18n-placeholder]")).forEach(function(el){el.setAttribute("data-ph-de",el.getAttribute("placeholder")||"");});
+  }
+  function applyLang(lang){
+    currentLang=lang;
+    i18nEls.forEach(function(el){
+      var idx=el.getAttribute("data-i18n-idx");var key=el.getAttribute("data-i18n");
+      if(lang==="de"){el.innerHTML=i18nSnapshot[idx];}
+      else{var val=i18nEn[key];if(typeof val==="string"){el.innerHTML=val;}}
+    });
+    Array.prototype.slice.call(document.querySelectorAll("[data-i18n-placeholder]")).forEach(function(el){
+      var key=el.getAttribute("data-i18n-placeholder");
+      if(lang==="de"){el.setAttribute("placeholder",el.getAttribute("data-ph-de")||"");}
+      else{var val=i18nEn[key];if(typeof val==="string"){el.setAttribute("placeholder",val);}}
+    });
+    document.documentElement.setAttribute("lang",lang==="en"?"en":"de");
+    refreshChapterTitles();updateComplete();applyBeamerLabel();
+  }
+  document.getElementById("langBtn").addEventListener("pointerup",function(){applyLang(currentLang==="de"?"en":"de");});
+
+  var beamerLevels=[
+    {cls:[],de:"Beamer: Normal",en:"Beamer: Normal"},
+    {cls:["beamer"],de:"Beamer: Stufe 1",en:"Beamer: Level 1"},
+    {cls:["beamer","beamer-xl"],de:"Beamer: Stufe 2 (XL)",en:"Beamer: Level 2 (XL)"},
+    {cls:["beamer","beamer-xl","beamer-xxl"],de:"Beamer: Stufe 3 (XXL)",en:"Beamer: Level 3 (XXL)"}
+  ];
+  var beamerIdx=0;
+  function applyBeamerLabel(){var btn=document.getElementById("beamerBtn");if(btn){btn.textContent=currentLang==="de"?beamerLevels[beamerIdx].de:beamerLevels[beamerIdx].en;}}
+  function applyBeamer(){document.documentElement.className=beamerLevels[beamerIdx].cls.join(" ");applyBeamerLabel();}
+  document.getElementById("beamerBtn").addEventListener("pointerup",function(){beamerIdx=(beamerIdx+1)%beamerLevels.length;applyBeamer();});
+
+  collectI18n();
+  setMode(state.mode||"lesen");updateProgress();updateSaved();show(0);applyBeamer();
+})();
+</script>
+</body>
+</html>
