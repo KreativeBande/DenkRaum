@@ -67,6 +67,21 @@ Abgeleitet aus dem Master-Prompt „Zusammenarbeit bei RE-Trainingstools" (`mast
 **Prüfmethode:** Sichtprüfung: Enthält die Box eine vollständige, eigenständig nutzbare Bauanleitung, mit der eine interessierte Person ein vergleichbares Tool von Grund auf entwickeln könnte (Struktur, Inhalt pro Spur/Modus, Design-Vorgaben, Nicht-tun-Liste)? Falls das Tool zusätzlich einen echten Laufzeit-Prompt verwendet: ist dieser als separater, klar abgegrenzter Abschnitt ergänzt, ohne den Master-Bau-Prompt zu ersetzen?
 **Bestanden, wenn:** Vollständiger Master-Bau-Prompt vorhanden und ohne Zusatzrecherche nachbaubar; Abgrenzung zu Handbuch (keine Framework-Analyse dort) gewahrt. *(Hochgestuft von Kann- zu Muss-Kriterium, MP v4.3 → v6 — zuvor genügte ein minimaler Rahmensatz.)*
 
+### K20 — Sprach-Toggle (Deutsch/Englisch)
+**Aussage:** Das Tool bietet einen Umschalter, der die komplette sichtbare Textoberfläche — Header, Buttons, Tabelleninhalte, Persona-Aussagen (Namen bleiben laut K9 unverändert) und alle vier Footer-Boxen (Systemprompt/Handbuch/Vortrags-Skript/Normen-Register) — zwischen Deutsch und Englisch umschaltet, ohne Neuladen und ohne externen Übersetzungsdienst (K1-Offlinepflicht bleibt gewahrt).
+**Prüfmethode:**
+1. Sichtprüfung/Grep: Umschalt-Mechanismus vorhanden (z. B. Sprach-Button + zweisprachige Textquellen im Code)?
+2. Manueller Test: Jeden sichtbaren Textbereich einzeln umschalten — Header, Buttons, Tabellen, alle vier Footer-Boxen. Keine gemischt-sprachigen Reste, kein Text bleibt beim Umschalten in der alten Sprache hängen.
+3. Persona-Namen (Ela, Knut, Sarah, Petra, Herr Bachmeier) bleiben in beiden Sprachen identisch — nur Fließtext/Rollenbezeichnungen werden übersetzt.
+**Bestanden, wenn:** 100 % der sichtbaren Texte inkl. aller vier Footer-Boxen in beiden Sprachen vollständig und korrekt vorhanden, Umschaltung ohne Reload funktioniert, keine gemischtsprachigen Reste. *(Neu ab v1.8, September 2026 — verpflichtendes Muss-Kriterium für alle künftigen Tools.)*
+
+### K21 — Signatur fest verankert
+**Aussage:** Die Signatur (Name + Website-Link) ist auf jeder Bildschirmgröße und in jedem Modus/Scroll-Zustand per `position:fixed` oben rechts im Viewport verankert — keine Ausnahme für schmale Viewports, kein Rückfall auf `position:static`.
+**Prüfmethode:**
+1. `grep -n "position:fixed\|position:static" datei.html` im Kontext des Signatur-Selektors (z. B. `.signature`) — `position:fixed` darf durch keine `@media`-Regel auf `position:static` zurückfallen.
+2. Manueller Test: Browser bei ca. 1440px, 900px und 375px Breite öffnen, Seite scrollen und alle vier Beamer-Stufen durchklicken — Signatur bleibt in jedem Fall an fester Position oben rechts, bewegt sich nicht mit dem Inhalt und wird nicht überdeckt.
+**Bestanden, wenn:** `position:fixed` gilt uneingeschränkt über alle Breakpoints und Modi hinweg; kein `position:static`-Fallback vorhanden. *(Neu ab v1.9, September 2026 — verpflichtendes Muss-Kriterium für alle künftigen Tools; löst den bisherigen, in CLAUDE.md/Master-Prompt dokumentierten Fallback auf `position:static` unter 900px Breite ab, der ab sofort nicht mehr zulässig ist.)*
+
 ---
 
 ## B. Inhaltliche Muss-Kriterien
@@ -158,8 +173,8 @@ Abgeleitet aus dem Master-Prompt „Zusammenarbeit bei RE-Trainingstools" (`mast
 
 | Ergebnis | Bedingung |
 |---|---|
-| ❌ Nicht zertifiziert | Mindestens ein Muss-Kriterium (K1–K10, K15, K17, K18, K19) nicht bestanden |
-| ✅ Zertifiziert | Alle Muss-Kriterien (K1–K10, K15, K17, K18, K19) bestanden |
+| ❌ Nicht zertifiziert | Mindestens ein Muss-Kriterium (K1–K10, K15, K17, K18, K19, K20, K21) nicht bestanden |
+| ✅ Zertifiziert | Alle Muss-Kriterien (K1–K10, K15, K17, K18, K19, K20, K21) bestanden |
 | ⭐ Zertifiziert mit Auszeichnung | Alle Muss-Kriterien + alle Kann-Kriterien (K11–K14, K16) bestanden |
 
 Jede Prüfung wird protokolliert als: **Tool → Datum → Kriterium → Ergebnis → Nachweis (Fundstelle/Messwert)**. Kein Kriterium gilt als „bestanden", ohne dass der konkrete Nachweis (Zeile, Messwert, Screenshot) dokumentiert ist — sonst ist es selbst wieder generisches Bla.
@@ -168,6 +183,8 @@ Jede Prüfung wird protokolliert als: **Tool → Datum → Kriterium → Ergebni
 
 ---
 
-*Version 1.7 — Juli 2026 (Stand Notion, synchronisiert 30.07.2026). Änderungshistorie v1.7: K19 (Systemprompt-Box) von Kann- zu Muss-Kriterium hochgestuft und von Abschnitt C nach Abschnitt A verschoben — die Box muss jetzt immer den vollständigen, wiederverwendbaren Master-Bau-Prompt enthalten (Struktur/Inhalt/Design/Nicht-tun), nicht mehr nur einen minimalen Rahmensatz. Siegel-Logik-Tabelle entsprechend aktualisiert (K19 aus der ⭐-Zeile in die ✅-Zeile verschoben). Korrespondiert mit Master-Prompt v6.*
+*Version 1.9 — September 2026 (Stand Notion, synchronisiert 04.09.2026). Änderungshistorie v1.9: K21 ergänzt (Signatur fest verankert, Abschnitt A, Muss-Kriterium) — die Signatur muss ab sofort auf jeder Bildschirmgröße per `position:fixed` verankert sein; der bisherige Fallback auf `position:static` unter 900px Breite ist nicht mehr zulässig. Siegel-Logik-Tabelle entsprechend aktualisiert (K21 in ❌/✅-Zeilen ergänzt). Auf Wunsch von Michaela.*
+*Änderungshistorie v1.8: K20 ergänzt (Sprach-Toggle Deutsch/Englisch, Abschnitt A, Muss-Kriterium) — jedes Tool muss ab sofort einen vollständigen DE/EN-Umschalter für alle sichtbaren Texte inkl. aller vier Footer-Boxen bieten, ohne Reload und ohne externen Übersetzungsdienst. Siegel-Logik-Tabelle entsprechend aktualisiert (K20 in ❌/✅-Zeilen ergänzt).*
+*Version 1.7 — Juli 2026. Änderungshistorie v1.7: K19 (Systemprompt-Box) von Kann- zu Muss-Kriterium hochgestuft und von Abschnitt C nach Abschnitt A verschoben — die Box muss jetzt immer den vollständigen, wiederverwendbaren Master-Bau-Prompt enthalten (Struktur/Inhalt/Design/Nicht-tun), nicht mehr nur einen minimalen Rahmensatz. Siegel-Logik-Tabelle entsprechend aktualisiert (K19 aus der ⭐-Zeile in die ✅-Zeile verschoben). Korrespondiert mit Master-Prompt v6.*
 *Änderungshistorie v1.6: K17 ergänzt (Aktualität referenzierter Normen/Frameworks, Abschnitt B, Muss-Kriterium); K18 ergänzt (Beamer-Modus-Toggle, vierstufig, Abschnitt A, Muss-Kriterium — löst eine Kollision auf, bei der eine lokale Master-Prompt-Version den Beamer-Toggle fälschlich „K15" nannte); K19 ergänzt (Systemprompt-Box vermittelt Nachbau-Prompt-Idee, Abschnitt C, Kann-Kriterium); Siegel-Logik-Tabelle korrigiert — K16 fehlte bisher in der ⭐-Zeile trotz Kann-Kriterium-Status, jetzt inkl. K16 und K19.*
 *Frühere Historie: Version 1.4 — seit Ersterstellung auf Version 1.0 (kein Statuszusatz bei K8, kein Abschnitt D, keine K13/K14) — v1.1 (K8-Statuspflicht bei Regulatorik), v1.2 (Abschnitt D ISO/IEC 25010), v1.3/1.4 (K13 Vortrags-Skript-Box, K14 Audit-Status-Zeile), v1.5 (K15 Erreichbarkeit nicht-live-relevanter Inhalte, K5-Prüfmethode verschärft, K4-Prüfmethode um `color-scheme: light` ergänzt, Abschnitt-D-Terminologie auf ISO/IEC 25010:2023 korrigiert).*

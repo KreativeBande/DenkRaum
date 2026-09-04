@@ -7,11 +7,11 @@ Sammlung eigenständiger HTML-Tools rund um Requirements Engineering und den kom
 - `index.html` — Landingpage mit Kachel-Links zu allen Tools, gruppiert in Rubriken (aktuell: "Requirements Engineering Tools", "KI Tools").
 - `tools/` — alle Tools. Einzeldatei-Tools liegen direkt darin (z.B. `tools/fragenautomat.html`); Mehrdatei-Apps bekommen einen eigenen Unterordner (z.B. `tools/klarheits-sprint/`).
 
-## Qualitätsstandard (K1–K19)
+## Qualitätsstandard (K1–K21)
 
-Der vollständige, verbindliche Prüfkatalog für alle Tools ist die Notion-Seite **„Qualitätskriterien-Checkliste (Siegel-Prüfung)"** (`391d6937-ee08-8183-9966-fd0e2e963de9`), abgeleitet aus dem **„Master-Prompt: Zusammenarbeit bei RE-Trainingstools"** (ebenfalls Notion). Beide sind kanonisch — dieses Dokument hier ist die Arbeitskopie mit den für den Alltag relevanten Bau-Mustern. **Bei Diskrepanz zwischen diesem Dokument und Notion gilt immer Notion.** Vor größeren Audits oder bei Unsicherheit die Notion-Seite frisch abrufen, statt sich allein auf dieses Dokument zu verlassen — die Checkliste entwickelt sich weiter (aktuell Version 1.7, K1–K19).
+Der vollständige, verbindliche Prüfkatalog für alle Tools ist die Notion-Seite **„Qualitätskriterien-Checkliste (Siegel-Prüfung)"** (`391d6937-ee08-8183-9966-fd0e2e963de9`), abgeleitet aus dem **„Master-Prompt: Zusammenarbeit bei RE-Trainingstools"** (ebenfalls Notion). Beide sind kanonisch — dieses Dokument hier ist die Arbeitskopie mit den für den Alltag relevanten Bau-Mustern. **Bei Diskrepanz zwischen diesem Dokument und Notion gilt immer Notion.** Vor größeren Audits oder bei Unsicherheit die Notion-Seite frisch abrufen, statt sich allein auf dieses Dokument zu verlassen — die Checkliste entwickelt sich weiter (aktuell Version 1.9, K1–K21).
 
-Kurzfassung der Siegel-Logik: ❌ Nicht zertifiziert, wenn mindestens ein Muss-Kriterium (K1–K10, K15, K17, K18, K19) fehlschlägt · ✅ Zertifiziert, wenn alle Muss-Kriterien bestehen · ⭐ Zertifiziert mit Auszeichnung, wenn zusätzlich alle Kann-Kriterien (K11–K14, K16) bestehen.
+Kurzfassung der Siegel-Logik: ❌ Nicht zertifiziert, wenn mindestens ein Muss-Kriterium (K1–K10, K15, K17, K18, K19, K20, K21) fehlschlägt · ✅ Zertifiziert, wenn alle Muss-Kriterien bestehen · ⭐ Zertifiziert mit Auszeichnung, wenn zusätzlich alle Kann-Kriterien (K11–K14, K16) bestehen.
 
 ## Design-System: Struktur-Tokens (Radius, Schatten, Buttons)
 
@@ -39,7 +39,7 @@ Umsetzung: Bestehende Tools werden schrittweise nachgezogen (nicht als Ad-hoc-Bl
 Jedes Tool bekommt im Header:
 
 1. **Zurück-Link zur Startseite** — `<a href="../index.html">← Zurück zur Startseite</a>` (Pfad relativ zu `tools/`, ggf. `../../index.html` bei einer Ebene tiefer wie `klarheits-sprint/`).
-2. **Signatur** — Name + Website-Link, fix positioniert oben rechts im Viewport (`position:fixed; top:14px; right:28px;`), unabhängig von Modus/Scroll-Zustand der Live-Ansicht. Name fett, Link darunter in Akzentfarbe: `<strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>` (www.michaela-kuehn.**com**, nicht .de). Positionierung muss Kollisionen mit dynamischen Panel-Titeln ausschließen. Unter 900px Breite: Fallback auf `position:static`, rechtsbündig.
+2. **Signatur (K21, Muss-Kriterium)** — Name + Website-Link, fix positioniert oben rechts im Viewport (`position:fixed; top:14px; right:28px;`), unabhängig von Modus/Scroll-Zustand der Live-Ansicht **und unabhängig von der Bildschirmbreite**. Name fett, Link darunter in Akzentfarbe: `<strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>` (www.michaela-kuehn.**com**, nicht .de). Positionierung muss Kollisionen mit dynamischen Panel-Titeln ausschließen. **Kein Fallback auf `position:static` unter 900px Breite mehr** (frühere Ausnahme seit K21/v1.9 aufgehoben, September 2026, auf Wunsch von Michaela) — bei Platzknappheit auf Mobile stattdessen Schriftgröße/Padding der Signatur reduzieren oder sie kompakter fassen, aber nie aus dem `position:fixed` herausnehmen.
 3. **Beamer-Modus-Button (K18, vierstufig)** — Normal → Beamer → Beamer XL → Beamer XXL, danach zurück auf Normal. Kumulative CSS-Klassen auf `<html>` (`beamer`, `beamer-xl`, `beamer-xxl`), reine Größensteigerung, kein inhaltlicher Modus-Wechsel. Button oben rechts neben dem Reset-Button, gleiche Pill-Stilistik; Label zeigt immer die *nächste* Aktion; aktiver Zustand (Stufe 1–3) über invertierte Button-Farbe. **Footer ab Stufe 1 `display:none`.** Kanonisches Muster (Selektoren wie `.nfa-text`/`.p-name`/`.tr-name` sind Beispiele aus der Referenzimplementierung — pro Tool auf die eigenen Haupttext-/Überschrift-/Sekundärtext-Elemente übertragen, Größen-Floors dabei einhalten):
 
 ```css
