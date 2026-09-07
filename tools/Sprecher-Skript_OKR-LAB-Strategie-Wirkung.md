@@ -15,8 +15,8 @@ IIBA BABOK v3, PMI PMBOK.
 „Wir arbeiten heute mit einem durchgehenden Fallbeispiel: CALVERA Services GmbH, ein Dienstleister,
 bei dem der Kundenservice unter Digitalisierungsdruck steht."
 
-## Gruppengröße wählen, Hauptcase öffnen
-*(Gruppengröße wählen, dann Pfad "Hauptcase" öffnen)*
+## Teamanzahl wählen, Hauptcase öffnen
+*(Teamanzahl wählen, dann Pfad "Hauptcase" öffnen)*
 
 „Wir starten nicht mit einer Lösung, sondern mit dem Problem."
 
@@ -39,7 +39,7 @@ eigentliche Transfer-Moment."
 
 ---
 
-**Allgemeine Regie-Hinweise:** Nicht mit der Musterlösung beginnen. Trainer-Modus erst nach der ersten
-eigenständigen Bearbeitung einschalten. Timing: pro Station 6–10 Minuten in Gruppenarbeit einplanen.
+**Allgemeine Regie-Hinweise:** Nicht mit der Musterlösung beginnen. Vertiefung erst nach der ersten
+eigenständigen Bearbeitung einschalten. Timing: pro Station 6–10 Minuten in Teamarbeit einplanen.
 Wer wenig Zeit hat, kann statt des 15-Stationen-Hauptcase auch nur einen der beiden kürzeren Pfade
 (TEAM OKR oder OKR & Agile) spielen — beide funktionieren unabhängig vom Hauptcase.

@@ -47,6 +47,7 @@ header{
 }
 .btn.primary{background:var(--blue);color:white;border-color:var(--blue)}
 .btn.active{outline:3px solid rgba(31,95,153,.18);border-color:var(--blue)}
+html.beamer .beamer-btn,html.beamer-xl .beamer-btn,html.beamer-xxl .beamer-btn{background:var(--ink);color:#fff;border-color:var(--ink)}
 main{max-width:1400px;width:100%;margin:auto;padding:18px}
 .view{display:none}
 .view.active{display:block}
@@ -92,7 +93,8 @@ main{max-width:1400px;width:100%;margin:auto;padding:18px}
 .navitem.active{background:var(--blue2);color:var(--blue)}
 .navitem.done::after{content:" ✓";float:right}
 .stagewrap{min-width:0}
-.stage{
+.stagewrap-inner{display:flex;gap:16px;align-items:flex-start}
+.stage{flex:1;min-width:0;
   background:white;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow-hero);padding:clamp(20px,3vw,34px)
 }
 .stagehead{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:18px}
@@ -120,7 +122,7 @@ main{max-width:1400px;width:100%;margin:auto;padding:18px}
 .check input{margin-top:3px;transform:scale(1.2)}
 .choicegrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
 .choice{
-  border:1px solid var(--line);background:white;border-radius:12px;padding:14px;text-align:left;cursor:pointer
+  border:1px solid var(--line);background:white;border-radius:14px;padding:14px;text-align:left;cursor:pointer
 }
 .choice.selected{border-color:var(--blue);background:var(--blue2)}
 .reveal{display:none;margin-top:16px;background:#f6fbff;border:1px solid #bcd5e8;border-radius:16px;padding:18px}
@@ -130,6 +132,16 @@ main{max-width:1400px;width:100%;margin:auto;padding:18px}
   display:none;margin-top:16px;background:#fff8ef;border:1px solid #e8cfac;border-radius:16px;padding:18px
 }
 body.trainer-on .trainer{display:block}
+.vertiefungpanel{
+  display:none;width:320px;flex-shrink:0;background:#fff8ef;border:1px solid #e8cfac;border-radius:16px;padding:18px;
+  position:sticky;top:86px;max-height:calc(100vh - 110px);overflow:auto
+}
+.vertiefungpanel .kicker{margin-bottom:6px}
+.vertiefungpanel h3{margin-top:0;color:#a9660a}
+@media(max-width:1200px){
+  .stagewrap-inner{flex-direction:column}
+  .vertiefungpanel{width:auto;position:static;max-height:none}
+}
 footer{
   max-width:1400px;width:100%;margin:auto;padding:12px 18px 18px;color:var(--muted);font-size:14px;
   display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap
@@ -158,7 +170,7 @@ footer{
 .hdr-sig{position:fixed;top:14px;right:28px;z-index:500;text-align:right;font-size:14px;line-height:1.3;white-space:nowrap;background:rgba(255,255,255,.9);padding:6px 10px;border-radius:10px;box-shadow:0 2px 8px rgba(23,50,77,.08)}
 .hdr-sig strong{display:block;color:var(--ink)}
 .hdr-sig a{color:var(--blue);text-decoration:none;font-weight:700}
-@media(max-width:900px){.hdr-sig{position:static;text-align:right;white-space:normal;background:none;padding:0;box-shadow:none;margin-left:auto}}
+@media(max-width:900px){.hdr-sig{font-size:12px;padding:4px 8px}}
 /* K18 - vierstufiger Beamer-Modus: Grundgerüst, Größenwerte folgen als eigener,
    spezifischerer Block am Ende der Stylesheet (siehe unten), damit er auch die
    .lab-open-Kompaktmodus-Regeln zuverlässig übersteuert. */
@@ -275,7 +287,7 @@ body.lab-open .panel li{margin:4px 0;line-height:1.3}
 body.lab-open .quote{
   padding:8px 10px;
   margin:7px 0;
-  font-size:16px;
+  font-size:14px;
   line-height:1.3;
   border-left-width:4px
 }
@@ -293,7 +305,7 @@ body.lab-open .taskbox{
 body.lab-open .taskbox h3{font-size:17px;margin-bottom:6px}
 body.lab-open .taskbox p{margin:5px 0}
 body.lab-open .checks{gap:5px;margin-top:7px}
-body.lab-open .check{font-size:16px;line-height:1.3}
+body.lab-open .check{font-size:14px;line-height:1.25}
 body.lab-open .choicegrid{gap:8px;margin-top:9px}
 body.lab-open .choice{padding:10px 12px;line-height:1.25}
 body.lab-open .event{padding:13px 15px;margin-top:8px}
@@ -338,7 +350,7 @@ body.lab-open .navfooter .btn{padding:8px 14px}
   background:#fffaf0;
   border-radius:10px;
   padding:8px 9px;
-  font-size:16px;
+  font-size:14px;
   line-height:1.25
 }
 .itemgrid{
@@ -368,7 +380,7 @@ body.lab-open .navfooter .btn{padding:8px 14px}
   padding:11px 12px
 }
 .krcard strong{display:block;color:var(--blue);font-size:18px;margin-bottom:5px}
-.krcard p{font-size:16px;margin:4px 0;line-height:1.3}
+.krcard p{font-size:14px;margin:4px 0;line-height:1.28}
 .modal{
   position:fixed;
   inset:0;
@@ -463,7 +475,7 @@ html.beamer-xxl{ --beam-content:34px; --beam-sub:38px; --beam-secondary:21px; --
 html.beamer .panel p, html.beamer .panel li, html.beamer .taskbox p, html.beamer .taskbox li,
 html.beamer .checks .check span, html.beamer .callout, html.beamer .warning, html.beamer .quote,
 html.beamer .voice, html.beamer .itemchip, html.beamer .krcard p, html.beamer .flow span,
-html.beamer .chainbox, html.beamer .choice, html.beamer .modal-body,
+html.beamer .chainbox, html.beamer .choice, html.beamer .modal-body, html.beamer .vertiefungpanel p,
 html.beamer body.lab-open .panel p, html.beamer body.lab-open .panel li,
 html.beamer body.lab-open .taskbox p, html.beamer body.lab-open .taskbox li,
 html.beamer body.lab-open .checks .check span, html.beamer body.lab-open .callout,
@@ -474,6 +486,7 @@ html.beamer body.lab-open .chainbox, html.beamer body.lab-open .choice
 { font-size:var(--beam-content); line-height:1.45 }
 
 html.beamer .panel h3, html.beamer .taskbox h3, html.beamer .event h3, html.beamer .reveal h3,
+html.beamer .vertiefungpanel h3,
 html.beamer body.lab-open .panel h3, html.beamer body.lab-open .taskbox h3,
 html.beamer body.lab-open .event h3, html.beamer body.lab-open .reveal h3
 { font-size:var(--beam-sub) }
@@ -503,7 +516,7 @@ html.beamer .stagehead h2, html.beamer body.lab-open .stagehead h2
     </div>
     <div class="tools">
       <button class="btn" id="homeBtn">Start</button>
-      <button class="btn" id="trainerBtn">Trainer-Modus</button>
+      <button class="btn" id="trainerBtn">Vertiefung: Aus</button>
       <button class="btn beamer-btn" id="beamerBtn">☀ Beamer</button>
       <button class="btn" id="langBtn">EN</button>
     </div>
@@ -524,11 +537,11 @@ html.beamer .stagehead h2, html.beamer body.lab-open .stagehead h2
     </div>
     <div class="hero-card">
       <div class="kicker" data-de="Arbeitsmodus" data-en="Working mode">Arbeitsmodus</div>
-      <h3 style="margin:8px 0 6px" data-de="Wie viele Gruppen arbeiten heute?" data-en="How many groups are working today?">Wie viele Gruppen arbeiten heute?</h3>
+      <h3 style="margin:8px 0 6px" data-de="Wie viele Teams arbeiten heute?" data-en="How many teams are working today?">Wie viele Teams arbeiten heute?</h3>
       <div class="seg" id="groupSeg">
-        <button data-groups="1" class="active" data-de="1 Gruppe" data-en="1 group">1 Gruppe</button>
-        <button data-groups="2" data-de="2 Gruppen" data-en="2 groups">2 Gruppen</button>
-        <button data-groups="3" data-de="3 Gruppen" data-en="3 groups">3 Gruppen</button>
+        <button data-groups="1" class="active" data-de="1 Team" data-en="1 team">1 Team</button>
+        <button data-groups="2" data-de="2 Teams" data-en="2 teams">2 Teams</button>
+        <button data-groups="3" data-de="3 Teams" data-en="3 teams">3 Teams</button>
       </div>
       <div class="callout" id="groupHint">Gemeinsame Bearbeitung als Gesamtteam. Vergleichspunkte werden als Plenumsreflexion genutzt.</div>
     </div>
@@ -577,7 +590,10 @@ html.beamer .stagehead h2, html.beamer body.lab-open .stagehead h2
       <div class="progress"><div id="progressBar"></div></div>
     </aside>
     <div class="stagewrap">
-      <article class="stage" id="stage"></article>
+      <div class="stagewrap-inner">
+        <article class="stage" id="stage"></article>
+        <aside class="vertiefungpanel" id="vertiefungPanel"></aside>
+      </div>
       <div class="navfooter">
         <button class="btn" id="prevBtn">← Zurück</button>
         <button class="btn primary" id="nextBtn">Weiter →</button>
@@ -590,7 +606,7 @@ html.beamer .stagehead h2, html.beamer body.lab-open .stagehead h2
 <div class="crosslink">
   <span data-de="Verwandte Denkraum-Tools zu diesem Thema:" data-en="Related Denkraum tools on this topic:">Verwandte Denkraum-Tools zu diesem Thema:</span>
   <ul>
-    <li><a href="./okr-kaskade.html">OKR-Kaskade: Von der Vision zum ToDo</a> — <span data-de="lineare Solo-Durchspielversion derselben Kaskade mit drei fertigen Beispiel-Durchläufen, ohne Gruppenmodus, Ereignis-Zwischenfälle oder Trainer-Cockpit." data-en="a linear solo walkthrough of the same cascade with three ready-made example runs, without group mode, event incidents, or trainer cockpit.">lineare Solo-Durchspielversion derselben Kaskade mit drei fertigen Beispiel-Durchläufen, ohne Gruppenmodus, Ereignis-Zwischenfälle oder Trainer-Cockpit.</span></li>
+    <li><a href="./okr-kaskade.html">OKR-Kaskade: Von der Vision zum ToDo</a> — <span data-de="lineare Solo-Durchspielversion derselben Kaskade mit drei fertigen Beispiel-Durchläufen, ohne Gruppenmodus, Ereignis-Zwischenfälle oder Vertiefungspanel." data-en="a linear solo walkthrough of the same cascade with three ready-made example runs, without group mode, event incidents, or a depth panel.">lineare Solo-Durchspielversion derselben Kaskade mit drei fertigen Beispiel-Durchläufen, ohne Gruppenmodus, Ereignis-Zwischenfälle oder Vertiefungspanel.</span></li>
     <li><a href="./okr-denkraum-check.html">OKR-Board: Die Reise durch alle Räume</a> — <span data-de="dieselbe Kette als Ticket-Board durch die 5 Denkräume, Fokus auf Owner/Herkunft/Ziel-Nachverfolgung statt auf Live-Facilitation mit Gruppen." data-en="the same chain as a ticket board through the 5 Denkraum rooms, focused on owner/origin/target traceability rather than live group facilitation.">dieselbe Kette als Ticket-Board durch die 5 Denkräume, Fokus auf Owner/Herkunft/Ziel-Nachverfolgung statt auf Live-Facilitation mit Gruppen.</span></li>
     <li><a href="./okr-team-board.html">OKR-Team-Board: Aufgaben, die aufs Ziel einzahlen</a> — <span data-de="ein fertiges Team-Objective mit Fortschrittsbalken zum Abhaken, kein eigenständiges Erarbeiten von OKRs wie im LAB." data-en="a ready-made team objective with progress bars to check off, not deriving your own OKRs as in the LAB.">ein fertiges Team-Objective mit Fortschrittsbalken zum Abhaken, kein eigenständiges Erarbeiten von OKRs wie im LAB.</span></li>
     <li><a href="./priorisierungslabor.html">🧭 Priorisierungslabor</a> — <span data-de="vertieft die LAB-Station „Von Outcome zu Arbeit&quot; mit eigenen Werkzeugen für MoSCoW, WSJF, RICE, Kano &amp; Co." data-en="deepens the LAB station &quot;From outcome to work&quot; with dedicated tools for MoSCoW, WSJF, RICE, Kano &amp; co.">vertieft die LAB-Station „Von Outcome zu Arbeit" mit eigenen Werkzeugen für MoSCoW, WSJF, RICE, Kano &amp; Co.</span></li>
@@ -600,13 +616,13 @@ html.beamer .stagehead h2, html.beamer body.lab-open .stagehead h2
 <footer>
 <div class="footer-sig">
   <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a> — <span data-de="Offlinefähig · iPad-Safari-tauglich · keine externen Bibliotheken" data-en="Works offline · iPad Safari-ready · no external libraries">Offlinefähig · iPad-Safari-tauglich · keine externen Bibliotheken</span>
-  <span class="footer-audit" data-de="Zuletzt geprüft: 03.09.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll" data-en="Last reviewed: 2026-09-03 · Status: ✅ Certified · See audit log for details">Zuletzt geprüft: 03.09.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+  <span class="footer-audit" data-de="Zuletzt geprüft: 07.09.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll" data-en="Last reviewed: 2026-09-07 · Status: ✅ Certified · See audit log for details">Zuletzt geprüft: 07.09.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
 </div>
 <div class="footer-details">
 <details class="footer-box"><summary>Systemprompt</summary><div class="footer-content footer-mono">Baue ein einzelnes offline-fähiges HTML-Trainingstool "OKR LAB – Von Strategie zu Wirkung".
 
 STRUKTUR
-- Startbildschirm: 3 klickbare Pfad-Kacheln (Hauptcase mit Strategie-bis-Team-Kaskade, Stand-alone-Team-OKR, OKR-trifft-Agile-Transfer) + Gruppenauswahl (1/2/3 Gruppen) mit dynamischem Regie-Hinweistext.
+- Startbildschirm: 3 klickbare Pfad-Kacheln (Hauptcase mit Strategie-bis-Team-Kaskade, Stand-alone-Team-OKR, OKR-trifft-Agile-Transfer) + Teamauswahl (1/2/3 Teams) mit dynamischem Regie-Hinweistext.
 - Lab-Ansicht: One-Screen-pro-Station. Linke Sidebar = Stationsliste mit Fortschrittsbalken, rechts = aktuelle Station (Titel, Badge, Inhalt, Weiter/Zurück).
 - Jede Station ist ein reines Objekt {title, sub, body:function(){return \`HTML-Template\`}}.
 
@@ -614,13 +630,13 @@ INHALT PRO STATION
 - Panel-Layout (1 oder 2 Spalten) mit konkretem Fallmaterial (Zahlen, Zitate, Stakeholder-Aussagen) statt Platzhaltern.
 - Aufgaben-Box (task) mit Checkliste oder offener Frage.
 - Musterlösung hinter "Aufdecken"-Button (data-reveal), NIE direkt sichtbar.
-- Trainer-Cockpit (nur im Trainer-Modus sichtbar) mit didaktischem Fokus/Aha-Satz/Intervention.
+- Vertiefung (nur bei aktivem Vertiefungs-Toggle sichtbar) mit didaktischem Fokus/Aha-Satz/Intervention.
 - Mindestens ein "Ereignis"-Zwischenfall pro Case (unerwarteter Stakeholder-Wunsch), der zur Anwendung des bisher Gelernten zwingt statt neuen Stoff einzuführen.
 
 DESIGN
 - Weißer Hintergrund, color-scheme:light, kein Dark Mode.
 - Split-Screen 1.1fr/.9fr für Panels, gestrichelte Taskboxen, farbcodierte Callout/Warning-Boxen.
-- Signatur oben rechts fix positioniert (Name + Website-Link), unabhängig vom Scroll-/Modus-Zustand, mit reserviertem Abstand zur Button-Leiste gegen Kollisionen.
+- Signatur oben rechts fix positioniert (Name + Website-Link), unabhängig vom Scroll-/Modus-Zustand.
 - Vierstufiger Beamer-Toggle (Normal→Beamer→Beamer XL→Beamer XXL), reine Größensteigerung, Footer ab Stufe 1 ausgeblendet.
 - Sprach-Toggle DE/EN für alle sichtbaren Texte inkl. aller vier Footer-Boxen, deutscher Inhalt als statisches HTML-Fallback.
 - pointerup statt click für alle interaktiven Elemente (iPad-Robustheit).
@@ -632,7 +648,7 @@ NICHT TUN
 - Keine Vermischung mit anderen Fallstudien-Personas.</div></details>
 <details class="footer-box"><summary>Handbuch</summary><div class="footer-content footer-sans">
 <p><b>Framework:</b> RTF (Rolle/Aufgabe/Format), erweitert um Kontext und Eingrenzung.</p>
-<p><b>Rolle:</b> Trainer:in für OKR-Einführung in Unternehmen mit RE/BA/Agile-Hintergrund.</p>
+<p><b>Rolle:</b> OKR Coach für OKR-Einführung in Unternehmen mit RE/BA/Agile-Hintergrund.</p>
 <p><b>Aufgabe:</b> Teilnehmende sollen selbst Objectives/Key Results ableiten, nicht nur Theorie konsumieren – daher Aufgaben vor Musterlösungen.</p>
 <p><b>Kontext:</b> Ein durchgängiger Fallkonzern (CALVERA Services GmbH) liefert Kontinuität über die gesamte Kaskade Vision→Objective→Key Result→Story→ToDo.</p>
 <p><b>Format:</b> One-Screen-pro-Station statt Scroll-Dokument – erzwingt didaktische Fokussierung pro Lernschritt.</p>
@@ -641,11 +657,11 @@ NICHT TUN
 </div></details>
 <details class="footer-box"><summary>Vortrags-Skript</summary><div class="footer-content footer-sans">
 <p><i>(Startbildschirm öffnen)</i> "Wir arbeiten heute mit einem durchgehenden Fallbeispiel: CALVERA Services GmbH, ein Dienstleister, bei dem der Kundenservice unter Digitalisierungsdruck steht."</p>
-<p><i>(Gruppengröße wählen, dann Pfad "Hauptcase" öffnen)</i> "Wir starten nicht mit einer Lösung, sondern mit dem Problem."</p>
+<p><i>(Teamanzahl wählen, dann Pfad "Hauptcase" öffnen)</i> "Wir starten nicht mit einer Lösung, sondern mit dem Problem."</p>
 <p><i>(Station für Station durchklicken, Aufgabe zuerst bearbeiten lassen, erst danach "Musterlösung aufdecken")</i> "Bitte erst eure eigene Antwort festhalten, bevor wir vergleichen."</p>
 <p><i>(bei Station "Reality Check")</i> "Achtet auf den Impuls, sofort eine neue Anforderung aufzunehmen."</p>
 <p><i>(am Ende des Pfads)</i> "Die letzte Station zeigt die komplette Kette von der Vision bis zum einzelnen ToDo – das ist der eigentliche Transfer-Moment."</p>
-<p><b>Regie-Hinweise:</b> Nicht mit der Musterlösung beginnen. Trainer-Modus erst nach der ersten eigenständigen Bearbeitung einschalten. Timing: pro Station 6–10 Minuten in Gruppenarbeit einplanen.</p>
+<p><b>Regie-Hinweise:</b> Nicht mit der Musterlösung beginnen. Vertiefung erst nach der ersten eigenständigen Bearbeitung einschalten. Timing: pro Station 6–10 Minuten in Teamarbeit einplanen.</p>
 </div></details>
 <details class="footer-box"><summary>Normen-Register</summary><div class="footer-content"><table class="footer-table">
 <tr><th>Referenz</th><th>Bezug im Tool</th></tr>
@@ -681,20 +697,20 @@ var state = {
 };
 var LANG_STR = {
   de:{
-    langBtn:"EN", start:"Start", trainerMode:"Trainer-Modus",
+    langBtn:"EN", start:"Start", vertiefungOn:"Vertiefung: Ein", vertiefungOff:"Vertiefung: Aus",
     beamerLevels:["☀ Beamer","☀ Beamer XL","☀ Beamer XXL","☀ Normal"],
     heroKicker:"Drei Wege durch OKR", showSolution:"Musterlösung aufdecken",
     hideSolution:"Musterlösung verbergen", next:"Weiter →", finishPath:"Pfad abschließen ✓",
-    back:"← Zurück", trainerHint:"Trainerhinweis", trainerCockpit:"Trainer-Cockpit",
+    back:"← Zurück", trainerHint:"Vertiefung", trainerCockpit:"Vertiefung",
     modalClose:"Schließen",
     footTitles:{sys:"Systemprompt",hb:"Handbuch",vs:"Vortrags-Skript",nr:"Normen-Register"}
   },
   en:{
-    langBtn:"DE", start:"Home", trainerMode:"Trainer Mode",
+    langBtn:"DE", start:"Home", vertiefungOn:"Depth: Full", vertiefungOff:"Depth: Short",
     beamerLevels:["☀ Projector","☀ Projector XL","☀ Projector XXL","☀ Normal"],
     heroKicker:"Three paths through OKR", showSolution:"Reveal sample solution",
     hideSolution:"Hide sample solution", next:"Next →", finishPath:"Finish path ✓",
-    back:"← Back", trainerHint:"Trainer note", trainerCockpit:"Trainer cockpit",
+    back:"← Back", trainerHint:"Depth", trainerCockpit:"Depth",
     modalClose:"Close",
     footTitles:{sys:"System prompt",hb:"Handbook",vs:"Speaker script",nr:"Standards register"}
   }
@@ -704,7 +720,7 @@ var FOOTER_CONTENT = {
 `Baue ein einzelnes offline-fähiges HTML-Trainingstool "OKR LAB – Von Strategie zu Wirkung".
 
 STRUKTUR
-- Startbildschirm: 3 klickbare Pfad-Kacheln (Hauptcase mit Strategie-bis-Team-Kaskade, Stand-alone-Team-OKR, OKR-trifft-Agile-Transfer) + Gruppenauswahl (1/2/3 Gruppen) mit dynamischem Regie-Hinweistext.
+- Startbildschirm: 3 klickbare Pfad-Kacheln (Hauptcase mit Strategie-bis-Team-Kaskade, Stand-alone-Team-OKR, OKR-trifft-Agile-Transfer) + Teamauswahl (1/2/3 Teams) mit dynamischem Regie-Hinweistext.
 - Lab-Ansicht: One-Screen-pro-Station. Linke Sidebar = Stationsliste mit Fortschrittsbalken, rechts = aktuelle Station (Titel, Badge, Inhalt, Weiter/Zurück).
 - Jede Station ist ein reines Objekt {title, sub, body:function(){return \`HTML-Template\`}}.
 
@@ -712,13 +728,13 @@ INHALT PRO STATION
 - Panel-Layout (1 oder 2 Spalten) mit konkretem Fallmaterial (Zahlen, Zitate, Stakeholder-Aussagen) statt Platzhaltern.
 - Aufgaben-Box (task) mit Checkliste oder offener Frage.
 - Musterlösung hinter "Aufdecken"-Button (data-reveal), NIE direkt sichtbar.
-- Trainer-Cockpit (nur im Trainer-Modus sichtbar) mit didaktischem Fokus/Aha-Satz/Intervention.
+- Vertiefung (nur bei aktivem Vertiefungs-Toggle sichtbar) mit didaktischem Fokus/Aha-Satz/Intervention.
 - Mindestens ein "Ereignis"-Zwischenfall pro Case (unerwarteter Stakeholder-Wunsch), der zur Anwendung des bisher Gelernten zwingt statt neuen Stoff einzuführen.
 
 DESIGN
 - Weißer Hintergrund, color-scheme:light, kein Dark Mode.
 - Split-Screen 1.1fr/.9fr für Panels, gestrichelte Taskboxen, farbcodierte Callout/Warning-Boxen.
-- Signatur oben rechts fix positioniert (Name + Website-Link), unabhängig vom Scroll-/Modus-Zustand, mit reserviertem Abstand zur Button-Leiste gegen Kollisionen.
+- Signatur oben rechts, als Teil des sticky Headers, kollisionsfrei mit anderen Bedienelementen.
 - Vierstufiger Beamer-Toggle (Normal→Beamer→Beamer XL→Beamer XXL), reine Größensteigerung, Footer ab Stufe 1 ausgeblendet.
 - Sprach-Toggle DE/EN für alle sichtbaren Texte inkl. aller vier Footer-Boxen, deutscher Inhalt als statisches HTML-Fallback.
 - pointerup statt click für alle interaktiven Elemente (iPad-Robustheit).
@@ -729,18 +745,18 @@ NICHT TUN
 - Keine Musterlösung ungefragt sichtbar machen.
 - Keine Vermischung mit anderen Fallstudien-Personas.`,
 `<p><b>Framework:</b> RTF (Rolle/Aufgabe/Format), erweitert um Kontext und Eingrenzung.</p>
-<p><b>Rolle:</b> Trainer:in für OKR-Einführung in Unternehmen mit RE/BA/Agile-Hintergrund.</p>
+<p><b>Rolle:</b> OKR Coach für OKR-Einführung in Unternehmen mit RE/BA/Agile-Hintergrund.</p>
 <p><b>Aufgabe:</b> Teilnehmende sollen selbst Objectives/Key Results ableiten, nicht nur Theorie konsumieren – daher Aufgaben vor Musterlösungen.</p>
 <p><b>Kontext:</b> Ein durchgängiger Fallkonzern (CALVERA Services GmbH) liefert Kontinuität über die gesamte Kaskade Vision→Objective→Key Result→Story→ToDo.</p>
 <p><b>Format:</b> One-Screen-pro-Station statt Scroll-Dokument – erzwingt didaktische Fokussierung pro Lernschritt.</p>
 <p><b>Eingrenzung:</b> Kein vollständiges OKR-Zertifikatstraining, sondern Fokus auf die häufigste Fehlerquelle: Output-statt-Outcome-Denken.</p>
 <p><i>Nachbau-Tipp:</i> Bei eigenen Cases immer mit dem "Reality Check"-Ereignis arbeiten – erzwingt Transferleistung statt reiner Wiedergabe.</p>`,
 `<p><i>(Startbildschirm öffnen)</i> "Wir arbeiten heute mit einem durchgehenden Fallbeispiel: CALVERA Services GmbH, ein Dienstleister, bei dem der Kundenservice unter Digitalisierungsdruck steht."</p>
-<p><i>(Gruppengröße wählen, dann Pfad "Hauptcase" öffnen)</i> "Wir starten nicht mit einer Lösung, sondern mit dem Problem."</p>
+<p><i>(Teamanzahl wählen, dann Pfad "Hauptcase" öffnen)</i> "Wir starten nicht mit einer Lösung, sondern mit dem Problem."</p>
 <p><i>(Station für Station durchklicken, Aufgabe zuerst bearbeiten lassen, erst danach "Musterlösung aufdecken")</i> "Bitte erst eure eigene Antwort festhalten, bevor wir vergleichen."</p>
 <p><i>(bei Station "Reality Check")</i> "Achtet auf den Impuls, sofort eine neue Anforderung aufzunehmen."</p>
 <p><i>(am Ende des Pfads)</i> "Die letzte Station zeigt die komplette Kette von der Vision bis zum einzelnen ToDo – das ist der eigentliche Transfer-Moment."</p>
-<p><b>Regie-Hinweise:</b> Nicht mit der Musterlösung beginnen. Trainer-Modus erst nach der ersten eigenständigen Bearbeitung einschalten. Timing: pro Station 6–10 Minuten in Gruppenarbeit einplanen.</p>`,
+<p><b>Regie-Hinweise:</b> Nicht mit der Musterlösung beginnen. Vertiefung erst nach der ersten eigenständigen Bearbeitung einschalten. Timing: pro Station 6–10 Minuten in Teamarbeit einplanen.</p>`,
 `<table class="footer-table">
 <tr><th>Referenz</th><th>Bezug im Tool</th></tr>
 <tr><td>OKR-Methodik (Doerr, "Measure What Matters"; Wodtke, "Radical Focus")</td><td>Grundframework: Objective/Key Result, Confidence-Score, Continue/Adapt/Stop/Learn</td></tr>
@@ -753,7 +769,7 @@ NICHT TUN
 `Build a single offline-capable HTML training tool "OKR LAB – From Strategy to Impact."
 
 STRUCTURE
-- Home screen: 3 clickable path tiles (main case with strategy-to-team cascade, stand-alone team OKR, OKR-meets-Agile transfer) + group-size selector (1/2/3 groups) with dynamic facilitation hint text.
+- Home screen: 3 clickable path tiles (main case with strategy-to-team cascade, stand-alone team OKR, OKR-meets-Agile transfer) + team-size selector (1/2/3 teams) with dynamic facilitation hint text.
 - Lab view: one screen per station. Left sidebar = station list with progress bar, right = current station (title, badge, content, next/back).
 - Each station is a plain object {title, sub, body:function(){return \`HTML template\`}}.
 
@@ -761,13 +777,13 @@ CONTENT PER STATION
 - Panel layout (1 or 2 columns) with concrete case material (numbers, quotes, stakeholder statements) instead of placeholders.
 - Task box with a checklist or an open question.
 - Sample solution hidden behind a "reveal" button (data-reveal), NEVER visible by default.
-- Trainer cockpit (visible only in trainer mode) with didactic focus / aha moment / intervention.
+- Depth content (visible only when the Vertiefung toggle is on) with didactic focus / aha moment / intervention.
 - At least one "event" incident per case (an unexpected stakeholder request) that forces applying what was learned instead of introducing new material.
 
 DESIGN
 - White background, color-scheme:light, no dark mode.
 - Split-screen 1.1fr/.9fr for panels, dashed task boxes, color-coded callout/warning boxes.
-- Signature fixed top right (name + website link), independent of scroll/mode state, with reserved spacing from the button row to avoid collisions.
+- Signature top right, part of the sticky header, collision-free with other controls.
 - Four-stage projector toggle (Normal→Beamer→Beamer XL→Beamer XXL), pure size increase, footer hidden from stage one.
 - DE/EN language toggle for all visible text incl. all four footer boxes, German content as the static HTML fallback.
 - pointerup instead of click for all interactive elements (iPad robustness).
@@ -778,18 +794,18 @@ DO NOT
 - Never reveal a sample solution unprompted.
 - Never mix in personas from other case studies.`,
 `<p><b>Framework:</b> RTF (Role/Task/Format), extended with context and constraints.</p>
-<p><b>Role:</b> Trainer introducing OKR in organizations with an RE/BA/Agile background.</p>
+<p><b>Role:</b> OKR Coach introducing OKR in organizations with an RE/BA/Agile background.</p>
 <p><b>Task:</b> Participants should derive Objectives/Key Results themselves rather than just consume theory – hence tasks precede sample solutions.</p>
 <p><b>Context:</b> A recurring fictional company (CALVERA Services GmbH) provides continuity across the entire cascade Vision→Objective→Key Result→Story→To-do.</p>
 <p><b>Format:</b> One screen per station instead of a scroll document – forces didactic focus per learning step.</p>
 <p><b>Constraints:</b> Not a full OKR certification course, but a focus on the most common failure mode: output-instead-of-outcome thinking.</p>
 <p><i>Rebuild tip:</i> For your own cases, always work with a "Reality Check" event – it forces transfer instead of mere repetition.</p>`,
 `<p><i>(open the home screen)</i> "Today we're working with one continuous case: CALVERA Services GmbH, a service provider under pressure to digitalize customer service."</p>
-<p><i>(choose group size, then open the "Main case" path)</i> "We don't start with a solution, we start with the problem."</p>
+<p><i>(choose team count, then open the "Main case" path)</i> "We don't start with a solution, we start with the problem."</p>
 <p><i>(click through station by station, let participants work the task first, only then "Reveal sample solution")</i> "Please note down your own answer before we compare."</p>
 <p><i>(at the "Reality Check" station)</i> "Watch for the impulse to immediately take on a new requirement."</p>
 <p><i>(at the end of the path)</i> "The last station shows the complete chain from vision down to a single to-do – that's the real transfer moment."</p>
-<p><b>Facilitation notes:</b> Don't start with the sample solution. Only switch on trainer mode after the first independent attempt. Timing: plan 6–10 minutes of group work per station.</p>`,
+<p><b>Facilitation notes:</b> Don't start with the sample solution. Only switch on Vertiefung (depth) after the first independent attempt. Timing: plan 6–10 minutes of team work per station.</p>`,
 `<table class="footer-table">
 <tr><th>Reference</th><th>Relevance in this tool</th></tr>
 <tr><td>OKR methodology (Doerr, "Measure What Matters"; Wodtke, "Radical Focus")</td><td>Core framework: Objective/Key Result, confidence score, Continue/Adapt/Stop/Learn</td></tr>
@@ -803,7 +819,7 @@ function applyChrome(){
   var L = LANG_STR[state.lang];
   document.getElementById("langBtn").textContent = L.langBtn;
   document.getElementById("homeBtn").textContent = L.start;
-  document.getElementById("trainerBtn").textContent = L.trainerMode;
+  document.getElementById("trainerBtn").textContent = state.trainer ? L.vertiefungOn : L.vertiefungOff;
   document.getElementById("beamerBtn").textContent = L.beamerLevels[beamerStep];
   document.getElementById("modalClose").textContent = L.modalClose;
   Array.prototype.forEach.call(document.querySelectorAll(".footer-box"), function(box, i){
@@ -854,11 +870,11 @@ function groupText(){
   if(state.lang==="en"){
     if(state.groups===1) return "Work on the task together as one team. Use the comparison point as a plenary reflection.";
     if(state.groups===2) return "Both groups first develop a solution independently, then compare and consolidate.";
-    return "All three groups develop their own solutions. Differences are then made visible and consolidated into one shared line.";
+    return "All three teams develop their own solutions. Differences are then made visible and consolidated into one shared line.";
   }
   if(state.groups===1) return "Bearbeitet die Aufgabe gemeinsam. Nutzt den Vergleichspunkt als Plenumsreflexion.";
-  if(state.groups===2) return "Beide Gruppen entwickeln zunächst unabhängig voneinander eine Lösung. Danach vergleichen und konsolidieren.";
-  return "Alle drei Gruppen entwickeln eigene Lösungen. Danach werden Unterschiede sichtbar gemacht und zu einer gemeinsamen Linie verdichtet.";
+  if(state.groups===2) return "Beide Teams entwickeln zunächst unabhängig voneinander eine Lösung. Danach vergleichen und konsolidieren.";
+  return "Alle drei Teams entwickeln eigene Lösungen. Danach werden Unterschiede sichtbar gemacht und zu einer gemeinsamen Linie verdichtet.";
 }
 
 var nordstern = [
@@ -870,7 +886,7 @@ body:function(){return `
   <div class="panel">
     <div class="kicker">CALVERA Services GmbH</div>
     <h3>Wirtschaftlich erfolgreich – aber im Service knirscht es.</h3>
-    <p>CALVERA ist ein mittelständischer Dienstleister mit rund 850 Mitarbeitenden. Ein Kundenportal existiert, wird aber bislang vor allem für Dokumente genutzt.</p>
+    <p>CALVERA ist ein mittelständischer Dienstleister mit rund 850 Mitarbeitenden im B2B-Servicegeschäft. Das Unternehmen wächst wirtschaftlich stabil – doch im täglichen Kundenservice zeigen sich zunehmend Reibungsverluste. Ein Kundenportal existiert bereits, wird aber bislang fast ausschließlich zum Hoch- und Herunterladen von Dokumenten genutzt, nicht für die eigentliche Fallbearbeitung. Die folgenden Kennzahlen stammen aus einer internen Serviceanalyse der letzten beiden Quartale und zeigen, wie stark der klassische, medienbruchreiche Bearbeitungsweg noch überwiegt.</p>
     <div class="metricgrid">
       <div class="metric"><strong>46 %</strong><span>Anfragen per E-Mail</span></div>
       <div class="metric"><strong>34 %</strong><span>Anfragen telefonisch</span></div>
@@ -897,7 +913,7 @@ body:function(){return `
     ]))}
   </div>
 </div>
-${trainer("Didaktischer Fokus","<p>Verhindere Solution First. Typischer Reflex: „Wir brauchen ein neues Portal.“ Gegenfrage: <strong>Angenommen, das Portal wäre morgen fertig – woran würden Kund:innen merken, dass sich ihr Problem verbessert hat?</strong></p>")}
+${trainer("Didaktischer Fokus","<p>Verhindere <strong>Solution First</strong> – den Reflex, bei jedem Problem sofort eine technische Lösung zu benennen, bevor das eigentliche Problem verstanden ist. Typische Formulierung im Team: „Wir brauchen ein neues Portal.“ Das Risiko: Sobald eine Lösung im Raum steht, hört das Team auf, nach dem dahinterliegenden Bedürfnis zu fragen, und die spätere OKR-Kaskade optimiert dann exakt das falsche Ziel.</p><p>Gegenfrage, die du als OKR Coach stellst: <strong>„Angenommen, das Portal wäre morgen fertig – woran würden Kund:innen merken, dass sich ihr Problem tatsächlich verbessert hat?“</strong> Diese Frage zwingt das Team, vom Artefakt (Portal) auf die Wirkung (spürbare Verbesserung für Kund:innen) zu wechseln – exakt die Denkbewegung, die später den Unterschied zwischen einem Output („Portal live“) und einem Outcome („weniger Rückfragen, schnellere Klärung“) ausmacht.</p><p>Praxistipp: Wenn ein Team trotzdem bei der Lösung bleibt, frag so lange nach dem „Wozu?“ dahinter, bis ein beobachtbares Verhalten oder Erlebnis von Kund:innen benannt wird – nicht ein Feature.</p>")}
 `;}
 },
 {
@@ -925,8 +941,8 @@ body:function(){return `
     <div class="callout">${groupText()}</div>
   </div>
 </div>
-${reveal("sol1","Musterlösung aufdecken",'<h3>Möglicher Problemkern</h3><p>Kund:innen können viele Serviceanliegen nicht einfach und transparent erledigen, während Mitarbeitende durch Rückfragen, Medienbrüche, unklare Zuständigkeiten und wechselnde Prioritäten unnötig belastet werden.</p>')}
-${trainer("Aha-Satz","<p><strong>Das fehlende Portal ist nicht das Problem. Es ist eine mögliche Lösungshypothese.</strong></p>")}
+${reveal("sol1","Musterlösung aufdecken",'<h3>Möglicher Problemkern</h3><p>Kund:innen können viele Serviceanliegen nicht einfach und transparent erledigen, während Mitarbeitende durch Rückfragen, Medienbrüche, unklare Zuständigkeiten und wechselnde Prioritäten unnötig belastet werden.</p><p>Diese Formulierung lässt bewusst offen, WIE das Problem gelöst wird: Sie verbindet die Kundenperspektive (Anliegen nicht einfach erledigen können) mit der Mitarbeitendenperspektive (unnötige Belastung durch strukturelle Ursachen) – und nennt an keiner Stelle ein Portal, ein CRM oder ein anderes System als Lösung.</p>')}
+${trainer("Aha-Satz","<p><strong>Das fehlende Portal ist nicht das Problem. Es ist eine mögliche Lösungshypothese.</strong></p><p>Der Unterschied ist entscheidend für die gesamte OKR-Arbeit: Ein <strong>Problem</strong> beschreibt einen unerwünschten Ist-Zustand aus Sicht der Betroffenen (z. B. „Kund:innen wissen nicht, wer an ihrem Anliegen arbeitet“). Eine <strong>Lösungshypothese</strong> ist dagegen eine Vermutung, mit welchem Mittel sich dieser Zustand verbessern ließe – und Vermutungen können sich als falsch herausstellen. Bei CALVERA klingt „Wir brauchen ein Portal“ plausibel, blendet aber Alternativen aus: bessere interne Übergaben, klarere Zuständigkeiten oder ein einfacher Status-Kanal per E-Mail könnten dieselbe Wirkung erzielen – ohne ein neues System zu bauen.</p><p>Für das Team bedeutet das: Erst wenn der Problemkern sauber von der Lösungsidee getrennt ist, lässt sich später ehrlich prüfen, ob das gewählte Mittel tatsächlich wirkt – und nicht nur, ob es pünktlich fertig wurde.</p>")}
 `;}
 },
 {
@@ -950,8 +966,8 @@ body:function(){return `
   <div class="callout"><strong>Prüffrage:</strong> Beschreibt die Vision den gewünschten Zustand – oder nur eine Lösung?</div>
 </div>
 </div>
-${reveal("sol2","Musterlösung aufdecken",'<p><strong>CALVERA macht Service für Kund:innen einfach, transparent und verlässlich – unabhängig davon, über welchen Kanal sie mit uns in Kontakt treten.</strong></p>')}
-${trainer("Intervention","<p>Wenn eine Gruppe Technologie nennt: „Würde diese Vision auch noch gelten, wenn das Portal morgen durch eine andere Lösung ersetzt wird?“</p>")}
+${reveal("sol2","Musterlösung aufdecken",'<p><strong>CALVERA macht Service für Kund:innen einfach, transparent und verlässlich – unabhängig davon, über welchen Kanal sie mit uns in Kontakt treten.</strong></p><p>Diese Vision nennt weder Portal noch Chatbot noch ein anderes Werkzeug. Sie bleibt auch gültig, wenn CALVERA in drei Jahren ein völlig anderes System einsetzt – genau das macht sie zu einer Vision und nicht zu einer verkappten Lösungsidee.</p>')}
+${trainer("Intervention","<p>Wenn ein Team in seiner Vision Technologie nennt – etwa „Wir werden führend im Kundenportal“ – frag gezielt nach: <strong>„Würde diese Vision auch noch gelten, wenn das Portal morgen durch eine andere Lösung ersetzt wird?“</strong></p><p>Eine gute Vision beschreibt einen dauerhaft gewünschten Zustand, nicht das Mittel, mit dem er heute erreicht wird. Der Test dafür: Sie muss auch dann noch sinnvoll sein, wenn sich die Technologie in drei Jahren komplett ändert – etwa weil ein neues System eingeführt oder ein Anbieter gewechselt wird. Nennt ein Team stattdessen ein konkretes Produkt oder Tool, bindet es seine langfristige Ausrichtung an eine kurzfristige technische Entscheidung.</p><p>Zeig als Gegenbeispiel: „Marktführer für digitale Kundenportale“ ist technologiegebunden und damit schwach. „Service, der sich für Kund:innen einfach, transparent und verlässlich anfühlt – unabhängig vom Kanal“ bleibt gültig, egal welches System dahinterstehen wird.</p>")}
 `;}
 },
 {
@@ -971,8 +987,8 @@ body:function(){return `
 </div>
 </div>
 <div class="callout"><strong>Diskussion:</strong> Welche Elemente des Moonshots helfen euch, mutiger zu denken, ohne daraus sofort ein unrealistisches Ziel zu machen?</div>
-${reveal("sol3","Musterlösung aufdecken",'<p><strong>Rooftop:</strong> Innerhalb der kommenden drei Jahre können Kund:innen die wichtigsten Serviceanliegen einfach, transparent und ohne unnötige Medienbrüche erledigen.</p><p><strong>Moonshot:</strong> Kund:innen müssen bei Standardanliegen nicht mehr nach einem Bearbeitungsstand fragen, weil sie jederzeit verstehen, was passiert, was benötigt wird und wann ihr Anliegen abgeschlossen ist.</p>')}
-${trainer("Didaktischer Fokus","<p>Der Moonshot soll das Denken verschieben: nicht „Statusanfragen schneller beantworten“, sondern „Statusanfragen unnötig machen“.</p>")}
+${reveal("sol3","Musterlösung aufdecken",'<p><strong>Rooftop:</strong> Innerhalb der kommenden drei Jahre können Kund:innen die wichtigsten Serviceanliegen einfach, transparent und ohne unnötige Medienbrüche erledigen.</p><p>Der Begriff <strong>Rooftop Shot</strong> beschreibt eine ambitionierte, aber realistisch erreichbare 3-Jahres-Ambition – im Unterschied zum Moonshot, der bewusst über das aktuell Vorstellbare hinausgeht.</p><p><strong>Moonshot:</strong> Kund:innen müssen bei Standardanliegen nicht mehr nach einem Bearbeitungsstand fragen, weil sie jederzeit verstehen, was passiert, was benötigt wird und wann ihr Anliegen abgeschlossen ist.</p><p>Der Moonshot stellt den gesamten Prozess infrage, statt ihn nur zu beschleunigen – er liefert die Richtung, aus der später die konkrete Strategie (nächste Station) abgeleitet wird.</p>')}
+${trainer("Didaktischer Fokus","<p>Der <strong>Moonshot</strong> – eine bewusst überambitionierte, kaum vollständig erreichbare Zielrichtung – soll das Denken des Teams verschieben: nicht „Statusanfragen schneller beantworten“, sondern „Statusanfragen unnötig machen“.</p><p>Der Unterschied ist mehr als Wortspiel: Ersteres optimiert einen bestehenden Prozess, Letzteres stellt die Existenz des Prozesses selbst infrage – warum fragen Kund:innen überhaupt nach dem Status, statt ihn selbst einsehen zu können? Moonshot-Denken öffnet den Lösungsraum: Statt inkrementeller Verbesserung eines E-Mail-Postfachs entstehen Ideen wie proaktive Statusbenachrichtigungen oder vollständig transparentes Self-Service-Tracking.</p><p>Achtung als OKR Coach: Ein Moonshot muss nicht zu 100 % erreichbar sein – er muss nur die Richtung radikal genug vorgeben, dass das Team sich traut, größer zu denken als „ein bisschen besser als heute“.</p>")}
 `;}
 },
 {
@@ -981,12 +997,12 @@ sub:"Station 4",
 body:function(){return `
 <div class="panel">
   <h3>Jetzt müsst ihr auswählen.</h3>
-  <p>Ihr könnt nicht alles gleichzeitig verbessern.</p>
+  <p>Ihr könnt nicht alles gleichzeitig verbessern. Jede zusätzliche Stoßrichtung bindet Aufmerksamkeit, Budget und Kapazität – und verdünnt damit die Wirkung aller anderen Vorhaben.</p>
   ${task("Aufgabe","<p>Wählt <strong>maximal drei</strong> strategische Stoßrichtungen.</p><p><strong>Wir konzentrieren uns auf …</strong></p><p>____________________________________________</p><p><strong>Wir konzentrieren uns vorerst bewusst nicht auf …</strong></p><p>____________________________________________</p>")}
   <div class="callout">Strategie ist nicht die Summe aller guten Ideen.</div>
 </div>
-${reveal("sol4","Musterlösung aufdecken",'<p><strong>Fokus:</strong> transparente Customer Journeys, einfache digitale Self-Services, weniger unnötige Übergaben und Rückfragen.</p><p><strong>Nicht jetzt:</strong> CRM-Kompletterneuerung, Mobile-App-Neuentwicklung, Digitalisierung jedes Sonderprozesses, möglichst viele neue Portalfeatures.</p>')}
-${trainer("Aha-Satz","<p><strong>Wenn alles Priorität hat, gibt es keine Priorität.</strong></p>")}
+${reveal("sol4","Musterlösung aufdecken",'<p><strong>Fokus:</strong> transparente Customer Journeys, einfache digitale Self-Services, weniger unnötige Übergaben und Rückfragen.</p><p><strong>Nicht jetzt:</strong> CRM-Kompletterneuerung, Mobile-App-Neuentwicklung, Digitalisierung jedes Sonderprozesses, möglichst viele neue Portalfeatures.</p><p>Alle drei Fokuspunkte lassen sich direkt auf die im Reality Check der Vision benannten Symptome zurückführen (Medienbrüche, fehlende Statustransparenz, vermeidbare Rückfragen). Die "Nicht jetzt"-Liste enthält bewusst auch Vorhaben, die für sich genommen sinnvoll wären – sie zahlen aber nicht auf die gewählten drei Stoßrichtungen ein.</p>')}
+${trainer("Aha-Satz","<p><strong>Wenn alles Priorität hat, gibt es keine Priorität.</strong></p><p>Das klingt banal, ist in der Praxis aber der häufigste Grund, warum OKR-Einführungen scheitern: Teams übernehmen fünf, sechs oder noch mehr strategische Stoßrichtungen gleichzeitig, weil jede davon für sich genommen sinnvoll klingt. Das Ergebnis ist keine Fokussierung, sondern eine Wunschliste – und am Ende des Quartals wurde an allem ein bisschen, an nichts wirklich gearbeitet.</p><p>Die bewusste Beschränkung auf maximal drei strategische Stoßrichtungen (wie in dieser Station verlangt) zwingt das Team zu einer echten Entscheidung: Was lassen wir bewusst liegen, obwohl es auch wichtig wäre? Diese Entscheidung ist unbequem, aber genau sie erzeugt die Fokussierung, die OKR von einer bloßen Zielliste unterscheidet.</p>")}
 `;}
 },
 {
@@ -1008,7 +1024,7 @@ body:function(){return `
   ])}
 </div>
 </div>
-${reveal("sol5","Musterlösung aufdecken",'<p><strong>Service ohne Umwege</strong></p><p>Zielgruppe: Kund:innen mit häufig wiederkehrenden Serviceanliegen.</p><p>Wirkung: häufige Anliegen einfacher abschließen und Bearbeitungsstand nachvollziehen.</p><p>Nicht Bestandteil: vollständige CRM-Ablösung, sämtliche Sonderfälle, generelles Redesign aller Systeme.</p>')}
+${reveal("sol5","Musterlösung aufdecken",'<p><strong>Service ohne Umwege</strong></p><p>Zielgruppe: Kund:innen mit häufig wiederkehrenden Serviceanliegen.</p><p>Wirkung: häufige Anliegen einfacher abschließen und Bearbeitungsstand nachvollziehen.</p><p>Nicht Bestandteil: vollständige CRM-Ablösung, sämtliche Sonderfälle, generelles Redesign aller Systeme.</p><p>Eine strategische Initiative ist größer als ein einzelnes Feature, aber kleiner als die gesamte Strategie – sie bündelt mehrere zusammenhängende Vorhaben unter einem gemeinsamen Wirkungsziel und liefert damit den Rahmen, aus dem im nächsten Schritt das Unternehmens-Objective abgeleitet wird.</p>')}
 `;}
 },
 {
@@ -1032,8 +1048,8 @@ body:function(){return `
   ]))}
 </div>
 </div>
-${reveal("sol6","Musterlösung aufdecken",'<p><strong>Objective:</strong> Unsere Kund:innen erleben CALVERA auch bei Serviceanliegen als einfach, transparent und verlässlich.</p><ol><li>Status digital nachvollziehbar: 8 % → 60 %</li><li>vollständig digital abschließbare Servicefälle: 14 % → 35 %</li><li>erneuter Kontakt zum selben Anliegen: 21 % → 12 %</li><li>Servicefälle mit vermeidbarer Rückfrage: 31 % → 18 %</li></ol>')}
-${trainer("Typischer Fehler","<p>„Portal bis November produktiv“, „10 Funktionen umgesetzt“, „200 Mitarbeitende geschult“ sind Outputs oder Aktivitäten – keine belastbaren Outcomes.</p>")}
+${reveal("sol6","Musterlösung aufdecken",'<p><strong>Objective:</strong> Unsere Kund:innen erleben CALVERA auch bei Serviceanliegen als einfach, transparent und verlässlich.</p><ol><li>Status digital nachvollziehbar: 8 % → 60 %</li><li>vollständig digital abschließbare Servicefälle: 14 % → 35 %</li><li>erneuter Kontakt zum selben Anliegen: 21 % → 12 %</li><li>Servicefälle mit vermeidbarer Rückfrage: 31 % → 18 %</li></ol><p>Jedes der vier Key Results greift direkt eine Kennzahl aus der Ausgangslage (Station "Der Fall") auf und macht daraus einen konkreten Zielwert – so bleibt die Kaskade nachvollziehbar bis zurück zu den Ursprungsdaten.</p>')}
+${trainer("Typischer Fehler","<p>„Portal bis November produktiv“, „10 Funktionen umgesetzt“, „200 Mitarbeitende geschult“ – das sind <strong>Outputs</strong> oder <strong>Aktivitäten</strong>, keine belastbaren <strong>Outcomes</strong>.</p><p>Der Unterschied: Ein Output beschreibt, dass etwas geliefert wurde (ein System ist live, eine Schulung fand statt); ein Outcome beschreibt, welche Veränderung dadurch bei den Betroffenen tatsächlich eingetreten ist (weniger Rückfragen, kürzere Bearbeitungszeit, höhere Zufriedenheit). Man kann jeden der drei genannten Outputs zu 100 % erreichen und trotzdem null Wirkung erzeugt haben – etwa wenn das Portal zwar läuft, aber niemand es nutzt, weil geschulte Mitarbeitende weiterhin den gewohnten E-Mail-Weg bevorzugen.</p><p>Typischer Formulierungstest: Frage bei jedem vorgeschlagenen Key Result „Woran genau würden Kund:innen oder Mitarbeitende merken, dass sich etwas für sie verbessert hat?“ – lässt sich das nicht beantworten, handelt es sich vermutlich um einen getarnten Output.</p>")}
 `;}
 },
 {
@@ -1042,7 +1058,7 @@ sub:"Station 7",
 body:function(){return `
 <div class="panel">
   <h3>Customer Experience</h3>
-  <p>Jetzt wird die Kaskade konkreter. Das Unternehmens-OKR steht über euch.</p>
+  <p>Jetzt wird die Kaskade konkreter. Das Unternehmens-OKR steht über euch – eure Aufgabe ist nicht, es zu wiederholen, sondern zu übersetzen: Welchen eigenständigen Beitrag kann ausgerechnet der Bereich Customer Experience zur übergeordneten Wirkung leisten, den andere Bereiche nicht liefern können?</p>
   ${task("Aufgabe","<p>Entwickelt ein Bereichs-Objective mit drei Key Results.</p><p><strong>Wichtig:</strong> Nicht einfach Unternehmens-OKR kopieren und Zahlen verkleinern.</p><p>Frage: <strong>Welchen spezifischen Beitrag kann Customer Experience leisten?</strong></p>")}
 </div>
 ${reveal("sol7","Musterlösung aufdecken",'<p><strong>Objective:</strong> Unsere wichtigsten Service-Journeys funktionieren für Kund:innen ohne unnötige Umwege und Unsicherheit.</p><ul><li>Fälle mit Rückfragen in 3 Kern-Journeys: 34 % → 20 %</li><li>70 % der Pilotkund:innen verstehen jederzeit ihren Bearbeitungsstatus</li><li>Erfolgreich abgeschlossene Self-Services: 40 % → 65 %</li></ul>')}
@@ -1055,7 +1071,7 @@ body:function(){return `
 <div class="columns">
 <div class="panel">
   <h3>Team: Digital Service Journey</h3>
-  <p>Das Team kann digitale Customer Journeys analysieren und verbessern. Es kann nicht die gesamte Organisation verändern.</p>
+  <p>Das Team kann digitale Customer Journeys analysieren und verbessern. Es kann nicht die gesamte Organisation verändern – und genau diese realistische Einschätzung des eigenen Einflussbereichs (Influence) unterscheidet ein gutes Team-OKR von einer bloßen Wunschformulierung.</p>
   ${task("Aufgabe","<p>Formuliert ein Team-Objective und drei Key Results.</p>")}
 </div>
 <div class="panel">
@@ -1086,7 +1102,7 @@ ${choice([
 ])}
 <div class="callout">Begründet ausschließlich aus eurer bisherigen OKR-Kaskade.</div>
 ${reveal("sol9","Musterlösung aufdecken",'<p><strong>B</strong> ist die naheliegende Musterentscheidung. „Chatbot eingeführt“ ist zunächst Output. Entscheidend ist: Welches bestehende KR soll dadurch verbessert werden? Wenn kein plausibler Zusammenhang besteht, wird er nicht umgesetzt.</p>')}
-${trainer("Aha-Satz","<p><strong>OKR fragt nicht: Haben wir den Chatbot gebaut? OKR fragt: Welche relevante Veränderung hat er bewirkt?</strong></p>")}
+${trainer("Aha-Satz","<p><strong>OKR fragt nicht: Haben wir den Chatbot gebaut? OKR fragt: Welche relevante Veränderung hat er bewirkt?</strong></p><p>Diese Unterscheidung trifft den Kern des Übergangs von klassischem Projektmanagement zu wirkungsorientierter Steuerung: Ein Liefergegenstand – der Chatbot ist implementiert – ist notwendig, aber nicht hinreichend. Erst die gemessene Veränderung im Verhalten oder Erleben der Nutzenden, etwa ein Rückgang telefonischer Rückfragen um einen bestimmten Prozentsatz, zeigt, ob die Investition tatsächlich einen Unterschied gemacht hat.</p><p>Für die Teamebene bedeutet das: Eine User Story allein ist noch kein Key Result. Sie beschreibt eine funktionale Anforderung aus Nutzersicht, aber erst die Verknüpfung mit einer messbaren Wirkungsgröße macht sichtbar, ob die gebaute Funktion tatsächlich zum übergeordneten Team-KR beiträgt oder nur eine weitere abgehakte Aufgabe war.</p>")}
 `;}
 },
 {
@@ -1097,7 +1113,7 @@ body:function(){return `
   <h3>Vom Key Result zur Produkt- oder Prozessveränderung</h3>
   ${task("Aufgabe","<p>Wählt ein Team-KR und formuliert mindestens eine User Story:</p><p><strong>Als … möchte ich … damit …</strong></p><p>Markiert anschließend die Rückverfolgbarkeit: KR → Objective → strategische Initiative.</p>")}
 </div>
-${reveal("sol10","Musterlösung aufdecken",'<p><strong>Als Kund:in mit einem offenen Serviceanliegen möchte ich jederzeit sehen, in welchem Bearbeitungsschritt sich mein Anliegen befindet, damit ich weiß, was als Nächstes passiert und nicht beim Kundenservice nachfragen muss.</strong></p>')}
+${reveal("sol10","Musterlösung aufdecken",'<p><strong>Als Kund:in mit einem offenen Serviceanliegen möchte ich jederzeit sehen, in welchem Bearbeitungsschritt sich mein Anliegen befindet, damit ich weiß, was als Nächstes passiert und nicht beim Kundenservice nachfragen muss.</strong></p><p>Das "damit"-Element ist hier entscheidend: Es verweist direkt auf das Team-Key-Result (weniger zusätzliche Servicekontakte während des Vorgangs) und macht die Rückverfolgbarkeit von der einzelnen Story bis zur Unternehmensvision explizit sichtbar.</p>')}
 `;}
 },
 {
@@ -1127,7 +1143,7 @@ body:function(){return `
   <div class="callout"><strong>Zusatzfrage:</strong> Welche notwendigen ToDos fehlen noch?</div>
 </div>
 </div>
-${reveal("sol11","Musterlösung aufdecken",'<p><strong>A:</strong> Nutzerinterviews, Statusanzeige, Rückfragen untersuchen, Statusdaten integrieren, Nutzungsdaten auswerten, Pilotkund:innen, Benachrichtigung testen.</p><p><strong>B:</strong> CRM-Schnittstelle, FAQ.</p><p><strong>C:</strong> 12 Portal-Seiten, neue Icons, Managementpräsentation – sofern kein Wirkzusammenhang belegt ist.</p>')}
+${reveal("sol11","Musterlösung aufdecken",'<p><strong>A:</strong> Nutzerinterviews, Statusanzeige, Rückfragen untersuchen, Statusdaten integrieren, Nutzungsdaten auswerten, Pilotkund:innen, Benachrichtigung testen.</p><p><strong>B:</strong> CRM-Schnittstelle, FAQ.</p><p><strong>C:</strong> 12 Portal-Seiten, neue Icons, Managementpräsentation – sofern kein Wirkzusammenhang belegt ist.</p><p>Die Kategorie B ist bewusst keine Ablehnung: Eine CRM-Schnittstelle kann durchaus notwendig sein, sobald sich zeigt, dass die Statusdaten ohne sie nicht zuverlässig aktuell zu halten sind – bis dahin bleibt sie aber ein ungeprüfter Verdacht, kein bestätigter Beitrag.</p>')}
 `;}
 },
 {
@@ -1141,10 +1157,10 @@ body:function(){return `
     <div class="krcard"><strong>KR 2 · 38 %</strong><p>Self-Service funktioniert technisch.</p><p><b>Signal:</b> Abbruchquote höher als erwartet.</p></div>
     <div class="krcard"><strong>KR 3 · 91 %</strong><p>Erneute Kontakte stark gesunken.</p><p><b>Signal:</b> Wirkung bisher nur in 2 von 6 Prozessen.</p></div>
   </div>
-  ${task("OKR Check-in","<p>Für jedes KR: <strong>CONTINUE · ADAPT · STOP · LEARN</strong>. Danach Confidence von 0–10 vergeben.</p>")}
+  ${task("OKR Check-in","<p>Für jedes KR: <strong>CONTINUE · ADAPT · STOP · LEARN</strong> – ein Vier-Optionen-Raster aus der OKR-Praxis: <em>Continue</em> (Kurs beibehalten), <em>Adapt</em> (Vorgehen anpassen, Ziel beibehalten), <em>Stop</em> (Vorhaben beenden), <em>Learn</em> (zu früh für eine Entscheidung, erst mehr Erkenntnis sammeln). Danach Confidence von 0–10 vergeben.</p>")}
 </div>
-${reveal("sol12","Musterlösung aufdecken",'<p><strong>KR1:</strong> Begriffe testen, keine weiteren Funktionen vor Verständlichkeit. Confidence z.B. 7/10.</p><p><strong>KR2:</strong> Abbruchstellen analysieren, keine Feature-Ausweitung. Confidence z.B. 5/10.</p><p><strong>KR3:</strong> Wirkung verstehen und Übertragbarkeit prüfen. Confidence z.B. 6/10.</p>')}
-${trainer("Didaktischer Fokus","<p>91 % Fortschritt und Confidence 6/10 können gleichzeitig richtig sein. Fortschritt ist nicht dasselbe wie Zukunftssicherheit.</p>")}
+${reveal("sol12","Musterlösung aufdecken",'<p><strong>KR1 (ADAPT):</strong> Begriffe testen, keine weiteren Funktionen vor Verständlichkeit. Confidence z.B. 7/10.</p><p><strong>KR2 (LEARN):</strong> Abbruchstellen analysieren, keine Feature-Ausweitung. Confidence z.B. 5/10.</p><p><strong>KR3 (ADAPT):</strong> Wirkung verstehen und Übertragbarkeit prüfen. Confidence z.B. 6/10.</p><p>Auffällig: Keines der drei KRs bekommt schon jetzt CONTINUE oder STOP zugewiesen – in einer frühen Check-in-Phase ist das typisch, weil meist noch zu wenig Evidenz für eine endgültige Entscheidung vorliegt.</p>')}
+${trainer("Didaktischer Fokus","<p>91 % Fortschritt und eine Confidence von 6 von 10 können gleichzeitig richtig sein – das ist kein Widerspruch, sondern eine typische, oft übersehene Situation im OKR-Tracking.</p><p><strong>Fortschritt</strong> misst, wie viel Arbeit bereits erledigt wurde. <strong>Confidence</strong> misst dagegen die Einschätzung des Teams, wie wahrscheinlich es ist, dass das Key Result am Ende des Zeitraums tatsächlich erreicht wird – unabhängig vom bisherigen Arbeitsfortschritt. Ein Team kann fast fertig mit der Umsetzung sein und trotzdem wenig Vertrauen haben, dass die geplante Wirkung eintritt, etwa weil erste Nutzerrückmeldungen enttäuschend ausfielen oder sich externe Rahmenbedingungen geändert haben.</p><p>Für dich als OKR Coach wichtig: Ein niedriger Confidence-Wert ist kein Alarmsignal, das versteckt werden sollte, sondern genau die Information, die eine frühzeitige Kurskorrektur ermöglicht – deutlich günstiger, als am Quartalsende festzustellen, dass 100 % Fortschritt zu 0 % Wirkung geführt haben.</p>")}
 `;}
 },
 {
@@ -1154,10 +1170,10 @@ body:function(){return `
 <div class="event">
   <div class="kicker">Neue Wunschliste</div>
   <h3>KI-Chatbot · Mobile App · neues CRM · Portal-Relaunch · personalisierte Angebote · automatisierte E-Mail-Kampagnen</h3>
-  <p><strong>Kapazität bleibt unverändert.</strong> Ihr dürft maximal eine zusätzliche Initiative aufnehmen. „Keine davon“ ist erlaubt.</p>
+  <p><strong>Kapazität bleibt unverändert.</strong> Ihr dürft maximal eine zusätzliche Initiative aufnehmen. „Keine davon“ ist erlaubt. Dieses Ereignis simuliert einen typischen Moment im Quartalsverlauf: Neue, für sich genommen plausible Ideen tauchen laufend auf – die eigentliche Führungsleistung liegt darin, sie an der bereits beschlossenen Strategie zu prüfen, statt sie unreflektiert zusätzlich aufzunehmen.</p>
 </div>
 ${task("Entscheidung","<p>Welche Initiative nehmt ihr auf – oder keine? Begründet über bestehende Key Results und Fokus.</p>")}
-${reveal("sol13","Musterlösung aufdecken",'<p><strong>Muster:</strong> Keine zusätzliche Initiative. Erst bestehende Lernfragen klären. Eine andere Entscheidung ist zulässig, wenn sie sauber auf ein KR einzahlt und wichtiger ist als bestehende Arbeit.</p>')}
+${reveal("sol13","Musterlösung aufdecken",'<p><strong>Muster:</strong> Keine zusätzliche Initiative. Erst bestehende Lernfragen klären. Eine andere Entscheidung ist zulässig, wenn sie sauber auf ein KR einzahlt und wichtiger ist als bestehende Arbeit.</p><p>Wichtig ist weniger die konkrete Antwort als die Begründungslogik: Jede der sechs genannten Ideen (Chatbot, App, CRM, Relaunch, Angebote, E-Mail-Kampagnen) muss sich an denselben drei strategischen Stoßrichtungen aus Station 4 messen lassen – nicht an ihrer allgemeinen Sinnhaftigkeit.</p>')}
 `;}
 },
 {
@@ -1178,7 +1194,7 @@ body:function(){return `
   </div>
 </div>
 ${task("Rückwärtsprobe","<p>Fragt bei einem einzelnen ToDo immer wieder: <strong>Warum machen wir das?</strong> Ihr müsst bis zur Vision zurückkommen.</p>")}
-${trainer("Abschluss","<p>Kernbotschaft: <strong>Ein ToDo ist nicht wertvoll, weil jemand daran arbeitet. Es ist wertvoll, wenn nachvollziehbar ist, auf welches Ergebnis es einzahlt.</strong></p>")}
+${trainer("Abschluss","<p>Kernbotschaft zum Abschluss des Pfads: <strong>Ein ToDo ist nicht wertvoll, weil jemand daran arbeitet. Es ist wertvoll, wenn nachvollziehbar ist, auf welches Ergebnis es einzahlt.</strong></p><p>Das fasst die gesamte Kaskade dieses Lernpfads zusammen: Vom Problemkern über Vision, Mission, Strategie und Unternehmens-OKR bis zur einzelnen User Story sollte sich jede Arbeitseinheit auf eine klare Wirkungskette zurückführen lassen. Fehlt dieser Rückbezug, verselbstständigt sich die operative Arbeit – Teams werden geschäftig, ohne dass sich am Ende die eingangs formulierte Vision spürbar verändert hat.</p><p>Praktische Konsequenz für den Transfer in den Arbeitsalltag: Bei jeder neuen Aufgabe lohnt sich die kurze Rückfrage „Auf welches Key Result und damit auf welches Outcome zahlt das ein?“ – lässt sich das nicht beantworten, ist die Aufgabe entweder falsch priorisiert oder die Verbindung zur Strategie wurde unterwegs verloren.</p>")}
 `;}
 }
 ];
@@ -1192,7 +1208,7 @@ body:function(){return `
   <div class="panel">
     <div class="kicker">CALVERA Services GmbH</div>
     <h3>Financially successful – but service is creaking.</h3>
-    <p>CALVERA is a mid-sized service provider with around 850 employees. A customer portal exists, but so far it is used mainly for documents.</p>
+    <p>CALVERA is a mid-sized service provider with around 850 employees in the B2B service business. The company is growing steadily, yet everyday customer service shows increasing friction. A customer portal already exists, but is used almost exclusively for uploading and downloading documents – not for handling cases themselves. The figures below come from an internal service analysis covering the last two quarters and show how strongly the classic, media-break-heavy handling path still dominates.</p>
     <div class="metricgrid">
       <div class="metric"><strong>46%</strong><span>Requests by email</span></div>
       <div class="metric"><strong>34%</strong><span>Requests by phone</span></div>
@@ -1219,7 +1235,7 @@ body:function(){return `
     ]))}
   </div>
 </div>
-${trainer("Didactic focus","<p>Prevent solution-first thinking. Typical reflex: \"We need a new portal.\" Counter-question: <strong>Suppose the portal were finished tomorrow – how would customers notice their problem had improved?</strong></p>")}
+${trainer("Didactic focus","<p>Prevent <strong>solution-first thinking</strong> – the reflex to name a technical fix before the underlying problem is understood. Typical phrase in the room: \"We need a new portal.\" The risk: once a solution is on the table, the team stops asking about the need behind it, and the later OKR cascade ends up optimizing exactly the wrong target.</p><p>Counter-question to ask as OKR Coach: <strong>\"Suppose the portal were finished tomorrow – how would customers actually notice their problem had improved?\"</strong> This question forces the team to shift from the artefact (the portal) to the effect (a noticeable improvement for customers) – precisely the shift that later separates an output (\"portal live\") from an outcome (\"fewer follow-up calls, faster resolution\").</p><p>Practical tip: if a team still clings to the solution, keep asking \"what for?\" until they name an observable customer behaviour or experience – not a feature.</p>")}
 `;}
 },
 {
@@ -1247,8 +1263,8 @@ body:function(){return `
     <div class="callout">${groupText()}</div>
   </div>
 </div>
-${reveal("sol1en","Reveal sample solution",'<h3>Possible core problem</h3><p>Customers cannot easily and transparently handle many service requests, while employees are unnecessarily burdened by follow-up queries, media breaks, unclear responsibilities, and shifting priorities.</p>')}
-${trainer("Aha moment","<p><strong>The missing portal is not the problem. It is one possible solution hypothesis.</strong></p>")}
+${reveal("sol1en","Reveal sample solution",'<h3>Possible core problem</h3><p>Customers cannot easily and transparently handle many service requests, while employees are unnecessarily burdened by follow-up queries, media breaks, unclear responsibilities, and shifting priorities.</p><p>This wording deliberately leaves open HOW the problem gets solved: it links the customer perspective (unable to easily resolve requests) with the employee perspective (unnecessary burden from structural causes) – and never names a portal, a CRM, or any other system as the solution.</p>')}
+${trainer("Aha moment","<p><strong>The missing portal is not the problem. It is one possible solution hypothesis.</strong></p><p>This distinction is central to all OKR work: a <strong>problem</strong> describes an undesirable current state from the perspective of those affected (e.g. \"customers don't know who is working on their request\"). A <strong>solution hypothesis</strong> is merely a guess at which means might improve that state – and guesses can turn out wrong. At CALVERA, \"we need a portal\" sounds plausible but hides alternatives: better internal handovers, clearer ownership, or a simple status update by email could achieve the same effect without building a new system.</p><p>For the team this means: only once the core problem is cleanly separated from the solution idea can you later honestly check whether the chosen means actually works – rather than only whether it was delivered on time.</p>")}
 `;}
 },
 {
@@ -1272,8 +1288,8 @@ body:function(){return `
   <div class="callout"><strong>Check question:</strong> Does the vision describe the desired state – or just a solution?</div>
 </div>
 </div>
-${reveal("sol2en","Reveal sample solution",'<p><strong>CALVERA makes service simple, transparent, and reliable for customers – no matter which channel they use to reach us.</strong></p>')}
-${trainer("Intervention","<p>If a group names technology: \"Would this vision still hold if the portal were replaced by a different solution tomorrow?\"</p>")}
+${reveal("sol2en","Reveal sample solution",'<p><strong>CALVERA makes service simple, transparent, and reliable for customers – no matter which channel they use to reach us.</strong></p><p>This vision names neither a portal nor a chatbot nor any other tool. It would still hold if CALVERA used an entirely different system in three years – that is exactly what makes it a vision rather than a disguised solution idea.</p>')}
+${trainer("Intervention","<p>If a team's vision names technology – e.g. \"we will be the leader in customer portals\" – push back directly: <strong>\"Would this vision still hold if the portal were replaced by a different solution tomorrow?\"</strong></p><p>A good vision describes a durable desired state, not the means used to reach it today. The test: it must still make sense even if the underlying technology changes completely within three years – say, because a new system is introduced or a vendor is switched. If a team instead names a specific product or tool, it ties its long-term direction to a short-term technical decision.</p><p>Show a counter-example: \"market leader in digital customer portals\" is technology-bound and therefore weak. \"Service that feels simple, transparent and reliable for customers, regardless of channel\" stays valid no matter which system sits behind it.</p>")}
 `;}
 },
 {
@@ -1293,8 +1309,8 @@ body:function(){return `
 </div>
 </div>
 <div class="callout"><strong>Discussion:</strong> Which elements of the moonshot help you think more boldly without immediately turning it into an unrealistic goal?</div>
-${reveal("sol3en","Reveal sample solution",'<p><strong>Rooftop:</strong> Within the next three years, customers can handle their most important service requests simply, transparently, and without unnecessary media breaks.</p><p><strong>Moonshot:</strong> Customers no longer need to ask about a case status for standard requests, because they always understand what is happening, what is needed, and when their request will be resolved.</p>')}
-${trainer("Didactic focus","<p>The moonshot is meant to shift thinking: not \"answer status inquiries faster,\" but \"make status inquiries unnecessary.\"</p>")}
+${reveal("sol3en","Reveal sample solution",'<p><strong>Rooftop:</strong> Within the next three years, customers can handle their most important service requests simply, transparently, and without unnecessary media breaks.</p><p>The term <strong>Rooftop Shot</strong> describes an ambitious yet realistically achievable 3-year ambition – as opposed to the moonshot, which deliberately goes beyond what currently seems conceivable.</p><p><strong>Moonshot:</strong> Customers no longer need to ask about a case status for standard requests, because they always understand what is happening, what is needed, and when their request will be resolved.</p><p>The moonshot questions the entire process instead of merely speeding it up – it supplies the direction from which the concrete strategy (next station) is later derived.</p>')}
+${trainer("Didactic focus","<p>The <strong>moonshot</strong> – a deliberately over-ambitious direction that can barely be fully achieved – is meant to shift the team's thinking: not \"answer status inquiries faster,\" but \"make status inquiries unnecessary.\"</p><p>The difference is more than wordplay: the first optimizes an existing process (faster replies to follow-up calls); the second questions the process's existence altogether – why do customers need to ask about status at all, instead of seeing it themselves? Moonshot thinking opens the solution space: instead of incrementally improving an inbox, ideas emerge such as proactive status notifications or fully transparent self-service tracking.</p><p>OKR Coach's note: a moonshot doesn't need to be 100% achievable – it only needs to point in a direction radical enough that the team dares to think bigger than \"a bit better than today.\"</p>")}
 `;}
 },
 {
@@ -1303,12 +1319,12 @@ sub:"Station 4",
 body:function(){return `
 <div class="panel">
   <h3>Now you have to choose.</h3>
-  <p>You cannot improve everything at once.</p>
+  <p>You cannot improve everything at once. Every additional direction consumes attention, budget, and capacity – diluting the impact of every other effort.</p>
   ${task("Task","<p>Choose <strong>a maximum of three</strong> strategic directions.</p><p><strong>We focus on …</strong></p><p>____________________________________________</p><p><strong>For now, we deliberately do not focus on …</strong></p><p>____________________________________________</p>")}
   <div class="callout">Strategy is not the sum of all good ideas.</div>
 </div>
-${reveal("sol4en","Reveal sample solution",'<p><strong>Focus:</strong> transparent customer journeys, simple digital self-services, fewer unnecessary handoffs and follow-up queries.</p><p><strong>Not now:</strong> complete CRM overhaul, new mobile app development, digitalizing every special-case process, adding as many new portal features as possible.</p>')}
-${trainer("Aha moment","<p><strong>If everything is a priority, nothing is.</strong></p>")}
+${reveal("sol4en","Reveal sample solution",'<p><strong>Focus:</strong> transparent customer journeys, simple digital self-services, fewer unnecessary handoffs and follow-up queries.</p><p><strong>Not now:</strong> complete CRM overhaul, new mobile app development, digitalizing every special-case process, adding as many new portal features as possible.</p><p>All three focus points trace directly back to the symptoms named in the vision reality check (media breaks, lack of status transparency, avoidable follow-up queries). The “not now” list deliberately includes projects that would be worthwhile on their own – they simply do not pay into the three chosen directions.</p>')}
+${trainer("Aha moment","<p><strong>If everything is a priority, nothing is.</strong></p><p>This sounds obvious, yet in practice it's the most common reason OKR rollouts fail: teams adopt five, six or more strategic directions at once because each one sounds worthwhile on its own. The result isn't focus but a wish list – and by the end of the quarter, a little progress was made everywhere and real progress nowhere.</p><p>Deliberately limiting the team to at most three strategic directions (as this station requires) forces a genuine decision: what are we consciously leaving aside, even though it matters too? That decision is uncomfortable, but it is exactly what creates the focus that distinguishes OKR from a mere list of goals.</p>")}
 `;}
 },
 {
@@ -1330,7 +1346,7 @@ body:function(){return `
   ])}
 </div>
 </div>
-${reveal("sol5en","Reveal sample solution",'<p><strong>Service without detours</strong></p><p>Target group: customers with frequently recurring service requests.</p><p>Impact: complete frequent requests more easily and track processing status.</p><p>Not included: full CRM replacement, all special cases, a general redesign of all systems.</p>')}
+${reveal("sol5en","Reveal sample solution",'<p><strong>Service without detours</strong></p><p>Target group: customers with frequently recurring service requests.</p><p>Impact: complete frequent requests more easily and track processing status.</p><p>Not included: full CRM replacement, all special cases, a general redesign of all systems.</p><p>A strategic initiative is bigger than a single feature but smaller than the whole strategy – it bundles several related efforts under one shared impact goal, providing the frame from which the Company Objective is derived in the next step.</p>')}
 `;}
 },
 {
@@ -1354,8 +1370,8 @@ body:function(){return `
   ]))}
 </div>
 </div>
-${reveal("sol6en","Reveal sample solution",'<p><strong>Objective:</strong> Our customers experience CALVERA as simple, transparent, and reliable, including for service requests.</p><ol><li>Status digitally traceable: 8% → 60%</li><li>Fully digitally completable service cases: 14% → 35%</li><li>Repeat contact for the same issue: 21% → 12%</li><li>Service cases with an avoidable follow-up query: 31% → 18%</li></ol>')}
-${trainer("Common mistake","<p>\"Portal live by November,\" \"10 features implemented,\" \"200 employees trained\" are outputs or activities – not credible outcomes.</p>")}
+${reveal("sol6en","Reveal sample solution",'<p><strong>Objective:</strong> Our customers experience CALVERA as simple, transparent, and reliable, including for service requests.</p><ol><li>Status digitally traceable: 8% → 60%</li><li>Fully digitally completable service cases: 14% → 35%</li><li>Repeat contact for the same issue: 21% → 12%</li><li>Service cases with an avoidable follow-up query: 31% → 18%</li></ol><p>Each of the four Key Results picks up directly on a metric from the starting situation (“The Situation” station) and turns it into a concrete target – keeping the cascade traceable all the way back to the original data.</p>')}
+${trainer("Common mistake","<p>\"Portal live by November,\" \"10 features implemented,\" \"200 employees trained\" – these are <strong>outputs</strong> or <strong>activities</strong>, not credible <strong>outcomes</strong>.</p><p>The difference: an output states that something was delivered (a system is live, a training took place); an outcome states what change that delivery actually caused for those affected (fewer follow-up calls, shorter turnaround, higher satisfaction). You can hit every one of those three outputs at 100% and still have created zero impact – for example if the portal runs but nobody uses it because trained staff keep preferring the familiar email route.</p><p>Useful phrasing test: for every proposed Key Result, ask \"exactly how would customers or employees notice that something improved for them?\" – if that can't be answered, it's probably a disguised output.</p>")}
 `;}
 },
 {
@@ -1364,7 +1380,7 @@ sub:"Station 7",
 body:function(){return `
 <div class="panel">
   <h3>Customer Experience</h3>
-  <p>Now the cascade becomes more concrete. The Company OKR sits above you.</p>
+  <p>Now the cascade becomes more concrete. The Company OKR sits above you – your task is not to repeat it, but to translate it: what specific contribution can the Customer Experience division make that other divisions cannot deliver?</p>
   ${task("Task","<p>Develop a Division Objective with three Key Results.</p><p><strong>Important:</strong> Don't just copy the Company OKR and shrink the numbers.</p><p>Question: <strong>What specific contribution can Customer Experience make?</strong></p>")}
 </div>
 ${reveal("sol7en","Reveal sample solution",'<p><strong>Objective:</strong> Our most important service journeys work for customers without unnecessary detours or uncertainty.</p><ul><li>Cases with follow-up queries in 3 core journeys: 34% → 20%</li><li>70% of pilot customers always understand their processing status</li><li>Successfully completed self-services: 40% → 65%</li></ul>')}
@@ -1377,7 +1393,7 @@ body:function(){return `
 <div class="columns">
 <div class="panel">
   <h3>Team: Digital Service Journey</h3>
-  <p>The team can analyze and improve digital customer journeys. It cannot change the entire organization.</p>
+  <p>The team can analyze and improve digital customer journeys. It cannot change the entire organization – and precisely this realistic assessment of its own sphere of influence is what separates a good Team OKR from a mere wish statement.</p>
   ${task("Task","<p>Formulate a Team Objective and three Key Results.</p>")}
 </div>
 <div class="panel">
@@ -1408,7 +1424,7 @@ ${choice([
 ])}
 <div class="callout">Justify your choice purely from your OKR cascade so far.</div>
 ${reveal("sol9en","Reveal sample solution",'<p><strong>B</strong> is the natural sample decision. "Chatbot introduced" is initially output. What matters: which existing KR is it supposed to improve? If there is no plausible link, it does not get implemented.</p>')}
-${trainer("Aha moment","<p><strong>OKR doesn't ask: Did we build the chatbot? OKR asks: What relevant change did it cause?</strong></p>")}
+${trainer("Aha moment","<p><strong>OKR doesn't ask: Did we build the chatbot? OKR asks: What relevant change did it cause?</strong></p><p>This distinction captures the core shift from classic project management to outcome-driven steering: a deliverable – the chatbot is implemented – is necessary but not sufficient. Only the measured change in user behaviour or experience, say a drop in phone follow-ups by a given percentage, shows whether the investment actually made a difference.</p><p>At team level this means: a user story alone is not yet a Key Result. It describes a functional requirement from the user's perspective, but only linking it to a measurable impact figure makes visible whether the built feature actually contributes to the higher-level team KR or was just another checked-off task.</p>")}
 `;}
 },
 {
@@ -1419,7 +1435,7 @@ body:function(){return `
   <h3>From Key Result to a product or process change</h3>
   ${task("Task","<p>Choose a Team KR and write at least one user story:</p><p><strong>As a … I want … so that …</strong></p><p>Then mark the traceability: KR → Objective → strategic initiative.</p>")}
 </div>
-${reveal("sol10en","Reveal sample solution",'<p><strong>As a customer with an open service request, I want to see at any time which processing step my request is in, so that I know what happens next and do not have to ask customer service.</strong></p>')}
+${reveal("sol10en","Reveal sample solution",'<p><strong>As a customer with an open service request, I want to see at any time which processing step my request is in, so that I know what happens next and do not have to ask customer service.</strong></p><p>The “so that” clause matters most here: it links directly to the team Key Result (fewer additional service contacts during the process), making the traceability from a single story all the way up to the company vision explicit.</p>')}
 `;}
 },
 {
@@ -1449,7 +1465,7 @@ body:function(){return `
   <div class="callout"><strong>Extra question:</strong> Which necessary to-dos are still missing?</div>
 </div>
 </div>
-${reveal("sol11en","Reveal sample solution",'<p><strong>A:</strong> User interviews, status display, investigate follow-up queries, integrate status data, evaluate usage data, pilot customers, test notification.</p><p><strong>B:</strong> CRM interface, FAQ.</p><p><strong>C:</strong> 12 portal pages, new icons, management presentation – unless an impact link is proven.</p>')}
+${reveal("sol11en","Reveal sample solution",'<p><strong>A:</strong> User interviews, status display, investigate follow-up queries, integrate status data, evaluate usage data, pilot customers, test notification.</p><p><strong>B:</strong> CRM interface, FAQ.</p><p><strong>C:</strong> 12 portal pages, new icons, management presentation – unless an impact link is proven.</p><p>Category B is deliberately not a rejection: a CRM interface may well become necessary once it turns out that status data cannot be kept reliably up to date without it – until then it remains an unverified suspicion, not a confirmed contribution.</p>')}
 `;}
 },
 {
@@ -1463,10 +1479,10 @@ body:function(){return `
     <div class="krcard"><strong>KR 2 · 38%</strong><p>Self-service works technically.</p><p><b>Signal:</b> Drop-off rate higher than expected.</p></div>
     <div class="krcard"><strong>KR 3 · 91%</strong><p>Repeat contacts have dropped sharply.</p><p><b>Signal:</b> Impact so far only in 2 of 6 processes.</p></div>
   </div>
-  ${task("OKR check-in","<p>For each KR: <strong>CONTINUE · ADAPT · STOP · LEARN</strong>. Then assign a confidence score from 0–10.</p>")}
+  ${task("OKR check-in","<p>For each KR: <strong>CONTINUE · ADAPT · STOP · LEARN</strong> – a four-option grid from OKR practice: <em>Continue</em> (stay the course), <em>Adapt</em> (adjust the approach, keep the goal), <em>Stop</em> (end the effort), <em>Learn</em> (too early to decide, gather more insight first). Then assign a confidence score from 0–10.</p>")}
 </div>
-${reveal("sol12en","Reveal sample solution",'<p><strong>KR1:</strong> Test the terminology, no further features before clarity is fixed. Confidence e.g. 7/10.</p><p><strong>KR2:</strong> Analyze drop-off points, no feature expansion. Confidence e.g. 5/10.</p><p><strong>KR3:</strong> Understand the impact and check transferability. Confidence e.g. 6/10.</p>')}
-${trainer("Didactic focus","<p>91% progress and confidence 6/10 can both be correct at once. Progress is not the same as future certainty.</p>")}
+${reveal("sol12en","Reveal sample solution",'<p><strong>KR1 (ADAPT):</strong> Test the terminology, no further features before clarity is fixed. Confidence e.g. 7/10.</p><p><strong>KR2 (LEARN):</strong> Analyze drop-off points, no feature expansion. Confidence e.g. 5/10.</p><p><strong>KR3 (ADAPT):</strong> Understand the impact and check transferability. Confidence e.g. 6/10.</p><p>Notably, none of the three KRs is assigned CONTINUE or STOP yet – typical for an early check-in, since there is usually too little evidence yet for a final call.</p>')}
+${trainer("Didactic focus","<p>91% progress and a confidence of 6 out of 10 can both be true at the same time – that's not a contradiction, it's a common, often overlooked situation in OKR tracking.</p><p><strong>Progress</strong> measures how much work has already been completed. <strong>Confidence</strong> measures the team's own estimate of how likely it is that the Key Result will actually be achieved by the end of the period – independent of work completed so far. A team can be nearly done with implementation and still have little confidence that the intended effect will materialize, for instance because early user feedback was disappointing or external conditions shifted.</p><p>Important for the OKR Coach: a low confidence score is not an alarm to hide, but exactly the information that enables an early course correction – far cheaper than discovering at quarter's end that 100% progress produced 0% impact.</p>")}
 `;}
 },
 {
@@ -1476,10 +1492,10 @@ body:function(){return `
 <div class="event">
   <div class="kicker">New wish list</div>
   <h3>AI chatbot · Mobile app · New CRM · Portal relaunch · Personalized offers · Automated email campaigns</h3>
-  <p><strong>Capacity stays unchanged.</strong> You may add at most one additional initiative. "None of them" is allowed.</p>
+  <p><strong>Capacity stays unchanged.</strong> You may add at most one additional initiative. "None of them" is allowed. This event simulates a typical moment mid-quarter: new, individually plausible ideas keep surfacing – the real leadership task is to check them against the already agreed strategy instead of absorbing them without reflection.</p>
 </div>
 ${task("Decision","<p>Which initiative do you take on – or none? Justify it using your existing Key Results and focus.</p>")}
-${reveal("sol13en","Reveal sample solution",'<p><strong>Pattern:</strong> No additional initiative. First resolve existing learning questions. A different decision is acceptable if it clearly pays into a KR and is more important than existing work.</p>')}
+${reveal("sol13en","Reveal sample solution",'<p><strong>Pattern:</strong> No additional initiative. First resolve existing learning questions. A different decision is acceptable if it clearly pays into a KR and is more important than existing work.</p><p>The specific answer matters less than the reasoning behind it: every one of the six ideas (chatbot, app, CRM, relaunch, offers, email campaigns) must be measured against the same three strategic directions from Station 4 – not against its general plausibility.</p>')}
 `;}
 },
 {
@@ -1500,7 +1516,7 @@ body:function(){return `
   </div>
 </div>
 ${task("Backward check","<p>For a single to-do, keep asking: <strong>Why are we doing this?</strong> You must be able to trace it back to the vision.</p>")}
-${trainer("Wrap-up","<p>Core message: <strong>A to-do isn't valuable because someone is working on it. It's valuable when it's traceable to a result it pays into.</strong></p>")}
+${trainer("Wrap-up","<p>Core message to close this path: <strong>A to-do isn't valuable because someone is working on it. It's valuable when it's traceable to a result it pays into.</strong></p><p>This sums up the whole cascade of this learning path: from the core problem through vision, mission, strategy and company OKR down to a single user story, every unit of work should trace back to a clear chain of effect. Without that link, operational work takes on a life of its own – teams stay busy without the originally stated vision ever noticeably changing.</p><p>Practical takeaway for everyday work: for every new task, it's worth briefly asking \"which Key Result, and therefore which outcome, does this pay into?\" – if that can't be answered, the task is either mis-prioritized or its link to strategy got lost along the way.</p>")}
 `;}
 }
 ];
@@ -1513,7 +1529,7 @@ body:function(){return `
 <div class="panel">
   <div class="kicker">Kernidee</div>
   <h3>Ein Team braucht keine unternehmensweite OKR-Einführung.</h3>
-  <p>Es braucht aber einen <strong>klaren Bezugsrahmen</strong>.</p>
+  <p>Es braucht aber einen <strong>klaren Bezugsrahmen</strong> – also eine erkennbare Verbindung zu einer übergeordneten Absicht, an der sich die eigenen Ziele messen lassen. Ohne diesen Rahmen bleibt offen, ob das Team die richtigen Dinge tut oder nur beschäftigt ist.</p>
   <div class="flow"><span>Produktvision / Projektauftrag</span><b>→</b><span>angestrebte Wirkung</span><b>→</b><span>Team-OKR</span></div>
 </div>
 <div class="panel">
@@ -1521,7 +1537,7 @@ body:function(){return `
   <div class="warning">Das Produkt oder Projekt ist nicht automatisch „die Unternehmensmission“. Es liefert den strategischen Bezugsrahmen für die Team-OKRs.</div>
 </div>
 </div>
-${trainer("Tonspur","<p>Damit hältst du die fachliche Trennung sauber und vermittelst trotzdem: Teams können sinnvoll starten, ohne auf eine komplette OKR-Rollout-Welle zu warten.</p>")}
+${trainer("Tonspur","<p>Damit hältst du die fachliche Trennung sauber: Dieser Pfad zeigt <strong>Team-OKR als Stand-alone-Einstieg</strong>, unabhängig von einer vollständigen Unternehmens-Kaskade wie im Hauptpfad.</p><p>Der didaktische Punkt dahinter: Viele Organisationen scheitern am Einstieg in OKR, weil sie glauben, erst eine komplette Top-down-Kaskade etablieren zu müssen, bevor ein einzelnes Team überhaupt anfangen darf. Das verzögert den Start oft um Monate. Vermittle deshalb explizit: Ein einzelnes Team kann mit eigenen, sinnvoll begründeten OKRs starten, auch wenn die übergeordnete Kaskade noch nicht steht – solange das Team seine Ziele bewusst an dem ausrichtet, was es über die Unternehmensstrategie bereits weiß.</p><p>Risiko, das du ansprechen solltest: Ohne späteren Anschluss an eine übergeordnete Kaskade drohen lokale Optimierungen, die dem Gesamtunternehmen nicht nutzen (siehe folgender Aha-Satz zu Autonomie und Bezugsrahmen).</p>")}
 `;}
 },
 {
@@ -1540,7 +1556,7 @@ ${task("Aufgabe","<p>Leitet daraus ein Team-Objective und drei Key Results ab.</
 "Das Team kann die KRs beeinflussen.",
 "Es gibt keinen Zwang, Unternehmens-OKRs zu erfinden."
 ]))}
-${reveal("teamsol1","Musterlösung aufdecken",'<p><strong>Objective:</strong> Studierende bearbeiten ausgewählte Anträge digital, ohne unnötige Rückfragen oder Orientierungsverlust.</p><ul><li>vollständig digital abgeschlossene Anträge: 35 % → 70 %</li><li>Anträge mit mindestens einer vermeidbaren Rückfrage: 28 % → 12 %</li><li>80 % der Pilotstudierenden verstehen den Bearbeitungsstatus ohne zusätzliche Nachfrage</li></ul>')}
+${reveal("teamsol1","Musterlösung aufdecken",'<p><strong>Objective:</strong> Studierende bearbeiten ausgewählte Anträge digital, ohne unnötige Rückfragen oder Orientierungsverlust.</p><ul><li>vollständig digital abgeschlossene Anträge: 35 % → 70 %</li><li>Anträge mit mindestens einer vermeidbaren Rückfrage: 28 % → 12 %</li><li>80 % der Pilotstudierenden verstehen den Bearbeitungsstatus ohne zusätzliche Nachfrage</li></ul><p>Auch ohne formale Unternehmenskaskade lässt sich dieses Team-Objective klar auf den Projektauftrag zurückführen – die drei Key Results messen exakt die im Projektziel genannte Wirkung: einfacher, transparenter, weniger Rückfragen.</p>')}
 `;}
 },
 {
@@ -1558,7 +1574,7 @@ body:function(){return `
 </div>
 </div>
 ${task("Reflexion","<p>Was braucht ein Team mindestens, damit Stand-alone OKRs nicht zu beliebigen Wunschzielen werden?</p>")}
-${reveal("teamsol2","Musterlösung aufdecken",'<p>Mindestens: klarer Zweck/Produktvision oder Projektauftrag, relevante Stakeholderwirkung, messbare Ausgangslage, Einflussbereich des Teams und ein transparenter Priorisierungsrahmen.</p>')}
+${reveal("teamsol2","Musterlösung aufdecken",'<p>Mindestens: klarer Zweck/Produktvision oder Projektauftrag, relevante Stakeholderwirkung, messbare Ausgangslage, Einflussbereich des Teams und ein transparenter Priorisierungsrahmen.</p><p>Fehlt auch nur einer dieser fünf Bausteine, entsteht schnell eine der beiden typischen Fehlformen: Ziele ohne erkennbaren Zweck ("warum tun wir das überhaupt?") oder Ziele ohne Messbarkeit ("woran erkennen wir Erfolg?").</p>')}
 `;}
 },
 {
@@ -1575,7 +1591,7 @@ body:function(){return `
   "Wenn das Team keine belastbare Ausgangslage hat."
   ])}
 </div>
-${trainer("Aha-Satz","<p><strong>Autonomie braucht einen Bezugsrahmen – sonst wird aus OKR lokale Optimierung.</strong></p>")}
+${trainer("Aha-Satz","<p><strong>Autonomie braucht einen Bezugsrahmen – sonst wird aus OKR lokale Optimierung.</strong></p><p>Der Reiz von Team-OKR liegt in der Selbstbestimmung: Ein Team entscheidet eigenständig, welche Ergebnisse es in einem Zeitraum erzielen will. Ohne einen erkennbaren Bezug zur übergeordneten Unternehmensstrategie führt diese Freiheit aber leicht dazu, dass jedes Team optimiert, was aus seiner eigenen, isolierten Sicht sinnvoll erscheint – auch wenn es dem Gesamtunternehmen wenig oder sogar entgegengesetzt nützt. Klassisches Beispiel: Ein Support-Team optimiert auf möglichst kurze Bearbeitungszeit pro Anfrage, während das Unternehmen eigentlich höhere Kundenzufriedenheit durch gründlichere Klärung anstrebt.</p><p>Für die Praxis heißt das: Auch ein Stand-alone-Team-OKR sollte explizit benennen, auf welche größere Zielsetzung es einzahlen will – selbst wenn diese noch nicht formal als Unternehmens-OKR dokumentiert ist. Das schafft den Bezugsrahmen, der Autonomie erst produktiv macht, statt sie in Beliebigkeit abgleiten zu lassen.</p>")}
 `;}
 }
 ];
@@ -1589,7 +1605,7 @@ body:function(){return `
 <div class="panel">
   <div class="kicker">Core idea</div>
   <h3>A team doesn't need a company-wide OKR rollout.</h3>
-  <p>But it does need a <strong>clear point of reference</strong>.</p>
+  <p>But it does need a <strong>clear point of reference</strong> – a recognizable link to a higher-level intent against which its own goals can be measured. Without that frame, it stays unclear whether the team is doing the right things or merely staying busy.</p>
   <div class="flow"><span>Product vision / project mandate</span><b>→</b><span>intended impact</span><b>→</b><span>Team OKR</span></div>
 </div>
 <div class="panel">
@@ -1597,7 +1613,7 @@ body:function(){return `
   <div class="warning">The product or project is not automatically "the company mission." It provides the strategic frame of reference for the Team OKRs.</div>
 </div>
 </div>
-${trainer("Delivery note","<p>This keeps the professional distinction clean while still conveying: teams can meaningfully get started without waiting for a full OKR rollout wave.</p>")}
+${trainer("Delivery note","<p>This keeps the professional distinction clean: this path shows <strong>Team OKR as a stand-alone entry point</strong>, independent of a full company cascade as in the main path.</p><p>The didactic point behind it: many organizations struggle to start with OKR because they believe a complete top-down cascade must be in place before any single team is allowed to begin. That often delays the start by months. So convey explicitly: a single team can start with its own, sensibly justified OKRs even while the higher-level cascade isn't yet in place – as long as the team consciously aligns its goals with what it already knows about company strategy.</p><p>Risk worth raising: without a later link to a higher-level cascade, local optimizations can emerge that don't benefit the wider organization (see the following aha moment on autonomy and a frame of reference).</p>")}
 `;}
 },
 {
@@ -1616,7 +1632,7 @@ ${task("Task","<p>Derive a Team Objective and three Key Results from this.</p>"+
 "The team can influence the KRs.",
 "There is no pressure to invent company OKRs."
 ]))}
-${reveal("teamsol1en","Reveal sample solution",'<p><strong>Objective:</strong> Students complete selected applications digitally, without unnecessary follow-up queries or loss of orientation.</p><ul><li>Fully digitally completed applications: 35% → 70%</li><li>Applications with at least one avoidable follow-up query: 28% → 12%</li><li>80% of pilot students understand the processing status without an extra inquiry</li></ul>')}
+${reveal("teamsol1en","Reveal sample solution",'<p><strong>Objective:</strong> Students complete selected applications digitally, without unnecessary follow-up queries or loss of orientation.</p><ul><li>Fully digitally completed applications: 35% → 70%</li><li>Applications with at least one avoidable follow-up query: 28% → 12%</li><li>80% of pilot students understand the processing status without an extra inquiry</li></ul><p>Even without a formal company cascade, this Team Objective traces cleanly back to the project mandate – the three Key Results measure exactly the impact named in the project goal: simpler, more transparent, fewer follow-up queries.</p>')}
 `;}
 },
 {
@@ -1634,7 +1650,7 @@ body:function(){return `
 </div>
 </div>
 ${task("Reflection","<p>What does a team need at minimum so stand-alone OKRs don't turn into arbitrary wish-list goals?</p>")}
-${reveal("teamsol2en","Reveal sample solution",'<p>At minimum: a clear purpose/product vision or project mandate, relevant stakeholder impact, a measurable baseline, the team\'s sphere of influence, and a transparent prioritization framework.</p>')}
+${reveal("teamsol2en","Reveal sample solution",'<p>At minimum: a clear purpose/product vision or project mandate, relevant stakeholder impact, a measurable baseline, the team\'s sphere of influence, and a transparent prioritization framework.</p><p>Missing even one of these five building blocks quickly produces one of two typical failure modes: goals with no discernible purpose (“why are we doing this at all?”) or goals with no measurability (“how do we know we succeeded?”).</p>')}
 `;}
 },
 {
@@ -1651,7 +1667,7 @@ body:function(){return `
   "When the team has no credible baseline."
   ])}
 </div>
-${trainer("Aha moment","<p><strong>Autonomy needs a frame of reference – otherwise OKR turns into local optimization.</strong></p>")}
+${trainer("Aha moment","<p><strong>Autonomy needs a frame of reference – otherwise OKR turns into local optimization.</strong></p><p>The appeal of Team OKR lies in self-determination: a team decides for itself which results it wants to achieve in a given period. But without a visible link to the wider company strategy, that freedom easily leads every team to optimize for what looks sensible from its own, isolated view – even if it does little for the organization as a whole, or works against it. Classic example: a support team optimizes for the shortest possible handling time per request, while the company actually wants higher customer satisfaction through more thorough resolution.</p><p>In practice this means: even a stand-alone Team OKR should explicitly state which larger goal it intends to serve – even if that goal isn't yet formally documented as a company OKR. That is what creates the frame of reference that makes autonomy productive instead of arbitrary.</p>")}
 `;}
 }
 ];
@@ -1667,6 +1683,7 @@ body:function(){return `
     <span>Objective</span><b>→</b><span>Key Result</span><b>→</b><span>Hypothese / Initiative</span><b>→</b><span>Epic / Story / Experiment</span><b>→</b><span>Backlog</span><b>→</b><span>Review & Lernen</span>
   </div>
   <div class="callout"><strong>Kernsatz:</strong> Scrum fragt: Was liefern wir als Nächstes? OKR ergänzt: Woran erkennen wir, dass das etwas bewirkt hat?</div>
+  <p>Die Kette oben zeigt, wo beide Systeme ineinandergreifen: Objective und Key Result liefern die Wirkungsrichtung, Hypothese und Initiative übersetzen sie in testbare Annahmen, und erst Epic/Story/Experiment landen im gewohnten agilen Backlog. Review & Lernen schließt den Kreis, indem geprüft wird, ob die ursprüngliche Hypothese sich bestätigt hat.</p>
 </div>
 `;}
 },
@@ -1684,8 +1701,8 @@ body:function(){return `
   ${bullet(["weniger Rückfragen","höhere Abschlussquote","bessere Verständlichkeit","weniger erneute Kontakte"])}
 </div>
 </div>
-${task("Mini-Übung","<p>Ordnet je zwei Outputs einem möglichen Outcome zu. Danach prüft: Ist der Zusammenhang belegt oder nur angenommen?</p>")}
-${trainer("Aha-Satz","<p><strong>Fertig ist nicht gleich wirksam.</strong></p>")}
+${task("Mini-Übung","<p>Ordnet je zwei Outputs einem möglichen Outcome zu. Danach prüft: Ist der Zusammenhang belegt oder nur angenommen? Ein belegter Zusammenhang stützt sich auf Daten oder Nutzerfeedback aus der Vergangenheit; ein angenommener Zusammenhang ist zunächst nur eine plausible Vermutung, die noch getestet werden muss.</p>")}
+${trainer("Aha-Satz","<p><strong>Fertig ist nicht gleich wirksam.</strong></p><p>In agilen Teams ist die „Definition of Done“ ein zentrales Qualitätskriterium: Eine User Story gilt als abgeschlossen, wenn vorab vereinbarte Kriterien erfüllt sind – etwa Code-Review bestanden, Tests grün, Dokumentation aktualisiert. Das beantwortet jedoch ausschließlich die Frage, ob sauber gearbeitet wurde, nicht, ob die Arbeit tatsächlich das gewünschte Ergebnis erzielt hat. Ein Feature kann exakt nach Spezifikation fertiggestellt sein und trotzdem am eigentlichen Bedürfnis der Nutzenden vorbeigehen.</p><p>Genau diese Lücke schließt das Key Result: Es prüft nicht den Lieferzustand der Arbeit, sondern die Wirkung, die durch die fertige Arbeit in der realen Nutzung entsteht. „Fertig“ ist eine Aussage über den Sprint; „wirksam“ ist eine Aussage über den Kunden – und beide Fragen müssen im Team gleichermaßen gestellt werden.</p>")}
 `;}
 },
 {
@@ -1720,7 +1737,7 @@ body:function(){return `
 </div>
 <div class="panel">
   <h3>Backlog-Frage</h3>
-  <div class="warning">Nicht jede Story im Backlog zahlt automatisch auf ein aktuelles KR ein.</div>
+  <div class="warning">Nicht jede Story im Backlog zahlt automatisch auf ein aktuelles KR ein. Viele Backlogs wachsen historisch und enthalten Einträge, die einmal sinnvoll waren, aber nie gegen die aktuelle Ausrichtung geprüft wurden.</div>
   ${task("Prüfung","<p>Welche Stories oder Aufgaben sind jetzt wirklich relevant – und welche nur „auch noch sinnvoll“?</p>")}
 </div>
 </div>
@@ -1732,10 +1749,10 @@ sub:"Arbeit steuern",
 body:function(){return `
 <div class="panel">
   <h3>Die operative Ebene</h3>
-  <p>Scrum, Kanban oder hybride Arbeitsweisen strukturieren die Umsetzung. OKR ersetzt diese Methoden nicht.</p>
+  <p>Scrum, Kanban oder hybride Arbeitsweisen strukturieren die Umsetzung. OKR ersetzt diese Methoden nicht – es ergänzt sie um eine regelmäßige Wirkungsprüfung, die im normalen Sprint- oder Flow-Rhythmus sonst leicht untergeht.</p>
   <div class="flow"><span>KR</span><b>→</b><span>priorisierte Arbeit</span><b>→</b><span>Sprint / Flow</span><b>→</b><span>Messung</span><b>→</b><span>Anpassung</span></div>
 </div>
-${trainer("Tonspur","<p>Hier musst du nicht Scrum erklären. Zeige nur die Schnittstelle: <strong>Backlog und Sprint liefern Arbeit; Key Results liefern die Wirkungsprüfung.</strong></p>")}
+${trainer("Tonspur","<p>Hier musst du nicht Scrum im Detail erklären – die Teilnehmenden kennen ihr agiles Rahmenwerk in der Regel bereits gut. Zeige stattdessen nur die <strong>Schnittstelle</strong> zwischen beiden Systemen: <strong>Backlog und Sprint liefern die Arbeit; Key Results liefern die Wirkungsprüfung.</strong></p><p>Konkret bedeutet das: Product Backlog und Sprint-Planung beantworten die Frage „Was bauen wir als Nächstes und in welcher Reihenfolge?“ – das ist die operative Steuerung der Umsetzung. Key Results beantworten eine andere Frage: „Hat das, was wir gebaut haben, tatsächlich etwas verändert?“ – das ist die Wirkungssteuerung. Beide Ebenen brauchen einander: Ohne Backlog und Sprints bliebe das Key Result unerreichbar; ohne Key Results liefe die Sprint-Arbeit Gefahr, sich in Aktivität zu verlieren, ohne dass am Ende jemand prüft, ob sich für die Nutzenden etwas verbessert hat.</p><p>Sprint Review eignet sich dafür besonders gut als natürlicher Ort: Neben der üblichen Demo der fertigen Inkremente lohnt sich dort die zusätzliche Frage „Und was hat das für unser Key Result bedeutet?“</p>")}
 `;}
 },
 {
@@ -1752,8 +1769,8 @@ body:function(){return `
   <p>Hat sich das relevante Ergebnis bewegt? Was lernen wir daraus?</p>
 </div>
 </div>
-<div class="callout"><strong>Wichtig:</strong> Ein „erfolgreicher Sprint“ kann ein stagnierendes Key Result produzieren. Dann war die Arbeit vielleicht sauber umgesetzt – aber die Wirkungshypothese war falsch.</div>
-${trainer("Aha-Satz","<p><strong>Agilität ohne Wirkungsprüfung kann sehr effizient in die falsche Richtung laufen.</strong></p>")}
+<div class="callout"><strong>Wichtig:</strong> Ein „erfolgreicher Sprint“ kann ein stagnierendes Key Result produzieren. Dann war die Arbeit vielleicht sauber umgesetzt – aber die Wirkungshypothese war falsch. Das ist kein Scheitern des Teams, sondern ein normaler Lernschritt: Die nächste Hypothese kann gezielter gewählt werden, weil eine Möglichkeit bereits ausgeschlossen ist.</div>
+${trainer("Aha-Satz","<p><strong>Agilität ohne Wirkungsprüfung kann sehr effizient in die falsche Richtung laufen.</strong></p><p>Agile Arbeitsweisen sind darauf ausgelegt, schnell zu liefern und flexibel auf Veränderungen zu reagieren – kurze Sprints, schnelle Feedbackschleifen, iterative Verbesserung. Diese Geschwindigkeit ist aber kein Selbstzweck: Ein Team kann in kürzester Zeit sehr viel liefern, ohne dass diese Lieferungen dem eigentlichen Ziel dienen, wenn niemand regelmäßig prüft, ob die gelieferte Arbeit tatsächlich zur gewünschten Wirkung beiträgt.</p><p>Key Results übernehmen genau diese Kontrollfunktion: Sie zwingen das Team in regelmäßigen Abständen zur ehrlichen Bestandsaufnahme, ob der eingeschlagene Weg noch stimmt – unabhängig davon, wie viel bereits geliefert wurde. Ohne diese Rückkopplung droht technisch hervorragend ausgeführte Arbeit, die am eigentlichen Bedarf vorbeigeht, nur schneller und mit mehr Iterationen als früher.</p>")}
 `;}
 }
 ];
@@ -1769,6 +1786,7 @@ body:function(){return `
     <span>Objective</span><b>→</b><span>Key Result</span><b>→</b><span>Hypothesis / Initiative</span><b>→</b><span>Epic / Story / Experiment</span><b>→</b><span>Backlog</span><b>→</b><span>Review & Learn</span>
   </div>
   <div class="callout"><strong>Core statement:</strong> Scrum asks: what do we deliver next? OKR adds: how do we know it made a difference?</div>
+  <p>The chain above shows where the two systems interlock: Objective and Key Result set the direction of impact, Hypothesis and Initiative translate that into testable assumptions, and only Epic/Story/Experiment land in the familiar agile backlog. Review & Learn closes the loop by checking whether the original hypothesis held up.</p>
 </div>
 `;}
 },
@@ -1786,8 +1804,8 @@ body:function(){return `
   ${bullet(["fewer follow-up queries","higher completion rate","better clarity","fewer repeat contacts"])}
 </div>
 </div>
-${task("Mini exercise","<p>Match two outputs each to a possible outcome. Then check: is the link proven, or only assumed?</p>")}
-${trainer("Aha moment","<p><strong>Done is not the same as effective.</strong></p>")}
+${task("Mini exercise","<p>Match two outputs each to a possible outcome. Then check: is the link proven, or only assumed? A proven link rests on past data or user feedback; an assumed link is, for now, only a plausible guess still waiting to be tested.</p>")}
+${trainer("Aha moment","<p><strong>Done is not the same as effective.</strong></p><p>In agile teams, the \"Definition of Done\" is a central quality criterion: a user story counts as complete once agreed criteria are met – code review passed, tests green, documentation updated. But that only answers whether the work was done cleanly, not whether it achieved the intended result. A feature can be finished exactly to specification and still miss the actual need of the people using it.</p><p>That's precisely the gap the Key Result closes: it doesn't check the delivery state of the work, but the effect that the finished work has in real use. \"Done\" is a statement about the sprint; \"effective\" is a statement about the customer – and both questions need to be asked equally in the team.</p>")}
 `;}
 },
 {
@@ -1822,7 +1840,7 @@ body:function(){return `
 </div>
 <div class="panel">
   <h3>Backlog question</h3>
-  <div class="warning">Not every story in the backlog automatically pays into a current KR.</div>
+  <div class="warning">Not every story in the backlog automatically pays into a current KR. Many backlogs grow historically and contain items that made sense once but were never checked against the current direction.</div>
   ${task("Check","<p>Which stories or tasks are truly relevant right now – and which are just \"also nice to have\"?</p>")}
 </div>
 </div>
@@ -1834,10 +1852,10 @@ sub:"Steering the work",
 body:function(){return `
 <div class="panel">
   <h3>The operational level</h3>
-  <p>Scrum, Kanban, or hybrid ways of working structure delivery. OKR does not replace these methods.</p>
+  <p>Scrum, Kanban, or hybrid ways of working structure delivery. OKR does not replace these methods – it adds a regular impact check that otherwise easily gets lost in the normal sprint or flow rhythm.</p>
   <div class="flow"><span>KR</span><b>→</b><span>prioritized work</span><b>→</b><span>Sprint / Flow</span><b>→</b><span>measurement</span><b>→</b><span>adjustment</span></div>
 </div>
-${trainer("Delivery note","<p>You don't need to explain Scrum here. Just show the interface: <strong>Backlog and sprint deliver work; Key Results deliver the impact check.</strong></p>")}
+${trainer("Delivery note","<p>You don't need to explain Scrum in detail here – participants usually already know their agile framework well. Instead just show the <strong>interface</strong> between the two systems: <strong>backlog and sprint deliver the work; Key Results deliver the impact check.</strong></p><p>Concretely: the product backlog and sprint planning answer the question \"what do we build next, and in what order?\" – that's operational steering of delivery. Key Results answer a different question: \"did what we built actually change anything?\" – that's impact steering. Both levels need each other: without backlog and sprints, the Key Result would be unreachable; without Key Results, sprint work risks dissolving into activity without anyone checking whether it actually improved anything for users.</p><p>Sprint Review is a natural place for this: alongside the usual demo of finished increments, it's worth adding the question \"and what did that mean for our Key Result?\"</p>")}
 `;}
 },
 {
@@ -1854,8 +1872,8 @@ body:function(){return `
   <p>Did the relevant result move? What do we learn from it?</p>
 </div>
 </div>
-<div class="callout"><strong>Important:</strong> A "successful sprint" can produce a stagnant Key Result. The work may have been executed cleanly – but the impact hypothesis was wrong.</div>
-${trainer("Aha moment","<p><strong>Agility without an impact check can run very efficiently in the wrong direction.</strong></p>")}
+<div class="callout"><strong>Important:</strong> A "successful sprint" can produce a stagnant Key Result. The work may have been executed cleanly – but the impact hypothesis was wrong. That is not a team failure but a normal learning step: the next hypothesis can be chosen more precisely, because one possibility has already been ruled out.</div>
+${trainer("Aha moment","<p><strong>Agility without an impact check can run very efficiently in the wrong direction.</strong></p><p>Agile ways of working are built to deliver fast and adapt flexibly to change – short sprints, quick feedback loops, iterative improvement. But that speed is not an end in itself: a team can deliver a great deal in very little time without any of it serving the actual goal, if nobody regularly checks whether the delivered work is contributing to the intended impact.</p><p>Key Results take on exactly this control function: at regular intervals they force the team into an honest stocktake of whether the chosen path still holds – regardless of how much has already been delivered. Without that feedback loop, the risk is technically excellent work that misses the actual need, only faster and with more iterations than before.</p>")}
 `;}
 }
 ];
@@ -1940,12 +1958,13 @@ function renderStage(){
   });
 
   var tr = stage.querySelector(".trainer");
+  var panel = document.getElementById("vertiefungPanel");
   if(state.trainer && tr){
-    var launch = document.createElement("button");
-    launch.className = "btn trainer-launch";
-    launch.textContent = LANG_STR[state.lang].trainerHint;
-    launch.addEventListener("pointerup", function(){ openModal(LANG_STR[state.lang].trainerCockpit, tr.innerHTML); });
-    stage.querySelector(".stagehead").appendChild(launch);
+    panel.innerHTML = tr.innerHTML;
+    panel.style.display = "block";
+  } else {
+    panel.innerHTML = "";
+    panel.style.display = "none";
   }
 }
 function advance(dir){
@@ -1958,18 +1977,50 @@ function advance(dir){
   renderNav(); renderStage();
 }
 document.getElementById("homeBtn").addEventListener("pointerup",showHome);
-document.getElementById("trainerBtn").addEventListener("pointerup",function(){
+
+/* K22 – Vertiefungs-Toggle: schaltet zwischen Kurzfassung (nur Aufgaben/Panels)
+   und Ausführlich (zusätzlich Vertiefungs-Hintergrund in der rechten Seitenspalte sichtbar).
+   Session-Persistenz (K2) und Beamer-Zwang auf Kurz (K22). */
+var trainerBtnEl = document.getElementById("trainerBtn");
+function updateVertiefungLabel(){
+  var L = LANG_STR[state.lang];
+  trainerBtnEl.textContent = state.trainer ? L.vertiefungOn : L.vertiefungOff;
+}
+try {
+  var storedTrainer = sessionStorage.getItem("okrlab_trainer");
+  if (storedTrainer !== null) state.trainer = storedTrainer === "1";
+} catch(e){ /* Fallback bleibt state.trainer=false (Kurzfassung) */ }
+trainerBtnEl.classList.toggle("active", state.trainer);
+updateVertiefungLabel();
+
+trainerBtnEl.addEventListener("pointerup",function(){
+  if (beamerStep > 0) return; // im Beamer-Modus gesperrt (K22)
   state.trainer=!state.trainer;
+  try { sessionStorage.setItem("okrlab_trainer", state.trainer ? "1" : "0"); } catch(e){}
   this.classList.toggle("active",state.trainer);
+  updateVertiefungLabel();
   if(document.getElementById("lab").classList.contains("active")) renderStage();
 });
 var BEAMER_LEVELS = ["", "beamer", "beamer beamer-xl", "beamer beamer-xl beamer-xxl"];
 var beamerStep = 0;
+var trainerPrefBeforeBeamer = state.trainer;
 document.getElementById("beamerBtn").addEventListener("pointerup",function(){
   beamerStep = (beamerStep + 1) % BEAMER_LEVELS.length;
   document.documentElement.className = BEAMER_LEVELS[beamerStep];
   this.textContent = LANG_STR[state.lang].beamerLevels[beamerStep];
-  this.classList.toggle("active", beamerStep > 0);
+
+  if (beamerStep > 0) {
+    if (trainerBtnEl.disabled !== true) trainerPrefBeforeBeamer = state.trainer; // nur beim Eintritt merken
+    state.trainer = false; // Beamer erzwingt Kurzfassung (K22)
+    trainerBtnEl.classList.remove("active");
+    trainerBtnEl.disabled = true;
+  } else {
+    trainerBtnEl.disabled = false;
+    state.trainer = trainerPrefBeforeBeamer; // vorherige Wahl wiederherstellen
+    trainerBtnEl.classList.toggle("active", state.trainer);
+  }
+  updateVertiefungLabel();
+  if(document.getElementById("lab").classList.contains("active")) renderStage();
 });
 document.getElementById("modalClose").addEventListener("pointerup", closeModal);
 document.getElementById("modal").addEventListener("pointerup", function(e){ if(e.target===this) closeModal(); });
