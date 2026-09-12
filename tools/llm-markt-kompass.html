@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM-Markt-Kompass</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#ffffff;
+    --ink:#1a2332;
+    --ink-soft:#4a5568;
+    --line:#e2e8f0;
+    --brand:#2c5f6f;
+    --brand-dark:#1d4652;
+    --accent:#c0743d;
+    --accent-soft:#f5e6d8;
+    --claude:#c96442;
+    --openai:#10a37f;
+    --gemini:#4285f4;
+    --grok:#5a5a5a;
+    --llama:#0668e1;
+    --mistral:#ff7000;
+    --oss:#6b46c1;
+    --card-bg:#f8fafb;
+    --font-body:16px;
+    --font-small:14px;
+    --radius:12px;
+  }
+  *{box-sizing:border-box;}
+  html,body{background:var(--bg);color:var(--ink);}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    margin:0; padding:0 0 40px 0;
+    font-size:var(--font-body);
+    line-height:1.55;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+  }
+  .signature{
+    position:fixed; top:10px; right:14px;
+    font-size:12px; color:var(--ink-soft);
+    background:rgba(255,255,255,0.92);
+    padding:4px 10px; border-radius:8px;
+    z-index:500; text-align:right; line-height:1.3;
+    border:1px solid var(--line);
+  }
+  .signature strong{color:var(--brand-dark);}
+  header{
+    background:linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 100%);
+    color:#fff; padding:32px 24px 26px 24px;
+    text-align:center;
+  }
+  header h1{margin:0 0 8px 0; font-size:clamp(24px,4vw,34px);}
+  header p{margin:0; opacity:0.92; font-size:15px; max-width:720px; margin:0 auto;}
+  .controls{
+    display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
+    padding:16px; background:var(--card-bg); border-bottom:1px solid var(--line);
+    position:sticky; top:0; z-index:100;
+  }
+  button{
+    font-family:inherit; cursor:pointer; border-radius:8px; border:1px solid var(--line);
+    background:#fff; color:var(--ink); padding:10px 16px; font-size:var(--font-small);
+    min-height:44px; min-width:44px; font-weight:600;
+  }
+  button.active{background:var(--brand); color:#fff; border-color:var(--brand);}
+  button:hover{filter:brightness(0.97);}
+  main{max-width:1100px; margin:0 auto; padding:24px 18px;}
+  section{margin-bottom:40px;}
+  h2{color:var(--brand-dark); font-size:22px; border-bottom:3px solid var(--accent-soft); padding-bottom:8px;}
+  h3{font-size:18px; margin-bottom:6px;}
+  .intro-box{
+    background:var(--accent-soft); border-left:5px solid var(--accent);
+    padding:16px 20px; border-radius:8px; font-size:15px;
+  }
+  .grid{display:flex; flex-direction:column; gap:18px; margin-top:18px;}
+  .card{
+    background:var(--card-bg); border:1px solid var(--line); border-radius:var(--radius);
+    padding:18px 20px; border-top:6px solid var(--brand);
+    transition:box-shadow .15s ease;
+  }
+  .card:hover{box-shadow:0 4px 14px rgba(0,0,0,0.08);}
+  .card.claude{border-top-color:var(--claude);}
+  .card.openai{border-top-color:var(--openai);}
+  .card.gemini{border-top-color:var(--gemini);}
+  .card.grok{border-top-color:var(--grok);}
+  .card.llama{border-top-color:var(--llama);}
+  .card.mistral{border-top-color:var(--mistral);}
+  .card.oss{border-top-color:var(--oss);}
+  .card .badge{
+    display:inline-block; font-size:11px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.04em; color:#fff; padding:3px 9px; border-radius:20px; margin-bottom:8px;
+  }
+  .claude .badge{background:var(--claude);}
+  .openai .badge{background:var(--openai);}
+  .gemini .badge{background:var(--gemini);}
+  .grok .badge{background:var(--grok);}
+  .llama .badge{background:var(--llama);}
+  .mistral .badge{background:var(--mistral);}
+  .oss .badge{background:var(--oss);}
+  .swot{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px;}
+  .swot div{padding:10px; border-radius:8px; font-size:var(--font-small);}
+  .staerken{background:#eaf6ee; border:1px solid #bfe6c9;}
+  .schwaechen{background:#fbebea; border:1px solid #f0c4c0;}
+  .swot h4{margin:0 0 6px 0; font-size:13px; text-transform:uppercase; letter-spacing:.03em;}
+  .staerken h4{color:#2c6e3f;}
+  .schwaechen h4{color:#a8362b;}
+  .swot ul{margin:0; padding-left:18px;}
+  .swot li{margin-bottom:3px;}
+  .einsatz{
+    margin-top:12px; padding-top:10px; border-top:1px dashed var(--line);
+    font-size:var(--font-small); color:var(--ink-soft);
+  }
+  .einsatz strong{color:var(--ink);}
+  table{width:100%; border-collapse:collapse; margin-top:16px; font-size:var(--font-small);}
+  th,td{border:1px solid var(--line); padding:10px 12px; text-align:left; vertical-align:top;}
+  th{background:var(--brand); color:#fff;}
+  tr:nth-child(even) td{background:#f8fafb;}
+  .re-guide{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; margin-top:16px;}
+  .re-guide .rc{background:#fff; border:1px solid var(--line); border-radius:10px; padding:16px;}
+  .re-guide .rc h4{margin:0 0 8px 0; color:var(--brand-dark);}
+  .re-guide .rc .empfehlung{font-weight:700; color:var(--accent); margin-top:8px; font-size:var(--font-small);}
+  .vertiefung-toggle{
+    display:inline-flex; align-items:center; gap:8px; margin:14px 0;
+    background:var(--card-bg); padding:6px; border-radius:20px; border:1px solid var(--line);
+  }
+  .vertiefung-toggle button{border:none; background:transparent; padding:8px 14px; border-radius:16px; min-height:38px;}
+  .vertiefung-toggle button.active{background:var(--brand); color:#fff;}
+  .full-text{display:none;}
+  .full-text.show{display:block;}
+  .short-text.hide{display:none;}
+  .cmp-row{margin-bottom:16px; border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+  .cmp-row-label{
+    background:var(--brand); color:#fff; font-weight:700; font-size:13px;
+    text-transform:uppercase; letter-spacing:.03em; padding:8px 14px;
+  }
+  .cmp-cell{padding:14px 16px; border-top:1px solid var(--line); font-size:var(--font-small);}
+  .cmp-cell:first-of-type{border-top:none;}
+  .cmp-cell .cmp-tag{
+    display:inline-block; font-size:11px; font-weight:700; color:#fff; padding:2px 8px;
+    border-radius:20px; margin-bottom:6px;
+  }
+  .cmp-cell ul{margin:6px 0 0 0; padding-left:18px;}
+  .cmp-cell li{margin-bottom:3px;}
+  body.beamer1 .cmp-cell, body.beamer2 .cmp-cell, body.beamer3 .cmp-cell{font-size:1.15em;}
+  .callout-sovereignty{
+    background:#f0f4f7; border:1px solid #c9d8de; border-radius:10px; padding:16px 18px; margin-top:18px;
+    font-size:var(--font-small);
+  }
+  .callout-sovereignty strong{color:var(--brand-dark);}
+  footer{
+    max-width:1100px; margin:40px auto 0 auto; padding:0 18px;
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;
+  }
+  .foot-box{
+    background:var(--card-bg); border:1px solid var(--line); border-radius:10px;
+    padding:14px 16px; font-size:var(--font-small);
+  }
+  .foot-box h5{margin:0 0 6px 0; color:var(--brand-dark); font-size:14px;}
+  .foot-box p{margin:0; color:var(--ink-soft);}
+  .stand{text-align:center; font-size:12px; color:var(--ink-soft); margin-top:20px;}
+
+  /* Beamer stages */
+  body.beamer1 header h1{font-size:clamp(30px,5vw,42px);}
+  body.beamer1 .card{font-size:17px;}
+  body.beamer1 footer{display:none;}
+  body.beamer1 .signature{display:none;}
+  body.beamer1 .swot li{margin-bottom:5px;}
+
+  body.beamer2 header h1{font-size:clamp(36px,6vw,50px);}
+  body.beamer2 .card, body.beamer2 table, body.beamer2 .re-guide{font-size:19px;}
+  body.beamer2 footer, body.beamer2 .signature{display:none;}
+  body.beamer2 .vertiefung-toggle .short-text.hide,
+  body.beamer2 .vertiefung-toggle{display:none;}
+  body.beamer2 .full-text{display:none !important;}
+  body.beamer2 .short-text{display:block !important;}
+
+  body.beamer3 header h1{font-size:clamp(42px,7vw,60px);}
+  body.beamer3 .card, body.beamer3 table, body.beamer3 .re-guide{font-size:22px;}
+  body.beamer3 footer, body.beamer3 .signature{display:none;}
+  body.beamer3 .swot{grid-template-columns:1fr;}
+  body.beamer3 .vertiefung-toggle{display:none;}
+  body.beamer3 .full-text{display:none !important;}
+  body.beamer3 .short-text{display:block !important;}
+
+  [lang-el]{}
+  html.lang-en [lang-el="de"]{display:none;}
+  html:not(.lang-en) [lang-el="en"]{display:none;}
+
+  @media (max-width:720px){
+    .signature{position:fixed; top:6px; right:6px; font-size:10px; padding:3px 7px;}
+    .swot{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="signature"><strong>Michaela Kühn</strong><br>www.michaela-kuehn.com</div>
+
+<header>
+  <h1><span lang-el="de">LLM-Markt-Kompass</span><span lang-el="en">LLM Market Compass</span></h1>
+  <p>
+    <span lang-el="de">Stärken, Schwächen und Einsatzfelder der führenden Sprachmodelle — eine Orientierungshilfe für RE, BA und PM.</span>
+    <span lang-el="en">Strengths, weaknesses and use cases of the leading language models — an orientation guide for RE, BA and PM.</span>
+  </p>
+</header>
+
+<div class="controls">
+  <button id="btn-lang" onpointerup="toggleLang()">🌐 <span lang-el="de">EN</span><span lang-el="en">DE</span></button>
+  <button id="btn-beamer" onpointerup="cycleBeamer()">🖥️ <span lang-el="de">Beamer-Modus</span><span lang-el="en">Presenter Mode</span></button>
+</div>
+
+<main>
+
+  <section id="intro">
+    <div class="intro-box">
+      <span lang-el="de"><strong>Warum dieser Kompass?</strong> Der LLM-Markt verändert sich im Wochentakt — neue Modellgenerationen, neue Preise, neue Stärken. Für RE-, BA- und PM-Praxis zählt nicht das lauteste Marketing-Versprechen, sondern die Frage: <em>Welches Modell passt zu meiner Aufgabe, meinen Daten und meinen Compliance-Anforderungen?</em> Dieses Tool ordnet die aktuelle Landschaft (Stand siehe Fußzeile) nach genau diesem Prinzip.</span>
+      <span lang-el="en"><strong>Why this compass?</strong> The LLM market shifts weekly — new model generations, new pricing, new strengths. For RE, BA and PM practice, what matters isn't the loudest marketing claim but the question: <em>which model fits my task, my data, and my compliance requirements?</em> This tool organizes the current landscape (see footer for the reference date) around exactly that principle.</span>
+    </div>
+  </section>
+
+  <section id="anbieter">
+    <h2><span lang-el="de">Die Anbieter im Überblick</span><span lang-el="en">Provider Overview</span></h2>
+    <div class="grid">
+
+      <div class="card claude">
+        <span class="badge">Anthropic</span>
+        <h3>Claude</h3>
+        <p class="short-text"><span lang-el="de">Fokus auf Sicherheit, verlässliches Instruction-Following und starke agentische Programmierfähigkeiten (Claude Code). Aktuelle Generation: Sonnet 5 / Opus 5.</span><span lang-el="en">Focus on safety, reliable instruction-following and strong agentic coding (Claude Code). Current generation: Sonnet 5 / Opus 5.</span></p>
+        <div class="swot">
+          <div class="staerken">
+            <h4><span lang-el="de">Stärken</span><span lang-el="en">Strengths</span></h4>
+            <ul>
+              <li><span lang-el="de">Sehr gute Ergebnisse bei mehrstufigen, agentischen Programmier- und Tool-Use-Aufgaben (starke SWE-bench-Werte)</span><span lang-el="en">Very strong on multi-step, agentic coding and tool-use tasks (strong SWE-bench results)</span></li>
+              <li><span lang-el="de">Ausgeprägte Instruction-Following-Qualität, gut geeignet für strukturierte Dokumenterstellung</span><span lang-el="en">Strong instruction-following quality, well suited to structured document generation</span></li>
+              <li><span lang-el="de">Großes Kontextfenster (1 Mio. Token) bei Sonnet 5</span><span lang-el="en">Large context window (1M tokens) in Sonnet 5</span></li>
+              <li><span lang-el="de">Guter Kosten-Nutzen-Faktor im Vergleich zu Opus-Klasse-Konkurrenten</span><span lang-el="en">Good cost-to-value ratio compared to Opus-class competitors</span></li>
+            </ul>
+          </div>
+          <div class="schwaechen">
+            <h4><span lang-el="de">Schwächen</span><span lang-el="en">Weaknesses</span></h4>
+            <ul>
+              <li><span lang-el="de">Opus-Tier vergleichsweise teuer bei sehr langen Outputs</span><span lang-el="en">Opus tier relatively expensive for very long outputs</span></li>
+              <li><span lang-el="de">Multimodale Fähigkeiten (Video, native Bildgenerierung) schwächer ausgeprägt als bei Google</span><span lang-el="en">Multimodal capabilities (video, native image generation) less developed than Google's</span></li>
+              <li><span lang-el="de">Kein eigenes großes Konsumenten-Ökosystem wie ChatGPT</span><span lang-el="en">No large consumer ecosystem like ChatGPT</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="einsatz"><strong><span lang-el="de">Einsatzempfehlung:</span><span lang-el="en">Recommended for:</span></strong> <span lang-el="de">Anforderungsdokumentation, Code-nahe RE-Artefakte, mehrstufige Analyseaufgaben mit Tool-Nutzung.</span><span lang-el="en">Requirements documentation, code-adjacent RE artifacts, multi-step analysis tasks with tool use.</span></div>
+      </div>
+
+      <div class="card openai">
+        <span class="badge">OpenAI</span>
+        <h3>GPT</h3>
+        <p class="short-text"><span lang-el="de">Breitestes Ökosystem (ChatGPT, API, Copilot-Integration). Aktuelle Familie: GPT-5.6 mit drei Stufen (Sol, Terra, Luna) für unterschiedliche Preis-/Leistungsprofile.</span><span lang-el="en">Broadest ecosystem (ChatGPT, API, Copilot integration). Current family: GPT-5.6 with three tiers (Sol, Terra, Luna) for different price/performance profiles.</span></p>
+        <div class="swot">
+          <div class="staerken">
+            <h4><span lang-el="de">Stärken</span><span lang-el="en">Strengths</span></h4>
+            <ul>
+              <li><span lang-el="de">Spitzenwerte bei autonomen Agenten-Benchmarks (z. B. Terminal-Bench, ARC-AGI-2)</span><span lang-el="en">Top scores on autonomous-agent benchmarks (e.g. Terminal-Bench, ARC-AGI-2)</span></li>
+              <li><span lang-el="de">Gestaffeltes Angebot erlaubt granulare Kosten-/Leistungssteuerung</span><span lang-el="en">Tiered lineup allows granular cost/performance control</span></li>
+              <li><span lang-el="de">Größte Verbreitung/Integrationstiefe in Unternehmenssoftware (Copilot, Azure)</span><span lang-el="en">Widest adoption/integration depth in enterprise software (Copilot, Azure)</span></li>
+            </ul>
+          </div>
+          <div class="schwaechen">
+            <h4><span lang-el="de">Schwächen</span><span lang-el="en">Weaknesses</span></h4>
+            <ul>
+              <li><span lang-el="de">Top-Tier (Sol) mit Abstand teuerstes Modell im Vergleich pro Aufgabe</span><span lang-el="en">Top tier (Sol) is by far the most expensive per task in comparison</span></li>
+              <li><span lang-el="de">Häufige Modellwechsel/Umbenennungen erschweren langfristige Evaluierung</span><span lang-el="en">Frequent model changes/renamings complicate long-term evaluation</span></li>
+              <li><span lang-el="de">US-Hosting als Standard — Datenschutz-/Souveränitätsfragen bei EU-Kunden bleiben relevant</span><span lang-el="en">US hosting by default — data-protection/sovereignty questions remain relevant for EU customers</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="einsatz"><strong><span lang-el="de">Einsatzempfehlung:</span><span lang-el="en">Recommended for:</span></strong> <span lang-el="de">Komplexe, autonome Mehrschritt-Recherchen; breite Werkzeug-Integration in bestehende MS-/Copilot-Landschaften.</span><span lang-el="en">Complex, autonomous multi-step research; broad tool integration into existing MS/Copilot landscapes.</span></div>
+      </div>
+
+      <div class="card gemini">
+        <span class="badge">Google DeepMind</span>
+        <h3>Gemini</h3>
+        <p class="short-text"><span lang-el="de">Stärke bei sehr langem Kontext und nativer Multimodalität. Aktuell: Gemini 3.1 Pro / 3.x Flash-Reihe.</span><span lang-el="en">Strength in very long context and native multimodality. Current: Gemini 3.1 Pro / 3.x Flash lineup.</span></p>
+        <div class="swot">
+          <div class="staerken">
+            <h4><span lang-el="de">Stärken</span><span lang-el="en">Strengths</span></h4>
+            <ul>
+              <li><span lang-el="de">Führend bei Kontextlänge (bis 1 Mio. Token Input, 65k Output) und Dokumentenmassen-Verarbeitung</span><span lang-el="en">Leading in context length (up to 1M input tokens, 65K output) and bulk-document processing</span></li>
+              <li><span lang-el="de">Starke native Multimodalität (Text, Bild, Video, Audio in einem Modell)</span><span lang-el="en">Strong native multimodality (text, image, video, audio in one model)</span></li>
+              <li><span lang-el="de">Enge Integration in Google-Workspace-Umgebungen</span><span lang-el="en">Tight integration into Google Workspace environments</span></li>
+            </ul>
+          </div>
+          <div class="schwaechen">
+            <h4><span lang-el="de">Schwächen</span><span lang-el="en">Weaknesses</span></h4>
+            <ul>
+              <li><span lang-el="de">Unregelmäßiger Produkttakt — Pro-Linie zeitweise ohne aktuelles Flaggschiff, Flash-Reihe übernimmt Führungsrolle</span><span lang-el="en">Irregular release cadence — Pro line temporarily without a current flagship, Flash lineup taking the lead role</span></li>
+              <li><span lang-el="de">Verfügbarkeit/Zugangswege je nach Region und Google-Konto unterschiedlich geregelt</span><span lang-el="en">Availability/access paths vary by region and Google account type</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="einsatz"><strong><span lang-el="de">Einsatzempfehlung:</span><span lang-el="en">Recommended for:</span></strong> <span lang-el="de">Analyse langer Vertrags-/Anforderungskorpora, multimodale Anforderungserhebung (z. B. Fotoprotokolle, Video-Interviews).</span><span lang-el="en">Analyzing long contract/requirements corpora, multimodal elicitation (e.g. photo protocols, video interviews).</span></div>
+      </div>
+
+      <div class="card grok">
+        <span class="badge">xAI</span>
+        <h3>Grok</h3>
+        <p class="short-text"><span lang-el="de">Schneller Modellzyklus, aktuell Grok 4.3, mit Fokus auf kostengünstiges Reasoning und Echtzeit-Datenanbindung (X/Twitter).</span><span lang-el="en">Fast release cadence, currently Grok 4.3, focused on low-cost reasoning and real-time data connectivity (X/Twitter).</span></p>
+        <div class="swot">
+          <div class="staerken">
+            <h4><span lang-el="de">Stärken</span><span lang-el="en">Strengths</span></h4>
+            <ul>
+              <li><span lang-el="de">Gutes Preis-Leistungs-Verhältnis bei Reasoning-Aufgaben, hohe Verarbeitungsgeschwindigkeit</span><span lang-el="en">Good price/performance on reasoning tasks, high throughput</span></li>
+              <li><span lang-el="de">Zugriff auf tagesaktuelle Daten über X-Integration</span><span lang-el="en">Access to same-day data via X integration</span></li>
+            </ul>
+          </div>
+          <div class="schwaechen">
+            <h4><span lang-el="de">Schwächen</span><span lang-el="en">Weaknesses</span></h4>
+            <ul>
+              <li><span lang-el="de">Kürzere Erfahrungshistorie in regulierten Enterprise-Umgebungen als die drei etablierten Anbieter</span><span lang-el="en">Shorter track record in regulated enterprise settings than the three established providers</span></li>
+              <li><span lang-el="de">Governance- und Content-Moderationsfragen wurden in der Vergangenheit öffentlich diskutiert</span><span lang-el="en">Governance and content-moderation questions have been publicly discussed in the past</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="einsatz"><strong><span lang-el="de">Einsatzempfehlung:</span><span lang-el="en">Recommended for:</span></strong> <span lang-el="de">Hochvolumige, kostensensitive Reasoning-Aufgaben ohne strenge regulatorische Auflagen.</span><span lang-el="en">High-volume, cost-sensitive reasoning tasks without strict regulatory constraints.</span></div>
+      </div>
+
+      <div class="card llama">
+        <span class="badge">Meta</span>
+        <h3>Llama</h3>
+        <p class="short-text"><span lang-el="de">Größtes Open-Weight-Ökosystem. Llama 3.3 (dicht, 128k Kontext) und Llama-4-Familie (Scout/Maverick, MoE-Architektur) verfügbar; das 2-Billionen-Parameter-Flaggschiff "Behemoth" bleibt unveröffentlicht.</span><span lang-el="en">Largest open-weight ecosystem. Llama 3.3 (dense, 128K context) and the Llama 4 family (Scout/Maverick, MoE architecture) are available; the 2-trillion-parameter "Behemoth" flagship remains unreleased.</span></p>
+        <div class="swot">
+          <div class="staerken">
+            <h4><span lang-el="de">Stärken</span><span lang-el="en">Strengths</span></h4>
+            <ul>
+              <li><span lang-el="de">Größte Community, breiteste Tooling-/Fine-Tuning-Unterstützung</span><span lang-el="en">Largest community, broadest tooling/fine-tuning support</span></li>
+              <li><span lang-el="de">Sehr starke Instruction-Following-Werte (z. B. IFEval)</span><span lang-el="en">Very strong instruction-following scores (e.g. IFEval)</span></li>
+              <li><span lang-el="de">Selbst-Hosting möglich — volle Datenkontrolle</span><span lang-el="en">Self-hosting possible — full data control</span></li>
+            </ul>
+          </div>
+          <div class="schwaechen">
+            <h4><span lang-el="de">Schwächen</span><span lang-el="en">Weaknesses</span></h4>
+            <ul>
+              <li><span lang-el="de">Lizenz der Llama-4-Familie schließt multimodale Nutzungsrechte für EU-Personen/-Unternehmen aus — praktisch eine Einschränkung für den EU-Einsatz</span><span lang-el="en">Llama 4 family's license excludes multimodal usage rights for EU-based individuals/companies — a practical restriction for EU deployment</span></li>
+              <li><span lang-el="de">Flaggschiff-Modell wiederholt verschoben, Entwicklungstempo zuletzt unregelmäßig</span><span lang-el="en">Flagship model repeatedly delayed, development pace recently irregular</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="einsatz"><strong><span lang-el="de">Einsatzempfehlung:</span><span lang-el="en">Recommended for:</span></strong> <span lang-el="de">On-Premise-Betrieb mit voller Datenhoheit, textbasierte Anwendungen außerhalb der EU-Lizenzbeschränkung.</span><span lang-el="en">On-premise operation with full data sovereignty, text-based applications outside the EU licensing restriction.</span></div>
+      </div>
+
+      <div class="card mistral">
+        <span class="badge">Mistral AI</span>
+        <h3>Mistral</h3>
+        <p class="short-text"><span lang-el="de">Europäischer Anbieter, Apache-2.0-Lizenzierung. Aktuelle Reihe: Mistral Large 3 / Medium 3.5 / Small 3.2.</span><span lang-el="en">European provider, Apache 2.0 licensing. Current lineup: Mistral Large 3 / Medium 3.5 / Small 3.2.</span></p>
+        <div class="swot">
+          <div class="staerken">
+            <h4><span lang-el="de">Stärken</span><span lang-el="en">Strengths</span></h4>
+            <ul>
+              <li><span lang-el="de">Führend bei Code-Benchmarks unter offenen Modellen (HumanEval)</span><span lang-el="en">Leading code benchmarks among open models (HumanEval)</span></li>
+              <li><span lang-el="de">Sehr permissive Apache-2.0-Lizenz — uneingeschränkte kommerzielle Nutzung</span><span lang-el="en">Very permissive Apache 2.0 license — unrestricted commercial use</span></li>
+              <li><span lang-el="de">Kleinere Modelle laufen ressourcenschonend (z. B. Small 3.2 mit 14 GB RAM)</span><span lang-el="en">Smaller models run resource-efficiently (e.g. Small 3.2 with 14 GB RAM)</span></li>
+              <li><span lang-el="de">EU-Sitz — relevanter Faktor für Datenschutz- und Souveränitätsdiskussionen</span><span lang-el="en">EU headquarters — a relevant factor in data-protection and sovereignty discussions</span></li>
+            </ul>
+          </div>
+          <div class="schwaechen">
+            <h4><span lang-el="de">Schwächen</span><span lang-el="en">Weaknesses</span></h4>
+            <ul>
+              <li><span lang-el="de">Kleineres Kapital-/Compute-Budget als die drei US-Großanbieter, dadurch langsameres Frontier-Tempo</span><span lang-el="en">Smaller capital/compute budget than the three big US providers, resulting in a slower frontier pace</span></li>
+              <li><span lang-el="de">Weniger ausgeprägtes Ökosystem an Drittanbieter-Integrationen</span><span lang-el="en">Less developed ecosystem of third-party integrations</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="einsatz"><strong><span lang-el="de">Einsatzempfehlung:</span><span lang-el="en">Recommended for:</span></strong> <span lang-el="de">EU-Datenschutz-sensible Projekte, Code-Support, ressourcenschonender On-Premise-Betrieb.</span><span lang-el="en">EU data-protection-sensitive projects, code support, resource-efficient on-premise operation.</span></div>
+      </div>
+
+      <div class="card oss">
+        <span class="badge"><span lang-el="de">Offene Modelle</span><span lang-el="en">Open Models</span></span>
+        <h3>DeepSeek · Qwen · Phi · GLM</h3>
+        <p class="short-text"><span lang-el="de">Chinesische und Microsoft-Modelle mit rasant wachsender Bedeutung: DeepSeek V4 (starkes Reasoning zu niedrigen Kosten), Qwen3 (72B, 29 Sprachen, Top-Code-Werte), Microsoft Phi-4 (klein, stark in Mathematik/Reasoning).</span><span lang-el="en">Chinese and Microsoft models with rapidly growing relevance: DeepSeek V4 (strong reasoning at low cost), Qwen3 (72B, 29 languages, top code scores), Microsoft Phi-4 (small, strong at math/reasoning).</span></p>
+        <div class="swot">
+          <div class="staerken">
+            <h4><span lang-el="de">Stärken</span><span lang-el="en">Strengths</span></h4>
+            <ul>
+              <li><span lang-el="de">Exzellentes Preis-Leistungs-Verhältnis, teils Bestwerte bei Mathematik/Code trotz kleiner Modellgröße</span><span lang-el="en">Excellent price/performance, sometimes top scores in math/code despite small model size</span></li>
+              <li><span lang-el="de">Offene Gewichte erlauben volle Kontrolle über Deployment und Daten</span><span lang-el="en">Open weights allow full control over deployment and data</span></li>
+            </ul>
+          </div>
+          <div class="schwaechen">
+            <h4><span lang-el="de">Schwächen</span><span lang-el="en">Weaknesses</span></h4>
+            <ul>
+              <li><span lang-el="de">Herkunft (insb. chinesische Anbieter) wirft in vielen Organisationen eigene Compliance-/Sicherheitsfragen auf</span><span lang-el="en">Provenance (especially Chinese providers) raises separate compliance/security questions in many organizations</span></li>
+              <li><span lang-el="de">Benchmark-Werte oft auf standardisierte Tests optimiert, nicht 1:1 auf Unternehmens-Codebasen übertragbar</span><span lang-el="en">Benchmark scores are often optimized for standardized tests, not directly transferable to enterprise codebases</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="einsatz"><strong><span lang-el="de">Einsatzempfehlung:</span><span lang-el="en">Recommended for:</span></strong> <span lang-el="de">Kostensensitive Massenaufgaben, Prototyping — vor Produktiveinsatz stets eigene Compliance-Prüfung.</span><span lang-el="en">Cost-sensitive bulk tasks, prototyping — always run your own compliance review before production use.</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="vertiefung">
+    <h2><span lang-el="de">Vertiefung: Was steckt hinter den Unterschieden?</span><span lang-el="en">Deep Dive: What Drives the Differences?</span></h2>
+    <div class="vertiefung-toggle">
+      <button id="v-short" class="active" onpointerup="setVertiefung('short')"><span lang-el="de">Kurzfassung</span><span lang-el="en">Short version</span></button>
+      <button id="v-full" onpointerup="setVertiefung('full')"><span lang-el="de">Ausführlich</span><span lang-el="en">Full version</span></button>
+    </div>
+
+    <div class="short-text">
+      <p><span lang-el="de">Vier Faktoren erklären die meisten Unterschiede: <strong>Trainingsdaten &amp; -ziel</strong> (welche Fähigkeit wurde optimiert — Coding, Reasoning, Kreativität?), <strong>Architektur</strong> (dichtes Modell vs. Mixture-of-Experts), <strong>Lizenz &amp; Hosting</strong> (proprietär/API vs. offene Gewichte/selbst gehostet) und <strong>Kontextfenster</strong> (wie viel Text/Bild/Video kann das Modell gleichzeitig "im Kopf" behalten).</span>
+      <span lang-el="en">Four factors explain most differences: <strong>training data &amp; objective</strong> (which capability was optimized — coding, reasoning, creativity?), <strong>architecture</strong> (dense model vs. mixture-of-experts), <strong>license &amp; hosting</strong> (proprietary/API vs. open weights/self-hosted), and <strong>context window</strong> (how much text/image/video the model can hold "in mind" at once).</span></p>
+    </div>
+
+    <div class="full-text">
+      <p><span lang-el="de"><strong>1. Trainingsdaten &amp; -ziel.</strong> Kein Anbieter trainiert "das beste Modell für alles" — jedes Labor setzt Schwerpunkte. Anthropic hat Claude von Anfang an stark auf Sicherheit, Instruction-Following und zuletzt agentisches Coding ausgerichtet — das erklärt, warum Claude bei mehrstufigen Werkzeug-Aufgaben und in Programmier-Assistenten wie Claude Code überdurchschnittlich abschneidet. OpenAI verfolgt mit GPT einen breiten Konsumenten- und Enterprise-Ansatz gleichzeitig, was die gestaffelte Produktfamilie (z. B. Sol/Terra/Luna) erklärt: unterschiedliche Zielgruppen brauchen unterschiedliche Preis-Leistungs-Punkte. Google trainiert Gemini von Grund auf multimodal (Text, Bild, Video, Audio in einem Modell statt nachträglich verknüpft) — ein struktureller Vorteil bei Aufgaben, die mehrere Medientypen kombinieren.</span>
+      <span lang-el="en"><strong>1. Training data &amp; objective.</strong> No provider trains "the best model for everything" — every lab sets priorities. Anthropic has aligned Claude from the start around safety, instruction-following, and more recently agentic coding — which explains why Claude performs above average on multi-step tool tasks and in coding assistants like Claude Code. OpenAI pursues a broad consumer- and enterprise approach simultaneously with GPT, which explains the tiered product family (e.g. Sol/Terra/Luna): different audiences need different price/performance points. Google trains Gemini natively multimodal (text, image, video, audio in one model rather than bolted together afterward) — a structural advantage for tasks that combine multiple media types.</span></p>
+
+      <p><span lang-el="de"><strong>2. Architektur.</strong> Größere Modelle sind nicht automatisch besser — die Architektur entscheidet mit. "Dichte" Modelle (z. B. Llama 3.3, 70 Mrd. Parameter) nutzen bei jeder Anfrage alle Parameter, was gründlich, aber rechenintensiv ist. "Mixture-of-Experts"-Modelle (z. B. Llama 4, DeepSeek V4) aktivieren pro Anfrage nur einen Bruchteil der Gesamtparameter — das senkt Kosten und Latenz bei vergleichbarer Qualität, erklärt aber auch, warum reine Parameterzahlen zwischen Anbietern kaum vergleichbar sind. Für die Praxis heißt das: Ein Modell mit "nur" 24 Mrd. Parametern (wie Mistral Small) kann einem 70-Mrd.-Modell in bestimmten Aufgaben nahekommen, wenn Architektur und Trainingsdaten gut aufeinander abgestimmt sind.</span>
+      <span lang-el="en"><strong>2. Architecture.</strong> Bigger models aren't automatically better — architecture matters just as much. "Dense" models (e.g. Llama 3.3, 70B parameters) use all parameters on every request, which is thorough but compute-intensive. "Mixture-of-experts" models (e.g. Llama 4, DeepSeek V4) activate only a fraction of the total parameters per request — this lowers cost and latency at comparable quality, but also explains why raw parameter counts are barely comparable across providers. In practice: a model with "only" 24B parameters (like Mistral Small) can come close to a 70B model on certain tasks if architecture and training data are well matched.</span></p>
+
+      <p><span lang-el="de"><strong>3. Lizenz &amp; Hosting.</strong> Dies ist für RE/BA/PM-Kontexte oft der entscheidende Faktor — wichtiger als jeder Benchmark-Wert. Proprietäre API-Modelle (Claude, GPT, Gemini, Grok) laufen ausschließlich auf Servern des Anbieters; Daten verlassen die eigene Infrastruktur. Offene Gewichte (Llama, Mistral, Qwen, DeepSeek) können selbst gehostet werden — das ermöglicht volle Datenhoheit, verlagert aber Betrieb, Wartung und Sicherheit in die eigene Verantwortung. Die Lizenzbedingungen variieren erheblich: Apache 2.0 (Mistral) ist uneingeschränkt kommerziell nutzbar, während die Meta-Community-Lizenz für die Llama-4-Familie multimodale Nutzungsrechte für EU-Personen und -Unternehmen ausdrücklich ausschließt — ein Beispiel dafür, warum Lizenztexte vor jedem Produktiveinsatz sorgfältig geprüft werden müssen.</span>
+      <span lang-el="en"><strong>3. License &amp; hosting.</strong> This is often the decisive factor in RE/BA/PM contexts — more important than any benchmark score. Proprietary API models (Claude, GPT, Gemini, Grok) run exclusively on the provider's servers; data leaves your own infrastructure. Open weights (Llama, Mistral, Qwen, DeepSeek) can be self-hosted — enabling full data sovereignty, but shifting operations, maintenance, and security onto your own organization. Licensing terms vary considerably: Apache 2.0 (Mistral) permits unrestricted commercial use, while the Meta Community License for the Llama 4 family explicitly excludes multimodal usage rights for EU-based individuals and companies — an example of why license text must be carefully reviewed before any production use.</span></p>
+
+      <p><span lang-el="de"><strong>4. Kontextfenster.</strong> Die Fähigkeit, große Textmengen gleichzeitig zu verarbeiten, unterscheidet sich stark und ist für RE-Praxis hochrelevant: Wer ein 300-seitiges Lastenheft, ein Vertragswerk oder ein ganzes Anforderungs-Repository in einem Durchgang analysieren will, braucht ein großes Kontextfenster (Gemini 3.1 Pro und Claude Sonnet 5 bieten aktuell bis zu 1 Mio. Token Input). Kleinere Kontextfenster zwingen zu Chunking-Strategien — das erhöht den Aufwand, kann aber bei fokussierten Einzelaufgaben irrelevant sein.</span>
+      <span lang-el="en"><strong>4. Context window.</strong> The ability to process large volumes of text at once varies significantly and is highly relevant to RE practice: analyzing a 300-page requirements specification, a contract, or an entire requirements repository in one pass requires a large context window (Gemini 3.1 Pro and Claude Sonnet 5 currently offer up to 1M input tokens). Smaller context windows force chunking strategies — increasing effort, though this may be irrelevant for focused, single tasks.</span></p>
+    </div>
+  </section>
+
+  <section id="direktvergleich">
+    <h2><span lang-el="de">Direktvergleich: Zwei Modelle im Duell</span><span lang-el="en">Head-to-Head: Two Models Compared</span></h2>
+    <div class="intro-box" style="margin-bottom:14px;">
+      <span lang-el="de">Wähle zwei Modelle aus — sie werden untereinander mit synchronisierten Kriterienzeilen gegenübergestellt, damit du pro Kriterium direkt vergleichen kannst, ohne zwischen Spalten zu springen.</span>
+      <span lang-el="en">Pick two models — they'll be stacked with synchronized criteria rows so you can compare each criterion directly without jumping between columns.</span>
+    </div>
+    <div class="controls" style="position:static; justify-content:flex-start; padding:0; background:none; border:none; margin-bottom:14px;">
+      <select id="sel-a" onchange="renderCompare()" style="min-height:44px; font-size:15px; padding:8px 12px; border-radius:8px; border:1px solid var(--line);"></select>
+      <span style="align-self:center; font-weight:700; color:var(--ink-soft);">vs.</span>
+      <select id="sel-b" onchange="renderCompare()" style="min-height:44px; font-size:15px; padding:8px 12px; border-radius:8px; border:1px solid var(--line);"></select>
+    </div>
+    <div id="compare-output"></div>
+  </section>
+
+  <section id="vergleich">
+    <h2><span lang-el="de">Vergleichstabelle auf einen Blick</span><span lang-el="en">Comparison Table at a Glance</span></h2>
+    <table>
+      <thead>
+        <tr>
+          <th><span lang-el="de">Anbieter / Modell</span><span lang-el="en">Provider / Model</span></th>
+          <th><span lang-el="de">Stärkste Domäne</span><span lang-el="en">Strongest Domain</span></th>
+          <th><span lang-el="de">Lizenz / Hosting</span><span lang-el="en">License / Hosting</span></th>
+          <th><span lang-el="de">Sitz</span><span lang-el="en">HQ</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Claude (Anthropic)</td><td><span lang-el="de">Agentisches Coding, Instruction-Following</span><span lang-el="en">Agentic coding, instruction-following</span></td><td><span lang-el="de">Proprietär / API</span><span lang-el="en">Proprietary / API</span></td><td>USA</td></tr>
+        <tr><td>GPT (OpenAI)</td><td><span lang-el="de">Autonome Agenten, breite Integration</span><span lang-el="en">Autonomous agents, broad integration</span></td><td><span lang-el="de">Proprietär / API</span><span lang-el="en">Proprietary / API</span></td><td>USA</td></tr>
+        <tr><td>Gemini (Google)</td><td><span lang-el="de">Langer Kontext, native Multimodalität</span><span lang-el="en">Long context, native multimodality</span></td><td><span lang-el="de">Proprietär / API</span><span lang-el="en">Proprietary / API</span></td><td>USA</td></tr>
+        <tr><td>Grok (xAI)</td><td><span lang-el="de">Kosten-Reasoning, Echtzeitdaten</span><span lang-el="en">Cost-efficient reasoning, real-time data</span></td><td><span lang-el="de">Proprietär / API</span><span lang-el="en">Proprietary / API</span></td><td>USA</td></tr>
+        <tr><td>Llama (Meta)</td><td><span lang-el="de">Instruction-Following, Community-Tooling</span><span lang-el="en">Instruction-following, community tooling</span></td><td><span lang-el="de">Offene Gewichte (Lizenz mit EU-Einschränkung bei Llama 4)</span><span lang-el="en">Open weights (license restricts EU use for Llama 4)</span></td><td>USA</td></tr>
+        <tr><td>Mistral</td><td><span lang-el="de">Code, ressourcenschonender Betrieb</span><span lang-el="en">Code, resource-efficient operation</span></td><td><span lang-el="de">Apache 2.0 (offen)</span><span lang-el="en">Apache 2.0 (open)</span></td><td>Frankreich / EU</td></tr>
+        <tr><td>DeepSeek / Qwen</td><td><span lang-el="de">Reasoning &amp; Mathematik zu niedrigen Kosten</span><span lang-el="en">Reasoning &amp; math at low cost</span></td><td><span lang-el="de">Offene Gewichte</span><span lang-el="en">Open weights</span></td><td><span lang-el="de">China</span><span lang-el="en">China</span></td></tr>
+        <tr><td>Phi (Microsoft)</td><td><span lang-el="de">Mathematik/Reasoning bei kleiner Modellgröße</span><span lang-el="en">Math/reasoning at small model size</span></td><td><span lang-el="de">Offene Gewichte</span><span lang-el="en">Open weights</span></td><td>USA</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="re-anwendung">
+    <h2><span lang-el="de">Einsatzleitfaden für RE, BA und PM</span><span lang-el="en">Application Guide for RE, BA and PM</span></h2>
+    <div class="re-guide">
+      <div class="rc">
+        <h4><span lang-el="de">Anforderungsanalyse &amp; Dokumentation</span><span lang-el="en">Requirements analysis &amp; documentation</span></h4>
+        <p><span lang-el="de">Präzises Befolgen strukturierter Vorgaben (z. B. IREB-Templates, Akzeptanzkriterien) ist entscheidend.</span><span lang-el="en">Precise adherence to structured templates (e.g. IREB templates, acceptance criteria) is decisive.</span></p>
+        <div class="empfehlung"><span lang-el="de">→ Claude oder GPT (starkes Instruction-Following)</span><span lang-el="en">→ Claude or GPT (strong instruction-following)</span></div>
+      </div>
+      <div class="rc">
+        <h4><span lang-el="de">Analyse langer Dokumentbestände</span><span lang-el="en">Analyzing large document sets</span></h4>
+        <p><span lang-el="de">Lastenhefte, Verträge, ganze Repositories in einem Durchgang durchsuchen.</span><span lang-el="en">Searching requirement specs, contracts, entire repositories in one pass.</span></p>
+        <div class="empfehlung"><span lang-el="de">→ Gemini 3.1 Pro oder Claude Sonnet 5 (1-Mio.-Token-Kontext)</span><span lang-el="en">→ Gemini 3.1 Pro or Claude Sonnet 5 (1M-token context)</span></div>
+      </div>
+      <div class="rc">
+        <h4><span lang-el="de">Datenschutz-/Souveränitäts-kritische Projekte</span><span lang-el="en">Data-protection / sovereignty-critical projects</span></h4>
+        <p><span lang-el="de">Sensible Kundendaten, Behörden- oder Betriebsratskontext, DSGVO-Anforderungen.</span><span lang-el="en">Sensitive customer data, government or works-council context, GDPR requirements.</span></p>
+        <div class="empfehlung"><span lang-el="de">→ Mistral (EU-Sitz) oder On-Premise-Betrieb offener Modelle</span><span lang-el="en">→ Mistral (EU-based) or on-premise operation of open models</span></div>
+      </div>
+      <div class="rc">
+        <h4><span lang-el="de">Prototyping &amp; kostensensitive Massenaufgaben</span><span lang-el="en">Prototyping &amp; cost-sensitive bulk tasks</span></h4>
+        <p><span lang-el="de">Große Mengen einfacher Klassifikations- oder Zusammenfassungsaufgaben.</span><span lang-el="en">Large volumes of simple classification or summarization tasks.</span></p>
+        <div class="empfehlung"><span lang-el="de">→ Kleinere/offene Modelle (Mistral Small, Phi, Grok) statt Frontier-Modell</span><span lang-el="en">→ Smaller/open models (Mistral Small, Phi, Grok) instead of a frontier model</span></div>
+      </div>
+      <div class="rc">
+        <h4><span lang-el="de">Multimodale Anforderungserhebung</span><span lang-el="en">Multimodal elicitation</span></h4>
+        <p><span lang-el="de">Fotoprotokolle, Skizzen, Video-Interviews, UI-Mockups gemeinsam auswerten.</span><span lang-el="en">Jointly evaluating photo protocols, sketches, video interviews, UI mockups.</span></p>
+        <div class="empfehlung"><span lang-el="de">→ Gemini (native Multimodalität)</span><span lang-el="en">→ Gemini (native multimodality)</span></div>
+      </div>
+      <div class="rc">
+        <h4><span lang-el="de">Agentische Mehrschritt-Workflows</span><span lang-el="en">Agentic multi-step workflows</span></h4>
+        <p><span lang-el="de">Werkzeugnutzung über mehrere Schritte, z. B. automatisierte Testfall-Generierung + Ausführung.</span><span lang-el="en">Tool use across multiple steps, e.g. automated test-case generation + execution.</span></p>
+        <div class="empfehlung"><span lang-el="de">→ Claude Opus/Sonnet oder GPT-5.6 Sol</span><span lang-el="en">→ Claude Opus/Sonnet or GPT-5.6 Sol</span></div>
+      </div>
+    </div>
+
+    <div class="callout-sovereignty">
+      <span lang-el="de"><strong>Wichtiger Hinweis zur digitalen Souveränität:</strong> Die Modellwahl ist nie nur eine Qualitätsfrage. Wer Vorgaben wie DSGVO, EU AI Act, BetrVG oder branchenspezifische Compliance-Vorgaben erfüllen muss, sollte Hosting-Standort, Lizenzbedingungen und Auftragsverarbeitungsverträge <em>vor</em> jedem Benchmark-Vergleich prüfen.</span>
+      <span lang-el="en"><strong>Important note on digital sovereignty:</strong> Model choice is never purely a quality question. Anyone required to meet GDPR, the EU AI Act, works-council regulations, or industry-specific compliance requirements should check hosting location, license terms, and data-processing agreements <em>before</em> any benchmark comparison.</span>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="foot-box">
+    <h5><span lang-el="de">Systemprompt</span><span lang-el="en">System Prompt</span></h5>
+    <p><span lang-el="de">Dieses Tool ordnet Marktdaten für RE/BA/PM-Entscheidungen ein — es ersetzt keine eigene, aktuelle Anbieter-Recherche.</span><span lang-el="en">This tool contextualizes market data for RE/BA/PM decisions — it does not replace your own up-to-date provider research.</span></p>
+  </div>
+  <div class="foot-box">
+    <h5><span lang-el="de">Handbuch</span><span lang-el="en">Handbook</span></h5>
+    <p><span lang-el="de">DE/EN-Umschalter oben; Beamer-Modus-Button durchläuft vier Stufen (Normal → Beamer → Beamer XL → Beamer XXL).</span><span lang-el="en">DE/EN toggle above; presenter-mode button cycles through four stages (Normal → Presenter → Presenter XL → Presenter XXL).</span></p>
+  </div>
+  <div class="foot-box">
+    <h5><span lang-el="de">Vortrags-Skript</span><span lang-el="en">Speaker Notes</span></h5>
+    <p><span lang-el="de">Einstieg über die vier Unterscheidungsfaktoren (Vertiefung), dann Anbieterkarten, dann Einsatzleitfaden als Transfer in die eigene Praxis.</span><span lang-el="en">Open with the four differentiating factors (deep dive), then provider cards, then the application guide to transfer into the audience's own practice.</span></p>
+  </div>
+  <div class="foot-box">
+    <h5><span lang-el="de">Normen-Register / Quellenstand</span><span lang-el="en">Standards Register / Source Status</span></h5>
+    <p><span lang-el="de">Modelldaten recherchiert per Websuche, Stand 12.09.2026. Der LLM-Markt verändert sich sehr schnell — Angaben vor Trainings-/Beschaffungsentscheidungen stets erneut prüfen.</span><span lang-el="en">Model data researched via web search, as of Sep 12, 2026. The LLM market changes very fast — always re-verify before training/procurement decisions.</span></p>
+  </div>
+</footer>
+<div class="stand"><span lang-el="de">Stand: 12. September 2026 · © Michaela Kühn</span><span lang-el="en">As of: September 12, 2026 · © Michaela Kühn</span></div>
+
+<script>
+  var MODELS = [
+    { id:'claude', cls:'claude', color:'#c96442', name:{de:'Claude (Anthropic)',en:'Claude (Anthropic)'},
+      staerken:{de:['Sehr gut bei mehrstufigen, agentischen Coding-/Tool-Use-Aufgaben','Ausgeprägtes Instruction-Following, gut für strukturierte Dokumente','1-Mio.-Token-Kontext bei Sonnet 5'],
+                en:['Very strong on multi-step, agentic coding/tool-use tasks','Strong instruction-following, good for structured documents','1M-token context in Sonnet 5']},
+      schwaechen:{de:['Opus-Tier teuer bei sehr langen Outputs','Multimodalität (Video, Bildgenerierung) schwächer als bei Google'],
+                  en:['Opus tier expensive for very long outputs','Multimodality (video, image generation) weaker than Google']},
+      lizenz:{de:'Proprietär / API — Hosting USA', en:'Proprietary / API — hosted in the US'},
+      einsatz:{de:'Anforderungsdokumentation, agentisches Coding, mehrstufige Analyseaufgaben', en:'Requirements documentation, agentic coding, multi-step analysis'} },
+    { id:'gpt', cls:'openai', color:'#10a37f', name:{de:'GPT (OpenAI)',en:'GPT (OpenAI)'},
+      staerken:{de:['Spitzenwerte bei autonomen Agenten-Benchmarks','Gestaffeltes Angebot (Sol/Terra/Luna) für granulare Kostensteuerung','Größte Verbreitung in Enterprise-Software (Copilot, Azure)'],
+                en:['Top scores on autonomous-agent benchmarks','Tiered lineup (Sol/Terra/Luna) for granular cost control','Widest adoption in enterprise software (Copilot, Azure)']},
+      schwaechen:{de:['Top-Tier (Sol) mit Abstand teuerstes Modell im Vergleich','Häufige Modellwechsel erschweren langfristige Evaluierung'],
+                  en:['Top tier (Sol) by far the most expensive in comparison','Frequent model changes complicate long-term evaluation']},
+      lizenz:{de:'Proprietär / API — Hosting USA', en:'Proprietary / API — hosted in the US'},
+      einsatz:{de:'Komplexe autonome Mehrschritt-Recherchen, MS-/Copilot-Integration', en:'Complex autonomous multi-step research, MS/Copilot integration'} },
+    { id:'gemini', cls:'gemini', color:'#4285f4', name:{de:'Gemini (Google)',en:'Gemini (Google)'},
+      staerken:{de:['Führend bei Kontextlänge (bis 1 Mio. Token) und Dokumentenmassen','Starke native Multimodalität (Text, Bild, Video, Audio)','Enge Google-Workspace-Integration'],
+                en:['Leading context length (up to 1M tokens) and bulk documents','Strong native multimodality (text, image, video, audio)','Tight Google Workspace integration']},
+      schwaechen:{de:['Unregelmäßiger Produkttakt, Pro-Linie zeitweise ohne Flaggschiff','Verfügbarkeit je nach Region/Konto unterschiedlich'],
+                  en:['Irregular release cadence, Pro line temporarily without a flagship','Availability varies by region/account']},
+      lizenz:{de:'Proprietär / API — Hosting USA', en:'Proprietary / API — hosted in the US'},
+      einsatz:{de:'Lange Dokumentkorpora, multimodale Anforderungserhebung', en:'Long document corpora, multimodal elicitation'} },
+    { id:'grok', cls:'grok', color:'#5a5a5a', name:{de:'Grok (xAI)',en:'Grok (xAI)'},
+      staerken:{de:['Gutes Preis-Leistungs-Verhältnis bei Reasoning','Zugriff auf tagesaktuelle Daten über X-Integration'],
+                en:['Good price/performance on reasoning','Access to same-day data via X integration']},
+      schwaechen:{de:['Kürzere Erfahrung in regulierten Enterprise-Umgebungen','Governance-/Moderationsfragen wurden öffentlich diskutiert'],
+                  en:['Shorter track record in regulated enterprise settings','Governance/moderation questions publicly discussed']},
+      lizenz:{de:'Proprietär / API — Hosting USA', en:'Proprietary / API — hosted in the US'},
+      einsatz:{de:'Hochvolumige, kostensensitive Reasoning-Aufgaben', en:'High-volume, cost-sensitive reasoning tasks'} },
+    { id:'llama', cls:'llama', color:'#0668e1', name:{de:'Llama (Meta)',en:'Llama (Meta)'},
+      staerken:{de:['Größte Community, breiteste Tooling-Unterstützung','Sehr starke Instruction-Following-Werte','Selbst-Hosting möglich — volle Datenkontrolle'],
+                en:['Largest community, broadest tooling support','Very strong instruction-following scores','Self-hosting possible — full data control']},
+      schwaechen:{de:['Llama-4-Lizenz schließt multimodale EU-Nutzung aus','Flaggschiff wiederholt verschoben'],
+                  en:['Llama 4 license excludes multimodal EU usage','Flagship repeatedly delayed']},
+      lizenz:{de:'Offene Gewichte — Meta Community License (EU-Einschränkung bei Llama 4)', en:'Open weights — Meta Community License (EU restriction on Llama 4)'},
+      einsatz:{de:'On-Premise-Betrieb mit voller Datenhoheit', en:'On-premise operation with full data sovereignty'} },
+    { id:'mistral', cls:'mistral', color:'#ff7000', name:{de:'Mistral',en:'Mistral'},
+      staerken:{de:['Führend bei Code-Benchmarks unter offenen Modellen','Apache-2.0-Lizenz — uneingeschränkt kommerziell nutzbar','EU-Sitz — relevant für Souveränitätsfragen'],
+                en:['Leading code benchmarks among open models','Apache 2.0 license — unrestricted commercial use','EU-based — relevant to sovereignty questions']},
+      schwaechen:{de:['Kleineres Compute-Budget als US-Großanbieter','Weniger Drittanbieter-Integrationen'],
+                  en:['Smaller compute budget than big US providers','Fewer third-party integrations']},
+      lizenz:{de:'Apache 2.0 (offen) — Sitz Frankreich/EU', en:'Apache 2.0 (open) — HQ France/EU'},
+      einsatz:{de:'EU-datenschutzsensible Projekte, Code-Support', en:'EU data-protection-sensitive projects, code support'} },
+    { id:'oss', cls:'oss', color:'#6b46c1', name:{de:'DeepSeek / Qwen / Phi',en:'DeepSeek / Qwen / Phi'},
+      staerken:{de:['Exzellentes Preis-Leistungs-Verhältnis','Teils Bestwerte bei Mathematik/Code trotz kleiner Modellgröße','Offene Gewichte — volle Deployment-Kontrolle'],
+                en:['Excellent price/performance','Sometimes top scores in math/code despite small size','Open weights — full deployment control']},
+      schwaechen:{de:['Herkunft (insb. China) wirft eigene Compliance-Fragen auf','Benchmarks oft nicht 1:1 auf Unternehmenscode übertragbar'],
+                  en:['Provenance (esp. China) raises separate compliance questions','Benchmarks often not directly transferable to enterprise code']},
+      lizenz:{de:'Offene Gewichte — Sitz China (DeepSeek/Qwen) bzw. USA (Phi)', en:'Open weights — China-based (DeepSeek/Qwen) or US-based (Phi)'},
+      einsatz:{de:'Kostensensitive Massenaufgaben, Prototyping', en:'Cost-sensitive bulk tasks, prototyping'} }
+  ];
+
+  function isEN(){ return document.documentElement.classList.contains('lang-en'); }
+  function populateSelects(){
+    var a = document.getElementById('sel-a'), b = document.getElementById('sel-b');
+    var lang = isEN() ? 'en':'de';
+    [a,b].forEach(function(sel){
+      sel.innerHTML = '';
+      MODELS.forEach(function(m){
+        var o = document.createElement('option');
+        o.value = m.id; o.textContent = m.name[lang];
+        sel.appendChild(o);
+      });
+    });
+    a.value = 'claude'; b.value = 'gemini';
+  }
+  function cmpBlockHTML(m, lang){
+    return '<div class="cmp-cell"><span class="cmp-tag" style="background:'+m.color+'">'+m.name[lang]+'</span></div>';
+  }
+  function renderCompare(){
+    var a = MODELS.find(function(m){return m.id===document.getElementById('sel-a').value;});
+    var b = MODELS.find(function(m){return m.id===document.getElementById('sel-b').value;});
+    var lang = isEN() ? 'en':'de';
+    if(!a||!b) return;
+    var labels = {
+      staerken: isEN() ? 'Strengths' : 'Stärken',
+      schwaechen: isEN() ? 'Weaknesses' : 'Schwächen',
+      lizenz: isEN() ? 'License / Hosting' : 'Lizenz / Hosting',
+      einsatz: isEN() ? 'Recommended for' : 'Einsatzempfehlung'
+    };
+    function rowFor(field, isList){
+      var html = '<div class="cmp-row"><div class="cmp-row-label">'+labels[field]+'</div>';
+      [a,b].forEach(function(m){
+        html += '<div class="cmp-cell"><span class="cmp-tag" style="background:'+m.color+'">'+m.name[lang]+'</span>';
+        if(isList){
+          html += '<ul>' + m[field][lang].map(function(x){return '<li>'+x+'</li>';}).join('') + '</ul>';
+        } else {
+          html += '<div>'+m[field][lang]+'</div>';
+        }
+        html += '</div>';
+      });
+      html += '</div>';
+      return html;
+    }
+    var out = rowFor('staerken', true) + rowFor('schwaechen', true) + rowFor('lizenz', false) + rowFor('einsatz', false);
+    document.getElementById('compare-output').innerHTML = out;
+  }
+
+  function toggleLang(){
+    document.documentElement.classList.toggle('lang-en');
+    populateSelects();
+    renderCompare();
+  }
+  var beamerStage = 0;
+  function cycleBeamer(){
+    document.body.classList.remove('beamer1','beamer2','beamer3');
+    beamerStage = (beamerStage+1) % 4;
+    if(beamerStage===1) document.body.classList.add('beamer1');
+    if(beamerStage===2) document.body.classList.add('beamer2');
+    if(beamerStage===3) document.body.classList.add('beamer3');
+    if(beamerStage>=2){ setVertiefung('short'); }
+  }
+  function setVertiefung(mode){
+    var shorts = document.querySelectorAll('.short-text');
+    var fulls = document.querySelectorAll('.full-text');
+    var bShort = document.getElementById('v-short');
+    var bFull = document.getElementById('v-full');
+    if(mode==='full'){
+      shorts.forEach(function(e){e.classList.add('hide'); e.style.display='none';});
+      fulls.forEach(function(e){e.classList.add('show'); e.style.display='block';});
+      bFull.classList.add('active'); bShort.classList.remove('active');
+      sessionStorage_safe_set('llm-kompass-vertiefung','full');
+    } else {
+      shorts.forEach(function(e){e.classList.remove('hide'); e.style.display='block';});
+      fulls.forEach(function(e){e.classList.remove('show'); e.style.display='none';});
+      bShort.classList.add('active'); bFull.classList.remove('active');
+      sessionStorage_safe_set('llm-kompass-vertiefung','short');
+    }
+  }
+  function sessionStorage_safe_set(k,v){
+    try{ sessionStorage.setItem(k,v); }catch(e){}
+  }
+  function sessionStorage_safe_get(k){
+    try{ return sessionStorage.getItem(k); }catch(e){ return null; }
+  }
+  (function init(){
+    var saved = sessionStorage_safe_get('llm-kompass-vertiefung');
+    if(saved==='full'){ setVertiefung('full'); }
+    populateSelects();
+    renderCompare();
+  })();
+</script>
+
+</body>
+</html>
