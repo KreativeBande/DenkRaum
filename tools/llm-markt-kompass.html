@@ -38,14 +38,23 @@
     touch-action:manipulation;
   }
   .signature{
-    position:fixed; top:10px; right:14px;
-    font-size:12px; color:var(--ink-soft);
-    background:rgba(255,255,255,0.92);
-    padding:4px 10px; border-radius:8px;
-    z-index:500; text-align:right; line-height:1.3;
+    position:fixed; top:14px; right:20px;
+    font-size:14px; color:var(--ink-soft);
+    background:rgba(255,255,255,0.95);
+    padding:7px 16px; border-radius:999px;
+    z-index:500; text-align:right; line-height:1.4;
     border:1px solid var(--line);
+    box-shadow:0 6px 16px rgba(26,35,50,.08);
+    white-space:nowrap;
   }
   .signature strong{color:var(--brand-dark);}
+  .signature a{color:var(--accent); font-weight:700; text-decoration:none;}
+  .signature a:hover{text-decoration:underline;}
+  .topbar{
+    max-width:1100px; margin:0 auto; padding:16px 18px 0;
+  }
+  .back-link{font-size:14px; font-weight:600; color:var(--brand-dark); text-decoration:none;}
+  .back-link:hover{text-decoration:underline;}
   header{
     background:linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 100%);
     color:#fff; padding:32px 24px 26px 24px;
@@ -65,6 +74,14 @@
   }
   button.active{background:var(--brand); color:#fff; border-color:var(--brand);}
   button:hover{filter:brightness(0.97);}
+  .beamer-btn{
+    background:transparent; border:1.5px solid var(--line);
+    color:var(--ink-soft); font-size:var(--font-small); font-weight:600; padding:10px 20px;
+    border-radius:999px; cursor:pointer; min-height:44px;
+  }
+  html.beamer .beamer-btn,
+  html.beamer-xl .beamer-btn,
+  html.beamer-xxl .beamer-btn{ background:var(--ink); color:#fff; border-color:var(--ink); }
   main{max-width:1100px; margin:0 auto; padding:24px 18px;}
   section{margin-bottom:40px;}
   h2{color:var(--brand-dark); font-size:22px; border-bottom:3px solid var(--accent-soft); padding-bottom:8px;}
@@ -142,60 +159,89 @@
   }
   .cmp-cell ul{margin:6px 0 0 0; padding-left:18px;}
   .cmp-cell li{margin-bottom:3px;}
-  body.beamer1 .cmp-cell, body.beamer2 .cmp-cell, body.beamer3 .cmp-cell{font-size:1.15em;}
   .callout-sovereignty{
     background:#f0f4f7; border:1px solid #c9d8de; border-radius:10px; padding:16px 18px; margin-top:18px;
     font-size:var(--font-small);
   }
   .callout-sovereignty strong{color:var(--brand-dark);}
-  footer{
-    max-width:1100px; margin:40px auto 0 auto; padding:0 18px;
-    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;
+
+  /* ============ Footer-Standard ============ */
+  .footer-outer{max-width:1100px; margin:40px auto 0 auto; padding:24px 18px 0; border-top:2px solid var(--line);}
+  .footer-sig{margin-bottom:14px; font-size:var(--font-small); color:var(--ink-soft); line-height:1.6;}
+  .footer-sig strong{color:var(--ink);}
+  .footer-sig a{color:var(--accent); font-weight:700; text-decoration:none;}
+  .footer-sig .audit-status{display:block; margin-top:4px;}
+  .footer-details{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  @media(max-width:900px){ .footer-details{grid-template-columns:1fr;} }
+  .footer-box{
+    background:var(--card-bg); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:0 6px 16px rgba(26,35,50,.03); overflow:hidden;
   }
-  .foot-box{
-    background:var(--card-bg); border:1px solid var(--line); border-radius:10px;
-    padding:14px 16px; font-size:var(--font-small);
+  .footer-summary{cursor:pointer; padding:14px 16px; font-weight:700; font-size:var(--font-small); color:var(--ink); list-style:none;}
+  .footer-summary::-webkit-details-marker{display:none;}
+  .footer-summary::before{content:"▸ "; color:var(--accent);}
+  details[open] > .footer-summary::before{content:"▾ ";}
+  .footer-content{padding:0 16px 16px;}
+  .footer-mono{
+    font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+    font-size:14px; line-height:1.6; color:var(--ink); white-space:pre-wrap;
   }
-  .foot-box h5{margin:0 0 6px 0; color:var(--brand-dark); font-size:14px;}
-  .foot-box p{margin:0; color:var(--ink-soft);}
+  .footer-sans{font-size:16px; line-height:1.6; color:var(--ink);}
+  .footer-sans strong{color:var(--ink);}
+  .footer-sans p{margin:0 0 10px;}
+  .footer-sans ul{margin:0 0 10px; padding-left:20px;}
+  .footer-sans li{margin-bottom:6px;}
+  .footer-table{width:100%; border-collapse:collapse; margin-top:6px; font-size:15px;}
+  .footer-table th, .footer-table td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top;}
+  .footer-table th{background:#fff; font-size:14px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft);}
   .stand{text-align:center; font-size:12px; color:var(--ink-soft); margin-top:20px;}
 
-  /* Beamer stages */
-  body.beamer1 header h1{font-size:clamp(30px,5vw,42px);}
-  body.beamer1 .card{font-size:17px;}
-  body.beamer1 footer{display:none;}
-  body.beamer1 .signature{display:none;}
-  body.beamer1 .swot li{margin-bottom:5px;}
+  /* Beamer-Modus (vierstufig, kanonisches Muster) */
+  html.beamer{ --ink-soft:#3D4A5C; }
+  html.beamer header h1{font-size:clamp(30px,5vw,42px);}
+  html.beamer .card, html.beamer table, html.beamer .re-guide, html.beamer .cmp-cell, html.beamer .intro-box, html.beamer .callout-sovereignty{font-size:22px;}
+  html.beamer h2{font-size:44px;}
+  html.beamer h3{font-size:26px;}
+  html.beamer .badge, html.beamer .einsatz{font-size:15px;}
+  html.beamer .footer-outer{display:none;}
+  html.beamer .swot li{margin-bottom:5px;}
 
-  body.beamer2 header h1{font-size:clamp(36px,6vw,50px);}
-  body.beamer2 .card, body.beamer2 table, body.beamer2 .re-guide{font-size:19px;}
-  body.beamer2 footer, body.beamer2 .signature{display:none;}
-  body.beamer2 .vertiefung-toggle .short-text.hide,
-  body.beamer2 .vertiefung-toggle{display:none;}
-  body.beamer2 .full-text{display:none !important;}
-  body.beamer2 .short-text{display:block !important;}
+  html.beamer-xl header h1{font-size:clamp(36px,6vw,50px);}
+  html.beamer-xl .card, html.beamer-xl table, html.beamer-xl .re-guide, html.beamer-xl .cmp-cell, html.beamer-xl .intro-box, html.beamer-xl .callout-sovereignty{font-size:28px;}
+  html.beamer-xl h2{font-size:54px;}
+  html.beamer-xl h3{font-size:32px;}
+  html.beamer-xl .badge, html.beamer-xl .einsatz{font-size:18px;}
+  html.beamer-xl .vertiefung-toggle{display:none;}
+  html.beamer-xl .full-text{display:none !important;}
+  html.beamer-xl .short-text{display:block !important;}
 
-  body.beamer3 header h1{font-size:clamp(42px,7vw,60px);}
-  body.beamer3 .card, body.beamer3 table, body.beamer3 .re-guide{font-size:22px;}
-  body.beamer3 footer, body.beamer3 .signature{display:none;}
-  body.beamer3 .swot{grid-template-columns:1fr;}
-  body.beamer3 .vertiefung-toggle{display:none;}
-  body.beamer3 .full-text{display:none !important;}
-  body.beamer3 .short-text{display:block !important;}
+  html.beamer-xxl header h1{font-size:clamp(42px,7vw,60px);}
+  html.beamer-xxl .card, html.beamer-xxl table, html.beamer-xxl .re-guide, html.beamer-xxl .cmp-cell, html.beamer-xxl .intro-box, html.beamer-xxl .callout-sovereignty{font-size:34px;}
+  html.beamer-xxl h2{font-size:64px;}
+  html.beamer-xxl h3{font-size:38px;}
+  html.beamer-xxl .badge, html.beamer-xxl .einsatz{font-size:21px;}
+  html.beamer-xxl .swot{grid-template-columns:1fr;}
+  html.beamer-xxl .vertiefung-toggle{display:none;}
+  html.beamer-xxl .full-text{display:none !important;}
+  html.beamer-xxl .short-text{display:block !important;}
 
   [lang-el]{}
   html.lang-en [lang-el="de"]{display:none;}
   html:not(.lang-en) [lang-el="en"]{display:none;}
 
   @media (max-width:720px){
-    .signature{position:fixed; top:6px; right:6px; font-size:10px; padding:3px 7px;}
+    .signature{top:8px; right:10px; font-size:11px; padding:5px 12px;}
     .swot{grid-template-columns:1fr;}
   }
 </style>
 </head>
 <body>
 
-<div class="signature"><strong>Michaela Kühn</strong><br>www.michaela-kuehn.com</div>
+<div class="signature"><strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></div>
+
+<div class="topbar">
+  <a class="back-link" href="../index.html"><span lang-el="de">← Zurück zur Startseite</span><span lang-el="en">← Back to homepage</span></a>
+</div>
 
 <header>
   <h1><span lang-el="de">LLM-Markt-Kompass</span><span lang-el="en">LLM Market Compass</span></h1>
@@ -207,7 +253,7 @@
 
 <div class="controls">
   <button id="btn-lang" onpointerup="toggleLang()">🌐 <span lang-el="de">EN</span><span lang-el="en">DE</span></button>
-  <button id="btn-beamer" onpointerup="cycleBeamer()">🖥️ <span lang-el="de">Beamer-Modus</span><span lang-el="en">Presenter Mode</span></button>
+  <button class="beamer-btn" id="btn-beamer" onpointerup="cycleBeamer()">☀ <span id="beamer-label"><span lang-el="de">Beamer</span><span lang-el="en">Presenter</span></span></button>
 </div>
 
 <main>
@@ -504,24 +550,178 @@
 
 </main>
 
+<div class="footer-outer">
 <footer>
-  <div class="foot-box">
-    <h5><span lang-el="de">Systemprompt</span><span lang-el="en">System Prompt</span></h5>
-    <p><span lang-el="de">Dieses Tool ordnet Marktdaten für RE/BA/PM-Entscheidungen ein — es ersetzt keine eigene, aktuelle Anbieter-Recherche.</span><span lang-el="en">This tool contextualizes market data for RE/BA/PM decisions — it does not replace your own up-to-date provider research.</span></p>
+  <div class="footer-sig">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a> ·
+    <span lang-el="de">Keine ISO-/RE-Norm referenziert · Marktdaten per Websuche, Stand 12.09.2026 (siehe Normen-Register)</span>
+    <span lang-el="en">No ISO/RE standard referenced · market data via web search, as of Sep 12, 2026 (see Standards Register)</span>
+    <span class="audit-status">
+      <span lang-el="de">Zuletzt geprüft: 12.09.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+      <span lang-el="en">Last reviewed: Sept 12, 2026 · Status: ✅ Certified · Details in the audit log</span>
+    </span>
   </div>
-  <div class="foot-box">
-    <h5><span lang-el="de">Handbuch</span><span lang-el="en">Handbook</span></h5>
-    <p><span lang-el="de">DE/EN-Umschalter oben; Beamer-Modus-Button durchläuft vier Stufen (Normal → Beamer → Beamer XL → Beamer XXL).</span><span lang-el="en">DE/EN toggle above; presenter-mode button cycles through four stages (Normal → Presenter → Presenter XL → Presenter XXL).</span></p>
-  </div>
-  <div class="foot-box">
-    <h5><span lang-el="de">Vortrags-Skript</span><span lang-el="en">Speaker Notes</span></h5>
-    <p><span lang-el="de">Einstieg über die vier Unterscheidungsfaktoren (Vertiefung), dann Anbieterkarten, dann Einsatzleitfaden als Transfer in die eigene Praxis.</span><span lang-el="en">Open with the four differentiating factors (deep dive), then provider cards, then the application guide to transfer into the audience's own practice.</span></p>
-  </div>
-  <div class="foot-box">
-    <h5><span lang-el="de">Normen-Register / Quellenstand</span><span lang-el="en">Standards Register / Source Status</span></h5>
-    <p><span lang-el="de">Modelldaten recherchiert per Websuche, Stand 12.09.2026. Der LLM-Markt verändert sich sehr schnell — Angaben vor Trainings-/Beschaffungsentscheidungen stets erneut prüfen.</span><span lang-el="en">Model data researched via web search, as of Sep 12, 2026. The LLM market changes very fast — always re-verify before training/procurement decisions.</span></p>
+  <div class="footer-details">
+
+    <details class="footer-box">
+      <summary class="footer-summary"><span lang-el="de">Systemprompt</span><span lang-el="en">System Prompt</span></summary>
+      <div class="footer-content footer-mono">
+        <div lang-el="de">ROLLE: Du baust ein einseitiges HTML-Referenztool für RE/BA/PM-Trainer:innen, das die aktuelle LLM-Marktlandschaft (sieben Anbieter) nach Stärken/Schwächen und RE/BA/PM-Einsatzfeldern ordnet — als Orientierungshilfe für Workshops, nicht als Marketingvergleich.
+
+STRUKTUR (in dieser Reihenfolge):
+1. Intro-Box — begründet, warum ein reiner Marktüberblick für RE/BA/PM-Praxis wichtiger ist als das lauteste Marketing-Versprechen.
+2. Die Anbieter im Überblick — sieben SWOT-Karten (Claude, GPT, Gemini, Grok, Llama, Mistral, DeepSeek/Qwen/Phi), jede mit Badge, Kurztext, Stärken-Liste, Schwächen-Liste, Einsatzempfehlung. Jede Karte bekommt eine eigene Akzentfarbe als oberen Rahmen.
+3. Vertiefung — Kurzfassung/Ausführlich-Toggle zu den vier strukturellen Unterscheidungsfaktoren (Trainingsdaten & -ziel, Architektur, Lizenz & Hosting, Kontextfenster).
+4. Direktvergleich — zwei Dropdowns wählen zwei Modelle, die dann untereinander mit synchronisierten Kriterienzeilen (Stärken/Schwächen/Lizenz/Einsatzempfehlung) gegenübergestellt werden, damit direkt pro Kriterium verglichen werden kann statt zwischen Spalten zu springen.
+5. Vergleichstabelle — eine Zeile pro Anbieter: stärkste Domäne, Lizenz/Hosting, Sitz.
+6. Einsatzleitfaden für RE, BA und PM — sechs Karten mit typischer Aufgabe + konkreter Modellempfehlung.
+7. Souveränitäts-Callout — ein Kasten, der Modellwahl ausdrücklich an DSGVO/EU-AI-Act/BetrVG-Prüfung zurückbindet, bevor Benchmarks verglichen werden.
+8. Footer — vier Aufklapp-Boxen nach DenkRaum-Standard (Systemprompt/Handbuch/Vortrags-Skript/Normen-Register).
+
+DESIGN:
+- Sieben Akzentfarben, je eine pro Anbieter (--claude, --openai, --gemini, --grok, --llama, --mistral, --oss) — nicht vermischen; jede Karte bekommt genau eine Anbieterfarbe als oberen Rahmen, jedes Badge dieselbe Farbe als Hintergrund.
+- Radius-Skala: 12px Karten/Panels/Buttons, 999px Pill (Beamer-Button, Signatur-Chip, Badges).
+- Signatur oben rechts, position:fixed, keine Ausnahme unter 900px Breite oder im Beamer-Modus.
+- Beamer-Modus vierstufig (Normal → Beamer → Beamer XL → Beamer XXL), Footer ab Stufe 1 ausgeblendet; ab Beamer XL klappt eine offene Vertiefungs-Box automatisch auf die Kurzfassung zurück.
+- Sprachumschalter DE/EN für die komplette sichtbare Oberfläche inkl. aller vier Footer-Boxen, ohne Reload, ohne externen Übersetzungsdienst.
+
+INHALT PRO ANBIETER-KARTE: Badge (Anbieter-Name) → Kurztext (1-2 Sätze, aktuelle Modellgeneration nennen) → Stärken (3-4 Punkte) → Schwächen (2-3 Punkte) → Einsatzempfehlung (1 Satz, konkrete RE/BA/PM-Aufgabe).
+
+PERSONA-BEZUG: Bewusst keine Personas (Ela/Knut/Sarah/Petra/Herr Bachmeier) — reines Fakten-Nachschlagewerk ohne Fallstudien-Rahmen. Kein echter Laufzeit-KI-Aufruf: alle Inhalte sind statisch recherchiert und redaktionell gepflegt.
+
+NICHT TUN:
+- Keine Markt-/Preisangaben aus dem Trainingswissen der KI übernehmen, ohne sie per gezielter Websuche gegen den aktuellen Stand zu prüfen (K17) — der LLM-Markt ändert sich im Wochentakt.
+- Keine Marken-Wertung ("X ist besser als Y") — nur Stärken/Schwächen/Einsatzempfehlung; die Bewertung bleibt bei Trainerin und Teilnehmenden.
+- Keine Logos/Markenbilder der Anbieter laden (Marken- und Offline-Gründe, K1).
+- Lizenz-/Hosting-Angaben nicht vereinfachen, ohne die Einschränkung zu nennen (z. B. Llama-4-EU-Lizenzeinschränkung) — sonst entsteht ein falscher Souveränitätseindruck.
+- Den Souveränitäts-Hinweis nicht als Fußnote verstecken — er gehört als eigener Callout direkt nach dem Einsatzleitfaden, nicht in den Footer.</div>
+        <div lang-el="en">ROLE: Build a single-page HTML reference tool for RE/BA/PM trainers that organizes the current LLM market landscape (seven providers) by strengths/weaknesses and RE/BA/PM use cases — an orientation aid for workshops, not a marketing comparison.
+
+STRUCTURE (in this order):
+1. Intro box — explains why a plain market overview matters more for RE/BA/PM practice than the loudest marketing claim.
+2. Provider overview — seven SWOT cards (Claude, GPT, Gemini, Grok, Llama, Mistral, DeepSeek/Qwen/Phi), each with a badge, short text, strengths list, weaknesses list, recommended-use line. Each card gets its own accent colour as a top border.
+3. Deep dive — short/full toggle covering the four structural differentiators (training data & objective, architecture, license & hosting, context window).
+4. Head-to-head — two dropdowns pick two models, then stack them with synchronized criteria rows (strengths/weaknesses/license/recommended-use) so each criterion can be compared directly instead of jumping between columns.
+5. Comparison table — one row per provider: strongest domain, license/hosting, HQ.
+6. Application guide for RE, BA and PM — six cards with a typical task plus a concrete model recommendation.
+7. Sovereignty callout — a box that explicitly ties model choice back to a GDPR/EU-AI-Act/works-council check before comparing benchmarks.
+8. Footer — four disclosure boxes per the DenkRaum standard (system prompt/handbook/speaker script/standards register).
+
+DESIGN:
+- Seven accent colours, one per provider (--claude, --openai, --gemini, --grok, --llama, --mistral, --oss) — never mix them; every card gets exactly one provider colour as its top border, every badge the same colour as its background.
+- Radius scale: 12px cards/panels/buttons, 999px pill (presenter-mode button, signature chip, badges).
+- Signature top right, position:fixed, no exception below 900px width or in presenter mode.
+- Four-stage presenter mode (Normal → Presenter → Presenter XL → Presenter XXL), footer hidden from stage 1 up; from Presenter XL an open "deep dive" box auto-collapses to the short text.
+- DE/EN language toggle for the entire visible surface incl. all four footer boxes, no reload, no external translation service.
+
+CONTENT PER PROVIDER CARD: Badge (provider name) → short text (1-2 sentences, name the current model generation) → strengths (3-4 bullets) → weaknesses (2-3 bullets) → recommended-use line (1 sentence, concrete RE/BA/PM task).
+
+PERSONA REFERENCE: Deliberately no personas (Ela/Knut/Sarah/Petra/Herr Bachmeier) — a pure fact-reference tool without a case-study frame. No real runtime AI call: all content is researched statically and maintained editorially.
+
+DO NOT:
+- Carry over market/pricing figures from the model's training knowledge without checking them against the current state via targeted web search (K17) — the LLM market changes weekly.
+- Make brand value judgements ("X is better than Y") — strengths/weaknesses/recommended-use only; the evaluation stays with the trainer and participants.
+- Load vendor logos/brand imagery (brand and offline reasons, K1).
+- Simplify license/hosting details without naming the restriction (e.g. the Llama 4 EU licensing restriction) — otherwise it creates a false sovereignty impression.
+- Bury the sovereignty note as a footnote — it belongs as its own callout right after the application guide, not in the footer.</div>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary"><span lang-el="de">Handbuch</span><span lang-el="en">Handbook</span></summary>
+      <div class="footer-content footer-sans">
+        <div lang-el="de">
+          <p><strong>Framework:</strong> RTF (Rolle – Aufgabe – Format), ergänzt um eine feste Eingrenzung. Rolle: Marktbeobachterin ohne Verkaufsposition. Aufgabe: sieben Anbieter so verdichten, dass eine Trainerin in unter 10 Minuten durch Stärken/Schwächen und Einsatzfelder führen kann. Format: SWOT-Karten statt Fließtext, damit Beamer-Tauglichkeit von Anfang an mitgedacht ist. Eingrenzung: nur aktuell aktive Modelle, keine historischen Modelle.</p>
+          <p><strong>5 Dimensionen:</strong></p>
+          <ul>
+            <li><strong>Rolle:</strong> Marktüberblick-Autorin, keine Anbieter-Werbung.</li>
+            <li><strong>Aufgabe:</strong> Stärken, Schwächen und RE/BA/PM-Einsatzfelder von sieben LLM-Anbietern vergleichbar machen.</li>
+            <li><strong>Kontext:</strong> ein sich wöchentlich verändernder Markt — Trainer:innen brauchen ein Werkzeug, das sich schnell aktualisieren lässt, statt einen starren Foliensatz.</li>
+            <li><strong>Format:</strong> SWOT-Karten, Direktvergleich mit synchronisierten Zeilen, Vergleichstabelle, Einsatzleitfaden-Karten.</li>
+            <li><strong>Eingrenzung:</strong> sieben Anbieter, keine Bewertung "bester Anbieter insgesamt" — nur Passung zur Aufgabe.</li>
+          </ul>
+          <p><strong>Zentraler Lernhinweis:</strong> Modellwahl ist immer eine Anforderungsfrage (welche Aufgabe, welche Daten, welche Compliance-Vorgaben?), nie eine reine Qualitätsfrage — Lizenz/Hosting/Souveränität entscheiden in RE/BA/PM-Kontexten oft mehr als jeder Benchmark-Wert.</p>
+          <p><strong>Nachbau-Tipp:</strong> Wer diese Struktur für ein anderes Themenfeld übernehmen will (z. B. BI-Tools, Cloud-Anbieter), behält das Muster 1:1: SWOT-Karten pro Option, ein Direktvergleich mit synchronisierten Kriterienzeilen, eine Vergleichstabelle, ein aufgabenbezogener Einsatzleitfaden. Der Trick liegt im Direktvergleich (zwei Dropdowns, gleiche Zeilenreihenfolge für beide Optionen), nicht im Inhalt der Karten.</p>
+        </div>
+        <div lang-el="en">
+          <p><strong>Framework:</strong> RTF (Role – Task – Format), extended with a fixed constraint. Role: market observer, no sales position. Task: condense seven providers so a trainer can walk through strengths/weaknesses and use cases in under 10 minutes. Format: SWOT cards instead of prose, so presenter-mode readability is designed in from the start. Constraint: only currently active models, no legacy models.</p>
+          <p><strong>5 dimensions:</strong></p>
+          <ul>
+            <li><strong>Role:</strong> market-overview author, no vendor advertising.</li>
+            <li><strong>Task:</strong> make the strengths, weaknesses and RE/BA/PM use cases of seven LLM providers comparable.</li>
+            <li><strong>Context:</strong> a market that shifts weekly — trainers need a tool they can update quickly rather than a static slide deck.</li>
+            <li><strong>Format:</strong> SWOT cards, a head-to-head with synchronized rows, a comparison table, application-guide cards.</li>
+            <li><strong>Constraint:</strong> seven providers, no "overall best provider" verdict — fit to the task only.</li>
+          </ul>
+          <p><strong>Central learning point:</strong> model choice is always a requirements question (which task, which data, which compliance rules?), never a pure quality question — license/hosting/sovereignty often outweigh any benchmark score in RE/BA/PM contexts.</p>
+          <p><strong>Rebuild tip:</strong> to reuse this structure for another topic (e.g. BI tools, cloud vendors), keep the pattern 1:1: SWOT cards per option, a head-to-head with synchronized criteria rows, a comparison table, a task-oriented application guide. The trick is the head-to-head (two dropdowns, the same row order for both options), not the content of the cards.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary"><span lang-el="de">Vortrags-Skript</span><span lang-el="en">Speaker Script</span></summary>
+      <div class="footer-content footer-sans">
+        <div lang-el="de">
+          <p><em>(Intro-Box sichtbar)</em> „Der LLM-Markt verändert sich im Wochentakt — deshalb lohnt sich keine Bestenliste, sondern eine Frage: Welches Modell passt zu Ihrer Aufgabe, Ihren Daten, Ihren Compliance-Anforderungen?" Überleitung: „Schauen wir uns die sieben wichtigsten Anbieter an."</p>
+          <p><em>(Scroll zu den Anbieter-Karten)</em> „Jede Karte hat dieselbe Struktur: Stärken, Schwächen, Einsatzempfehlung. Bewusst keine Rangliste — nur Passung." Überleitung: „Was steckt eigentlich hinter diesen Unterschieden?"</p>
+          <p><em>(Klick auf „Ausführlich" bei Vertiefung)</em> „Vier Faktoren erklären fast alles: Trainingsziel, Architektur, Lizenz und Kontextfenster. Für unsere Praxis ist Lizenz und Hosting oft der wichtigste — wichtiger als jeder Benchmark." Überleitung: „Jetzt konkret: zwei Modelle direkt nebeneinander."</p>
+          <p><em>(Scroll zum Direktvergleich, zwei Modelle auswählen)</em> „Hier wähle ich zwei Modelle — die Kriterien stehen synchron untereinander, sodass wir Zeile für Zeile vergleichen können, ohne zwischen Spalten zu springen." Überleitung: „Zur Übersicht gibt es das Ganze auch als Tabelle."</p>
+          <p><em>(Scroll zur Vergleichstabelle)</em> „Ein Blick, sieben Zeilen: stärkste Domäne, Lizenz, Sitz." Überleitung: „Und jetzt der Transfer in Ihre Praxis."</p>
+          <p><em>(Scroll zum Einsatzleitfaden)</em> „Sechs typische RE/BA/PM-Aufgaben, je eine konkrete Empfehlung. Nicht 'das beste Modell', sondern 'das passende Modell für diese Aufgabe'." Überleitung: „Und ein letzter, wichtiger Punkt, bevor wir überhaupt über Benchmarks reden."</p>
+          <p><em>(Scroll zum Souveränitäts-Callout, Abschluss)</em> „Modellwahl ist nie nur eine Qualitätsfrage. Wer DSGVO, EU AI Act oder Betriebsrat erfüllen muss, prüft Hosting-Standort und Lizenzbedingungen, bevor er überhaupt einen Benchmark anschaut." <em>(keine weitere Aktion nötig)</em></p>
+          <p><strong>Regie-Hinweise:</strong> Nicht mit der Vergleichstabelle einsteigen — erst die Intro-Box, sonst wirkt der Vortrag wie eine Produktübersicht. Zeitbudget: 6–8 Minuten für den kompletten Durchlauf. Nicht zuerst über Preise sprechen — erst Stärken/Schwächen, dann Lizenz/Souveränität, sonst wird die Diskussion zur Kostenfrage statt zur Passungsfrage.</p>
+        </div>
+        <div lang-el="en">
+          <p><em>(Intro box visible)</em> "The LLM market shifts weekly — so a leaderboard isn't worth building, but a question is: which model fits your task, your data, your compliance requirements?" Transition: "Let's look at the seven most important providers."</p>
+          <p><em>(Scroll to the provider cards)</em> "Every card has the same structure: strengths, weaknesses, recommended use. Deliberately no ranking — fit only." Transition: "What's actually behind these differences?"</p>
+          <p><em>(Click "Full version" on the deep dive)</em> "Four factors explain almost everything: training objective, architecture, license, and context window. For our practice, license and hosting is often the most important — more important than any benchmark." Transition: "Now concretely: two models side by side."</p>
+          <p><em>(Scroll to the head-to-head, pick two models)</em> "Here I pick two models — the criteria sit in sync underneath each other, so we can compare row by row without jumping between columns." Transition: "For an overview, the whole thing also exists as a table."</p>
+          <p><em>(Scroll to the comparison table)</em> "One glance, seven rows: strongest domain, license, HQ." Transition: "And now the transfer into your own practice."</p>
+          <p><em>(Scroll to the application guide)</em> "Six typical RE/BA/PM tasks, one concrete recommendation each. Not 'the best model', but 'the right model for this task'." Transition: "And one last, important point before we even talk about benchmarks."</p>
+          <p><em>(Scroll to the sovereignty callout, closing)</em> "Model choice is never purely a quality question. Anyone who must meet GDPR, the EU AI Act, or works-council rules checks hosting location and license terms before even looking at a benchmark." <em>(closing, no further action needed)</em></p>
+          <p><strong>Directing notes:</strong> Don't open with the comparison table — start with the intro box, or the talk reads like a product overview. Time budget: 6–8 minutes for the full run-through. Don't lead with pricing — strengths/weaknesses first, then license/sovereignty, or the discussion turns into a cost debate instead of a fit question.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="footer-box">
+      <summary class="footer-summary"><span lang-el="de">Normen-Register</span><span lang-el="en">Standards Register</span></summary>
+      <div class="footer-content footer-sans">
+        <div lang-el="de">
+          <p>Keine ISO-/RE-Norm referenziert — reines Marktüberblick-/Faktenblatt. Der Souveränitäts-Hinweis nennt Rechtsrahmen, die bei der Modellwahl zu prüfen sind, ohne sie inhaltlich zu bewerten. Vor Einsatz in neuen Trainingsmaterialien den Stand erneut prüfen (K17), da sich Modellnamen, Preise und Lizenzbedingungen bei allen Anbietern regelmäßig ändern.</p>
+          <table class="footer-table">
+            <thead><tr><th>Framework/Quelle</th><th>Fassung/Status</th><th>Bezug im Tool</th></tr></thead>
+            <tbody>
+              <tr><td>DSGVO (Verordnung (EU) 2016/679)</td><td>in Kraft</td><td>Souveränitäts-Callout, Einsatzleitfaden (Datenschutz-kritische Projekte)</td></tr>
+              <tr><td>EU AI Act (Verordnung (EU) 2024/1689)</td><td>in Kraft, stufenweises Inkrafttreten</td><td>Souveränitäts-Callout</td></tr>
+              <tr><td>BetrVG (Betriebsverfassungsgesetz)</td><td>in Kraft</td><td>Souveränitäts-Callout</td></tr>
+              <tr><td>Meta Community License (Llama 4)</td><td>Stand 12.09.2026</td><td>Llama-Karte (Schwächen), Vergleichstabelle</td></tr>
+              <tr><td>Apache License 2.0 (Mistral)</td><td>Stand 12.09.2026</td><td>Mistral-Karte (Stärken), Vergleichstabelle</td></tr>
+              <tr><td>Marktdaten aller sieben Anbieter</td><td>Websuche, Stand 12.09.2026</td><td>alle Anbieter-Karten, Vergleichstabelle</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div lang-el="en">
+          <p>No ISO/RE standard referenced — a pure market-overview/fact sheet. The sovereignty callout names legal frameworks to check before choosing a model, without assessing them substantively. Re-check the current state before using this in new training materials (K17), since model names, prices and license terms change regularly across all providers.</p>
+          <table class="footer-table">
+            <thead><tr><th>Framework/source</th><th>Version/status</th><th>Reference in the tool</th></tr></thead>
+            <tbody>
+              <tr><td>GDPR (Regulation (EU) 2016/679)</td><td>in force</td><td>Sovereignty callout, application guide (data-protection-critical projects)</td></tr>
+              <tr><td>EU AI Act (Regulation (EU) 2024/1689)</td><td>in force, phased application</td><td>Sovereignty callout</td></tr>
+              <tr><td>German Works Constitution Act (BetrVG)</td><td>in force</td><td>Sovereignty callout</td></tr>
+              <tr><td>Meta Community License (Llama 4)</td><td>as of Sept 12, 2026</td><td>Llama card (weaknesses), comparison table</td></tr>
+              <tr><td>Apache License 2.0 (Mistral)</td><td>as of Sept 12, 2026</td><td>Mistral card (strengths), comparison table</td></tr>
+              <tr><td>Market data for all seven providers</td><td>web search, as of Sept 12, 2026</td><td>all provider cards, comparison table</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
   </div>
 </footer>
+</div>
 <div class="stand"><span lang-el="de">Stand: 12. September 2026 · © Michaela Kühn</span><span lang-el="en">As of: September 12, 2026 · © Michaela Kühn</span></div>
 
 <script>
@@ -628,14 +828,25 @@
     populateSelects();
     renderCompare();
   }
-  var beamerStage = 0;
+
+  /* ================= BEAMER-MODUS (vierstufig, kanonisches Muster) ================= */
+  var BEAMER_LEVELS = [
+    { classes: [],                                    de:'Beamer',     en:'Presenter' },
+    { classes: ['beamer'],                             de:'Beamer XL',  en:'Presenter XL' },
+    { classes: ['beamer', 'beamer-xl'],                de:'Beamer XXL', en:'Presenter XXL' },
+    { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  de:'Normal',     en:'Normal' }
+  ];
+  var beamerLevel = 0;
+  function applyBeamerLabel(){
+    document.getElementById('beamer-label').innerHTML =
+      '<span lang-el="de">' + BEAMER_LEVELS[beamerLevel].de + '</span><span lang-el="en">' + BEAMER_LEVELS[beamerLevel].en + '</span>';
+  }
   function cycleBeamer(){
-    document.body.classList.remove('beamer1','beamer2','beamer3');
-    beamerStage = (beamerStage+1) % 4;
-    if(beamerStage===1) document.body.classList.add('beamer1');
-    if(beamerStage===2) document.body.classList.add('beamer2');
-    if(beamerStage===3) document.body.classList.add('beamer3');
-    if(beamerStage>=2){ setVertiefung('short'); }
+    beamerLevel = (beamerLevel + 1) % 4;
+    document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    applyBeamerLabel();
+    if(beamerLevel >= 2){ setVertiefung('short'); }
   }
   function setVertiefung(mode){
     var shorts = document.querySelectorAll('.short-text');
