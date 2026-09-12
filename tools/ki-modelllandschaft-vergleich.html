@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KI-Modelllandschaft im Vergleich: Claude vs. ChatGPT</title>
+<style>
+  :root{
+    color-scheme: light;
+    --claude-accent:#C15F3C;
+    --claude-accent2:#D97757;
+    --gpt-accent:#10A37F;
+    --gpt-accent2:#1A7F64;
+    --ink:#1F2430;
+    --ink-dim:#5B6270;
+    --line:#E3E1DC;
+    --bg:#FDFBF8;
+    --card:#FFFFFF;
+    --soft:#F5F2EC;
+    --good:#2F7D4F;
+    --warn:#B4762A;
+    --radius:16px;
+    --radius-btn:12px;
+    --fs-body:16px;
+    --fs-small:14px;
+    --touch:44px;
+    --shadow-card:0 6px 16px rgba(31,36,48,.05);
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    background:var(--bg);
+    color:var(--ink);
+    margin:0;
+    padding:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:var(--fs-body);
+    line-height:1.5;
+    -webkit-user-select:text;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:64px 20px 60px;}
+
+  /* Signature (K21 — fest verankert, keine Ausnahme unter 900px) */
+  .signature{
+    position:fixed;
+    top:14px;
+    right:20px;
+    z-index:500;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:7px 16px;
+    font-size:var(--fs-small);
+    color:var(--ink);
+    box-shadow:0 6px 16px rgba(31,36,48,.08);
+    white-space:nowrap;
+  }
+  .signature a{color:var(--claude-accent);font-weight:700;text-decoration:none;}
+  .signature a:hover{text-decoration:underline;}
+
+  /* Top controls */
+  .topbar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    justify-content:space-between;
+    margin:0 0 20px 0;
+  }
+  .back-link{font-size:var(--fs-small);font-weight:600;color:var(--ink-dim);text-decoration:none;}
+  .back-link:hover{color:var(--claude-accent);}
+  .topbar-right{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .btn{
+    min-height:var(--touch);
+    min-width:44px;
+    padding:8px 16px;
+    border-radius:var(--radius-btn);
+    border:1px solid var(--line);
+    background:var(--card);
+    color:var(--ink);
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    touch-action:manipulation;
+  }
+  .btn.active{
+    background:var(--ink);
+    color:#fff;
+    border-color:var(--ink);
+  }
+  .btn.lang{min-width:52px;}
+
+  .beamer-btn{
+    background:transparent;border:1.5px solid var(--line);
+    color:var(--ink-dim);font-size:14px;font-weight:600;padding:9px 18px;
+    border-radius:999px;cursor:pointer;min-height:var(--touch);touch-action:manipulation;
+  }
+  html.beamer .beamer-btn,
+  html.beamer-xl .beamer-btn,
+  html.beamer-xxl .beamer-btn{ background:var(--ink); color:#fff; border-color:var(--ink); }
+
+  h1{font-size:1.7rem;margin:6px 0 4px;letter-spacing:-0.01em;}
+  .subtitle{color:var(--ink-dim);font-size:1rem;margin:0 0 22px;}
+
+  section{margin-bottom:34px;}
+  h2{
+    font-size:1.25rem;
+    margin:0 0 14px;
+    padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .tag{
+    display:inline-block;
+    font-size:var(--fs-small);
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    background:var(--soft);
+    color:var(--ink-dim);
+    border-radius:999px;
+    padding:3px 12px;
+    margin-right:8px;
+    vertical-align:middle;
+  }
+
+  /* Family grids */
+  .family-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:14px;
+  }
+  .model-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-card);
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .model-card.claude{border-top:4px solid var(--claude-accent);}
+  .model-card.gpt{border-top:4px solid var(--gpt-accent);}
+  .model-card h3{margin:0;font-size:1.05rem;}
+  .model-card .badge{
+    display:inline-block;
+    font-size:var(--fs-small);
+    font-weight:700;
+    padding:3px 12px;
+    border-radius:999px;
+    width:fit-content;
+  }
+  .badge.top{background:#FBEAE3;color:var(--claude-accent);}
+  .badge.mid{background:#EAF6F1;color:var(--gpt-accent2);}
+  .badge.free{background:#EEF1F6;color:#3B5378;}
+  .model-card p{margin:0;font-size:var(--fs-body);color:var(--ink-dim);}
+  .model-card .avail{font-size:var(--fs-small);color:var(--ink-dim);border-top:1px dashed var(--line);padding-top:8px;margin-top:2px;}
+
+  /* Table */
+  .table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow-card);}
+  table{border-collapse:collapse;width:100%;min-width:680px;}
+  th,td{
+    text-align:left;
+    padding:12px 14px;
+    font-size:var(--fs-small);
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  th{background:var(--soft);font-size:var(--fs-small);text-transform:uppercase;letter-spacing:.03em;color:var(--ink-dim);position:sticky;top:0;}
+  tr:last-child td{border-bottom:none;}
+  td.label{font-weight:700;white-space:nowrap;}
+  .col-claude{border-left:3px solid var(--claude-accent);}
+  .col-gpt{border-left:3px solid var(--gpt-accent);}
+
+  .note{font-size:var(--fs-small);color:var(--ink-dim);margin-top:10px;}
+
+  /* Decision boxes */
+  .decision-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:14px;
+  }
+  .decision-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-card);
+    padding:16px;
+  }
+  .decision-card h4{margin:0 0 8px;font-size:1rem;}
+  .decision-card ul{margin:0;padding-left:18px;font-size:var(--fs-body);color:var(--ink-dim);}
+  .decision-card li{margin-bottom:4px;}
+
+  /* Vertiefung */
+  .vertiefung-box{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-card);
+    padding:18px;
+  }
+  .vertiefung-box .short-text{display:block;}
+  .vertiefung-box .full-text{display:none;}
+  .vertiefung-box.expanded .short-text{display:none;}
+  .vertiefung-box.expanded .full-text{display:block;}
+  .vt-toggle{
+    touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;
+    -webkit-user-select:none;
+    user-select:none;
+    margin-top:12px;
+    font-size:var(--fs-small);
+    font-weight:700;
+    color:var(--claude-accent);
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:8px 0;
+    min-height:44px;
+  }
+  .full-text p, .short-text p{margin:0 0 10px;}
+  .full-text ul{margin:8px 0 14px;padding-left:20px;}
+  .full-text li{margin-bottom:6px;}
+
+  .callout{
+    background:#FBEAE3;
+    border-left:5px solid var(--claude-accent);
+    border-radius:4px;
+    padding:18px 22px;
+    font-size:var(--fs-body);
+  }
+  .callout strong{color:var(--claude-accent);}
+
+  .crosslink{margin-top:20px;font-size:var(--fs-small);color:var(--ink-dim);}
+  .crosslink a{color:var(--claude-accent);font-weight:700;text-decoration:none;}
+  .crosslink a:hover{text-decoration:underline;}
+  .crosslink ul{margin:8px 0 0;padding-left:20px;}
+  .crosslink li{margin-bottom:4px;}
+
+  /* Footer */
+  footer{
+    margin-top:20px;
+    border-top:2px solid var(--line);
+    padding-top:20px;
+  }
+  .footer-sig{margin-bottom:14px;font-size:var(--fs-small);color:var(--ink-dim);line-height:1.6;}
+  .footer-sig strong{color:var(--ink);}
+  .footer-sig a{color:var(--claude-accent);font-weight:700;text-decoration:none;}
+  .footer-sig .audit-status{display:block;margin-top:4px;}
+
+  .footer-details{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+  }
+  @media(max-width:900px){
+    .footer-details{grid-template-columns:1fr;}
+  }
+  .footer-box{
+    background:var(--soft);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-card);
+    overflow:hidden;
+  }
+  .footer-summary{
+    cursor:pointer;
+    padding:14px 16px;
+    font-weight:700;
+    font-size:var(--fs-small);
+    color:var(--ink);
+    list-style:none;
+  }
+  .footer-summary::-webkit-details-marker{display:none;}
+  .footer-summary::before{content:"▸ ";color:var(--claude-accent);}
+  details[open] > .footer-summary::before{content:"▾ ";}
+  .footer-content{padding:0 16px 16px;}
+  .footer-mono{
+    font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+    font-size:14px;
+    line-height:1.6;
+    color:var(--ink);
+    white-space:pre-wrap;
+  }
+  .footer-sans{
+    font-size:16px;
+    line-height:1.6;
+    color:var(--ink);
+  }
+  .footer-sans strong{color:var(--ink);}
+  .footer-sans p{margin:0 0 10px;}
+  .footer-sans ul{margin:0 0 10px;padding-left:20px;}
+  .footer-sans li{margin-bottom:6px;}
+  .footer-table{width:100%;border-collapse:collapse;margin-top:6px;font-size:15px;}
+  .footer-table th,.footer-table td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
+  .footer-table th{background:var(--card);font-size:14px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-dim);}
+
+  /* Beamer modes (kanonisches vierstufiges Muster, siehe CLAUDE.md) */
+  html.beamer{ --ink-dim:#3D4A5C; --fs-body:22px; --fs-small:15px; }
+  html.beamer h2{ font-size:44px; }
+  html.beamer .footer-outer{ display:none; }
+
+  html.beamer-xl{ --fs-body:28px; --fs-small:18px; }
+  html.beamer-xl h2{ font-size:54px; }
+
+  html.beamer-xxl{ --fs-body:34px; --fs-small:21px; }
+  html.beamer-xxl h2{ font-size:64px; }
+
+  @media (max-width:640px){
+    .wrap{padding:58px 14px 60px;}
+    h1{font-size:1.4rem;}
+    .signature{padding:5px 10px;top:8px;right:10px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="signature"><strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></div>
+
+<div class="wrap">
+
+  <div class="topbar">
+    <a class="back-link" href="../index.html" data-de="← Zurück zur Startseite" data-en="← Back to homepage">← Zurück zur Startseite</a>
+    <div class="topbar-right">
+      <button class="btn lang active" id="langDE">DE</button>
+      <button class="btn lang" id="langEN">EN</button>
+      <button class="beamer-btn" id="beamerBtn">☀ Beamer</button>
+    </div>
+  </div>
+
+  <h1 data-de="KI-Modelllandschaft im Vergleich" data-en="AI Model Landscape Compared">KI-Modelllandschaft im Vergleich</h1>
+  <p class="subtitle" data-de="Claude-Modellfamilie (Anthropic) vs. ChatGPT-Modellfamilie (OpenAI) — Stand September 2026"
+     data-en="Claude model family (Anthropic) vs. ChatGPT model family (OpenAI) — as of September 2026">
+     Claude-Modellfamilie (Anthropic) vs. ChatGPT-Modellfamilie (OpenAI) — Stand September 2026
+  </p>
+
+  <section>
+    <h2><span class="tag" data-de="Einordnung" data-en="Framing">Einordnung</span><span data-de="Warum überhaupt vergleichen?" data-en="Why compare at all?">Warum überhaupt vergleichen?</span></h2>
+    <div class="vertiefung-box" id="vtIntro">
+      <div class="short-text">
+        <p data-de="Beide Anbieter bauen keine einzelnen Modelle mehr, sondern <strong>Modellfamilien</strong>: mehrere Größen für unterschiedliche Aufgaben, Geschwindigkeiten und Budgets. Wer &bdquo;Claude&ldquo; oder &bdquo;ChatGPT&ldquo; sagt, meint eigentlich eine ganze Produktpalette."
+           data-en="Both providers no longer ship single models but <strong>model families</strong>: several sizes for different tasks, speeds and budgets. Saying &ldquo;Claude&rdquo; or &ldquo;ChatGPT&rdquo; actually refers to a whole product range.">
+           Beide Anbieter bauen keine einzelnen Modelle mehr, sondern <strong>Modellfamilien</strong>: mehrere Größen für unterschiedliche Aufgaben, Geschwindigkeiten und Budgets. Wer „Claude“ oder „ChatGPT“ sagt, meint eigentlich eine ganze Produktpalette.
+        </p>
+      </div>
+      <div class="full-text">
+        <p data-de="Beide Anbieter bauen keine einzelnen Modelle mehr, sondern <strong>Modellfamilien</strong>: mehrere Größen für unterschiedliche Aufgaben, Geschwindigkeiten und Budgets. Wer &bdquo;Claude&ldquo; oder &bdquo;ChatGPT&ldquo; sagt, meint eigentlich eine ganze Produktpalette."
+           data-en="Both providers no longer ship single models but <strong>model families</strong>: several sizes for different tasks, speeds and budgets. Saying &ldquo;Claude&rdquo; or &ldquo;ChatGPT&rdquo; actually refers to a whole product range.">
+           Beide Anbieter bauen keine einzelnen Modelle mehr, sondern <strong>Modellfamilien</strong>: mehrere Größen für unterschiedliche Aufgaben, Geschwindigkeiten und Budgets. Wer „Claude“ oder „ChatGPT“ sagt, meint eigentlich eine ganze Produktpalette.
+        </p>
+        <p data-de="Für RE/BA/PM-Trainer:innen ist das relevant, weil es dieselbe Denkweise wie beim Anforderungsmanagement erfordert: <strong>Bevor man ein Modell wählt, muss man die Anforderung an die Aufgabe klären</strong> — Geschwindigkeit vs. Tiefe, Kosten vs. Genauigkeit, einfache Abfrage vs. mehrstufiger Workflow. Modellwahl ist im Kern eine Requirements-Engineering-Entscheidung, keine Marken-Entscheidung."
+           data-en="For RE/BA/PM trainers this matters because it requires the same mindset as requirements management: <strong>before choosing a model, clarify the requirement behind the task</strong> — speed vs. depth, cost vs. accuracy, a simple query vs. a multi-step workflow. Model selection is at its core a requirements-engineering decision, not a brand decision.">
+           Für RE/BA/PM-Trainer:innen ist das relevant, weil es dieselbe Denkweise wie beim Anforderungsmanagement erfordert: <strong>Bevor man ein Modell wählt, muss man die Anforderung an die Aufgabe klären</strong> — Geschwindigkeit vs. Tiefe, Kosten vs. Genauigkeit, einfache Abfrage vs. mehrstufiger Workflow. Modellwahl ist im Kern eine Requirements-Engineering-Entscheidung, keine Marken-Entscheidung.
+        </p>
+        <ul>
+          <li data-de="Beide Familien folgen demselben Muster: ein <strong>Spitzenmodell</strong> für maximale Denkleistung, ein <strong>Allrounder</strong> für den Alltag, ein <strong>schnelles/günstiges Modell</strong> für Masse und Tempo."
+              data-en="Both families follow the same pattern: a <strong>top-tier model</strong> for maximum reasoning, an <strong>all-rounder</strong> for daily use, and a <strong>fast/cheap model</strong> for volume and speed.">
+              Beide Familien folgen demselben Muster: ein <strong>Spitzenmodell</strong> für maximale Denkleistung, ein <strong>Allrounder</strong> für den Alltag, ein <strong>schnelles/günstiges Modell</strong> für Masse und Tempo.
+          </li>
+          <li data-de="Modellnamen und -versionen ändern sich schnell — die <strong>Struktur der Familie</strong> (Spitze/Mitte/Basis) ist stabiler als jeder einzelne Name und deshalb der bessere Merkpunkt für Trainings."
+              data-en="Model names and versions change quickly — the <strong>structure of the family</strong> (top/mid/base) is more stable than any single name and therefore the better teaching anchor.">
+              Modellnamen und -versionen ändern sich schnell — die <strong>Struktur der Familie</strong> (Spitze/Mitte/Basis) ist stabiler als jeder einzelne Name und deshalb der bessere Merkpunkt für Trainings.
+          </li>
+          <li data-de="Die Familienstruktur ist auch <strong>preislich</strong> konsequent: Bei Claude kostet Opus 5 das 2,5-Fache von Sonnet 5 (Input wie Output), Haiku 4.5 die Hälfte von Sonnet 5, Fable 5.1 das 5-Fache von Sonnet 5. Wer diese Verhältnisse kennt, kann Kosten abschätzen, ohne jede Preistabelle einzeln nachzuschlagen."
+              data-en="The family structure is also consistent <strong>on price</strong>: for Claude, Opus 5 costs 2.5x Sonnet 5 (input and output alike), Haiku 4.5 costs half of Sonnet 5, and Fable 5.1 costs 5x Sonnet 5. Knowing these ratios lets you estimate cost without looking up every price sheet individually.">
+              Die Familienstruktur ist auch <strong>preislich</strong> konsequent: Bei Claude kostet Opus 5 das 2,5-Fache von Sonnet 5 (Input wie Output), Haiku 4.5 die Hälfte von Sonnet 5, Fable 5.1 das 5-Fache von Sonnet 5. Wer diese Verhältnisse kennt, kann Kosten abschätzen, ohne jede Preistabelle einzeln nachzuschlagen.
+          </li>
+          <li data-de="Ein zweiter Blick lohnt sich auf das <strong>Kontextfenster</strong>: Bei Claude teilen sich Fable 5.1, Opus 5 und Sonnet 5 dasselbe 1-Million-Token-Fenster mit 128K Max-Output — nur Haiku 4.5 fällt auf 200K/64K zurück. Bei OpenAI liegt GPT-6 Astra bei 1,05 Mio. Token Kontext und ebenfalls 128K Output. Die Größenordnung ist bei beiden Anbietern inzwischen vergleichbar; der Unterschied liegt eher im Preis pro Token als im Fenster selbst."
+              data-en="A second look is worth it on the <strong>context window</strong>: for Claude, Fable 5.1, Opus 5 and Sonnet 5 share the same 1-million-token window with 128K max output — only Haiku 4.5 drops to 200K/64K. For OpenAI, GPT-6 Astra sits at 1.05M tokens of context and likewise 128K output. The order of magnitude is now comparable across both vendors; the real difference lies more in price per token than in the window itself.">
+              Ein zweiter Blick lohnt sich auf das <strong>Kontextfenster</strong>: Bei Claude teilen sich Fable 5.1, Opus 5 und Sonnet 5 dasselbe 1-Million-Token-Fenster mit 128K Max-Output — nur Haiku 4.5 fällt auf 200K/64K zurück. Bei OpenAI liegt GPT-6 Astra bei 1,05 Mio. Token Kontext und ebenfalls 128K Output. Die Größenordnung ist bei beiden Anbietern inzwischen vergleichbar; der Unterschied liegt eher im Preis pro Token als im Fenster selbst.
+          </li>
+          <li data-de="Für RE/BA-Workshops heißt das konkret: Ein 1-Mio.-Token-Fenster fasst grob ein mittelgroßes Lastenheft samt Anhängen in einem einzigen Kontext — die Frage &bdquo;reicht das Kontextfenster?&ldquo; stellt sich bei aktuellen Spitzenmodellen praktisch kaum noch; die Kostenfrage (Preis pro Token bei wiederholter Nutzung) wiegt inzwischen schwerer als die Kapazitätsfrage."
+              data-en="For RE/BA workshops this means concretely: a 1M-token window roughly fits a medium-sized requirements document plus attachments into a single context — the question &ldquo;does the context window suffice?&rdquo; barely arises with current flagship models anymore; the cost question (price per token under repeated use) now outweighs the capacity question.">
+              Für RE/BA-Workshops heißt das konkret: Ein 1-Mio.-Token-Fenster fasst grob ein mittelgroßes Lastenheft samt Anhängen in einem einzigen Kontext — die Frage „reicht das Kontextfenster?“ stellt sich bei aktuellen Spitzenmodellen praktisch kaum noch; die Kostenfrage (Preis pro Token bei wiederholter Nutzung) wiegt inzwischen schwerer als die Kapazitätsfrage.
+          </li>
+        </ul>
+      </div>
+      <button class="vt-toggle" data-target="vtIntro" data-de-more="Mehr erfahren ↓" data-de-less="Weniger anzeigen ↑" data-en-more="Read more ↓" data-en-less="Show less ↑">Mehr erfahren ↓</button>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="tag" data-de="Verifiziert" data-en="Verified">Verifiziert</span><span data-de="Belastbare Kennzahlen (Stand: September 2026)" data-en="Hard numbers (as of September 2026)">Belastbare Kennzahlen (Stand: September 2026)</span></h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th data-de="Modell" data-en="Model">Modell</th>
+            <th data-de="Kontextfenster" data-en="Context window">Kontextfenster</th>
+            <th data-de="Max. Output" data-en="Max output">Max. Output</th>
+            <th data-de="Preis Input/Output je 1&nbsp;Mio. Token" data-en="Price input/output per 1M tokens">Preis Input/Output je 1&nbsp;Mio. Token</th>
+            <th data-de="Wissensstand" data-en="Knowledge cutoff">Wissensstand</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label col-claude">Claude Fable 5.1</td>
+            <td>1 Mio. Token</td>
+            <td>128K Token</td>
+            <td>10 $ / 50 $</td>
+            <td data-de="Juni 2026" data-en="June 2026">Juni 2026</td>
+          </tr>
+          <tr>
+            <td class="label col-claude">Claude Opus 5</td>
+            <td>1 Mio. Token</td>
+            <td>128K Token</td>
+            <td>5 $ / 25 $</td>
+            <td data-de="Mai 2026" data-en="May 2026">Mai 2026</td>
+          </tr>
+          <tr>
+            <td class="label col-claude">Claude Sonnet 5</td>
+            <td>1 Mio. Token</td>
+            <td>128K Token</td>
+            <td>2 $ / 10 $</td>
+            <td data-de="Januar 2026" data-en="January 2026">Januar 2026</td>
+          </tr>
+          <tr>
+            <td class="label col-claude">Claude Haiku 4.5</td>
+            <td>200K Token</td>
+            <td>64K Token</td>
+            <td>1 $ / 5 $</td>
+            <td data-de="Februar 2025" data-en="February 2025">Februar 2025</td>
+          </tr>
+          <tr>
+            <td class="label col-gpt">GPT-6 Astra</td>
+            <td data-de="1,05 Mio. Token (bis 272K zum Basistarif)" data-en="1.05M tokens (up to 272K at base rate)">1,05 Mio. Token (bis 272K zum Basistarif)</td>
+            <td>128K Token</td>
+            <td>10 $ / 50 $</td>
+            <td data-de="30. April 2026" data-en="April 30, 2026">30. April 2026</td>
+          </tr>
+          <tr>
+            <td class="label col-gpt">GPT-5.6 Sol / Terra / Luna</td>
+            <td colspan="3" data-de="Keine unabhängig verifizierten Werte für Kontextfenster/Preis gefunden (Stand dieser Recherche) — vor Nutzung in Trainings direkt bei OpenAI prüfen." data-en="No independently verified context-window/price figures found (as of this research) — verify directly with OpenAI before use in training.">
+              Keine unabhängig verifizierten Werte für Kontextfenster/Preis gefunden (Stand dieser Recherche) — vor Nutzung in Trainings direkt bei OpenAI prüfen.
+            </td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" data-de="Quellen: platform.claude.com/docs (Modellübersichten Opus 5, Fable 5.1), Anthropic Pricing-Dokumentation, OpenAI Model Release Notes / Help Center. Alle Angaben per Websuche am 12.09.2026 geprüft; Preise und Kontextfenster ändern sich bei beiden Anbietern regelmäßig — vor Trainingseinsatz erneut verifizieren."
+       data-en="Sources: platform.claude.com/docs (Opus 5, Fable 5.1 model overviews), Anthropic pricing documentation, OpenAI Model Release Notes / Help Center. All figures checked via web search on Sept 12, 2026; prices and context windows change regularly at both vendors — re-verify before training use.">
+       Quellen: platform.claude.com/docs (Modellübersichten Opus 5, Fable 5.1), Anthropic Pricing-Dokumentation, OpenAI Model Release Notes / Help Center. Alle Angaben per Websuche am 12.09.2026 geprüft; Preise und Kontextfenster ändern sich bei beiden Anbietern regelmäßig — vor Trainingseinsatz erneut verifizieren.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="tag">Anthropic</span><span data-de="Die Claude-Familie" data-en="The Claude family">Die Claude-Familie</span></h2>
+    <div class="family-grid">
+      <div class="model-card claude">
+        <span class="badge top" data-de="Mythos-Klasse" data-en="Mythos tier">Mythos-Klasse</span>
+        <h3>Claude Fable 5.1</h3>
+        <p data-de="Höchste Intelligenz und Denkleistung; komplexes Coding, Forschung, strategische Analyse; für die anspruchsvollsten, langlaufenden Aufgaben."
+           data-en="Highest intelligence and reasoning; complex coding, research, strategic analysis; for the most demanding, long-running tasks.">
+           Höchste Intelligenz und Denkleistung; komplexes Coding, Forschung, strategische Analyse; für die anspruchsvollsten, langlaufenden Aufgaben.
+        </p>
+        <div class="avail" data-de="Verfügbar: Pro, Max, Team, Enterprise, API" data-en="Available: Pro, Max, Team, Enterprise, API">Verfügbar: Pro, Max, Team, Enterprise, API</div>
+      </div>
+      <div class="model-card claude">
+        <span class="badge top" data-de="Spitzenmodell" data-en="Flagship">Spitzenmodell</span>
+        <h3>Claude Opus 5</h3>
+        <p data-de="Sehr stark bei komplexem Reasoning, Coding und mehrstufigen Workflows; hohe Genauigkeit bei anspruchsvollen Fragestellungen."
+           data-en="Very strong at complex reasoning, coding and multi-step workflows; high accuracy on demanding questions.">
+           Sehr stark bei komplexem Reasoning, Coding und mehrstufigen Workflows; hohe Genauigkeit bei anspruchsvollen Fragestellungen.
+        </p>
+        <div class="avail" data-de="Verfügbar: Pro, Max, Team, Enterprise, API" data-en="Available: Pro, Max, Team, Enterprise, API">Verfügbar: Pro, Max, Team, Enterprise, API</div>
+      </div>
+      <div class="model-card claude">
+        <span class="badge mid" data-de="Allrounder" data-en="All-rounder">Allrounder</span>
+        <h3>Claude Sonnet 5</h3>
+        <p data-de="Bester Ausgleich aus Leistung, Geschwindigkeit und Kosten; ideal für Coding, Agenten und alltägliche professionelle Aufgaben."
+           data-en="Best balance of performance, speed and cost; ideal for coding, agents and everyday professional tasks.">
+           Bester Ausgleich aus Leistung, Geschwindigkeit und Kosten; ideal für Coding, Agenten und alltägliche professionelle Aufgaben.
+        </p>
+        <div class="avail" data-de="Verfügbar: Free, Pro, Max, Team, Enterprise, API" data-en="Available: Free, Pro, Max, Team, Enterprise, API">Verfügbar: Free, Pro, Max, Team, Enterprise, API</div>
+      </div>
+      <div class="model-card claude">
+        <span class="badge free" data-de="Schnell & günstig" data-en="Fast & efficient">Schnell &amp; günstig</span>
+        <h3>Claude Haiku 4.5</h3>
+        <p data-de="Sehr schnelle Antworten, optimiert für Hochvolumen-Aufgaben, einfache Abfragen und Echtzeitanwendungen — bei weiterhin hoher Kompetenz."
+           data-en="Very fast responses, optimized for high-volume tasks, simple queries and real-time applications — while staying highly capable.">
+           Sehr schnelle Antworten, optimiert für Hochvolumen-Aufgaben, einfache Abfragen und Echtzeitanwendungen — bei weiterhin hoher Kompetenz.
+        </p>
+        <div class="avail" data-de="Verfügbar: Free, Pro, Max, Team, Enterprise, API" data-en="Available: Free, Pro, Max, Team, Enterprise, API">Verfügbar: Free, Pro, Max, Team, Enterprise, API</div>
+      </div>
+      <div class="model-card claude">
+        <span class="badge mid" data-de="Agent" data-en="Agent">Agent</span>
+        <h3>Claude Code</h3>
+        <p data-de="Coding-Agent für Entwickler:innen: arbeitet direkt im Terminal, versteht große Codebasen, führt Befehle aus, integriert sich in bestehende Tools."
+           data-en="Coding agent for developers: works directly in the terminal, understands large codebases, runs commands, integrates with existing tools.">
+           Coding-Agent für Entwickler:innen: arbeitet direkt im Terminal, versteht große Codebasen, führt Befehle aus, integriert sich in bestehende Tools.
+        </p>
+        <div class="avail" data-de="Verfügbar: Pro, Max, Team, Enterprise, API" data-en="Available: Pro, Max, Team, Enterprise, API">Verfügbar: Pro, Max, Team, Enterprise, API</div>
+      </div>
+    </div>
+    <p class="note" data-de="Hinweis: Oberhalb von Opus steht bei Anthropic inzwischen die neue &bdquo;Mythos&ldquo;-Stufe (u.a. Claude Fable 5.1) — als nächste Eskalationsstufe über dem bisherigen Spitzenmodell."
+       data-en="Note: Above Opus, Anthropic now has the new &ldquo;Mythos&rdquo; tier (incl. Claude Fable 5.1) — the next escalation level above the former flagship.">
+       Hinweis: Oberhalb von Opus steht bei Anthropic inzwischen die neue „Mythos“-Stufe (u.a. Claude Fable 5.1) — als nächste Eskalationsstufe über dem bisherigen Spitzenmodell.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="tag">OpenAI</span><span data-de="Die ChatGPT-Familie" data-en="The ChatGPT family">Die ChatGPT-Familie</span></h2>
+    <div class="family-grid">
+      <div class="model-card gpt">
+        <span class="badge top" data-de="Neues Spitzenmodell" data-en="New flagship">Neues Spitzenmodell</span>
+        <h3>GPT-6 Astra</h3>
+        <p data-de="Neuestes Flaggschiff, seit Anfang September 2026 in Phasen ausgerollt; in ChatGPT als &bdquo;GPT-6 Pro&ldquo; bezeichnet. Zunächst für Pro-, Business- und Enterprise-Konten, nicht für Plus."
+           data-en="Newest flagship, rolling out in phases since early September 2026; shown in ChatGPT as &ldquo;GPT-6 Pro&rdquo;. Initially for Pro, Business and Enterprise accounts, not Plus.">
+           Neuestes Flaggschiff, seit Anfang September 2026 in Phasen ausgerollt; in ChatGPT als „GPT-6 Pro“ bezeichnet. Zunächst für Pro-, Business- und Enterprise-Konten, nicht für Plus.
+        </p>
+        <div class="avail" data-de="Verfügbar: Pro (100/200 $), Business, Enterprise, API — Rollout läuft" data-en="Available: Pro ($100/$200), Business, Enterprise, API — rollout in progress">Verfügbar: Pro (100/200 $), Business, Enterprise, API — Rollout läuft</div>
+      </div>
+      <div class="model-card gpt">
+        <span class="badge mid" data-de="Allrounder (Plus/Pro)" data-en="All-rounder (Plus/Pro)">Allrounder (Plus/Pro)</span>
+        <h3>GPT-5.6 Sol</h3>
+        <p data-de="War Flaggschiff bis Astra kam; die frühere Trennung &bdquo;Instant/Thinking&ldquo; ist zu einem Regler für die Denktiefe (Reasoning-Effort) verschmolzen."
+           data-en="Was the flagship until Astra arrived; the former &ldquo;Instant/Thinking&rdquo; split has merged into a reasoning-effort slider.">
+           War Flaggschiff bis Astra kam; die frühere Trennung „Instant/Thinking“ ist zu einem Regler für die Denktiefe (Reasoning-Effort) verschmolzen.
+        </p>
+        <div class="avail" data-de="Verfügbar: Plus, Pro, Business, Enterprise, API" data-en="Available: Plus, Pro, Business, Enterprise, API">Verfügbar: Plus, Pro, Business, Enterprise, API</div>
+      </div>
+      <div class="model-card gpt">
+        <span class="badge mid" data-de="Mittelstufe" data-en="Mid-tier">Mittelstufe</span>
+        <h3>GPT-5.6 Terra</h3>
+        <p data-de="Positioniert zwischen Sol und Luna — geringerer Ressourcenbedarf als Sol, leistungsfähiger als das kostenlose Basismodell."
+           data-en="Positioned between Sol and Luna — lighter than Sol, more capable than the free base model.">
+           Positioniert zwischen Sol und Luna — geringerer Ressourcenbedarf als Sol, leistungsfähiger als das kostenlose Basismodell.
+        </p>
+        <div class="avail" data-de="Verfügbar: im Rahmen bestehender ChatGPT-Pläne" data-en="Available: within existing ChatGPT plans">Verfügbar: im Rahmen bestehender ChatGPT-Pläne</div>
+      </div>
+      <div class="model-card gpt">
+        <span class="badge free" data-de="Kostenlos, Standard" data-en="Free default">Kostenlos, Standard</span>
+        <h3>GPT-5.6 Luna</h3>
+        <p data-de="Standardmodell für Free- und Go-Konten mit unbegrenzten Text-Chats; kein Modell-Auswahlmenü für diese Stufe."
+           data-en="Default model for Free and Go accounts with unlimited text chats; no model picker at this tier.">
+           Standardmodell für Free- und Go-Konten mit unbegrenzten Text-Chats; kein Modell-Auswahlmenü für diese Stufe.
+        </p>
+        <div class="avail" data-de="Verfügbar: Free, Go" data-en="Available: Free, Go">Verfügbar: Free, Go</div>
+      </div>
+    </div>
+    <p class="note" data-de="Hinweis: Ältere Modelle (GPT-4o, GPT-4.1, GPT-4.1 mini, o4-mini, GPT-5, o3, GPT-4.5) wurden bis Ende August 2026 aus ChatGPT entfernt. Modellnamen bei OpenAI ändern sich derzeit sehr häufig — vor jeder Trainingsnutzung aktuellen Stand prüfen."
+       data-en="Note: Older models (GPT-4o, GPT-4.1, GPT-4.1 mini, o4-mini, GPT-5, o3, GPT-4.5) were retired from ChatGPT by the end of August 2026. OpenAI model names currently change very frequently — verify the current state before each training use.">
+       Hinweis: Ältere Modelle (GPT-4o, GPT-4.1, GPT-4.1 mini, o4-mini, GPT-5, o3, GPT-4.5) wurden bis Ende August 2026 aus ChatGPT entfernt. Modellnamen bei OpenAI ändern sich derzeit sehr häufig — vor jeder Trainingsnutzung aktuellen Stand prüfen.
+    </p>
+  </section>
+
+  <section>
+    <h2><span data-de="Strukturvergleich: Familie zu Familie" data-en="Structural comparison: family to family">Strukturvergleich: Familie zu Familie</span></h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th data-de="Rolle in der Familie" data-en="Role in the family">Rolle in der Familie</th>
+            <th class="col-claude">Claude (Anthropic)</th>
+            <th class="col-gpt">ChatGPT (OpenAI)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label" data-de="Über dem Spitzenmodell" data-en="Above the flagship">Über dem Spitzenmodell</td>
+            <td class="col-claude">Mythos-Klasse (z.&nbsp;B. Fable 5.1)</td>
+            <td class="col-gpt">—</td>
+          </tr>
+          <tr>
+            <td class="label" data-de="Spitzenmodell" data-en="Flagship">Spitzenmodell</td>
+            <td class="col-claude">Opus 5</td>
+            <td class="col-gpt">GPT-6 Astra (im Rollout)</td>
+          </tr>
+          <tr>
+            <td class="label" data-de="Allrounder" data-en="All-rounder">Allrounder</td>
+            <td class="col-claude">Sonnet 5</td>
+            <td class="col-gpt">GPT-5.6 Sol</td>
+          </tr>
+          <tr>
+            <td class="label" data-de="Mittelstufe" data-en="Mid-tier">Mittelstufe</td>
+            <td class="col-claude">—</td>
+            <td class="col-gpt">GPT-5.6 Terra</td>
+          </tr>
+          <tr>
+            <td class="label" data-de="Schnell / günstig" data-en="Fast / cheap">Schnell / günstig</td>
+            <td class="col-claude">Haiku 4.5</td>
+            <td class="col-gpt">GPT-5.6 Luna</td>
+          </tr>
+          <tr>
+            <td class="label" data-de="Coding-Agent" data-en="Coding agent">Coding-Agent</td>
+            <td class="col-claude">Claude Code</td>
+            <td class="col-gpt">Codex (separates Produkt)</td>
+          </tr>
+          <tr>
+            <td class="label" data-de="Reasoning-Steuerung" data-en="Reasoning control">Reasoning-Steuerung</td>
+            <td class="col-claude" data-de="Über Modellwahl (z.B. Sonnet vs. Opus)" data-en="Via model choice (e.g. Sonnet vs. Opus)">Über Modellwahl (z.B. Sonnet vs. Opus)</td>
+            <td class="col-gpt" data-de="Zusätzlich per Regler innerhalb von Sol (Reasoning-Effort)" data-en="Additionally via a slider inside Sol (reasoning effort)">Zusätzlich per Regler innerhalb von Sol (Reasoning-Effort)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2><span data-de="Welches Modell wofür? — Entscheidungshilfe" data-en="Which model for what? — Decision guide">Welches Modell wofür? — Entscheidungshilfe</span></h2>
+    <div class="decision-grid">
+      <div class="decision-card">
+        <h4 data-de="Höchste Denkleistung gefragt" data-en="Maximum reasoning needed">Höchste Denkleistung gefragt</h4>
+        <ul>
+          <li data-de="Claude: Fable 5.1 oder Opus 5" data-en="Claude: Fable 5.1 or Opus 5">Claude: Fable 5.1 oder Opus 5</li>
+          <li data-de="ChatGPT: GPT-6 Astra (Reasoning-Effort hoch)" data-en="ChatGPT: GPT-6 Astra (high reasoning effort)">ChatGPT: GPT-6 Astra (Reasoning-Effort hoch)</li>
+        </ul>
+      </div>
+      <div class="decision-card">
+        <h4 data-de="Alltägliche Fach- und Projektarbeit" data-en="Everyday professional & project work">Alltägliche Fach- und Projektarbeit</h4>
+        <ul>
+          <li data-de="Claude: Sonnet 5" data-en="Claude: Sonnet 5">Claude: Sonnet 5</li>
+          <li data-de="ChatGPT: GPT-5.6 Sol / Terra" data-en="ChatGPT: GPT-5.6 Sol / Terra">ChatGPT: GPT-5.6 Sol / Terra</li>
+        </ul>
+      </div>
+      <div class="decision-card">
+        <h4 data-de="Hohes Volumen, geringe Kosten" data-en="High volume, low cost">Hohes Volumen, geringe Kosten</h4>
+        <ul>
+          <li data-de="Claude: Haiku 4.5" data-en="Claude: Haiku 4.5">Claude: Haiku 4.5</li>
+          <li data-de="ChatGPT: GPT-5.6 Luna" data-en="ChatGPT: GPT-5.6 Luna">ChatGPT: GPT-5.6 Luna</li>
+        </ul>
+      </div>
+      <div class="decision-card">
+        <h4 data-de="Coding-Workflows / Entwicklung" data-en="Coding workflows / development">Coding-Workflows / Entwicklung</h4>
+        <ul>
+          <li data-de="Claude: Claude Code" data-en="Claude: Claude Code">Claude: Claude Code</li>
+          <li data-de="ChatGPT: Codex" data-en="ChatGPT: Codex">ChatGPT: Codex</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="callout">
+      <strong data-de="Transferfrage fürs Training: " data-en="Transfer question for the training: ">Transferfrage fürs Training: </strong>
+      <span data-de="Bevor Teilnehmende ein Modell wählen, sollten sie erst die Anforderung an die Aufgabe formulieren (Tempo? Tiefe? Budget? Reproduzierbarkeit?) — genau wie beim Requirements Engineering vor der Lösungsauswahl."
+        data-en="Before participants pick a model, they should first formulate the requirement behind the task (speed? depth? budget? reproducibility?) — exactly as in requirements engineering before selecting a solution.">
+        Bevor Teilnehmende ein Modell wählen, sollten sie erst die Anforderung an die Aufgabe formulieren (Tempo? Tiefe? Budget? Reproduzierbarkeit?) — genau wie beim Requirements Engineering vor der Lösungsauswahl.
+      </span>
+    </div>
+  </section>
+
+  <div class="crosslink" data-de="Verwandte Denkraum-Tools zu diesem Thema: <ul><li><a href=&quot;./claude-feature-navigator.html&quot;>Claude-Feature-Navigator</a> — vertieft die Claude-Ökosystem-Bausteine (Chat, Projects, Artifacts, Skills, Claude Code, Cowork) statt Modellfamilie &amp; Preise; beantwortet &bdquo;was kann ich mit Claude tun&ldquo;, nicht &bdquo;welches Modell wähle ich&ldquo;.</li></ul>"
+       data-en="Related DenkRaum tools on this topic: <ul><li><a href=&quot;./claude-feature-navigator.html&quot;>Claude-Feature-Navigator</a> — dives into the Claude ecosystem building blocks (Chat, Projects, Artifacts, Skills, Claude Code, Cowork) instead of model family &amp; pricing; answers &ldquo;what can I do with Claude&rdquo;, not &ldquo;which model do I pick&rdquo;.</li></ul>">
+    Verwandte Denkraum-Tools zu diesem Thema:
+    <ul>
+      <li><a href="./claude-feature-navigator.html">Claude-Feature-Navigator</a> — vertieft die Claude-Ökosystem-Bausteine (Chat, Projects, Artifacts, Skills, Claude Code, Cowork) statt Modellfamilie &amp; Preise; beantwortet „was kann ich mit Claude tun“, nicht „welches Modell wähle ich“.</li>
+    </ul>
+  </div>
+
+  <div class="footer-outer">
+  <footer>
+    <div class="footer-sig">
+      <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a> ·
+      <span data-de="Keine ISO-/RE-Norm referenziert · Produktangaben Anthropic &amp; OpenAI, Stand 12.09.2026 (siehe Normen-Register)"
+            data-en="No ISO/RE standard referenced · Anthropic &amp; OpenAI product data as of Sept 12, 2026 (see Standards Register)">Keine ISO-/RE-Norm referenziert · Produktangaben Anthropic &amp; OpenAI, Stand 12.09.2026 (siehe Normen-Register)</span>
+      <span class="audit-status" data-de="Zuletzt geprüft: 12.09.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll"
+            data-en="Last reviewed: Sept 12, 2026 · Status: ✅ Certified · Details in the audit log">Zuletzt geprüft: 12.09.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+    </div>
+    <div class="footer-details">
+
+      <details class="footer-box">
+        <summary class="footer-summary" data-de="Systemprompt" data-en="System Prompt">Systemprompt</summary>
+        <div class="footer-content footer-mono">
+          <div data-lang="de">ROLLE: Du baust ein einseitiges HTML-Referenztool für RE/BA/PM-Trainer:innen, das zwei KI-Modellfamilien (Anthropic Claude, OpenAI ChatGPT) strukturell und preislich vergleicht — als Nachschlagewerk für Workshops, nicht als Marketingvergleich.
+
+STRUKTUR (je ein &lt;section&gt;, in dieser Reihenfolge):
+1. Einordnung — Vertiefungs-Box (Kurztext + "Mehr erfahren"-Toggle) mit der These, dass Modellwahl eine RE-Entscheidung ist, keine Markenfrage.
+2. Verifizierte Kennzahlen — Tabelle Modell / Kontextfenster / Max. Output / Preis Input-Output je 1 Mio. Token / Wissensstand, eine Zeile pro Modell, farbiger linker Rand nach Anbieter. Zeile für unverifizierte Modelle explizit als "keine verifizierten Werte" kennzeichnen statt zu schätzen.
+3. Die Claude-Familie — Karten-Grid, eine Karte pro Modell: Badge (Mythos-Klasse/Spitzenmodell/Allrounder/Schnell &amp; günstig/Agent), Kurzbeschreibung, Verfügbarkeits-Zeile.
+4. Die ChatGPT-Familie — identisches Karten-Grid-Muster, damit beide Familien unmittelbar vergleichbar sind.
+5. Strukturvergleich — Tabelle Rolle-in-der-Familie × Claude × ChatGPT.
+6. Entscheidungshilfe — Karten-Grid mit vier Anwendungsfällen, je Karte zwei Empfehlungen (Claude + ChatGPT).
+7. Transferfrage — ein Callout-Kasten, der die Modellwahl an RE-Denken zurückbindet.
+8. Footer — vier Aufklapp-Boxen nach DenkRaum-Standard (Systemprompt/Handbuch/Vortrags-Skript/Normen-Register).
+
+DESIGN:
+- Zwei Akzentfarben, je eine pro Anbieter (--claude-accent, --gpt-accent) — nicht vermischen; jede Karte/Tabellenzeile bekommt genau eine Anbieterfarbe als linken Rand.
+- Radius-Skala: 16px Karten/Panels, 12px Buttons, 999px Pill (Beamer-Button, Badges, Rubrik-Tag, Signatur-Chip).
+- Subtile Schatten auf allen Karten/Panels (0 6px 16px, Ink-Farbe statt reinem Schwarz).
+- Signatur oben rechts, position:fixed, keine Ausnahme unter 900px Breite.
+- Beamer-Modus vierstufig (Normal → Beamer → Beamer XL → Beamer XXL), Footer ab Stufe 1 ausgeblendet, offene Vertiefungs-Box klappt beim Wechsel automatisch auf Kurztext zurück.
+- Sprachumschalter DE/EN für die komplette sichtbare Oberfläche inkl. aller vier Footer-Boxen, ohne Reload, ohne externen Übersetzungsdienst.
+
+INHALT PRO SPUR/MODUS:
+- DE- und EN-Spur sind inhaltlich deckungsgleich (keine Kürzung in der EN-Version), nur die Formulierung wechselt.
+- Normal-Modus zeigt auf Wunsch die Vertiefungs-Box aufgeklappt; Beamer-Stufen zeigen immer nur den Kurztext.
+
+PERSONA-BEZUG: Bewusst keine Personas (Ela/Knut/Sarah/Petra/Herr Bachmeier) — reines Fakten-Nachschlagewerk ohne Fallstudien-Rahmen; ein erzwungener Persona-Bezug wäre hier künstlich. Kein echter Laufzeit-KI-Aufruf: alle Inhalte sind statisch recherchiert und redaktionell gepflegt.
+
+NICHT TUN:
+- Keine Preise/Kontextfenster aus dem Trainingswissen der KI übernehmen, ohne sie per gezielter Websuche gegen den aktuellen Stand zu prüfen (K17) — Modellnamen und Preise ändern sich bei beiden Anbietern wöchentlich.
+- Keine Zahl ohne Quelle und Stand-Datum zeigen (K8) — lieber "keine verifizierten Werte gefunden" schreiben als eine Schätzung als Fakt auszugeben.
+- Keine Marken-Wertung ("X ist besser als Y") — nur Struktur- und Preisvergleich; die Bewertung bleibt bei Trainerin und Teilnehmenden.
+- Keine Logos/Markenbilder der Anbieter laden (Marken- und Offline-Gründe, K1).
+- Die Vertiefungs-Box im Beamer-Modus nicht dauerhaft kürzen — nur automatisch einklappen, der Volltext bleibt im Normal-Modus jederzeit erreichbar.</div>
+          <div data-lang="en" hidden>ROLE: Build a single-page HTML reference tool for RE/BA/PM trainers that compares two AI model families (Anthropic Claude, OpenAI ChatGPT) by structure and pricing — a workshop reference sheet, not a marketing comparison.
+
+STRUCTURE (one &lt;section&gt; each, in this order):
+1. Framing — a "deepen" box (short text + "read more" toggle) making the case that model choice is a requirements-engineering decision, not a brand decision.
+2. Verified numbers — table: model / context window / max output / price input-output per 1M tokens / knowledge cutoff, one row per model, coloured left border per vendor. Mark unverified models explicitly as "no verified figures" instead of guessing.
+3. The Claude family — card grid, one card per model: badge (Mythos tier/flagship/all-rounder/fast &amp; efficient/agent), short description, availability line.
+4. The ChatGPT family — identical card-grid pattern so both families are directly comparable.
+5. Structural comparison — table: role in the family × Claude × ChatGPT.
+6. Decision guide — card grid with four use cases, two recommendations per card (Claude + ChatGPT).
+7. Transfer question — one callout box tying model choice back to RE thinking.
+8. Footer — four disclosure boxes per the DenkRaum standard (system prompt/handbook/speaker script/standards register).
+
+DESIGN:
+- Two accent colours, one per vendor (--claude-accent, --gpt-accent) — never mix them; every card/table row gets exactly one vendor colour as its left border.
+- Radius scale: 16px cards/panels, 12px buttons, 999px pill (presenter-mode button, badges, section tag, signature chip).
+- Subtle shadows on every card/panel (0 6px 16px, using the ink colour rather than pure black).
+- Signature top right, position:fixed, no exception below 900px width.
+- Four-stage presenter mode (Normal → Presenter → Presenter XL → Presenter XXL), footer hidden from stage 1 up, an open "deepen" box auto-collapses to the short text on stage change.
+- DE/EN language toggle for the entire visible surface incl. all four footer boxes, no reload, no external translation service.
+
+CONTENT PER TRACK/MODE:
+- The DE and EN tracks are content-identical (no shortening in the EN version), only the wording changes.
+- Normal mode may show the "deepen" box expanded; every presenter stage always shows only the short text.
+
+PERSONA REFERENCE: Deliberately no personas (Ela/Knut/Sarah/Petra/Herr Bachmeier) — this is a pure fact-reference tool without a case-study frame; forcing a persona reference here would feel artificial. No real runtime AI call: all content is researched statically and maintained editorially.
+
+DO NOT:
+- Carry over prices/context windows from the model's training knowledge without checking them against the current state via targeted web search (K17) — model names and prices change weekly at both vendors.
+- Show any number without a source and as-of date (K8) — write "no verified figures found" rather than presenting a guess as fact.
+- Make brand value judgements ("X is better than Y") — structure and price comparison only; the evaluation stays with the trainer and participants.
+- Load vendor logos/brand imagery (brand and offline reasons, K1).
+- Permanently shorten the "deepen" box in presenter mode — only auto-collapse it; the full text stays reachable in normal mode at any time.</div>
+        </div>
+      </details>
+
+      <details class="footer-box">
+        <summary class="footer-summary" data-de="Handbuch" data-en="Handbook">Handbuch</summary>
+        <div class="footer-content footer-sans">
+          <div data-lang="de">
+            <p><strong>Framework:</strong> CO-STAR (Context – Objective – Style – Tone – Audience – Response). Context: schnelllebige KI-Modelllandschaft September 2026, zwei Anbieter. Objective: Trainer:innen sollen Modellwahl als RE-Entscheidung vermitteln können, nicht als Markenfrage. Style: nüchtern, tabellarisch, vergleichend, mit klar getrennten Verifiziert-/Unverifiziert-Markierungen. Tone: sachlich, keine Werbesprache. Audience: RE/BA/PM-Trainer:innen und ihre Workshop-Teilnehmenden. Response: Kennzahlen-Tabelle + zwei parallele Familien-Grids + Strukturvergleich + Entscheidungshilfe + Transferfrage.</p>
+            <p><strong>5 Dimensionen:</strong></p>
+            <ul>
+              <li><strong>Rolle:</strong> Nachschlagewerk-Autor:in, keine Verkaufsposition.</li>
+              <li><strong>Aufgabe:</strong> Struktur &amp; Preise zweier Modellfamilien so aufbereiten, dass sie in unter 5 Minuten präsentierbar sind.</li>
+              <li><strong>Kontext:</strong> schnelllebiger KI-Markt (September 2026) — Trainer:innen brauchen etwas, das sich schnell aktualisieren lässt.</li>
+              <li><strong>Format:</strong> Tabellen und Karten-Grids statt Fließtext, damit Beamer-Tauglichkeit von Anfang an mitgedacht ist.</li>
+              <li><strong>Eingrenzung:</strong> nur zwei Anbieter, nur aktuell aktive Modelle — keine historischen Modelle, keine weiteren Anbieter (Gemini, Llama u.&nbsp;a.).</li>
+            </ul>
+            <p><strong>Zentraler Lernhinweis:</strong> Modellfamilien folgen einer stabilen Struktur (Spitze/Mitte/Basis), auch wenn sich Namen und Preise ständig ändern — das ist der Transfermoment für Teilnehmende. Zusätzlich zeigt das Tool live, wie verifizierte und unverifizierte Werte unterscheidbar bleiben müssen (K8/K17-Prinzip in der Praxis).</p>
+            <p><strong>Nachbau-Tipp:</strong> Wer diese Struktur für ein anderes Themenfeld übernehmen will (z.&nbsp;B. Cloud-Anbieter, BI-Tools), behält das Muster 1:1: Kennzahlen-Tabelle mit Verifiziert-Badge, zwei parallele Karten-Grids, eine Strukturvergleichstabelle Rolle-für-Rolle, Entscheidungshilfe-Karten, eine Transferfrage. Der Trick liegt in der Zeile-für-Zeile-Parallelität der beiden Karten-Grids, nicht im Inhalt.</p>
+          </div>
+          <div data-lang="en" hidden>
+            <p><strong>Framework:</strong> CO-STAR (Context – Objective – Style – Tone – Audience – Response). Context: fast-moving AI model landscape, September 2026, two vendors. Objective: enable trainers to teach model choice as a requirements-engineering decision, not a brand question. Style: sober, tabular, comparative, with clearly separated verified/unverified markers. Tone: factual, no marketing language. Audience: RE/BA/PM trainers and their workshop participants. Response: numbers table + two parallel family grids + structural comparison + decision guide + transfer question.</p>
+            <p><strong>5 dimensions:</strong></p>
+            <ul>
+              <li><strong>Role:</strong> reference-sheet author, no sales position.</li>
+              <li><strong>Task:</strong> present the structure &amp; pricing of two model families so it is presentable in under 5 minutes.</li>
+              <li><strong>Context:</strong> fast-moving AI market (September 2026) — trainers need something they can update quickly.</li>
+              <li><strong>Format:</strong> tables and card grids instead of prose, so presenter-mode readability is designed in from the start.</li>
+              <li><strong>Constraint:</strong> only two vendors, only currently active models — no legacy models, no further vendors (Gemini, Llama, etc.).</li>
+            </ul>
+            <p><strong>Central learning point:</strong> model families follow a stable structure (top/mid/base) even as names and prices keep changing — that is the transfer moment for participants. The tool also shows live how verified and unverified figures must stay distinguishable (the K8/K17 principle in practice).</p>
+            <p><strong>Rebuild tip:</strong> to reuse this structure for another topic (e.g. cloud vendors, BI tools), keep the pattern 1:1: a numbers table with a verified badge, two parallel card grids, a role-by-role structural comparison table, decision-guide cards, one transfer question. The trick is the row-by-row parallelism of the two card grids, not the content.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="footer-box">
+        <summary class="footer-summary" data-de="Vortrags-Skript" data-en="Speaker Script">Vortrags-Skript</summary>
+        <div class="footer-content footer-sans">
+          <div data-lang="de">
+            <p><em>(Einordnung sichtbar, noch nicht aufgeklappt)</em> „Wenn wir über KI-Tools reden, reden wir eigentlich über Familien, nicht über ein einzelnes Modell. Claude ist nicht ein Modell, ChatGPT ist nicht ein Modell — beide sind inzwischen ganze Produktpaletten." Überleitung: „Schauen wir uns erst die belastbaren Zahlen an, bevor wir über Struktur sprechen."</p>
+            <p><em>(Scroll zur Kennzahlen-Tabelle)</em> „Diese Tabelle ist bewusst nüchtern gehalten — jede Zahl hat eine Quelle und ein Datum. Und sehen Sie hier unten: Für drei GPT-5.6-Modelle haben wir bewusst keine Preise eingetragen, weil wir sie zum Recherchezeitpunkt nicht unabhängig verifizieren konnten. Das ist Absicht, kein Fehler." Überleitung: „Diese Disziplin — lieber &bdquo;nicht verifiziert&ldquo; als eine geschätzte Zahl — ist dieselbe, die wir auch bei Anforderungen fordern."</p>
+            <p><em>(Scroll zur Claude-Familie)</em> „Fünf Bausteine: Mythos-Klasse ganz oben, dann das Spitzenmodell, der Allrounder, das schnelle Modell — und Claude Code als eigener Agent, kein Chat-Modell." Überleitung: „Jetzt der Spiegel dazu."</p>
+            <p><em>(Scroll zur ChatGPT-Familie)</em> „Fast dieselbe Struktur, andere Namen: GPT-6 Astra oben, dann Sol, Terra, Luna. Der Unterschied: OpenAI hat aktuell noch eine Rollout-Phase — GPT-6 Astra ist noch nicht für alle Konten verfügbar." Überleitung: „Damit die Parallele nicht nur behauptet, sondern sichtbar wird, kommt jetzt die direkte Gegenüberstellung."</p>
+            <p><em>(Scroll zur Strukturvergleichstabelle)</em> „Zeile für Zeile: Spitzenmodell gegen Spitzenmodell, Allrounder gegen Allrounder. Das ist der Aha-Moment — die Struktur ist bei beiden Anbietern fast identisch, obwohl die Namen komplett unterschiedlich sind." Überleitung: „Aber Struktur allein hilft niemandem bei der Auswahl — deshalb jetzt die praktische Seite."</p>
+            <p><em>(Scroll zur Entscheidungshilfe)</em> „Vier typische Aufgaben, je zwei Empfehlungen. Wichtig: Das sind keine Werturteile, sondern Passungen — welches Modell passt zu welcher Anforderung." Überleitung: „Und damit sind wir wieder bei der eigentlichen Frage."</p>
+            <p><em>(Scroll zum Callout am Ende)</em> „Bevor Sie ein Modell wählen: Was ist eigentlich die Anforderung an die Aufgabe? Tempo, Tiefe, Budget, Reproduzierbarkeit? Das ist derselbe erste Schritt wie bei jeder Anforderungsanalyse." <em>(Abschluss, keine weitere Aktion nötig)</em></p>
+            <p><strong>Regie-Hinweise:</strong> Nicht mit der Kennzahlen-Tabelle einsteigen — erst die Einordnung, sonst wirkt der Vortrag wie eine Produktvorstellung. Zeitbudget: 5–7 Minuten für den kompletten Durchlauf, die Kennzahlen-Tabelle nicht Zeile für Zeile vorlesen, nur die Auffälligkeiten (Kontextfenster-Parität, fehlende Preise) hervorheben. Nicht zuerst über Preise sprechen — erst Struktur, dann Preis, sonst wird die Diskussion zur Kostenfrage statt zur Auswahllogik.</p>
+          </div>
+          <div data-lang="en" hidden>
+            <p><em>(Framing box visible, not yet expanded)</em> "When we talk about AI tools, we're really talking about families, not a single model. Claude isn't one model, ChatGPT isn't one model — both are now entire product ranges." Transition: "Let's look at the hard numbers first, before we talk structure."</p>
+            <p><em>(Scroll to the numbers table)</em> "This table is deliberately sober — every figure has a source and a date. And look down here: for three GPT-5.6 models we deliberately left the prices out, because we couldn't verify them independently at research time. That's intentional, not a gap." Transition: "This discipline — 'not verified' rather than a guessed number — is the same discipline we demand for requirements."</p>
+            <p><em>(Scroll to the Claude family)</em> "Five building blocks: the Mythos tier at the very top, then the flagship, the all-rounder, the fast model — and Claude Code as its own agent, not a chat model." Transition: "Now the mirror image."</p>
+            <p><em>(Scroll to the ChatGPT family)</em> "Almost the same structure, different names: GPT-6 Astra at the top, then Sol, Terra, Luna. The difference: OpenAI is currently still mid-rollout — GPT-6 Astra isn't available to every account yet." Transition: "So the parallel isn't just claimed but visible, here's the direct side-by-side."</p>
+            <p><em>(Scroll to the structural comparison table)</em> "Row by row: flagship against flagship, all-rounder against all-rounder. This is the aha-moment — the structure is almost identical across both vendors even though the names are completely different." Transition: "But structure alone doesn't help anyone choose — so now the practical side."</p>
+            <p><em>(Scroll to the decision guide)</em> "Four typical tasks, two recommendations each. Important: these aren't value judgements, they're fits — which model matches which requirement." Transition: "And that brings us back to the actual question."</p>
+            <p><em>(Scroll to the closing callout)</em> "Before you pick a model: what's the actual requirement behind the task? Speed, depth, budget, reproducibility? That's the same first step as in any requirements analysis." <em>(Closing, no further action needed)</em></p>
+            <p><strong>Directing notes:</strong> Don't open with the numbers table — start with the framing section, or the talk reads like a product pitch. Time budget: 5–7 minutes for the full run-through; don't read the numbers table row by row, just highlight the standouts (context-window parity, missing prices). Don't lead with pricing — structure first, then price, or the discussion turns into a cost debate instead of a selection framework.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="footer-box">
+        <summary class="footer-summary" data-de="Normen-Register" data-en="Standards Register">Normen-Register</summary>
+        <div class="footer-content footer-sans">
+          <div data-lang="de">
+            <p>Keine ISO-/RE-Norm referenziert — reines Produkt-/Preisfaktenblatt. Vor Einsatz in neuen Trainingsmaterialien den Stand erneut prüfen (K17), da sich Modellnamen und Preise bei beiden Anbietern regelmäßig ändern.</p>
+            <table class="footer-table">
+              <thead><tr><th>Quelle</th><th>Fassung/Status</th><th>Bezug im Tool</th></tr></thead>
+              <tbody>
+                <tr><td>platform.claude.com/docs (Anthropic Modellübersichten)</td><td>Stand 12.09.2026, laufend aktualisiert</td><td>Kennzahlen-Tabelle (Claude-Zeilen), Claude-Familien-Karten</td></tr>
+                <tr><td>Anthropic Pricing-Dokumentation</td><td>Stand 12.09.2026</td><td>Preisspalte der Kennzahlen-Tabelle</td></tr>
+                <tr><td>OpenAI Model Release Notes / Help Center</td><td>Stand 12.09.2026, GPT-6-Astra-Rollout läuft</td><td>Kennzahlen-Tabelle (GPT-6-Astra-Zeile), ChatGPT-Familien-Karten</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div data-lang="en" hidden>
+            <p>No ISO/RE standard referenced — a pure product/pricing fact sheet. Re-check the current state before using it in new training materials (K17), since model names and prices change regularly at both vendors.</p>
+            <table class="footer-table">
+              <thead><tr><th>Source</th><th>Version/status</th><th>Reference in the tool</th></tr></thead>
+              <tbody>
+                <tr><td>platform.claude.com/docs (Anthropic model overviews)</td><td>As of Sept 12, 2026, continuously updated</td><td>Numbers table (Claude rows), Claude family cards</td></tr>
+                <tr><td>Anthropic pricing documentation</td><td>As of Sept 12, 2026</td><td>Price column of the numbers table</td></tr>
+                <tr><td>OpenAI Model Release Notes / Help Center</td><td>As of Sept 12, 2026, GPT-6 Astra rollout in progress</td><td>Numbers table (GPT-6 Astra row), ChatGPT family cards</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </footer>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var isEn = false;
+
+  var langDE = document.getElementById('langDE');
+  var langEN = document.getElementById('langEN');
+  var beamerBtn = document.getElementById('beamerBtn');
+
+  // Alle Elemente mit data-de + data-en per innerHTML-Austausch übersetzen.
+  var translatable = Array.prototype.slice.call(document.querySelectorAll('[data-de][data-en]'));
+  function applyTranslations(){
+    translatable.forEach(function(el){
+      el.innerHTML = isEn ? el.getAttribute('data-en') : el.getAttribute('data-de');
+    });
+  }
+
+  // Lange Footer-Inhalte liegen als parallele DE/EN-Blöcke vor (Tabellen/Listen
+  // lassen sich nicht sinnvoll als HTML-String in einem Attribut pflegen).
+  var langBlocks = Array.prototype.slice.call(document.querySelectorAll('[data-lang]'));
+  function applyFooterLang(){
+    langBlocks.forEach(function(el){
+      var matches = el.getAttribute('data-lang') === (isEn ? 'en' : 'de');
+      el.hidden = !matches;
+    });
+  }
+
+  function refreshVtToggleLabels(){
+    document.querySelectorAll('.vt-toggle').forEach(function(btn){
+      var box = document.getElementById(btn.getAttribute('data-target'));
+      var expanded = box.classList.contains('expanded');
+      if(isEn){
+        btn.textContent = expanded ? btn.getAttribute('data-en-less') : btn.getAttribute('data-en-more');
+      } else {
+        btn.textContent = expanded ? btn.getAttribute('data-de-less') : btn.getAttribute('data-de-more');
+      }
+    });
+  }
+
+  /* ================= BEAMER-MODUS (vierstufig, kanonisches Muster) ================= */
+  var BEAMER_LEVELS = [
+    { classes: [],                                    de: '☀ Beamer',     en: '☀ Presenter' },
+    { classes: ['beamer'],                             de: '☀ Beamer XL',  en: '☀ Presenter XL' },
+    { classes: ['beamer', 'beamer-xl'],                de: '☀ Beamer XXL', en: '☀ Presenter XXL' },
+    { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  de: '☀ Normal',     en: '☀ Normal' }
+  ];
+  var beamerLevel = 0;
+  function applyBeamerLabel(){
+    beamerBtn.textContent = isEn ? BEAMER_LEVELS[beamerLevel].en : BEAMER_LEVELS[beamerLevel].de;
+  }
+  beamerBtn.addEventListener('pointerup', function(e){
+    e.preventDefault();
+    beamerLevel = (beamerLevel + 1) % 4;
+    document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    applyBeamerLabel();
+    if(beamerLevel > 0){
+      document.querySelectorAll('.vertiefung-box.expanded').forEach(function(box){
+        box.classList.remove('expanded');
+      });
+      refreshVtToggleLabels();
+    }
+  });
+
+  function setLang(en){
+    isEn = en;
+    langDE.classList.toggle('active', !en);
+    langEN.classList.toggle('active', en);
+    applyTranslations();
+    applyFooterLang();
+    refreshVtToggleLabels();
+    applyBeamerLabel();
+  }
+  langDE.addEventListener('pointerup', function(e){ e.preventDefault(); setLang(false); });
+  langEN.addEventListener('pointerup', function(e){ e.preventDefault(); setLang(true); });
+
+  // Vertiefungs-Toggle (unabhängig von der Sprache)
+  document.querySelectorAll('.vt-toggle').forEach(function(btn){
+    btn.addEventListener('pointerup', function(e){
+      e.preventDefault();
+      var box = document.getElementById(btn.getAttribute('data-target'));
+      box.classList.toggle('expanded');
+      refreshVtToggleLabels();
+    });
+  });
+
+  applyFooterLang();
+  refreshVtToggleLabels();
+})();
+</script>
+
+</body>
+</html>
