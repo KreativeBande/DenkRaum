@@ -7,30 +7,32 @@
 <style>
 :root{
   color-scheme: light;
-  --bg:#ffffff; --bg-alt:#f7f7f9; --ink:#1c1c22; --ink-soft:#4b4b57;
-  --line:#e2e2e8; --line-strong:#c7c7d1;
-  --perspective:#1e40af; --perspective-bg:#eaf0fd;
-  --people:#0d9488; --people-bg:#e6f7f5;
-  --practice:#b45309; --practice-bg:#fdf1e3;
-  --synthese:#4f46e5; --synthese-bg:#eeecfd;
-  --accent:#1c1c22;
-  --ela:#4f46e5; --knut:#0d9488; --sarah:#b45309; --petra:#7c3aed; --bachmeier:#475569;
-  --radius:12px;
+  --bg:#ffffff; --bg-alt:#faf8f3; --ink:#1c2438; --ink-soft:#3f4a63;
+  --line:#e3e6ee; --line-strong:#d8cdb0;
+  --gold:#9c7a2e; --gold-deep:#7a5e1f; --gold-wash:#fffdf7;
+  --perspective:#2c3a5c; --perspective-bg:#eef1f6;
+  --people:#2f5d52; --people-bg:#eef4f1;
+  --practice:#8a5a2b; --practice-bg:#faf3e8;
+  --synthese:#5b3a6e; --synthese-bg:#f3eef6;
+  --accent:#7a5e1f;
+  --ela:#5b3a6e; --knut:#2f5d52; --sarah:#8a5a2b; --petra:#7c5ea6; --bachmeier:#475569;
+  --radius:10px;
 }
 *{box-sizing:border-box;}
 html,body{background:var(--bg); color:var(--ink);}
 body{
-  margin:0; font-family:"Segoe UI",Verdana,Arial,sans-serif; font-size:16px; line-height:1.55;
+  margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:16px; line-height:1.6;
   background:var(--bg); color:var(--ink); -webkit-text-size-adjust:100%;
   padding-top:56px;
 }
-h1,h2,h3,h4{font-family:inherit; color:var(--ink); line-height:1.25; font-weight:700;}
+h1,h2,h3,h4{font-family:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,serif; color:var(--ink); line-height:1.25; font-weight:700;}
 h1{font-size:1.7rem; margin:0 0 .3rem;}
 h2{font-size:1.35rem; margin:0 0 .6rem;}
 h3{font-size:1.1rem; margin:1.1rem 0 .4rem;}
 p{margin:0 0 .7rem; font-size:1rem;}
 small,.small{font-size:.875rem; color:var(--ink-soft);}
-a{color:var(--perspective);}
+a{color:var(--gold-deep);}
 button{font-family:inherit; cursor:pointer;}
 .container{max-width:960px; margin:0 auto; padding:0 18px 40px;}
 
@@ -83,15 +85,15 @@ body.quiz-aus .quiz-block{display:none;}
   display:inline-block; margin:14px 0 0 18px;
   font-size:14px; font-weight:700; color:var(--ink-soft); text-decoration:none;
 }
-.back-link:hover{color:var(--perspective);}
+.back-link:hover{color:var(--gold-deep);}
 .signature{
   position:fixed; top:10px; right:14px; z-index:500;
-  background:var(--bg); border:1px solid var(--line); border-radius:12px;
+  background:var(--bg); border:1px solid var(--line-strong); border-radius:10px;
   padding:6px 14px; font-size:14px; font-weight:600; color:var(--ink);
-  box-shadow:0 1px 4px rgba(0,0,0,.08); white-space:nowrap; text-align:right;
+  box-shadow:0 1px 4px rgba(0,0,0,.06); white-space:nowrap; text-align:right;
 }
 .signature strong{display:block; font-size:14px; color:var(--ink);}
-.signature a{color:var(--perspective); text-decoration:none; font-weight:600;}
+.signature a{color:var(--gold-deep); text-decoration:none; font-weight:600;}
 .signature .sig-short{display:none;}
 @media (max-width:640px){
   .signature{ top:8px; right:8px; padding:5px 10px; font-size:12px; }
@@ -101,13 +103,13 @@ body.quiz-aus .quiz-block{display:none;}
 }
 
 header.hero{
-  background:linear-gradient(135deg,var(--perspective-bg),var(--practice-bg));
-  border-bottom:1px solid var(--line); padding:26px 18px 20px;
+  background:linear-gradient(180deg,#fffefb 0%,#ffffff 100%);
+  border-bottom:1px solid var(--line-strong); padding:26px 18px 20px;
 }
 header.hero .container{padding-bottom:0;}
 .hero-badge{
   display:inline-block; font-size:.875rem; font-weight:700; text-transform:uppercase;
-  letter-spacing:.04em; color:var(--ink-soft); background:#fff; border:1px solid var(--line-strong);
+  letter-spacing:.06em; color:var(--gold-deep); background:#fff; border:1px solid var(--line-strong);
   border-radius:999px; padding:3px 12px; margin-bottom:10px;
 }
 .hero h1{max-width:760px;}
@@ -115,7 +117,7 @@ header.hero .container{padding-bottom:0;}
 
 /* ---- Toolbar (Toggles) ---- */
 .toolbar{
-  position:sticky; top:0; z-index:400; background:#fff; border-bottom:1px solid var(--line);
+  position:sticky; top:0; z-index:400; background:#fff; border-bottom:1px solid var(--line-strong);
   padding:8px 350px 8px 18px; display:flex; flex-wrap:wrap; gap:8px; align-items:center;
   /* rechtes Padding reserviert Platz fuer die fixierte Signatur, damit die Toolbar
      beim Scrollen (position:sticky) nie unter der Signatur verdeckt wird (K21). */
@@ -132,7 +134,7 @@ header.hero .container{padding-bottom:0;}
 .tbtn[aria-pressed="true"]{background:var(--ink); color:#fff; border-color:var(--ink);}
 html.beamer .beamer-btn,
 html.beamer-xl .beamer-btn,
-html.beamer-xxl .beamer-btn{background:var(--perspective); color:#fff; border-color:var(--perspective);}
+html.beamer-xxl .beamer-btn{background:var(--gold-deep); color:#fff; border-color:var(--gold-deep);}
 @media (max-width:900px){
   .toolbar{padding-right:340px;} /* Signatur zeigt bis 640px noch den vollen Text */
 }
@@ -154,7 +156,7 @@ html.beamer-xxl .beamer-btn{background:var(--perspective); color:#fff; border-co
   display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.875rem;
   color:var(--ink-soft); background:#fff; padding:0 8px;
 }
-.stamp.done{border-style:solid; border-color:var(--perspective); background:var(--perspective-bg); color:var(--perspective);}
+.stamp.done{border-style:solid; border-color:var(--gold-deep); background:var(--gold-wash); color:var(--gold-deep);}
 
 /* ---- Navigation ---- */
 nav.stations{display:flex; flex-wrap:wrap; gap:8px; padding:14px 18px; background:var(--bg-alt);
@@ -227,8 +229,8 @@ nav.stations{display:flex; flex-wrap:wrap; gap:8px; padding:14px 18px; backgroun
 .persona-box{border-radius:8px; padding:10px 12px; margin:6px 0 0; border-left:4px solid var(--ink-soft);
   background:#fff; font-weight:600;}
 .persona-name{font-weight:800; margin-right:4px;}
-.trainertipp{background:#fffbe8; border:1.5px dashed #d4a017; border-radius:8px; padding:9px 12px; margin-top:10px; font-size:.92rem;}
-.trainertipp .tt-lbl{font-weight:800; text-transform:uppercase; font-size:.875rem; letter-spacing:.03em; color:#8a6300; display:block; margin-bottom:3px;}
+.trainertipp{background:var(--gold-wash); border:1.5px dashed var(--gold); border-radius:8px; padding:9px 12px; margin-top:10px; font-size:.92rem;}
+.trainertipp .tt-lbl{font-weight:800; text-transform:uppercase; font-size:.875rem; letter-spacing:.03em; color:var(--gold-deep); display:block; margin-bottom:3px;}
 
 /* ---- Synthese Facetten ---- */
 .facet{border-radius:var(--radius); padding:14px 16px; margin-bottom:12px; border:1.5px solid var(--line-strong);}
@@ -269,7 +271,7 @@ nav.stations{display:flex; flex-wrap:wrap; gap:8px; padding:14px 18px; backgroun
 
 /* ---- Crosslink ---- */
 .crosslink{margin:20px 0 0; font-size:14px; color:var(--ink-soft);}
-.crosslink a{color:var(--perspective); font-weight:700; text-decoration:none;}
+.crosslink a{color:var(--gold-deep); font-weight:700; text-decoration:none;}
 .crosslink a:hover{text-decoration:underline;}
 .crosslink ul{margin:8px 0 0; padding-left:20px;}
 .crosslink li{margin-bottom:4px;}
