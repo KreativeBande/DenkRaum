@@ -115,9 +115,17 @@ header.hero .container{padding-bottom:0;}
 .hero h1{max-width:760px;}
 .hero .sub{font-size:1.02rem; color:var(--ink-soft); max-width:720px;}
 
+/* ---- Sticky Steuerleiste: Toolbar + Stempelpass + Stationsnav bleiben beim
+   Scrollen als ein Block oben stehen, damit man beim Vortragen nicht zum
+   Umschalten erst wieder nach oben scrollen muss. ---- */
+.controls-sticky{
+  position:sticky; top:0; z-index:400;
+  box-shadow:0 4px 10px rgba(28,36,56,.06);
+}
+
 /* ---- Toolbar (Toggles) ---- */
 .toolbar{
-  position:sticky; top:0; z-index:400; background:#fff; border-bottom:1px solid var(--line-strong);
+  background:#fff; border-bottom:1px solid var(--line-strong);
   padding:8px 350px 8px 18px; display:flex; flex-wrap:wrap; gap:8px; align-items:center;
   /* rechtes Padding reserviert Platz fuer die fixierte Signatur, damit die Toolbar
      beim Scrollen (position:sticky) nie unter der Signatur verdeckt wird (K21). */
@@ -137,6 +145,9 @@ html.beamer-xl .beamer-btn,
 html.beamer-xxl .beamer-btn{background:var(--gold-deep); color:#fff; border-color:var(--gold-deep);}
 @media (max-width:900px){
   .toolbar{padding-right:340px;} /* Signatur zeigt bis 640px noch den vollen Text */
+  /* Unter 900px waechst der Steuerungsblock durch Umbruch stark in der Hoehe;
+     sticky wuerde dann zu viel vom kleinen Bildschirm dauerhaft belegen. */
+  .controls-sticky{position:static; box-shadow:none;}
 }
 @media (max-width:760px){
   .toolbar{gap:6px;}
@@ -330,6 +341,7 @@ button, .opt, .navbtn, .tbtn{touch-action:manipulation;}
 </header>
 
 
+<div class="controls-sticky">
 <div class="toolbar" role="toolbar" aria-label="Werkzeugleiste">
   <div class="grp">
     <span class="lbl"><span class="lang-de">Sprache</span><span class="lang-en">Language</span></span>
@@ -357,6 +369,7 @@ button, .opt, .navbtn, .tbtn{touch-action:manipulation;}
 </div>
 
 <nav class="stations" aria-label="Stationen"><button class="navbtn dom-le0" data-station="le0" aria-current="true"><span class="lang-de">Überblick</span><span class="lang-en">Overview</span></button><button class="navbtn dom-perspective" data-station="le1" aria-current="false"><span class="lang-de">Perspective</span><span class="lang-en">Perspective</span></button><button class="navbtn dom-people" data-station="le2" aria-current="false"><span class="lang-de">People I</span><span class="lang-en">People I</span></button><button class="navbtn dom-people" data-station="le3" aria-current="false"><span class="lang-de">People II</span><span class="lang-en">People II</span></button><button class="navbtn dom-practice" data-station="le4" aria-current="false"><span class="lang-de">Practice I</span><span class="lang-en">Practice I</span></button><button class="navbtn dom-practice" data-station="le5" aria-current="false"><span class="lang-de">Practice II</span><span class="lang-en">Practice II</span></button><button class="navbtn dom-synthese" data-station="le6" aria-current="false"><span class="lang-de">Synthese</span><span class="lang-en">Synthesis</span></button><button class="navbtn dom-anhang" data-station="anhang" aria-current="false"><span class="lang-de">Anhang</span><span class="lang-en">Appendix</span></button></nav>
+</div>
 <main class="container">
 
 <section class="panel active" id="panel-le0">
