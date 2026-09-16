@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RE-Kompendium &ndash; Requirements Engineering &uuml;ber IREB, BABOK v3 und ISO/IEC/IEEE 29148</title>
+<style>
+:root{
+  color-scheme: light;
+  --bg:#ffffff;
+  --panel:#f7f8fa;
+  --border:#e2e5ea;
+  --ink:#1b1f27;
+  --muted:#5a6270;
+  --faint:#8a909c;
+  --accent:#2b5fd9;
+  --accent-ink:#12327a;
+  --accent-bg:#e8effc;
+  --ela:#4f46e5;      /* indigo - Projektleitung */
+  --ela-bg:#eeecfd;
+  --knut:#0d9488;     /* teal - Entwicklung */
+  --knut-bg:#e2f6f4;
+  --sarah:#b45309;    /* amber - Vertrieb */
+  --sarah-bg:#fdf1e0;
+  --petra:#7c3aed;    /* violet - QM */
+  --petra-bg:#f1e9fe;
+  --bach:#475569;     /* slate - Geschaeftsfuehrung */
+  --bach-bg:#eceff3;
+  --ok:#0f7a3d;
+  --ok-bg:#e5f5ec;
+  --warn:#a15c00;
+  --warn-bg:#fdf0dc;
+  --radius:10px;
+}
+
+*{box-sizing:border-box;}
+html,body{
+  margin:0;padding:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;
+  line-height:1.5;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:none;
+  -webkit-overflow-scrolling:touch;
+}
+body{padding-top:92px;}
+
+.signature{
+  position:fixed;
+  top:14px;
+  right:28px;
+  z-index:500;
+  text-align:right;
+  background:rgba(255,255,255,0.92);
+  padding:4px 10px;
+  border-radius:8px;
+  line-height:1.3;
+}
+.signature strong{display:block;font-size:14px;color:var(--ink);}
+.signature a{font-size:14px;color:var(--accent);text-decoration:none;}
+.signature a:hover{text-decoration:underline;}
+
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:var(--bg);
+  border-bottom:1px solid var(--border);
+  padding:14px 24px;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:16px;
+  transform:translateZ(0);
+}
+.topbar .brand-col{display:flex;flex-direction:column;gap:4px;}
+.back-link{font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;}
+.back-link:hover{color:var(--accent);}
+.topbar .brand{font-weight:700;font-size:19px;}
+.topbar .brand .sub{display:block;font-weight:400;font-size:14px;color:var(--muted);margin-top:2px;}
+
+.pill{
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:var(--ink);
+  border-radius:999px;
+  padding:8px 16px;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  touch-action:manipulation;
+  min-height:40px;
+}
+.pill:hover{background:var(--accent-bg);border-color:var(--accent);}
+.pill.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+.toggle-group{display:flex;gap:8px;flex-wrap:wrap;justify-self:center;align-items:center;}
+.toggle-group .vertiefung-toggle{margin:0;}
+
+.layout{
+  display:flex;
+  min-height:calc(100vh - 68px);
+}
+.nav-col{
+  width:340px;flex-shrink:0;
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+}
+.nav-col .nav-hint{
+  font-size:14px;color:var(--muted);
+  margin:0;
+  padding:40px 16px 16px 18px;
+  flex-shrink:0;
+  border-bottom:1px solid var(--border);
+  background:var(--bg);
+}
+.nav-list-scroll{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  padding:16px;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+.nav-item{
+  display:block;width:100%;text-align:left;
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:var(--radius);
+  padding:12px 14px;
+  margin-bottom:8px;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+.nav-item .num{
+  display:inline-block;width:26px;height:26px;border-radius:50%;
+  background:var(--panel);color:var(--muted);font-weight:700;font-size:14px;
+  text-align:center;line-height:26px;margin-right:8px;
+}
+.nav-item .title{font-weight:700;font-size:15px;}
+.nav-item .frage{display:block;font-size:14px;color:var(--muted);margin-top:4px;margin-left:34px;}
+.nav-item.active{border-color:var(--accent);background:var(--accent-bg);}
+.nav-item.active .num{background:var(--accent);color:#fff;}
+
+.detail-col{
+  flex:1;
+  padding:28px 40px;
+  max-width:920px;
+}
+.detail-col h1{font-size:26px;margin:0 0 4px 0;}
+.detail-col .frage-lead{font-size:16px;color:var(--muted);margin:0 0 22px 0;font-style:italic;}
+
+.badge-row{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 14px 0;}
+.badge{
+  display:inline-block;
+  font-size:14px;font-weight:700;
+  border-radius:6px;padding:3px 9px;
+  background:var(--accent-bg);color:var(--accent-ink);
+  border:1px solid #c7d7f7;
+}
+
+.section-block{margin-bottom:26px;}
+.section-block h2{font-size:18px;margin:0 0 10px 0;border-left:4px solid var(--accent);padding-left:10px;}
+.section-block p{margin:0 0 12px 0;}
+.section-block ul, .section-block ol{margin:0 0 12px 0;padding-left:22px;}
+.section-block li{margin-bottom:6px;}
+
+.vertiefung-toggle{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid var(--border);border-radius:999px;
+  padding:4px;margin-bottom:18px;background:var(--panel);
+}
+.vertiefung-toggle button{
+  border:none;background:transparent;border-radius:999px;
+  padding:6px 14px;font-size:14px;font-weight:700;cursor:pointer;
+  color:var(--muted);touch-action:manipulation;
+}
+.vertiefung-toggle button.active{background:#fff;color:var(--accent-ink);box-shadow:0 1px 2px rgba(0,0,0,.08);}
+.vertiefung-toggle.disabled{opacity:.4;}
+.vertiefung-toggle.disabled button{pointer-events:none;cursor:default;}
+
+.quote-box{
+  border-radius:var(--radius);
+  padding:14px 16px;
+  margin:14px 0;
+  border-left:4px solid var(--accent);
+  background:var(--panel);
+}
+.quote-box .who{font-weight:700;font-size:14px;margin-bottom:4px;}
+.quote-box.ela{border-color:var(--ela);background:var(--ela-bg);}
+.quote-box.ela .who{color:var(--ela);}
+.quote-box.knut{border-color:var(--knut);background:var(--knut-bg);}
+.quote-box.knut .who{color:var(--knut);}
+.quote-box.sarah{border-color:var(--sarah);background:var(--sarah-bg);}
+.quote-box.sarah .who{color:var(--sarah);}
+.quote-box.petra{border-color:var(--petra);background:var(--petra-bg);}
+.quote-box.petra .who{color:var(--petra);}
+.quote-box.bach{border-color:var(--bach);background:var(--bach-bg);}
+.quote-box.bach .who{color:var(--bach);}
+
+.example-box{
+  border:1px dashed var(--border);
+  border-radius:var(--radius);
+  padding:14px 16px;
+  margin:14px 0;
+  background:#fff;
+}
+.example-box .label{font-size:14px;font-weight:700;letter-spacing:.03em;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
+
+.map-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px;}
+.map-table th,.map-table td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top;}
+.map-table th{background:var(--panel);font-size:14px;}
+
+.quiz-box{
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:16px;margin:18px 0;background:var(--panel);
+}
+.quiz-box .q{font-weight:700;margin-bottom:10px;}
+.quiz-opt{
+  display:block;width:100%;text-align:left;
+  border:1px solid var(--border);background:#fff;border-radius:8px;
+  padding:10px 12px;margin-bottom:8px;cursor:pointer;font-size:14px;
+  touch-action:manipulation;
+}
+.quiz-opt.correct{border-color:var(--ok);background:var(--ok-bg);}
+.quiz-opt.wrong{border-color:#c0392b;background:#fde9e7;}
+.quiz-feedback{font-size:14px;margin-top:8px;font-weight:600;}
+.quiz-feedback.ok{color:var(--ok);}
+.quiz-feedback.warn{color:#c0392b;}
+
+/* ---------- Footer ---------- */
+footer{
+  border-top:1px solid var(--border);
+  padding:20px 40px 60px 40px;
+  background:var(--panel);
+}
+.footer-sig{font-size:14px;color:var(--muted);margin-bottom:14px;}
+.footer-sig strong{color:var(--ink);}
+.footer-sig a{color:var(--accent);}
+
+.footer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.footer-box{
+  border:1px solid var(--border);border-radius:var(--radius);
+  background:#fff;
+}
+.footer-summary{
+  padding:12px 14px;font-weight:700;font-size:14px;cursor:pointer;
+  list-style:none;display:flex;align-items:center;justify-content:space-between;
+  touch-action:manipulation;
+}
+.footer-summary::-webkit-details-marker{display:none;}
+.footer-summary::after{content:"+";font-size:18px;color:var(--muted);}
+details[open] .footer-summary::after{content:"–";}
+.footer-content{padding:0 14px 14px 14px;}
+.footer-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;white-space:pre-wrap;background:#fbfbfc;border:1px solid var(--border);border-radius:8px;padding:12px;max-height:340px;overflow-y:auto;}
+.footer-sans{font-size:14px;}
+.footer-table{width:100%;border-collapse:collapse;font-size:14px;}
+.footer-table th,.footer-table td{border:1px solid var(--border);padding:5px 6px;text-align:left;}
+.footer-table th{background:var(--panel);}
+
+@media (max-width:900px){
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .layout{flex-direction:column;}
+  .nav-col{width:100%;border-right:none;border-bottom:1px solid var(--border);max-height:280px;}
+  .detail-col{padding:20px;}
+  .signature{padding:2px 6px;max-width:98px;}
+  .signature strong{font-size:11px;}
+  .signature a{font-size:10px;word-break:break-word;}
+  .topbar{grid-template-columns:1fr;padding:12px 132px 12px 16px;}
+  .brand-col{align-items:flex-start;text-align:left;}
+  .topbar .brand .sub{font-size:12px;}
+  .toggle-group{justify-content:flex-start;margin-top:10px;}
+  body{padding-top:150px;}
+}
+@media (max-width:640px){
+  .footer-grid{grid-template-columns:1fr;}
+}
+
+/* ---------- Dokumentenketten-Vorlage (Kapitel 10) ---------- */
+.chain-pair{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:16px 0 22px 0;}
+@media (max-width:900px){.chain-pair{grid-template-columns:1fr;}}
+.chain-col-label{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:8px;}
+.chain{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.chain-link{padding:12px 14px;border-bottom:1px solid var(--border);background:#fff;}
+.chain-link:last-child{border-bottom:none;}
+.chain-link .stage{font-size:14px;font-weight:700;color:var(--accent-ink);text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px;}
+.chain-link .field{font-size:14px;}
+.chain-link.empty .field{color:var(--faint);font-style:italic;}
+.chain-link.filled .field{color:var(--ink);}
+.chain-arrow{text-align:center;font-size:16px;color:var(--faint);padding:2px 0;background:var(--panel);}
+
+/* ---------- Dokumenten-Schaufenster (Kapitel 10) — Karussell ---------- */
+.showcase-grid{display:block;margin:16px 0;}
+.showcase-card{border:1px solid var(--border);border-radius:var(--radius);background:#fff;overflow:hidden;display:none;}
+.showcase-card.showing{display:block;}
+.showcase-card .sc-head{background:var(--accent-bg);color:var(--accent-ink);padding:14px 18px;font-weight:700;font-size:18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.showcase-card .sc-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-size:15px;font-weight:700;flex-shrink:0;}
+.showcase-card .sc-sub{display:block;font-weight:400;font-size:14px;color:var(--muted);margin-top:2px;}
+.showcase-card .sc-body{padding:16px 18px;font-size:15px;}
+.showcase-card dl{margin:0;}
+.showcase-card dt{font-weight:700;font-size:14px;color:var(--muted);margin-top:12px;}
+.showcase-card dt:first-child{margin-top:0;}
+.showcase-card dd{margin:3px 0 0 0;font-size:15px;}
+.showcase-card ol,.showcase-card ul{margin:3px 0 0 18px;padding:0;font-size:15px;}
+.showcase-card .gherkin{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;background:#fbfbfc;border:1px solid var(--border);border-radius:8px;padding:10px;white-space:pre-wrap;margin-top:6px;}
+.sc-valid{background:var(--ok-bg);color:var(--ok);font-size:14px;padding:10px 18px;border-top:1px solid var(--border);font-weight:600;}
+
+.sc-controls{background:var(--bg);padding:0 0 14px 0;margin-bottom:4px;}
+.sc-dots{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.sc-dot{width:40px;height:40px;border-radius:50%;border:2px solid var(--border);background:#fff;color:var(--muted);font-weight:700;font-size:15px;cursor:pointer;touch-action:manipulation;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sc-dot.current{border-color:var(--accent);background:var(--accent);color:#fff;}
+.sc-dot.seen:not(.current){border-color:var(--accent);color:var(--accent-ink);}
+.sc-nav{display:flex;align-items:center;gap:12px;}
+.sc-nav button{min-height:44px;padding:10px 18px;font-size:15px;border-radius:999px;border:1px solid var(--border);background:var(--panel);font-weight:700;cursor:pointer;touch-action:manipulation;}
+.sc-nav button:disabled{opacity:.4;cursor:default;}
+.sc-nav button.primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.sc-nav .sc-label{font-size:15px;font-weight:700;flex:1;text-align:center;}
+
+
+html.beamer body{font-size:19px;}
+html.beamer .topbar{padding:18px 28px;}
+html.beamer .pill{font-size:16px;padding:10px 20px;min-height:48px;}
+html.beamer .nav-item .title{font-size:17px;}
+html.beamer .nav-item .frage{font-size:14px;}
+html.beamer .detail-col h1{font-size:32px;}
+html.beamer .detail-col{padding:32px 48px;}
+html.beamer .section-block h2{font-size:21px;}
+html.beamer footer{display:none;}
+html.beamer .signature{font-size:15px;}
+
+html.beamer.beamer-xl body{font-size:22px;}
+html.beamer.beamer-xl .detail-col h1{font-size:38px;}
+html.beamer.beamer-xl .nav-item .title{font-size:19px;}
+html.beamer.beamer-xl .pill{font-size:18px;padding:12px 22px;}
+
+html.beamer.beamer-xl.beamer-xxl body{font-size:26px;}
+html.beamer.beamer-xl.beamer-xxl .detail-col h1{font-size:44px;}
+html.beamer.beamer-xl.beamer-xxl .nav-item .title{font-size:22px;}
+html.beamer.beamer-xl.beamer-xxl .pill{font-size:20px;padding:14px 26px;}
+
+</style>
+</head>
+<body>
+
+<div class="signature">
+  <strong>Michaela K&uuml;hn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<div class="topbar">
+  <div class="brand-col">
+    <a class="back-link" href="../index.html">&larr; Zur&uuml;ck zur Startseite</a>
+    <div class="brand">
+      <span id="brandTitle">RE-Kompendium</span>
+      <span class="sub" id="brandSub">Requirements Engineering &uuml;ber IREB &middot; BABOK v3 &middot; ISO/IEC/IEEE 29148</span>
+    </div>
+  </div>
+  <div class="toggle-group">
+    <button class="pill" id="beamerBtn">Beamer</button>
+    <div class="vertiefung-toggle" id="topVertToggle" role="group">
+      <button data-v="kurz" id="topVertKurzBtn">Kurz</button>
+      <button data-v="voll" id="topVertVollBtn">Vollst&auml;ndig</button>
+    </div>
+    <button class="pill" id="langBtn">EN</button>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="nav-col">
+    <p class="nav-hint" id="navHint">10 Kapitel &mdash; anklicken zum &Ouml;ffnen</p>
+    <div class="nav-list-scroll">
+      <div id="navList"></div>
+    </div>
+  </nav>
+  <main class="detail-col" id="detailCol"></main>
+</div>
+
+<footer>
+<div class="footer-sig">
+  <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+  <span data-lang="de">· Referenziert: IREB CPRE Foundation Level Syllabus v3.3.0 (1. April 2026) ·
+  IIBA BABOK Guide v3 · ISO/IEC/IEEE 29148:2018 (bestätigt 2024, in Revision seit Feb. 2026, aktuell gültig) ·
+  ISO/IEC 25010:2023</span>
+  <span data-lang="en" style="display:none;">· References: IREB CPRE Foundation Level Syllabus v3.3.0 (April 1, 2026) ·
+  IIBA BABOK Guide v3 · ISO/IEC/IEEE 29148:2018 (confirmed 2024, scheduled for revision since Feb. 2026, currently in force) ·
+  ISO/IEC 25010:2023</span>
+</div>
+<div class="footer-grid">
+
+  <details class="footer-box">
+    <summary class="footer-summary" id="sumSystem">Systemprompt</summary>
+    <div class="footer-content">
+      <div class="footer-mono" data-lang="de">MASTER-BAU-PROMPT — RE-Kompendium (Requirements Engineering übergreifend)
+
+ROLLE
+Du baust ein interaktives, offlinefähiges HTML-Trainingstool für
+Requirements-Engineering-Schulungen (Zielgruppe: RE/BA/PM-Trainees ohne
+KI-Vorwissen). Referenzoptik: Split-Screen-Klick-Layout mit linker
+Kapitel-Navigation und rechtem Detail-Panel (siehe Referenztool
+ki-architektur-glossar-reba.html).
+
+STRUKTUR
+- Topbar: Marke/Untertitel links, Beamer-Toggle + Sprach-Toggle rechts.
+- Split-Screen: linke Spalte = Kapitel-Liste (Nummer, Titel, Kernfrage),
+  rechte Spalte = Detail (Badges, Titel, Kernfrage, Persona-Zitat,
+  Vertiefungs-Toggle, Inhalt, Mini-Quiz).
+- Vier Footer-Boxen: Systemprompt (dieser Prompt), Handbuch (didaktisch),
+  Vortrags-Skript (Sprechtext), Normen-Register (referenzierte Standards
+  mit Stand/Datum).
+- Signatur oben rechts, position:fixed, Name + Website-Link, auf jeder
+  Viewport-Breite (kein static-Fallback).
+
+INHALT PRO KAPITEL
+- Badges (referenzierte Normen), Nummer/Titel/Kernfrage, Persona-Zitat
+  (feste Vantera-Personas: Ela/Knut/Sarah/Petra/Bachmeier, farbcodiert),
+  Kurzversion (destilliert) + Vollversion (vierstufiger Anreicherungs-
+  Pass: Lückenanalyse, Anreicherung mit Beispiel/Definition/Kontext,
+  Stiloptimierung, Substanzverdreifachung), TalentMatch-AI-Beispielbox,
+  Mini-Quiz mit sofortigem Feedback.
+
+TOGGLES (alle drei Pflicht, von Anfang an mitbauen)
+1. Beamer-Toggle (vierstufig): Normal -> Beamer -> Beamer XL -> Beamer XXL
+   -> Normal. Reine Groessensteigerung. Footer ab Stufe 1 ausgeblendet.
+   Erzwingt automatisch die Kurzversion der Vertiefung, unabhaengig vom
+   vorherigen Nutzerzustand; beim Verlassen wird der vorherige Zustand
+   wiederhergestellt.
+2. Sprach-Toggle DE/EN: alle sichtbaren Texte inkl. aller vier
+   Footer-Boxen, ohne Reload, ohne externen Uebersetzungsdienst.
+3. Vertiefungs-Toggle (kurz/voll): Default kurz, beide Versionen
+   statisch im HTML, session-persistent.
+
+NICHT TUN
+- Keine Normbezug-Stempelmarken/Audit-Status-Zeile in der Signatur.
+- Keine Nachbau-Tipp-Zeile im Handbuch.
+- Kein Dark Mode, kein fetch() auf externe Hosts, kein CDN.
+- Keine generischen Werte/Platzhalter — jede Zahl/Frist/Norm konkret
+  und mit Stand/Datum belegt.
+
+TECHNIK
+Single-file HTML, color-scheme:light, pointerup statt click,
+sessionStorage nur mit try/catch, min. 16px Fliesstext / 14px
+Sekundaertext, 44px Touch-Ziele, UTF-8 direkt ohne Escape-Sequenzen.</div>
+      <div class="footer-mono" data-lang="en" style="display:none;">MASTER BUILD PROMPT — RE Compendium (cross-standard Requirements Engineering)
+
+ROLE
+You are building an interactive, fully offline HTML training tool for
+requirements engineering education (audience: RE/BA/PM trainees with no
+prior AI knowledge). Reference look: split-screen click layout with a
+left chapter navigation and a right detail panel (see reference tool
+ki-architektur-glossar-reba.html).
+
+STRUCTURE
+- Topbar: brand/subtitle left, Beamer toggle + language toggle right.
+- Split screen: left column = chapter list (number, title, key
+  question), right column = detail (badges, title, key question,
+  persona quote, Vertiefung toggle, content, mini quiz).
+- Four footer boxes: System Prompt (this prompt), Handbook (didactic),
+  Speaker Script, Norms Register (referenced standards with date/status).
+- Signature top-right, position:fixed, name + website link, on every
+  viewport width (no static fallback).
+
+CONTENT PER CHAPTER
+- Badges (referenced norms), number/title/key question, persona quote
+  (fixed Vantera personas: Ela/Knut/Sarah/Petra/Bachmeier, color-coded),
+  short version (distilled) + full version (four-step enrichment pass:
+  gap analysis, enrichment with example/definition/context, style
+  optimization, substance tripling), TalentMatch AI example box, mini
+  quiz with instant feedback.
+
+TOGGLES (all three mandatory, built in from the start)
+1. Beamer toggle (four-stage): Normal -> Beamer -> Beamer XL -> Beamer
+   XXL -> Normal. Pure size increase. Footer hidden from stage one.
+   Automatically forces the short Vertiefung version regardless of
+   prior user choice; the prior state is restored on exit.
+2. Language toggle DE/EN: all visible text incl. all four footer boxes,
+   no reload, no external translation service.
+3. Vertiefung toggle (short/full): default short, both versions static
+   in the HTML, session-persistent.
+
+DO NOT
+- No norm-reference stamps/audit-status line in the signature.
+- No rebuild-tip line in the handbook.
+- No dark mode, no fetch() to external hosts, no CDN.
+- No generic values/placeholders — every number/deadline/norm concrete
+  and backed with a status/date.
+
+TECH
+Single-file HTML, color-scheme:light, pointerup instead of click,
+sessionStorage only with try/catch, min. 16px body text / 14px
+secondary text, 44px touch targets, direct UTF-8, no escape sequences.</div>
+    </div>
+  </details>
+
+  <details class="footer-box">
+    <summary class="footer-summary" id="sumHandbuch">Handbuch</summary>
+    <div class="footer-content footer-sans" data-i18n-block="handbuch">
+      <div data-lang="de">
+        <p><strong>Framework:</strong> RAKFE (Rolle · Aufgabe · Kontext · Format · Eingrenzung) — Michaelas eigenes Prompt-Framework, hier auf den Tool-Bau-Prompt selbst angewendet.</p>
+        <ul>
+          <li><strong>Rolle:</strong> "Trainingstool-Entwicklerin für RE/BA/PM-Schulungen" — nicht "Requirements Engineer", weil die Aufgabe didaktische Aufbereitung ist, nicht die Anforderungsarbeit selbst.</li>
+          <li><strong>Aufgabe:</strong> ein Kompendium bauen, das drei Standards (IREB/BABOK v3/IEEE 29148) nebeneinander verständlich macht — nicht nur einen davon vertiefen.</li>
+          <li><strong>Kontext:</strong> Vantera/TalentMatch-AI-Fallstudienwelt als durchgängiges Beispiel, feste Personas mit klaren Rollen und Farbcodes.</li>
+          <li><strong>Format:</strong> Split-Screen-Klick-Kompendium mit Kapitel-Navigation (nicht Begriffs-Lexikon) — weil "vollständig und ausführlich" mehr Tiefe pro Einheit braucht als ein Glossar leisten kann.</li>
+          <li><strong>Eingrenzung:</strong> keine Stempelmarken, keine Nachbau-Tipp-Zeile — auf expliziten Wunsch entfernt, um den Fokus auf Inhalt statt Meta-Ebene zu legen.</li>
+        </ul>
+        <p><strong>Zentraler Lernhinweis:</strong> Der wichtigste didaktische Kniff dieses Tools ist Kapitel 9 (Normen-Mapping) — es zeigt explizit, wo Standards sich NICHT decken (z. B. BABOK 5.5 ohne IREB-Pendant). Genau diese Lücken sind es, an denen Lernende typischerweise scheitern, wenn sie Standards nur additiv statt vergleichend lernen.</p>
+      </div>
+      <div data-lang="en" style="display:none;">
+        <p><strong>Framework:</strong> RAKFE (Role · Task · Context · Format · Constraints) — Michaela's own prompting framework, applied here to the tool-build prompt itself.</p>
+        <ul>
+          <li><strong>Role:</strong> "training tool developer for RE/BA/PM education" — not "requirements engineer", because the task is didactic preparation, not requirements work itself.</li>
+          <li><strong>Task:</strong> build a compendium that makes three standards (IREB/BABOK v3/IEEE 29148) understandable side by side — not deepen only one of them.</li>
+          <li><strong>Context:</strong> the Vantera/TalentMatch AI case study world as a running example, fixed personas with clear roles and color codes.</li>
+          <li><strong>Format:</strong> split-screen click-compendium with chapter navigation (not a term glossary) — because "complete and thorough" needs more depth per unit than a glossary can deliver.</li>
+          <li><strong>Constraints:</strong> no stamps/seals, no rebuild-tip line — removed on explicit request to keep the focus on content rather than the meta level.</li>
+        </ul>
+        <p><strong>Central learning point:</strong> this tool's most important didactic trick is Chapter 9 (norms mapping) — it explicitly shows where standards do NOT align (e.g. BABOK 5.5 with no IREB counterpart). It is exactly these gaps where learners typically stumble when they learn standards additively rather than comparatively.</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="footer-box">
+    <summary class="footer-summary" id="sumVortrag">Vortrags-Skript</summary>
+    <div class="footer-content footer-sans" data-i18n-block="vortrag">
+      <div data-lang="de">
+        <p><em>(Klick: Tool öffnen, Kapitel 1 aktiv)</em> "Wir starten mit einer Frage, die in fast jedem Projekt zu Missverständnissen führt: Was ist eigentlich der Unterschied zwischen Requirements Engineering, Business Analysis und Projektmanagement? Schauen wir uns die drei Definitionen nebeneinander an..."</p>
+        <p><em>(Klick: Vertiefungs-Toggle auf "Vollständig")</em> "Wer mehr Tiefe braucht, klappt hier auf — inklusive einem konkreten TalentMatch-AI-Beispiel, wie die Rollentrennung in der Praxis aussieht."</p>
+        <p><em>(Klick: Kapitel 6, Qualitätskriterien)</em> "Das hier ist für mich das wichtigste Kapitel im ganzen Kompendium — sieben Kriterien, die für JEDE Anforderung gelten, egal in welchem Format sie geschrieben ist."</p>
+        <p><em>(Klick: Kapitel 9, Normen-Mapping)</em> "Und zum Schluss die Landkarte: Wo decken sich die drei Standards, und wo eben nicht? Genau an den Lücken lernt man am meisten."</p>
+        <p><em>(Klick: Beamer-Toggle)</em> "Für die Projektion vergrößere ich jetzt die Ansicht — das schaltet automatisch auf die Kurzversion um, damit es auf der Leinwand lesbar bleibt."</p>
+        <p><strong>Regie-Hinweise:</strong> Nicht mit Kapitel 9 (Normen-Mapping) beginnen — wirkt ohne die vorherigen acht Kapitel abstrakt und akademisch. Zeitbudget: ca. 8–10 Minuten pro Kapitel bei Live-Diskussion, das ganze Kompendium sprengt eine 90-Minuten-Session — für kürzere Formate 3–4 Kernkapitel vorab auswählen.</p>
+      </div>
+      <div data-lang="en" style="display:none;">
+        <p><em>(Click: open tool, Chapter 1 active)</em> "We start with a question that causes misunderstandings in almost every project: what's the actual difference between requirements engineering, business analysis and project management? Let's look at the three definitions side by side..."</p>
+        <p><em>(Click: Vertiefung toggle to "Full")</em> "Anyone who needs more depth can expand here — including a concrete TalentMatch AI example of what the role separation looks like in practice."</p>
+        <p><em>(Click: Chapter 6, Quality Criteria)</em> "This is, for me, the most important chapter in the whole compendium — seven criteria that apply to EVERY requirement, no matter which format it's written in."</p>
+        <p><em>(Click: Chapter 9, Norms Mapping)</em> "And finally the map: where do the three standards align, and where don't they? It's exactly at the gaps that people learn the most."</p>
+        <p><em>(Click: Beamer toggle)</em> "For projection I'll now enlarge the view — this automatically switches to the short version so it stays readable on the screen."</p>
+        <p><strong>Directing notes:</strong> don't start with Chapter 9 (norms mapping) — without the preceding eight chapters it feels abstract and academic. Time budget: roughly 8–10 minutes per chapter with live discussion; the full compendium exceeds a 90-minute session — for shorter formats, pre-select 3–4 core chapters.</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="footer-box">
+    <summary class="footer-summary" id="sumNormen">Normen-Register</summary>
+    <div class="footer-content">
+      <table class="footer-table" data-lang="de">
+        <thead><tr><th>Norm/Standard</th><th>Version/Stand</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>IREB CPRE Foundation Level Syllabus</td><td>v3.3.0</td><td>Gültig seit 1. April 2026</td></tr>
+          <tr><td>IIBA BABOK Guide</td><td>Version 3</td><td>Aktuell gültige Version (Stand September 2026)</td></tr>
+          <tr><td>ISO/IEC/IEEE 29148</td><td>Edition 2, 2018</td><td>2024 bestätigt gültig; seit Feb. 2026 zur Revision vorgemerkt, aktuell weiterhin in Kraft</td></tr>
+          <tr><td>ISO/IEC 25010</td><td>Fassung 2023</td><td>Aktuell gültig (Ergänzung um Safety als 9. Merkmal)</td></tr>
+          <tr><td>EU AI Act</td><td>Verordnung (EU) 2024/1689, Anhang III Nr. 4</td><td>Hochrisiko-Einstufung unverändert; Großteil der Betreiberpflichten für Anhang-III-Systeme durch Digital-Omnibus-Verordnung (EU) 2026/1744 auf 02.12.2027 verschoben</td></tr>
+          <tr><td>AGG (Allgemeines Gleichbehandlungsgesetz)</td><td>national, Deutschland</td><td>Referenziert im TalentMatch-AI-Beispiel (Kap. 2, 4, 6)</td></tr>
+        </tbody>
+      </table>
+      <table class="footer-table" data-lang="en" style="display:none;">
+        <thead><tr><th>Norm/Standard</th><th>Version/Status</th><th>Currency</th></tr></thead>
+        <tbody>
+          <tr><td>IREB CPRE Foundation Level Syllabus</td><td>v3.3.0</td><td>In force since April 1, 2026</td></tr>
+          <tr><td>IIBA BABOK Guide</td><td>Version 3</td><td>Currently the latest version (as of September 2026)</td></tr>
+          <tr><td>ISO/IEC/IEEE 29148</td><td>Edition 2, 2018</td><td>Confirmed valid in 2024; scheduled for revision since Feb. 2026, currently still in force</td></tr>
+          <tr><td>ISO/IEC 25010</td><td>2023 edition</td><td>Currently in force (Safety added as 9th characteristic)</td></tr>
+          <tr><td>EU AI Act</td><td>Regulation (EU) 2024/1689, Annex III No. 4</td><td>High-risk classification unchanged; most operator obligations for Annex III systems delayed to Dec. 2, 2027 by Digital Omnibus Regulation (EU) 2026/1744</td></tr>
+          <tr><td>AGG (German General Equal Treatment Act)</td><td>national, Germany</td><td>Referenced in the TalentMatch AI example (Ch. 2, 4, 6)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+</div>
+
+</footer>
+
+<script>
+// RE-Kompendium – Inhaltsdaten
+// Persona-Farbcodierung: ela (Projektleitung/indigo), knut (Entwicklung/teal),
+// sarah (Vertrieb/amber), petra (QM/violet), bach (Geschaeftsfuehrung/slate)
+
+const UI = {
+  de: {
+    brand: "RE-Kompendium",
+    brandSub: "Requirements Engineering über IREB · BABOK v3 · ISO/IEC/IEEE 29148",
+    navHint: "10 Kapitel — anklicken zum Öffnen",
+    beamer: "Beamer",
+    lang: "EN",
+    vertKurz: "Kurz",
+    vertVoll: "Vollständig",
+    quizCheck: "Antwort prüfen",
+    quizCorrect: "Richtig.",
+    quizWrong: "Nicht ganz — versuch's nochmal.",
+    footerSystem: "Systemprompt",
+    footerHandbuch: "Handbuch",
+    footerVortrag: "Vortrags-Skript",
+    footerNormen: "Normen-Register",
+    exampleLabel: "TalentMatch-AI-Beispiel",
+    mapTitle: "Normen-Mapping",
+    chainLeer: "Leere Vorlage",
+    chainAusgefuellt: "Ausgefüllt — TalentMatch-AI-Beispiel",
+    chainS1: "Ursprungsäußerung",
+    chainS2: "Business Requirement",
+    chainS3: "Stakeholder Requirement",
+    chainS4: "Solution Requirement",
+    chainS5: "Spezifikationsformat",
+    chainS6: "Akzeptanzkriterium",
+    chainS7: "Traceability-ID / Normbezug",
+    scNext: "Nächstes Dokument öffnen →",
+    scDone: "Alle acht geöffnet ✓",
+    scReset: "↺ von vorn beginnen",
+    scProgress: "geöffnet",
+    scPrev: "← Zurück",
+    scNextShort: "Weiter →",
+    scOf: "von",
+    scType0: "Business Case", scType1: "Epic", scType2: "Anforderungsdokumentation",
+    scType3: "Use Case", scType4: "User Story", scType5: "Akzeptanzkriterien",
+    scType6: "NFR", scType7: "FR"
+  },
+  en: {
+    brand: "RE Compendium",
+    brandSub: "Requirements Engineering across IREB · BABOK v3 · ISO/IEC/IEEE 29148",
+    navHint: "10 chapters — click to open",
+    beamer: "Beamer",
+    lang: "DE",
+    vertKurz: "Short",
+    vertVoll: "Full",
+    quizCheck: "Check answer",
+    quizCorrect: "Correct.",
+    quizWrong: "Not quite — try again.",
+    footerSystem: "System Prompt",
+    footerHandbuch: "Handbook",
+    footerVortrag: "Speaker Script",
+    footerNormen: "Norms Register",
+    exampleLabel: "TalentMatch AI Example",
+    mapTitle: "Norms Mapping",
+    chainLeer: "Empty Template",
+    chainAusgefuellt: "Filled In — TalentMatch AI Example",
+    chainS1: "Origin Statement",
+    chainS2: "Business Requirement",
+    chainS3: "Stakeholder Requirement",
+    chainS4: "Solution Requirement",
+    chainS5: "Specification Format",
+    chainS6: "Acceptance Criterion",
+    chainS7: "Traceability ID / Norm Reference",
+    scNext: "Open next document →",
+    scDone: "All eight opened ✓",
+    scReset: "↺ start over",
+    scProgress: "opened",
+    scPrev: "← Back",
+    scNextShort: "Next →",
+    scOf: "of",
+    scType0: "Business Case", scType1: "Epic", scType2: "Requirements Documentation",
+    scType3: "Use Case", scType4: "User Story", scType5: "Acceptance Criteria",
+    scType6: "NFR", scType7: "FR"
+  }
+};
+
+const CHAPTERS = [
+{
+  id: "grundlagen",
+  num: 1,
+  badges: ["IREB", "BABOK v3", "ISO 29148"],
+  title: { de: "Grundlagen & Rollenverständnis", en: "Foundations & Role Understanding" },
+  frage: { de: "Was ist RE eigentlich, und wie grenzt es sich zu BA und PM ab?", en: "What is RE, and how does it differ from BA and PM?" },
+  persona: "ela",
+  quote: {
+    de: "Bei Vantera hieß es früher: 'Requirements Engineering macht der, der die Lastenhefte schreibt.' Das stimmt nicht mehr — RE ist eine Querschnittsdisziplin, die in jeder Projektphase eine andere Rolle trägt.",
+    en: "At Vantera it used to be: 'Requirements engineering is whoever writes the specs.' That's no longer true — RE is a cross-cutting discipline that plays a different role in every project phase."
+  },
+  short: {
+    de: "Requirements Engineering (RE) ist die systematische Ermittlung, Dokumentation, Prüfung und Verwaltung von Anforderungen an ein System. IREB definiert RE als systematisches, diszipliniertes Vorgehen zur Spezifikation von Software-Systemen. BABOK v3 ordnet die Requirements-Arbeit in Business Analysis ein — Requirements sind dort ein Werkzeug, um einen Business-Nutzen zu erzielen, nicht Selbstzweck. IEEE 29148 wiederum betrachtet RE technologieneutral als Lebenszyklusprozess für Systeme und Software gleichermaßen. Die drei Perspektiven ergänzen sich: IREB liefert die Handwerkskunst der Anforderung selbst, BABOK den strategischen Rahmen (warum überhaupt?), IEEE 29148 die prozessuale Einbettung in den gesamten System-Lebenszyklus.",
+    en: "Requirements Engineering (RE) is the systematic elicitation, documentation, validation and management of requirements for a system. IREB defines RE as a systematic, disciplined approach to specifying software systems. BABOK v3 places requirements work inside Business Analysis — requirements are a means to a business benefit, not an end in themselves. IEEE 29148 treats RE technology-neutrally as a life cycle process for systems and software alike. The three perspectives complement each other: IREB supplies the craft of the requirement itself, BABOK the strategic frame (why at all?), IEEE 29148 the process embedding across the full system life cycle."
+  },
+  full: {
+    de: `<p>Requirements Engineering ist keine isolierte Tätigkeit einer einzelnen Rolle, sondern eine Querschnittsdisziplin, die je nach Projektphase von unterschiedlichen Personen mit unterschiedlichen Schwerpunkten ausgeübt wird — bei Vantera zum Beispiel von Ela in der frühen Zielklärung, von Sarah im Kundenkontakt bei der Elicitation, und von Knut, wenn technische Machbarkeit in Anforderungen zurückfließt.</p>
+    <p><strong>IREB-Definition:</strong> Requirements Engineering ist ein systematisches und diszipliniertes Vorgehen zur Spezifikation von Software-Systemen. Es umfasst alle Aktivitäten, die zur Ermittlung, Dokumentation, Prüfung und Verwaltung von Anforderungen notwendig sind — mit dem Ziel, dass Auftraggeber und Realisierer ein gemeinsames Verständnis der zu erstellenden Software erreichen (IREB CPRE Foundation Level Syllabus). Der Fokus liegt auf der <em>Anforderung als Artefakt</em>: Wie muss sie formuliert sein, damit sie eindeutig, testbar und verfolgbar ist?</p>
+    <p><strong>BABOK-v3-Perspektive:</strong> BABOK definiert Business Analysis als "die Praxis, Veränderungen in einer Organisation zu ermöglichen, indem Bedürfnisse definiert und Lösungen empfohlen werden, die für Stakeholder einen Wert liefern". Requirements sind darin ein <em>Mittel</em>: BABOK unterscheidet vier Anforderungsklassen — Business Requirements (übergeordnete Unternehmensziele), Stakeholder Requirements (Bedürfnisse einzelner Stakeholder-Gruppen), Solution Requirements (funktional/nicht-funktional, was die Lösung leisten muss) und Transition Requirements (was nur für den Übergang zur neuen Lösung nötig ist, z. B. Datenmigration). Diese Klassifikation ist der Schlüssel, warum BA breiter denkt als reines RE: Eine Anforderung wird immer gegen ein Geschäftsziel zurückverfolgt.</p>
+    <p><strong>IEEE-29148-Perspektive:</strong> Der Standard beschreibt RE technologieneutral als Prozess innerhalb des gesamten System-Lebenszyklus (in Verbindung mit ISO/IEC/IEEE 15288 für Systeme und 12207 für Software). Er unterscheidet explizit zwischen Stakeholder Requirements Specification (StRS), System Requirements Specification (SysRS) und Software Requirements Specification (SRS) als eigenständige Dokumentenarten mit jeweils eigenem Detaillierungsgrad — eine Struktur, die in Kapitel 5 dieses Kompendiums vertieft wird.</p>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    Bei TalentMatch AI zeigt sich die Rollentrennung konkret: Sarah (Vertrieb) sammelt beim Kunden Business Requirements ("Wir wollen die Time-to-Hire um 30 % senken"). Ela (Projektleitung) übersetzt das mit Petra (QM) in Stakeholder Requirements je Nutzergruppe (Recruiter, Bewerber, Compliance-Team). Knut (Entwicklung) verhandelt daraus Solution Requirements für das ML-Modell — inklusive der Randbedingung, dass es sich um ein Hochrisiko-KI-System nach EU-AI-Act-Anhang-III-Nr.-4 handelt.</div>
+    <p><strong>Abgrenzung zu Business Analysis und Projektmanagement:</strong> RE fragt <em>"was genau soll das System tun, und wie muss die Anforderung formuliert sein, damit sie eindeutig ist?"</em>. BA fragt breiter <em>"welche Veränderung bringt dem Unternehmen den größten Nutzen, und ist eine Software-Lösung überhaupt die richtige Antwort?"</em>. PM fragt <em>"wie steuern wir Zeit, Kosten, Ressourcen und Risiken, damit das Ergebnis (welches Ergebnis auch immer RE/BA definiert haben) termingerecht geliefert wird?"</em>. In der Praxis überschneiden sich die drei Rollen oft in einer Person — wichtig ist, in jedem Moment zu wissen, mit welcher "Brille" man gerade arbeitet.</p>`,
+    en: `<p>Requirements Engineering is not an isolated activity of a single role but a cross-cutting discipline exercised by different people with different emphases depending on the project phase — at Vantera, for instance, by Ela during early goal clarification, by Sarah in customer-facing elicitation, and by Knut whenever technical feasibility feeds back into the requirements.</p>
+    <p><strong>IREB definition:</strong> Requirements Engineering is a systematic and disciplined approach to specifying software systems. It comprises all activities needed to elicit, document, validate and manage requirements — with the goal that client and developer reach a shared understanding of the software to be built (IREB CPRE Foundation Level Syllabus). The focus is on the <em>requirement as an artifact</em>: how must it be phrased to be unambiguous, testable and traceable?</p>
+    <p><strong>BABOK v3 perspective:</strong> BABOK defines business analysis as "the practice of enabling change in an organizational context, by defining needs and recommending solutions that deliver value to stakeholders." Requirements are a <em>means</em> here: BABOK distinguishes four requirement classes — Business Requirements (overarching organizational goals), Stakeholder Requirements (needs of individual stakeholder groups), Solution Requirements (functional/non-functional, what the solution must do) and Transition Requirements (needed only for moving to the new solution, e.g. data migration). This classification is the key reason BA thinks more broadly than pure RE: a requirement is always traced back to a business goal.</p>
+    <p><strong>IEEE 29148 perspective:</strong> The standard describes RE technology-neutrally as a process within the whole system life cycle (in conjunction with ISO/IEC/IEEE 15288 for systems and 12207 for software). It explicitly distinguishes Stakeholder Requirements Specification (StRS), System Requirements Specification (SysRS) and Software Requirements Specification (SRS) as separate document types with their own level of detail — a structure explored further in Chapter 5 of this compendium.</p>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    At TalentMatch AI the role separation is concrete: Sarah (Sales) gathers business requirements from the client ("we want to cut time-to-hire by 30%"). Ela (Project Lead) translates this with Petra (QM) into stakeholder requirements per user group (recruiters, applicants, compliance team). Knut (Development) negotiates solution requirements for the ML model from that — including the constraint that this is a high-risk AI system under EU AI Act Annex III No. 4.</div>
+    <p><strong>Distinguishing RE from Business Analysis and Project Management:</strong> RE asks <em>"exactly what should the system do, and how must the requirement be phrased to be unambiguous?"</em>. BA asks more broadly <em>"which change brings the organization the greatest benefit, and is a software solution even the right answer?"</em>. PM asks <em>"how do we manage time, cost, resources and risk so that the result (whatever RE/BA defined it to be) is delivered on schedule?"</em>. In practice the three roles often overlap in one person — what matters is knowing, at any given moment, which "lens" you are working through.</p>`
+  },
+  quiz: {
+    q: { de: "Welche BABOK-Anforderungsklasse beschreibt Anforderungen, die NUR für den Übergang zur neuen Lösung gebraucht werden (z. B. Datenmigration)?", en: "Which BABOK requirement class describes requirements needed ONLY for transitioning to the new solution (e.g. data migration)?" },
+    options: { de: ["Business Requirements", "Stakeholder Requirements", "Solution Requirements", "Transition Requirements"], en: ["Business Requirements", "Stakeholder Requirements", "Solution Requirements", "Transition Requirements"] },
+    correct: 3
+  }
+},
+{
+  id: "arten",
+  num: 2,
+  badges: ["BABOK v3", "IREB", "ISO 25010"],
+  title: { de: "Anforderungsarten", en: "Requirement Types" },
+  frage: { de: "Welche Anforderungsarten gibt es, und wie hängen sie zusammen?", en: "What requirement types exist, and how do they relate?" },
+  persona: "knut",
+  quote: {
+    de: "Meine größte Fehleinschätzung als junger Entwickler war: 'Nicht-funktionale Anforderungen sind die, die man am Ende noch dazuschreibt.' Bei TalentMatch AI hätte uns das fast eine EU-AI-Act-Verletzung eingebracht — Transparenz ist dort keine Kür, sondern Pflicht von Tag eins.",
+    en: "My biggest misjudgment as a young developer was: 'Non-functional requirements are the ones you add at the end.' At TalentMatch AI that nearly cost us an EU AI Act violation — transparency there isn't optional, it's mandatory from day one."
+  },
+  short: {
+    de: "IREB unterscheidet grundlegend funktionale Anforderungen (was das System tun soll) von nicht-funktionalen Anforderungen bzw. Qualitätsanforderungen (wie gut es das tun soll, strukturiert nach ISO/IEC 25010) sowie Randbedingungen (Restriktionen, die nicht verhandelbar sind, z. B. gesetzliche Vorgaben). BABOK v3 legt eine zweite, orthogonale Klassifikation darüber: Business/Stakeholder/Solution/Transition Requirements, wobei Solution Requirements wiederum in funktional und nicht-funktional zerfallen. Beide Systeme beißen sich nicht — IREBs Funktional/Nicht-funktional-Unterscheidung beschreibt die Art der Anforderung, BABOKs Klassifikation beschreibt die Herkunft/Ebene der Anforderung.",
+    en: "IREB fundamentally distinguishes functional requirements (what the system should do) from non-functional/quality requirements (how well it should do it, structured per ISO/IEC 25010) and constraints (non-negotiable restrictions, e.g. legal mandates). BABOK v3 overlays a second, orthogonal classification: Business/Stakeholder/Solution/Transition Requirements, where Solution Requirements again split into functional and non-functional. The two systems don't conflict — IREB's functional/non-functional distinction describes the nature of the requirement, BABOK's classification describes its origin/level."
+  },
+  full: {
+    de: `<p><strong>Funktionale Anforderungen</strong> beschreiben eine Funktion, die das System bereitstellen muss — beobachtbares Verhalten oder Ergebnis. IREB-Kurzformel: "Das System MUSS/SOLL [Funktion] können." Beispiel: "Das TalentMatch-System muss eingehende Bewerbungen automatisch nach den zehn definierten Kompetenzfeldern klassifizieren."</p>
+    <p><strong>Nicht-funktionale Anforderungen (Qualitätsanforderungen)</strong> beschreiben, WIE GUT eine Funktion erbracht werden muss — messbare Qualitätsmerkmale statt Verhalten. ISO/IEC 25010 (Product Quality Model) liefert dafür acht Qualitätsmerkmale (überarbeitet 2023): Functional Suitability, Performance Efficiency, Compatibility, Interaction Capability (vormals Usability), Reliability, Security, Maintainability, Flexibility (vormals Portability) — plus das 2023 neu ergänzte Safety als eigenständiges Merkmal. Eine gute NFR ist immer messbar: "Das Matching-Ergebnis muss in unter 2 Sekunden bei 95 % der Anfragen vorliegen (Performance Efficiency)" ist prüfbar, "das System soll schnell sein" ist es nicht — ein häufiger Fehler, den auch die eigenen K1–K22-Qualitätskriterien für Trainingstools als K8 "keine generischen Werte" konsequent verbieten.</p>
+    <p><strong>Randbedingungen (Constraints)</strong> sind Vorgaben, die per se nicht verhandelbar sind — anders als funktionale/nicht-funktionale Anforderungen, die im Projektverlauf priorisiert und gegeneinander abgewogen werden können. IREB unterscheidet organisatorische Randbedingungen (z. B. "nur bestehende Cloud-Infrastruktur nutzen"), technische Randbedingungen (z. B. "muss mit SAP S/4HANA kompatibel sein") und rechtliche Randbedingungen (z. B. DSGVO, EU AI Act).</p>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    Bei TalentMatch AI: <em>Funktional</em> — "Das System muss Kandidatenprofile mit Stellenprofilen abgleichen." <em>Nicht-funktional (Interaction Capability + Safety)</em> — "Jede automatisierte Ablehnung muss dem Bewerber innerhalb von 24 Stunden mit einer für Laien verständlichen Begründung mitgeteilt werden (EU AI Act Art. 13, Transparenzpflicht)." <em>Randbedingung (rechtlich)</em> — "Das System darf keine Daten zu geschützten Merkmalen nach AGG als Eingabefeature verwenden."</div>
+    <p><strong>Das Problem-Requirement-Solution-Prinzip</strong> (verbindliches Arbeitsprinzip in Michaelas Trainingstools, K10): Eine Anforderung beschreibt ein Ziel oder Problem, keine vorweggenommene Lösung — außer die Lösung ist normativ vorgeschrieben. "Das System muss ein Dropdown-Menü zur Kategorieauswahl bieten" ist streng genommen keine Anforderung, sondern schon ein Lösungsentwurf; die eigentliche Anforderung dahinter lautet "Nutzer müssen aus einer begrenzten Menge gültiger Kategorien auswählen können, ohne Tippfehler zu riskieren." Nur wenn eine Norm ein bestimmtes Mittel vorschreibt (z. B. "Log-Einträge MÜSSEN nach ISO 27001 Anhang A.12.4 mindestens 90 Tage revisionssicher gespeichert werden"), gilt die Lösungsvorgabe selbst als legitime Anforderung — gekennzeichnet mit dem Badge "⚖ Norm schreibt Mittel vor".</p>`,
+    en: `<p><strong>Functional requirements</strong> describe a function the system must provide — observable behavior or outcome. IREB short formula: "The system SHALL/SHOULD be able to [function]." Example: "The TalentMatch system shall automatically classify incoming applications against the ten defined competency fields."</p>
+    <p><strong>Non-functional requirements (quality requirements)</strong> describe HOW WELL a function must be delivered — measurable quality characteristics rather than behavior. ISO/IEC 25010 (Product Quality Model) provides eight quality characteristics for this (revised 2023): Functional Suitability, Performance Efficiency, Compatibility, Interaction Capability (formerly Usability), Reliability, Security, Maintainability, Flexibility (formerly Portability) — plus Safety, newly added as its own characteristic in 2023. A good NFR is always measurable: "the matching result must be delivered in under 2 seconds for 95% of requests (Performance Efficiency)" is verifiable; "the system should be fast" is not — a common mistake that Michaela's own K1–K22 quality criteria for training tools (K8, "no generic values") consistently forbid.</p>
+    <p><strong>Constraints</strong> are mandates that are inherently non-negotiable — unlike functional/non-functional requirements, which can be prioritized and traded off during the project. IREB distinguishes organizational constraints (e.g. "use only existing cloud infrastructure"), technical constraints (e.g. "must be compatible with SAP S/4HANA") and legal constraints (e.g. GDPR, EU AI Act).</p>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    At TalentMatch AI: <em>Functional</em> — "the system must match candidate profiles against job profiles." <em>Non-functional (Interaction Capability + Safety)</em> — "every automated rejection must be communicated to the applicant within 24 hours with a layperson-understandable justification (EU AI Act Art. 13, transparency obligation)." <em>Constraint (legal)</em> — "the system must not use data on protected characteristics under German equal-treatment law (AGG) as an input feature."</div>
+    <p><strong>The Problem-Requirement-Solution principle</strong> (a binding working principle in Michaela's training tools, K10): a requirement describes a goal or problem, not a pre-decided solution — unless the solution is normatively mandated. "The system must offer a dropdown menu for category selection" is, strictly speaking, not a requirement but already a solution design; the actual requirement behind it is "users must be able to select from a bounded set of valid categories without risking typos." Only when a norm prescribes a specific means (e.g. "log entries MUST be stored tamper-evident for at least 90 days per ISO 27001 Annex A.12.4") does the solution mandate itself count as a legitimate requirement — flagged with the "⚖ norm mandates the means" badge.</p>`
+  },
+  quiz: {
+    q: { de: "Welches ISO/IEC-25010-Qualitätsmerkmal wurde 2023 neu ergänzt?", en: "Which ISO/IEC 25010 quality characteristic was newly added in 2023?" },
+    options: { de: ["Usability", "Safety", "Portability", "Functional Suitability"], en: ["Usability", "Safety", "Portability", "Functional Suitability"] },
+    correct: 1
+  }
+},
+{
+  id: "elicitation",
+  num: 3,
+  badges: ["BABOK v3", "IREB"],
+  title: { de: "Elicitation-Techniken", en: "Elicitation Techniques" },
+  frage: { de: "Wie kommt man überhaupt an valide Anforderungen heran?", en: "How do you actually get to valid requirements?" },
+  persona: "sarah",
+  quote: {
+    de: "Kunden sagen mir selten, was sie brauchen — sie sagen mir, was sie sich als Lösung vorstellen. Meine Aufgabe in der Elicitation ist, hinter die vorgeschlagene Lösung zum eigentlichen Bedürfnis zu kommen.",
+    en: "Clients rarely tell me what they need — they tell me what solution they imagine. My job in elicitation is to get behind the proposed solution to the actual need."
+  },
+  short: {
+    de: "BABOK v3 fasst unter 'Elicitation and Collaboration' alle Techniken zusammen, mit denen Informationen von Stakeholdern gewonnen werden. Die wichtigsten Techniken: Interviews (strukturiert/halbstrukturiert/offen), Workshops (moderierte Gruppensitzungen, z. B. Requirements Workshops oder Design Thinking), Beobachtung (Job Shadowing, um unausgesprochenes Arbeitswissen sichtbar zu machen), Dokumentenanalyse (bestehende Prozessdokumentation, Altsysteme), Prototyping (frühes, greifbares Feedback-Objekt) und Umfragen/Fragebögen (für große, verteilte Stakeholder-Gruppen). Keine Technik ist universell die beste — die Wahl hängt von Stakeholder-Verfügbarkeit, Artikulationsfähigkeit und der Reife der Domäne ab.",
+    en: "BABOK v3 groups all techniques for gathering information from stakeholders under 'Elicitation and Collaboration.' The key techniques: interviews (structured/semi-structured/open), workshops (facilitated group sessions, e.g. requirements workshops or design thinking), observation (job shadowing, to surface tacit work knowledge), document analysis (existing process documentation, legacy systems), prototyping (an early, tangible feedback object), and surveys/questionnaires (for large, distributed stakeholder groups). No technique is universally best — the choice depends on stakeholder availability, ability to articulate needs, and domain maturity."
+  },
+  full: {
+    de: `<table class="map-table"><thead><tr><th>Technik</th><th>Stärken</th><th>Schwächen / Grenzen</th></tr></thead><tbody>
+    <tr><td><strong>Interview</strong></td><td>Tiefe, individuelle Einblicke; gut für sensible Themen; flexibel nachfragbar</td><td>Zeitintensiv pro Stakeholder; Gefahr der Einzelmeinungs-Verzerrung</td></tr>
+    <tr><td><strong>Workshop</strong></td><td>Schnelle Konsensbildung; sichtbare Konflikte lösbar in Echtzeit; gemeinsames Verständnis entsteht direkt</td><td>Erfordert erfahrene Moderation; dominante Teilnehmer können leisere Stimmen übertönen</td></tr>
+    <tr><td><strong>Beobachtung (Job Shadowing)</strong></td><td>Deckt unausgesprochenes, implizites Wissen auf ("das machen wir schon immer so"); zeigt tatsächliches statt berichtetes Verhalten</td><td>Beobachtungseffekt (Personen verhalten sich anders, wenn sie beobachtet werden); hoher Zeitaufwand</td></tr>
+    <tr><td><strong>Dokumentenanalyse</strong></td><td>Kein Termin nötig; historischer Kontext und Altsystem-Logik nachvollziehbar</td><td>Dokumentation oft veraltet oder unvollständig; liefert nur den Ist-Zustand, kein Zukunftsbedürfnis</td></tr>
+    <tr><td><strong>Prototyping</strong></td><td>Macht Abstraktes greifbar; Stakeholder erkennen fehlende Anforderungen oft erst am Prototyp ("das hätte ich so nicht gemeint")</td><td>Risiko der vorschnellen Lösungsfixierung; Erwartungsmanagement nötig (Prototyp ≠ fertiges Produkt)</td></tr>
+    <tr><td><strong>Umfrage/Fragebogen</strong></td><td>Skaliert auf sehr große, geografisch verteilte Gruppen; anonym, daher ehrlicher bei heiklen Themen</td><td>Keine Nachfragemöglichkeit; Rücklaufquote und Formulierungsqualität entscheidend</td></tr>
+    </tbody></table>
+    <p><strong>Das Kernproblem hinter jeder Technik:</strong> Stakeholder formulieren fast immer Lösungen statt Bedürfnisse ("Ich brauche einen Button, der ..."). Elicitation bedeutet, systematisch hinter die vorgeschlagene Lösung zum eigentlichen Bedürfnis zurückzufragen — die "5-Why"-Technik oder einfache Rückfragen wie "Was würde Ihnen das ermöglichen, was heute nicht geht?" sind dafür Standardwerkzeuge.</p>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    Sarah führt mit einem Recruiting-Team-Lead ein Interview. Die Aussage "Wir brauchen eine Ampel-Farbcodierung für Kandidaten" ist bereits eine Lösung. Sarahs Rückfrage "Was wollen Sie damit auf einen Blick erkennen können?" fördert das eigentliche Bedürfnis zutage: "Ob ein Kandidat ohne weitere Prüfung ins nächste Interview kann, geprüft werden muss, oder eindeutig nicht passt." Das ist die eigentliche funktionale Anforderung — die Farbcodierung ist nur eine mögliche Umsetzung davon.</div>
+    <p>BABOK v3 betont zusätzlich die <strong>Collaboration</strong>-Seite: Elicitation ist kein einmaliger Akt, sondern ein iterativer, kollaborativer Prozess. Requirements-Ergebnisse müssen an die Stakeholder zurückgespiegelt werden (Requirements Validation, siehe Kapitel 7), damit Missverständnisse früh auffallen — nicht erst bei der Abnahme.</p>`,
+    en: `<table class="map-table"><thead><tr><th>Technique</th><th>Strengths</th><th>Weaknesses / limits</th></tr></thead><tbody>
+    <tr><td><strong>Interview</strong></td><td>Deep, individual insight; good for sensitive topics; flexible follow-up questions</td><td>Time-intensive per stakeholder; risk of single-opinion bias</td></tr>
+    <tr><td><strong>Workshop</strong></td><td>Fast consensus-building; visible conflicts resolvable in real time; shared understanding emerges directly</td><td>Requires experienced facilitation; dominant participants can drown out quieter voices</td></tr>
+    <tr><td><strong>Observation (job shadowing)</strong></td><td>Surfaces tacit, unspoken knowledge ("we've always done it this way"); shows actual rather than reported behavior</td><td>Observer effect (people behave differently when watched); high time cost</td></tr>
+    <tr><td><strong>Document analysis</strong></td><td>No appointment needed; historical context and legacy-system logic traceable</td><td>Documentation often outdated or incomplete; only shows the as-is, not future needs</td></tr>
+    <tr><td><strong>Prototyping</strong></td><td>Makes the abstract tangible; stakeholders often only spot missing requirements once they see the prototype ("that's not what I meant")</td><td>Risk of premature solution fixation; expectation management needed (prototype ≠ finished product)</td></tr>
+    <tr><td><strong>Survey/questionnaire</strong></td><td>Scales to very large, geographically distributed groups; anonymous, hence more honest on sensitive topics</td><td>No follow-up possible; response rate and wording quality are decisive</td></tr>
+    </tbody></table>
+    <p><strong>The core problem behind every technique:</strong> stakeholders almost always phrase solutions rather than needs ("I need a button that ..."). Elicitation means systematically asking behind the proposed solution back to the actual need — the "5 Whys" technique or simple follow-ups like "what would that let you do that you can't today?" are standard tools for this.</p>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    Sarah interviews a recruiting team lead. The statement "we need traffic-light color coding for candidates" is already a solution. Sarah's follow-up "what do you want to be able to tell at a glance?" surfaces the actual need: "whether a candidate can move straight to the next interview, needs further review, or clearly doesn't fit." That is the actual functional requirement — the color coding is just one possible implementation of it.</div>
+    <p>BABOK v3 also emphasizes the <strong>collaboration</strong> side: elicitation is not a one-off act but an iterative, collaborative process. Requirements results must be reflected back to stakeholders (requirements validation, see Chapter 7) so misunderstandings surface early — not only at acceptance.</p>`
+  },
+  quiz: {
+    q: { de: "Welche Elicitation-Technik ist am besten geeignet, um unausgesprochenes, implizites Arbeitswissen sichtbar zu machen?", en: "Which elicitation technique is best suited to surfacing tacit, unspoken work knowledge?" },
+    options: { de: ["Umfrage", "Dokumentenanalyse", "Beobachtung / Job Shadowing", "Prototyping"], en: ["Survey", "Document analysis", "Observation / job shadowing", "Prototyping"] },
+    correct: 2
+  }
+},
+{
+  id: "analyse",
+  num: 4,
+  badges: ["BABOK v3", "IREB"],
+  title: { de: "Analyse & Modellierung", en: "Analysis & Modeling" },
+  frage: { de: "Wie werden gesammelte Rohdaten zu strukturierten, priorisierten Anforderungen?", en: "How does raw gathered data become structured, prioritized requirements?" },
+  persona: "petra",
+  quote: {
+    de: "Ich sehe in Reviews oft hundert Einzelaussagen aus Interviews, die niemand modelliert hat. Ohne Modell bleibt das eine Liste — mit einem Prozessmodell wird daraus ein Verständnis.",
+    en: "In reviews I often see a hundred individual statements from interviews that nobody modeled. Without a model that stays a list — with a process model it becomes understanding."
+  },
+  short: {
+    de: "Requirements-Analyse überführt die in der Elicitation gewonnenen Rohinformationen in strukturierte Modelle und priorisierte, konfliktfreie Anforderungen. Zentrale Modellierungssprachen sind BPMN (Business Process Model and Notation) für Ablauflogik und UML (v.a. Use-Case-, Aktivitäts- und Klassendiagramme) für Struktur und Verhalten. Priorisierung erfolgt häufig mit MoSCoW (Must/Should/Could/Won't have) oder dem Kano-Modell (Basis-, Leistungs-, Begeisterungsmerkmale). Konflikte zwischen Anforderungen — etwa wenn zwei Stakeholder widersprüchliche Erwartungen haben — müssen aktiv aufgelöst werden, nicht stillschweigend zugunsten des lautstärkeren Stakeholders entschieden werden.",
+    en: "Requirements analysis turns the raw information gathered during elicitation into structured models and prioritized, conflict-free requirements. Key modeling languages are BPMN (Business Process Model and Notation) for process logic and UML (especially use case, activity and class diagrams) for structure and behavior. Prioritization commonly uses MoSCoW (Must/Should/Could/Won't have) or the Kano model (basic, performance, excitement attributes). Conflicts between requirements — e.g. when two stakeholders have contradictory expectations — must be actively resolved, not silently decided in favor of the louder stakeholder."
+  },
+  full: {
+    de: `<p><strong>Modellierung als Verständigungswerkzeug:</strong> Ein Prozessmodell (BPMN) macht sichtbar, WER WANN WAS tut und WELCHE Entscheidungspunkte existieren — Textbeschreibungen allein neigen dazu, implizite Annahmen zu verstecken. Ein Use-Case-Diagramm (UML) zeigt, welche Akteure mit welchen Systemfunktionen interagieren, ohne bereits die interne Umsetzung festzulegen. Beide Modelltypen dienen nicht der Dokumentation um ihrer selbst willen, sondern der <em>Verständigung zwischen Stakeholdern unterschiedlicher fachlicher Prägung</em> — ein Recruiting-Fachbereichler und ein ML-Entwickler lesen ein BPMN-Diagramm ähnlich, eine reine Textspezifikation dagegen sehr unterschiedlich.</p>
+    <p><strong>Priorisierung mit MoSCoW:</strong> <em>Must have</em> — ohne diese Anforderung ist die Lösung wertlos oder nicht auslieferbar. <em>Should have</em> — wichtig, aber ein Workaround existiert kurzfristig. <em>Could have</em> — wünschenswert, aber verzichtbar ohne signifikanten Werteverlust. <em>Won't have (this time)</em> — bewusst und dokumentiert aus dem aktuellen Release-Scope ausgeschlossen, nicht "vergessen". Der letzte Punkt wird in der Praxis oft übersehen: eine explizit dokumentierte "Won't have"-Liste verhindert, dass dieselbe Diskussion in drei Monaten erneut geführt wird.</p>
+    <p><strong>Priorisierung mit dem Kano-Modell:</strong> Unterscheidet drei Merkmalstypen anhand ihrer Wirkung auf Kundenzufriedenheit. <em>Basismerkmale</em> (must-be) werden nicht wahrgenommen, wenn vorhanden, aber massiv negativ, wenn sie fehlen (z. B. "das System stürzt nicht ab"). <em>Leistungsmerkmale</em> (performance) wirken proportional — je mehr, desto zufriedener (z. B. Matching-Geschwindigkeit). <em>Begeisterungsmerkmale</em> (delighters) werden nicht erwartet, begeistern aber, wenn vorhanden (z. B. eine unerwartet hilfreiche Erklärung, warum ein Kandidat vorgeschlagen wurde). Das Kano-Modell ergänzt MoSCoW, weil es nach der <em>Art der Wirkung</em> fragt, nicht nur nach der <em>Dringlichkeit</em>.</p>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    Bei TalentMatch AI: Ela moderiert einen Priorisierungsworkshop. "Automatisches CV-Parsing" ist MoSCoW-Must (ohne das funktioniert das System nicht) und Kano-Basismerkmal. "Erklärbarkeit der Matching-Entscheidung" ist MoSCoW-Must (EU-AI-Act-Pflicht, siehe Kapitel 2) aber Kano-Leistungsmerkmal (je verständlicher, desto besser). Ein von Sarah vorgeschlagenes "Gamification-Element für Recruiter" ist MoSCoW-Could und Kano-Begeisterungsmerkmal — nett, aber nicht projektentscheidend.</p>
+    <p><strong>Konfliktauflösung:</strong> Wenn Sarah (Kundenwunsch: möglichst viele Datenfelder für Personalisierung) und Petra (QM-Perspektive: jedes zusätzliche Feld erhöht das Risiko unzulässiger Diskriminierungsmerkmale) widersprüchliche Anforderungen einbringen, ist das kein Fall für stillschweigende Priorisierung nach Hierarchie, sondern für einen dokumentierten Trade-off: Welches Ziel wird höher gewichtet, warum, und wer trägt die Entscheidung? IREB empfiehlt hierfür Konfliktmatrizen oder eine explizite Stakeholder-Priorisierung nach Einfluss/Interesse (siehe auch Michaelas separates Stakeholder-Management-Kompendium).</div>`,
+    en: `<p><strong>Modeling as a tool for shared understanding:</strong> a process model (BPMN) makes visible WHO does WHAT WHEN and WHICH decision points exist — text descriptions alone tend to hide implicit assumptions. A use case diagram (UML) shows which actors interact with which system functions without yet fixing the internal implementation. Both model types don't serve documentation for its own sake, but <em>mutual understanding between stakeholders from different professional backgrounds</em> — a recruiting domain expert and an ML developer read a BPMN diagram similarly, whereas a pure text specification, quite differently.</p>
+    <p><strong>Prioritization with MoSCoW:</strong> <em>Must have</em> — without this requirement the solution is worthless or cannot ship. <em>Should have</em> — important, but a short-term workaround exists. <em>Could have</em> — desirable but dispensable without significant loss of value. <em>Won't have (this time)</em> — deliberately and documentedly excluded from the current release scope, not "forgotten." The last point is often overlooked in practice: an explicitly documented "won't have" list prevents the same discussion from resurfacing three months later.</p>
+    <p><strong>Prioritization with the Kano model:</strong> distinguishes three attribute types by their effect on customer satisfaction. <em>Basic attributes</em> (must-be) go unnoticed when present but cause massive dissatisfaction when missing (e.g. "the system doesn't crash"). <em>Performance attributes</em> act proportionally — the more, the more satisfied (e.g. matching speed). <em>Excitement attributes</em> (delighters) aren't expected but delight when present (e.g. an unexpectedly helpful explanation of why a candidate was suggested). The Kano model complements MoSCoW because it asks about the <em>type of effect</em>, not just <em>urgency</em>.</p>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    At TalentMatch AI: Ela facilitates a prioritization workshop. "Automatic CV parsing" is MoSCoW-Must (without it the system doesn't function) and a Kano basic attribute. "Explainability of the matching decision" is MoSCoW-Must (EU AI Act obligation, see Chapter 2) but a Kano performance attribute (the more understandable, the better). A "gamification element for recruiters" suggested by Sarah is MoSCoW-Could and a Kano delighter — nice, but not project-critical.</p>
+    <p><strong>Conflict resolution:</strong> when Sarah (client wish: as many data fields as possible for personalization) and Petra (QM perspective: every extra field increases the risk of impermissible discrimination features) bring in contradictory requirements, that's not a case for silent prioritization by hierarchy but for a documented trade-off: which goal is weighted higher, why, and who owns the decision? IREB recommends conflict matrices or an explicit stakeholder prioritization by influence/interest for this (see also Michaela's separate Stakeholder Management Compendium).</div>`
+  },
+  quiz: {
+    q: { de: "Ein Merkmal, das bei Vorhandensein nicht auffällt, aber bei Fehlen massive Unzufriedenheit auslöst, heißt im Kano-Modell:", en: "In the Kano model, an attribute unnoticed when present but causing major dissatisfaction when missing is called:" },
+    options: { de: ["Begeisterungsmerkmal", "Leistungsmerkmal", "Basismerkmal", "Rückweisungsmerkmal"], en: ["Excitement attribute", "Performance attribute", "Basic attribute", "Reverse attribute"] },
+    correct: 2
+  }
+},
+{
+  id: "spezifikation",
+  num: 5,
+  badges: ["ISO 29148", "IREB", "BABOK v3"],
+  title: { de: "Spezifikation & Dokumentation", en: "Specification & Documentation" },
+  frage: { de: "Wie wird eine Anforderung so aufgeschrieben, dass sie eindeutig und umsetzbar ist?", en: "How is a requirement written down so it's unambiguous and actionable?" },
+  persona: "knut",
+  quote: {
+    de: "Als Entwickler ist mir egal, ob die Anforderung als User Story oder als EARS-Satz vor mir liegt — Hauptsache, ich kann daraus einen eindeutigen Akzeptanztest ableiten, ohne den Fachbereich noch dreimal anrufen zu müssen.",
+    en: "As a developer I don't care whether the requirement is a user story or an EARS sentence — as long as I can derive an unambiguous acceptance test from it without calling the business side three more times."
+  },
+  short: {
+    de: "IEEE/ISO/IEC 29148 strukturiert Spezifikationsdokumente in drei Ebenen: Stakeholder Requirements Specification (StRS, was Stakeholder brauchen), System Requirements Specification (SysRS, was das Gesamtsystem inkl. Hardware/Personal leisten muss) und Software Requirements Specification (SRS, was die Software-Komponente konkret leisten muss). Für die Formulierung einzelner Anforderungen haben sich drei Techniken etabliert: EARS-Satzschablonen (strukturierte, eindeutige Wenn-Dann-Sätze), User Stories nach Mike Cohn (Rolle-Ziel-Nutzen-Format mit INVEST-Kriterien) und Use Cases nach Alistair Cockburn (Akteur-System-Interaktionsfolgen mit Vor-/Nachbedingungen). Keine Technik ist universell überlegen — EARS eignet sich für präzise Einzelanforderungen, User Stories für agile, wertorientierte Kommunikation, Use Cases für komplexe Mehrschritt-Interaktionen mit Ausnahmefällen.",
+    en: "IEEE/ISO/IEC 29148 structures specification documents into three levels: Stakeholder Requirements Specification (StRS, what stakeholders need), System Requirements Specification (SysRS, what the overall system incl. hardware/personnel must deliver), and Software Requirements Specification (SRS, what the software component specifically must deliver). Three techniques have become established for phrasing individual requirements: EARS sentence templates (structured, unambiguous if-then sentences), user stories per Mike Cohn (role-goal-benefit format with INVEST criteria), and use cases per Alistair Cockburn (actor-system interaction sequences with pre-/post-conditions). No technique is universally superior — EARS suits precise individual requirements, user stories suit agile, value-oriented communication, use cases suit complex multi-step interactions with exception paths."
+  },
+  full: {
+    de: `<h3 style="font-size:15px;margin:0 0 8px 0;">Die drei Spezifikationsebenen nach ISO/IEC/IEEE 29148:2018</h3>
+    <table class="map-table"><thead><tr><th>Dokument</th><th>Adressiert</th><th>Typische Frage</th></tr></thead><tbody>
+    <tr><td><strong>StRS</strong> (Stakeholder Requirements Specification)</td><td>Bedürfnisse der Stakeholder, technologieunabhängig</td><td>Was muss aus Sicht der Recruiter, Bewerber und Compliance-Verantwortlichen erreicht werden?</td></tr>
+    <tr><td><strong>SysRS</strong> (System Requirements Specification)</td><td>Gesamtsystem inkl. Hardware, Personal, Prozesse — nicht nur Software</td><td>Was muss das Gesamtsystem TalentMatch AI (Server-Infrastruktur, Schnittstellen, Betriebsprozesse) leisten?</td></tr>
+    <tr><td><strong>SRS</strong> (Software Requirements Specification)</td><td>Nur die Software-Komponente, im Detail umsetzbar</td><td>Was genau muss das ML-Modul und das Backend von TalentMatch AI tun?</td></tr>
+    </tbody></table>
+    <p>Diese dreistufige Trennung verhindert ein häufiges Problem: dass Software-Entwickler an Anforderungen arbeiten, die eigentlich noch auf Stakeholder-Ebene ungeklärt sind (z. B. organisatorische Prozessfragen), oder dass Stakeholder-Wünsche direkt undifferenziert in Code-Tickets landen, ohne den Zwischenschritt der Systemebene.</p>
+    <h3 style="font-size:15px;margin:18px 0 8px 0;">EARS-Satzschablonen (Easy Approach to Requirements Syntax)</h3>
+    <p>EARS strukturiert eine Anforderung immer nach dem Muster <em>[Optionale Bedingung] + [System-Subjekt] + shall/muss + [Systemantwort]</em>. Fünf Grundmuster:</p>
+    <ul>
+    <li><strong>Ubiquitous:</strong> "Das System muss [Funktion] können." (gilt immer)</li>
+    <li><strong>Event-driven:</strong> "Wenn [Auslöser eintritt], muss das System [Reaktion] können."</li>
+    <li><strong>State-driven:</strong> "Während [Zustand], muss das System [Verhalten] zeigen."</li>
+    <li><strong>Unwanted behavior:</strong> "Falls [unerwünschtes Ereignis eintritt], muss das System [Fehlerbehandlung] durchführen."</li>
+    <li><strong>Optional feature:</strong> "Bei aktivierter [Option], muss das System [Zusatzverhalten] können."</li>
+    </ul>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    Event-driven EARS-Anforderung bei TalentMatch AI: <em>"Wenn eine automatisierte Ablehnung eines Kandidaten generiert wird, muss das System eine für Laien verständliche Begründung sowie einen Link zum Widerspruchsverfahren innerhalb von 24 Stunden an den Bewerber versenden."</em> — eindeutig, testbar, mit klarem Auslöser und klarer Frist.</div>
+    <h3 style="font-size:15px;margin:18px 0 8px 0;">User Stories nach Mike Cohn</h3>
+    <p>Format: <em>"Als [Rolle] möchte ich [Ziel], damit [Nutzen]."</em> Cohns INVEST-Kriterien für gute User Stories: <strong>I</strong>ndependent (unabhängig von anderen Stories umsetzbar), <strong>N</strong>egotiable (Verhandlungsspielraum in der Umsetzung, keine Detail-Spezifikation), <strong>V</strong>aluable (liefert erkennbaren Wert für den Nutzer), <strong>E</strong>stimable (Aufwand grob schätzbar), <strong>S</strong>mall (in einen Sprint passend), <strong>T</strong>estable (klare Akzeptanzkriterien ableitbar).</p>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    "Als Recruiterin möchte ich sehen, warum ein Kandidat als Top-Match markiert wurde, damit ich die Empfehlung gegenüber der Fachabteilung begründen kann." — erfüllt INVEST: klar abgrenzbar (I), Umsetzung offen (Tooltip? Panel? — N), erkennbarer Nutzen (V), schätzbar (E), sprintfähig (S), testbar über konkrete Akzeptanzkriterien (T).</div>
+    <h3 style="font-size:15px;margin:18px 0 8px 0;">Use Cases nach Alistair Cockburn</h3>
+    <p>Ein Use Case beschreibt eine vollständige Interaktionsfolge zwischen einem Akteur und dem System zur Erreichung eines Ziels — inklusive Vorbedingung, Hauptszenario (Erfolgsfall), Erweiterungen (Fehler-/Ausnahmefälle) und Nachbedingung. Cockburns Formularvorlage enthält typischerweise: Name/Ziel, primärer Akteur, Vorbedingung, Auslöser, Hauptszenario (nummerierte Schritte), Erweiterungen (nummeriert je Hauptschritt), Nachbedingung bei Erfolg/Misserfolg. Use Cases eignen sich besonders, wenn Ausnahmefälle (Abbruch, Fehleingabe, Systemausfall) genauso wichtig sind wie der Erfolgspfad — beim reinen User-Story-Format gehen solche Fälle leicht unter.</p>`,
+    en: `<h3 style="font-size:15px;margin:0 0 8px 0;">The three specification levels per ISO/IEC/IEEE 29148:2018</h3>
+    <table class="map-table"><thead><tr><th>Document</th><th>Addresses</th><th>Typical question</th></tr></thead><tbody>
+    <tr><td><strong>StRS</strong> (Stakeholder Requirements Specification)</td><td>Stakeholder needs, technology-independent</td><td>What must be achieved from the perspective of recruiters, applicants and compliance officers?</td></tr>
+    <tr><td><strong>SysRS</strong> (System Requirements Specification)</td><td>Overall system incl. hardware, personnel, processes — not just software</td><td>What must the overall TalentMatch AI system (server infrastructure, interfaces, operating processes) deliver?</td></tr>
+    <tr><td><strong>SRS</strong> (Software Requirements Specification)</td><td>Only the software component, actionable in detail</td><td>What exactly must the ML module and backend of TalentMatch AI do?</td></tr>
+    </tbody></table>
+    <p>This three-level separation prevents a common problem: software developers working on requirements that are actually still unresolved at the stakeholder level (e.g. organizational process questions), or stakeholder wishes landing undifferentiated directly in code tickets without the intermediate system-level step.</p>
+    <h3 style="font-size:15px;margin:18px 0 8px 0;">EARS sentence templates (Easy Approach to Requirements Syntax)</h3>
+    <p>EARS always structures a requirement per the pattern <em>[optional condition] + [system subject] + shall + [system response]</em>. Five base patterns:</p>
+    <ul>
+    <li><strong>Ubiquitous:</strong> "The system shall be able to [function]." (always applies)</li>
+    <li><strong>Event-driven:</strong> "When [trigger occurs], the system shall [reaction]."</li>
+    <li><strong>State-driven:</strong> "While [state], the system shall exhibit [behavior]."</li>
+    <li><strong>Unwanted behavior:</strong> "If [unwanted event occurs], the system shall [error handling]."</li>
+    <li><strong>Optional feature:</strong> "Where [option] is enabled, the system shall [additional behavior]."</li>
+    </ul>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    Event-driven EARS requirement at TalentMatch AI: <em>"When an automated rejection of a candidate is generated, the system shall send a layperson-understandable justification and a link to the appeal process to the applicant within 24 hours."</em> — unambiguous, testable, with a clear trigger and clear deadline.</div>
+    <h3 style="font-size:15px;margin:18px 0 8px 0;">User stories per Mike Cohn</h3>
+    <p>Format: <em>"As a [role] I want [goal], so that [benefit]."</em> Cohn's INVEST criteria for good user stories: <strong>I</strong>ndependent (implementable independently of other stories), <strong>N</strong>egotiable (room to negotiate implementation, not a detail spec), <strong>V</strong>aluable (delivers recognizable value to the user), <strong>E</strong>stimable (effort roughly estimable), <strong>S</strong>mall (fits within a sprint), <strong>T</strong>estable (clear acceptance criteria derivable).</p>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    "As a recruiter I want to see why a candidate was flagged as a top match, so that I can justify the recommendation to the department." — meets INVEST: clearly scoped (I), implementation open (tooltip? panel? — N), recognizable value (V), estimable (E), fits a sprint (S), testable via concrete acceptance criteria (T).</div>
+    <h3 style="font-size:15px;margin:18px 0 8px 0;">Use cases per Alistair Cockburn</h3>
+    <p>A use case describes a complete interaction sequence between an actor and the system to achieve a goal — including precondition, main scenario (success path), extensions (error/exception paths), and postcondition. Cockburn's template typically contains: name/goal, primary actor, precondition, trigger, main scenario (numbered steps), extensions (numbered per main step), postcondition on success/failure. Use cases are particularly suited when exception paths (abort, invalid input, system failure) matter as much as the success path — in a pure user-story format such cases are easily lost.</p>`
+  },
+  quiz: {
+    q: { de: "Welches EARS-Grundmuster passt zu: 'Wenn eine automatisierte Ablehnung generiert wird, muss das System eine Begründung senden'?", en: "Which EARS base pattern fits: 'When an automated rejection is generated, the system shall send a justification'?" },
+    options: { de: ["Ubiquitous", "Event-driven", "State-driven", "Optional feature"], en: ["Ubiquitous", "Event-driven", "State-driven", "Optional feature"] },
+    correct: 1
+  }
+},
+{
+  id: "qualitaet",
+  num: 6,
+  badges: ["IREB"],
+  title: { de: "Qualitätskriterien für Anforderungen", en: "Quality Criteria for Requirements" },
+  frage: { de: "Woran erkennt man eine GUTE Anforderung — unabhängig vom Format?", en: "How do you recognize a GOOD requirement — regardless of format?" },
+  persona: "petra",
+  quote: {
+    de: "In jedem Review frage ich zuerst: Ist die Anforderung eindeutig genug, dass zwei verschiedene Entwickler exakt dasselbe bauen würden? Wenn nicht, ist Format völlig egal.",
+    en: "In every review I first ask: is the requirement unambiguous enough that two different developers would build exactly the same thing? If not, format is completely irrelevant."
+  },
+  short: {
+    de: "IREB definiert Qualitätskriterien, die für JEDE Einzelanforderung gelten sollten — unabhängig davon, ob sie als EARS-Satz, User Story oder Use Case vorliegt: eindeutig (nur eine Interpretation möglich), vollständig (keine fehlenden Informationen für die Umsetzung), konsistent (widerspricht keiner anderen Anforderung), verfolgbar (Herkunft und Umsetzung nachvollziehbar dokumentiert), notwendig (liefert einen tatsächlichen Stakeholder-Wert), realisierbar (technisch und wirtschaftlich umsetzbar) und verifizierbar/testbar (ein klares Kriterium für 'erfüllt' vs. 'nicht erfüllt' existiert). Für die Gesamtheit aller Anforderungen (die Spezifikation als Ganzes) gelten zusätzlich Kollektivkriterien wie Vollständigkeit der Spezifikation und widerspruchsfreie Priorisierung.",
+    en: "IREB defines quality criteria that should apply to EVERY individual requirement — regardless of whether it appears as an EARS sentence, user story or use case: unambiguous (only one interpretation possible), complete (no missing information for implementation), consistent (doesn't contradict any other requirement), traceable (origin and implementation documented and traceable), necessary (delivers actual stakeholder value), feasible (technically and economically implementable), and verifiable/testable (a clear criterion for 'met' vs. 'not met' exists). For the requirements set as a whole (the specification), collective criteria additionally apply, such as completeness of the specification and conflict-free prioritization."
+  },
+  full: {
+    de: `<table class="map-table"><thead><tr><th>Kriterium</th><th>Prüffrage</th><th>Typischer Verstoß</th></tr></thead><tbody>
+    <tr><td><strong>Eindeutig</strong></td><td>Gibt es nur eine mögliche Interpretation?</td><td>"Das System soll schnell reagieren" — schnell im Vergleich wozu?</td></tr>
+    <tr><td><strong>Vollständig</strong></td><td>Fehlen Informationen, die für die Umsetzung nötig wären?</td><td>"Bewerbungen werden bewertet" — nach welchen Kriterien, mit welcher Skala?</td></tr>
+    <tr><td><strong>Konsistent</strong></td><td>Widerspricht sie einer anderen dokumentierten Anforderung?</td><td>Eine Anforderung fordert 100%ige Automatisierung, eine andere verlangt menschliche Letztentscheidung bei jeder Ablehnung</td></tr>
+    <tr><td><strong>Verfolgbar (traceable)</strong></td><td>Ist die Herkunft (welcher Stakeholder, welches Geschäftsziel) und die Umsetzung (welcher Code, welcher Test) dokumentiert?</td><td>Eine Anforderung im Backlog ohne Verweis darauf, wer sie warum gefordert hat</td></tr>
+    <tr><td><strong>Notwendig</strong></td><td>Liefert sie tatsächlich Stakeholder-Wert, oder ist sie "nice to have ohne Auftraggeber"?</td><td>Eine vom Entwicklerteam selbst erfundene Anforderung ohne Rückbindung an einen Stakeholder-Bedarf</td></tr>
+    <tr><td><strong>Realisierbar</strong></td><td>Ist sie technisch UND wirtschaftlich in der gegebenen Zeit/mit dem Budget umsetzbar?</td><td>"100% Erkennungsgenauigkeit beim CV-Parsing" — technisch faktisch nicht erreichbar</td></tr>
+    <tr><td><strong>Verifizierbar/testbar</strong></td><td>Existiert ein klares, objektives Kriterium für "erfüllt"?</td><td>"Die Benutzeroberfläche soll intuitiv sein" — nicht ohne weitere Operationalisierung testbar</td></tr>
+    </tbody></table>
+    <p><strong>Kollektivkriterien für die Spezifikation als Ganzes</strong> (nicht pro Einzelanforderung, sondern für das Gesamtdokument): Vollständigkeit (deckt die Spezifikation alle relevanten Aspekte ab, oder fehlen ganze Themenbereiche?), Konsistenz auf Gesamtebene (keine widersprüchlichen Prioritäten), Modifizierbarkeit (Struktur erlaubt spätere Änderungen ohne Kaskadeneffekte), sowie Verfolgbarkeit im Gesamtsystem (Requirements Traceability Matrix, siehe Kapitel 8).</p>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    Petra prüft im Review folgende Anforderung: "Das TalentMatch-System soll faire Bewertungen liefern." Diese verletzt gleich drei Kriterien: nicht eindeutig (was ist "fair"? statistische Parität? Chancengleichheit?), nicht vollständig (keine messbare Schwelle) und nicht verifizierbar (kein Testkriterium ableitbar). Nach Überarbeitung mit Knut und Ela: "Die Ablehnungsquote des Systems darf für keine der nach AGG geschützten Gruppen um mehr als 5 Prozentpunkte von der Gesamtablehnungsquote abweichen (statistische Parität, monatlich gemessen)." — jetzt eindeutig, vollständig und testbar.</div>
+    <p>Diese Kriterien sind kein akademischer Selbstzweck: Eine Anforderung, die alle sieben Kriterien erfüllt, reduziert Nachfragen in der Entwicklung, verhindert Fehlinterpretationen bei der Abnahme und macht Requirements Reviews (Kapitel 7) überhaupt erst effizient durchführbar.</p>`,
+    en: `<table class="map-table"><thead><tr><th>Criterion</th><th>Test question</th><th>Typical violation</th></tr></thead><tbody>
+    <tr><td><strong>Unambiguous</strong></td><td>Is there only one possible interpretation?</td><td>"The system shall respond quickly" — quickly compared to what?</td></tr>
+    <tr><td><strong>Complete</strong></td><td>Is information missing that would be needed for implementation?</td><td>"Applications are scored" — by which criteria, on what scale?</td></tr>
+    <tr><td><strong>Consistent</strong></td><td>Does it contradict another documented requirement?</td><td>One requirement demands 100% automation, another demands human final decision on every rejection</td></tr>
+    <tr><td><strong>Traceable</strong></td><td>Is the origin (which stakeholder, which business goal) and the implementation (which code, which test) documented?</td><td>A backlog requirement with no reference to who requested it and why</td></tr>
+    <tr><td><strong>Necessary</strong></td><td>Does it actually deliver stakeholder value, or is it "nice to have without a sponsor"?</td><td>A requirement invented by the dev team itself with no tie-back to a stakeholder need</td></tr>
+    <tr><td><strong>Feasible</strong></td><td>Is it technically AND economically implementable in the given time/budget?</td><td>"100% recognition accuracy in CV parsing" — factually unattainable technically</td></tr>
+    <tr><td><strong>Verifiable/testable</strong></td><td>Does a clear, objective criterion for "met" exist?</td><td>"The UI shall be intuitive" — not testable without further operationalization</td></tr>
+    </tbody></table>
+    <p><strong>Collective criteria for the specification as a whole</strong> (not per individual requirement, but for the overall document): completeness (does the specification cover all relevant aspects, or are whole topic areas missing?), consistency at the overall level (no contradictory priorities), modifiability (structure allows later changes without cascade effects), and traceability across the overall system (Requirements Traceability Matrix, see Chapter 8).</p>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    Petra reviews the following requirement: "The TalentMatch system shall deliver fair evaluations." This violates three criteria at once: not unambiguous (what is "fair"? statistical parity? equal opportunity?), not complete (no measurable threshold), and not verifiable (no test criterion derivable). After revision with Knut and Ela: "The system's rejection rate must not deviate by more than 5 percentage points from the overall rejection rate for any group protected under German equal-treatment law (statistical parity, measured monthly)." — now unambiguous, complete and testable.</div>
+    <p>These criteria are not an academic exercise: a requirement that meets all seven criteria reduces follow-up questions during development, prevents misinterpretation at acceptance, and is what makes requirements reviews (Chapter 7) efficient to conduct at all.</p>`
+  },
+  quiz: {
+    q: { de: "'Die Ablehnungsquote darf um max. 5 Prozentpunkte von der Gesamtquote abweichen' erfüllt vor allem welches Kriterium, das die vorherige Formulierung 'faire Bewertung' verletzte?", en: "'The rejection rate must not deviate by more than 5 percentage points from the overall rate' fixes which criterion violated by the earlier 'fair evaluation' wording?" },
+    options: { de: ["Realisierbarkeit", "Verifizierbarkeit/Testbarkeit", "Notwendigkeit", "Modifizierbarkeit"], en: ["Feasibility", "Verifiability/testability", "Necessity", "Modifiability"] },
+    correct: 1
+  }
+},
+{
+  id: "validierung",
+  num: 7,
+  badges: ["IREB", "BABOK v3"],
+  title: { de: "Validierung & Verifikation", en: "Validation & Verification" },
+  frage: { de: "Woher weiß man, dass man die RICHTIGEN Anforderungen RICHTIG umgesetzt hat?", en: "How do you know you've implemented the RIGHT requirements CORRECTLY?" },
+  persona: "ela",
+  quote: {
+    de: "Der Satz, den ich Projektleitungs-Trainees am häufigsten mitgebe: Verifikation fragt 'haben wir das System richtig gebaut?', Validierung fragt 'haben wir das richtige System gebaut?'. Beide Fragen brauchen unterschiedliche Antworten.",
+    en: "The line I give project-lead trainees most often: verification asks 'did we build the system right?', validation asks 'did we build the right system?'. Both questions need different answers."
+  },
+  short: {
+    de: "Verifikation prüft die Konformität einer Anforderung/eines Systems gegen eine vorgegebene Spezifikation ('haben wir richtig gebaut?') — typische Techniken sind Reviews, Inspektionen und Walkthroughs der Spezifikation selbst sowie automatisierte Tests gegen die dokumentierten Akzeptanzkriterien. Validierung prüft, ob die Spezifikation überhaupt die tatsächlichen Stakeholder-Bedürfnisse trifft ('haben wir das Richtige gebaut?') — meist durch direkte Stakeholder-Beteiligung an Demos, Nutzertests oder Abnahmekriterien-Reviews. IREB unterscheidet zusätzlich drei Review-Techniken nach Formalitätsgrad: informelle Reviews (Ad-hoc-Feedback), Walkthroughs (Autor führt selbst durchs Dokument) und Inspektionen (formalisiert, mit definierten Rollen wie Moderator und Protokollant, für kritische/regulierte Anforderungen).",
+    en: "Verification checks a requirement's/system's conformance against a given specification ('did we build it right?') — typical techniques are reviews, inspections and walkthroughs of the specification itself, plus automated tests against documented acceptance criteria. Validation checks whether the specification actually meets real stakeholder needs at all ('did we build the right thing?') — usually through direct stakeholder involvement in demos, user testing, or acceptance-criteria reviews. IREB additionally distinguishes three review techniques by formality: informal reviews (ad-hoc feedback), walkthroughs (author guides through the document), and inspections (formalized, with defined roles like moderator and scribe, for critical/regulated requirements)."
+  },
+  full: {
+    de: `<p>Der Unterschied zwischen Verifikation und Validierung ist einer der am häufigsten verwechselten Begriffe im RE — dabei ist die Konsequenz einer Verwechslung erheblich: Ein Team kann monatelang perfekt gegen eine falsche Spezifikation verifizieren und trotzdem ein Produkt liefern, das niemand braucht.</p>
+    <table class="map-table"><thead><tr><th></th><th>Verifikation</th><th>Validierung</th></tr></thead><tbody>
+    <tr><td><strong>Kernfrage</strong></td><td>Haben wir das System richtig gebaut (gemäß Spezifikation)?</td><td>Haben wir das richtige System gebaut (gemäß tatsächlichem Bedarf)?</td></tr>
+    <tr><td><strong>Referenzpunkt</strong></td><td>Die dokumentierte Spezifikation selbst</td><td>Das tatsächliche Stakeholder-Bedürfnis</td></tr>
+    <tr><td><strong>Typische Methoden</strong></td><td>Code-Review, automatisierte Tests, Spezifikations-Inspektion</td><td>Nutzertests, Stakeholder-Demos, Akzeptanz-Workshops</td></tr>
+    <tr><td><strong>Wer prüft primär</strong></td><td>Entwicklungs-/QM-Team gegen Dokument</td><td>Stakeholder/Endnutzer gegen ihr eigenes Bedürfnis</td></tr>
+    </tbody></table>
+    <p><strong>Drei Review-Techniken nach Formalitätsgrad (IREB):</strong></p>
+    <ul>
+    <li><strong>Informelles Review:</strong> Ad-hoc, kein festgelegter Prozess, z. B. ein Kollege liest kurz über die Schulter. Schnell, aber wenig systematisch — Risiko, dass wichtige Aspekte übersehen werden.</li>
+    <li><strong>Walkthrough:</strong> Der Autor der Spezifikation führt eine Gruppe aktiv durch das Dokument und erläutert es. Gut geeignet, um frühzeitig Verständnisfragen zu klären, aber der Autor moderiert selbst — Gefahr der "blinden Flecken" bei eigenen Fehlern.</li>
+    <li><strong>Inspektion:</strong> Formalisiertes Verfahren mit definierten Rollen (Moderator, Autor, Prüfer, Protokollant), festen Prüfkriterien (Checklisten, oft direkt aus den IREB-Qualitätskriterien aus Kapitel 6 abgeleitet) und dokumentiertem Ergebnis. Höchster Formalitätsgrad, entsprechend zeitaufwändiger — reserviert für sicherheitskritische oder stark regulierte Anforderungen.</li>
+    </ul>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    Bei TalentMatch AI führt Petra für alle Anforderungen mit EU-AI-Act-Bezug verpflichtend eine formale Inspektion durch (höchste Kritikalität), während funktionale UI-Anforderungen im informellen Review zwischen zwei Entwicklern abgestimmt werden. Die Validierung erfolgt zusätzlich über einen monatlichen Demo-Termin mit dem Recruiting-Team von Vantera: Ela zeigt den aktuellen Stand, und die tatsächlichen Nutzer bestätigen (oder widerlegen) live, ob die umgesetzten Anforderungen ihr eigentliches Problem lösen.</div>
+    <p><strong>Akzeptanzkriterien als Bindeglied:</strong> Gut formulierte Akzeptanzkriterien (aus User Stories, EARS-Sätzen oder Use-Case-Nachbedingungen) sind der Punkt, an dem Verifikation und Validierung zusammenlaufen — sie sind spezifisch genug zum Verifizieren (automatisiert testbar) UND stakeholder-verständlich genug zum Validieren (der Fachbereich versteht, was geprüft wird, ohne Code lesen zu müssen).</p>`,
+    en: `<p>The distinction between verification and validation is one of the most commonly confused terms in RE — yet the consequence of confusing them is significant: a team can spend months perfectly verifying against a wrong specification and still deliver a product nobody needs.</p>
+    <table class="map-table"><thead><tr><th></th><th>Verification</th><th>Validation</th></tr></thead><tbody>
+    <tr><td><strong>Core question</strong></td><td>Did we build the system right (per specification)?</td><td>Did we build the right system (per actual need)?</td></tr>
+    <tr><td><strong>Reference point</strong></td><td>The documented specification itself</td><td>The actual stakeholder need</td></tr>
+    <tr><td><strong>Typical methods</strong></td><td>Code review, automated tests, specification inspection</td><td>User testing, stakeholder demos, acceptance workshops</td></tr>
+    <tr><td><strong>Who primarily checks</strong></td><td>Dev/QM team against the document</td><td>Stakeholders/end users against their own need</td></tr>
+    </tbody></table>
+    <p><strong>Three review techniques by formality (IREB):</strong></p>
+    <ul>
+    <li><strong>Informal review:</strong> ad-hoc, no defined process, e.g. a colleague briefly reads over your shoulder. Fast but unsystematic — risk that important aspects are missed.</li>
+    <li><strong>Walkthrough:</strong> the specification's author actively guides a group through the document and explains it. Good for clarifying comprehension questions early, but the author moderates it themselves — risk of "blind spots" for their own mistakes.</li>
+    <li><strong>Inspection:</strong> a formalized procedure with defined roles (moderator, author, reviewer, scribe), fixed review criteria (checklists, often derived directly from the IREB quality criteria in Chapter 6), and a documented result. Highest formality, correspondingly more time-consuming — reserved for safety-critical or heavily regulated requirements.</li>
+    </ul>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    At TalentMatch AI, Petra mandates a formal inspection for every requirement with EU AI Act relevance (highest criticality), while functional UI requirements are aligned in an informal review between two developers. Validation additionally happens through a monthly demo with Vantera's recruiting team: Ela shows the current state, and the actual users confirm (or refute) live whether the implemented requirements solve their real problem.</div>
+    <p><strong>Acceptance criteria as the connecting link:</strong> well-phrased acceptance criteria (from user stories, EARS sentences, or use-case postconditions) are the point where verification and validation meet — they're specific enough to verify (automatically testable) AND stakeholder-understandable enough to validate (the business side understands what is being checked without reading code).</p>`
+  },
+  quiz: {
+    q: { de: "Welche Review-Technik ist am formalsten und für sicherheitskritische Anforderungen reserviert?", en: "Which review technique is most formal and reserved for safety-critical requirements?" },
+    options: { de: ["Informelles Review", "Walkthrough", "Inspektion", "Pair Review"], en: ["Informal review", "Walkthrough", "Inspection", "Pair review"] },
+    correct: 2
+  }
+},
+{
+  id: "management",
+  num: 8,
+  badges: ["BABOK v3", "IREB", "ISO 29148"],
+  title: { de: "Anforderungsmanagement", en: "Requirements Management" },
+  frage: { de: "Wie bleiben Anforderungen über den ganzen Projektverlauf hinweg konsistent und nachvollziehbar?", en: "How do requirements stay consistent and traceable across the whole project?" },
+  persona: "bach",
+  quote: {
+    de: "Als Geschäftsführung will ich nicht wissen, wie eine einzelne Anforderung formuliert ist. Ich will wissen: Wenn sich unsere Compliance-Vorgaben ändern, wie schnell sehen wir, welche Systemteile betroffen sind?",
+    en: "As management I don't need to know how a single requirement is phrased. I want to know: if our compliance mandates change, how fast can we see which system parts are affected?"
+  },
+  short: {
+    de: "Anforderungsmanagement (BABOK-Wissensbereich 'Requirements Life Cycle Management') umfasst alle Aktivitäten, die Anforderungen über den gesamten Lebenszyklus konsistent, nachvollziehbar und aktuell halten. Kernelemente: Traceability (Rückverfolgbarkeit, meist in einer Requirements Traceability Matrix von Geschäftsziel über Anforderung bis Testfall dokumentiert), Baselines (fest eingefrorene Anforderungsstände zu definierten Meilensteinen, gegen die spätere Änderungen verglichen werden), Change Management (formaler Prozess zur Bewertung und Genehmigung von Änderungswünschen — inklusive Impact-Analyse) und Versionierung. BABOK v3 nennt in Wissensbereich 5 die Tasks 5.1–5.5 (Trace Requirements, Maintain Requirements, Prioritize Requirements, Assess Requirements Changes, Approve Requirements) — wobei 5.5 kein eigenständiges IREB-Pendant hat, da IREB Genehmigung eher implizit im Review-/Validierungsprozess (Kapitel 7) verortet.",
+    en: "Requirements management (BABOK knowledge area 'Requirements Life Cycle Management') covers all activities that keep requirements consistent, traceable and current across the entire life cycle. Core elements: traceability (usually documented in a Requirements Traceability Matrix from business goal through requirement to test case), baselines (fixed, frozen requirement states at defined milestones, against which later changes are compared), change management (a formal process to assess and approve change requests — including impact analysis), and versioning. BABOK v3 names Tasks 5.1–5.5 in Knowledge Area 5 (Trace Requirements, Maintain Requirements, Prioritize Requirements, Assess Requirements Changes, Approve Requirements) — where 5.5 has no standalone IREB counterpart, since IREB locates approval more implicitly within the review/validation process (Chapter 7)."
+  },
+  full: {
+    de: `<p><strong>Traceability (Rückverfolgbarkeit):</strong> Eine Requirements Traceability Matrix (RTM) verknüpft jede Anforderung mit ihrer Herkunft (welches Geschäftsziel, welcher Stakeholder) und ihrer Umsetzung (welcher Code, welcher Testfall, welches Release). Zwei Richtungen sind wichtig: <em>Forward Traceability</em> (von der Anforderung zur Umsetzung — "ist alles umgesetzt, was gefordert wurde?") und <em>Backward Traceability</em> (von der Umsetzung zur Anforderung — "warum existiert dieser Code, welche Anforderung rechtfertigt ihn?"). Backward Traceability ist besonders bei regulierten Systemen entscheidend: Ein Auditor fragt nicht nur "was wurde gebaut", sondern "warum genau so, und wer hat das autorisiert".</p>
+    <p><strong>Baselines:</strong> Eine Baseline ist ein zu einem definierten Zeitpunkt eingefrorener, freigegebener Stand der Anforderungen (z. B. "Anforderungsbaseline v2.0, freigegeben nach Sprint 6"). Änderungen NACH einer Baseline durchlaufen zwingend den Change-Management-Prozess — Änderungen VOR einer Baseline sind normale, iterative Verfeinerung ohne Extra-Prozess. Diese Unterscheidung verhindert einerseits Prozess-Overhead in der frühen, explorativen Phase und stellt andererseits sicher, dass spätere Änderungen kontrolliert erfolgen.</p>
+    <p><strong>Change Management:</strong> Ein formaler Änderungsprozess umfasst typischerweise: Änderungsantrag einreichen → Impact-Analyse (welche anderen Anforderungen, Testfälle, Code-Teile sind betroffen? Wie ändert sich Aufwand/Risiko?) → Bewertung durch ein Gremium oder eine verantwortliche Rolle → Genehmigung/Ablehnung → bei Genehmigung: neue Baseline. BABOK v3 Task 5.4 "Assess Requirements Changes" betont explizit, dass jede Änderung gegen den ursprünglichen Geschäftswert bewertet werden muss — nicht nur gegen den technischen Aufwand.</p>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    Bei TalentMatch AI löst eine Gesetzesänderung (verschärfte EU-AI-Act-Transparenzpflichten) einen Change Request aus. Die Impact-Analyse mit der RTM zeigt: 14 Anforderungen betroffen, davon 3 bereits implementiert und getestet, 11 noch in Entwicklung. Bachmeier genehmigt den Change basierend auf der Impact-Analyse (Mehraufwand: 2 Sprints) — ohne funktionierende Traceability hätte das Team die betroffenen 14 Anforderungen manuell in der gesamten Dokumentation suchen müssen, mit hohem Risiko, welche zu übersehen.</div>
+    <p><strong>BABOK v3 Wissensbereich 5 (Requirements Life Cycle Management) — die fünf Tasks im Überblick:</strong> 5.1 Trace Requirements (Verknüpfungen dokumentieren), 5.2 Maintain Requirements (Anforderungen über Zeit aktuell halten, redundante/veraltete entfernen), 5.3 Prioritize Requirements (siehe Kapitel 4), 5.4 Assess Requirements Changes (Impact-Analyse bei Änderungswünschen), 5.5 Approve Requirements (formale Freigabe durch autorisierte Stakeholder). Der Normen-Mapping-Anhang (Kapitel 9) zeigt im Detail, wo IREB explizite Entsprechungen zu diesen fünf Tasks hat und wo nicht.</p>`,
+    en: `<p><strong>Traceability:</strong> a Requirements Traceability Matrix (RTM) links every requirement to its origin (which business goal, which stakeholder) and its implementation (which code, which test case, which release). Two directions matter: <em>forward traceability</em> (from requirement to implementation — "is everything that was requested implemented?") and <em>backward traceability</em> (from implementation to requirement — "why does this code exist, which requirement justifies it?"). Backward traceability is especially decisive for regulated systems: an auditor doesn't just ask "what was built" but "why exactly this way, and who authorized it."</p>
+    <p><strong>Baselines:</strong> a baseline is a frozen, released state of requirements at a defined point in time (e.g. "requirements baseline v2.0, released after sprint 6"). Changes AFTER a baseline must go through the change management process — changes BEFORE a baseline are normal, iterative refinement without extra process. This distinction avoids process overhead in the early, exploratory phase while ensuring later changes happen in a controlled way.</p>
+    <p><strong>Change management:</strong> a formal change process typically includes: submit change request → impact analysis (which other requirements, test cases, code parts are affected? how does effort/risk change?) → assessment by a board or responsible role → approval/rejection → on approval: new baseline. BABOK v3 Task 5.4 "Assess Requirements Changes" explicitly stresses that every change must be assessed against the original business value — not just against technical effort.</p>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    At TalentMatch AI, a legal change (tightened EU AI Act transparency obligations) triggers a change request. The impact analysis via the RTM shows: 14 requirements affected, 3 already implemented and tested, 11 still in development. Bachmeier approves the change based on the impact analysis (extra effort: 2 sprints) — without working traceability, the team would have had to manually search the entire documentation for the affected 14 requirements, with a high risk of missing some.</div>
+    <p><strong>BABOK v3 Knowledge Area 5 (Requirements Life Cycle Management) — the five tasks at a glance:</strong> 5.1 Trace Requirements (document links), 5.2 Maintain Requirements (keep requirements current over time, remove redundant/outdated ones), 5.3 Prioritize Requirements (see Chapter 4), 5.4 Assess Requirements Changes (impact analysis for change requests), 5.5 Approve Requirements (formal sign-off by authorized stakeholders). The norms mapping appendix (Chapter 9) shows in detail where IREB has explicit counterparts to these five tasks and where it doesn't.</p>`
+  },
+  quiz: {
+    q: { de: "Welche BABOK-v3-Task betont, dass jede Änderung gegen den ursprünglichen Geschäftswert bewertet werden muss?", en: "Which BABOK v3 task stresses that every change must be assessed against the original business value?" },
+    options: { de: ["5.1 Trace Requirements", "5.2 Maintain Requirements", "5.4 Assess Requirements Changes", "5.5 Approve Requirements"], en: ["5.1 Trace Requirements", "5.2 Maintain Requirements", "5.4 Assess Requirements Changes", "5.5 Approve Requirements"] },
+    correct: 2
+  }
+},
+{
+  id: "mapping",
+  num: 9,
+  badges: ["IREB", "BABOK v3", "ISO 29148"],
+  title: { de: "Anhang: Normen-Mapping", en: "Appendix: Norms Mapping" },
+  frage: { de: "Wo decken sich IREB, BABOK v3 und IEEE 29148 — und wo nicht?", en: "Where do IREB, BABOK v3 and IEEE 29148 overlap — and where don't they?" },
+  persona: "petra",
+  quote: {
+    de: "Ich lasse Trainees nie einfach nur 'die drei Standards' auswendig lernen. Ich will, dass sie eine konkrete Anforderung nehmen und sagen können: Genau HIER unterscheidet sich, wie IREB und BABOK draufschauen.",
+    en: "I never let trainees just memorize 'the three standards'. I want them to take one concrete requirement and be able to say: exactly HERE is where IREB and BABOK look at it differently."
+  },
+  short: {
+    de: "Die drei Rahmenwerke überschneiden sich in der Kernaufgabe (gute Anforderungen ermitteln, dokumentieren, prüfen), unterscheiden sich aber in Fokus und Detailtiefe: IREB ist am handwerklich-technischsten (Anforderung als Artefakt), BABOK v3 am geschäftsorientiertesten (Anforderung als Mittel zum Business-Value) und IEEE 29148 am prozessual-strukturiertesten (Anforderung im gesamten System-Lebenszyklus, technologieneutral für Hardware UND Software). Keine Lücke ist ein Mangel der Standards — sie sind für unterschiedliche Zwecke geschrieben und ergänzen sich in der Praxis, statt sich zu ersetzen.",
+    en: "The three frameworks overlap in their core task (eliciting, documenting, validating good requirements) but differ in focus and depth: IREB is the most craft/technical (requirement as artifact), BABOK v3 the most business-oriented (requirement as a means to business value), and IEEE 29148 the most process-structured (requirement across the entire system life cycle, technology-neutral for hardware AND software). No gap is a shortcoming of the standards — they're written for different purposes and complement rather than replace each other in practice."
+  },
+  full: {
+    de: `<table class="map-table"><thead><tr><th>IREB-Konzept</th><th>BABOK-v3-Entsprechung</th><th>IEEE-29148-Entsprechung</th><th>Anmerkung</th></tr></thead><tbody>
+    <tr><td>Elicitation</td><td>Wissensbereich "Elicitation and Collaboration"</td><td>Requirements-Elicitation-Prozess (Clause 6)</td><td>Weitgehend deckungsgleich; BABOK am ausführlichsten zu Einzeltechniken</td></tr>
+    <tr><td>Funktionale/nicht-funktionale Anforderung</td><td>Solution Requirements (funktional/nicht-funktional)</td><td>Requirement-Charakteristiken (Clause 5)</td><td>BABOK bettet dies in die breitere 4-Klassen-Struktur ein (Kap. 1)</td></tr>
+    <tr><td>Qualitätskriterien für Anforderungen</td><td>Kein eigenständiger IREB-Gegenpart als geschlossene Liste; Qualität implizit über Techniken</td><td>Requirement-Characteristics (Clause 5) — nahezu identisch zu IREBs 7 Kriterien</td><td>IEEE 29148 und IREB sind hier fast wortgleich; IREB nennt zusätzlich Kollektivkriterien</td></tr>
+    <tr><td>Requirements Management (Traceability, Change)</td><td>Wissensbereich 5, Tasks 5.1–5.5</td><td>Requirements-Management-Prozess (Clause 6.4)</td><td>Alle drei decken sich inhaltlich stark; siehe Detail unten</td></tr>
+    <tr><td>—</td><td>5.5 Approve Requirements (formale Genehmigung)</td><td>Genehmigung implizit Teil des Baseline-Prozesses</td><td><strong>Kein eigenständiges IREB-Pendant</strong> — IREB verortet Genehmigung eher implizit im Review-/Validierungsprozess, nicht als separaten benannten Task</td></tr>
+    <tr><td>StRS/SysRS/SRS-Dreiteilung</td><td>Business/Stakeholder/Solution-Requirements-Klassen (ähnliche Intention, andere Struktur)</td><td><strong>Originärer IEEE-29148-Beitrag</strong> — die explizite Dokumentenebenen-Trennung</td><td>BABOKs Klassifikation ist konzeptionell verwandt, aber nicht dokumentenstrukturell wie bei IEEE 29148</td></tr>
+    <tr><td>Rollenverständnis RE (technisches Handwerk)</td><td>Rollenverständnis BA (geschäftlicher Nutzen/Change Enablement)</td><td>Technologieneutraler Lebenszyklus-Prozess (Systeme UND Software)</td><td>Grundlegende Fokus-Differenz, siehe Kapitel 1</td></tr>
+    </tbody></table>
+    <p><strong>Die wichtigste Erkenntnis aus diesem Mapping:</strong> Keiner der drei Standards "gewinnt" — sie sind komplementär. Ein Team, das ausschließlich IREB anwendet, riskiert, technisch saubere Anforderungen zu schreiben, die am Geschäftsziel vorbeigehen (BABOKs Stärke fehlt). Ein Team, das ausschließlich BABOK anwendet, riskiert, den Business-Value klar zu benennen, aber handwerklich unsaubere Einzelanforderungen zu produzieren (IREBs Stärke fehlt). Ein Team, das ausschließlich IEEE 29148 anwendet, hat eine saubere Dokumentenstruktur, aber ggf. wenig Anleitung für die konkrete Elicitation-Technik vor Ort.</p>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    Bei Vantera wird in der Praxis genau diese Kombination gelebt: Ela nutzt BABOKs Anforderungsklassen zur strategischen Einordnung ("ist das ein Business-, Stakeholder- oder Solution-Requirement?"), Knut und Petra prüfen jede Einzelanforderung gegen IREBs sieben Qualitätskriterien, und die Gesamtdokumentation von TalentMatch AI folgt der IEEE-29148-Dreiteilung StRS/SysRS/SRS für die Auditierbarkeit gegenüber dem EU-AI-Act-Konformitätsnachweis.</div>`,
+    en: `<table class="map-table"><thead><tr><th>IREB concept</th><th>BABOK v3 counterpart</th><th>IEEE 29148 counterpart</th><th>Note</th></tr></thead><tbody>
+    <tr><td>Elicitation</td><td>"Elicitation and Collaboration" knowledge area</td><td>Requirements elicitation process (Clause 6)</td><td>Largely congruent; BABOK most detailed on individual techniques</td></tr>
+    <tr><td>Functional/non-functional requirement</td><td>Solution Requirements (functional/non-functional)</td><td>Requirement characteristics (Clause 5)</td><td>BABOK embeds this within the broader 4-class structure (Ch. 1)</td></tr>
+    <tr><td>Quality criteria for requirements</td><td>No standalone IREB counterpart as a closed list; quality is implicit via techniques</td><td>Requirement characteristics (Clause 5) — nearly identical to IREB's 7 criteria</td><td>IEEE 29148 and IREB are near-verbatim here; IREB additionally names collective criteria</td></tr>
+    <tr><td>Requirements management (traceability, change)</td><td>Knowledge Area 5, Tasks 5.1–5.5</td><td>Requirements management process (Clause 6.4)</td><td>All three strongly overlap in content; see detail below</td></tr>
+    <tr><td>—</td><td>5.5 Approve Requirements (formal approval)</td><td>Approval implicitly part of the baseline process</td><td><strong>No standalone IREB counterpart</strong> — IREB locates approval more implicitly within the review/validation process, not as a separate named task</td></tr>
+    <tr><td>StRS/SysRS/SRS three-way split</td><td>Business/Stakeholder/Solution requirement classes (similar intent, different structure)</td><td><strong>An original IEEE 29148 contribution</strong> — the explicit document-level separation</td><td>BABOK's classification is conceptually related but not document-structural like IEEE 29148's</td></tr>
+    <tr><td>RE role understanding (technical craft)</td><td>BA role understanding (business benefit/change enablement)</td><td>Technology-neutral life cycle process (systems AND software)</td><td>A fundamental focus difference, see Chapter 1</td></tr>
+    </tbody></table>
+    <p><strong>The key takeaway from this mapping:</strong> none of the three standards "wins" — they are complementary. A team applying only IREB risks writing technically clean requirements that miss the business goal (BABOK's strength is absent). A team applying only BABOK risks clearly naming business value but producing craft-wise sloppy individual requirements (IREB's strength is absent). A team applying only IEEE 29148 has a clean document structure but possibly little guidance for the concrete on-the-ground elicitation technique.</p>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    At Vantera, this exact combination is lived in practice: Ela uses BABOK's requirement classes for strategic framing ("is this a business, stakeholder or solution requirement?"), Knut and Petra check every individual requirement against IREB's seven quality criteria, and TalentMatch AI's overall documentation follows the IEEE 29148 StRS/SysRS/SRS three-way split for auditability against the EU AI Act compliance evidence.</div>`
+  },
+  quiz: {
+    q: { de: "Welcher BABOK-v3-Task hat KEIN eigenständiges IREB-Pendant?", en: "Which BABOK v3 task has NO standalone IREB counterpart?" },
+    options: { de: ["5.1 Trace Requirements", "5.3 Prioritize Requirements", "5.5 Approve Requirements", "5.2 Maintain Requirements"], en: ["5.1 Trace Requirements", "5.3 Prioritize Requirements", "5.5 Approve Requirements", "5.2 Maintain Requirements"] },
+    correct: 2
+  }
+},
+{
+  id: "dokumentenkette",
+  num: 10,
+  badges: ["BABOK v3", "IREB", "ISO 29148"],
+  title: { de: "Vorlage: Die Dokumentenkette", en: "Template: The Document Chain" },
+  frage: { de: "Wie wird aus einem Wunsch, einer Idee oder einem Vorschlag eine prüfbare Anforderung?", en: "How does a wish, idea or proposal become a testable requirement?" },
+  persona: "ela",
+  quote: {
+    de: "Der gefährlichste Moment in jedem Projekt ist, wenn ein Wunsch direkt zum Entwickler durchgereicht wird — ohne die Kette dazwischen. Dann baut Knut etwas Plausibles, das trotzdem am eigentlichen Bedürfnis vorbeigeht.",
+    en: "The most dangerous moment in any project is when a wish gets passed straight to the developer — skipping the chain in between. Then Knut builds something plausible that still misses the actual need."
+  },
+  short: {
+    de: "Jede Anforderung bei TalentMatch AI durchläuft eine siebengliedrige Dokumentenkette, bevor sie umgesetzt wird: (1) Ursprungsäußerung — der O-Ton des Stakeholders, roh und ungefiltert; (2) Business Requirement — welches Geschäftsziel steckt dahinter (BABOK); (3) Stakeholder Requirement — das konkrete Bedürfnis der betroffenen Nutzergruppe (BABOK); (4) Solution Requirement — was das System dafür konkret leisten muss, funktional oder nicht-funktional (BABOK/IREB); (5) Spezifikationsformat — die testbare Formulierung, z. B. als EARS-Satz oder User Story (Kapitel 5); (6) Akzeptanzkriterium — das objektive Prüfkriterium für 'erfüllt'; (7) Traceability-ID — die Verknüpfung zurück zu Herkunft und Norm (Kapitel 8). Jede Stufe baut auf der vorherigen auf und macht explizit, was in der vorherigen nur implizit war.",
+    en: "Every requirement at TalentMatch AI runs through a seven-link document chain before implementation: (1) origin statement — the stakeholder's raw, unfiltered wording; (2) business requirement — which business goal is behind it (BABOK); (3) stakeholder requirement — the concrete need of the affected user group (BABOK); (4) solution requirement — what the system must concretely deliver for that, functional or non-functional (BABOK/IREB); (5) specification format — the testable phrasing, e.g. as an EARS sentence or user story (Chapter 5); (6) acceptance criterion — the objective test criterion for 'met'; (7) traceability ID — the link back to origin and norm (Chapter 8). Each stage builds on the previous one and makes explicit what was only implicit before."
+  },
+  full: {
+    de: `<p>Die Dokumentenkette ist kein zusätzlicher Bürokratie-Schritt, sondern macht sichtbar, was in schlecht geführten Projekten stillschweigend und fehleranfällig im Kopf einer einzelnen Person passiert: die Übersetzung eines vagen Wunsches in eine testbare Anforderung. Jedes Kettenglied beantwortet eine eigene Frage und kann einzeln geprüft werden (siehe Kapitel 6 und 7).</p>
+    <p>Unten stehen zwei Versionen derselben Vorlage: <strong>links leer</strong> zum Kopieren für eigene Fälle, <strong>rechts ausgefüllt</strong> am Beispiel eines konkreten TalentMatch-AI-Falls. Die Story dahinter: Sarah bringt aus einem Kundengespräch einen Wunsch mit, der zunächst wie eine reine UI-Frage klingt — und sich durch die Kette als EU-AI-Act-relevante Anforderung mit Testkriterium entpuppt.</p>
+    <div class="chain-pair">
+      <div>
+        <div class="chain-col-label">${"__LEER__"}</div>
+        <div class="chain">
+          <div class="chain-link empty"><div class="stage">1 · ${"__S1__"}</div><div class="field">[Wörtliches Zitat des Stakeholders, unbearbeitet]</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link empty"><div class="stage">2 · ${"__S2__"}</div><div class="field">[Welches übergeordnete Geschäftsziel bedient dieser Wunsch?]</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link empty"><div class="stage">3 · ${"__S3__"}</div><div class="field">[Welche Stakeholder-Gruppe hat welches konkrete Bedürfnis?]</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link empty"><div class="stage">4 · ${"__S4__"}</div><div class="field">[Was muss das System konkret leisten — funktional/nicht-funktional?]</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link empty"><div class="stage">5 · ${"__S5__"}</div><div class="field">[EARS-Satz oder User Story, eindeutig formuliert]</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link empty"><div class="stage">6 · ${"__S6__"}</div><div class="field">[Objektives Kriterium: woran erkennt man "erfüllt"?]</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link empty"><div class="stage">7 · ${"__S7__"}</div><div class="field">[ID, Normbezug, Verknüpfung zu Test/Code]</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="chain-col-label">${"__AUSGEFUELLT__"}</div>
+        <div class="chain">
+          <div class="chain-link filled"><div class="stage">1 · ${"__S1__"}</div><div class="field">"Können wir bei abgelehnten Kandidaten nicht einfach ein rotes Icon anzeigen, dann sehen unsere Recruiter das sofort?" (Kundengespräch, Teamleiterin Recruiting, notiert von Sarah)</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link filled"><div class="stage">2 · ${"__S2__"}</div><div class="field">Die Time-to-Hire soll um 30 % sinken, u. a. durch schnellere Entscheidungsfindung der Recruiter (Business Requirement aus dem Ursprungs-Kickoff).</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link filled"><div class="stage">3 · ${"__S3__"}</div><div class="field">Recruiter müssen den Status jedes Kandidaten auf einen Blick erkennen UND bei jeder Ablehnung eine nachvollziehbare, dem Bewerber mitteilbare Begründung erhalten (Stakeholder Requirement, verfeinert mit Petra wegen EU-AI-Act-Bezug).</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link filled"><div class="stage">4 · ${"__S4__"}</div><div class="field">Funktional: Statusanzeige je Kandidat. Nicht-funktional (Safety/Interaction Capability): jede automatisierte Ablehnung muss eine für Laien verständliche Begründung generieren (EU AI Act Art. 13) — die reine "rote Ampel" allein reicht rechtlich nicht.</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link filled"><div class="stage">5 · ${"__S5__"}</div><div class="field">EARS (event-driven): "Wenn eine automatisierte Ablehnung generiert wird, muss das System eine für Laien verständliche Begründung sowie eine farbcodierte Statusanzeige innerhalb von 24 Stunden bereitstellen."</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link filled"><div class="stage">6 · ${"__S6__"}</div><div class="field">Erfüllt, wenn: 100 % der automatisierten Ablehnungen binnen 24h eine Begründung + Statusfarbe erhalten UND ein Laientest (5 fachfremde Testleser) die Begründung als "verständlich" bewertet.</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link filled"><div class="stage">7 · ${"__S7__"}</div><div class="field">REQ-TM-0142 · Norm: EU AI Act Art. 13 · Test: TC-0142-a/b · Verknüpft mit Kapitel-8-RTM-Eintrag "Transparenzpflichten"</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    Der entscheidende Lernmoment liegt zwischen Stufe 1 und Stufe 4: Was als reine UI-Bitte ("rotes Icon") begann, wird durch die Kette zu einer EU-AI-Act-relevanten Anforderung mit Erklärpflicht — eine Konsequenz, die weder Sarah noch die Kundin am Anfang gesehen haben. Genau deshalb darf keine Stufe übersprungen werden, so verlockend das bei "offensichtlichen" Wünschen auch scheint.</div>
+    <p>Diese Vorlage lässt sich direkt für eigene TalentMatch-AI-Fälle oder andere Projekte kopieren — wichtig ist, dass jede Stufe von einer Person geprüft wird, die die vorherige Stufe NICHT selbst geschrieben hat (Vier-Augen-Prinzip, siehe Review-Techniken in Kapitel 7).</p>
+    <h3 style="font-size:17px;margin:26px 0 6px 0;">Dokumenten-Schaufenster: Ein durchgängiges, validiertes Beispiel</h3>
+    <p>Die folgenden acht Kacheln zeigen dieselbe Anforderung — die erklärbare automatisierte Ablehnung bei TalentMatch AI — in acht verschiedenen Dokumentformen. Alle acht hängen zusammen (gleiche Traceability-ID-Familie REQ-TM-014x) und sind nach den Qualitätskriterien aus Kapitel 6 geprüft — kein Lehrbuch-Spielzeugbeispiel, sondern ein durchgehender, konsistenter Fall.</p>
+    <div class="showcase-grid">
+
+      <div class="showcase-card" data-idx="0">
+        <div class="sc-head">Business Case<span class="sc-sub">Strategische Ebene — vor jeder Anforderung</span></div>
+        <div class="sc-body">
+          <dl>
+            <dt>Anlass/Problem</dt><dd>Ablehnungen werden ohne Begründung verschickt; Beschwerden häufen sich, EU-AI-Act-Konformität (Art. 13) ist nicht gegeben.</dd>
+            <dt>Optionen</dt><dd>(a) Status quo — Bußgeldrisiko bis 15 Mio. € / 3 % Jahresumsatz (Art. 99 EU AI Act). (b) Manuelle Begründung — ca. 8 Min./Fall, bei 12.000 Bewerbungen/Jahr nicht skalierbar. (c) Automatisierte Begründung — Investition ca. 45.000 €.</dd>
+            <dt>Empfehlung</dt><dd>Option (c); Amortisation nach ca. 5 Monaten durch eingesparte Recruiter-Zeit und vermiedenes Bußgeldrisiko.</dd>
+            <dt>Erfolgsmessung</dt><dd>100 % Begründungsabdeckung binnen 24 h; Recruiter-Zeitersparnis ≥ 6 Min./Fall.</dd>
+          </dl>
+        </div>
+        <div class="sc-valid">✅ Erfüllt IREB "notwendig" (klarer Stakeholder-Value) und "realisierbar" (Kosten/Nutzen konkret beziffert) — keine generischen Werte (K8, Kap. 2).</div>
+      </div>
+
+      <div class="showcase-card" data-idx="1">
+        <div class="sc-head">Epic<span class="sc-sub">Agiles Bündel mehrerer User Stories</span></div>
+        <div class="sc-body">
+          <dl>
+            <dt>Titel</dt><dd>Automatisierte, rechtssichere Ablehnungskommunikation</dd>
+            <dt>Beschreibung</dt><dd>Als Recruiting-Organisation wollen wir jede automatisierte Ablehnung mit einer nachvollziehbaren, laienverständlichen Begründung versehen, um EU-AI-Act-konform zu bleiben und Kandidaten fair zu behandeln.</dd>
+            <dt>Enthaltene User Stories</dt><dd>US-142 (Statusanzeige) · US-143 (Begründungstext generieren) · US-144 (Widerspruchslink anzeigen)</dd>
+            <dt>Abgrenzung (Won't have)</dt><dd>Keine Anpassung der Begründung an den individuellen Sprachstil des Kandidaten — geplant für ein späteres Epic.</dd>
+          </dl>
+        </div>
+        <div class="sc-valid">✅ MoSCoW-Must, Kano-Basismerkmal (Kap. 4); explizite Abgrenzung verhindert Scope-Kriechen.</div>
+      </div>
+
+      <div class="showcase-card" data-idx="2">
+        <div class="sc-head">Anforderungsdokumentation<span class="sc-sub">SRS-Auszug nach ISO/IEC/IEEE 29148</span></div>
+        <div class="sc-body">
+          <table class="map-table" style="font-size:14px;">
+            <thead><tr><th>ID</th><th>Typ</th><th>Beschreibung (gekürzt)</th></tr></thead>
+            <tbody>
+            <tr><td>REQ-TM-0140</td><td>FR</td><td>Ablehnungsbegründung automatisch generieren</td></tr>
+            <tr><td>REQ-TM-0141</td><td>FR</td><td>Widerspruchslink im Begründungstext bereitstellen</td></tr>
+            <tr><td>REQ-TM-0142</td><td>NFR</td><td>Verständlichkeit der Begründung (Safety/Interaction Capability)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="sc-valid">✅ Verfolgbar (K6): jede Zeile trägt eine eindeutige ID, konsistent mit der Dokumentenkette oben.</div>
+      </div>
+
+      <div class="showcase-card" data-idx="3">
+        <div class="sc-head">Use Case<span class="sc-sub">Cockburn-Format mit Erweiterungen</span></div>
+        <div class="sc-body">
+          <dl>
+            <dt>Name / primärer Akteur</dt><dd>Ablehnung mit Begründung generieren / System (automatisiert)</dd>
+            <dt>Vorbedingung</dt><dd>Matching-Score des Kandidaten liegt unter dem definierten Schwellenwert</dd>
+            <dt>Hauptszenario</dt>
+            <ol>
+              <li>System generiert Begründung aus den drei größten Abweichungsfaktoren</li>
+              <li>System prüft Begründung gegen die Verständlichkeits-Heuristik</li>
+              <li>System versendet Begründung + Widerspruchslink</li>
+              <li>System protokolliert den Versand im Audit-Log</li>
+            </ol>
+            <dt>Erweiterungen</dt><dd>2a. Verständlichkeits-Check scheitert → Eskalation an Recruiter. 3a. Versand scheitert → Recruiter wird benachrichtigt.</dd>
+          </dl>
+        </div>
+        <div class="sc-valid">✅ Vollständig (K6): Ausnahmefälle sind genauso spezifiziert wie der Erfolgspfad (Kap. 5).</div>
+      </div>
+
+      <div class="showcase-card" data-idx="4">
+        <div class="sc-head">User Story<span class="sc-sub">Cohn-Format mit INVEST-Prüfung</span></div>
+        <div class="sc-body">
+          <dl>
+            <dt>US-142</dt><dd>"Als Recruiterin möchte ich sehen, warum ein Kandidat automatisiert abgelehnt wurde, damit ich die Entscheidung im Zweifel überprüfen und gegenüber der Fachabteilung erklären kann."</dd>
+            <dt>INVEST-Check</dt><dd>Independent (unabhängig von der Statusanzeige umsetzbar) · Negotiable (UI-Form offen) · Valuable (reduziert Rückfragen) · Estimable · Small · Testable (siehe Akzeptanzkriterien rechts)</dd>
+          </dl>
+        </div>
+        <div class="sc-valid">✅ Alle sechs INVEST-Kriterien einzeln geprüft, nicht nur behauptet.</div>
+      </div>
+
+      <div class="showcase-card" data-idx="5">
+        <div class="sc-head">Akzeptanzkriterien<span class="sc-sub">Given/When/Then (Gherkin)</span></div>
+        <div class="sc-body">
+          <div class="gherkin">Given ein Kandidat wurde automatisiert abgelehnt
+When die Recruiterin das Kandidatenprofil öffnet
+Then sieht sie eine laienverständliche Begründung
+  mit den drei größten Abweichungsfaktoren
+And einen Link zum Widerspruchsverfahren
+And der Text enthält höchstens 2 unerklärte Fachbegriffe
+
+Given die Begründung besteht den Verständlichkeits-Check nicht
+When das System die Ablehnung verarbeitet
+Then wird der Fall an eine Recruiterin eskaliert
+And keine Ablehnung wird ohne Begründung verschickt</div>
+        </div>
+        <div class="sc-valid">✅ Verifizierbar (K6): jedes Then-Kriterium ist objektiv prüfbar, kein Interpretationsspielraum.</div>
+      </div>
+
+      <div class="showcase-card" data-idx="6">
+        <div class="sc-head">NFR<span class="sc-sub">REQ-TM-0142 · ISO/IEC 25010</span></div>
+        <div class="sc-body">
+          <dl>
+            <dt>Qualitätsmerkmal</dt><dd>Interaction Capability + Safety</dd>
+            <dt>Anforderung</dt><dd>"Jede automatisierte Ablehnungsbegründung muss von mindestens 80 % einer Stichprobe fachfremder Testleser (n ≥ 5) als 'verständlich' bewertet werden (Skala 1–5, Schwelle ≥ 4)."</dd>
+            <dt>Messverfahren</dt><dd>Quartalsweiser Laientest mit rotierender Testgruppe</dd>
+            <dt>Quelle</dt><dd>EU AI Act Art. 13 · Stakeholder Requirement (Petra/Ela)</dd>
+          </dl>
+        </div>
+        <div class="sc-valid">✅ Eindeutig + verifizierbar (K6): konkrete Schwelle statt "verständlich sein" (Gegenbeispiel in Kap. 6).</div>
+      </div>
+
+      <div class="showcase-card" data-idx="7">
+        <div class="sc-head">FR<span class="sc-sub">REQ-TM-0140 · EARS event-driven</span></div>
+        <div class="sc-body">
+          <dl>
+            <dt>Anforderung</dt><dd>"Wenn die Matching-Engine einen Kandidaten unterhalb des Schwellenwerts einstuft, muss das System automatisch eine Ablehnungsbegründung basierend auf den drei größten Abweichungsfaktoren generieren."</dd>
+            <dt>Quelle</dt><dd>Business Requirement "Time-to-Hire −30 %" · Stakeholder Requirement Recruiting-Team</dd>
+          </dl>
+        </div>
+        <div class="sc-valid">✅ Eindeutiger Auslöser + eindeutige Systemantwort (K6); direkt testbar gegen die Akzeptanzkriterien links.</div>
+      </div>
+
+    </div>
+    <p>Der Punkt dieses Schaufensters: Alle acht Dokumente widersprechen sich nicht, tragen dieselbe Traceability-Familie und lassen sich in beide Richtungen nachverfolgen (Business Case → FR/NFR ebenso wie FR → zurück zum Business Case, siehe Kapitel 8). Das ist der Unterschied zwischen einer Formulierungsübung und einem echten, auditierbaren Anforderungssatz.</p>`,
+    en: `<p>The document chain is not an extra bureaucratic step — it makes visible what happens silently and error-prone inside one person's head in poorly run projects: translating a vague wish into a testable requirement. Each link answers its own question and can be checked individually (see Chapters 6 and 7).</p>
+    <p>Below are two versions of the same template: <strong>left, empty</strong> to copy for your own cases, <strong>right, filled in</strong> using a concrete TalentMatch AI case. The story behind it: Sarah brings back a wish from a client conversation that at first sounds like a pure UI question — and turns out, through the chain, to be an EU-AI-Act-relevant requirement with a test criterion.</p>
+    <div class="chain-pair">
+      <div>
+        <div class="chain-col-label">${"__LEER__"}</div>
+        <div class="chain">
+          <div class="chain-link empty"><div class="stage">1 · ${"__S1__"}</div><div class="field">[Verbatim quote from the stakeholder, unedited]</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link empty"><div class="stage">2 · ${"__S2__"}</div><div class="field">[Which overarching business goal does this wish serve?]</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link empty"><div class="stage">3 · ${"__S3__"}</div><div class="field">[Which stakeholder group has which concrete need?]</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link empty"><div class="stage">4 · ${"__S4__"}</div><div class="field">[What must the system concretely deliver — functional/non-functional?]</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link empty"><div class="stage">5 · ${"__S5__"}</div><div class="field">[EARS sentence or user story, unambiguously phrased]</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link empty"><div class="stage">6 · ${"__S6__"}</div><div class="field">[Objective criterion: how do you recognize "met"?]</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link empty"><div class="stage">7 · ${"__S7__"}</div><div class="field">[ID, norm reference, link to test/code]</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="chain-col-label">${"__AUSGEFUELLT__"}</div>
+        <div class="chain">
+          <div class="chain-link filled"><div class="stage">1 · ${"__S1__"}</div><div class="field">"Can't we just show a red icon for rejected candidates, so our recruiters see it right away?" (client conversation, recruiting team lead, noted by Sarah)</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link filled"><div class="stage">2 · ${"__S2__"}</div><div class="field">Time-to-hire should drop by 30%, partly through faster recruiter decision-making (business requirement from the original kickoff).</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link filled"><div class="stage">3 · ${"__S3__"}</div><div class="field">Recruiters must be able to tell each candidate's status at a glance AND receive a traceable justification for every rejection that can be communicated to the applicant (stakeholder requirement, refined with Petra due to EU AI Act relevance).</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link filled"><div class="stage">4 · ${"__S4__"}</div><div class="field">Functional: status display per candidate. Non-functional (Safety/Interaction Capability): every automated rejection must generate a layperson-understandable justification (EU AI Act Art. 13) — the "red light" alone is not legally sufficient.</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link filled"><div class="stage">5 · ${"__S5__"}</div><div class="field">EARS (event-driven): "When an automated rejection is generated, the system shall provide a layperson-understandable justification and a color-coded status indicator within 24 hours."</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link filled"><div class="stage">6 · ${"__S6__"}</div><div class="field">Met if: 100% of automated rejections receive a justification + status color within 24h AND a layperson test (5 non-expert readers) rates the justification as "understandable."</div></div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-link filled"><div class="stage">7 · ${"__S7__"}</div><div class="field">REQ-TM-0142 · Norm: EU AI Act Art. 13 · Test: TC-0142-a/b · Linked to Chapter-8 RTM entry "Transparency obligations"</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="example-box"><div class="label">${"__EXAMPLE__"}</div>
+    The key learning moment sits between stage 1 and stage 4: what began as a pure UI request ("red icon") becomes, through the chain, an EU-AI-Act-relevant requirement with a disclosure obligation — a consequence neither Sarah nor the client saw at the start. That is exactly why no stage may be skipped, however tempting that seems for "obvious" wishes.</div>
+    <p>This template can be copied directly for your own TalentMatch AI cases or other projects — the key is that each stage is checked by someone who did NOT write the previous stage themselves (four-eyes principle, see the review techniques in Chapter 7).</p>
+    <h3 style="font-size:17px;margin:26px 0 6px 0;">Document Showcase: One Coherent, Validated Example</h3>
+    <p>The eight tiles below show the same requirement — the explainable automated rejection at TalentMatch AI — in eight different document forms. All eight belong together (same traceability ID family REQ-TM-014x) and are checked against the quality criteria from Chapter 6 — not a textbook toy example, but one coherent, consistent case.</p>
+    <div class="showcase-grid">
+
+      <div class="showcase-card" data-idx="0">
+        <div class="sc-head">Business Case<span class="sc-sub">Strategic level — before any requirement</span></div>
+        <div class="sc-body">
+          <dl>
+            <dt>Trigger/problem</dt><dd>Rejections are sent without justification; complaints are piling up, EU AI Act compliance (Art. 13) is not met.</dd>
+            <dt>Options</dt><dd>(a) Status quo — fine risk up to €15M / 3% of annual turnover (Art. 99 EU AI Act). (b) Manual justification — ca. 8 min/case, not scalable at 12,000 applications/year. (c) Automated justification — investment ca. €45,000.</dd>
+            <dt>Recommendation</dt><dd>Option (c); payback after ca. 5 months through saved recruiter time and avoided fine risk.</dd>
+            <dt>Success measure</dt><dd>100% justification coverage within 24h; recruiter time savings ≥ 6 min/case.</dd>
+          </dl>
+        </div>
+        <div class="sc-valid">✅ Meets IREB "necessary" (clear stakeholder value) and "feasible" (cost/benefit concretely quantified) — no generic values (K8, Ch. 2).</div>
+      </div>
+
+      <div class="showcase-card" data-idx="1">
+        <div class="sc-head">Epic<span class="sc-sub">Agile bundle of several user stories</span></div>
+        <div class="sc-body">
+          <dl>
+            <dt>Title</dt><dd>Automated, legally sound rejection communication</dd>
+            <dt>Description</dt><dd>As a recruiting organization, we want every automated rejection to carry a traceable, layperson-understandable justification, to stay EU AI Act compliant and treat candidates fairly.</dd>
+            <dt>Contained user stories</dt><dd>US-142 (status display) · US-143 (generate justification text) · US-144 (display appeal link)</dd>
+            <dt>Boundary (won't have)</dt><dd>No adapting the justification to the candidate's individual language style — planned for a later epic.</dd>
+          </dl>
+        </div>
+        <div class="sc-valid">✅ MoSCoW-Must, Kano basic attribute (Ch. 4); explicit boundary prevents scope creep.</div>
+      </div>
+
+      <div class="showcase-card" data-idx="2">
+        <div class="sc-head">Requirements Documentation<span class="sc-sub">SRS excerpt per ISO/IEC/IEEE 29148</span></div>
+        <div class="sc-body">
+          <table class="map-table" style="font-size:14px;">
+            <thead><tr><th>ID</th><th>Type</th><th>Description (short)</th></tr></thead>
+            <tbody>
+            <tr><td>REQ-TM-0140</td><td>FR</td><td>Automatically generate rejection justification</td></tr>
+            <tr><td>REQ-TM-0141</td><td>FR</td><td>Provide appeal link within the justification text</td></tr>
+            <tr><td>REQ-TM-0142</td><td>NFR</td><td>Understandability of the justification (Safety/Interaction Capability)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="sc-valid">✅ Traceable (K6): every row carries a unique ID, consistent with the document chain above.</div>
+      </div>
+
+      <div class="showcase-card" data-idx="3">
+        <div class="sc-head">Use Case<span class="sc-sub">Cockburn format with extensions</span></div>
+        <div class="sc-body">
+          <dl>
+            <dt>Name / primary actor</dt><dd>Generate rejection with justification / system (automated)</dd>
+            <dt>Precondition</dt><dd>Candidate's matching score is below the defined threshold</dd>
+            <dt>Main scenario</dt>
+            <ol>
+              <li>System generates justification from the three largest deviation factors</li>
+              <li>System checks justification against the understandability heuristic</li>
+              <li>System sends justification + appeal link</li>
+              <li>System logs the send in the audit log</li>
+            </ol>
+            <dt>Extensions</dt><dd>2a. Understandability check fails → escalate to recruiter. 3a. Send fails → recruiter is notified.</dd>
+          </dl>
+        </div>
+        <div class="sc-valid">✅ Complete (K6): exception paths are specified just as thoroughly as the success path (Ch. 5).</div>
+      </div>
+
+      <div class="showcase-card" data-idx="4">
+        <div class="sc-head">User Story<span class="sc-sub">Cohn format with INVEST check</span></div>
+        <div class="sc-body">
+          <dl>
+            <dt>US-142</dt><dd>"As a recruiter I want to see why a candidate was automatically rejected, so that I can review the decision if in doubt and explain it to the department."</dd>
+            <dt>INVEST check</dt><dd>Independent (implementable regardless of the status display) · Negotiable (UI form open) · Valuable (reduces follow-up questions) · Estimable · Small · Testable (see acceptance criteria to the right)</dd>
+          </dl>
+        </div>
+        <div class="sc-valid">✅ All six INVEST criteria checked individually, not merely asserted.</div>
+      </div>
+
+      <div class="showcase-card" data-idx="5">
+        <div class="sc-head">Acceptance Criteria<span class="sc-sub">Given/When/Then (Gherkin)</span></div>
+        <div class="sc-body">
+          <div class="gherkin">Given a candidate was automatically rejected
+When the recruiter opens the candidate profile
+Then they see a layperson-understandable justification
+  with the three largest deviation factors
+And a link to the appeal process
+And the text contains at most 2 unexplained technical terms
+
+Given the justification fails the understandability check
+When the system processes the rejection
+Then the case is escalated to a recruiter
+And no rejection is sent without a justification</div>
+        </div>
+        <div class="sc-valid">✅ Verifiable (K6): every Then criterion is objectively checkable, no room for interpretation.</div>
+      </div>
+
+      <div class="showcase-card" data-idx="6">
+        <div class="sc-head">NFR<span class="sc-sub">REQ-TM-0142 · ISO/IEC 25010</span></div>
+        <div class="sc-body">
+          <dl>
+            <dt>Quality characteristic</dt><dd>Interaction Capability + Safety</dd>
+            <dt>Requirement</dt><dd>"Every automated rejection justification must be rated 'understandable' by at least 80% of a sample of non-expert readers (n ≥ 5) (scale 1–5, threshold ≥ 4)."</dd>
+            <dt>Measurement method</dt><dd>Quarterly layperson test with a rotating test group</dd>
+            <dt>Source</dt><dd>EU AI Act Art. 13 · stakeholder requirement (Petra/Ela)</dd>
+          </dl>
+        </div>
+        <div class="sc-valid">✅ Unambiguous + verifiable (K6): a concrete threshold instead of "be understandable" (counter-example in Ch. 6).</div>
+      </div>
+
+      <div class="showcase-card" data-idx="7">
+        <div class="sc-head">FR<span class="sc-sub">REQ-TM-0140 · EARS event-driven</span></div>
+        <div class="sc-body">
+          <dl>
+            <dt>Requirement</dt><dd>"When the matching engine ranks a candidate below the threshold, the system shall automatically generate a rejection justification based on the three largest deviation factors."</dd>
+            <dt>Source</dt><dd>Business requirement "time-to-hire −30%" · stakeholder requirement, recruiting team</dd>
+          </dl>
+        </div>
+        <div class="sc-valid">✅ Unambiguous trigger + unambiguous system response (K6); directly testable against the acceptance criteria to the left.</div>
+      </div>
+
+    </div>
+    <p>The point of this showcase: all eight documents don't contradict each other, carry the same traceability family, and can be traced in both directions (business case → FR/NFR as well as FR → back to the business case, see Chapter 8). That's the difference between a phrasing exercise and a real, auditable requirement set.</p>`
+  },
+  quiz: {
+    q: { de: "Zwischen welchen zwei Stufen der Dokumentenkette wurde im Beispiel sichtbar, dass eine 'einfache' UI-Bitte rechtlich relevant wird?", en: "Between which two stages of the document chain did the example reveal that a 'simple' UI request becomes legally relevant?" },
+    options: { de: ["Stufe 1 und Stufe 4", "Stufe 5 und Stufe 6", "Stufe 2 und Stufe 3", "Stufe 6 und Stufe 7"], en: ["Stage 1 and stage 4", "Stage 5 and stage 6", "Stage 2 and stage 3", "Stage 6 and stage 7"] },
+    correct: 0
+  }
+}
+];
+
+
+</script>
+<script>
+(function(){
+  "use strict";
+
+  var state = {
+    lang: "de",
+    beamerLevel: 0, // 0=normal,1=beamer,2=beamer-xl,3=beamer-xxl
+    vertiefung: "kurz", // "kurz" | "voll" — ab Beamer-XL frei waehlbar, nur Stufe 1 erzwingt kurz
+    activeChapter: CHAPTERS[0].id,
+    showcaseStep: 0, // Kapitel 10: Index (0-7) der aktuell angezeigten Schaufenster-Karte
+    showcaseSeen: [true,false,false,false,false,false,false,false]
+  };
+
+  function safeGet(key){
+    try { return sessionStorage.getItem(key); } catch(e){ return null; }
+  }
+  function safeSet(key, val){
+    try { sessionStorage.setItem(key, val); } catch(e){ /* ignore */ }
+  }
+
+  function restoreState(){
+    var l = safeGet("rek_lang"); if (l === "de" || l === "en") state.lang = l;
+    var v = safeGet("rek_vert"); if (v === "kurz" || v === "voll") { state.vertiefung = v; }
+    var c = safeGet("rek_chapter"); if (c && CHAPTERS.some(function(ch){return ch.id === c;})) state.activeChapter = c;
+    var s = safeGet("rek_scstep"); if (s !== null) { var n = parseInt(s, 10); if (n >= 0 && n <= 7) state.showcaseStep = n; }
+    var seen = safeGet("rek_scseen");
+    if (seen && seen.length === 8) {
+      state.showcaseSeen = seen.split("").map(function(c){ return c === "1"; });
+    }
+  }
+
+  function personaLabel(p){
+    var map = {
+      de: { ela:"Ela · Projektleitung", knut:"Knut · Entwicklung", sarah:"Sarah · Vertrieb", petra:"Petra · QM", bach:"Herr Bachmeier · Geschäftsführung" },
+      en: { ela:"Ela · Project Lead", knut:"Knut · Development", sarah:"Sarah · Sales", petra:"Petra · QA", bach:"Mr. Bachmeier · Executive Management" }
+    };
+    return map[state.lang][p];
+  }
+
+  function t(key){ return UI[state.lang][key]; }
+
+  function renderTopbar(){
+    document.getElementById("brandTitle").textContent = t("brand");
+    document.getElementById("brandSub").textContent = t("brandSub");
+    document.getElementById("beamerBtn").textContent = "🎥 " + t("beamer") + (state.beamerLevel>0 ? " " + ["","I","XL","XXL"][state.beamerLevel] : "");
+    document.getElementById("langBtn").textContent = "🌐 " + t("lang");
+    document.getElementById("navHint").textContent = t("navHint");
+
+    var kurzBtn = document.getElementById("topVertKurzBtn");
+    var vollBtn = document.getElementById("topVertVollBtn");
+    var vertGroup = document.getElementById("topVertToggle");
+    kurzBtn.textContent = t("vertKurz");
+    vollBtn.textContent = t("vertVoll");
+    kurzBtn.classList.toggle("active", state.vertiefung === "kurz");
+    vollBtn.classList.toggle("active", state.vertiefung === "voll");
+    vertGroup.classList.toggle("disabled", state.beamerLevel === 1);
+  }
+
+  function renderNav(){
+    var nav = document.getElementById("navList");
+    nav.innerHTML = "";
+    CHAPTERS.forEach(function(ch){
+      var btn = document.createElement("button");
+      btn.className = "nav-item" + (ch.id === state.activeChapter ? " active" : "");
+      btn.setAttribute("data-chapter", ch.id);
+      btn.innerHTML = '<span class="num">'+ch.num+'</span><span class="title">'+ch.title[state.lang]+'</span>'+
+        '<span class="frage">'+ch.frage[state.lang]+'</span>';
+      btn.addEventListener("click", function(){ selectChapter(ch.id); });
+      nav.appendChild(btn);
+    });
+  }
+
+  function selectChapter(id){
+    state.activeChapter = id;
+    safeSet("rek_chapter", id);
+    renderNav();
+    renderDetail();
+    var detailCol = document.querySelector(".detail-col");
+    if (detailCol) detailCol.scrollTop = 0;
+  }
+
+  function currentChapter(){
+    return CHAPTERS.filter(function(c){ return c.id === state.activeChapter; })[0] || CHAPTERS[0];
+  }
+
+  function renderDetail(){
+    var ch = currentChapter();
+    var col = document.getElementById("detailCol");
+    var lang = state.lang;
+
+    var badgeRow = ch.badges.map(function(b){ return '<span class="badge">'+b+'</span>'; }).join("");
+
+    var exampleLabel = t("exampleLabel");
+    var tokenMap = {
+      "__EXAMPLE__": exampleLabel,
+      "__LEER__": t("chainLeer"),
+      "__AUSGEFUELLT__": t("chainAusgefuellt"),
+      "__S1__": t("chainS1"), "__S2__": t("chainS2"), "__S3__": t("chainS3"),
+      "__S4__": t("chainS4"), "__S5__": t("chainS5"), "__S6__": t("chainS6"), "__S7__": t("chainS7")
+    };
+    function applyTokens(str){
+      Object.keys(tokenMap).forEach(function(k){ str = str.split(k).join(tokenMap[k]); });
+      return str;
+    }
+    var fullHtml = applyTokens(ch.full[lang]);
+    var shortHtml = "<p>" + ch.short[lang] + "</p>";
+
+    var vertBlock = "";
+    if (state.beamerLevel === 1) {
+      vertBlock = shortHtml;
+    } else if (state.vertiefung === "voll") {
+      vertBlock = fullHtml;
+    } else {
+      vertBlock = shortHtml;
+    }
+
+    var quizOpts = ch.quiz.options[lang].map(function(opt, i){
+      return '<button class="quiz-opt" data-idx="'+i+'">'+opt+'</button>';
+    }).join("");
+
+    col.innerHTML =
+      '<div class="badge-row">'+badgeRow+'</div>' +
+      '<h1>'+ch.num+'. '+ch.title[lang]+'</h1>' +
+      '<p class="frage-lead">'+ch.frage[lang]+'</p>' +
+      '<div class="quote-box '+ch.persona+'"><div class="who">'+personaLabel(ch.persona)+'</div>'+ch.quote[lang]+'</div>' +
+      '<div class="section-block" id="vertContent">'+vertBlock+'</div>' +
+      '<div class="quiz-box">' +
+        '<div class="q">❓ '+ch.quiz.q[lang]+'</div>' +
+        quizOpts +
+        '<div class="quiz-feedback" id="quizFeedback"></div>' +
+      '</div>';
+
+    if (ch.id === "dokumentenkette") {
+      setupShowcase(col);
+    }
+
+    col.querySelectorAll(".quiz-opt").forEach(function(b){
+      b.addEventListener("click", function(){
+        var idx = parseInt(b.getAttribute("data-idx"), 10);
+        var opts = col.querySelectorAll(".quiz-opt");
+        opts.forEach(function(o){ o.classList.remove("correct","wrong"); });
+        var fb = document.getElementById("quizFeedback");
+        if (idx === ch.quiz.correct) {
+          b.classList.add("correct");
+          fb.textContent = "✅ " + t("quizCorrect");
+          fb.className = "quiz-feedback ok";
+        } else {
+          b.classList.add("wrong");
+          opts[ch.quiz.correct].classList.add("correct");
+          fb.textContent = "❌ " + t("quizWrong");
+          fb.className = "quiz-feedback warn";
+        }
+      });
+    });
+  }
+
+  function setupShowcase(col){
+    var grid = col.querySelector(".showcase-grid");
+    if (!grid) return;
+    var cards = grid.querySelectorAll(".showcase-card");
+    var typeLabels = [t("scType0"),t("scType1"),t("scType2"),t("scType3"),t("scType4"),t("scType5"),t("scType6"),t("scType7")];
+
+    if (state.showcaseStep === undefined || state.showcaseStep === null) state.showcaseStep = 0;
+    // Altdaten-Kompatibilitaet: fruehere Version zaehlte 1-8 "geoeffnete" Karten; hier 0-basierter Index der sichtbaren Karte
+    if (state.showcaseStep > 7) state.showcaseStep = 7;
+    if (state.showcaseSeen === undefined) state.showcaseSeen = [true,false,false,false,false,false,false,false];
+
+    var current = state.showcaseStep;
+
+    cards.forEach(function(card){
+      var idx = parseInt(card.getAttribute("data-idx"), 10);
+      var head = card.querySelector(".sc-head");
+      if (head && !head.querySelector(".sc-num")) {
+        var num = document.createElement("span");
+        num.className = "sc-num";
+        num.textContent = String(idx + 1);
+        head.insertBefore(num, head.firstChild);
+      }
+      card.classList.toggle("showing", idx === current);
+    });
+
+    var controls = document.createElement("div");
+    controls.className = "sc-controls";
+
+    var dotsHtml = "";
+    for (var i = 0; i < 8; i++) {
+      var cls = "sc-dot" + (i === current ? " current" : "") + (state.showcaseSeen[i] ? " seen" : "");
+      dotsHtml += '<button class="'+cls+'" data-goto="'+i+'" aria-label="'+typeLabels[i]+'">'+(i+1)+'</button>';
+    }
+
+    controls.innerHTML =
+      '<div class="sc-dots">'+dotsHtml+'</div>' +
+      '<div class="sc-nav">' +
+        '<button id="scPrevBtn"'+(current===0?' disabled':'')+'>'+t("scPrev")+'</button>' +
+        '<span class="sc-label">'+(current+1)+' '+t("scOf")+' 8 · '+typeLabels[current]+'</span>' +
+        '<button id="scNextBtn" class="primary"'+(current===7?' disabled':'')+'>'+t("scNextShort")+'</button>' +
+      '</div>';
+
+    grid.insertAdjacentElement("beforebegin", controls);
+
+    function goTo(newIdx){
+      if (newIdx < 0 || newIdx > 7) return;
+      state.showcaseStep = newIdx;
+      state.showcaseSeen[newIdx] = true;
+      safeSet("rek_scstep", String(newIdx));
+      safeSet("rek_scseen", state.showcaseSeen.map(function(b){return b?"1":"0";}).join(""));
+      renderDetail();
+    }
+
+    controls.querySelectorAll(".sc-dot").forEach(function(d){
+      d.addEventListener("click", function(){ goTo(parseInt(d.getAttribute("data-goto"), 10)); });
+    });
+    var prevBtn = document.getElementById("scPrevBtn");
+    if (prevBtn) prevBtn.addEventListener("click", function(){ goTo(current - 1); });
+    var nextBtn = document.getElementById("scNextBtn");
+    if (nextBtn) nextBtn.addEventListener("click", function(){ goTo(current + 1); });
+  }
+
+  function applyBeamerClass(){
+    var html = document.documentElement;
+    html.classList.remove("beamer","beamer-xl","beamer-xxl");
+    if (state.beamerLevel >= 1) html.classList.add("beamer");
+    if (state.beamerLevel >= 2) html.classList.add("beamer-xl");
+    if (state.beamerLevel >= 3) html.classList.add("beamer-xxl");
+  }
+
+  function toggleBeamer(){
+    state.beamerLevel = (state.beamerLevel + 1) % 4;
+    applyBeamerClass();
+    renderTopbar();
+    renderDetail();
+  }
+
+  function toggleLang(){
+    state.lang = state.lang === "de" ? "en" : "de";
+    safeSet("rek_lang", state.lang);
+    renderTopbar();
+    renderNav();
+    renderDetail();
+    renderFooter();
+  }
+
+  function applyDataLangVisibility(){
+    var nodes = document.querySelectorAll("[data-lang]");
+    nodes.forEach(function(n){
+      n.style.display = (n.getAttribute("data-lang") === state.lang) ? "" : "none";
+    });
+  }
+
+  function renderFooter(){
+    var lang = state.lang;
+    document.getElementById("sumSystem").textContent = t("footerSystem");
+    document.getElementById("sumHandbuch").textContent = t("footerHandbuch");
+    document.getElementById("sumVortrag").textContent = t("footerVortrag");
+    document.getElementById("sumNormen").textContent = t("footerNormen");
+    applyDataLangVisibility();
+  }
+
+  function init(){
+    restoreState();
+    applyBeamerClass();
+    renderTopbar();
+    renderNav();
+    renderDetail();
+    renderFooter();
+
+    document.getElementById("beamerBtn").addEventListener("click", toggleBeamer);
+    document.getElementById("langBtn").addEventListener("click", toggleLang);
+    document.getElementById("topVertKurzBtn").addEventListener("click", function(){ setVertiefung("kurz"); });
+    document.getElementById("topVertVollBtn").addEventListener("click", function(){ setVertiefung("voll"); });
+  }
+
+  function setVertiefung(v){
+    if (state.beamerLevel === 1) return; // nur bei kleinster Beamer-Stufe gesperrt (K22)
+    state.vertiefung = v;
+    safeSet("rek_vert", v);
+    renderTopbar();
+    renderDetail();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+
+</script>
+
+</body>
+</html>
