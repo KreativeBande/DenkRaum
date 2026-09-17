@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RE-Szenensammlung &ndash; Eine Anforderung, drei Rollen</title>
+<style>
+:root{
+  color-scheme: light;
+  --bg:#ffffff;
+  --panel:#f7f8fa;
+  --border:#e2e5ea;
+  --ink:#1b1f27;
+  --muted:#5a6270;
+  --faint:#8a909c;
+  --accent:#2b5fd9;
+  --accent-ink:#12327a;
+  --accent-bg:#e8effc;
+  --anw:#0d9488;      /* teal - Anwenderin */
+  --anw-bg:#e2f6f4;
+  --fue:#4f46e5;      /* indigo - Fuehrung */
+  --fue-bg:#eeecfd;
+  --tec:#b45309;      /* amber - Technik */
+  --tec-bg:#fdf1e0;
+  --gast:#64748b;     /* slate - Gaststimme */
+  --gast-bg:#f1f4f7;
+  --ok:#0f7a3d;
+  --ok-bg:#e5f5ec;
+  --radius:10px;
+}
+
+*{box-sizing:border-box;}
+html,body{
+  margin:0;padding:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;
+  line-height:1.5;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:none;
+  -webkit-overflow-scrolling:touch;
+}
+body{padding-top:92px;}
+
+.signature{
+  position:fixed;top:14px;right:28px;z-index:500;
+  text-align:right;background:rgba(255,255,255,0.92);
+  padding:4px 10px;border-radius:8px;line-height:1.3;
+}
+.signature strong{display:block;font-size:14px;color:var(--ink);}
+.signature a{font-size:14px;color:var(--accent);text-decoration:none;}
+.signature a:hover{text-decoration:underline;}
+
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:var(--bg);
+  border-bottom:1px solid var(--border);
+  padding:14px 24px;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:16px;
+  transform:translateZ(0);
+}
+.topbar .brand-col{display:flex;flex-direction:column;gap:4px;}
+.back-link{font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;}
+.back-link:hover{color:var(--accent);}
+.topbar .brand{font-weight:700;font-size:19px;}
+.topbar .brand .sub{display:block;font-weight:400;font-size:14px;color:var(--muted);margin-top:2px;}
+
+.pill{
+  border:1px solid var(--border);background:var(--panel);color:var(--ink);
+  border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600;
+  cursor:pointer;touch-action:manipulation;min-height:40px;
+}
+.pill:hover{background:var(--accent-bg);border-color:var(--accent);}
+.toggle-group{display:flex;gap:8px;flex-wrap:wrap;justify-self:center;align-items:center;}
+.vertiefung-toggle{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--border);border-radius:999px;padding:4px;background:var(--panel);}
+.vertiefung-toggle button{border:none;background:transparent;border-radius:999px;padding:6px 14px;font-size:14px;font-weight:700;cursor:pointer;color:var(--muted);touch-action:manipulation;min-height:32px;}
+.vertiefung-toggle button.active{background:#fff;color:var(--accent-ink);box-shadow:0 1px 2px rgba(0,0,0,.08);}
+.vertiefung-toggle.disabled{opacity:.4;}
+.vertiefung-toggle.disabled button{pointer-events:none;cursor:default;}
+
+.main-wrap{max-width:900px;margin:0 auto;padding:28px 24px 40px 24px;}
+
+.intro{font-size:15px;color:var(--muted);margin:0 0 22px 0;text-align:center;}
+
+.scene-stage{border:1px solid var(--border);border-radius:var(--radius);background:#fff;overflow:hidden;}
+.scene-head{background:var(--accent-bg);color:var(--accent-ink);padding:16px 20px;border-bottom:1px solid var(--border);}
+.scene-head .scene-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-size:15px;font-weight:700;margin-right:10px;}
+.scene-head .scene-title{font-size:20px;font-weight:700;}
+.scene-head .scene-tag{display:block;font-size:14px;color:var(--muted);margin-top:4px;margin-left:42px;}
+
+.rohwunsch-box{
+  margin:20px;padding:16px 18px;border-left:4px solid var(--faint);
+  background:var(--panel);border-radius:var(--radius);
+  font-size:17px;font-style:italic;
+}
+.rohwunsch-box .label{display:block;font-size:14px;font-style:normal;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:6px;}
+
+.role-grid{display:flex;flex-direction:column;gap:14px;margin:0 20px 20px 20px;}
+.role-card{border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;}
+.role-card .role-head{padding:10px 16px;font-weight:700;font-size:15px;color:#fff;}
+.role-card.anw .role-head{background:var(--anw);}
+.role-card.fue .role-head{background:var(--fue);}
+.role-card.tec .role-head{background:var(--tec);}
+.role-card.gast{border-style:dashed;}
+.role-card.gast .role-head{background:var(--gast);}
+.role-card .role-body{padding:12px 16px;background:#fff;}
+.role-card dt{font-size:14px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-top:10px;}
+.role-card dt:first-child{margin-top:0;}
+.role-card dd{margin:3px 0 0 0;font-size:15px;}
+
+.reveal-btn{
+  display:block;width:calc(100% - 40px);margin:0 20px 20px 20px;
+  padding:14px;border-radius:var(--radius);border:2px dashed var(--accent);
+  background:var(--accent-bg);color:var(--accent-ink);font-weight:700;font-size:15px;
+  cursor:pointer;touch-action:manipulation;text-align:center;
+}
+.destillat-box{
+  margin:0 20px 20px 20px;padding:18px 20px;border-radius:var(--radius);
+  background:var(--ok-bg);border:1px solid #b7e0c6;
+}
+.destillat-box .label{display:block;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ok);margin-bottom:8px;}
+.destillat-box p{margin:0;font-size:16px;color:#0d3b22;}
+
+.scene-controls{margin:16px 0;}
+.sc-dots{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;justify-content:center;}
+.sc-dot{width:40px;height:40px;border-radius:50%;border:2px solid var(--border);background:#fff;color:var(--muted);font-weight:700;font-size:15px;cursor:pointer;touch-action:manipulation;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sc-dot.current{border-color:var(--accent);background:var(--accent);color:#fff;}
+.sc-dot.seen:not(.current){border-color:var(--accent);color:var(--accent-ink);}
+.sc-nav{display:flex;align-items:center;gap:12px;}
+.sc-nav button{min-height:44px;padding:10px 18px;font-size:15px;border-radius:999px;border:1px solid var(--border);background:var(--panel);font-weight:700;cursor:pointer;touch-action:manipulation;}
+.sc-nav button:disabled{opacity:.4;cursor:default;}
+.sc-nav button.primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.sc-nav .sc-label{font-size:15px;font-weight:700;flex:1;text-align:center;}
+
+/* ---------- Verschachteltes Reise-Karussell (innerhalb einer Szene) ---------- */
+.journey-wrap{margin:0 20px 20px 20px;border:1px solid var(--border);border-radius:var(--radius);background:var(--panel);padding:16px;}
+.journey-label{font-size:14px;font-weight:700;color:var(--muted);text-align:center;margin-bottom:12px;text-transform:uppercase;letter-spacing:.03em;}
+.journey-dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:12px;}
+.j-dot{min-width:34px;height:34px;padding:0 8px;border-radius:17px;border:2px solid var(--border);background:#fff;color:var(--muted);font-weight:700;font-size:14px;cursor:pointer;touch-action:manipulation;display:flex;align-items:center;justify-content:center;}
+.j-dot.current{border-color:var(--tec);background:var(--tec);color:#fff;}
+.j-dot.seen:not(.current){border-color:var(--tec);color:var(--tec);}
+.journey-stage-box{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:12px;min-height:60px;}
+.journey-stage-box .j-stop-title{font-size:15px;font-weight:700;color:var(--tec);margin-bottom:10px;}
+.journey-stage-box p{margin:0 0 10px 0;font-size:15px;}
+.journey-stage-box p:last-child{margin-bottom:0;}
+.journey-stage-box ul,.journey-stage-box ol{margin:0 0 10px 20px;padding:0;font-size:15px;}
+.journey-nav{display:flex;align-items:center;gap:10px;justify-content:center;}
+.journey-nav button{min-height:40px;padding:8px 16px;font-size:14px;border-radius:999px;border:1px solid var(--border);background:#fff;font-weight:700;cursor:pointer;touch-action:manipulation;}
+.journey-nav button:disabled{opacity:.4;cursor:default;}
+.journey-nav button.primary{background:var(--tec);color:#fff;border-color:var(--tec);}
+
+/* ---------- Stopp 5: drei User Stories im Vergleich ---------- */
+.story-compare{display:flex;flex-direction:column;gap:12px;}
+@media (min-width:760px){.story-compare{flex-direction:row;}}
+.story-col{flex:1;border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;}
+.story-col .story-head{padding:8px 12px;font-weight:700;font-size:14px;color:#fff;}
+.story-col.anw .story-head{background:var(--anw);}
+.story-col.fue .story-head{background:var(--fue);}
+.story-col.tec .story-head{background:var(--tec);}
+.story-col .story-body{padding:12px;background:#fff;font-size:14px;}
+.story-col .story-body p{margin:0 0 8px 0;}
+.story-col .gherkin-mini{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;background:#fbfbfc;border:1px solid var(--border);border-radius:6px;padding:8px;white-space:pre-wrap;}
+
+/* ---------- Stopp 6: Entwickler-Review ---------- */
+.review-block{margin-bottom:14px;}
+.review-block .review-title{font-size:14px;font-weight:700;color:var(--tec);margin-bottom:6px;}
+.review-block ol{margin:0;padding-left:20px;}
+.review-block li{margin-bottom:6px;font-size:14px;}
+
+/* ---------- Stopp 7: Testfaelle ---------- */
+.tc-list{list-style:none;margin:0;padding:0;}
+.tc-list li{padding:8px 10px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;font-size:14px;background:#fff;}
+.tc-list li strong{color:var(--ok);}
+
+/* ---------- Stopp: Umsetzung (Code) ---------- */
+.code-block{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;background:#1b1f27;color:#e2e8f0;border-radius:8px;padding:14px;white-space:pre-wrap;margin:8px 0 4px 0;overflow-x:auto;}
+.code-block .nfr-hl{color:#fbbf24;font-weight:700;}
+.code-legend{font-size:14px;color:var(--muted);margin:0 0 14px 0;}
+.code-legend .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#fbbf24;margin-right:6px;}
+.code-file{font-size:14px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;margin:0 0 4px 0;}
+.code-file::before{content:"📄 ";}
+.test-steps{margin:0;padding-left:22px;}
+.test-steps li{margin-bottom:8px;font-size:15px;}
+.test-steps .step-check{color:var(--ok);font-weight:700;}
+
+/* ---------- Footer ---------- */
+footer{border-top:1px solid var(--border);padding:20px 40px 60px 40px;background:var(--panel);}
+.footer-sig{font-size:14px;color:var(--muted);margin-bottom:14px;}
+.footer-sig strong{color:var(--ink);}
+.footer-sig a{color:var(--accent);}
+.footer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.footer-box{border:1px solid var(--border);border-radius:var(--radius);background:#fff;}
+.footer-summary{padding:12px 14px;font-weight:700;font-size:14px;cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;touch-action:manipulation;}
+.footer-summary::-webkit-details-marker{display:none;}
+.footer-summary::after{content:"+";font-size:18px;color:var(--muted);}
+details[open] .footer-summary::after{content:"–";}
+.footer-content{padding:0 14px 14px 14px;}
+.footer-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;white-space:pre-wrap;background:#fbfbfc;border:1px solid var(--border);border-radius:8px;padding:12px;max-height:340px;overflow-y:auto;}
+.footer-sans{font-size:15px;}
+.footer-table{width:100%;border-collapse:collapse;font-size:14px;}
+.footer-table th,.footer-table td{border:1px solid var(--border);padding:5px 6px;text-align:left;}
+.footer-table th{background:var(--panel);}
+
+@media (max-width:900px){
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .main-wrap{padding:20px 16px 32px 16px;}
+  .signature{padding:2px 6px;max-width:98px;}
+  .signature strong{font-size:11px;}
+  .signature a{font-size:10px;word-break:break-word;}
+  .topbar{grid-template-columns:1fr;padding:12px 132px 12px 16px;}
+  .brand-col{align-items:flex-start;text-align:left;}
+  .topbar .brand .sub{font-size:12px;}
+  .toggle-group{justify-content:flex-start;margin-top:10px;}
+  body{padding-top:150px;}
+  .role-head{font-size:14px;}
+}
+@media (max-width:640px){
+  .footer-grid{grid-template-columns:1fr;}
+}
+
+/* ---------- Beamer-Modus (K18, vierstufig) ---------- */
+html.beamer body{font-size:19px;}
+html.beamer .topbar{padding:18px 28px;}
+html.beamer .pill{font-size:16px;padding:10px 20px;min-height:48px;}
+html.beamer .scene-head .scene-title{font-size:26px;}
+html.beamer .rohwunsch-box{font-size:20px;}
+html.beamer .role-card dd{font-size:19px;}
+html.beamer .role-card dt{font-size:15px;}
+html.beamer footer{display:none;}
+html.beamer .signature{font-size:15px;}
+html.beamer .journey-label{font-size:16px;}
+html.beamer .j-stop-title{font-size:20px;}
+html.beamer .journey-stage-box p,
+html.beamer .journey-stage-box li,
+html.beamer .journey-stage-box dd{font-size:19px;}
+html.beamer .journey-stage-box dt{font-size:15px;}
+html.beamer .story-col .story-head{font-size:16px;}
+html.beamer .story-col .story-body p{font-size:18px;}
+html.beamer .story-col .gherkin-mini{font-size:15px;}
+html.beamer .review-block .review-title{font-size:17px;}
+html.beamer .review-block li{font-size:18px;}
+html.beamer .tc-list li{font-size:18px;}
+html.beamer .destillat-box p{font-size:19px;}
+
+html.beamer.beamer-xl body{font-size:22px;}
+html.beamer.beamer-xl .scene-head .scene-title{font-size:30px;}
+html.beamer.beamer-xl .journey-stage-box p,
+html.beamer.beamer-xl .journey-stage-box li,
+html.beamer.beamer-xl .journey-stage-box dd,
+html.beamer.beamer-xl .story-col .story-body p,
+html.beamer.beamer-xl .review-block li,
+html.beamer.beamer-xl .tc-list li,
+html.beamer.beamer-xl .destillat-box p,
+html.beamer.beamer-xl .role-card dd{font-size:22px;}
+
+html.beamer.beamer-xl.beamer-xxl body{font-size:26px;}
+html.beamer.beamer-xl.beamer-xxl .scene-head .scene-title{font-size:34px;}
+html.beamer.beamer-xl.beamer-xxl .journey-stage-box p,
+html.beamer.beamer-xl.beamer-xxl .journey-stage-box li,
+html.beamer.beamer-xl.beamer-xxl .journey-stage-box dd,
+html.beamer.beamer-xl.beamer-xxl .story-col .story-body p,
+html.beamer.beamer-xl.beamer-xxl .review-block li,
+html.beamer.beamer-xl.beamer-xxl .tc-list li,
+html.beamer.beamer-xl.beamer-xxl .destillat-box p,
+html.beamer.beamer-xl.beamer-xxl .role-card dd{font-size:26px;}
+
+</style>
+</head>
+<body>
+
+<div class="signature">
+  <strong>Michaela K&uuml;hn</strong>
+  <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+</div>
+
+<div class="topbar">
+  <div class="brand-col">
+    <a class="back-link" href="../index.html">&larr; Zur&uuml;ck zur Startseite</a>
+    <div class="brand">
+      <span id="brandTitle">RE-Szenensammlung</span>
+      <span class="sub" id="brandSub">Eine Anforderung, drei Rollen, drei Sichtweisen &mdash; firmenneutral</span>
+    </div>
+  </div>
+  <div class="toggle-group">
+    <button class="pill" id="beamerBtn">Beamer</button>
+    <div class="vertiefung-toggle" id="topVertToggle" role="group">
+      <button data-v="kurz" id="topVertKurzBtn">Kurz</button>
+      <button data-v="voll" id="topVertVollBtn">Vollst&auml;ndig</button>
+    </div>
+    <button class="pill" id="langBtn">EN</button>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <p class="intro" id="introText"></p>
+  <div class="scene-stage" id="sceneStage"></div>
+  <div class="scene-controls" id="sceneControls"></div>
+</div>
+
+<footer>
+<div class="footer-sig">
+  <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
+  <span data-lang="de">· Referenziert: IREB CPRE Foundation Level Syllabus v3.3.0 (1. April 2026) — Problem-Requirement-Solution-Prinzip und Elicitation-Techniken</span>
+  <span data-lang="en" style="display:none;">· References: IREB CPRE Foundation Level Syllabus v3.3.0 (April 1, 2026) — Problem-Requirement-Solution principle and elicitation techniques</span>
+</div>
+<div class="footer-grid">
+
+  <details class="footer-box">
+    <summary class="footer-summary" id="sumSystem">Systemprompt</summary>
+    <div class="footer-content">
+      <div class="footer-mono" data-lang="de">MASTER-BAU-PROMPT — RE-Szenensammlung
+
+ROLLE
+Du baust ein interaktives, offlinefaehiges HTML-Trainingstool, das
+zeigt, wie dieselbe Anforderung von verschiedenen Rollen unterschiedlich
+formuliert wird — bewusst firmen- und branchenneutral, ohne feste
+Personas.
+
+STRUKTUR
+- Topbar: Marke/Untertitel links, Beamer-Toggle + Vertiefungs-Toggle +
+  Sprach-Toggle rechts.
+- Ein-Szenen-Karussell (wie im RE-Kompendium, Kapitel 10): Rohwunsch
+  oben, darunter ein verschachteltes Reise-Karussell mit nummerierten
+  Zwischenstopps (2-9 je Szene) statt Rollen-Karten mit Klick-Reveal —
+  jeder Stopp zeigt, wie sich der Rohwunsch von der ersten Aeusserung
+  bis zur passenden Loesung entwickelt.
+- 6 Nummern-Punkte zur Direktnavigation zwischen den Szenen,
+  Weiter/Zurueck-Buttons auf beiden Ebenen (Szene und Stopp).
+- Vier Footer-Boxen: Systemprompt, Handbuch, Vortrags-Skript,
+  Normen-Register.
+- Signatur oben rechts, position:fixed.
+
+INHALT PRO SZENE
+- Ein Rohwunsch (Zitat), der wie EINE einfache Anforderung klingt.
+- Eine Reise aus mehreren nummerierten Stopps (Zielkonflikt, Analyse,
+  Entscheidung, Artefakt, Code/Test je nach Szene), jeder Stopp in
+  einer Kurz- UND einer Vollversion.
+- Kein Rollen-Karten-Vergleich und kein separater Reveal-Button — die
+  Aufloesung ist der letzte Stopp der Reise, nicht ein Extra-Klick.
+
+TOGGLES (Pflicht)
+1. Beamer-Toggle (vierstufig), erzwingt keine Inhaltsaenderung, nur
+   Groessensteigerung; Footer ab Stufe 1 ausgeblendet.
+2. Sprach-Toggle DE/EN fuer alle sichtbaren Texte inkl. Footer-Boxen.
+3. Vertiefungs-Toggle (Kurz/Vollstaendig): steuert in allen 6 Szenen
+   die Textlaenge je Reise-Stopp; bei Beamer-Stufe 1 automatisch auf
+   Kurz gesperrt.
+
+NICHT TUN
+- Keine festen Firmen-Personas (kein Ela/Knut/Sarah).
+- Kein zusaetzlicher Reveal-Button neben der Reise — die Aufloesung
+  ist immer der letzte Stopp, kein separater Klick-Moment.
+
+TECHNIK
+Single-file HTML, color-scheme:light, click-Events (nicht pointerup,
+iOS-Robustheit), sessionStorage nur mit try/catch, min. 16px
+Fliesstext / 14px Sekundaertext, 44px Touch-Ziele, UTF-8 direkt.</div>
+      <div class="footer-mono" data-lang="en" style="display:none;">MASTER BUILD PROMPT — RE Scenario Collection
+
+ROLE
+You are building an interactive, fully offline HTML training tool that
+shows how the same requirement gets phrased differently by different
+roles — deliberately company- and industry-neutral, no fixed personas.
+
+STRUCTURE
+- Topbar: brand/subtitle left, Beamer toggle + Vertiefung toggle +
+  language toggle right.
+- Single-scene carousel (as in the RE Compendium, Chapter 10): raw
+  wish at the top, a nested journey carousel with numbered stops
+  (2-9 per scene) below instead of role cards with click-to-reveal —
+  each stop shows how the raw wish evolves from the first utterance
+  to the fitting solution.
+- 6 numbered dots for direct navigation between scenes, Next/Back
+  buttons on both levels (scene and stop).
+- Four footer boxes: System Prompt, Handbook, Speaker Script,
+  Norms Register.
+- Signature top-right, position:fixed.
+
+CONTENT PER SCENE
+- One raw wish (quote) that sounds like ONE simple requirement.
+- A journey of several numbered stops (goal conflict, analysis,
+  decision, artifact, code/test depending on the scene), each stop in
+  a short AND a full version.
+- No role-card comparison and no separate reveal button — the
+  resolution is the journey's last stop, not an extra click.
+
+TOGGLES (mandatory)
+1. Beamer toggle (four-stage), forces no content change, pure size
+   increase; footer hidden from stage one.
+2. Language toggle DE/EN for all visible text incl. footer boxes.
+3. Vertiefung toggle (Short/Full): controls the text length per
+   journey stop across all 6 scenes; locked to Short at Beamer stage
+   one.
+
+DO NOT
+- No fixed company personas (no Ela/Knut/Sarah).
+- No extra reveal button alongside the journey — the resolution is
+  always the last stop, not a separate click moment.
+
+TECH
+Single-file HTML, color-scheme:light, click events (not pointerup,
+for iOS robustness), sessionStorage only with try/catch, min. 16px
+body text / 14px secondary text, 44px touch targets, direct UTF-8.</div>
+    </div>
+  </details>
+
+  <details class="footer-box">
+    <summary class="footer-summary" id="sumHandbuch">Handbuch</summary>
+    <div class="footer-content footer-sans">
+      <div data-lang="de">
+        <p><strong>Framework:</strong> RAKFE (Rolle · Aufgabe · Kontext · Format · Eingrenzung), hier auf den Bau-Prompt selbst angewendet.</p>
+        <ul>
+          <li><strong>Rolle:</strong> Trainingstool-Entwicklerin, nicht Requirements Engineer — die Aufgabe ist didaktische Aufbereitung eines Elicitation-Prinzips.</li>
+          <li><strong>Aufgabe:</strong> ein wiederkehrendes RE-Muster (unterschiedliche Rollenformulierung derselben Anforderung) an sechs alltagsnahen Szenen zeigen.</li>
+          <li><strong>Kontext:</strong> bewusst firmenneutral, keine Anbindung an eine bestehende Fallstudienwelt — Übertragbarkeit auf jede Branche ist das didaktische Ziel.</li>
+          <li><strong>Format:</strong> Ein-Szenen-Karussell mit verschachtelter Stopp-für-Stopp-Reise statt Split-Screen-Liste — die Auflösung ist der letzte Stopp der Reise, nicht ein separater Klick-Moment.</li>
+          <li><strong>Eingrenzung:</strong> keine feste Persona-Welt, kein Bezug zu einer konkreten Regulatorik; der Vertiefungs-Toggle wirkt einheitlich in allen sechs Szenen auf die Textlänge je Reise-Stopp.</li>
+        </ul>
+        <p><strong>Zentraler Lernhinweis:</strong> Die drei Rollenperspektiven (Anwenderin/Führung/Technik) sind keine Zufallsauswahl — sie stehen für operative, verantwortliche und umsetzende Sicht, die in praktisch jedem RE-Szenario auftauchen. Wer diese Trias erkennt, kann Elicitation-Widersprüche schneller als Aggregationsebenen statt als echte Konflikte einordnen (siehe Kapitel 3 und 4 im RE-Kompendium).</p>
+      </div>
+      <div data-lang="en" style="display:none;">
+        <p><strong>Framework:</strong> RAKFE (Role · Task · Context · Format · Constraints), applied here to the build prompt itself.</p>
+        <ul>
+          <li><strong>Role:</strong> training tool developer, not requirements engineer — the task is didactic packaging of an elicitation principle.</li>
+          <li><strong>Task:</strong> show a recurring RE pattern (different roles phrasing the same requirement differently) across six everyday scenes.</li>
+          <li><strong>Context:</strong> deliberately company-neutral, no tie to an existing case study world — transferability to any industry is the didactic goal.</li>
+          <li><strong>Format:</strong> single-scene carousel with a nested stop-by-stop journey instead of a split-screen list — the resolution is the journey's last stop, not a separate click moment.</li>
+          <li><strong>Constraints:</strong> no fixed persona world, no tie to a specific regulatory framework; the Vertiefung toggle uniformly controls the text length per journey stop across all six scenes.</li>
+        </ul>
+        <p><strong>Central learning point:</strong> the three role perspectives (User/Leadership/Technical) aren't a random pick — they stand for the operational, accountable, and implementing viewpoints that show up in practically every RE scenario. Recognizing this triad lets you classify elicitation contradictions faster as levels of aggregation rather than real conflicts (see Chapters 3 and 4 in the RE Compendium).</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="footer-box">
+    <summary class="footer-summary" id="sumVortrag">Vortrags-Skript</summary>
+    <div class="footer-content footer-sans">
+      <div data-lang="de">
+        <p><em>(Klick: Tool öffnen, Szene 1 aktiv)</em> "Jede dieser sechs Szenen beginnt mit einem Satz, der wie EINE klare Anforderung klingt. Lassen wir uns nicht täuschen — schauen wir uns die Reise dahinter an, Stopp für Stopp."</p>
+        <p><em>(Klick durch die ersten Reise-Stopps von Szene 1)</em> "Rohaussagen, Zwischenergebnis, Übersetzung in FR/NFR, Use Case — jeder Stopp macht sichtbar, was im vorherigen nur implizit war."</p>
+        <p><em>(Klick: bis zum letzten Stopp 'Die passende Lösung')</em> "Und hier die Auflösung: keine drei widersprüchlichen Wünsche, sondern eine Anforderung, die auf jeder Stufe präziser wird."</p>
+        <p><em>(Klick: nächste Szene, z. B. Rechnungsfreigabe)</em> "Testen wir das an einer zweiten Szene aus einem ganz anderen Bereich — hier ist der Kern kein Missverständnis, sondern ein echter Zielkonflikt. Funktioniert das Muster trotzdem?"</p>
+        <p><strong>Regie-Hinweise:</strong> Nicht alle sechs Szenen in einer Session durchgehen — 2 bis 3 reichen, um das Muster zu verankern. Publikum vor dem letzten Stopp aktiv raten lassen ("Was, glaubt ihr, kommt am Ende heraus?"). Bei Zeitdruck den Vertiefungs-Toggle auf Kurz lassen — er kürzt jeden Stopp, ohne die Reihenfolge zu ändern.</p>
+      </div>
+      <div data-lang="en" style="display:none;">
+        <p><em>(Click: open tool, Scene 1 active)</em> "Each of these six scenes starts with a sentence that sounds like ONE clear requirement. Let's not be fooled — let's look at the journey behind it, stop by stop."</p>
+        <p><em>(Click through Scene 1's first few stops)</em> "Raw statements, elicitation interim result, translation into FR/NFR, use case — each stop makes explicit what was only implicit in the one before."</p>
+        <p><em>(Click through to the final stop, "The Fitting Solution")</em> "And here's the resolution: not three contradictory wishes, but one requirement that gets more precise at every step."</p>
+        <p><em>(Click: next scene, e.g. Invoice Approval)</em> "Let's test this on a second scene from a completely different area — here the core issue isn't a misunderstanding but a genuine goal conflict. Does the pattern still hold?"</p>
+        <p><strong>Directing notes:</strong> don't run all six scenes in one session — 2 to 3 are enough to anchor the pattern. Have the audience actively guess before the final stop ("what do you think comes out at the end?"). Under time pressure, leave the Vertiefung toggle on Short — it shortens every stop without changing the sequence.</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="footer-box">
+    <summary class="footer-summary" id="sumNormen">Normen-Register</summary>
+    <div class="footer-content">
+      <table class="footer-table" data-lang="de">
+        <thead><tr><th>Norm/Prinzip</th><th>Bezug</th></tr></thead>
+        <tbody>
+          <tr><td>IREB CPRE Foundation Level Syllabus v3.3.0</td><td>Problem-Requirement-Solution-Prinzip (jedes "Wie" ist ein Lösungsvorschlag, keine Anforderung)</td></tr>
+          <tr><td>IREB Elicitation-Techniken</td><td>"Hinter die Lösung zum Bedürfnis zurückfragen" — Grundprinzip jeder Szene</td></tr>
+          <tr><td>BABOK v3</td><td>Anforderungsklassen (Business/Stakeholder/Solution) — indirekt sichtbar in der Aggregationsebenen-Logik jeder Auflösung</td></tr>
+        </tbody>
+      </table>
+      <table class="footer-table" data-lang="en" style="display:none;">
+        <thead><tr><th>Norm/Principle</th><th>Relevance</th></tr></thead>
+        <tbody>
+          <tr><td>IREB CPRE Foundation Level Syllabus v3.3.0</td><td>Problem-Requirement-Solution principle (every "how" is a proposed solution, not a requirement)</td></tr>
+          <tr><td>IREB elicitation techniques</td><td>"Ask behind the solution to the need" — the core principle of every scene</td></tr>
+          <tr><td>BABOK v3</td><td>Requirement classes (Business/Stakeholder/Solution) — indirectly visible in the aggregation-level logic of every resolution</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+</div>
+
+</footer>
+
+<script>
+const UI = {
+  de: {
+    brand: "RE-Szenensammlung",
+    brandSub: "Eine Anforderung, drei Rollen, drei Sichtweisen — firmenneutral",
+    beamer: "Beamer",
+    lang: "EN",
+    intro: "Requirements Engineering findet in vielen Szenarien statt. In jedem davon wollen die beteiligten Rollen oft dasselbe — sie beschreiben es nur unterschiedlich. Szene 1 zeigt die vollständige Reise vom ersten Satz bis zum Code; die Szenen 2–6 setzen je einen eigenen Schwerpunkt.",
+    revealBtn: "Auflösung zeigen →",
+    destillatLabel: "Die eigentliche Anforderung",
+    footerSystem: "Systemprompt",
+    footerHandbuch: "Handbuch",
+    footerVortrag: "Vortrags-Skript",
+    footerNormen: "Normen-Register",
+    rohwunschLabel: "Der Auslöser",
+    roleAnw: "Anwenderin", roleFue: "Führung", roleTec: "Technik", roleGast: "Gaststimme",
+    warum: "Warum", was: "Was", wie: "Wie (ihr Lösungsvorschlag)",
+    scOf: "von",
+    journeyLabel: "Die Reise: vom ersten Satz zur passenden Lösung",
+    reviewBedenken: "Bedenken-Liste (Entwickler-Review)",
+    reviewFragen: "Offene Fragen an die Stakeholder",
+    vertKurz: "Kurz", vertVoll: "Vollständig"
+  },
+  en: {
+    brand: "RE Scenario Collection",
+    brandSub: "One requirement, three roles, three viewpoints — company-neutral",
+    beamer: "Beamer",
+    lang: "DE",
+    intro: "Requirements engineering happens in many scenarios. In each one, the roles involved often want the same thing — they just describe it differently. Scene 1 shows the full journey from the first sentence to the code; Scenes 2–6 each focus on one specific aspect.",
+    revealBtn: "Show resolution →",
+    destillatLabel: "The actual requirement",
+    footerSystem: "System Prompt",
+    footerHandbuch: "Handbook",
+    footerVortrag: "Speaker Script",
+    footerNormen: "Norms Register",
+    rohwunschLabel: "The Trigger",
+    roleAnw: "User", roleFue: "Leadership", roleTec: "Technical", roleGast: "Guest voice",
+    warum: "Why", was: "What", wie: "How (their proposed solution)",
+    scOf: "of",
+    journeyLabel: "The journey: from the first sentence to the fitting solution",
+    reviewBedenken: "Concerns List (Developer Review)",
+    reviewFragen: "Open Questions for the Stakeholders",
+    vertKurz: "Short", vertVoll: "Full"
+  }
+};
+
+const SCENES = [
+{
+  id: "status",
+  num: 1,
+  tag: { de: "Verwaltung/Vorgangsbearbeitung — die vollständige Reise", en: "Administration/case handling — the full journey" },
+  title: { de: "Status-Übersicht", en: "Status Overview" },
+  rohwunsch: {
+    de: "\"Wir brauchen eine bessere Übersicht über den Status der laufenden Vorgänge.\"",
+    en: "\"We need a better overview of the status of ongoing cases.\""
+  },
+  journey: [
+    { label: { de: "Rohaussagen", en: "Raw Statements" },
+      kurz: {
+        de: `<p>Drei O-Töne aus Interview und Workshop — noch unbearbeitet, teils widersprüchlich klingend:</p>
+        <ul>
+          <li><strong>Sachbearbeiterin:</strong> "Ich brauche eine Ampel, dann seh ich sofort, was brennt."</li>
+          <li><strong>Führungskraft:</strong> "Ich will einfach wissen: Sind wir im Rückstand oder nicht?"</li>
+          <li><strong>Technik:</strong> "Wir bräuchten mal ein einheitliches Statusfeld in der Datenbank."</li>
+        </ul>
+        <p>Auf den ersten Blick: eine UI-Bitte, eine Führungsfrage, eine technische Forderung — scheinbar drei verschiedene Baustellen.</p>`,
+        en: `<p>Three verbatim quotes from interviews and a workshop — still raw, some sounding contradictory:</p>
+        <ul>
+          <li><strong>Case worker:</strong> "I need a traffic light, then I can see right away what's burning."</li>
+          <li><strong>Manager:</strong> "I just want to know: are we behind schedule or not?"</li>
+          <li><strong>Technical:</strong> "We'd need a unified status field in the database."</li>
+        </ul>
+        <p>At first glance: a UI request, a leadership question, a technical demand — seemingly three separate concerns.</p>` },
+      voll: {
+        de: `<p>Diese drei Aussagen stammen aus drei getrennten, unabhängig geführten 30-Minuten-Interviews über zwei Wochen — die drei Personen hatten sich vorher nicht abgestimmt. Das ist methodisch wichtig: Die spätere Überschneidung ist kein Zufall der Kommunikation, sondern ein strukturelles Muster, das die Elicitation erst sichtbar macht.</p>
+        <p><strong>IREB-Begriff:</strong> Das hier ist eine <em>Rohaussage</em> (raw elicitation output) — noch keine Anforderung im Sinne von Kapitel 6 (Qualitätskriterien für Anforderungen), sondern unbearbeitetes Rohmaterial. Der häufigste Anfängerfehler in der Praxis: Rohaussagen direkt als Anforderung ins Backlog zu übernehmen, ohne den Zwischenschritt der Erhebungs-Synthese (Stopp 2).</p>
+        <ul>
+          <li><strong>Sachbearbeiterin:</strong> "Ich brauche eine Ampel, dann seh ich sofort, was brennt." — Kontext: Sie bearbeitet täglich rund 40 Vorgänge parallel und wechselt dafür zwischen drei verschiedenen Fachanwendungen, von denen keine eine Gesamtübersicht bietet.</li>
+          <li><strong>Führungskraft:</strong> "Ich will einfach wissen: Sind wir im Rückstand oder nicht?" — Kontext: Sie berichtet monatlich an die Geschäftsleitung und wird dort regelmäßig nach Zahlen gefragt, die sie aktuell nur durch manuelles Auszählen liefern kann.</li>
+          <li><strong>Technik:</strong> "Wir bräuchten mal ein einheitliches Statusfeld in der Datenbank." — Kontext: Er hat in der Vergangenheit mehrfach Inkonsistenzen zwischen zwei Teilsystemen beheben müssen, die denselben Vorgang unterschiedlich als "offen" bzw. "erledigt" führten.</li>
+        </ul>
+        <p>Auf den ersten Blick: eine UI-Bitte, eine Führungsfrage, eine technische Forderung — scheinbar drei verschiedene Baustellen, die in einem schlecht geführten Projekt auch als drei getrennte Tickets im Backlog landen würden. Genau das verhindert die nächste Stufe.</p>`,
+        en: `<p>These three statements come from three separate, independently conducted 30-minute interviews spread over two weeks — the three people had not coordinated beforehand. This matters methodologically: the overlap that emerges later is not a coincidence of communication but a structural pattern that elicitation makes visible in the first place.</p>
+        <p><strong>IREB term:</strong> this is a <em>raw statement</em> (raw elicitation output) — not yet a requirement in the sense of Chapter 6 (Quality Criteria for Requirements), just unprocessed raw material. The most common beginner mistake in practice: taking raw statements straight into the backlog as requirements, skipping the elicitation-synthesis step (Stop 2).</p>
+        <ul>
+          <li><strong>Case worker:</strong> "I need a traffic light, then I can see right away what's burning." — Context: she handles about 40 cases in parallel every day and switches between three different applications for it, none of which offers an overall view.</li>
+          <li><strong>Manager:</strong> "I just want to know: are we behind schedule or not?" — Context: she reports monthly to senior management and is regularly asked for figures she can currently only produce by manually counting.</li>
+          <li><strong>Technical:</strong> "We'd need a unified status field in the database." — Context: he has repeatedly had to fix inconsistencies between two subsystems that tracked the same case differently as "open" or "done."</li>
+        </ul>
+        <p>At first glance: a UI request, a leadership question, a technical demand — seemingly three separate concerns that, in a poorly run project, would land as three separate backlog tickets. Exactly that is what the next stage prevents.</p>` } },
+
+    { label: { de: "Zwischenergebnis nach Erhebung", en: "Elicitation Interim Result" },
+      kurz: {
+        de: `<p>Nach gezieltem Nachfragen ("Was würde Ihnen das ermöglichen?") in Folgeinterviews:</p>
+        <ul>
+          <li><strong>Sachbearbeiterin:</strong> Auf einen Blick sehen, welche ihrer Fälle offen, in Bearbeitung oder erledigt sind.</li>
+          <li><strong>Führungskraft:</strong> Eine verdichtete Kennzahl über die Zeit, nicht den Einzelfall.</li>
+          <li><strong>Technik:</strong> Eine eindeutige Definition, wann ein Vorgang als "offen" gilt.</li>
+        </ul>
+        <p>Die drei Rohaussagen entpuppen sich als dieselbe Frage auf drei Ebenen: Einzelfall, Team-Trend, Datenmodell.</p>`,
+        en: `<p>After targeted follow-up ("What would that let you do?") in subsequent interviews:</p>
+        <ul>
+          <li><strong>Case worker:</strong> See at a glance which of her cases are open, in progress, or done.</li>
+          <li><strong>Manager:</strong> An aggregated metric over time, not individual cases.</li>
+          <li><strong>Technical:</strong> A clear definition of when a case counts as "open."</li>
+        </ul>
+        <p>The three raw statements turn out to be the same question at three levels: individual case, team trend, data model.</p>` },
+      voll: {
+        de: `<p>Die Technik hinter diesem Schritt heißt in IREB-Terminologie <em>Elicitation durch gezieltes Nachfragen</em> (Kapitel 3: Elicitation-Techniken): Man geht nicht von der geäußerten Lösung aus, sondern fragt systematisch "Was würde Ihnen das ermöglichen, was heute nicht geht?", bis das eigentliche Bedürfnis freigelegt ist. Bei allen drei Rollen brauchte es genau eine Nachfrage-Runde.</p>
+        <ul>
+          <li><strong>Sachbearbeiterin</strong> — Ursprünglich: "eine Ampel". Nach Nachfrage: Auf einen Blick sehen, welche ihrer Fälle offen, in Bearbeitung oder erledigt sind — die Ampel war nur eine von mehreren denkbaren Umsetzungen dieses Bedürfnisses (siehe Problem-Requirement-Solution-Prinzip, Kapitel 2 (Anforderungsarten)).</li>
+          <li><strong>Führungskraft</strong> — Ursprünglich: "wissen, ob wir im Rückstand sind". Nach Nachfrage: eine verdichtete Kennzahl über die Zeit (nicht der Einzelfall) — sie braucht keinen Vorgang im Detail zu sehen, sondern eine Trendaussage für ihr Reporting.</li>
+          <li><strong>Technik</strong> — Ursprünglich: "ein Statusfeld in der Datenbank". Nach Nachfrage: eine eindeutige, unternehmensweit gültige Definition, wann ein Vorgang als "offen" gilt — die Datenbank-Lösung war schon sein eigener Lösungsvorschlag für dieses tiefere Bedürfnis nach Eindeutigkeit.</li>
+        </ul>
+        <p>Die drei Rohaussagen entpuppen sich als dieselbe Frage auf drei Aggregationsebenen: Einzelfall (Sachbearbeiterin), Team-Trend über Zeit (Führung), Datenmodell-Eindeutigkeit (Technik). Diese Erkenntnis entsteht nicht automatisch — sie ist das Ergebnis der Erhebungsarbeit selbst, nicht der Rohaussagen. Ohne die Nachfrage-Runde hätte man drei Features gebaut statt eine gemeinsame Lösung erkannt.</p>`,
+        en: `<p>The technique behind this step is called, in IREB terminology, <em>elicitation through targeted follow-up</em> (Chapter 3: Elicitation Techniques): instead of starting from the stated solution, you systematically ask "what would that let you do that you can't today?" until the actual need is uncovered. All three roles needed exactly one round of follow-up.</p>
+        <ul>
+          <li><strong>Case worker</strong> — Originally: "a traffic light." After follow-up: see at a glance which of her cases are open, in progress, or done — the traffic light was only one of several conceivable implementations of this need (see the Problem-Requirement-Solution principle, Chapter 2 (Requirement Types)).</li>
+          <li><strong>Manager</strong> — Originally: "know if we're behind schedule." After follow-up: an aggregated metric over time (not individual cases) — she doesn't need to see any case in detail, just a trend statement for her reporting.</li>
+          <li><strong>Technical</strong> — Originally: "a status field in the database." After follow-up: a clear, company-wide valid definition of when a case counts as "open" — the database solution was already his own proposed fix for this deeper need for clarity.</li>
+        </ul>
+        <p>The three raw statements turn out to be the same question at three levels of aggregation: individual case (case worker), team trend over time (manager), data-model clarity (technical). This insight doesn't emerge automatically — it's the result of the elicitation work itself, not of the raw statements. Without the follow-up round, three separate features would have been built instead of one shared solution being recognized.</p>` } },
+
+    { label: { de: "Übersetzung in FR/NFR", en: "Translated into FR/NFR" },
+      kurz: {
+        de: `<p><strong>FR-1</strong> (EARS, ubiquitous): "Das System muss zu jedem Vorgang genau einen von drei Statuswerten (offen / in Bearbeitung / erledigt) anzeigen können."</p>
+        <p><strong>FR-2:</strong> "Das System muss eine verdichtete Statusübersicht auf Teamebene über die Zeit bereitstellen können."</p>
+        <p><strong>NFR-1</strong> (Functional Suitability / Consistency, ISO 25010): "Der Statuswert eines Vorgangs muss aus genau einer zentralen Datenquelle abgeleitet werden, nicht aus mehreren Teilsystemen einzeln berechnet."</p>`,
+        en: `<p><strong>FR-1</strong> (EARS, ubiquitous): "The system shall display exactly one of three status values (open / in progress / done) for every case."</p>
+        <p><strong>FR-2:</strong> "The system shall provide an aggregated status overview at team level over time."</p>
+        <p><strong>NFR-1</strong> (Functional Suitability / Consistency, ISO 25010): "A case's status value must be derived from exactly one central data source, not computed separately by multiple subsystems."</p>` },
+      voll: {
+        de: `<p>Der Übergang von Stopp 2 zu diesem Stopp ist der Kern von Kapitel 5 (Spezifikation & Dokumentation) des Kompendiums: aus einem verstandenen Bedürfnis wird eine testbare, eindeutig formulierte Anforderung. Jede der drei Zeilen unten ist bewusst nach dem EARS-Schema (Kapitel 5: Spezifikation & Dokumentation) aufgebaut, damit sie ohne weitere Interpretation in einen Akzeptanztest überführbar ist.</p>
+        <p><strong>FR-1</strong> (EARS, ubiquitous — gilt immer, kein Auslöser nötig): "Das System muss zu jedem Vorgang genau einen von drei Statuswerten (offen / in Bearbeitung / erledigt) anzeigen können." — Deckt das Bedürfnis der Sachbearbeiterin ab. Bewusst "genau einen", nicht "einen oder mehrere" — verhindert später widersprüchliche Mehrfachstatus.</p>
+        <p><strong>FR-2:</strong> "Das System muss eine verdichtete Statusübersicht auf Teamebene über die Zeit bereitstellen können." — Deckt das Bedürfnis der Führungskraft ab. "Über die Zeit" ist hier keine beiläufige Formulierung, sondern verweist bereits auf die im Review (Stopp 6) noch zu klärende Frage, ob eine Historie gespeichert werden muss.</p>
+        <p><strong>NFR-1</strong> (Functional Suitability / Consistency, nach ISO/IEC 25010, siehe Kapitel 2 (Anforderungsarten) des Kompendiums): "Der Statuswert eines Vorgangs muss aus genau einer zentralen Datenquelle abgeleitet werden, nicht aus mehreren Teilsystemen einzeln berechnet." — Das ist die Anforderung, die aus der Technik-Rolle stammt. Wichtig: Es ist bewusst eine <em>nicht</em>-funktionale Anforderung, weil sie nicht beschreibt, WAS das System tut, sondern WIE zuverlässig/konsistent es das tut — eine Unterscheidung, die in der Praxis häufig verwischt wird (vgl. die Abgrenzung in Kapitel 2 (Anforderungsarten)).</p>
+        <p>Ohne diesen Übersetzungsschritt bliebe man bei drei vagen Wünschen — mit ihm entstehen drei Sätze, die ein Entwickler direkt umsetzen und ein Tester direkt prüfen kann (siehe Stopp 8).</p>`,
+        en: `<p>The transition from Stop 2 to this stop is the heart of Chapter 5 (Specification & Documentation) of the Compendium: an understood need becomes a testable, unambiguously phrased requirement. Each line below is deliberately built on the EARS pattern (Chapter 5: Specification & Documentation), so it can be turned into an acceptance test without further interpretation.</p>
+        <p><strong>FR-1</strong> (EARS, ubiquitous — always applies, no trigger needed): "The system shall display exactly one of three status values (open / in progress / done) for every case." — Covers the case worker's need. Deliberately "exactly one," not "one or more" — this prevents contradictory multi-status states later on.</p>
+        <p><strong>FR-2:</strong> "The system shall provide an aggregated status overview at team level over time." — Covers the manager's need. "Over time" is not an incidental phrase here — it already points to the question, still to be clarified in the review (Stop 6), of whether history needs to be stored.</p>
+        <p><strong>NFR-1</strong> (Functional Suitability / Consistency, per ISO/IEC 25010, see Chapter 2 (Requirement Types) of the Compendium): "A case's status value must be derived from exactly one central data source, not computed separately by multiple subsystems." — This is the requirement that comes from the technical role. Important: it's deliberately a non-functional requirement, because it doesn't describe WHAT the system does but HOW reliably/consistently it does it — a distinction that in practice is often blurred (cf. the distinction in Chapter 2 (Requirement Types)).</p>
+        <p>Without this translation step you'd be left with three vague wishes — with it, you get three sentences a developer can implement directly and a tester can check directly (see Stop 8).</p>` } },
+
+    { label: { de: "Use Case", en: "Use Case" },
+      kurz: {
+        de: `<dl style="margin:0;">
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);margin-top:0;">Name / primärer Akteur</dt><dd style="margin:3px 0 10px 0;">Vorgangsstatus anzeigen / Sachbearbeiterin (System für Dashboard-Aggregation)</dd>
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);">Vorbedingung</dt><dd style="margin:3px 0 10px 0;">Vorgang ist im System angelegt</dd>
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);">Hauptszenario</dt>
+          <dd style="margin:3px 0 10px 0;"><ol style="margin:0;padding-left:20px;">
+            <li>System liest Statusfeld aus zentraler Datenquelle</li>
+            <li>System zeigt Status farbcodiert in der Vorgangsliste</li>
+            <li>System aggregiert Status wöchentlich auf Teamebene für das Dashboard</li>
+          </ol></dd>
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);">Erweiterung</dt><dd style="margin:3px 0 0 0;">1a. Statusfeld nicht gesetzt → System zeigt "unbekannt", markiert Datensatz zur Prüfung.</dd>
+        </dl>`,
+        en: `<dl style="margin:0;">
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);margin-top:0;">Name / primary actor</dt><dd style="margin:3px 0 10px 0;">Display case status / case worker (system for dashboard aggregation)</dd>
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);">Precondition</dt><dd style="margin:3px 0 10px 0;">Case exists in the system</dd>
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);">Main scenario</dt>
+          <dd style="margin:3px 0 10px 0;"><ol style="margin:0;padding-left:20px;">
+            <li>System reads the status field from the central data source</li>
+            <li>System shows color-coded status in the case list</li>
+            <li>System aggregates status weekly at team level for the dashboard</li>
+          </ol></dd>
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);">Extension</dt><dd style="margin:3px 0 0 0;">1a. Status field not set → system shows "unknown," flags the record for review.</dd>
+        </dl>` },
+      voll: {
+        de: `<p>Warum überhaupt ein Use Case und nicht nur eine User Story? Weil hier ein Ausnahmefall (Statusfeld nicht gesetzt) genauso wichtig ist wie der Erfolgspfad — Cockburns Format (Kapitel 5: Spezifikation & Dokumentation) erzwingt, diesen Fall explizit zu benennen, während ein reines User-Story-Format ihn leicht unter den Tisch fallen lässt.</p>
+        <dl style="margin:0;">
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);margin-top:0;">Name / primärer Akteur</dt><dd style="margin:3px 0 10px 0;">Vorgangsstatus anzeigen / Sachbearbeiterin (System als sekundärer Akteur für die Dashboard-Aggregation der Führungskraft)</dd>
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);">Vorbedingung</dt><dd style="margin:3px 0 10px 0;">Vorgang ist im System angelegt und einer Sachbearbeiterin zugeordnet</dd>
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);">Auslöser</dt><dd style="margin:3px 0 10px 0;">Sachbearbeiterin öffnet ihre Vorgangsliste (Hauptpfad) oder wöchentlicher Aggregations-Job läuft an (Nebenpfad für FR-2)</dd>
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);">Hauptszenario</dt>
+          <dd style="margin:3px 0 10px 0;"><ol style="margin:0;padding-left:20px;">
+            <li>System liest Statusfeld aus der zentralen Datenquelle (nicht aus einem Teilsystem-Cache — Konsequenz aus NFR-1)</li>
+            <li>System zeigt Status farbcodiert in der Vorgangsliste der Sachbearbeiterin</li>
+            <li>System aggregiert Status wöchentlich auf Teamebene für das Führungs-Dashboard</li>
+          </ol></dd>
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);">Erweiterungen</dt><dd style="margin:3px 0 10px 0;">1a. Statusfeld nicht gesetzt → System zeigt "unbekannt" statt eines Fehlers oder einer leeren Zelle, markiert den Datensatz zusätzlich zur manuellen Prüfung. Diese Erweiterung existiert nur, weil sie im Use-Case-Format explizit eingefordert wird — im ersten Entwurf der User Story (Stopp 5) fehlte sie komplett.</dd>
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);">Nachbedingung</dt><dd style="margin:3px 0 0 0;">Erfolg: Sachbearbeiterin sieht aktuellen Status; Fehlschlag (1a): Datensatz ist zur Prüfung markiert, kein stiller Datenverlust.</dd>
+        </dl>`,
+        en: `<p>Why a use case at all, and not just a user story? Because here an exception path (status field not set) matters just as much as the success path — Cockburn's format (Chapter 5: Specification & Documentation) forces you to name this case explicitly, while a pure user-story format can easily let it slip through the cracks.</p>
+        <dl style="margin:0;">
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);margin-top:0;">Name / primary actor</dt><dd style="margin:3px 0 10px 0;">Display case status / case worker (system as secondary actor for the manager's dashboard aggregation)</dd>
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);">Precondition</dt><dd style="margin:3px 0 10px 0;">Case exists in the system and is assigned to a case worker</dd>
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);">Trigger</dt><dd style="margin:3px 0 10px 0;">Case worker opens her case list (main path) or the weekly aggregation job runs (side path for FR-2)</dd>
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);">Main scenario</dt>
+          <dd style="margin:3px 0 10px 0;"><ol style="margin:0;padding-left:20px;">
+            <li>System reads the status field from the central data source (not from a subsystem cache — a consequence of NFR-1)</li>
+            <li>System shows color-coded status in the case worker's case list</li>
+            <li>System aggregates status weekly at team level for the manager's dashboard</li>
+          </ol></dd>
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);">Extensions</dt><dd style="margin:3px 0 10px 0;">1a. Status field not set → system shows "unknown" instead of an error or empty cell, additionally flags the record for manual review. This extension exists only because the use-case format explicitly demands it — it was completely missing from the first draft of the user story (Stop 5).</dd>
+          <dt style="font-weight:700;font-size:14px;color:var(--muted);">Postcondition</dt><dd style="margin:3px 0 0 0;">Success: case worker sees the current status; failure (1a): record is flagged for review, no silent data loss.</dd>
+        </dl>` } },
+
+    { label: { de: "User Story & Akzeptanzkriterien — je Rolle", en: "User Story & Acceptance Criteria — per role" },
+      kurz: {
+        de: `<p>Drei Stories aus derselben Anforderung — bewusst noch NICHT vereinheitlicht, damit der Unterschied sichtbar bleibt:</p>
+        <div class="story-compare">
+          <div class="story-col anw"><div class="story-head">Sachbearbeiterin</div><div class="story-body">
+            <p>"Als Sachbearbeiterin möchte ich den Status jedes meiner Vorgänge auf einen Blick sehen, damit ich nicht mehr in drei Systemen nachschauen muss."</p>
+            <div class="gherkin-mini">Given ein Vorgang hat einen Status
+When sie ihre Vorgangsliste öffnet
+Then sieht sie ihn farbcodiert je Fall</div>
+          </div></div>
+          <div class="story-col fue"><div class="story-head">Führungskraft</div><div class="story-body">
+            <p>"Als Führungskraft möchte ich einen Wochentrend über offene/erledigte Vorgänge im Team sehen, damit ich im Monatsmeeting fundiert Auskunft geben kann."</p>
+            <div class="gherkin-mini">Given eine Woche ist abgeschlossen
+When sie das Dashboard öffnet
+Then sieht sie Trend + Ampel auf Teamebene</div>
+          </div></div>
+          <div class="story-col tec"><div class="story-head">Technik</div><div class="story-body">
+            <p>"Als technischer Verantwortlicher möchte ich ein einziges, eindeutig definiertes Statusfeld in der zentralen Datenbank haben, damit alle Systeme denselben Stand anzeigen."</p>
+            <div class="gherkin-mini">Given zwei Systeme lesen denselben Vorgang
+When beide den Status abfragen
+Then erhalten beide denselben Wert</div>
+          </div></div>
+        </div>`,
+        en: `<p>Three stories from the same requirement — deliberately NOT yet unified, so the difference stays visible:</p>
+        <div class="story-compare">
+          <div class="story-col anw"><div class="story-head">Case Worker</div><div class="story-body">
+            <p>"As a case worker I want to see the status of each of my cases at a glance, so that I no longer have to check three systems."</p>
+            <div class="gherkin-mini">Given a case has a status
+When she opens her case list
+Then she sees it color-coded per case</div>
+          </div></div>
+          <div class="story-col fue"><div class="story-head">Manager</div><div class="story-body">
+            <p>"As a manager I want to see a weekly trend of open/closed cases across the team, so that I can report accurately in the monthly meeting."</p>
+            <div class="gherkin-mini">Given a week has ended
+When she opens the dashboard
+Then she sees trend + traffic light at team level</div>
+          </div></div>
+          <div class="story-col tec"><div class="story-head">Technical</div><div class="story-body">
+            <p>"As the technical owner I want exactly one clearly defined status field in the central database, so that all systems show the same state."</p>
+            <div class="gherkin-mini">Given two systems read the same case
+When both query the status
+Then both get the same value</div>
+          </div></div>
+        </div>` },
+      voll: {
+        de: `<p>Das ist der didaktisch wichtigste Moment der ganzen Reise: Obwohl Stopp 2 die drei Bedürfnisse schon als "dieselbe Frage auf drei Ebenen" erkannt hatte, schreibt in der Praxis meist jede Rolle (oder das Team, das mit ihr arbeitet) ihre EIGENE Story — die Konvergenz aus Stopp 2 ist noch nicht im Backlog angekommen. Genau das siehst du hier: drei Stories, die für sich genommen plausibel klingen, aber unkoordiniert nebeneinander existieren.</p>
+        <div class="story-compare">
+          <div class="story-col anw"><div class="story-head">Sachbearbeiterin</div><div class="story-body">
+            <p>"Als Sachbearbeiterin möchte ich den Status jedes meiner Vorgänge auf einen Blick sehen, damit ich nicht mehr in drei Systemen nachschauen muss."</p>
+            <div class="gherkin-mini">Given ein Vorgang hat einen Status
+When sie ihre Vorgangsliste öffnet
+Then sieht sie ihn farbcodiert je Fall</div>
+            <p style="margin-top:8px;">INVEST-Blick: klar abgrenzbar, aber "farbcodiert" ist bereits eine UI-Festlegung — verhandelbar bliebe, OB Farbe oder z. B. ein Textlabel verwendet wird.</p>
+          </div></div>
+          <div class="story-col fue"><div class="story-head">Führungskraft</div><div class="story-body">
+            <p>"Als Führungskraft möchte ich einen Wochentrend über offene/erledigte Vorgänge im Team sehen, damit ich im Monatsmeeting fundiert Auskunft geben kann."</p>
+            <div class="gherkin-mini">Given eine Woche ist abgeschlossen
+When sie das Dashboard öffnet
+Then sieht sie Trend + Ampel auf Teamebene</div>
+            <p style="margin-top:8px;">Diese Story setzt bereits "Wochenabschluss" als Datenpunkt voraus — technisch ungeklärt, ob das eine Momentaufnahme oder eine gespeicherte Historie erfordert (siehe Stopp 6).</p>
+          </div></div>
+          <div class="story-col tec"><div class="story-head">Technik</div><div class="story-body">
+            <p>"Als technischer Verantwortlicher möchte ich ein einziges, eindeutig definiertes Statusfeld in der zentralen Datenbank haben, damit alle Systeme denselben Stand anzeigen."</p>
+            <div class="gherkin-mini">Given zwei Systeme lesen denselben Vorgang
+When beide den Status abfragen
+Then erhalten beide denselben Wert</div>
+            <p style="margin-top:8px;">Diese Story ist die einzige der drei, die nicht direkt aus einem Nutzerbedürfnis, sondern aus einer Qualitätsanforderung (NFR-1) abgeleitet ist — ein Hinweis darauf, dass nicht jede Story menschzentriert sein muss.</p>
+          </div></div>
+        </div>
+        <p>Der Vergleich macht sichtbar: Alle drei Akzeptanzkriterien sind für sich genommen korrekt und testbar — aber sie sagen nichts darüber, WIE die drei Datenquellen zusammenhängen. Genau diese Lücke schließt der nächste Stopp.</p>`,
+        en: `<p>This is the pedagogically most important moment of the whole journey: even though Stop 2 had already recognized the three needs as "the same question at three levels," in practice each role (or the team working with them) usually writes its OWN story — the convergence from Stop 2 hasn't yet reached the backlog. That's exactly what you see here: three stories that each sound plausible on their own but exist side by side, uncoordinated.</p>
+        <div class="story-compare">
+          <div class="story-col anw"><div class="story-head">Case Worker</div><div class="story-body">
+            <p>"As a case worker I want to see the status of each of my cases at a glance, so that I no longer have to check three systems."</p>
+            <div class="gherkin-mini">Given a case has a status
+When she opens her case list
+Then she sees it color-coded per case</div>
+            <p style="margin-top:8px;">INVEST view: clearly scoped, but "color-coded" is already a UI decision — what remains negotiable is WHETHER color or, say, a text label is used.</p>
+          </div></div>
+          <div class="story-col fue"><div class="story-head">Manager</div><div class="story-body">
+            <p>"As a manager I want to see a weekly trend of open/closed cases across the team, so that I can report accurately in the monthly meeting."</p>
+            <div class="gherkin-mini">Given a week has ended
+When she opens the dashboard
+Then she sees trend + traffic light at team level</div>
+            <p style="margin-top:8px;">This story already assumes "week end" as a data point — technically unresolved whether that requires a snapshot or a stored history (see Stop 6).</p>
+          </div></div>
+          <div class="story-col tec"><div class="story-head">Technical</div><div class="story-body">
+            <p>"As the technical owner I want exactly one clearly defined status field in the central database, so that all systems show the same state."</p>
+            <div class="gherkin-mini">Given two systems read the same case
+When both query the status
+Then both get the same value</div>
+            <p style="margin-top:8px;">This is the only one of the three stories not derived directly from a user need but from a quality requirement (NFR-1) — a reminder that not every story has to be human-centered.</p>
+          </div></div>
+        </div>
+        <p>The comparison makes it visible: all three acceptance criteria are, on their own, correct and testable — but they say nothing about HOW the three data sources relate to each other. That's exactly the gap the next stop closes.</p>` } },
+
+    { label: { de: "Entwickler-Review", en: "Developer Review" },
+      kurz: {
+        de: `<p>Der Entwickler bekommt alle drei Stories + Akzeptanzkriterien vorgelegt (formale Inspektion, siehe Kompendium Kapitel 7 (Validierung & Verifikation)) und erstellt daraus zwei Listen:</p>
+        <div class="review-block"><div class="review-title">⚠️ __REVIEW_BEDENKEN__</div><ol>
+          <li>Die drei Stories setzen unterschiedliche Datengranularität voraus (Einzelfall vs. Aggregat) — reicht ein einfaches Statusfeld mit Zeitstempel, oder braucht es einen Event-Stream?</li>
+          <li>Die Story der Führungskraft verlangt einen "Wochentrend" — aktuell nirgends spezifiziert, ob das eine Momentaufnahme oder eine historisierte Zeitreihe sein muss.</li>
+          <li>Die Story der Technik verlangt "ein einziges Statusfeld" — aber wer schreibt es, wenn mehrere Teilsysteme denselben Vorgang bearbeiten? Race Conditions möglich.</li>
+        </ol></div>
+        <div class="review-block"><div class="review-title">❓ __REVIEW_FRAGEN__</div><ol>
+          <li>Muss der Wochentrend historisch nachvollziehbar sein (Audit-fähig), oder reicht eine aktuelle Momentaufnahme?</li>
+          <li>Was passiert, wenn zwei Systeme gleichzeitig einen Statuswechsel melden — wer gewinnt?</li>
+          <li>Reicht ein 3-Werte-Status (offen/in Bearbeitung/erledigt), oder braucht es einen Zwischenzustand "wartet auf Rückmeldung"?</li>
+        </ol></div>`,
+        en: `<p>The developer receives all three stories + acceptance criteria (formal inspection, see Compendium Chapter 7 (Validation & Verification)) and produces two lists from them:</p>
+        <div class="review-block"><div class="review-title">⚠️ __REVIEW_BEDENKEN__</div><ol>
+          <li>The three stories assume different data granularity (individual case vs. aggregate) — does a simple status field with a timestamp suffice, or is an event stream needed?</li>
+          <li>The manager's story requires a "weekly trend" — currently nowhere specified whether this must be a snapshot or a historized time series.</li>
+          <li>The technical story requires "a single status field" — but who writes it when multiple subsystems process the same case? Race conditions possible.</li>
+        </ol></div>
+        <div class="review-block"><div class="review-title">❓ __REVIEW_FRAGEN__</div><ol>
+          <li>Does the weekly trend need to be historically traceable (audit-capable), or is a current snapshot enough?</li>
+          <li>What happens when two systems report a status change at the same time — who wins?</li>
+          <li>Is a 3-value status (open/in progress/done) enough, or is an intermediate "awaiting response" state needed?</li>
+        </ol></div>` },
+      voll: {
+        de: `<p>Diese Review-Sitzung ist inhaltlich eine <strong>formale Inspektion</strong> nach IREB (Kapitel 7: Validierung & Verifikation, höchste Formalitätsstufe der drei dort beschriebenen Review-Techniken) — mit definierten Rollen (Autor der Stories = Ela-Rolle, Prüfer = Entwickler, Moderator, Protokollant) und einem festen Prüfkriterium: "Ist aus den drei Stories ein einziges, widerspruchsfreies Datenmodell ableitbar?" Die Antwort lautet hier: noch nicht ganz.</p>
+        <div class="review-block"><div class="review-title">⚠️ __REVIEW_BEDENKEN__</div><ol>
+          <li>Die drei Stories setzen unterschiedliche Datengranularität voraus (Einzelfall vs. Aggregat) — reicht ein einfaches Statusfeld mit Zeitstempel, oder braucht es einen Event-Stream? Das ist keine akademische Frage: ein Event-Stream kostet deutlich mehr Implementierungsaufwand als ein einfaches Feld, entscheidet also über den Umfang der nächsten zwei Sprints.</li>
+          <li>Die Story der Führungskraft verlangt einen "Wochentrend" — aktuell nirgends spezifiziert, ob das eine Momentaufnahme oder eine historisierte Zeitreihe sein muss. Dieser Punkt wurde in Stopp 3 (FR-2, "über die Zeit") schon angedeutet, aber nie explizit entschieden.</li>
+          <li>Die Story der Technik verlangt "ein einziges Statusfeld" — aber wer schreibt es, wenn mehrere Teilsysteme denselben Vorgang bearbeiten? Race Conditions möglich, wenn z. B. das Bearbeitungssystem und das Freigabesystem gleichzeitig einen Statuswechsel auslösen.</li>
+        </ol></div>
+        <div class="review-block"><div class="review-title">❓ __REVIEW_FRAGEN__</div><ol>
+          <li>Muss der Wochentrend historisch nachvollziehbar sein (Audit-fähig), oder reicht eine aktuelle Momentaufnahme? — Diese Frage geht zurück an Ela/die Führungskraft, nicht an die Technik: nur der Stakeholder kann den tatsächlichen Bedarf einschätzen.</li>
+          <li>Was passiert, wenn zwei Systeme gleichzeitig einen Statuswechsel melden — wer gewinnt? — Eine rein technische Entscheidung, aber mit Konsequenz für die Nachvollziehbarkeit gegenüber der Sachbearbeiterin.</li>
+          <li>Reicht ein 3-Werte-Status (offen/in Bearbeitung/erledigt), oder braucht es einen Zwischenzustand "wartet auf Rückmeldung"? — Diese Frage entsteht, weil die Sachbearbeiterin in einem Nebensatz des Interviews (nicht in der Rohaussage aus Stopp 1) einen solchen Fall erwähnt hatte, der bislang nirgends aufgegriffen wurde.</li>
+        </ol></div>
+        <p>Der Witz an einer echten Inspektion: Sie erzeugt keine fertige Lösung, sondern eine <em>dokumentierte Liste offener Punkte</em>, die vor der Umsetzung geklärt werden müssen — genau das, was Stopp 7 (Umsetzung) und Stopp 8 (Testing) dann sichtbar aufgreifen.</p>`,
+        en: `<p>This review session is, in substance, a <strong>formal inspection</strong> per IREB (Chapter 7: Validation & Verification, the highest formality level among the three review techniques described there) — with defined roles (author of the stories = Ela role, reviewer = developer, moderator, scribe) and one fixed test criterion: "can a single, contradiction-free data model be derived from the three stories?" The answer here: not quite yet.</p>
+        <div class="review-block"><div class="review-title">⚠️ __REVIEW_BEDENKEN__</div><ol>
+          <li>The three stories assume different data granularity (individual case vs. aggregate) — does a simple status field with a timestamp suffice, or is an event stream needed? This isn't an academic question: an event stream costs significantly more implementation effort than a simple field, so it decides the scope of the next two sprints.</li>
+          <li>The manager's story requires a "weekly trend" — currently nowhere specified whether this must be a snapshot or a historized time series. This point was already hinted at in Stop 3 (FR-2, "over time") but never explicitly decided.</li>
+          <li>The technical story requires "a single status field" — but who writes it when multiple subsystems process the same case? Race conditions are possible, e.g. if the processing system and the approval system both trigger a status change at the same time.</li>
+        </ol></div>
+        <div class="review-block"><div class="review-title">❓ __REVIEW_FRAGEN__</div><ol>
+          <li>Does the weekly trend need to be historically traceable (audit-capable), or is a current snapshot enough? — This question goes back to Ela/the manager, not to the technical side: only the stakeholder can judge the actual need.</li>
+          <li>What happens when two systems report a status change at the same time — who wins? — A purely technical decision, but with consequences for traceability toward the case worker.</li>
+          <li>Is a 3-value status (open/in progress/done) enough, or is an intermediate "awaiting response" state needed? — This question arises because the case worker mentioned such a case in passing during the interview (not in the raw statement from Stop 1), and it was never picked up anywhere since.</li>
+        </ol></div>
+        <p>The point of a genuine inspection: it doesn't produce a finished solution, but a <em>documented list of open items</em> that must be clarified before implementation — exactly what Stop 7 (implementation) and Stop 8 (testing) then visibly pick up.</p>` } },
+
+    { label: { de: "Umsetzung", en: "Implementation" },
+      kurz: {
+        de: `<p>Das, was der Entwickler aus Story + Review tatsächlich baut — die Klärungen aus Stopp 6 (letzter Schreibvorgang gewinnt, Zeitstempel-Log, 3-Werte-Status) fließen direkt ein. <strong>Gelb hervorgehoben</strong> ist alles, was NFR-1 (Konsistenz, siehe Stopp 3) und die daraus abgeleiteten Nachvollziehbarkeits-Anforderungen aus dem Review erfüllt — nicht die reine FR-Logik.</p>
+        <p class="code-file">backend/models/vorgang.sql — Datenmodell</p>
+        <div class="code-block">CREATE TABLE vorgang (
+  id UUID PRIMARY KEY,
+  <span class="nfr-hl">status VARCHAR(20) NOT NULL DEFAULT 'unbekannt'
+    CHECK (status IN ('offen','in_bearbeitung','erledigt','unbekannt')),</span>
+  <span class="nfr-hl">status_updated_at TIMESTAMP NOT NULL DEFAULT now(),
+  status_updated_by VARCHAR(50) NOT NULL</span>
+);</div>
+        <p class="code-legend"><span class="dot"></span>Ein einziges <code>status</code>-Feld statt mehrerer Teilsystem-Kopien = NFR-1 (Konsistenz). <code>status_updated_at</code>/<code>_by</code> = Nachvollziehbarkeit aus der offenen Review-Frage "historisierbar?".</p>
+        <p class="code-file">backend/services/statusService.js — Statuswechsel + Audit-Log</p>
+        <div class="code-block">function setStatus(vorgangId, neuerStatus, quelle) {
+  <span class="nfr-hl">// Race-Condition-Schutz aus Stopp 6:
+  // letzter Schreibvorgang gewinnt, Log dokumentiert alles</span>
+  db.vorgang.update(vorgangId, {
+    status: neuerStatus,
+    <span class="nfr-hl">status_updated_at: now(),
+    status_updated_by: quelle</span>
+  });
+  <span class="nfr-hl">auditLog.write({ vorgangId, neuerStatus, quelle, timestamp: now() });</span>
+}</div>
+        <p class="code-legend"><span class="dot"></span>Der komplette Audit-Log-Aufruf und die Zeitstempel-Felder sind reine NFR-Umsetzung — die FR selbst ("Status setzen") bräuchte nur die eine <code>db.vorgang.update(...)</code>-Zeile ohne die markierten Zusätze.</p>
+        <p><strong>Wo du das wiedererkennst:</strong> Sachbearbeiterin-Ampel, Führungs-Dashboard und die API-Antwort an andere Systeme lesen alle aus genau diesem <code>status</code>-Feld — nicht aus eigener, doppelter Logik. Das ist die technische Umsetzung der "einen Datenquelle mit drei Sichten" aus Stopp 9.</p>`,
+        en: `<p>What the developer actually builds from story + review — the clarifications from Stop 6 (last write wins, timestamp log, 3-value status) flow directly in. <strong>Highlighted in yellow</strong> is everything that fulfills NFR-1 (consistency, see Stop 3) and the traceability requirements derived from the review — not the plain FR logic.</p>
+        <p class="code-file">backend/models/vorgang.sql — data model</p>
+        <div class="code-block">CREATE TABLE case_record (
+  id UUID PRIMARY KEY,
+  <span class="nfr-hl">status VARCHAR(20) NOT NULL DEFAULT 'unknown'
+    CHECK (status IN ('open','in_progress','done','unknown')),</span>
+  <span class="nfr-hl">status_updated_at TIMESTAMP NOT NULL DEFAULT now(),
+  status_updated_by VARCHAR(50) NOT NULL</span>
+);</div>
+        <p class="code-legend"><span class="dot"></span>A single <code>status</code> field instead of multiple subsystem copies = NFR-1 (consistency). <code>status_updated_at</code>/<code>_by</code> = traceability from the open review question "does it need history?"</p>
+        <p class="code-file">backend/services/statusService.js — status change + audit log</p>
+        <div class="code-block">function setStatus(caseId, newStatus, source) {
+  <span class="nfr-hl">// Race-condition protection from Stop 6:
+  // last write wins, log documents everything</span>
+  db.caseRecord.update(caseId, {
+    status: newStatus,
+    <span class="nfr-hl">status_updated_at: now(),
+    status_updated_by: source</span>
+  });
+  <span class="nfr-hl">auditLog.write({ caseId, newStatus, source, timestamp: now() });</span>
+}</div>
+        <p class="code-legend"><span class="dot"></span>The whole audit-log call and the timestamp fields are pure NFR implementation — the FR itself ("set status") would only need the one <code>db.caseRecord.update(...)</code> line without the highlighted additions.</p>
+        <p><strong>Where you'll recognize it:</strong> the case worker's traffic light, the manager's dashboard, and the API response to other systems all read from this exact <code>status</code> field — not from separate, duplicated logic. This is the technical implementation of "one data source with three views" from Stop 9.</p>` },
+      voll: {
+        de: `<p>Der Weg von Story zu Code führt normalerweise über eine technische Spezifikation, die hier aus Platzgründen übersprungen wird — in der Praxis würde dazwischen noch ein API-Design-Dokument stehen. Was du hier siehst, ist bewusst vereinfachter, aber lauffähiger Beispielcode, an dem sich das Prinzip zeigen lässt: <strong>jede gelb markierte Zeile lässt sich auf eine konkrete Klärung aus Stopp 6 zurückführen</strong> — nichts davon ist "guter Programmierstil ohne Grund".</p>
+        <p class="code-file">backend/models/vorgang.sql — Datenmodell</p>
+        <div class="code-block">CREATE TABLE vorgang (
+  id UUID PRIMARY KEY,
+  <span class="nfr-hl">status VARCHAR(20) NOT NULL DEFAULT 'unbekannt'
+    CHECK (status IN ('offen','in_bearbeitung','erledigt','unbekannt')),</span>
+  <span class="nfr-hl">status_updated_at TIMESTAMP NOT NULL DEFAULT now(),
+  status_updated_by VARCHAR(50) NOT NULL</span>
+);</div>
+        <p class="code-legend"><span class="dot"></span>Ein einziges <code>status</code>-Feld statt mehrerer Teilsystem-Kopien = direkte Umsetzung von NFR-1 (Konsistenz, Stopp 3). Die CHECK-Klausel mit vier Werten (inklusive "unbekannt") ist die Antwort auf Review-Frage 3 (Stopp 6): kein Zwischenzustand "wartet auf Rückmeldung" — das wurde bewusst vertagt, um den ersten Release nicht zu verzögern. <code>status_updated_at</code>/<code>_by</code> beantworten Review-Frage 1: eine einfache Zeitstempel-Spalte statt eines vollständigen Event-Streams, weil der Aufwand für Letzteren im Review als unverhältnismäßig eingeschätzt wurde.</p>
+        <p class="code-file">backend/services/statusService.js — Statuswechsel + Audit-Log</p>
+        <div class="code-block">function setStatus(vorgangId, neuerStatus, quelle) {
+  <span class="nfr-hl">// Race-Condition-Schutz aus Stopp 6:
+  // letzter Schreibvorgang gewinnt, Log dokumentiert alles</span>
+  db.vorgang.update(vorgangId, {
+    status: neuerStatus,
+    <span class="nfr-hl">status_updated_at: now(),
+    status_updated_by: quelle</span>
+  });
+  <span class="nfr-hl">auditLog.write({ vorgangId, neuerStatus, quelle, timestamp: now() });</span>
+}</div>
+        <p class="code-legend"><span class="dot"></span>Der komplette Audit-Log-Aufruf und die Zeitstempel-Felder sind reine NFR-Umsetzung — direkte Antwort auf Review-Frage 2 ("wer gewinnt bei Gleichzeitigkeit?"): die Antwort lautet "der zeitlich letzte Aufruf", und der Audit-Log macht diese Entscheidung nachträglich nachvollziehbar, statt sie stillschweigend zu treffen. Die FR selbst ("Status setzen") bräuchte nur die eine <code>db.vorgang.update(...)</code>-Zeile ohne die markierten Zusätze — der Unterschied zwischen den beiden Codeversionen IST der Unterschied zwischen FR und NFR, sichtbar im selben Funktionskörper.</p>
+        <p><strong>Wo du das wiedererkennst:</strong> Sachbearbeiterin-Ampel, Führungs-Dashboard und die API-Antwort an andere Systeme lesen alle aus genau diesem <code>status</code>-Feld — nicht aus eigener, doppelter Logik. Das ist die technische Umsetzung der "einen Datenquelle mit drei Sichten" aus Stopp 9, und der Grund, warum die drei Stories aus Stopp 5 am Ende doch zu EINER Implementierung zusammenfinden, obwohl sie unabhängig geschrieben wurden.</p>`,
+        en: `<p>The path from story to code normally runs through a technical specification, skipped here for space reasons — in practice an API design document would sit between them. What you see here is deliberately simplified but runnable example code that illustrates the principle: <strong>every yellow-highlighted line can be traced back to a concrete clarification from Stop 6</strong> — none of it is "good coding style without a reason."</p>
+        <p class="code-file">backend/models/vorgang.sql — data model</p>
+        <div class="code-block">CREATE TABLE case_record (
+  id UUID PRIMARY KEY,
+  <span class="nfr-hl">status VARCHAR(20) NOT NULL DEFAULT 'unknown'
+    CHECK (status IN ('open','in_progress','done','unknown')),</span>
+  <span class="nfr-hl">status_updated_at TIMESTAMP NOT NULL DEFAULT now(),
+  status_updated_by VARCHAR(50) NOT NULL</span>
+);</div>
+        <p class="code-legend"><span class="dot"></span>A single <code>status</code> field instead of multiple subsystem copies = direct implementation of NFR-1 (consistency, Stop 3). The CHECK clause with four values (including "unknown") is the answer to review question 3 (Stop 6): no intermediate "awaiting response" state — that was deliberately deferred to avoid delaying the first release. <code>status_updated_at</code>/<code>_by</code> answer review question 1: a simple timestamp column instead of a full event stream, because the effort for the latter was judged disproportionate in the review.</p>
+        <p class="code-file">backend/services/statusService.js — status change + audit log</p>
+        <div class="code-block">function setStatus(caseId, newStatus, source) {
+  <span class="nfr-hl">// Race-condition protection from Stop 6:
+  // last write wins, log documents everything</span>
+  db.caseRecord.update(caseId, {
+    status: newStatus,
+    <span class="nfr-hl">status_updated_at: now(),
+    status_updated_by: source</span>
+  });
+  <span class="nfr-hl">auditLog.write({ caseId, newStatus, source, timestamp: now() });</span>
+}</div>
+        <p class="code-legend"><span class="dot"></span>The whole audit-log call and the timestamp fields are pure NFR implementation — the direct answer to review question 2 ("who wins on concurrency?"): the answer is "the later call in time," and the audit log makes that decision traceable after the fact instead of making it silently. The FR itself ("set status") would only need the one <code>db.caseRecord.update(...)</code> line without the highlighted additions — the difference between the two code versions IS the difference between FR and NFR, visible within the same function body.</p>
+        <p><strong>Where you'll recognize it:</strong> the case worker's traffic light, the manager's dashboard, and the API response to other systems all read from this exact <code>status</code> field — not from separate, duplicated logic. This is the technical implementation of "one data source with three views" from Stop 9, and the reason the three stories from Stop 5 eventually converge into ONE implementation despite having been written independently.</p>` } },
+
+    { label: { de: "Testing", en: "Testing" },
+      kurz: {
+        de: `<p><strong>Manueller Testablauf</strong> — so geht die Testerin tatsächlich vor:</p>
+        <ol class="test-steps">
+          <li>Testdaten anlegen: Vorgang mit <code>status = 'offen'</code> per Testskript erzeugen.</li>
+          <li>Oberfläche öffnen: Zeigt die Sachbearbeiterin-Ansicht die rote Ampel? <span class="step-check">✓ TC-1</span></li>
+          <li><code>setStatus(v1, 'erledigt', 'SystemA')</code> aufrufen.</li>
+          <li>24-Stunden-Lauf simulieren (Cronjob manuell auslösen): Aktualisiert sich der Wochentrend im Dashboard? <span class="step-check">✓ TC-2</span></li>
+          <li>Für TC-3: <code>setStatus(v1, 'in_bearbeitung', 'SystemA')</code> und unmittelbar danach <code>setStatus(v1, 'erledigt', 'SystemB')</code> auslösen. Gewinnt der zeitlich letzte Aufruf, und stehen beide Einträge im Audit-Log? <span class="step-check">✓ TC-3</span></li>
+          <li>Statusfeld auf <code>NULL</code> setzen (direkt in der Testdatenbank): Zeigt das System "unbekannt" statt eines Fehlers? <span class="step-check">✓ TC-4</span></li>
+        </ol>
+        <p class="code-file">tests/statusService.test.js — automatisierter Test zu TC-3</p>
+        <div class="code-block">test("letzter Schreibvorgang gewinnt bei gleichzeitigem Zugriff", () => {
+  setStatus(v1, "in_bearbeitung", "SystemA");
+  setStatus(v1, "erledigt", "SystemB"); // minimal später
+  expect(getStatus(v1)).toBe("erledigt");
+  expect(auditLog.entries(v1).length).toBe(2);
+});</div>`,
+        en: `<p><strong>Manual test procedure</strong> — how the tester actually proceeds:</p>
+        <ol class="test-steps">
+          <li>Set up test data: create a case with <code>status = 'open'</code> via test script.</li>
+          <li>Open the UI: does the case worker view show the red light? <span class="step-check">✓ TC-1</span></li>
+          <li>Call <code>setStatus(v1, 'done', 'SystemA')</code>.</li>
+          <li>Simulate a 24-hour run (trigger the cron job manually): does the weekly trend on the dashboard update? <span class="step-check">✓ TC-2</span></li>
+          <li>For TC-3: trigger <code>setStatus(v1, 'in_progress', 'SystemA')</code> and immediately after <code>setStatus(v1, 'done', 'SystemB')</code>. Does the later call win, and do both entries appear in the audit log? <span class="step-check">✓ TC-3</span></li>
+          <li>Set the status field to <code>NULL</code> (directly in the test database): does the system show "unknown" instead of an error? <span class="step-check">✓ TC-4</span></li>
+        </ol>
+        <p class="code-file">tests/statusService.test.js — automated test for TC-3</p>
+        <div class="code-block">test("last write wins on concurrent access", () => {
+  setStatus(v1, "in_progress", "SystemA");
+  setStatus(v1, "done", "SystemB"); // slightly later
+  expect(getStatus(v1)).toBe("done");
+  expect(auditLog.entries(v1).length).toBe(2);
+});</div>` },
+      voll: {
+        de: `<p>Der Übergang von Akzeptanzkriterium zu Testfall ist in der Praxis selten so glatt, wie Lehrbücher es darstellen — hier siehst du, wie die im Review geklärten Punkte direkt in die Testschritte einfließen, statt nachträglich als Sonderfälle "entdeckt" zu werden.</p>
+        <p><strong>Manueller Testablauf</strong> — so geht die Testerin tatsächlich vor:</p>
+        <ol class="test-steps">
+          <li>Testdaten anlegen: Vorgang mit <code>status = 'offen'</code> per Testskript erzeugen — nicht manuell über die Oberfläche, damit der Testfall reproduzierbar bleibt und nicht von Zufallsdaten abhängt.</li>
+          <li>Oberfläche öffnen: Zeigt die Sachbearbeiterin-Ansicht die rote Ampel? <span class="step-check">✓ TC-1</span> — Prüft direkt FR-1 aus Stopp 3.</li>
+          <li><code>setStatus(v1, 'erledigt', 'SystemA')</code> aufrufen — bewusst über die Service-Funktion, nicht direkt per SQL-Update, damit auch der Audit-Log-Pfad mitgetestet wird.</li>
+          <li>24-Stunden-Lauf simulieren (Cronjob manuell auslösen): Aktualisiert sich der Wochentrend im Dashboard? <span class="step-check">✓ TC-2</span> — Diese 24-Stunden-Grenze war vor dem Review gar nicht spezifiziert; sie wurde erst als Antwort auf Review-Frage 1 festgelegt ("tägliche Aktualisierung genügt").</li>
+          <li>Für TC-3: <code>setStatus(v1, 'in_bearbeitung', 'SystemA')</code> und unmittelbar danach <code>setStatus(v1, 'erledigt', 'SystemB')</code> auslösen. Gewinnt der zeitlich letzte Aufruf, und stehen beide Einträge im Audit-Log? <span class="step-check">✓ TC-3</span> — Der anspruchsvollste Testfall der ganzen Reise, weil er eine Race Condition absichtlich provoziert; ohne den Review-Schritt (Stopp 6) wäre dieser Fall vermutlich erst in der Produktion aufgefallen.</li>
+          <li>Statusfeld auf <code>NULL</code> setzen (direkt in der Testdatenbank, nicht über die Service-Funktion — genau um den in Stopp 7 vorgesehenen Fallback-Pfad zu erzwingen): Zeigt das System "unbekannt" statt eines Fehlers? <span class="step-check">✓ TC-4</span></li>
+        </ol>
+        <p class="code-file">tests/statusService.test.js — automatisierter Test zu TC-3</p>
+        <div class="code-block">test("letzter Schreibvorgang gewinnt bei gleichzeitigem Zugriff", () => {
+  setStatus(v1, "in_bearbeitung", "SystemA");
+  setStatus(v1, "erledigt", "SystemB"); // minimal später
+  expect(getStatus(v1)).toBe("erledigt");
+  expect(auditLog.entries(v1).length).toBe(2);
+});</div>
+        <p>Dass ausgerechnet TC-3 als Einziger automatisiert statt nur manuell getestet wird, ist keine zufällige Wahl: Race-Condition-Fehler sind notorisch schwer manuell reproduzierbar (sie hängen von exaktem Timing ab) und notorisch teuer, wenn sie erst in Produktion auffallen — ein klassisches Kriterium aus der Testfall-Priorisierung, welche Fälle Automatisierungsaufwand rechtfertigen.</p>`,
+        en: `<p>The transition from acceptance criterion to test case is rarely as smooth in practice as textbooks suggest — here you see how the points clarified in the review flow directly into the test steps, instead of being "discovered" afterward as special cases.</p>
+        <p><strong>Manual test procedure</strong> — how the tester actually proceeds:</p>
+        <ol class="test-steps">
+          <li>Set up test data: create a case with <code>status = 'open'</code> via test script — not manually through the UI, so the test case stays reproducible and doesn't depend on random data.</li>
+          <li>Open the UI: does the case worker view show the red light? <span class="step-check">✓ TC-1</span> — Directly checks FR-1 from Stop 3.</li>
+          <li>Call <code>setStatus(v1, 'done', 'SystemA')</code> — deliberately via the service function, not a direct SQL update, so the audit-log path gets tested too.</li>
+          <li>Simulate a 24-hour run (trigger the cron job manually): does the weekly trend on the dashboard update? <span class="step-check">✓ TC-2</span> — This 24-hour boundary wasn't specified at all before the review; it was only fixed as the answer to review question 1 ("daily refresh is sufficient").</li>
+          <li>For TC-3: trigger <code>setStatus(v1, 'in_progress', 'SystemA')</code> and immediately after <code>setStatus(v1, 'done', 'SystemB')</code>. Does the later call win, and do both entries appear in the audit log? <span class="step-check">✓ TC-3</span> — The most demanding test case of the whole journey, because it deliberately provokes a race condition; without the review step (Stop 6) this case would likely only have surfaced in production.</li>
+          <li>Set the status field to <code>NULL</code> (directly in the test database, not via the service function — precisely to force the fallback path built in Stop 7): does the system show "unknown" instead of an error? <span class="step-check">✓ TC-4</span></li>
+        </ol>
+        <p class="code-file">tests/statusService.test.js — automated test for TC-3</p>
+        <div class="code-block">test("last write wins on concurrent access", () => {
+  setStatus(v1, "in_progress", "SystemA");
+  setStatus(v1, "done", "SystemB"); // slightly later
+  expect(getStatus(v1)).toBe("done");
+  expect(auditLog.entries(v1).length).toBe(2);
+});</div>
+        <p>That TC-3 specifically is the only one automated rather than only tested manually is not an arbitrary choice: race-condition bugs are notoriously hard to reproduce manually (they depend on exact timing) and notoriously expensive when they only surface in production — a classic criterion in test-case prioritization for which cases justify automation effort.</p>` } },
+
+    { label: { de: "Die passende Lösung", en: "The Fitting Solution" },
+      kurz: {
+        de: `<p>Alle drei brauchen eine verlässliche, konsistente Aussage zum Bearbeitungsstatus — nur auf drei Aggregationsebenen (Einzelfall / Team-Trend / Datenmodell).</p>
+        <p><strong>Die passende Lösung:</strong> ein einheitlich definiertes Statusmodell mit genau einem zentralen Statusfeld plus Zeitstempel-Log, aus dem sich Einzelfall-Ansicht, historisierter Wochentrend und konfliktfreie Datenkonsistenz gleichermaßen ableiten lassen — nicht drei separate Tools, sondern eine Datenquelle mit drei Sichten.</p>`,
+        en: `<p>All three need a reliable, consistent statement of processing status — just at three levels of aggregation (individual case / team trend / data model).</p>
+        <p><strong>The fitting solution:</strong> a uniformly defined status model with exactly one central status field plus a timestamp log, from which the individual-case view, a historized weekly trend, and conflict-free data consistency can all be derived alike — not three separate tools, but one data source with three views.</p>` },
+      voll: {
+        de: `<p>Alle drei brauchen eine verlässliche, konsistente Aussage zum Bearbeitungsstatus — nur auf drei Aggregationsebenen (Einzelfall / Team-Trend / Datenmodell). Der Entwickler-Review hat die Lücken geschlossen, die beim ersten Lesen der drei Stories unsichtbar blieben; die Umsetzung (Stopp 7) hat diese Klärungen in konkreten Code gegossen; das Testing (Stopp 8) hat bewiesen, dass genau diese Klärungen tatsächlich greifen.</p>
+        <p><strong>Die passende Lösung:</strong> ein einheitlich definiertes Statusmodell mit genau einem zentralen Statusfeld (<code>status</code> in <code>backend/models/vorgang.sql</code>) plus Zeitstempel-Log (<code>auditLog</code> in <code>statusService.js</code>), aus dem sich Einzelfall-Ansicht, historisierter Wochentrend und konfliktfreie Datenkonsistenz gleichermaßen ableiten lassen — nicht drei separate Tools, sondern eine Datenquelle mit drei Sichten.</p>
+        <p>Der eigentliche Lerneffekt dieser neunstufigen Reise liegt nicht in der Lösung selbst — eine erfahrene Entwicklerin hätte vermutlich auch ohne die formale Kette ein ähnliches Datenmodell gebaut. Der Lerneffekt liegt darin, <em>wie viele stille Entscheidungen</em> auf dem Weg dorthin getroffen werden mussten (Historisierung ja/nein, Race-Condition-Verhalten, Zwischenzustand ja/nein) — und dass jede einzelne davon, wäre sie unausgesprochen geblieben, später als Bug oder als Konflikt zwischen Sachbearbeiterin, Führungskraft und Technik wieder aufgetaucht wäre. Genau das ist der Wert von Requirements Engineering: nicht Papier produzieren, sondern diese Entscheidungen sichtbar VOR dem Code treffen statt NACH dem ersten Produktionsvorfall.</p>`,
+        en: `<p>All three need a reliable, consistent statement of processing status — just at three levels of aggregation (individual case / team trend / data model). The developer review closed the gaps that stayed invisible on a first read of the three stories; the implementation (Stop 7) poured those clarifications into concrete code; the testing (Stop 8) proved that exactly those clarifications actually hold.</p>
+        <p><strong>The fitting solution:</strong> a uniformly defined status model with exactly one central status field (<code>status</code> in <code>backend/models/vorgang.sql</code>) plus a timestamp log (<code>auditLog</code> in <code>statusService.js</code>), from which the individual-case view, a historized weekly trend, and conflict-free data consistency can all be derived alike — not three separate tools, but one data source with three views.</p>
+        <p>The real learning effect of this nine-stop journey isn't the solution itself — an experienced developer would probably have built a similar data model even without the formal chain. The learning effect lies in <em>how many silent decisions</em> had to be made along the way (history yes/no, race-condition behavior, intermediate state yes/no) — and that each one of them, had it stayed unspoken, would have resurfaced later as a bug or as a conflict between the case worker, the manager, and the technical side. That's exactly the value of requirements engineering: not producing paperwork, but making these decisions visible BEFORE the code instead of AFTER the first production incident.</p>` } }
+  ]
+},
+{
+  id: "freigabe",
+  num: 2,
+  tag: { de: "Finance/Einkauf — Schwerpunkt: Konfliktauflösung & Trade-off", en: "Finance/Procurement — Focus: Conflict Resolution & Trade-off" },
+  title: { de: "Rechnungsfreigabe", en: "Invoice Approval" },
+  rohwunsch: {
+    de: "\"Die Freigabe dauert zu lange.\"",
+    en: "\"Approval takes too long.\""
+  },
+  journey: [
+    { label: { de: "Der Zielkonflikt", en: "The Goal Conflict" },
+      kurz: {
+        de: `<p>Anders als bei der Status-Übersicht (Szene 1) sind das hier keine drei Sichten auf dieselbe Sache — es sind echte, gegensätzliche Ziele:</p>
+        <ul>
+          <li><strong>Buchhaltung:</strong> will schnelle Freigabe, um Mahnungen zu vermeiden.</li>
+          <li><strong>Einkaufsleitung:</strong> will Budgetkontrolle, jede Freigabe ist ein Risiko.</li>
+          <li><strong>Lieferant:</strong> will Zahlungssicherheit für die eigene Liquiditätsplanung.</li>
+        </ul>
+        <p>Schneller = weniger Kontrolle. Mehr Kontrolle = langsamer. Ein echter Trade-off, kein Missverständnis.</p>`,
+        en: `<p>Unlike the status overview (Scene 1), these aren't three views of the same thing — they're genuinely opposing goals:</p>
+        <ul>
+          <li><strong>Accounting:</strong> wants fast approval to avoid reminders.</li>
+          <li><strong>Procurement lead:</strong> wants budget control, every approval is a risk.</li>
+          <li><strong>Supplier:</strong> wants payment certainty for their own cash-flow planning.</li>
+        </ul>
+        <p>Faster = less control. More control = slower. A genuine trade-off, not a misunderstanding.</p>` },
+      voll: {
+        de: `<p>Kapitel 4 (Analyse & Modellierung) des Kompendiums unterscheidet zwei völlig verschiedene Situationen, die im Alltag oft verwechselt werden: Bei der Status-Übersicht (Szene 1) sahen drei Rollen dieselbe zugrunde liegende Anforderung nur aus unterschiedlichem Blickwinkel — eine Frage der Aggregationsebene, lösbar durch ein gemeinsames Datenmodell. Hier liegt ein <em>echter Zielkonflikt</em> vor: Die drei Ziele stehen tatsächlich in Konkurrenz zueinander, und keine Datenmodellierung der Welt löst das auf.</p>
+        <ul>
+          <li><strong>Buchhaltung:</strong> Bearbeitet monatlich rund 300 Eingangsrechnungen, erhält bei Verzug Mahnungen und muss diese händisch klären — will schnelle Freigabe, um diesen Mehraufwand zu vermeiden.</li>
+          <li><strong>Einkaufsleitung:</strong> Verantwortet ein Jahresbudget von mehreren Millionen Euro; jede Freigabe ohne Prüfung ist aus ihrer Sicht ein Kontrollverlust, unabhängig vom Rechnungsbetrag.</li>
+          <li><strong>Lieferant:</strong> Ein mittelständischer Zulieferer, für den verspätete Zahlungen unmittelbar die eigene Liquiditätsplanung gefährden — plant seinerseits mit einem festen Zahlungsziel.</li>
+        </ul>
+        <p>Der Reflex vieler unerfahrener Requirements Engineers: eine der drei Positionen "gewinnt" (meist die der ranghöchsten Person), die anderen werden stillschweigend übergangen. Kapitel 4 (Analyse & Modellierung) nennt das explizit einen Fehler — die richtige Reaktion ist ein <em>dokumentierter Trade-off</em>, nicht eine verdeckte Priorisierung nach Hierarchie. Genau den siehst du im nächsten Schritt.</p>`,
+        en: `<p>Chapter 4 (Analysis & Modeling) of the Compendium distinguishes two completely different situations that are often confused in everyday practice: in the status overview (Scene 1), three roles saw the same underlying requirement, just from a different angle — a question of aggregation level, solvable with a shared data model. Here, there's a <em>genuine goal conflict</em>: the three goals are actually in competition with each other, and no amount of data modeling resolves that.</p>
+        <ul>
+          <li><strong>Accounting:</strong> processes roughly 300 incoming invoices a month, receives reminders on delays and has to clear them manually — wants fast approval to avoid this extra work.</li>
+          <li><strong>Procurement lead:</strong> owns an annual budget of several million euros; from her view, any approval without review is a loss of control, regardless of the invoice amount.</li>
+          <li><strong>Supplier:</strong> a mid-sized supplier for whom late payments directly threaten their own cash-flow planning — plans around a fixed payment term on their end.</li>
+        </ul>
+        <p>The reflex of many inexperienced requirements engineers: one of the three positions "wins" (usually the most senior person's), the others are silently overridden. Chapter 4 (Analysis & Modeling) explicitly names this a mistake — the correct response is a <em>documented trade-off</em>, not a hidden prioritization by hierarchy. That's exactly what you see in the next step.</p>` } },
+
+    { label: { de: "Der dokumentierte Trade-off", en: "The Documented Trade-off" },
+      kurz: {
+        de: `<p><strong>Entscheidung (dokumentiert, nicht stillschweigend):</strong> Automatische Vorfreigabe für Rechnungen unter 5.000 €, manuelle Prüfung nur darüber oder bei Abweichung vom Bestellwert.</p>
+        <p><strong>Wer hat entschieden:</strong> Einkaufsleitung, mit Vetorecht der Buchhaltung bei Prozessrisiken — dokumentiert in einem Entscheidungsprotokoll, nicht nur mündlich vereinbart.</p>
+        <p>Ergebnis: Buchhaltung bekommt Tempo bei 80 % der Fälle, Einkaufsleitung behält Kontrolle bei den risikoreichen 20 %, Lieferant bekommt eine verlässliche Zusage statt eines Versprechens.</p>`,
+        en: `<p><strong>Decision (documented, not silent):</strong> automatic pre-approval for invoices under €5,000, manual review only above that or on deviation from the order value.</p>
+        <p><strong>Who decided:</strong> the procurement lead, with veto rights for accounting on process risks — documented in a decision record, not just agreed verbally.</p>
+        <p>Result: accounting gets speed on 80% of cases, the procurement lead keeps control on the risky 20%, the supplier gets a reliable commitment instead of a promise.</p>` },
+      voll: {
+        de: `<p>IREB empfiehlt für echte Zielkonflikte explizit eine <em>Konfliktmatrix</em> oder eine Stakeholder-Priorisierung nach Einfluss/Interesse (vertieft in Michaelas separatem Stakeholder-Management-Kompendium) — nicht eine informelle Absprache im Flurgespräch. Bei der Rechnungsfreigabe wurden vor der finalen Entscheidung drei Optionen dokumentiert und explizit verworfen:</p>
+        <ul>
+          <li><em>Verworfen:</em> "Alle Rechnungen automatisch freigeben" — hätte die Einkaufsleitung komplett aus dem Prozess genommen; abgelehnt wegen Budgetverantwortung.</li>
+          <li><em>Verworfen:</em> "Jede Rechnung manuell prüfen" — hätte den ursprünglichen Rohwunsch ("dauert zu lange") ignoriert; abgelehnt wegen Skalierbarkeit bei 300 Rechnungen/Monat.</li>
+          <li><em>Gewählt:</em> Schwellenwert-basierte Vorfreigabe unter 5.000 €, manuelle Prüfung darüber oder bei Abweichung vom Bestellwert.</li>
+        </ul>
+        <p><strong>Wer hat entschieden:</strong> Die Einkaufsleitung trägt die Budgetverantwortung und damit die Entscheidungshoheit, mit einem dokumentierten Vetorecht der Buchhaltung bei erkennbaren Prozessrisiken (z. B. gehäufte Rechnungen knapp unter dem Schwellenwert als mögliches Umgehungsmuster). Diese Entscheidung steht in einem Entscheidungsprotokoll mit Datum, Beteiligten und Begründung — nicht nur in einer E-Mail oder einem mündlichen Ergebnis eines Meetings.</p>
+        <p>Ergebnis: Buchhaltung bekommt Tempo bei rund 80 % der Fälle (alles unter 5.000 €), die Einkaufsleitung behält Kontrolle genau bei den 20 % mit dem höchsten Risiko, und der Lieferant bekommt über das neue Portal (aus dem ursprünglichen Rohwunsch) eine verlässliche, nachvollziehbare Zusage statt eines vagen Versprechens. Der Trade-off wurde nicht aufgelöst — er wurde sichtbar gemacht und bewusst getroffen. Das ist der entscheidende Unterschied zu einer stillschweigenden Priorisierung, die später als "die IT hat einfach entschieden" oder "der Chef wollte das so" negativ nachwirkt.</p>`,
+        en: `<p>For genuine goal conflicts, IREB explicitly recommends a <em>conflict matrix</em> or a stakeholder prioritization by influence/interest (explored further in Michaela's separate Stakeholder Management Compendium) — not an informal hallway agreement. For invoice approval, three options were documented and explicitly rejected before the final decision:</p>
+        <ul>
+          <li><em>Rejected:</em> "auto-approve all invoices" — would have removed the procurement lead from the process entirely; rejected due to budget responsibility.</li>
+          <li><em>Rejected:</em> "manually review every invoice" — would have ignored the original raw wish ("takes too long"); rejected due to scalability at 300 invoices/month.</li>
+          <li><em>Chosen:</em> threshold-based pre-approval under €5,000, manual review above that or on deviation from the order value.</li>
+        </ul>
+        <p><strong>Who decided:</strong> the procurement lead carries budget responsibility and thus decision authority, with a documented veto right for accounting on recognizable process risks (e.g. clusters of invoices just under the threshold as a possible workaround pattern). This decision sits in a decision record with date, participants, and rationale — not just in an email or a verbal meeting outcome.</p>
+        <p>Result: accounting gets speed on roughly 80% of cases (everything under €5,000), the procurement lead keeps control exactly on the 20% with the highest risk, and the supplier gets, via the new portal (from the original raw wish), a reliable, traceable commitment instead of a vague promise. The trade-off wasn't dissolved — it was made visible and deliberately chosen. That's the crucial difference from a silent prioritization that later comes back as "IT just decided" or "the boss wanted it that way."</p>` } }
+  ]
+},
+{
+  id: "suche",
+  num: 3,
+  tag: { de: "Produkt/Kundenservice — Schwerpunkt: Wahl der Elicitation-Technik", en: "Product/Customer Service — Focus: Choosing the Elicitation Technique" },
+  title: { de: "Das Suchfeld, das alles findet", en: "The Search Box That Finds Everything" },
+  rohwunsch: {
+    de: "\"Ich finde nie, was ich suche.\"",
+    en: "\"I can never find what I'm looking for.\""
+  },
+  journey: [
+    { label: { de: "Drei Techniken, drei Ergebnisse", en: "Three Techniques, Three Results" },
+      kurz: {
+        de: `<p>Dieselbe Anforderung, drei verschiedene Elicitation-Techniken (Kapitel 3: Elicitation-Techniken) — jede findet einen anderen Teil der Wahrheit:</p>
+        <ul>
+          <li><strong>Interview</strong> mit der Nutzerin ergibt: Fehlertoleranz bei Tippfehlern ist ihr Hauptproblem.</li>
+          <li><strong>Job Shadowing</strong> beim Kundenservice zeigt: In Wahrheit sucht er über drei Felder gleichzeitig (Name, Kundennummer, Telefon) — das hatte er im Interview nie erwähnt.</li>
+          <li><strong>Prototyping</strong> mit der Entwicklerin deckt auf: Erst am Klick-Dummy fällt allen auf, dass Volltextsuche über alle Felder zu langsam wäre.</li>
+        </ul>
+        <p>Keine einzelne Technik hätte alle drei Aspekte gefunden.</p>`,
+        en: `<p>The same requirement, three different elicitation techniques (Chapter 3: Elicitation Techniques) — each surfaces a different part of the truth:</p>
+        <ul>
+          <li><strong>Interview</strong> with the user reveals: typo tolerance is her main problem.</li>
+          <li><strong>Job shadowing</strong> with customer service shows: he actually searches across three fields at once (name, customer number, phone) — he never mentioned that in the interview.</li>
+          <li><strong>Prototyping</strong> with the developer uncovers: only at the click-through mockup does everyone notice full-text search across all fields would be too slow.</li>
+        </ul>
+        <p>No single technique would have found all three aspects.</p>` },
+      voll: {
+        de: `<p>Kapitel 3 (Elicitation-Techniken) des Kompendiums listet die Stärken und Schwächen von sechs Elicitation-Techniken tabellarisch auf — dieses Szenario zeigt, was passiert, wenn man sich nur auf eine davon verlässt. Drei unabhängig geführte Elicitation-Runden zu derselben Anforderung:</p>
+        <ul>
+          <li><strong>Interview</strong> mit der Nutzerin (45 Minuten, strukturiert): Sie beschreibt ihr Hauptproblem klar — sie tippt oft Namen falsch und die Suche liefert dann keine Treffer. Interviews sind stark bei artikulierbaren, bewussten Problemen — genau das zeigt sich hier.</li>
+          <li><strong>Job Shadowing</strong> beim Kundenservice-Mitarbeiter (2 Stunden Beobachtung am Arbeitsplatz): Er selbst hätte im Interview vermutlich dasselbe gesagt wie die Nutzerin — aber die Beobachtung zeigt ein Verhalten, das ihm selbst nicht bewusst ist: Er tippt reflexhaft abwechselnd Name, dann Kundennummer, dann Telefonnummer in dasselbe Feld, je nachdem was der Anrufer zuerst nennt. Genau das ist der Fall, für den Kapitel 3 (Elicitation-Techniken) Beobachtung empfiehlt: unausgesprochenes, habitualisiertes Verhalten wird nur sichtbar, wenn man zuschaut statt fragt.</li>
+          <li><strong>Prototyping</strong> mit der Entwicklerin (Klick-Dummy nach einer Woche): Erst als alle Beteiligten den klickbaren Prototyp vor sich haben und probehalber "Volltextsuche über alle Felder" simulieren, fällt der Entwicklerin auf, dass das bei über 2 Millionen Datensätzen mehrere Sekunden dauern würde — ein Performance-Aspekt, den weder Interview noch Beobachtung aufgedeckt hätten, weil er sich erst am konkreten, greifbaren Artefakt zeigt.</li>
+        </ul>
+        <p>Keine einzelne Technik hätte alle drei Aspekte (Fehlertoleranz, Mehrfeld-Verhalten, Performance-Grenze) gefunden — das ist der Kern der Lehre aus Kapitel 3: Elicitation-Techniken ergänzen sich, sie ersetzen sich nicht. Ein Projekt, das ausschließlich interviewt, hätte hier ein halbfertiges Bild geliefert.</p>`,
+        en: `<p>Chapter 3 (Elicitation Techniques) of the Compendium lists the strengths and weaknesses of six elicitation techniques in a table — this scenario shows what happens if you rely on just one of them. Three independently conducted elicitation rounds on the same requirement:</p>
+        <ul>
+          <li><strong>Interview</strong> with the user (45 minutes, structured): she clearly describes her main problem — she often mistypes names and the search then returns no results. Interviews are strong for articulable, conscious problems — exactly what shows up here.</li>
+          <li><strong>Job shadowing</strong> with the customer service rep (2 hours of workplace observation): he would probably have said the same thing as the user in an interview — but the observation reveals a behavior he isn't even aware of himself: he reflexively alternates typing name, then customer number, then phone number into the same field, depending on what the caller states first. This is exactly the case Chapter 3 (Elicitation Techniques) recommends observation for: unspoken, habitual behavior only becomes visible when you watch instead of ask.</li>
+          <li><strong>Prototyping</strong> with the developer (click-through mockup after a week): only once everyone has the clickable prototype in front of them and tries simulating "full-text search across all fields" does the developer notice this would take several seconds with over 2 million records — a performance aspect neither the interview nor the observation would have uncovered, because it only shows up with a concrete, tangible artifact.</li>
+        </ul>
+        <p>No single technique would have found all three aspects (error tolerance, multi-field behavior, performance limit) — that's the core lesson of Chapter 3: elicitation techniques complement each other, they don't replace one another. A project that interviewed exclusively would have delivered a half-finished picture here.</p>` } },
+
+    { label: { de: "Die Kombination macht's", en: "The Combination Makes It Work" },
+      kurz: {
+        de: `<p><strong>Konsolidierte Anforderung</strong> aus allen drei Techniken zusammen:</p>
+        <p>"Das System muss eine kombinierte Suchleiste über Name, Kundennummer und Telefonnummer mit Fehlertoleranz (Levenshtein-Distanz ≤ 2) bereitstellen, mit einer Antwortzeit unter 300 ms bei bis zu 5 Millionen Datensätzen — erreicht durch einen vorberechneten, gewichteten Suchindex statt Volltextsuche zur Laufzeit."</p>
+        <p>Jeder Teilsatz stammt aus einer anderen Elicitation-Technik — keiner davon wäre allein entstanden.</p>`,
+        en: `<p><strong>Consolidated requirement</strong> from all three techniques combined:</p>
+        <p>"The system shall provide a combined search bar across name, customer number, and phone number with error tolerance (Levenshtein distance ≤ 2), with a response time under 300ms for up to 5 million records — achieved via a precomputed, weighted search index instead of runtime full-text search."</p>
+        <p>Each clause originates from a different elicitation technique — none of them would have emerged alone.</p>` },
+      voll: {
+        de: `<p>Der letzte Schritt ist selten so sauber, wie er hier aussieht — in der Praxis braucht es meist noch einen Abstimmungsworkshop, um aus drei Teilergebnissen einen einzigen, widerspruchsfreien Satz zu machen. Hier siehst du das Ergebnis dieses Abstimmungsschritts, mit Herkunftsnachweis für jeden Teilsatz:</p>
+        <p><strong>Konsolidierte Anforderung:</strong> "Das System muss eine kombinierte Suchleiste über Name, Kundennummer und Telefonnummer <em>[aus Job Shadowing: Mehrfeld-Verhalten]</em> mit Fehlertoleranz (Levenshtein-Distanz ≤ 2) <em>[aus Interview: Tippfehler-Problem]</em> bereitstellen, mit einer Antwortzeit unter 300 ms bei bis zu 5 Millionen Datensätzen <em>[aus Prototyping: Performance-Grenze]</em> — erreicht durch einen vorberechneten, gewichteten Suchindex statt Volltextsuche zur Laufzeit."</p>
+        <p>Diese Formulierung erfüllt bereits mehrere der sieben IREB-Qualitätskriterien aus Kapitel 6: Sie ist <em>vollständig</em> (deckt alle drei entdeckten Aspekte ab, nicht nur den zuerst genannten), <em>eindeutig</em> (konkrete Zahl statt "schnell") und <em>verifizierbar</em> (300 ms und Levenshtein-Distanz ≤ 2 sind objektiv messbar). Der methodische Punkt, den dieses Szenario zeigt: Die Qualität einer Anforderung hängt nicht nur davon ab, wie sauber sie am Ende formuliert wird (Kapitel 6: Qualitätskriterien für Anforderungen), sondern schon davon, mit wie vielen unterschiedlichen Techniken sie überhaupt erhoben wurde. Eine perfekt formulierte, aber nur interview-basierte Anforderung wäre trotzdem unvollständig geblieben.</p>`,
+        en: `<p>The last step is rarely as clean as it looks here — in practice it usually still takes an alignment workshop to turn three partial results into one contradiction-free sentence. Here you see the outcome of that alignment step, with a provenance note for each clause:</p>
+        <p><strong>Consolidated requirement:</strong> "The system shall provide a combined search bar across name, customer number, and phone number <em>[from job shadowing: multi-field behavior]</em> with error tolerance (Levenshtein distance ≤ 2) <em>[from interview: typo problem]</em>, with a response time under 300ms for up to 5 million records <em>[from prototyping: performance limit]</em> — achieved via a precomputed, weighted search index instead of runtime full-text search."</p>
+        <p>This phrasing already satisfies several of the seven IREB quality criteria from Chapter 6: it is <em>complete</em> (covers all three discovered aspects, not just the first one mentioned), <em>unambiguous</em> (a concrete number instead of "fast"), and <em>verifiable</em> (300ms and Levenshtein distance ≤ 2 are objectively measurable). The methodological point this scenario makes: the quality of a requirement doesn't just depend on how cleanly it's phrased at the end (Chapter 6: Quality Criteria for Requirements) — it already depends on how many different techniques were used to elicit it in the first place. A perfectly phrased but interview-only requirement would still have remained incomplete.</p>` } }
+  ]
+},
+{
+  id: "rueckfragen",
+  num: 4,
+  tag: { de: "Vertrieb/Logistik — Schwerpunkt: Der vergessene Stakeholder", en: "Sales/Logistics — Focus: The Forgotten Stakeholder" },
+  title: { de: "Weniger Rückfragen", en: "Fewer Follow-Up Calls" },
+  rohwunsch: {
+    de: "\"Ständig rufen Kunden wegen ihrer Bestellung an.\"",
+    en: "\"Customers keep calling about their order.\""
+  },
+  journey: [
+    { label: { de: "Wer wurde gefragt — und wer nicht", en: "Who Was Asked — And Who Wasn't" },
+      kurz: {
+        de: `<p>Der ursprüngliche Elicitation-Plan sah zwei Interviewpartner vor: Vertrieb und Kundin. Das Lager kam in keiner Stakeholder-Liste vor — schließlich "macht das Lager doch nur Pakete fertig".</p>
+        <p>Ergebnis nach zwei Interviewrunden: eine Lösung ("Tracking-Link in der Bestellbestätigung"), die technisch fertig aussieht, aber an einer Stelle hohl ist — sie setzt voraus, dass der Status im System aktuell ist. Niemand hat gefragt, WIE der Status dort hineinkommt.</p>`,
+        en: `<p>The original elicitation plan foresaw two interview partners: sales and the customer. The warehouse appeared on no stakeholder list at all — after all, "the warehouse just packs boxes."</p>
+        <p>Result after two rounds of interviews: a solution ("tracking link in the order confirmation") that looks technically complete but is hollow at one point — it assumes the status in the system is current. Nobody asked HOW that status gets in there.</p>` },
+      voll: {
+        de: `<p>Dieses Szenario zeigt ein Vollständigkeitsproblem, das keine der IREB-Einzelkriterien aus Kapitel 6 (Qualitätskriterien für Anforderungen) direkt erfasst — die dortigen sieben Kriterien prüfen die Qualität einer <em>bereits formulierten</em> Anforderung. Hier liegt das Problem eine Stufe davor: Die Stakeholder-Identifikation selbst war unvollständig, bevor überhaupt eine Anforderung formuliert wurde.</p>
+        <p>Der ursprüngliche Elicitation-Plan sah zwei Interviewpartner vor: den Vertriebsmitarbeiter (weil er die Beschwerde-Anrufe entgegennimmt) und eine Kundin (weil sie die Anrufe tätigt). Das Lager kam in keiner Stakeholder-Liste vor — in der Kickoff-Notiz stand wörtlich: "Lager ist nicht prozessrelevant, macht nur die Paketfertigstellung."</p>
+        <p>Ergebnis nach den zwei durchgeführten Interviews: eine auf den ersten Blick vollständige Lösung — "Tracking-Link in der Bestellbestätigung, der den aktuellen Status anzeigt." Die Akzeptanzkriterien wurden formuliert, die Story wirkte fertig. Erst ein Reviewer, der zufällig fragte "und wer aktualisiert eigentlich den Status im System?", deckte die Lücke auf: Niemand hatte je definiert, WIE der Status vom physischen Versandvorgang ins System gelangt. Die gesamte Lösung stand auf einer unausgesprochenen Annahme.</p>
+        <p>Diese Art von Lücke lässt sich nicht durch bessere Formulierung der vorhandenen Anforderung schließen — sie lässt sich nur schließen, indem man die Stakeholder-Identifikation selbst noch einmal macht, bevor man weiterschreibt. Eine einfache Gegenprobe hilft dabei: "Wer muss etwas TUN, damit diese Anforderung überhaupt erfüllbar ist?" — diese Frage hätte das Lager sofort ins Bild gebracht.</p>`,
+        en: `<p>This scenario shows a completeness problem that none of the individual IREB criteria from Chapter 6 (Quality Criteria for Requirements) directly catches — those seven criteria check the quality of an <em>already-phrased</em> requirement. Here the problem sits one level earlier: the stakeholder identification itself was incomplete before any requirement was even phrased.</p>
+        <p>The original elicitation plan foresaw two interview partners: the sales rep (because he fields the complaint calls) and a customer (because she makes the calls). The warehouse appeared on no stakeholder list — the kickoff note literally said: "warehouse is not process-relevant, just handles package fulfillment."</p>
+        <p>Result after the two interviews conducted: an at-first-glance complete solution — "a tracking link in the order confirmation that shows the current status." Acceptance criteria were written, the story looked finished. Only a reviewer who happened to ask "and who actually updates the status in the system?" uncovered the gap: nobody had ever defined HOW the status gets from the physical shipping process into the system. The entire solution rested on an unspoken assumption.</p>
+        <p>This kind of gap can't be closed by better phrasing of the existing requirement — it can only be closed by redoing the stakeholder identification itself before writing further. A simple counter-check helps here: "who has to DO something for this requirement to even be fulfillable?" — that question would have brought the warehouse into the picture immediately.</p>` } },
+
+    { label: { de: "Die Korrektur", en: "The Correction" },
+      kurz: {
+        de: `<p>Nachträgliches Interview mit dem Lager ändert die Anforderung substanziell:</p>
+        <p><strong>Vorher:</strong> "Tracking-Link zeigt aktuellen Status."</p>
+        <p><strong>Nachher:</strong> "Tracking-Link zeigt aktuellen Status, UND das Lager erhält Scanner-gestützte, automatische Statuserfassung ohne Zusatzaufwand — sonst bleibt der Link leer oder falsch."</p>
+        <p>Aus einer Frontend-Anforderung wurde eine Anforderung, die zwei Systeme betrifft.</p>`,
+        en: `<p>A follow-up interview with the warehouse changes the requirement substantially:</p>
+        <p><strong>Before:</strong> "tracking link shows current status."</p>
+        <p><strong>After:</strong> "tracking link shows current status, AND the warehouse gets scanner-based, automatic status capture with no extra effort — otherwise the link stays empty or wrong."</p>
+        <p>A frontend requirement became a requirement spanning two systems.</p>` },
+      voll: {
+        de: `<p>Das nachträgliche Interview mit dem Lager dauerte 20 Minuten und veränderte den Anforderungsumfang grundlegend. Die zentrale Aussage aus dem Lager: "Wir haben keine Zeit, nach jedem Packvorgang noch extra einen Status ins System zu tippen — das würde bei 800 Paketen am Tag schlicht nicht passieren, egal was in der Anforderung steht."</p>
+        <p><strong>Vorher (unvollständig):</strong> "Das System muss dem Kunden einen Tracking-Link mit aktuellem Bestellstatus bereitstellen." — Diese Formulierung ist nach IREB sogar formal in Ordnung (eindeutig, testbar), aber sie verletzt das Kollektivkriterium <em>Vollständigkeit der Spezifikation</em> aus Kapitel 6: Ein zentraler Aspekt der Gesamtlösung (Datenerfassung) fehlt komplett.</p>
+        <p><strong>Nachher (korrigiert):</strong> "Das System muss dem Kunden einen Tracking-Link mit aktuellem Bestellstatus bereitstellen. Das Lager muss Statusänderungen per Scanner-Scan ohne zusätzlichen manuellen Erfassungsschritt auslösen können, integriert in den bestehenden Packvorgang." — Aus einer reinen Frontend-/Kundenkommunikations-Anforderung wurde eine Anforderung, die zwingend ein zweites System (Lagerlogistik) und eine zweite Rolle (Lagerpersonal) mit einschließt.</p>
+        <p>Die allgemeine Lehre daraus, unabhängig vom konkreten Fall: Ein "vergessener Stakeholder" fällt selten durch fehlende Sorgfalt bei der Formulierung auf (die Formulierung kann trotzdem sauber sein) — er fällt durch eine schlicht falsche Prämisse bei der Stakeholder-Auswahl auf, die man nur durch eine bewusste Rückfrage wie "wer muss etwas tun, damit das funktioniert?" aufdeckt, nicht durch nochmaliges Prüfen des bereits Geschriebenen.</p>`,
+        en: `<p>The follow-up interview with the warehouse lasted 20 minutes and fundamentally changed the requirement's scope. The key statement from the warehouse: "we don't have time to type in an extra status after every packing step — with 800 packages a day, that simply wouldn't happen, no matter what the requirement says."</p>
+        <p><strong>Before (incomplete):</strong> "The system shall provide the customer a tracking link with the current order status." — By IREB standards this phrasing is even formally fine (unambiguous, testable), but it violates the collective criterion <em>completeness of the specification</em> from Chapter 6: a central aspect of the overall solution (data capture) is missing entirely.</p>
+        <p><strong>After (corrected):</strong> "The system shall provide the customer a tracking link with the current order status. The warehouse must be able to trigger status changes via a scanner scan without an additional manual entry step, integrated into the existing packing process." — A pure frontend/customer-communication requirement became a requirement that necessarily includes a second system (warehouse logistics) and a second role (warehouse staff).</p>
+        <p>The general lesson here, independent of the specific case: a "forgotten stakeholder" rarely shows up through sloppy phrasing (the phrasing can still be clean) — it shows up through a simply wrong premise in stakeholder selection, which you only uncover through a deliberate question like "who has to do something for this to work?", not by re-checking what's already written.</p>` } }
+  ]
+},
+{
+  id: "formular",
+  num: 5,
+  tag: { de: "Antragswesen/Verwaltung — Schwerpunkt: Anforderungsqualität", en: "Applications/Administration — Focus: Requirement Quality" },
+  title: { de: "Das Formular, das niemand richtig ausfüllt", en: "The Form Nobody Fills In Correctly" },
+  rohwunsch: {
+    de: "\"Die Hälfte der Anträge kommt unvollständig zurück.\"",
+    en: "\"Half the applications come back incomplete.\""
+  },
+  journey: [
+    { label: { de: "Der Rohwunsch ist selbst eine schlechte Anforderung", en: "The Raw Wish Is Itself a Bad Requirement" },
+      kurz: {
+        de: `<p>Bevor man das Formular verbessert: Der Rohwunsch selbst verletzt mehrere IREB-Qualitätskriterien (Kapitel 6: Qualitätskriterien für Anforderungen) — er ist keine Anforderung, sondern eine Symptom-Beschreibung.</p>
+        <ul>
+          <li><strong>Nicht eindeutig:</strong> "unvollständig" — welche Felder genau?</li>
+          <li><strong>Nicht verifizierbar:</strong> "die Hälfte" — gemessen wie, über welchen Zeitraum, gegen welche Baseline?</li>
+          <li><strong>Nicht notwendig (so wie formuliert):</strong> Beschreibt ein Problem, keine gewünschte Systemeigenschaft.</li>
+        </ul>`,
+        en: `<p>Before improving the form: the raw wish itself violates several IREB quality criteria (Chapter 6: Quality Criteria for Requirements) — it's not a requirement, it's a symptom description.</p>
+        <ul>
+          <li><strong>Not unambiguous:</strong> "incomplete" — which fields exactly?</li>
+          <li><strong>Not verifiable:</strong> "half" — measured how, over what period, against what baseline?</li>
+          <li><strong>Not necessary (as phrased):</strong> describes a problem, not a desired system property.</li>
+        </ul>` },
+      voll: {
+        de: `<p>Dieses Szenario nutzt bewusst den Rohwunsch selbst als Übungsobjekt für die sieben IREB-Qualitätskriterien aus Kapitel 6 (Qualitätskriterien für Anforderungen) — anstatt sie abstrakt zu erklären, wendet man sie auf einen Satz an, den in der Praxis fast jeder schon einmal gehört hat.</p>
+        <p><strong>"Die Hälfte der Anträge kommt unvollständig zurück."</strong> — Kriterium für Kriterium geprüft:</p>
+        <ul>
+          <li><strong>Eindeutig?</strong> Nein. "Unvollständig" ist nicht definiert — fehlt ein Pflichtfeld, ein optionales Feld, eine Unterschrift, eine Anlage? Jede dieser Lesarten führt zu einer anderen Lösung.</li>
+          <li><strong>Vollständig?</strong> Nicht prüfbar an dieser Stelle — das Kriterium bezieht sich auf die Spezifikation als Ganzes, die hier noch gar nicht existiert.</li>
+          <li><strong>Konsistent?</strong> Nicht anwendbar — es gibt noch keine zweite Aussage, mit der sie im Widerspruch stehen könnte.</li>
+          <li><strong>Verfolgbar?</strong> Nein — welcher Stakeholder hat das gesagt, mit welcher Datengrundlage? "Die Hälfte" klingt nach einer Schätzung, nicht nach einer gemessenen Zahl.</li>
+          <li><strong>Notwendig?</strong> Fraglich formuliert — der Satz beschreibt ein <em>Symptom</em> (Formulare kommen unvollständig zurück), nicht ein <em>Bedürfnis</em> (was soll stattdessen passieren?).</li>
+          <li><strong>Realisierbar?</strong> Nicht bewertbar, weil noch unklar ist, WAS realisiert werden soll.</li>
+          <li><strong>Verifizierbar/testbar?</strong> Nein — "die Hälfte" hat keine Baseline, keinen Messzeitraum, keine Erhebungsmethode.</li>
+        </ul>
+        <p>Der Punkt dieser Übung: Ein Rohwunsch darf laut Kapitel 6 (Qualitätskriterien für Anforderungen) diese Kriterien verletzen — er ist ja noch keine formulierte Anforderung, sondern Rohmaterial aus der Elicitation (vgl. Stopp-1-Logik in Szene 1). Der Fehler passiert erst, wenn man diesen Satz UNVERÄNDERT ins Backlog oder Lastenheft übernimmt, ohne ihn durch die sieben Kriterien laufen zu lassen.</p>`,
+        en: `<p>This scenario deliberately uses the raw wish itself as a practice object for the seven IREB quality criteria from Chapter 6 (Quality Criteria for Requirements) — instead of explaining them abstractly, they're applied to a sentence almost everyone has heard in practice.</p>
+        <p><strong>"Half the applications come back incomplete."</strong> — checked criterion by criterion:</p>
+        <ul>
+          <li><strong>Unambiguous?</strong> No. "Incomplete" isn't defined — is a required field missing, an optional field, a signature, an attachment? Each reading leads to a different solution.</li>
+          <li><strong>Complete?</strong> Not checkable at this point — the criterion refers to the specification as a whole, which doesn't exist here yet.</li>
+          <li><strong>Consistent?</strong> Not applicable — there's no second statement yet for it to contradict.</li>
+          <li><strong>Traceable?</strong> No — which stakeholder said this, based on what data? "Half" sounds like an estimate, not a measured figure.</li>
+          <li><strong>Necessary?</strong> Questionably phrased — the sentence describes a <em>symptom</em> (forms come back incomplete), not a <em>need</em> (what should happen instead?).</li>
+          <li><strong>Feasible?</strong> Not assessable, because it's still unclear WHAT should be built.</li>
+          <li><strong>Verifiable/testable?</strong> No — "half" has no baseline, no measurement period, no collection method.</li>
+        </ul>
+        <p>The point of this exercise: per Chapter 6 (Quality Criteria for Requirements), a raw wish is allowed to violate these criteria — it's not yet a phrased requirement, just raw material from elicitation (cf. the Stop-1 logic in Scene 1). The mistake happens only when this sentence is taken UNCHANGED into the backlog or spec document, without running it through the seven criteria first.</p>` } },
+
+    { label: { de: "Die überarbeitete Anforderung", en: "The Revised Requirement" },
+      kurz: {
+        de: `<p><strong>Nach Bearbeitung:</strong> "Im Zeitraum Januar–März wurden 32 % der eingereichten Anträge (n=1.240) mit mindestens einem leeren Pflichtfeld übermittelt, gemessen über das Formularvalidierungs-Log. Ziel: Reduktion auf unter 10 % durch Pflichtfeld-Validierung mit Hilfetexten vor dem Absenden."</p>
+        <p>Jetzt eindeutig, verfolgbar und verifizierbar — dieselbe Beobachtung, aber als echte Anforderung statt als Symptom-Klage.</p>`,
+        en: `<p><strong>After revision:</strong> "In the January–March period, 32% of submitted applications (n=1,240) had at least one empty required field, measured via the form-validation log. Goal: reduce to under 10% through required-field validation with help text before submission."</p>
+        <p>Now unambiguous, traceable, and verifiable — the same observation, but as a real requirement instead of a symptom complaint.</p>` },
+      voll: {
+        de: `<p>Die Überarbeitung läuft in der Praxis über zwei Schritte: erst Messung (um aus "die Hälfte" eine echte Zahl zu machen), dann Umformulierung nach den Kriterien aus Kapitel 6 (Qualitätskriterien für Anforderungen).</p>
+        <p><strong>Schritt 1 — Messung:</strong> Ein Blick ins Formularvalidierungs-Log zeigt: Im Zeitraum Januar–März wurden von 1.240 eingereichten Anträgen 397 (32 %) mit mindestens einem leeren Pflichtfeld übermittelt. Die ursprüngliche Schätzung "die Hälfte" war also zu hoch — ein häufiges Muster: gefühlte Werte aus dem Berufsalltag weichen oft von den tatsächlichen Zahlen ab, was ohne Messung nie aufgefallen wäre.</p>
+        <p><strong>Schritt 2 — Umformulierung:</strong> "Im Zeitraum Januar–März wurden 32 % der eingereichten Anträge (n=1.240) mit mindestens einem leeren Pflichtfeld übermittelt, gemessen über das Formularvalidierungs-Log. Ziel: Reduktion auf unter 10 % durch Pflichtfeld-Validierung mit erklärenden Hilfetexten vor dem Absenden."</p>
+        <p>Kriterien-Check der neuen Fassung: <strong>Eindeutig</strong> (konkrete Feldbedingung "leeres Pflichtfeld"), <strong>verfolgbar</strong> (Quelle: Formularvalidierungs-Log, Zeitraum, Fallzahl), <strong>verifizierbar</strong> (32 % → Ziel unter 10 %, exakt nachmessbar), <strong>notwendig</strong> (klar auf ein Geschäftsziel bezogen: weniger Nachfassaufwand für Sachbearbeitung). Das <strong>Problem-Requirement-Solution-Prinzip</strong> aus Kapitel 2 (Anforderungsarten) zeigt sich hier ebenfalls: "Hilfetexte" ist ein Lösungsvorschlag, keine zwingende Vorgabe — die eigentliche Anforderung ("Vollständigkeit vor Absenden sicherstellen") bliebe auch mit einer anderen Umsetzung (z. B. einem Fortschrittsbalken) erfüllt.</p>
+        <p>Der Vorher-Nachher-Vergleich ist der eigentliche Lernwert dieser Szene: Dieselbe Beobachtung, aber einmal als frustrierte Alltagsklage und einmal als Anforderung, die ein Entwicklerteam ohne Rückfragen umsetzen und ein Tester ohne Interpretationsspielraum prüfen kann.</p>`,
+        en: `<p>The revision runs through two steps in practice: first measurement (to turn "half" into a real number), then rephrasing per the criteria from Chapter 6 (Quality Criteria for Requirements).</p>
+        <p><strong>Step 1 — measurement:</strong> a look at the form-validation log shows: in the January–March period, 397 of 1,240 submitted applications (32%) were submitted with at least one empty required field. The original estimate of "half" was too high — a common pattern: gut-feeling figures from everyday work often diverge from the actual numbers, which would never have surfaced without measurement.</p>
+        <p><strong>Step 2 — rephrasing:</strong> "In the January–March period, 32% of submitted applications (n=1,240) had at least one empty required field, measured via the form-validation log. Goal: reduce to under 10% through required-field validation with explanatory help text before submission."</p>
+        <p>Criteria check of the new version: <strong>unambiguous</strong> (concrete field condition "empty required field"), <strong>traceable</strong> (source: form-validation log, period, case count), <strong>verifiable</strong> (32% → target under 10%, exactly remeasurable), <strong>necessary</strong> (clearly tied to a business goal: less follow-up work for case officers). The <strong>Problem-Requirement-Solution principle</strong> from Chapter 2 (Requirement Types) also shows up here: "help text" is a proposed solution, not a mandatory prescription — the actual requirement ("ensure completeness before submission") would still be satisfied by a different implementation (e.g. a progress bar).</p>
+        <p>The before-after comparison is the real learning value of this scene: the same observation, once as a frustrated everyday complaint and once as a requirement a development team can implement without follow-up questions and a tester can check without room for interpretation.</p>` } }
+  ]
+},
+{
+  id: "onboarding",
+  num: 6,
+  tag: { de: "HR/Teamführung — Schwerpunkt: Wahl des Spezifikationsformats", en: "HR/Team Leadership — Focus: Choosing the Specification Format" },
+  title: { de: "Schnelleres Onboarding", en: "Faster Onboarding" },
+  rohwunsch: {
+    de: "\"Neue Mitarbeitende brauchen ewig, bis sie produktiv sind.\"",
+    en: "\"New hires take forever to become productive.\""
+  },
+  journey: [
+    { label: { de: "Zwei Formate, dieselbe Anforderung", en: "Two Formats, the Same Requirement" },
+      kurz: {
+        de: `<p>Dieselbe Anforderung, einmal als User Story, einmal als Use Case (Kapitel 5: Spezifikation & Dokumentation) — beide korrekt, aber unterschiedlich nützlich:</p>
+        <p><strong>User Story:</strong> "Als neue Kollegin möchte ich einen persönlichen Onboarding-Plan mit Terminen und Ansprechpartnern haben, damit ich weiß, was als Nächstes von mir erwartet wird."</p>
+        <p><strong>Use Case:</strong> Akteur "Neue Mitarbeiterin", Hauptszenario mit 5 nummerierten Schritten (Zugang einrichten → Einweisung → erste Aufgabe → Feedback-Gespräch → eigenständige Freigabe), PLUS zwei Erweiterungen für Ausnahmefälle (IT-Zugang verzögert sich; Pate ist krank).</p>`,
+        en: `<p>The same requirement, once as a user story, once as a use case (Chapter 5: Specification & Documentation) — both correct, but useful in different ways:</p>
+        <p><strong>User story:</strong> "As a new colleague I want a personal onboarding plan with dates and contacts, so that I know what's expected of me next."</p>
+        <p><strong>Use case:</strong> actor "new employee," main scenario with 5 numbered steps (set up access → orientation → first task → feedback conversation → independence sign-off), PLUS two extensions for exception cases (IT access is delayed; the buddy is sick).</p>` },
+      voll: {
+        de: `<p>Kapitel 5 (Spezifikation & Dokumentation) des Kompendiums stellt drei Spezifikationsformate nebeneinander (EARS, User Story, Use Case), ohne eines davon als generell überlegen zu bewerten — dieses Szenario macht den Unterschied an einem einzigen Fall konkret sichtbar, statt ihn nur abstrakt zu behaupten.</p>
+        <p><strong>Als User Story (Cohn-Format):</strong> "Als neue Kollegin möchte ich einen persönlichen Onboarding-Plan mit Terminen und Ansprechpartnern haben, damit ich weiß, was als Nächstes von mir erwartet wird." — INVEST-konform: klar abgegrenzt, verhandelbar in der Umsetzung (App? PDF? Gespräch?), wertorientiert, schätzbar, sprintfähig, testbar über einfache Akzeptanzkriterien wie "Plan ist am ersten Arbeitstag verfügbar."</p>
+        <p><strong>Als Use Case (Cockburn-Format), dieselbe Grundanforderung:</strong></p>
+        <ul>
+          <li>Primärer Akteur: neue Mitarbeiterin. Sekundäre Akteure: Personalabteilung, Team-Lead, Pate/Patin.</li>
+          <li>Vorbedingung: Arbeitsvertrag ist unterschrieben, Starttermin steht fest.</li>
+          <li>Hauptszenario (5 Schritte): (1) IT-Zugang wird vorab eingerichtet, (2) Einweisungstag mit Team-Lead, (3) erste eigenständige Aufgabe wird zugewiesen, (4) Feedback-Gespräch nach zwei Wochen, (5) formale Freigabe zur eigenständigen Arbeit durch den Team-Lead.</li>
+          <li>Erweiterung 1a: IT-Zugang verzögert sich → Personalabteilung organisiert Ersatzarbeitsplatz für Tag 1.</li>
+          <li>Erweiterung 2a: Zugewiesener Pate ist am Einweisungstag krank → Team-Lead bestimmt kurzfristig Ersatzperson, Verzögerung wird im Onboarding-Plan dokumentiert.</li>
+        </ul>
+        <p>Der entscheidende Unterschied liegt nicht in "richtig oder falsch", sondern darin, was jedes Format erzwingt: Die User Story erzwingt Klarheit über den Nutzen ("damit ich weiß, was erwartet wird") und bleibt bewusst offen in der Umsetzung. Der Use Case erzwingt, dass die zwei Ausnahmefälle (Erweiterungen 1a/2a) überhaupt benannt werden — im User-Story-Format wären beide vermutlich erst beim ersten echten Vorfall aufgefallen, weil das Format keinen Platz dafür vorsieht, sie im Voraus zu benennen.</p>`,
+        en: `<p>Chapter 5 (Specification & Documentation) of the Compendium places three specification formats side by side (EARS, user story, use case) without rating any of them as generally superior — this scenario makes the difference concretely visible on a single case instead of just asserting it abstractly.</p>
+        <p><strong>As a user story (Cohn format):</strong> "As a new colleague I want a personal onboarding plan with dates and contacts, so that I know what's expected of me next." — INVEST-compliant: clearly scoped, negotiable in implementation (app? PDF? conversation?), value-oriented, estimable, fits a sprint, testable via simple acceptance criteria like "plan is available on day one."</p>
+        <p><strong>As a use case (Cockburn format), the same underlying requirement:</strong></p>
+        <ul>
+          <li>Primary actor: new employee. Secondary actors: HR department, team lead, buddy.</li>
+          <li>Precondition: employment contract is signed, start date is fixed.</li>
+          <li>Main scenario (5 steps): (1) IT access is set up in advance, (2) orientation day with the team lead, (3) first independent task is assigned, (4) feedback conversation after two weeks, (5) formal sign-off for independent work by the team lead.</li>
+          <li>Extension 1a: IT access is delayed → HR organizes a temporary workstation for day one.</li>
+          <li>Extension 2a: assigned buddy is sick on orientation day → team lead names a stand-in on short notice, the delay is documented in the onboarding plan.</li>
+        </ul>
+        <p>The decisive difference isn't "right or wrong" but what each format forces: the user story forces clarity about the benefit ("so that I know what's expected") and deliberately stays open on implementation. The use case forces the two exception cases (extensions 1a/2a) to even be named — in the user-story format, both would probably only have surfaced at the first real incident, because the format leaves no room to name them in advance.</p>` } },
+
+    { label: { de: "Wann passt was?", en: "Which Fits When?" },
+      kurz: {
+        de: `<p><strong>Faustregel aus diesem Vergleich:</strong> User Story, wenn der Nutzen im Vordergrund steht und die Umsetzung bewusst offen bleiben soll. Use Case, wenn Ausnahmefälle (Krankheit, Verzögerung, Systemausfall) mindestens so wichtig sind wie der Erfolgspfad.</p>
+        <p>Für "Onboarding" konkret: Die User Story eignet sich für die Kommunikation mit der neuen Kollegin selbst ("das bekommst du"), der Use Case für die interne Prozessdokumentation von HR und Team-Lead ("das müssen wir für jeden Fall vorbereitet haben").</p>`,
+        en: `<p><strong>Rule of thumb from this comparison:</strong> user story when the benefit is front and center and implementation should deliberately stay open. Use case when exception cases (illness, delay, system failure) matter at least as much as the success path.</p>
+        <p>Concretely for "onboarding": the user story suits communication with the new colleague herself ("this is what you'll get"), the use case suits internal process documentation for HR and the team lead ("we need to be prepared for this in every case").</p>` },
+      voll: {
+        de: `<p>Die Faustregel aus dem Vergleich lässt sich an drei Fragen festmachen, die Kapitel 5 (Spezifikation & Dokumentation) implizit nahelegt, aber nicht explizit als Checkliste formuliert — hier ausformuliert:</p>
+        <ol>
+          <li><strong>Wie wichtig sind Ausnahmefälle?</strong> Wenn Abweichungen vom Erfolgspfad selten und harmlos sind (z. B. eine einfache Statusanzeige), reicht eine User Story mit knappen Akzeptanzkriterien. Wenn Abweichungen häufig UND folgenreich sind (wie hier: kranker Pate, verzögerter IT-Zugang), erzwingt der Use Case die Auseinandersetzung damit vorab.</li>
+          <li><strong>Wer ist die Zielgruppe der Dokumentation?</strong> User Stories kommunizieren gut mit der Person, die den Nutzen hat (hier: die neue Kollegin, oder ein Produktverantwortlicher, der Priorisierung entscheidet). Use Cases kommunizieren besser mit denen, die den Prozess operativ verantworten (hier: HR und Team-Lead, die im Ernstfall wissen müssen, was zu tun ist).</li>
+          <li><strong>Wie viele Akteure sind beteiligt?</strong> Eine User Story mit "Als X möchte ich Y" wird unhandlich, sobald mehr als ein bis zwei Akteure eine aktive Rolle spielen. Der Use Case mit primärem/sekundären Akteuren ist für Mehrparteien-Interaktionen von Natur aus besser geeignet — hier sind es vier (neue Mitarbeiterin, Personalabteilung, Team-Lead, Pate).</li>
+        </ol>
+        <p><strong>Für "Onboarding" konkret bedeutet das:</strong> Es ist kein Widerspruch, beide Formate parallel zu pflegen, sondern eine bewusste Aufgabenteilung. Die User Story dient der Kommunikation mit der neuen Kollegin selbst und dem Produktbacklog ("das bekommst du, das ist der Nutzen"). Der Use Case dient der internen Prozessdokumentation von HR und Team-Lead ("das müssen wir für jeden Eintrittsfall vorbereitet haben, inklusive der zwei bekannten Ausnahmefälle"). Keines der beiden Formate ersetzt das andere vollständig — das ist der eigentliche Punkt dieser Szene, im Unterschied zu Szene 1, wo am Ende EINE Lösung für alle drei Rollen herauskam: Hier bleiben bewusst ZWEI Dokumente nebeneinander bestehen, weil sie unterschiedliche Zwecke erfüllen.</p>`,
+        en: `<p>The rule of thumb from the comparison can be pinned to three questions that Chapter 5 (Specification & Documentation) implicitly suggests but doesn't explicitly spell out as a checklist — spelled out here:</p>
+        <ol>
+          <li><strong>How important are exception cases?</strong> If deviations from the success path are rare and harmless (e.g. a simple status display), a user story with brief acceptance criteria is enough. If deviations are frequent AND consequential (as here: a sick buddy, delayed IT access), the use case forces you to address them up front.</li>
+          <li><strong>Who's the audience for the documentation?</strong> User stories communicate well with the person who gets the benefit (here: the new colleague, or a product owner deciding on prioritization). Use cases communicate better with those operationally responsible for the process (here: HR and the team lead, who need to know what to do when it actually happens).</li>
+          <li><strong>How many actors are involved?</strong> A user story with "As X I want Y" becomes unwieldy once more than one or two actors play an active role. The use case, with primary/secondary actors, is inherently better suited to multi-party interactions — here there are four (new employee, HR, team lead, buddy).</li>
+        </ol>
+        <p><strong>Concretely for "onboarding," this means:</strong> it's not a contradiction to maintain both formats in parallel, but a deliberate division of labor. The user story serves communication with the new colleague herself and the product backlog ("this is what you get, this is the benefit"). The use case serves internal process documentation for HR and the team lead ("we need to be prepared for this for every new hire, including the two known exception cases"). Neither format fully replaces the other — that's the actual point of this scene, in contrast to Scene 1, where ONE solution eventually emerged for all three roles: here, TWO documents deliberately continue to exist side by side, because they serve different purposes.</p>` } }
+  ]
+}
+];
+
+</script>
+<script>
+(function(){
+  "use strict";
+
+  var state = {
+    lang: "de",
+    beamerLevel: 0,
+    vertiefung: "kurz",
+    sceneIndex: 0,
+    sceneSeen: [true,false,false,false,false,false],
+    revealed: [false,false,false,false,false,false],
+    journeyStep: [0,0,0,0,0,0],
+    journeySeen: null
+  };
+
+  function safeGet(key){ try { return sessionStorage.getItem(key); } catch(e){ return null; } }
+  function safeSet(key, val){ try { sessionStorage.setItem(key, val); } catch(e){ /* ignore */ } }
+
+  function restoreState(){
+    state.journeySeen = SCENES.map(function(s){
+      return s.journey.map(function(_, i){ return i === 0; });
+    });
+    var l = safeGet("res_lang"); if (l === "de" || l === "en") state.lang = l;
+    var v = safeGet("res_vert"); if (v === "kurz" || v === "voll") state.vertiefung = v;
+    var s = safeGet("res_scene"); if (s !== null) { var n = parseInt(s, 10); if (n >= 0 && n <= 5) state.sceneIndex = n; }
+    var seen = safeGet("res_seen");
+    if (seen && seen.length === 6) state.sceneSeen = seen.split("").map(function(c){return c==="1";});
+    var rev = safeGet("res_reveal");
+    if (rev && rev.length === 6) state.revealed = rev.split("").map(function(c){return c==="1";});
+    var js = safeGet("res_jstep");
+    if (js) { var arr = js.split(",").map(function(v){return parseInt(v,10);}); if (arr.length===6) state.journeyStep = arr; }
+    state.journeyStep = state.journeyStep.map(function(step, i){
+      var maxIdx = SCENES[i].journey.length - 1;
+      return (step >= 0 && step <= maxIdx) ? step : 0;
+    });
+    var jseen = safeGet("res_jseen");
+    if (jseen) {
+      try {
+        var parsed = JSON.parse(jseen);
+        var validShape = Array.isArray(parsed) && parsed.length === 6 &&
+          parsed.every(function(arr, i){ return Array.isArray(arr) && arr.length === SCENES[i].journey.length; });
+        if (validShape) state.journeySeen = parsed;
+      } catch(e){ /* ignore */ }
+    }
+  }
+
+  function t(key){ return UI[state.lang][key]; }
+  function roleLabel(key, roleObj){ return roleObj.label[state.lang]; }
+
+  function renderTopbar(){
+    document.getElementById("brandTitle").textContent = t("brand");
+    document.getElementById("brandSub").textContent = t("brandSub");
+    document.getElementById("beamerBtn").textContent = "🎥 " + t("beamer") + (state.beamerLevel>0 ? " " + ["","I","XL","XXL"][state.beamerLevel] : "");
+    document.getElementById("langBtn").textContent = "🌐 " + t("lang");
+    document.getElementById("introText").textContent = t("intro");
+
+    var kurzBtn = document.getElementById("topVertKurzBtn");
+    var vollBtn = document.getElementById("topVertVollBtn");
+    var vertGroup = document.getElementById("topVertToggle");
+    kurzBtn.textContent = t("vertKurz");
+    vollBtn.textContent = t("vertVoll");
+    kurzBtn.classList.toggle("active", state.vertiefung === "kurz");
+    vollBtn.classList.toggle("active", state.vertiefung === "voll");
+    vertGroup.classList.toggle("disabled", state.beamerLevel === 1);
+  }
+
+  function setVertiefung(v){
+    if (state.beamerLevel === 1) return;
+    state.vertiefung = v;
+    safeSet("res_vert", v);
+    renderTopbar();
+    renderStage();
+  }
+
+  function roleClass(key){
+    return key === "anw" ? "anw" : key === "fue" ? "fue" : key === "tec" ? "tec" : "gast";
+  }
+  function roleName(key){
+    return key === "anw" ? t("roleAnw") : key === "fue" ? t("roleFue") : key === "tec" ? t("roleTec") : t("roleGast");
+  }
+
+  function renderStage(){
+    var scene = SCENES[state.sceneIndex];
+    var lang = state.lang;
+    var stage = document.getElementById("sceneStage");
+
+    var bodyHtml;
+    if (scene.journey) {
+      bodyHtml = renderJourneyHtml(scene);
+    } else {
+      bodyHtml = renderRoleFallbackHtml(scene);
+    }
+
+    stage.innerHTML =
+      '<div class="scene-head">' +
+        '<span class="scene-num">'+scene.num+'</span><span class="scene-title">'+scene.title[lang]+'</span>' +
+        '<span class="scene-tag">'+scene.tag[lang]+'</span>' +
+      '</div>' +
+      '<div class="rohwunsch-box"><span class="label">'+t("rohwunschLabel")+'</span>'+scene.rohwunsch[lang]+'</div>' +
+      bodyHtml;
+
+    if (scene.journey) {
+      wireJourneyEvents(scene);
+    } else {
+      wireRoleFallbackEvents();
+    }
+
+    renderControls();
+  }
+
+  function renderRoleFallbackHtml(scene){
+    var lang = state.lang;
+    var rolesHtml = scene.roles.map(function(r){
+      return '<div class="role-card '+roleClass(r.key)+'">' +
+        '<div class="role-head">'+roleName(r.key)+' — '+r.label[lang]+'</div>' +
+        '<div class="role-body">' +
+          '<dt>'+t("warum")+'</dt><dd>'+r.warum[lang]+'</dd>' +
+          '<dt>'+t("was")+'</dt><dd>'+r.was[lang]+'</dd>' +
+          '<dt>'+t("wie")+'</dt><dd>'+r.wie[lang]+'</dd>' +
+        '</div></div>';
+    }).join("");
+    var isRevealed = state.revealed[state.sceneIndex];
+    var resolutionHtml = isRevealed
+      ? '<div class="destillat-box"><span class="label">💡 '+t("destillatLabel")+'</span><p>'+scene.destillat[lang]+'</p></div>'
+      : '<button class="reveal-btn" id="revealBtn">'+t("revealBtn")+'</button>';
+    return '<div class="role-grid">'+rolesHtml+'</div>' + resolutionHtml;
+  }
+
+  function wireRoleFallbackEvents(){
+    var btn = document.getElementById("revealBtn");
+    if (btn) {
+      btn.addEventListener("click", function(){
+        state.revealed[state.sceneIndex] = true;
+        safeSet("res_reveal", state.revealed.map(function(b){return b?"1":"0";}).join(""));
+        renderStage();
+      });
+    }
+  }
+
+  function renderJourneyHtml(scene){
+    var lang = state.lang;
+    var si = state.sceneIndex;
+    var total = scene.journey.length;
+    var jStep = state.journeyStep[si];
+    var vert = (state.beamerLevel === 1) ? "kurz" : state.vertiefung;
+
+    var dotsHtml = "";
+    for (var i = 0; i < total; i++) {
+      var cls = "j-dot" + (i === jStep ? " current" : "") + (state.journeySeen[si][i] ? " seen" : "");
+      dotsHtml += '<button class="'+cls+'" data-jgoto="'+i+'">'+(i+1)+'</button>';
+    }
+
+    var stopBody = scene.journey[jStep][vert][lang]
+      .split("__REVIEW_BEDENKEN__").join(t("reviewBedenken"))
+      .split("__REVIEW_FRAGEN__").join(t("reviewFragen"));
+
+    return '<div class="journey-wrap">' +
+      '<div class="journey-label">🧭 '+t("journeyLabel")+'</div>' +
+      '<div class="journey-dots">'+dotsHtml+'</div>' +
+      '<div class="journey-stage-box">' +
+        '<div class="j-stop-title">'+(jStep+1)+'/'+total+' · '+scene.journey[jStep].label[lang]+'</div>' +
+        stopBody +
+      '</div>' +
+      '<div class="journey-nav">' +
+        '<button id="jPrevBtn"'+(jStep===0?' disabled':'')+'>'+(lang==="de"?"← Zurück":"← Back")+'</button>' +
+        '<button id="jNextBtn" class="primary"'+(jStep===total-1?' disabled':'')+'>'+(lang==="de"?"Weiter →":"Next →")+'</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function wireJourneyEvents(scene){
+    var si = state.sceneIndex;
+    var maxIdx = scene.journey.length - 1;
+    function goToStop(i){
+      if (i < 0 || i > maxIdx) return;
+      state.journeyStep[si] = i;
+      state.journeySeen[si][i] = true;
+      safeSet("res_jstep", state.journeyStep.join(","));
+      safeSet("res_jseen", JSON.stringify(state.journeySeen));
+      renderStage();
+    }
+    document.querySelectorAll(".j-dot").forEach(function(d){
+      d.addEventListener("click", function(){ goToStop(parseInt(d.getAttribute("data-jgoto"),10)); });
+    });
+    var jPrev = document.getElementById("jPrevBtn");
+    if (jPrev) jPrev.addEventListener("click", function(){ goToStop(state.journeyStep[si] - 1); });
+    var jNext = document.getElementById("jNextBtn");
+    if (jNext) jNext.addEventListener("click", function(){ goToStop(state.journeyStep[si] + 1); });
+  }
+
+  function renderControls(){
+    var controls = document.getElementById("sceneControls");
+    var current = state.sceneIndex;
+    var dotsHtml = "";
+    for (var i = 0; i < 6; i++) {
+      var cls = "sc-dot" + (i === current ? " current" : "") + (state.sceneSeen[i] ? " seen" : "");
+      dotsHtml += '<button class="'+cls+'" data-goto="'+i+'" aria-label="'+SCENES[i].title[state.lang]+'">'+(i+1)+'</button>';
+    }
+    controls.innerHTML =
+      '<div class="sc-dots">'+dotsHtml+'</div>' +
+      '<div class="sc-nav">' +
+        '<button id="scPrevBtn"'+(current===0?' disabled':'')+'>'+ (state.lang==="de" ? "← Zurück" : "← Back") +'</button>' +
+        '<span class="sc-label">'+(current+1)+' '+t("scOf")+' 6 · '+SCENES[current].title[state.lang]+'</span>' +
+        '<button id="scNextBtn" class="primary"'+(current===5?' disabled':'')+'>'+ (state.lang==="de" ? "Weiter →" : "Next →") +'</button>' +
+      '</div>';
+
+    function goTo(i){
+      if (i < 0 || i > 5) return;
+      state.sceneIndex = i;
+      state.sceneSeen[i] = true;
+      safeSet("res_scene", String(i));
+      safeSet("res_seen", state.sceneSeen.map(function(b){return b?"1":"0";}).join(""));
+      renderStage();
+    }
+    controls.querySelectorAll(".sc-dot").forEach(function(d){
+      d.addEventListener("click", function(){ goTo(parseInt(d.getAttribute("data-goto"),10)); });
+    });
+    var prevBtn = document.getElementById("scPrevBtn");
+    if (prevBtn) prevBtn.addEventListener("click", function(){ goTo(current - 1); });
+    var nextBtn = document.getElementById("scNextBtn");
+    if (nextBtn) nextBtn.addEventListener("click", function(){ goTo(current + 1); });
+  }
+
+  function applyBeamerClass(){
+    var html = document.documentElement;
+    html.classList.remove("beamer","beamer-xl","beamer-xxl");
+    if (state.beamerLevel >= 1) html.classList.add("beamer");
+    if (state.beamerLevel >= 2) html.classList.add("beamer-xl");
+    if (state.beamerLevel >= 3) html.classList.add("beamer-xxl");
+  }
+
+  function toggleBeamer(){
+    state.beamerLevel = (state.beamerLevel + 1) % 4;
+    applyBeamerClass();
+    renderTopbar();
+    renderStage();
+  }
+
+  function applyDataLangVisibility(){
+    document.querySelectorAll("[data-lang]").forEach(function(n){
+      n.style.display = (n.getAttribute("data-lang") === state.lang) ? "" : "none";
+    });
+  }
+
+  function toggleLang(){
+    state.lang = state.lang === "de" ? "en" : "de";
+    safeSet("res_lang", state.lang);
+    renderTopbar();
+    renderStage();
+    renderFooter();
+  }
+
+  function renderFooter(){
+    document.getElementById("sumSystem").textContent = t("footerSystem");
+    document.getElementById("sumHandbuch").textContent = t("footerHandbuch");
+    document.getElementById("sumVortrag").textContent = t("footerVortrag");
+    document.getElementById("sumNormen").textContent = t("footerNormen");
+    applyDataLangVisibility();
+  }
+
+  function init(){
+    restoreState();
+    applyBeamerClass();
+    renderTopbar();
+    renderStage();
+    renderFooter();
+    document.getElementById("beamerBtn").addEventListener("click", toggleBeamer);
+    document.getElementById("langBtn").addEventListener("click", toggleLang);
+    document.getElementById("topVertKurzBtn").addEventListener("click", function(){ setVertiefung("kurz"); });
+    document.getElementById("topVertVollBtn").addEventListener("click", function(){ setVertiefung("voll"); });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+
+</script>
+
+</body>
+</html>
