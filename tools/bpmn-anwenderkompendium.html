@@ -29,7 +29,9 @@
   }
   .signature strong{display:block; font-size:14px;}
   .signature a{font-size:14px; text-decoration:none;}
-  @media (max-width:900px){ .signature{position:static; text-align:right; margin:8px 16px 0 0;} }
+  @media (max-width:900px){
+    .signature{padding:3px 6px;}
+  }
 
   header.top{
     padding:20px 28px 16px 28px; border-bottom:1px solid var(--line);
@@ -37,6 +39,9 @@
   }
   @media (min-width:901px){
     header.top{ padding-right:240px; }
+  }
+  @media (max-width:900px){
+    header.top{ padding-right:210px; }
   }
   .back-link{display:block; font-size:14px; font-weight:700; color:var(--muted); text-decoration:none; margin:0 0 8px 0;}
   .back-link:hover{color:var(--accent);}
@@ -50,6 +55,14 @@
   }
   .ctrl-btn:hover{background:var(--panel);}
   .ctrl-btn.active{background:var(--accent); color:var(--white); border-color:var(--accent);}
+  .ctrl-btn[disabled]{opacity:.4; cursor:not-allowed;}
+
+  .vertiefung-block{display:none; margin-top:14px; padding-top:14px; border-top:1px dashed var(--line);}
+  .vertiefung-block h4{font-size:15px; margin:0 0 8px 0; color:var(--accent-dark);}
+  .vertiefung-block p{font-size:16px; line-height:1.6; margin:0 0 12px 0;}
+  .vertiefung-block p:last-child{margin-bottom:0;}
+  html.vertiefung .vertiefung-block{display:block;}
+  html.beamer .vertiefung-block{display:none !important;}
 
   .layout{display:flex; gap:0; align-items:flex-start;}
   nav.sidebar{
@@ -86,6 +99,7 @@
   .station-panel h3{font-size:15px; margin:20px 0 8px 0; color:var(--sub); text-transform:uppercase; letter-spacing:.04em;}
   .station-panel h4{font-size:15px; margin:0 0 8px 0;}
   .begriffe{font-size:15px; color:var(--sub); margin:4px 0;}
+  .station-intro{font-size:16px; line-height:1.6; margin:0 0 14px 0;}
   .kern-list{margin:0; padding-left:20px;}
   .kern-list li{margin-bottom:10px; font-size:15px; line-height:1.55;}
 
@@ -120,7 +134,7 @@
   html.beamer .station-panel h2{font-size:26px;}
   html.beamer .kern-list li, html.beamer .begriffe, html.beamer .beispiel-box p,
   html.beamer .quiz-q, html.beamer .quiz-opt, html.beamer .nav-title,
-  html.beamer .req-table th, html.beamer .req-table td{font-size:18px;}
+  html.beamer .req-table th, html.beamer .req-table td, html.beamer .station-intro{font-size:18px;}
   html.beamer .persona-quote{font-size:17px;}
   html.beamer .nav-btn, html.beamer .ctrl-btn{font-size:16px; padding:12px 18px;}
   html.beamer footer.tool-footer{display:none;}
@@ -129,14 +143,14 @@
   html.beamer.beamer-xl .kern-list li, html.beamer.beamer-xl .begriffe,
   html.beamer.beamer-xl .beispiel-box p, html.beamer.beamer-xl .quiz-q,
   html.beamer.beamer-xl .quiz-opt, html.beamer.beamer-xl .nav-title,
-  html.beamer.beamer-xl .req-table th, html.beamer.beamer-xl .req-table td{font-size:21px;}
+  html.beamer.beamer-xl .req-table th, html.beamer.beamer-xl .req-table td, html.beamer.beamer-xl .station-intro{font-size:21px;}
   html.beamer.beamer-xl .persona-quote{font-size:20px;}
 
   html.beamer.beamer-xl.beamer-xxl .station-panel h2{font-size:34px;}
   html.beamer.beamer-xl.beamer-xxl .kern-list li, html.beamer.beamer-xl.beamer-xxl .begriffe,
   html.beamer.beamer-xl.beamer-xxl .beispiel-box p, html.beamer.beamer-xl.beamer-xxl .quiz-q,
   html.beamer.beamer-xl.beamer-xxl .quiz-opt, html.beamer.beamer-xl.beamer-xxl .nav-title,
-  html.beamer.beamer-xl.beamer-xxl .req-table th, html.beamer.beamer-xl.beamer-xxl .req-table td{font-size:24px;}
+  html.beamer.beamer-xl.beamer-xxl .req-table th, html.beamer.beamer-xl.beamer-xxl .req-table td, html.beamer.beamer-xl.beamer-xxl .station-intro{font-size:24px;}
   html.beamer.beamer-xl.beamer-xxl .persona-quote{font-size:23px;}
 
   @media (max-width:900px){
@@ -177,10 +191,11 @@
   <div class="top-titleblock">
     <a class="back-link" href="../index.html" data-i18n data-en="&larr; Back to homepage">&larr; Zur&uuml;ck zur Startseite</a>
     <h1 data-i18n data-en="BPMN 2.0 in Practice &ndash; When, What and How to Model">BPMN 2.0 in der Praxis &ndash; Wann, was und wie modellieren</h1>
-    <p class="subtitle" data-i18n data-en="Practitioner guide, not an exam compendium: 5 stations on choosing, scoping and drawing BPMN diagrams &middot; anchored in the TalentMatch AI case study">Anwender-Leitfaden, kein Pruefungs-Kompendium: 5 Stationen zur Auswahl, Abgrenzung und praktischen Erstellung von BPMN-Diagrammen &middot; verankert im Fallbeispiel TalentMatch AI</p>
+    <p class="subtitle" data-i18n data-en="Practitioner guide, not an exam compendium: 6 stations on choosing, scoping, drawing and placing BPMN diagrams in the method landscape &middot; anchored in the TalentMatch AI case study">Anwender-Leitfaden, kein Pruefungs-Kompendium: 6 Stationen zur Auswahl, Abgrenzung, praktischen Erstellung und methodischen Einordnung von BPMN-Diagrammen &middot; verankert im Fallbeispiel TalentMatch AI</p>
   </div>
   <div class="top-controls">
     <button type="button" class="ctrl-btn" id="langBtn">DE / EN</button>
+    <button type="button" class="ctrl-btn" id="vertiefungBtn">&#128269; Vertiefung: Aus</button>
     <button type="button" class="ctrl-btn" id="beamerBtn">&#9728; Beamer</button>
   </div>
 </header>
@@ -188,7 +203,7 @@
 <div class="layout">
   <nav class="sidebar" aria-label="Stationen">
     <div class="passport" id="passport"></div>
-    <p class="passport-label" id="passportLabel" data-i18n data-en="0 / 5 stations completed">0 / 5 Stationen abgeschlossen</p>
+    <p class="passport-label" id="passportLabel" data-i18n data-en="0 / 6 stations completed">0 / 6 Stationen abgeschlossen</p>
     <button type="button" class="nav-item" data-target="s1" id="nav-s1">
         <span class="nav-stamp" id="stamp-s1" aria-hidden="true">&#9679;</span>
         <span class="nav-num">1</span>
@@ -218,11 +233,17 @@
         <span class="nav-num">5</span>
         <span class="nav-title" data-i18n data-en="Further artifacts: data object, data store, group, annotation">Weitere Artefakte: Data Object, Data Store, Group, Annotation</span>
       </button>
+
+      <button type="button" class="nav-item" data-target="s6" id="nav-s6">
+        <span class="nav-stamp" id="stamp-s6" aria-hidden="true">&#9679;</span>
+        <span class="nav-num">6</span>
+        <span class="nav-title" data-i18n data-en="BPMN in the method landscape: PMP, BABOK, RE, IPMA, LEAN, PM², PRINCE2, Scrum">BPMN im Methodenkontext: PMP, BABOK, RE, IPMA, LEAN, PM&sup2;, PRINCE2, Scrum</span>
+      </button>
   </nav>
   <main class="content">
     <section class="station-panel active" id="panel-s1" data-station="s1">
       <div class="station-head">
-        <span class="badge badge-num">1 <span data-i18n data-en="of 5">von 5</span></span>
+        <span class="badge badge-num">1 <span data-i18n data-en="of 6">von 6</span></span>
       </div>
       <h2 data-i18n data-en="When do I need which process type?">Wann brauche ich welchen Prozess-Typ?</h2>
       <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="Process diagram, collaboration diagram, choreography diagram, pool">Prozessdiagramm, Collaboration Diagram, Choreography Diagram, Pool</span></p>
@@ -232,6 +253,11 @@
         <li><span data-i18n data-en="&lt;strong&gt;Collaboration diagram&lt;/strong&gt;: shows several process participants (several pools) AND their interaction via message flows - needed as soon as external parties are involved."><strong>Collaboration Diagram</strong>: zeigt mehrere Prozessteilnehmer (mehrere Pools) UND ihre Interaktion ueber Message Flows - noetig, sobald externe Parteien beteiligt sind.</span></li>
         <li><span data-i18n data-en="&lt;strong&gt;Choreography diagram&lt;/strong&gt;: shows only the sequence of messages between parties, without their internal flows - rarely used, useful for pure interface agreements between organisations."><strong>Choreography Diagram</strong>: zeigt nur die Abfolge der Nachrichten zwischen Parteien, ohne deren interne Ablaeufe - selten genutzt, sinnvoll bei reinen Schnittstellenvereinbarungen zwischen Organisationen.</span></li>
       </ul>
+      <div class="vertiefung-block">
+        <h4><span data-i18n data-en="In depth">Vertiefung</span></h4>
+        <p><span data-i18n data-en="Before choosing a diagram type, it helps to step back: a process turns a trigger (e.g. a customer enquiry) into a defined outcome through a series of activities. Choosing between a process, collaboration or choreography diagram is itself already a first scoping decision - it determines whose perspective the diagram shows, not just how it looks.">Bevor Du Dich fuer einen Diagrammtyp entscheidest, lohnt der Blick eine Ebene hoeher: Ein Prozess verwandelt einen Ausloeser (z.B. eine Kundenanfrage) ueber mehrere Aktivitaeten hinweg in ein definiertes Ergebnis. Die Wahl zwischen Prozess-, Collaboration- und Choreography-Diagramm ist selbst schon eine erste Scope-Entscheidung: Sie legt fest, wessen Perspektive das Diagramm zeigt, nicht nur wie es aussieht.</span></p>
+        <p><span data-i18n data-en="At the highest altitude, a process map merely shows which processes an organisation has at all (e.g. the core process &#x27;customer enquiry to service delivery&#x27;), without detail. BPMN operates one level below, once the actual flow needs to be drawn - that is where the choice between a process and a collaboration diagram begins.">Auf der hoechsten Flughoehe zeigt eine Process Map lediglich, welche Prozesse ein Unternehmen ueberhaupt hat (z.B. den Kernprozess &bdquo;Kundenanfrage bis Serviceerbringung&ldquo;), ohne Details. BPMN setzt eine Ebene darunter an, sobald der konkrete Ablauf gezeichnet werden soll - dort beginnt die Frage, ob ein Prozess- oder ein Collaboration-Diagramm passt.</span></p>
+      </div>
       <div class="beispiel-box">
         <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
         <p><span data-i18n data-en="The internal scoring flow at Vantera needs a plain &lt;strong&gt;process diagram&lt;/strong&gt;. As soon as applicants themselves interact (submitting an application, receiving feedback), it becomes a &lt;strong&gt;collaboration diagram&lt;/strong&gt; with two pools: Vantera and the applicant.">Der interne Scoring-Ablauf bei Vantera braucht ein reines <strong>Prozessdiagramm</strong>. Sobald Bewerbende selbst interagieren (Bewerbung einreichen, Rueckmeldung erhalten), wird daraus ein <strong>Collaboration Diagram</strong> mit zwei Pools: Vantera und Bewerbende Person.</span></p>
@@ -259,7 +285,7 @@
 
     <section class="station-panel" id="panel-s2" data-station="s2">
       <div class="station-head">
-        <span class="badge badge-num">2 <span data-i18n data-en="of 5">von 5</span></span>
+        <span class="badge badge-num">2 <span data-i18n data-en="of 6">von 6</span></span>
       </div>
       <h2 data-i18n data-en="What do I actually model? (Scope &amp; level of detail)">Was modelliere ich ueberhaupt? (Scope & Detailtiefe)</h2>
       <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="End-to-end process, level of detail, descriptive conformance sub-class, analytic conformance sub-class">End-to-End-Prozess, Detailtiefe, deskriptive Konformitaetsklasse, analytische Konformitaetsklasse</span></p>
@@ -269,6 +295,12 @@
         <li><span data-i18n data-en="Deliberately choose the level of detail: a rough overview (few activities, for management) vs. a detailed work instruction (every step, for people performing the work) - both are legitimate BPMN diagrams, but for different audiences.">Detailtiefe bewusst waehlen: grobe Uebersicht (wenige Aktivitaeten, fuer Fuehrungskraefte) vs. detaillierte Arbeitsanweisung (jeder Schritt, fuer Ausfuehrende) - beides sind legitime BPMN-Diagramme, aber fuer unterschiedliche Zielgruppen.</span></li>
         <li><span data-i18n data-en="BPMN 2.0 has a &lt;strong&gt;descriptive&lt;/strong&gt; (simple, readable subset of the notation) and an &lt;strong&gt;analytic conformance sub-class&lt;/strong&gt; (more precise, closer to executability) - for most practical purposes, descriptive is entirely sufficient.">BPMN 2.0 kennt eine <strong>deskriptive</strong> (einfache, gut lesbare Teilmenge der Notation) und eine <strong>analytische Konformitaetsklasse</strong> (praeziser, naeher an Ausfuehrbarkeit) - fuer die meisten Praxiszwecke reicht deskriptiv voellig aus.</span></li>
       </ul>
+      <div class="vertiefung-block">
+        <h4><span data-i18n data-en="In depth">Vertiefung</span></h4>
+        <p><span data-i18n data-en="The scope question from this key point can be answered systematically with a Process Charter - a compact one-page brief that creates clarity before the actual drawing starts: process name, purpose, input, output, start/end point (scope), roles involved, interfaces, constraints, and goals/measures. It prevents two people from assuming different process boundaries.">Die Scope-Frage aus diesem Kerninhalt laesst sich systematisch mit einem Process Charter beantworten - einem kompakten Steckbrief, der vor dem eigentlichen Zeichnen Klarheit schafft: Prozessname, Zweck, Input, Output, Start-/Endpunkt (Scope), beteiligte Rollen, Schnittstellen, Einschraenkungen sowie Ziele/Messgroessen. Er verhindert, dass zwei Beteiligte von unterschiedlichem Prozessumfang ausgehen.</span></p>
+        <p><span data-i18n data-en="Using the generic &#x27;Customer Enquiry to Service Delivery&#x27; example, such a charter looks roughly like this: purpose - turn a qualified customer need into a confirmed, delivered and invoiced service; scope start - enquiry received; scope end - service delivered, invoice issued, feedback recorded; explicitly out of scope - lead generation before and long-term account management after. For TalentMatch AI the charter would be analogous: start at application intake, end at the hire/reject decision including bias review - sourcing before and onboarding after both lie outside.">Am generischen Beispiel &bdquo;Customer Enquiry to Service Delivery&ldquo; sieht ein solcher Charter etwa so aus: Zweck - eine qualifizierte Kundenanfrage in eine bestaetigte, gelieferte und abgerechnete Leistung umwandeln; Scope-Start - Anfrage geht ein; Scope-Ende - Leistung erbracht, Rechnung gestellt, Feedback dokumentiert; explizit ausserhalb - Leadgenerierung davor und langfristige Kundenbetreuung danach. Fuer TalentMatch AI waere der Charter analog: Start bei Bewerbungseingang, Ende bei Einstellungs-/Ablehnungsentscheidung inklusive Bias-Pruefung - alles davor (Sourcing) und danach (Onboarding) liegt ausserhalb.</span></p>
+        <p><span data-i18n data-en="A process is not built at a desk but in six steps together with the people involved: (1) determine trigger and outcome, (2) define process boundaries, (3) identify participants, (4) collect and roughly order activities, (5) add decisions and exceptions, (6) validate the draft with everyone involved. The level-of-detail decision from this key point belongs in step 4.">Ein Prozess entsteht nicht am Schreibtisch, sondern in sechs Schritten gemeinsam mit den Beteiligten: (1) Ausloeser und Ergebnis bestimmen, (2) Prozessgrenzen festlegen, (3) Beteiligte identifizieren, (4) Aktivitaeten sammeln und grob ordnen, (5) Entscheidungen und Ausnahmen ergaenzen, (6) den Entwurf mit allen Beteiligten pruefen. Die Detailtiefe-Entscheidung aus diesem Kerninhalt gehoert in Schritt 4.</span></p>
+      </div>
       <div class="beispiel-box">
         <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
         <p><span data-i18n data-en="For the slide deck to management, Ela models the TalentMatch AI process descriptively with 6 elements; for the technical implementation, Knut creates a more detailed, analytic variant with all error paths.">Fuer den Foliensatz an die Geschaeftsfuehrung modelliert Ela den TalentMatch-AI-Prozess deskriptiv mit 6 Elementen; fuer die technische Umsetzung erstellt Knut eine detailliertere, analytische Variante mit allen Fehlerpfaden.</span></p>
@@ -296,7 +328,7 @@
 
     <section class="station-panel" id="panel-s3" data-station="s3">
       <div class="station-head">
-        <span class="badge badge-num">3 <span data-i18n data-en="of 5">von 5</span></span>
+        <span class="badge badge-num">3 <span data-i18n data-en="of 6">von 6</span></span>
       </div>
       <h2 data-i18n data-en="How do I model correctly? (Practical rules)">Wie modelliere ich richtig? (Praxisregeln)</h2>
       <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="Happy path, activity naming, element count, gateway discipline">Happy Path, Aktivitaetsbenennung, Elementanzahl, Gateway-Disziplin</span></p>
@@ -307,6 +339,11 @@
         <li><span data-i18n data-en="Rule of thumb: no more than about 15 elements per diagram - if it grows larger, split it into sub-processes.">Faustregel: nicht mehr als ca. 15 Elemente pro Diagramm - wird es groesser, in Teilprozesse (Sub-Processes) aufteilen.</span></li>
         <li><span data-i18n data-en="Every gateway needs an unambiguous question with clearly labelled outputs (e.g. “bias threshold exceeded? Yes/No“) - unlabelled arrows out of a gateway are a common modelling mistake.">Jedes Gateway braucht eine eindeutige Frage mit klar benannten Ausgaengen (z.B. „Bias-Schwellenwert ueberschritten? Ja/Nein“) - unbenannte Pfeile aus einem Gateway sind ein haeufiger Modellierungsfehler.</span></li>
       </ul>
+      <div class="vertiefung-block">
+        <h4><span data-i18n data-en="In depth">Vertiefung</span></h4>
+        <p><span data-i18n data-en="The four rules of thumb in this station are the practical implementation of steps 4-6 of the six-step process-building approach: first roughly collect and order activities (the happy path), then deliberately ask about exceptions (&#x27;what happens if data is missing? who must approve? what happens on rejection?&#x27;) - that is where gateways come from - and finally validate the draft with everyone involved: is the flow factually correct, are responsibilities unambiguous, does it reflect the process as it is actually lived (the as-is state)?">Die vier Faustregeln dieser Station sind die praktische Umsetzung der Schritte 4-6 aus dem Sechs-Schritte-Vorgehen zur Prozesserstellung: Erst Aktivitaeten grob sammeln und ordnen (Happy Path), dann gezielt nach Ausnahmen fragen (&bdquo;Was passiert, wenn Angaben fehlen? Wer muss freigeben? Was bei Ablehnung?&ldquo;) - daraus entstehen die Gateways -, und zuletzt den Entwurf mit den Beteiligten pruefen: Ist der Ablauf fachlich korrekt, sind Verantwortlichkeiten eindeutig, ist es der tatsaechlich gelebte Ist-Prozess?</span></p>
+        <p><span data-i18n data-en="An important distinction here: a diagram does not automatically show reality. As-is process = the flow as it is actually lived, to-be process = the flow as desired in future. Model the as-is process cleanly before any optimisation - otherwise you may improve a flow that works quite differently in practice.">Wichtiger Unterschied dabei: Ein Diagramm zeigt nicht automatisch die Realitaet. Ist-Prozess = der tatsaechlich gelebte Ablauf, Soll-Prozess = der kuenftig gewuenschte Ablauf. Vor jeder Optimierung erst den Ist-Prozess sauber modellieren - sonst verbessert man womoeglich einen Ablauf, der in der Praxis ganz anders laeuft.</span></p>
+      </div>
       <div class="beispiel-box">
         <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
         <p><span data-i18n data-en="The first draft of the TalentMatch AI process had 22 elements in a single diagram; Knut split it into a main process (7 elements) and a sub-process “bias review“ (6 elements).">Der erste Entwurf des TalentMatch-AI-Prozesses hatte 22 Elemente in einem einzigen Diagramm; Knut teilte ihn in einen Hauptprozess (7 Elemente) und einen Sub-Process „Bias-Pruefung“ (6 Elemente) auf.</span></p>
@@ -334,7 +371,7 @@
 
     <section class="station-panel" id="panel-s4" data-station="s4">
       <div class="station-head">
-        <span class="badge badge-num">4 <span data-i18n data-en="of 5">von 5</span></span>
+        <span class="badge badge-num">4 <span data-i18n data-en="of 6">von 6</span></span>
       </div>
       <h2 data-i18n data-en="Practical example: pool and swimlane">Praxisbeispiel: Pool und Swimlane</h2>
       <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="Pool, lane (swimlane), sequence flow, message flow">Pool, Lane (Swimlane), Sequence Flow, Message Flow</span></p>
@@ -357,6 +394,11 @@
             <tr><td><span data-i18n data-en="Second pool">Zweiter Pool</span></td><td><span data-i18n data-en="Own rectangle, connected via message flow">Eigenes Rechteck, per Message Flow verbunden</span></td><td><span data-i18n data-en="Applicant">Bewerbende Person</span></td></tr>
         </tbody>
       </table>
+      <div class="vertiefung-block">
+        <h4><span data-i18n data-en="In depth">Vertiefung</span></h4>
+        <p><span data-i18n data-en="A swimlane diagram is only one of many ways to represent the same process - and specifically answers &#x27;who does what, and where does a handover happen?&#x27; Other representation forms answer different questions about the same process: a process map only shows which processes exist at all; a SIPOC lays out supplier-input-process-output-customer side by side before any flowchart is drawn; a customer journey shows the process from the customer&#x27;s perspective, including the emotional curve.">Ein Swimlane-Diagramm ist nur eine von vielen Moeglichkeiten, denselben Prozess darzustellen - und beantwortet gezielt die Frage &bdquo;Wer macht was, und wo findet eine Uebergabe statt?&ldquo;. Andere Darstellungsformen beantworten andere Fragen zum gleichen Prozess: Eine Process Map zeigt nur, welche Prozesse es ueberhaupt gibt; ein SIPOC stellt Supplier-Input-Process-Output-Customer einander gegenueber, bevor ueberhaupt ein Flussdiagramm entsteht; eine Customer Journey zeigt den Prozess aus Sicht der Kundschaft inklusive Emotionsverlauf.</span></p>
+        <p><span data-i18n data-en="BPMN with pools and lanes is the most formal of these representations: it uses standardised symbols (circles = events, rounded rectangles = tasks, diamonds = gateways) and answers &#x27;how does the process actually and logically work in detail?&#x27; - more detailed than a simple flowchart or a hand-drawn swimlane sketch, but also more effort to produce. A simple swimlane diagram is often enough for an initial discussion with business stakeholders; for durable, reusable documentation, the BPMN standard pays off.">BPMN mit Pools und Lanes ist die formalste dieser Darstellungen: Sie nutzt standardisierte Symbole (Kreise = Ereignisse, abgerundete Rechtecke = Aufgaben, Rauten = Gateways) und beantwortet die Frage &bdquo;wie laeuft der Prozess fachlich und logisch im Detail ab?&ldquo; - detaillierter als ein einfaches Flowchart oder eine Swimlane-Skizze auf Papier, aber auch aufwendiger zu erstellen. Fuer eine erste Diskussion mit Fachbereichen reicht oft ein einfaches Swimlane-Diagramm; fuer die belastbare, wiederverwendbare Dokumentation lohnt sich der BPMN-Standard.</span></p>
+      </div>
       <div class="beispiel-box">
         <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
         <p><span data-i18n data-en="In the TalentMatch AI diagram there is the pool “Vantera“ with two lanes (“recruiter“, “TalentMatch AI“), plus a second pool “applicant“. The application itself runs as a &lt;strong&gt;message flow&lt;/strong&gt; from the external pool into the recruiter lane.">Im TalentMatch-AI-Diagramm gibt es den Pool „Vantera“ mit zwei Lanes („Recruiterin“, „TalentMatch AI“), sowie einen zweiten Pool „Bewerbende Person“. Die Bewerbung selbst laeuft als <strong>Message Flow</strong> vom externen Pool in die Recruiterin-Lane hinein.</span></p>
@@ -384,7 +426,7 @@
 
     <section class="station-panel" id="panel-s5" data-station="s5">
       <div class="station-head">
-        <span class="badge badge-num">5 <span data-i18n data-en="of 5">von 5</span></span>
+        <span class="badge badge-num">5 <span data-i18n data-en="of 6">von 6</span></span>
       </div>
       <h2 data-i18n data-en="Further artifacts: data object, data store, group, annotation">Weitere Artefakte: Data Object, Data Store, Group, Annotation</h2>
       <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="Data object, data store, group, text annotation">Data Object, Data Store, Group, Text Annotation</span></p>
@@ -395,6 +437,11 @@
         <li><span data-i18n data-en="&lt;strong&gt;Group&lt;/strong&gt;: a purely visual grouping element with no flow logic of its own - visually collects related activities (e.g. “bias review phase“)."><strong>Group</strong>: rein visuelles Gruppierungselement ohne eigene Ablauflogik - fasst zusammengehoerige Aktivitaeten optisch zusammen (z.B. „Bias-Pruefungsphase“).</span></li>
         <li><span data-i18n data-en="&lt;strong&gt;Text annotation&lt;/strong&gt;: a free-form comment attached to any element - for explanations that are not part of the formal notation."><strong>Text Annotation</strong>: freier Kommentar an einem beliebigen Element - fuer Erlaeuterungen, die nicht Teil der formalen Notation sind.</span></li>
       </ul>
+      <div class="vertiefung-block">
+        <h4><span data-i18n data-en="In depth">Vertiefung</span></h4>
+        <p><span data-i18n data-en="Data object, data store, group and text annotation describe WHAT flows or sits within the process - but not HOW LONG a step takes or WHERE time gets lost. Complementary representations exist for that: a value stream map shows processing and waiting time per activity plus the resulting flow efficiency; a Makigami diagram combines activity, role, required information, time and problem/waste in a single table.">Data Object, Data Store, Group und Text Annotation beschreiben, WAS im Prozess fliesst oder liegt - aber nicht, WIE LANGE ein Schritt dauert oder WO Zeit verloren geht. Dafuer gibt es ergaenzende Darstellungen: Eine Value Stream Map zeigt je Aktivitaet Bearbeitungs- und Wartezeit sowie die daraus berechnete Flow-Efficiency; ein Makigami-Diagramm kombiniert Aktivitaet, Rolle, benoetigte Information, Zeit und Problem/Verschwendung in einer einzigen Tabelle.</span></p>
+        <p><span data-i18n data-en="The data store &#x27;candidate database&#x27; from the practical example is exactly where a value stream map would make a waiting loop visible (e.g. &#x27;3 days waiting for approval&#x27;) - BPMN shows the structure, value stream map/Makigami show the time and waste dimension on top of it. Both views complement each other but do not replace one another.">Der Data Store &bdquo;Kandidatendatenbank&ldquo; aus dem Praxisbeispiel waere in einer Value Stream Map genau die Stelle, an der eine Warteschleife (z.B. &bdquo;3 Tage Warten auf Freigabe&ldquo;) sichtbar wuerde - BPMN zeigt die Struktur, Value Stream Map/Makigami zeigen die Zeit- und Verschwendungsdimension dazu. Beide Sichten ergaenzen sich, ersetzen sich aber nicht.</span></p>
+      </div>
       <div class="beispiel-box">
         <h4>&#128204; <span data-i18n data-en="TalentMatch AI &amp;ndash; practical example">TalentMatch AI &ndash; Praxisbeispiel</span></h4>
         <p><span data-i18n data-en="In the TalentMatch AI diagram, the “score profile“ is a data object attached to the task “calculate score“; the “candidate database“ is a data store accessed independently by several activities; a text annotation on the exclusive gateway explains the bias threshold in one sentence.">Im TalentMatch-AI-Diagramm ist das „Score-Profil“ ein Data Object an der Aufgabe „Score berechnen“; die „Kandidatendatenbank“ ist ein Data Store, auf den mehrere Aktivitaeten unabhaengig voneinander zugreifen; eine Text Annotation am exklusiven Gateway erklaert den Bias-Schwellenwert in einem Satz.</span></p>
@@ -416,6 +463,91 @@
       </div>
       <div class="station-footer-nav">
         <button type="button" class="nav-btn prev-btn" ><span data-i18n data-en="&amp;larr; Back">&larr; Zurueck</span></button>
+        <button type="button" class="nav-btn next-btn" ><span data-i18n data-en="Next &amp;rarr;">Weiter &rarr;</span></button>
+      </div>
+    </section>
+
+    <section class="station-panel" id="panel-s6" data-station="s6">
+      <div class="station-head">
+        <span class="badge badge-num">6 <span data-i18n data-en="of 6">von 6</span></span>
+      </div>
+      <h2 data-i18n data-en="BPMN in the method landscape">BPMN im Methodenkontext</h2>
+      <p class="begriffe"><strong><span data-i18n data-en="Terms:">Begriffe:</span></strong> <span data-i18n data-en="PMP/PMBOK, BABOK, IREB (RE), IPMA, LEAN, PM², PRINCE2, Scrum">PMP/PMBOK, BABOK, IREB (RE), IPMA, LEAN, PM&sup2;, PRINCE2, Scrum</span></p>
+      <h3><span data-i18n data-en="Key points">Kerninhalte</span></h3>
+      <p class="station-intro"><span data-i18n data-en="Process modelling is not an end in itself - each framework below places BPMN/process work at a different spot. The table shows where, in one sentence per framework; the &lt;strong&gt;in-depth view&lt;/strong&gt; (top-right toggle) adds a short explanation with a TalentMatch AI reference per framework.">Prozessmodellierung ist kein Selbstzweck - jedes der folgenden Frameworks verortet BPMN/Prozessarbeit an einer anderen Stelle. Die Tabelle zeigt das Wo in einem Satz pro Framework; die <strong>Vertiefung</strong> (Toggle oben rechts) ergaenzt je Framework eine kurze Einordnung mit TalentMatch-AI-Bezug.</span></p>
+      <table class="req-table">
+        <thead><tr>
+          <th data-i18n data-en="Framework">Framework</th>
+          <th data-i18n data-en="Current status">Aktueller Stand</th>
+          <th data-i18n data-en="Where BPMN/process modelling fits">Bezug zu BPMN/Prozessmodellierung</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><span data-i18n data-en="PMP&#x2f;PMBOK&#xAE; (PMI)">PMP/PMBOK&reg; (PMI)</span></td>
+            <td><span data-i18n data-en="8th Edition, November 2025">8. Edition, November 2025</span></td>
+            <td><span data-i18n data-en="Not part of PMBOK itself (project processes, not a notation) - BPMN comes in via the companion PMI standard &quot;Business Analysis for Practitioners&quot; when a project needs requirements analysis.">Nicht Teil des PMBOK selbst (Projektprozesse, keine Notation) - BPMN kommt ueber den ergaenzenden PMI-Standard &bdquo;Business Analysis for Practitioners&ldquo; ins Spiel, wenn ein Projekt Anforderungsanalyse braucht.</span></td>
+          </tr>
+          <tr>
+            <td><span data-i18n data-en="BABOK&#xAE; (IIBA)">BABOK&reg; (IIBA)</span></td>
+            <td><span data-i18n data-en="Version 3, 2015 (still current)">Version 3, 2015 (weiterhin aktuell)</span></td>
+            <td><span data-i18n data-en="&quot;Process Modelling&quot; is a named BABOK technique - BPMN is explicitly listed there as a common notation alongside flowcharts, IDEF and SIPOC.">&bdquo;Process Modelling&ldquo; ist eine benannte BABOK-Technik - BPMN wird dort explizit als gaengige Notation neben Flowcharts, IDEF und SIPOC genannt.</span></td>
+          </tr>
+          <tr>
+            <td><span data-i18n data-en="RE (IREB CPRE)">RE (IREB CPRE)</span></td>
+            <td><span data-i18n data-en="Foundation syllabus v3.3.0, 1 April 2026">Foundation-Lehrplan v3.3.0, 1. April 2026</span></td>
+            <td><span data-i18n data-en="Process models such as BPMN count among the documentation formats for functional requirements named in the syllabus.">Prozessmodelle wie BPMN zaehlen zu den im Lehrplan genannten Dokumentationsformen fuer funktionale Anforderungen.</span></td>
+          </tr>
+          <tr>
+            <td><span data-i18n data-en="IPMA (ICB4)">IPMA (ICB4)</span></td>
+            <td><span data-i18n data-en="Version 4, 2015 (version 5 announced for 2026, not yet published)">Version 4, 2015 (Version 5 fuer 2026 angekuendigt, noch nicht veroeffentlicht)</span></td>
+            <td><span data-i18n data-en="No fixed notation - process and structure work is part of the Practice competence elements; BPMN is one possible tool there, not a mandatory one.">Keine Notationsvorgabe - Prozess- und Strukturarbeit ist Teil der Practice-Kompetenzen; BPMN ist dort ein moegliches, kein vorgeschriebenes Werkzeug.</span></td>
+          </tr>
+          <tr>
+            <td><span data-i18n data-en="LEAN">LEAN</span></td>
+            <td><span data-i18n data-en="No single publisher/edition (roots: Toyota Production System)">Kein einzelner Herausgeber/keine Edition (Wurzel: Toyota Production System)</span></td>
+            <td><span data-i18n data-en="Primary tool is the value stream map, not BPMN - complementary: BPMN shows control flow/logic, VSM shows time and waste.">Primaeres Werkzeug ist die Value Stream Map, nicht BPMN - komplementaer: BPMN zeigt Kontrollfluss/Logik, VSM zeigt Zeit und Verschwendung.</span></td>
+          </tr>
+          <tr>
+            <td><span data-i18n data-en="PM&#xB2;">PM&sup2;</span></td>
+            <td><span data-i18n data-en="European Commission, Open PM&#xB2; Guide v3.1, December 2023">Europ&auml;ische Kommission, Open PM&sup2; Guide v3.1, Dezember 2023</span></td>
+            <td><span data-i18n data-en="A phase/role model for projects; BPMN not mandated, but a common complement in EU institutions for documenting the business (not the project) processes.">Phasen-/Rollenmodell fuer Projekte; BPMN nicht vorgeschrieben, aber in EU-Institutionen gaengige Ergaenzung zur Beschreibung der fachlichen (nicht der Projekt-)Prozesse.</span></td>
+          </tr>
+          <tr>
+            <td><span data-i18n data-en="PRINCE2&#xAE;">PRINCE2&reg;</span></td>
+            <td><span data-i18n data-en="AXELOS/PeopleCert, 7th Edition, September 2023">AXELOS/PeopleCert, 7. Edition, September 2023</span></td>
+            <td><span data-i18n data-en="The &quot;processes&quot; in PRINCE2 are project-steering phases, not a business-process notation - BPMN would document the business process the project changes, not the PRINCE2 flow itself.">Die &bdquo;Prozesse&ldquo; in PRINCE2 sind Projektsteuerungs-Phasen, keine Fachprozess-Notation - BPMN wuerde die vom Projekt veraenderten Geschaeftsprozesse abbilden, nicht den PRINCE2-Ablauf selbst.</span></td>
+          </tr>
+          <tr>
+            <td><span data-i18n data-en="Scrum">Scrum</span></td>
+            <td><span data-i18n data-en="Scrum Guide, November 2020 revision (Schwaber/Sutherland), still current">Scrum Guide, Revision November 2020 (Schwaber/Sutherland), weiterhin aktuell</span></td>
+            <td><span data-i18n data-en="No process-modelling tool - the backlog item is the unit of work; BPMN can describe the business process the finished product ends up supporting.">Kein Prozessmodellierungs-Werkzeug - das Backlog-Item ist die Arbeitseinheit; BPMN kann den fachlichen Prozess beschreiben, den das fertige Produkt am Ende unterstuetzt.</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="vertiefung-block">
+        <h4><span data-i18n data-en="In depth: framework by framework">Vertiefung: Framework fuer Framework</span></h4>
+        <p><span data-i18n data-en="&lt;strong&gt;PMP/PMBOK&lt;/strong&gt;: PMI itself does not model business processes. The PMBOK&#xAE; Guide (8th Edition, November 2025) describes 40 non-prescriptive project processes across five Focus Areas (formerly Process Groups) - these are project-steering processes, not domain workflows like the TalentMatch AI scoring. When a PMI-led project still needs to elicit requirements and document processes, the companion PMI standard &#x27;Business Analysis for Practitioners&#x27; applies - process modelling (including BPMN-like notation) is anchored there as an elicitation technique.">&lt;strong&gt;PMP/PMBOK:&lt;/strong&gt; PMI selbst modelliert keine Geschaeftsprozesse. Der PMBOK&reg; Guide (8. Edition, November 2025) beschreibt 40 nicht-praeskriptive Projektprozesse entlang fuenf Focus Areas (vormals Process Groups) - das sind Steuerungsprozesse des Projekts, keine Fachablaeufe wie das TalentMatch-AI-Scoring. Wenn ein PMI-gefuehrtes Projekt trotzdem Anforderungen erheben und Prozesse dokumentieren muss, greift der ergaenzende PMI-Standard &bdquo;Business Analysis for Practitioners&ldquo; - dort ist Prozessmodellierung (inkl. BPMN-aehnlicher Notation) explizit als Elicitation-Technik verankert.</span></p>
+        <p><span data-i18n data-en="&lt;strong&gt;BABOK&lt;/strong&gt;: the BABOK&#xAE; Guide v3 (IIBA, 2015, still the current edition) lists &#x27;Process Modelling&#x27; in its Techniques chapter as a technique in its own right - with BPMN, flowcharts, IDEF and SIPOC as common notations. For TalentMatch AI this means: the scoring flow is textbook BABOK process modelling within the Requirements Analysis and Design Definition knowledge area.">&lt;strong&gt;BABOK:&lt;/strong&gt; Die BABOK&reg; Guide v3 (IIBA, 2015, weiterhin die aktuelle Ausgabe) fuehrt &bdquo;Process Modelling&ldquo; im Techniken-Kapitel als eigenstaendige Technik - mit BPMN, Flowcharts, IDEF und SIPOC als gaengigen Notationen. Fuer TalentMatch AI heisst das: Der Scoring-Ablauf ist lehrbuchmaessige BABOK-Prozessmodellierung im Wissensbereich Requirements Analysis and Design Definition.</span></p>
+        <p><span data-i18n data-en="&lt;strong&gt;RE (IREB)&lt;/strong&gt;: in the IREB CPRE Foundation syllabus (v3.3.0, 1 April 2026, see the IREB compendium in this tool set), process models count among the recognised documentation formats for functional requirements - alongside user stories and use cases. BPMN is therefore directly IREB-compatible whenever a flow, not a single requirement, needs documenting.">&lt;strong&gt;RE (IREB):&lt;/strong&gt; Im IREB-CPRE-Foundation-Lehrplan (v3.3.0, 1. April 2026, siehe IREB-Kompendium in diesem Tool-Set) zaehlen Prozessmodelle zu den anerkannten Dokumentationsformen fuer funktionale Anforderungen - neben User Stories und Use Cases. BPMN ist damit direkt IREB-kompatibel, wenn ein Ablauf statt eines Einzel-Requirements dokumentiert werden soll.</span></p>
+        <p><span data-i18n data-en="&lt;strong&gt;IPMA&lt;/strong&gt;: the IPMA Individual Competence Baseline (ICB4, 2015; version 5 is announced for 2026 but, as of September 2026, not yet published) prescribes no notation. Process and structure work belongs to the Practice competence elements (e.g. &#x27;Requirements &amp; Objectives&#x27;, &#x27;Design &amp; Change&#x27;) - BPMN is one possible tool there among several, not a mandatory notation.">&lt;strong&gt;IPMA:&lt;/strong&gt; Die IPMA Individual Competence Baseline (ICB4, 2015; Version 5 ist fuer 2026 angekuendigt, aber Stand September 2026 noch nicht veroeffentlicht) schreibt keine Notation vor. Prozess- und Strukturarbeit gehoert zu den Practice-Kompetenzelementen (u.a. &bdquo;Requirements &amp; Objectives&ldquo;, &bdquo;Design &amp; Change&ldquo;) - BPMN ist dort ein moegliches Werkzeug unter mehreren, keine Pflichtnotation.</span></p>
+        <p><span data-i18n data-en="&lt;strong&gt;LEAN&lt;/strong&gt;: Lean has no single publisher or edition number the way the other frameworks here do - its roots lie in the Toyota Production System, popularised among others by Womack/Jones&#x27; &#x27;Lean Thinking&#x27;. Its central tool is the value stream map: it shows processing and waiting time plus waste per step - information a plain BPMN diagram does not capture. Both views complement each other (see station 5).">&lt;strong&gt;LEAN:&lt;/strong&gt; Lean hat keinen einzelnen Herausgeber oder eine Editionsnummer wie die anderen Frameworks hier - die Wurzeln liegen im Toyota Production System, popularisiert u.a. durch Womack/Jones&#x27; &bdquo;Lean Thinking&ldquo;. Das zentrale Werkzeug ist die Value Stream Map: Sie zeigt Bearbeitungs- und Wartezeit sowie Verschwendung je Schritt - Informationen, die ein reines BPMN-Diagramm nicht abbildet. Beide Sichten ergaenzen sich (siehe Station 5).</span></p>
+        <p><span data-i18n data-en="&lt;strong&gt;PM&#xB2;&lt;/strong&gt;: PM&#xB2; (Open PM&#xB2; Guide v3.1, European Commission, December 2023) deliberately combines elements from PMBOK, PRINCE2 and IPMA-ICB into a phase/role model for projects. The method itself does not mandate BPMN, but in EU institutions the pairing is common: PM&#xB2; steers the project, BPMN documents the business process the project changes.">&lt;strong&gt;PM&sup2;:&lt;/strong&gt; PM&sup2; (Open PM&sup2; Guide v3.1, Europaeische Kommission, Dezember 2023) kombiniert bewusst Elemente aus PMBOK, PRINCE2 und IPMA-ICB zu einem Phasen-/Rollenmodell fuer Projekte. Die Methode selbst schreibt BPMN nicht vor, in EU-Institutionen ist die Kombination aber gaengig: PM&sup2; steuert das Projekt, BPMN dokumentiert den fachlichen Prozess, den das Projekt veraendert.</span></p>
+        <p><span data-i18n data-en="&lt;strong&gt;PRINCE2&lt;/strong&gt;: PRINCE2&#xAE; has been in its 7th Edition since September 2023 (AXELOS/PeopleCert). The &#x27;processes&#x27; it describes are project-steering phases (e.g. &#x27;Starting up a Project&#x27;) - not a notation for business processes. A PRINCE2 project introducing TalentMatch AI would use BPMN to document the changed scoring process itself, not to depict the PRINCE2 flow.">&lt;strong&gt;PRINCE2:&lt;/strong&gt; PRINCE2&reg; liegt seit September 2023 in der 7. Edition vor (AXELOS/PeopleCert). Die dort beschriebenen &bdquo;Prozesse&ldquo; sind Projektsteuerungs-Phasen (z.B. &bdquo;Starting up a Project&ldquo;) - keine Notation fuer Geschaeftsprozesse. Ein PRINCE2-Projekt, das TalentMatch AI einfuehrt, wuerde BPMN nutzen, um den veraenderten Scoring-Prozess selbst zu dokumentieren, nicht um den PRINCE2-Ablauf darzustellen.</span></p>
+        <p><span data-i18n data-en="&lt;strong&gt;Scrum&lt;/strong&gt;: the Scrum Guide (November 2020 revision, Schwaber/Sutherland; as of September 2026 still the current, authoritative version) has no process modelling of its own - the backlog item is the unit of work. BPMN comes in indirectly when a Scrum team builds a system that itself automates a business process (e.g. TalentMatch AI): the BPMN diagram then describes WHAT the product should ultimately do - independent of HOW the team gets there in sprints.">&lt;strong&gt;Scrum:&lt;/strong&gt; Der Scrum Guide (Revision November 2020, Schwaber/Sutherland; Stand September 2026 weiterhin die aktuelle, autoritative Fassung) kennt keine eigene Prozessmodellierung - die Arbeitseinheit ist das Backlog-Item. BPMN kommt indirekt ins Spiel, wenn ein Scrum-Team ein System baut, das selbst einen fachlichen Prozess automatisiert (z.B. TalentMatch AI): Das BPMN-Diagramm beschreibt dann, WAS das Produkt am Ende leisten soll - unabhaengig davon, WIE das Team in Sprints dorthin arbeitet.</span></p>
+      </div>
+      <div class="quiz-box" data-correct="0">
+        <h4>&#10067; <span data-i18n data-en="Mini quiz">Mini-Quiz</span></h4>
+        <p class="quiz-q"><span data-i18n data-en="Which framework does not use BPMN itself but refers to a companion standard (Business Analysis for Practitioners) for process modelling?">Welches Framework nutzt BPMN nicht selbst, sondern verweist fuer Prozessmodellierung auf einen ergaenzenden Standard (Business Analysis for Practitioners)?</span></p>
+        <div class="quiz-opts">
+          <button type="button" class="quiz-opt" data-idx="0"><span data-i18n data-en="PMP / PMBOK (PMI)">PMP / PMBOK (PMI)</span></button>
+          <button type="button" class="quiz-opt" data-idx="1"><span data-i18n data-en="BABOK (IIBA)">BABOK (IIBA)</span></button>
+          <button type="button" class="quiz-opt" data-idx="2"><span data-i18n data-en="Scrum">Scrum</span></button>
+        </div>
+        <p class="quiz-feedback" hidden></p>
+        <p class="quiz-expl" hidden><span data-i18n data-en="The PMBOK Guide describes project-steering processes, not domain processes; BPMN comes in via the companion PMI Business Analysis standard, not via the PMBOK Guide itself.">Der PMBOK Guide beschreibt Projektsteuerungsprozesse, keine Fachprozesse; BPMN kommt ueber den ergaenzenden PMI-Business-Analysis-Standard ins Spiel, nicht ueber den PMBOK Guide selbst.</span></p>
+      </div>
+      <div class="station-footer-nav">
+        <button type="button" class="nav-btn prev-btn" ><span data-i18n data-en="&amp;larr; Back">&larr; Zurueck</span></button>
         <button type="button" class="nav-btn next-btn" disabled><span data-i18n data-en="Next &amp;rarr;">Weiter &rarr;</span></button>
       </div>
     </section>
@@ -427,84 +559,103 @@
 
     <details class="footer-box">
       <summary data-i18n data-en="System prompt">Systemprompt</summary>
-      <div class="footer-content footer-mono">Baue ein einzelnes, offlinef&auml;higes HTML-Trainingstool &ldquo;BPMN 2.0 in der Praxis &ndash; Wann, was und wie modellieren&rdquo;, als bewusst schlankstes der drei Business-Process-Tools (nach IREB-Kompendium und OCEB2-Kompendium).
+      <div class="footer-content footer-mono">Baue ein einzelnes, offlinef&auml;higes HTML-Trainingstool &ldquo;BPMN 2.0 in der Praxis &ndash; Wann, was und wie modellieren&rdquo;, urspr&uuml;nglich als bewusst schlankstes der drei Business-Process-Tools angelegt (nach IREB-Kompendium und BABOK-Kompendium), in einer zweiten Ausbaustufe um Vertiefungs-Toggle (K22) und eine sechste Station zum Framework-Kontext erweitert.
 
-AUSLOESER
-Nutzerin fand IREB/BABOK/OCEB2-Kompendien zu umfangreich (&ldquo;Hm, das ist schon viel&rdquo;) und wollte stattdessen einen praktischen Anwender-Leitfaden zu vier konkreten Fragen: Wann brauche ich welchen Prozess? Wie sollte ich modellieren? Was modelliere ich ueberhaupt? Mit Beispielen wie Swimlane und anderen Artefakten.
+AUSLOESER (V1)
+Nutzerin fand IREB/BABOK-Kompendien zu umfangreich (&ldquo;Hm, das ist schon viel&rdquo;) und wollte stattdessen einen praktischen Anwender-Leitfaden zu vier konkreten Fragen: Wann brauche ich welchen Prozess? Wie sollte ich modellieren? Was modelliere ich ueberhaupt? Mit Beispielen wie Swimlane und anderen Artefakten.
+
+AUSLOESER (V2, Ausbau)
+Nutzerin wollte nachtraeglich (1) einen Vertiefungs-Toggle (kurz/voll) je Station und (2) eine Verortung von BPMN/Prozessmodellierung im Methoden-Oekosystem PMP/PMBOK, BABOK, RE (IREB), IPMA, LEAN, PM&sup2;, PRINCE2 und Scrum - als Referenzmaterial dienten ein Process-Charter-Vorlagenset (ibo), ein ausgefuelltes Charter-Beispiel &ldquo;Customer Enquiry to Service Delivery&rdquo;, ein Raster mit 14 einfachen Prozessdarstellungsformen (Process Map, Swimlane, Makigami, Customer Journey, SIPOC, Brown Paper, Value Stream Map, BPMN, Flowchart, EPC, Boards u.a.) sowie ein Sprechskript &ldquo;Was ist ein Prozess?&rdquo;.
 
 STRUKTUR
-- Gleiches Split-Screen-Layout wie IREB/OCEB2: linke Sidebar + rechter Inhaltsbereich, gestapelt unter 900px.
-- NUR 5 Stationen (keine Lehrplan- oder Pruefungs-Blueprint-Bindung, daher kein Verifizierungsaufwand fuer Kapitelanzahl/Gewichtung noetig) - eine Station pro Praxisfrage:
+- Gleiches Split-Screen-Layout wie IREB/BABOK: linke Sidebar + rechter Inhaltsbereich, gestapelt unter 900px.
+- 6 Stationen (V1 hatte 5, keine Lehrplan- oder Pruefungs-Blueprint-Bindung, daher kein Verifizierungsaufwand fuer Kapitelanzahl/Gewichtung noetig):
   1. Wann brauche ich welchen Prozess-Typ? (Prozess- vs. Collaboration- vs. Choreography-Diagramm)
   2. Was modelliere ich ueberhaupt? (Scope, Detailtiefe, deskriptive/analytische Konformitaetsklasse)
   3. Wie modelliere ich richtig? (Happy Path zuerst, Aktivitaetsbenennung, Elementanzahl, Gateway-Disziplin)
   4. Praxisbeispiel Pool & Swimlane (inkl. Notationstabelle)
   5. Weitere Artefakte (Data Object, Data Store, Group, Text Annotation)
-- Stempel-Pass mit 5 Punkten, sessionStorage (try/catch).
+  6. NEU: BPMN im Methodenkontext (Tabelle mit 8 Frameworks: PMP/PMBOK, BABOK, RE/IREB, IPMA, LEAN, PM&sup2;, PRINCE2, Scrum, je mit aktuellem Stand und Bezug zu BPMN/Prozessmodellierung)
+- Stempel-Pass mit 6 Punkten, sessionStorage (try/catch).
 
-VEREINFACHUNGEN GEGENUEBER OCEB2/IREB (bewusst)
-- Kein Gewichtungs-/K-Stufen-Badge, nur Stationsnummer &ndash; da keine Pruefungsordnung zugrunde liegt.
-- Kein Anhang, keine Cross-Reference-Box.
-- Alle BPMN-Elementbegriffe bleiben trotzdem spezifikationstreu (BPMN 2.0.2 / ISO/IEC 19510) &ndash; &bdquo;einfach&ldquo; bezieht sich auf Struktur und Umfang, nicht auf fachliche Korrektheit.
+VERTIEFUNGS-TOGGLE (K22, neu in V2)
+- Ein globaler Button &ldquo;&#128269; Vertiefung&rdquo; im Header (neben Sprach- und Beamer-Toggle), kein Toggle pro Erklaerungsblock.
+- Zustand als Klasse &ldquo;vertiefung&rdquo; auf &lt;html&gt;; ein &ldquo;.vertiefung-block&rdquo; pro Station (display:none per Default, display:block bei aktivem Toggle) ergaenzt die kurze Version (Kerninhalte/Tabelle) um 2-3 vertiefende Absaetze je Station - inhaltlich abgeleitet aus dem Process-Charter-Material, den 14 Darstellungsformen und (in Station 6) je einem Absatz pro Framework.
+- Default: kurz (Toggle aus). Beamer-Modus (jede Stufe) erzwingt kurz unabhaengig vom Nutzer-Zustand (&ldquo;html.beamer .vertiefung-block{display:none !important}&rdquo; plus JS-Sync ueber eine gemeinsame apply()-Funktion, die sowohl vom Beamer- als auch vom Vertiefungs-Button aus aufgerufen wird); beim Verlassen des Beamer-Modus wird der vorherige Nutzer-Zustand wiederhergestellt.
+- Beide Versionen stehen vollstaendig statisch im HTML (keine Laufzeit-Generierung), Zustand ist sessionStorage-persistent.
+- Button-Disabled-Zustand waehrend Beamer-Modus, damit kein widerspruechlicher Klick moeglich ist.
 
-INHALT PRO STATION
+INHALT PRO STATION (1-5)
 1. Kopfzeile: Stationsnummer.
 2. Titel (die jeweilige Praxisfrage).
 3. Begriffe.
 4. Kerninhalte: 3-4 Bullet-Points.
-5. TalentMatch-AI-Praxisbeispiel.
-6. Persona-Reaktionszeile (Ela/Knut/Sarah/Petra/Herr Bachmeier).
-7. Mini-Quiz: 1 Frage, 3 Optionen, mit Erklaerung.
-8. Vor-/Zurueck-Navigation.
+5. Vertiefungs-Block (siehe oben).
+6. TalentMatch-AI-Praxisbeispiel.
+7. Persona-Reaktionszeile (Ela/Knut/Sarah/Petra/Herr Bachmeier).
+8. Mini-Quiz: 1 Frage, 3 Optionen, mit Erklaerung.
+9. Vor-/Zurueck-Navigation.
+
+STATION 6 (abweichende Struktur)
+1. Kopfzeile + Titel + Begriffe wie oben.
+2. Kurzer Einleitungssatz (Klasse .station-intro, eigene Beamer-Skalierung analog .begriffe).
+3. Tabelle (.req-table) mit 8 Zeilen: Framework/Herausgeber, aktueller Stand (Version + Datum, per gezielter Websuche verifiziert, K17), Bezug zu BPMN/Prozessmodellierung in einem Satz.
+4. Vertiefungs-Block mit 8 Absaetzen (einer je Framework), je mit TalentMatch-AI-Bezug wo sinnvoll.
+5. Mini-Quiz, Navigation (kein Beispiel-Box/Persona-Zitat wie in Station 1-5, da kein einzelnes Fallbeispiel im Zentrum steht).
 
 DESIGN-VORGABEN (identisch zu allen Michaela-Tools)
 - Hintergrund immer Wei&szlig;, color-scheme:light, kein Dark Mode.
-- Eigene Akzentfarbe (Amber/Bernstein) zur visuellen Unterscheidung von IREB (Blau) und OCEB2 (Tuerkis) im Tool-Set.
+- Eigene Akzentfarbe (Amber/Bernstein) zur visuellen Unterscheidung von IREB (Blau) und BABOK (Violett) im Tool-Set.
 - pointerup-Events statt click, keine HTML5-Drag-and-Drop-API.
-- Schriftgr&ouml;&szlig;en: Flie&szlig;text &ge;16px, Sekund&auml;rtext &ge;14px, in allen vier Beamer-Stufen weiter hochskaliert.
-- Signatur oben rechts, position:fixed, Name + Website-Link.
+- Schriftgr&ouml;&szlig;en: Flie&szlig;text &ge;16px, Sekund&auml;rtext &ge;14px, in allen vier Beamer-Stufen weiter hochskaliert (inkl. neuer .station-intro- und .vertiefung-block-Klassen).
+- Signatur oben rechts, position:fixed auf JEDER Viewport-Breite (K21) &ndash; kein Rueckfall auf position:static unter 900px, stattdessen Padding der Signatur und reservierter Platz im Header reduziert.
 - Vierstufiger kumulativer Beamer-Toggle, Footer ab Stufe 1 ausgeblendet.
-- Sprach-Toggle DE/EN ohne Reload: deutscher Text statisch im HTML.
+- Sprach-Toggle DE/EN ohne Reload: deutscher Text statisch im HTML, inkl. aller neuen Vertiefungs- und Station-6-Inhalte.
 - Vier Pflicht-Footer-Boxen: Systemprompt, Handbuch, Vortrags-Skript, Normen-Register.
 
 NICHT TUN
 - Keine externen Ressourcen (fetch, CDN, Web Fonts).
 - Kein localStorage, nur sessionStorage mit try/catch.
-- Keine erfundene Pruefungs-/Lehrplanstruktur, wo keine existiert (bewusster Unterschied zu IREB/OCEB2) - BPMN-Elementdefinitionen bleiben trotzdem spezifikationstreu.</div>
+- Keine erfundene Pruefungs-/Lehrplanstruktur, wo keine existiert (bewusster Unterschied zu IREB/BABOK) - BPMN-Elementdefinitionen und Framework-Angaben bleiben trotzdem spezifikationstreu.
+- Keine Laufzeit-Generierung der Vertiefungs-Inhalte per JS/Fetch - beide Versionen (kurz/voll) stehen von Anfang an vollstaendig im HTML.</div>
     </details>
 
     <details class="footer-box">
       <summary data-i18n data-en="Handbook">Handbuch</summary>
-      <div class="footer-content footer-sans" data-i18n data-en="&lt;p&gt;&lt;strong&gt;Framework used: RTF (Role &amp;middot; Task &amp;middot; Format).&lt;/strong&gt; The trigger was a sign of fatigue with the previous tools: &amp;ldquo;Hm, that is already a lot&amp;rdquo; &amp;ndash; followed by four very concrete practical questions rather than a syllabus request: when which process, how to model, what to model, with examples like swimlanes and artifacts.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Role:&lt;/strong&gt; the trainer, who after two exam-oriented compendiums (IREB, OCEB2) now explicitly wants a pure practitioner guide with no exam connection &amp;ndash; for participants who apply BPMN directly in practice, not those seeking certification.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Task:&lt;/strong&gt; the four questions asked mapped 1:1 onto the first three stations (When? What? How?), supplemented by two explicitly requested example stations (swimlane, further artifacts). No derivation from an external blueprint was needed &amp;ndash; the structure came directly from the user&#x27;s own phrasing.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Format:&lt;/strong&gt; implicitly set by the contrast to the previous tools: deliberately the leanest of the three BPM tools, with no weighting badges, no appendix, no cross-reference box &amp;ndash; just the four questions plus examples, cleanly organised into five stations.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Key teaching point:&lt;/strong&gt; &amp;ldquo;that is already a lot&amp;rdquo; is itself an important requirement, even though it does not sound like a specification &amp;ndash; it means: think smaller for the next tool, not just less text within an identical structure, but a genuine reduction in station count and layout.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Rebuild tip:&lt;/strong&gt; when a user says &amp;ldquo;that is already a lot&amp;rdquo; after several extensive tools and then makes a new, simpler request, that is a signal to actively cut scope (station count, badges, extra boxes) &amp;ndash; not just repeat the same blueprint with fewer bullet points.&lt;/p&gt;"><p><strong>Verwendetes Framework: RTF (Rolle &middot; Task &middot; Format).</strong> Ausl&ouml;ser war eine Ersch&ouml;pfungsreaktion auf die bisherigen Tools: &bdquo;Hm, das ist schon viel&ldquo; &ndash; gefolgt von vier sehr konkreten Praxisfragen statt eines Lehrplan-Wunsches: wann welcher Prozess, wie modellieren, was modellieren, mit Beispielen wie Swimlane und Artefakten.</p>
-<p><strong>Rolle:</strong> die Trainerin, die nach zwei pr&uuml;fungsnahen Kompendien (IREB, OCEB2) jetzt explizit einen reinen Anwender-Leitfaden ohne Pr&uuml;fungsbezug will &ndash; f&uuml;r Teilnehmende, die BPMN direkt in der Praxis einsetzen, nicht daf&uuml;r zertifiziert werden wollen.</p>
-<p><strong>Task:</strong> Die vier gestellten Fragen wurden 1:1 zu den ersten drei Stationen (Wann? Was? Wie?), erg&auml;nzt um zwei explizit angeforderte Beispiel-Stationen (Swimlane, weitere Artefakte). Keine Ableitung aus einem externen Blueprint n&ouml;tig &ndash; die Struktur kam direkt aus der Formulierung der Nutzerin.</p>
-<p><strong>Format:</strong> Implizit durch den Kontrast zu den vorherigen Tools vorgegeben: bewusst das schlankeste der drei BPM-Tools, ohne Gewichtungs-Badges, ohne Anhang, ohne Cross-Reference-Box &ndash; nur die vier Fragen plus Beispiele, sauber in fuenf Stationen gegliedert.</p>
-<p><strong>Zentraler Lernhinweis:</strong> &bdquo;Das ist schon viel&ldquo; ist selbst eine wichtige Anforderung, auch wenn sie nicht wie eine Spezifikation klingt &ndash; sie bedeutet: n&auml;chstes Tool bewusst kleiner denken, nicht nur weniger Text pro identischer Struktur, sondern eine echte Reduktion in Stationsanzahl und Aufbau.</p>
-<p><strong>Nachbau-Tipp:</strong> Wenn eine Nutzerin nach mehreren umfangreichen Tools &bdquo;das ist schon viel&ldquo; sagt und danach eine neue, einfachere Anfrage stellt, ist das ein Signal, aktiv Umfang zu reduzieren (Stationsanzahl, Badges, Zusatzboxen) &ndash; nicht nur denselben Bauplan mit weniger Bulletpoints zu wiederholen.</p></div>
+      <div class="footer-content footer-sans" data-i18n data-en="&lt;p&gt;&lt;strong&gt;Framework used: RTF (Role &amp;middot; Task &amp;middot; Format).&lt;/strong&gt; V1&#x27;s trigger was a sign of fatigue with the previous tools: &amp;ldquo;Hm, that is already a lot&amp;rdquo; &amp;ndash; followed by four very concrete practical questions rather than a syllabus request. V2&#x27;s trigger was the opposite motion: explicit requests for an in-depth toggle plus a grounding of BPMN in eight surrounding methodologies (PMP, BABOK, RE, IPMA, LEAN, PM&amp;sup2;, PRINCE2, Scrum), backed by Process Charter templates, a grid of 14 process representation forms and a speaker script on &amp;ldquo;what is a process&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Role:&lt;/strong&gt; the trainer, who after two exam-oriented compendiums (IREB, BABOK) first wanted a pure practitioner guide with no exam connection, then asked to layer optional depth back in without losing that lean baseline &amp;ndash; both audiences (quick practitioner lookup and deeper method-context reading) now share one tool.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Task:&lt;/strong&gt; V1&#x27;s four questions mapped 1:1 onto the first three stations (When? What? How?), supplemented by two example stations (swimlane, further artifacts). V2 added an in-depth block per station (derived from the Process Charter/representation-forms material) plus a sixth station mapping BPMN onto eight external frameworks, each with a verified current edition and date.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Format:&lt;/strong&gt; the opt-in toggle keeps the original constraint intact (no station forced to grow, no permanent wall of text) while making the richer content available on demand &amp;ndash; a single global toggle rather than one per explanation block, so the interaction stays as lean as the station count.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key teaching point:&lt;/strong&gt; &amp;ldquo;lean by default, deep on demand&amp;rdquo; resolves what looks like a contradiction between V1&#x27;s explicit request for brevity and V2&#x27;s explicit request for more depth &amp;ndash; both are true at the same time if the depth is opt-in rather than baked into the default view.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Rebuild tip:&lt;/strong&gt; when a later request asks to add depth to a tool that was deliberately built lean, do not rewrite the short version &amp;ndash; add a toggle and keep the short version as the untouched default, so the original design intent survives the extension.&lt;/p&gt;"><p><strong>Verwendetes Framework: RTF (Rolle &middot; Task &middot; Format).</strong> Ausl&ouml;ser von V1 war eine Ersch&ouml;pfungsreaktion auf die bisherigen Tools: &bdquo;Hm, das ist schon viel&ldquo; &ndash; gefolgt von vier sehr konkreten Praxisfragen statt eines Lehrplan-Wunsches. Ausl&ouml;ser von V2 war die Gegenbewegung: die explizite Bitte um einen Vertiefungs-Toggle plus eine Verortung von BPMN in acht umgebenden Methoden (PMP, BABOK, RE, IPMA, LEAN, PM&sup2;, PRINCE2, Scrum), gestuetzt auf Process-Charter-Vorlagen, ein Raster mit 14 Prozessdarstellungsformen und ein Sprechskript zu &bdquo;Was ist ein Prozess&ldquo;.</p>
+<p><strong>Rolle:</strong> die Trainerin, die nach zwei pr&uuml;fungsnahen Kompendien (IREB, BABOK) zunaechst einen reinen Anwender-Leitfaden ohne Pr&uuml;fungsbezug wollte, dann aber bat, optionale Tiefe wieder einzubauen, ohne die schlanke Basis zu verlieren &ndash; beide Zielgruppen (schnelles Nachschlagen und vertiefte Methodenlektuere) teilen sich jetzt ein Tool.</p>
+<p><strong>Task:</strong> Die vier Fragen aus V1 wurden 1:1 zu den ersten drei Stationen (Wann? Was? Wie?), erg&auml;nzt um zwei Beispiel-Stationen (Swimlane, weitere Artefakte). V2 ergaenzte pro Station einen Vertiefungs-Block (abgeleitet aus dem Process-Charter-/Darstellungsformen-Material) sowie eine sechste Station, die BPMN auf acht externe Frameworks abbildet, jeweils mit verifiziertem aktuellem Stand und Datum.</p>
+<p><strong>Format:</strong> Der Opt-in-Toggle haelt die urspruengliche Beschraenkung intakt (keine Station waechst zwangslaeufig, keine dauerhafte Textwand), macht den reicheren Inhalt aber bei Bedarf verfuegbar &ndash; ein einzelner globaler Toggle statt einem pro Erklaerungsblock, damit die Interaktion so schlank bleibt wie die Stationsanzahl.</p>
+<p><strong>Zentraler Lernhinweis:</strong> &bdquo;schlank per Default, tief auf Wunsch&ldquo; loest den scheinbaren Widerspruch zwischen V1s expliziter Bitte um Kuerze und V2s expliziter Bitte um mehr Tiefe auf &ndash; beides stimmt gleichzeitig, wenn die Tiefe optional statt fest in die Standardansicht eingebacken ist.</p>
+<p><strong>Nachbau-Tipp:</strong> Wenn eine spaetere Anfrage bittet, einem bewusst schlank gebauten Tool Tiefe hinzuzufuegen, die kurze Version nicht umschreiben &ndash; stattdessen einen Toggle ergaenzen und die kurze Version als unveraenderten Default belassen, damit die urspruengliche Design-Absicht die Erweiterung uebersteht.</p></div>
     </details>
 
     <details class="footer-box">
       <summary data-i18n data-en="Speaker script">Vortrags-Skript</summary>
-      <div class="footer-content footer-sans" data-i18n data-en="&lt;p&gt;&lt;em&gt;(Direction: open the tool in presenter mode. Very short format, about 6-8 minutes &amp;ndash; usable as a practitioner guide directly after a BPMN introduction.)&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Opening:&lt;/strong&gt; &amp;ldquo;After the theory, now the practice: five stations that walk you through the four most important questions that come up when drawing your first own BPMN diagram.&amp;rdquo;&lt;/p&gt;
+      <div class="footer-content footer-sans" data-i18n data-en="&lt;p&gt;&lt;em&gt;(Direction: open the tool in presenter mode. About 8-10 minutes for the six stations at their short setting &amp;ndash; usable as a practitioner guide directly after a BPMN introduction. The in-depth toggle stays off during a live talk; beamer mode forces it off automatically anyway.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Opening:&lt;/strong&gt; &amp;ldquo;After the theory, now the practice: six stations that walk you through the questions that come up when drawing your first own BPMN diagram &amp;ndash; and where that fits among the methods you already know.&amp;rdquo;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;(Click through stations 1-2.)&lt;/em&gt; &amp;ldquo;First the diagram choice: a plain process diagram or a collaboration diagram? Then the scope: where does my process really start, where does it end?&amp;rdquo;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;(Click to station 3.)&lt;/em&gt; &amp;ldquo;The four rules of thumb here are what I most often correct in every review: happy path first, meaningful names, not too many elements, clear gateway questions.&amp;rdquo;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;(Click to station 4 &amp;ndash; the heart of the demo.)&lt;/em&gt; &amp;ldquo;And here the example that sticks the most: pool and swimlane live on the TalentMatch AI process &amp;ndash; who does what, and where the message goes outward.&amp;rdquo;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;(Click to station 5.)&lt;/em&gt; &amp;ldquo;Finally the four artifacts most often confused in practice &amp;ndash; data object versus data store is the classic one.&amp;rdquo;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Closing:&lt;/strong&gt; &amp;ldquo;That is it &amp;ndash; five stations, directly applicable the next time you draw your own diagram.&amp;rdquo;&lt;/p&gt;
-&lt;p class=&quot;regie&quot;&gt;Direction note: this tool does not replace BPMN fundamentals training &amp;ndash; it is the practical follow-up. If needed, point to the OCEB2 compendium (station 4, BPMN 2.0) for the formal notation basis.&lt;/p&gt;"><p><em>(Regie: Tool im Beamer-Modus &ouml;ffnen. Sehr kurzes Format, ca. 6-8 Minuten &ndash; als Anwender-Leitfaden direkt im Anschluss an eine BPMN-Einf&uuml;hrung nutzbar.)</em></p>
-<p><strong>Einstieg:</strong> &bdquo;Nach der Theorie jetzt die Praxis: f&uuml;nf Stationen, die Euch durch die vier wichtigsten Fragen f&uuml;hren, die beim ersten eigenen BPMN-Diagramm auftauchen.&ldquo;</p>
+&lt;p&gt;&lt;em&gt;(Click to station 5.)&lt;/em&gt; &amp;ldquo;Then the four artifacts most often confused in practice &amp;ndash; data object versus data store is the classic one.&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(Click to station 6.)&lt;/em&gt; &amp;ldquo;And finally the question I get asked in almost every workshop: where does BPMN actually sit if my organisation already runs PMP, BABOK, Scrum or PRINCE2? Here is the one-sentence answer for each of the eight frameworks you are most likely to meet.&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(Optional, only for smaller groups with time to spare: turn on the in-depth toggle top-right and revisit station 6 or 2.)&lt;/em&gt; &amp;ldquo;If we have a few more minutes: the in-depth view adds the background for each of these points &amp;ndash; for instance the full Process Charter behind station 2&#x27;s scope question.&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Closing:&lt;/strong&gt; &amp;ldquo;That is it &amp;ndash; six stations, directly applicable the next time you draw your own diagram, plus the method map for whenever someone asks &amp;#x27;but how does this fit our PM framework&amp;#x27;.&amp;rdquo;&lt;/p&gt;
+&lt;p class=&quot;regie&quot;&gt;Direction note: this tool does not replace BPMN fundamentals training &amp;ndash; it is the practical follow-up. If needed, point to the BABOK compendium for the formal notation basis, and to the IREB compendium for the requirements-documentation angle. Keep the in-depth toggle off for a live talk unless the group explicitly asks for more background &amp;ndash; it is built for self-study afterwards.&lt;/p&gt;"><p><em>(Regie: Tool im Beamer-Modus &ouml;ffnen. Ca. 8-10 Minuten f&uuml;r die sechs Stationen in der kurzen Einstellung &ndash; als Anwender-Leitfaden direkt im Anschluss an eine BPMN-Einf&uuml;hrung nutzbar. Der Vertiefungs-Toggle bleibt im Live-Vortrag aus; der Beamer-Modus erzwingt das ohnehin automatisch.)</em></p>
+<p><strong>Einstieg:</strong> &bdquo;Nach der Theorie jetzt die Praxis: sechs Stationen, die Euch durch die Fragen f&uuml;hren, die beim ersten eigenen BPMN-Diagramm auftauchen &ndash; und wo das unter den Methoden einsortiert ist, die Ihr schon kennt.&ldquo;</p>
 <p><em>(Klick durch Station 1-2.)</em> &bdquo;Erst die Diagrammwahl: reines Prozessdiagramm oder Collaboration? Dann der Scope: Wo f&auml;ngt mein Prozess wirklich an, wo h&ouml;rt er auf?&ldquo;</p>
 <p><em>(Klick zu Station 3.)</em> &bdquo;Die vier Faustregeln hier sind das, was ich in jedem Review am h&auml;ufigsten korrigiere: Happy Path zuerst, sprechende Namen, nicht zu viele Elemente, klare Gateway-Fragen.&ldquo;</p>
 <p><em>(Klick zu Station 4 &ndash; Kernst&uuml;ck der Demo.)</em> &bdquo;Und hier das Beispiel, das am meisten h&auml;ngen bleibt: Pool und Swimlane live am TalentMatch-AI-Prozess &ndash; wer macht was, und wo geht die Nachricht nach au&szlig;en.&ldquo;</p>
-<p><em>(Klick zu Station 5.)</em> &bdquo;Zum Schluss die vier Artefakte, die in der Praxis am h&auml;ufigsten verwechselt werden &ndash; Data Object versus Data Store ist der Klassiker.&ldquo;</p>
-<p><strong>Abschluss:</strong> &bdquo;Das war's schon &ndash; f&uuml;nf Stationen, direkt anwendbar beim n&auml;chsten eigenen Diagramm.&ldquo;</p>
-<p class="regie">Regie-Hinweis: Dieses Tool ersetzt keine BPMN-Grundlagenschulung &ndash; es ist der Praxis-Nachschlag danach. Bei Bedarf auf das OCEB2-Kompendium (Station 4, BPMN 2.0) f&uuml;r die formale Notationsbasis verweisen.</p></div>
+<p><em>(Klick zu Station 5.)</em> &bdquo;Dann die vier Artefakte, die in der Praxis am h&auml;ufigsten verwechselt werden &ndash; Data Object versus Data Store ist der Klassiker.&ldquo;</p>
+<p><em>(Klick zu Station 6.)</em> &bdquo;Und zum Schluss die Frage, die mir in fast jedem Workshop gestellt wird: Wo sitzt BPMN eigentlich, wenn meine Organisation schon PMP, BABOK, Scrum oder PRINCE2 nutzt? Hier die Ein-Satz-Antwort fuer jedes der acht Frameworks, denen Ihr am ehesten begegnet.&ldquo;</p>
+<p><em>(Optional, nur bei kleineren Gruppen mit Zeitpuffer: Vertiefungs-Toggle oben rechts einschalten und Station 6 oder 2 erneut zeigen.)</em> &bdquo;Wenn wir noch ein paar Minuten haben: Die Vertiefung ergaenzt zu jedem Punkt den Hintergrund &ndash; zum Beispiel den vollstaendigen Process Charter hinter der Scope-Frage aus Station 2.&ldquo;</p>
+<p><strong>Abschluss:</strong> &bdquo;Das war's schon &ndash; sechs Stationen, direkt anwendbar beim n&auml;chsten eigenen Diagramm, plus die Methodenkarte fuer die naechste Frage &#x27;Aber wie passt das zu unserem PM-Framework&#x27;.&ldquo;</p>
+<p class="regie">Regie-Hinweis: Dieses Tool ersetzt keine BPMN-Grundlagenschulung &ndash; es ist der Praxis-Nachschlag danach. Bei Bedarf auf das BABOK-Kompendium fuer die formale Notationsbasis verweisen, und auf das IREB-Kompendium fuer den Anforderungsdokumentations-Blickwinkel. Vertiefungs-Toggle im Live-Vortrag ausgeschaltet lassen, ausser die Gruppe fragt explizit nach mehr Hintergrund &ndash; er ist fuer das Selbststudium danach gedacht.</p></div>
     </details>
 
     <details class="footer-box">
@@ -519,6 +670,13 @@ NICHT TUN
           <tbody>
             <tr><td>BPMN 2.0.2 (OMG) / ISO/IEC 19510</td><td data-i18n data-en="In force &ndash; published January 2014, unchanged since (verified: no newer major version)">In Kraft &ndash; ver&ouml;ffentlicht Januar 2014, seither unver&auml;ndert (verifiziert: keine neuere Hauptversion)</td><td>02.09.2026</td></tr>
             <tr><td>EU AI Act (Verordnung (EU) 2024/1689)</td><td data-i18n data-en="In force &ndash; TalentMatch AI classified as high-risk under Annex III No. 4">In Kraft &ndash; TalentMatch AI eingestuft als Hochrisiko-System nach Anhang III Nr. 4</td><td>02.09.2026</td></tr>
+            <tr><td>IREB CPRE Foundation Level Lehrplan</td><td data-i18n data-en="In force &ndash; Syllabus v3.3.0, 1 April 2026 (same version as referenced in this tool set&#x27;s IREB compendium)">In Kraft &ndash; Lehrplan v3.3.0, 1. April 2026 (gleiche Version wie im IREB-Kompendium dieses Tool-Sets referenziert)</td><td>23.09.2026</td></tr>
+            <tr><td>PMBOK&reg; Guide (PMI)</td><td data-i18n data-en="In force &ndash; 8th Edition, published November 2025 (verified via web search: current edition, supersedes the 7th Edition of 2021)">In Kraft &ndash; 8. Edition, ver&ouml;ffentlicht November 2025 (per Websuche verifiziert: aktuelle Edition, l&ouml;st die 7. Edition von 2021 ab)</td><td>23.09.2026</td></tr>
+            <tr><td>BABOK&reg; Guide (IIBA)</td><td data-i18n data-en="In force &ndash; Version 3, published 2015, still the current edition (verified via web search: no Version 4 released yet)">In Kraft &ndash; Version 3, ver&ouml;ffentlicht 2015, weiterhin aktuelle Ausgabe (per Websuche verifiziert: noch keine Version 4 erschienen)</td><td>23.09.2026</td></tr>
+            <tr><td>IPMA ICB4</td><td data-i18n data-en="In force &ndash; Version 4, published 2015; Version 5 announced for 2026 but not yet published (verified via web search)">In Kraft &ndash; Version 4, ver&ouml;ffentlicht 2015; Version 5 f&uuml;r 2026 angek&uuml;ndigt, aber noch nicht ver&ouml;ffentlicht (per Websuche verifiziert)</td><td>23.09.2026</td></tr>
+            <tr><td>Open PM&sup2; Guide (Europ&auml;ische Kommission)</td><td data-i18n data-en="In force &ndash; Version 3.1, published December 2023 (verified via web search: current release)">In Kraft &ndash; Version 3.1, ver&ouml;ffentlicht Dezember 2023 (per Websuche verifiziert: aktueller Stand)</td><td>23.09.2026</td></tr>
+            <tr><td>PRINCE2&reg; (AXELOS/PeopleCert)</td><td data-i18n data-en="In force &ndash; 7th Edition, published September 2023 (verified via web search: current edition)">In Kraft &ndash; 7. Edition, ver&ouml;ffentlicht September 2023 (per Websuche verifiziert: aktuelle Edition)</td><td>23.09.2026</td></tr>
+            <tr><td>Scrum Guide (Schwaber/Sutherland)</td><td data-i18n data-en="In force &ndash; November 2020 revision, still the current, authoritative version as of September 2026 (verified via web search)">In Kraft &ndash; Revision November 2020, Stand September 2026 weiterhin die aktuelle, autoritative Fassung (per Websuche verifiziert)</td><td>23.09.2026</td></tr>
           </tbody>
         </table>
       </div>
@@ -528,15 +686,15 @@ NICHT TUN
 
   <p class="footer-sig">
     <strong>Michaela K&uuml;hn</strong> &middot; <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a><br>
-    <span data-i18n data-en="Based on: BPMN 2.0.2 (ISO/IEC 19510), EU AI Act">Basierend auf: BPMN 2.0.2 (ISO/IEC 19510), EU AI Act</span>
-    <span class="audit">Zuletzt gepr&uuml;ft: 02.09.2026 &middot; Status: &#9989; Zertifiziert &middot; Details siehe Audit-Protokoll</span>
+    <span data-i18n data-en="Based on: BPMN 2.0.2 (ISO/IEC 19510), EU AI Act, IREB CPRE, BABOK&#xAE;, PMBOK&#xAE;, IPMA ICB4, PM&#xB2;, PRINCE2&#xAE;, Scrum Guide">Basierend auf: BPMN 2.0.2 (ISO/IEC 19510), EU AI Act, IREB CPRE, BABOK&reg;, PMBOK&reg;, IPMA ICB4, PM&sup2;, PRINCE2&reg;, Scrum Guide</span>
+    <span class="audit">Zuletzt gepr&uuml;ft: 23.09.2026 &middot; Status: &#9989; Zertifiziert &middot; Details siehe Audit-Protokoll</span>
   </p>
 </footer>
 
 <script>
 (function(){
   "use strict";
-  var STATIONS = ["s1", "s2", "s3", "s4", "s5"];
+  var STATIONS = ["s1", "s2", "s3", "s4", "s5", "s6"];
   var current = STATIONS[0];
   var stamped = {};
   var lang = "de";
@@ -658,6 +816,7 @@ NICHT TUN
       lang = (lang === "de") ? "en" : "de";
       saveLang();
       applyLang();
+      if(window.__syncVertiefung){ window.__syncVertiefung(); }
     });
   }
 
@@ -676,6 +835,7 @@ NICHT TUN
       var btn = document.getElementById("beamerBtn");
       btn.textContent = BEAMER_LEVELS[stage].label;
       btn.classList.toggle("active", stage > 0);
+      if(window.__syncVertiefung){ window.__syncVertiefung(); }
     }
     apply();
     document.getElementById("beamerBtn").addEventListener("pointerup", function(){
@@ -685,11 +845,38 @@ NICHT TUN
     });
   }
 
+  function wireVertiefung(){
+    var on = false;
+    var s = safeGet("bpmn_anwender_vertiefung");
+    if(s === "1"){ on = true; }
+    function apply(){
+      var beamerActive = document.documentElement.classList.contains("beamer");
+      var show = on && !beamerActive;
+      document.documentElement.classList.toggle("vertiefung", show);
+      var btn = document.getElementById("vertiefungBtn");
+      var label_de = show ? "🔍 Vertiefung: An" : "🔍 Vertiefung: Aus";
+      var label_en = show ? "🔍 In depth: On" : "🔍 In depth: Off";
+      btn.setAttribute("data-en", label_en);
+      btn.textContent = (lang === "en") ? label_en : label_de;
+      btn.classList.toggle("active", show);
+      btn.disabled = beamerActive;
+    }
+    apply();
+    document.getElementById("vertiefungBtn").addEventListener("pointerup", function(){
+      if(document.documentElement.classList.contains("beamer")) return;
+      on = !on;
+      safeSet("bpmn_anwender_vertiefung", on ? "1" : "0");
+      apply();
+    });
+    window.__syncVertiefung = apply;
+  }
+
   document.addEventListener("DOMContentLoaded", function(){
     loadState();
     wireNav();
     wireQuizzes();
     wireBeamer();
+    wireVertiefung();
     wireLangToggle();
     showStation(current);
     applyLang();
