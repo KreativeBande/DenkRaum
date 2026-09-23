@@ -118,7 +118,13 @@
   .diagram-card .dc-what{font-size:14px; color:var(--sub); line-height:1.5; margin:0 0 8px 0;}
   .diagram-card .dc-tools{font-size:14px; color:var(--muted); line-height:1.5; margin:0;}
   .diagram-card .dc-tools strong{color:var(--sub); font-weight:700;}
-  .diagram-card .dc-xref{font-size:14px; color:var(--accent-dark); margin:6px 0 0 0;}
+  .diagram-card .dc-xref{
+    font-size:14px; color:var(--accent-dark); margin:6px 0 0 0;
+    display:inline-flex; align-items:center; gap:4px;
+    background:transparent; border:none; padding:0; font-family:inherit;
+    cursor:pointer; text-align:left; text-decoration:underline; text-underline-offset:2px;
+  }
+  .diagram-card .dc-xref:hover{ color:var(--accent); }
   html.beamer .diagram-card h4{font-size:18px;}
   html.beamer .diagram-card .dc-what, html.beamer .diagram-card .dc-tools, html.beamer .diagram-card .dc-xref, html.beamer .diagram-card .dc-num{font-size:16px;}
   html.beamer.beamer-xl .diagram-card h4{font-size:21px;}
@@ -154,6 +160,13 @@
   html.beamer .persona-quote{font-size:17px;}
   html.beamer .nav-btn, html.beamer .ctrl-btn{font-size:16px; padding:12px 18px;}
   html.beamer footer.tool-footer{display:none;}
+  html.beamer .crosslink{display:none;}
+
+  .crosslink{margin:0 28px 20px 28px; font-size:14px; color:var(--muted);}
+  .crosslink a{color:var(--accent); font-weight:700; text-decoration:none;}
+  .crosslink a:hover{text-decoration:underline;}
+  .crosslink ul{margin:8px 0 0; padding-left:20px;}
+  .crosslink li{margin-bottom:4px;}
 
   html.beamer.beamer-xl .station-panel h2{font-size:30px;}
   html.beamer.beamer-xl .kern-list li, html.beamer.beamer-xl .begriffe,
@@ -651,7 +664,7 @@
           </svg>
           <p class="dc-what"><span data-i18n data-en="Which processes create value for the customer, framed by management and support - without going into individual activities. See station 1 for the next level down.">Welche Prozesse erzeugen Kundenwert, gerahmt von Management und Support - ohne auf einzelne Aktivitaeten einzugehen. Die naechste Ebene zeigt Station 1.</span></p>
           <p class="dc-tools"><strong><span data-i18n data-en="Typical tools:">Typische Tools:</span></strong> <span data-i18n data-en="SAP Signavio, Lucidchart, Miro">SAP Signavio, Lucidchart, Miro</span></p>
-          <p class="dc-xref">&#8594; <span data-i18n data-en="see station 1">siehe Station 1</span></p>
+          <button type="button" class="dc-xref" data-target="s1">&#8594; <span data-i18n data-en="see station 1">siehe Station 1</span></button>
         </div>
 
         <div class="diagram-card">
@@ -672,7 +685,7 @@
           </svg>
           <p class="dc-what"><span data-i18n data-en="Who does what, and where does a handover happen? One lane per role, sequence flow across lanes.">Wer macht was, und wo findet eine Uebergabe statt? Eine Lane pro Rolle, Sequence Flow ueber die Lanes hinweg.</span></p>
           <p class="dc-tools"><strong><span data-i18n data-en="Typical tools:">Typische Tools:</span></strong> <span data-i18n data-en="MS Visio, Lucidchart, draw.io/diagrams.net, Camunda Modeler">MS Visio, Lucidchart, draw.io/diagrams.net, Camunda Modeler</span></p>
-          <p class="dc-xref">&#8594; <span data-i18n data-en="see station 4">siehe Station 4</span></p>
+          <button type="button" class="dc-xref" data-target="s4">&#8594; <span data-i18n data-en="see station 4">siehe Station 4</span></button>
         </div>
 
         <div class="diagram-card">
@@ -695,7 +708,7 @@
           </svg>
           <p class="dc-what"><span data-i18n data-en="Activity, role, information, time and waste in one single table - a process X-ray for optimisation workshops.">Aktivitaet, Rolle, Information, Zeit und Verschwendung in einer einzigen Tabelle - ein Prozess-Roentgenbild fuer Optimierungs-Workshops.</span></p>
           <p class="dc-tools"><strong><span data-i18n data-en="Typical tools:">Typische Tools:</span></strong> <span data-i18n data-en="Excel/PowerPoint template, Miro, Mural">Excel-/PowerPoint-Vorlage, Miro, Mural</span></p>
-          <p class="dc-xref">&#8594; <span data-i18n data-en="see station 5 (in depth)">siehe Station 5 (Vertiefung)</span></p>
+          <button type="button" class="dc-xref" data-target="s5" data-vertiefung="1">&#8594; <span data-i18n data-en="see station 5 (in depth)">siehe Station 5 (Vertiefung)</span></button>
         </div>
 
         <div class="diagram-card">
@@ -714,7 +727,7 @@
           </svg>
           <p class="dc-what"><span data-i18n data-en="How does the customer experience the process, and where do emotions dip? Same process, but seen from the outside in.">Wie erlebt der Kunde den Prozess, und wo sackt die Stimmung ab? Derselbe Prozess, aber von aussen nach innen betrachtet.</span></p>
           <p class="dc-tools"><strong><span data-i18n data-en="Typical tools:">Typische Tools:</span></strong> <span data-i18n data-en="Miro, Mural, UXPressia, Smaply">Miro, Mural, UXPressia, Smaply</span></p>
-          <p class="dc-xref">&#8594; <span data-i18n data-en="see station 4 (in depth)">siehe Station 4 (Vertiefung)</span></p>
+          <button type="button" class="dc-xref" data-target="s4" data-vertiefung="1">&#8594; <span data-i18n data-en="see station 4 (in depth)">siehe Station 4 (Vertiefung)</span></button>
         </div>
 
         <div class="diagram-card">
@@ -734,7 +747,7 @@
           </svg>
           <p class="dc-what"><span data-i18n data-en="Supplier, input, process, output, customer side by side - the framing pass before any flowchart gets drawn.">Supplier, Input, Process, Output, Customer nebeneinander - der Rahmungs-Durchgang, bevor ueberhaupt ein Flussdiagramm entsteht.</span></p>
           <p class="dc-tools"><strong><span data-i18n data-en="Typical tools:">Typische Tools:</span></strong> <span data-i18n data-en="Excel/PowerPoint template, Miro, Lucidchart">Excel-/PowerPoint-Vorlage, Miro, Lucidchart</span></p>
-          <p class="dc-xref">&#8594; <span data-i18n data-en="see station 4 (in depth)">siehe Station 4 (Vertiefung)</span></p>
+          <button type="button" class="dc-xref" data-target="s4" data-vertiefung="1">&#8594; <span data-i18n data-en="see station 4 (in depth)">siehe Station 4 (Vertiefung)</span></button>
         </div>
 
         <div class="diagram-card">
@@ -774,7 +787,7 @@
           </svg>
           <p class="dc-what"><span data-i18n data-en="Processing and waiting time per step, plus the resulting flow efficiency - the time/waste dimension a plain BPMN diagram does not show.">Bearbeitungs- und Wartezeit je Schritt, plus die daraus berechnete Flow-Efficiency - die Zeit-/Verschwendungsdimension, die ein reines BPMN-Diagramm nicht zeigt.</span></p>
           <p class="dc-tools"><strong><span data-i18n data-en="Typical tools:">Typische Tools:</span></strong> <span data-i18n data-en="Miro/Mural VSM templates, iGrafx, Lucidchart VSM shapes">Miro-/Mural-VSM-Vorlagen, iGrafx, Lucidchart-VSM-Shapes</span></p>
-          <p class="dc-xref">&#8594; <span data-i18n data-en="see station 5 (in depth)">siehe Station 5 (Vertiefung)</span></p>
+          <button type="button" class="dc-xref" data-target="s5" data-vertiefung="1">&#8594; <span data-i18n data-en="see station 5 (in depth)">siehe Station 5 (Vertiefung)</span></button>
         </div>
 
         <div class="diagram-card">
@@ -793,7 +806,7 @@
           </svg>
           <p class="dc-what"><span data-i18n data-en="An end-to-end process with only a handful of high-level activities in a single pool - for a management audience, not for developers.">Ein End-to-End-Prozess mit nur einer Handvoll grober Aktivitaeten in einem einzigen Pool - fuer Fuehrungskraefte, nicht fuer Entwickelnde.</span></p>
           <p class="dc-tools"><strong><span data-i18n data-en="Typical tools:">Typische Tools:</span></strong> <span data-i18n data-en="Camunda Modeler, SAP Signavio, Bizagi Modeler">Camunda Modeler, SAP Signavio, Bizagi Modeler</span></p>
-          <p class="dc-xref">&#8594; <span data-i18n data-en="see station 2 (in depth)">siehe Station 2 (Vertiefung)</span></p>
+          <button type="button" class="dc-xref" data-target="s2" data-vertiefung="1">&#8594; <span data-i18n data-en="see station 2 (in depth)">siehe Station 2 (Vertiefung)</span></button>
         </div>
 
         <div class="diagram-card">
@@ -818,7 +831,7 @@
           </svg>
           <p class="dc-what"><span data-i18n data-en="How does the process actually and logically work, in full detail - standardised symbols, pools/lanes, gateways, message flow. The most formal form in this list.">Wie laeuft der Prozess fachlich und logisch im Detail ab - standardisierte Symbole, Pools/Lanes, Gateways, Message Flow. Die formalste Form dieser Liste.</span></p>
           <p class="dc-tools"><strong><span data-i18n data-en="Typical tools:">Typische Tools:</span></strong> <span data-i18n data-en="Camunda Modeler (open source), bpmn.io, SAP Signavio, Bizagi Modeler">Camunda Modeler (Open Source), bpmn.io, SAP Signavio, Bizagi Modeler</span></p>
-          <p class="dc-xref">&#8594; <span data-i18n data-en="see stations 1-5">siehe Stationen 1-5</span></p>
+          <button type="button" class="dc-xref" data-target="s1">&#8594; <span data-i18n data-en="see stations 1-5">siehe Stationen 1-5</span></button>
         </div>
 
         <div class="diagram-card">
@@ -911,6 +924,15 @@
       </div>
     </section>
   </main>
+</div>
+
+<div class="crosslink">
+  <span data-i18n data-en="Related Denkraum tools on this topic:">Verwandte Denkraum-Tools zu diesem Thema:</span>
+  <ul>
+    <li><a href="./vantera-talentmatch-steckbrief.html" data-i18n data-en="Case World Profile &ndash; Vantera / TalentMatch AI">Fallwelt-Steckbrief &ndash; Vantera / TalentMatch AI</a> &ndash; <span data-i18n data-en="the fact reference behind the TalentMatch AI example used throughout this compendium (company, personas, process, EU AI Act classification), not a BPMN explanation itself.">die Faktenreferenz hinter dem in diesem Kompendium durchgehend genutzten Beispiel TalentMatch AI (Unternehmen, Personas, Prozess, EU-AI-Act-Einstufung) &ndash; keine BPMN-Erkl&auml;rung selbst.</span></li>
+    <li><a href="./ireb-kompendium.html" data-i18n data-en="IREB CPRE Foundation Level Compendium">IREB CPRE Foundation Level Kompendium</a> &ndash; <span data-i18n data-en="covers process models as one documentation format among several for functional requirements, instead of BPMN notation in depth.">behandelt Prozessmodelle als eine Dokumentationsform unter mehreren f&uuml;r funktionale Anforderungen, statt BPMN-Notation in der Tiefe.</span></li>
+    <li><a href="./babok-kompendium.html" data-i18n data-en="BABOK&reg; Compendium">BABOK&reg; Kompendium</a> &ndash; <span data-i18n data-en="names process modelling as one of around 50 BA techniques, instead of walking through BPMN notation station by station.">nennt Prozessmodellierung als eine von rund 50 BA-Techniken, statt BPMN-Notation Station f&uuml;r Station durchzugehen.</span></li>
+  </ul>
 </div>
 
 <footer class="tool-footer">
@@ -1249,6 +1271,24 @@ NICHT TUN
       apply();
     });
     window.__syncVertiefung = apply;
+    window.__setVertiefungOn = function(v){
+      on = v;
+      safeSet("bpmn_anwender_vertiefung", on ? "1" : "0");
+      apply();
+    };
+  }
+
+  function wireXrefs(){
+    document.querySelectorAll(".dc-xref[data-target]").forEach(function(btn){
+      btn.addEventListener("pointerup", function(){
+        var target = btn.getAttribute("data-target");
+        if(STATIONS.indexOf(target) === -1) return;
+        if(btn.getAttribute("data-vertiefung") === "1" && window.__setVertiefungOn){
+          window.__setVertiefungOn(true);
+        }
+        showStation(target);
+      });
+    });
   }
 
   document.addEventListener("DOMContentLoaded", function(){
@@ -1257,6 +1297,7 @@ NICHT TUN
     wireQuizzes();
     wireBeamer();
     wireVertiefung();
+    wireXrefs();
     wireLangToggle();
     showStation(current);
     applyLang();

@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Fallwelt-Steckbrief &amp; Business Case — Hochschule Nordwest / Digitale Studierendenakte</title>
+<style>
+  :root{
+    --accent: #7a2540;
+    --accent2: #b08d57;
+    --dark: #2b2430;
+    --lightbg: #f7f3f4;
+    --amberbg: #f5ecdc;
+    --border: #ddd0d3;
+    --grey: #5f5560;
+  }
+  html{ color-scheme: light; }
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    padding:0 0 40px 0;
+    background:#ffffff;
+    color:#1a1a1a;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    font-size:16px;
+    line-height:1.5;
+  }
+
+  /* ---------- Topbar: Zurück-Link + Meta-Controls (Pflicht) ---------- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+    padding:16px 24px 0 24px;
+  }
+  .back-link{
+    display:inline-block;
+    font-size:14px;
+    font-weight:700;
+    color:var(--grey);
+    text-decoration:none;
+  }
+  .back-link:hover{ color:var(--accent); }
+  .meta-controls{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+  /* ---------- Signatur oben rechts (Pflicht, K21: immer position:fixed) ---------- */
+  .sig{
+    position:fixed;
+    top:14px;
+    right:28px;
+    font-size:14px;
+    line-height:1.3;
+    color:var(--grey);
+    background:#ffffff;
+    padding:4px 10px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    z-index:500;
+  }
+  .sig strong{ display:block; color:var(--dark); font-size:15px; }
+  .sig a{ color:var(--accent); text-decoration:none; font-weight:600; }
+  @media (max-width:900px){
+    .sig{ padding:3px 8px; }
+    .topbar{ padding:16px 235px 0 24px; }
+  }
+
+  .btn-ghost{
+    min-height:44px; min-width:44px;
+    padding:9px 20px;
+    font-size:15px;
+    font-weight:700;
+    border-radius:999px;
+    border:1.5px solid var(--border);
+    background:#ffffff;
+    color:var(--grey);
+    cursor:pointer;
+  }
+  .btn-ghost:hover{ border-color:var(--accent); color:var(--accent); }
+
+  /* ---------- Beamer-Modus-Button (K18, vierstufig, kanonisches Muster) ---------- */
+  .beamer-btn{
+    background:transparent; border:1.5px solid var(--border);
+    color:var(--grey); font-size:15px; font-weight:700;
+    padding:9px 20px; min-height:44px;
+    border-radius:999px; cursor:pointer;
+  }
+  .beamer-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  html.beamer .beamer-btn,
+  html.beamer-xl .beamer-btn,
+  html.beamer-xxl .beamer-btn{ background:var(--dark); color:#fff; border-color:var(--dark); }
+
+  header.hero{
+    background:var(--dark);
+    color:#ffffff;
+    padding:22px 24px 22px 24px;
+    margin-top:12px;
+  }
+  header.hero h1{
+    margin:0 0 6px 0;
+    font-size:26px;
+    font-weight:800;
+  }
+  header.hero p{
+    margin:0;
+    font-size:15px;
+    color:#ddd1d8;
+  }
+
+  nav.tabs{
+    display:flex;
+    gap:8px;
+    padding:14px 24px 0 24px;
+    border-bottom:2px solid var(--border);
+    flex-wrap:wrap;
+  }
+  .tab-btn{
+    min-height:44px;
+    padding:10px 20px;
+    font-size:16px;
+    font-weight:700;
+    border:none;
+    background:none;
+    color:var(--grey);
+    cursor:pointer;
+    border-bottom:4px solid transparent;
+  }
+  .tab-btn.active{
+    color:var(--accent);
+    border-bottom:4px solid var(--accent);
+  }
+
+  main{ padding:24px; max-width:1200px; margin:0 auto; }
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; }
+
+  h2{
+    color:var(--accent);
+    font-size:20px;
+    margin:28px 0 10px 0;
+  }
+  h2:first-child{ margin-top:0; }
+  p{ font-size:16px; }
+  .subtitle{
+    color:var(--accent);
+    font-style:italic;
+    font-size:16px;
+    margin-bottom:8px;
+  }
+  .purpose-box{
+    background:var(--lightbg); border:1px solid var(--border); border-left:6px solid var(--accent);
+    border-radius:4px; padding:14px 18px; margin-bottom:20px; font-size:16px;
+  }
+
+  /* ---- Steckbrief-Faktenraster (read-only, kein Formular) ---- */
+  .identity-row{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:14px;
+    margin-bottom:18px;
+  }
+  .field-box{
+    background:var(--lightbg);
+    border:1px solid var(--border);
+    border-radius:16px;
+    box-shadow:0 6px 16px rgba(43,36,48,.03);
+    padding:14px 16px;
+  }
+  .field-box label{
+    display:block;
+    font-weight:700;
+    color:var(--accent);
+    font-size:14px;
+    margin-bottom:4px;
+  }
+  .field-box .value{
+    font-size:16px;
+    color:#26232a;
+  }
+  .grid-fields{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:14px;
+    margin-bottom:18px;
+  }
+  @media (max-width: 900px){
+    .identity-row{ grid-template-columns: 1fr; }
+    .grid-fields{ grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px){
+    .grid-fields{ grid-template-columns: 1fr; }
+  }
+
+  /* ---- Persona-Cast ---- */
+  .persona-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:14px; margin-bottom:20px; }
+  .persona-card{ background:#ffffff; border:1px solid var(--border); border-radius:16px; padding:14px 16px; }
+  .persona-card .p-name{ font-weight:800; color:var(--accent); font-size:16px; }
+  .persona-card .p-role{ font-size:14px; color:var(--grey); margin:2px 0 8px 0; }
+  .persona-card .p-quote{ font-size:15px; font-style:italic; color:#26232a; }
+
+  .closing-box{
+    background:var(--amberbg);
+    border:1px solid #e3d2ae;
+    border-left:6px solid var(--accent2);
+    border-radius:4px;
+    padding:14px 18px;
+  }
+  .closing-box .label{ display:block; color:var(--accent2); font-weight:700; font-size:15px; margin-bottom:6px; }
+  .closing-box .value{ font-size:17px; font-weight:700; color:#3d2f10; }
+
+  /* ---- Business Case ---- */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:22px;
+    font-size:15px;
+  }
+  th, td{
+    border:1px solid var(--border);
+    padding:10px 12px;
+    text-align:left;
+    vertical-align:top;
+  }
+  th{
+    background:var(--dark);
+    color:#ffffff;
+    font-size:14px;
+  }
+  td.rowlabel{ background:var(--lightbg); font-weight:700; }
+  tr.total td{ background:var(--amberbg); font-weight:700; }
+  ul.impact-list{ font-size:16px; }
+  .quote-box{
+    border-left:6px solid var(--accent2);
+    background:var(--amberbg);
+    border-radius:4px;
+    padding:14px 18px;
+    font-size:18px;
+    font-weight:700;
+    font-style:italic;
+    color:#7a5a1f;
+    margin:14px 0 8px 0;
+  }
+  .note{
+    font-style:italic;
+    color:var(--grey);
+    font-size:14px;
+  }
+
+  /* ---- Crosslink ---- */
+  .crosslink{ margin:0 24px 20px 24px; font-size:14px; color:var(--grey); max-width:1152px; }
+  .crosslink a{ color:var(--accent); font-weight:700; text-decoration:none; }
+  .crosslink a:hover{ text-decoration:underline; }
+  .crosslink ul{ margin:8px 0 0; padding-left:20px; }
+  .crosslink li{ margin-bottom:4px; }
+
+  /* ---- Footer ---- */
+  footer{
+    margin-top:16px;
+    padding:20px 24px 30px 24px;
+    max-width:1200px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .footer-sig{
+    font-size:14px; color:var(--grey); margin-bottom:16px; line-height:1.6;
+  }
+  .footer-sig strong{ color:var(--dark); font-size:15px; }
+  .footer-details{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:14px;
+  }
+  @media (max-width: 900px){ .footer-details{ grid-template-columns: 1fr; } }
+  .footer-box{
+    background:var(--lightbg);
+    border:1px solid var(--border);
+    border-radius:16px;
+    overflow:hidden;
+  }
+  .footer-summary{
+    cursor:pointer; font-weight:700; font-size:16px; padding:12px 14px;
+    min-height:44px; display:flex; align-items:center; color:var(--dark);
+  }
+  .footer-content{ padding:0 14px 14px 14px; font-size:16px; color:#333; }
+  .footer-mono{ font-family: Consolas, "Courier New", monospace; white-space:pre-wrap; font-size:14px; line-height:1.5; }
+  .footer-sans{ font-size:16px; line-height:1.55; }
+  .footer-table{ width:100%; border-collapse:collapse; font-size:14px; }
+  .footer-table td, .footer-table th{
+    border-bottom:1px solid var(--border); padding:6px 6px; text-align:left; vertical-align:top;
+  }
+
+  /* ---------- Beamer-Modus (K18, vierstufig, kumulativ) ---------- */
+  html.beamer body,
+  html.beamer p, html.beamer li,
+  html.beamer .field-box .value, html.beamer .persona-card .p-quote,
+  html.beamer .closing-box .value,
+  html.beamer .quote-box,
+  html.beamer td{ font-size:22px; }
+  html.beamer h2{ font-size:44px; }
+  html.beamer .subtitle, html.beamer .field-box label, html.beamer .persona-card .p-role,
+  html.beamer .persona-card .p-name, html.beamer th,
+  html.beamer .tab-btn, html.beamer .closing-box .label{ font-size:15px; }
+  html.beamer .beamer-btn, html.beamer .btn-ghost{ font-size:16px; min-height:52px; }
+  html.beamer header.hero h1{ font-size:34px; }
+  html.beamer header.hero p{ font-size:18px; }
+
+  html.beamer-xl body,
+  html.beamer-xl p, html.beamer-xl li,
+  html.beamer-xl .field-box .value, html.beamer-xl .persona-card .p-quote,
+  html.beamer-xl .closing-box .value,
+  html.beamer-xl .quote-box,
+  html.beamer-xl td{ font-size:28px; }
+  html.beamer-xl h2{ font-size:54px; }
+  html.beamer-xl .subtitle, html.beamer-xl .field-box label, html.beamer-xl .persona-card .p-role,
+  html.beamer-xl .persona-card .p-name, html.beamer-xl th,
+  html.beamer-xl .tab-btn, html.beamer-xl .closing-box .label{ font-size:18px; }
+  html.beamer-xl .beamer-btn, html.beamer-xl .btn-ghost{ font-size:18px; min-height:56px; }
+  html.beamer-xl header.hero h1{ font-size:40px; }
+  html.beamer-xl header.hero p{ font-size:21px; }
+
+  html.beamer-xxl body,
+  html.beamer-xxl p, html.beamer-xxl li,
+  html.beamer-xxl .field-box .value, html.beamer-xxl .persona-card .p-quote,
+  html.beamer-xxl .closing-box .value,
+  html.beamer-xxl .quote-box,
+  html.beamer-xxl td{ font-size:34px; }
+  html.beamer-xxl h2{ font-size:64px; }
+  html.beamer-xxl .subtitle, html.beamer-xxl .field-box label, html.beamer-xxl .persona-card .p-role,
+  html.beamer-xxl .persona-card .p-name, html.beamer-xxl th,
+  html.beamer-xxl .tab-btn, html.beamer-xxl .closing-box .label{ font-size:21px; }
+  html.beamer-xxl .beamer-btn, html.beamer-xxl .btn-ghost{ font-size:20px; min-height:60px; }
+  html.beamer-xxl header.hero h1{ font-size:46px; }
+  html.beamer-xxl header.hero p{ font-size:24px; }
+
+  html.beamer{ --grey:#4a3f4b; }
+  html.beamer-xl{ --grey:#4a3f4b; }
+  html.beamer-xxl{ --grey:#4a3f4b; }
+
+  html.beamer footer, html.beamer-xl footer, html.beamer-xxl footer,
+  html.beamer .crosslink, html.beamer-xl .crosslink, html.beamer-xxl .crosslink{ display:none; }
+</style>
+</head>
+<body>
+
+<div class="sig"><strong data-i18n="sigName">Michaela Kühn</strong><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener">www.michaela-kuehn.com</a></div>
+
+<header class="topbar">
+  <a class="back-link" href="../index.html" data-i18n="backlink">← Zurück zur Startseite</a>
+  <div class="meta-controls">
+    <button id="langBtn" type="button" class="btn-ghost">EN</button>
+    <button id="beamerBtn" type="button" class="beamer-btn" title="Vergrößert die Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">☀ Beamer</button>
+  </div>
+</header>
+
+<header class="hero">
+  <h1 data-i18n="pageTitle">Fallwelt-Steckbrief &amp; Business Case — Hochschule Nordwest / Digitale Studierendenakte</h1>
+  <p data-i18n="pageSubtitle">Referenzseite für die Fallstudienwelt „Hochschule Nordwest&quot; (fiktiv) · konsistente Fakten für neue Denkraum-Tools</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="steckbrief" type="button" data-i18n="tabSteckbrief">Steckbrief</button>
+  <button class="tab-btn" data-tab="businesscase" type="button" data-i18n="tabBusinessCase">Business Case</button>
+</nav>
+
+<main>
+
+  <!-- ============ TAB 1: STECKBRIEF ============ -->
+  <section id="steckbrief" class="tab-panel active">
+    <h2 data-i18n="sbHeading">Steckbrief — Hochschule Nordwest</h2>
+    <p class="subtitle" data-i18n="sbSubtitle">Öffentliche Verwaltung · Prüfungsamt · digitalisiert die Studierendenakte — bewusst als Nicht-KI-Kontrastfall zu Vantera/TalentMatch AI</p>
+
+    <div class="purpose-box" data-i18n="purposeBox">Diese Seite ist kein eigenständiges Trainingstool, sondern eine Referenz: Sie hält die in der Fallwelt „Hochschule Nordwest&quot; bereits über mehrere Denkraum-Tools hinweg etablierten Fakten fest, damit neue Tools zu diesem Fall konsistent bleiben. Alle Angaben sind fiktiv, aber an echten Standards (VwVfG, BITV, WCAG u.a.) gespiegelt. Eine abweichende Formulierung in `stakeholder-management-kompendium-fachbuch.html`, die dem Fall eine leichte KI-gestützte Klassifikation zuschreibt, wird hier bewusst nicht übernommen — maßgeblich ist die in den Lernreisen konsequent durchgehaltene Linie „kein KI-System&quot;.</div>
+
+    <div class="identity-row">
+      <div class="field-box">
+        <label data-i18n="sbInstitution">Institution</label>
+        <span class="value" data-i18n="vInstitution">Hochschule Nordwest (fiktiv)</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbProduct">Projekt / System</label>
+        <span class="value" data-i18n="vProduct">Digitale Studierendenakte („E-Akte&quot;) — kein eigener Produktname</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbClassification">Einstufung</label>
+        <span class="value" data-i18n="vClassification">Klassische Verwaltungsdigitalisierung im öffentlichen Sektor — ausdrücklich <strong>kein KI-System</strong>, bewusster Kontrastfall zu Vantera/TalentMatch AI</span>
+      </div>
+    </div>
+
+    <div class="grid-fields">
+      <div class="field-box">
+        <label data-i18n="sbBereich">Bereich</label>
+        <span class="value" data-i18n="vBereich">Prüfungsamt einer Hochschule: Notenspiegel, Abschlusszeugnisse, Widerspruchsverfahren, Nachteilsausgleich, Immatrikulation</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbBesonderheit">Besonderheit</label>
+        <span class="value" data-i18n="vBesonderheit">50-Jahres-Aufbewahrungsfrist für Abschlusszeugnisse statt Löschpflicht — prägt Architektur- und Formatentscheidungen (kein Cloud-natives Format wegen Vendor-Lock-in-Risiko über 50 Jahre)</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbUsecase">Anwendungsfall</label>
+        <span class="value" data-i18n="vUsecase">Digitalisierung des Widerspruchsverfahrens (Papierakte → E-Akte) mit Schnittstelle zum Campus-Management-System</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbProzess">Prozess (Kurzfassung)</label>
+        <span class="value" data-i18n="vProzess">Ist-Zustand: 7 manuelle Schritte, Ø18 Tage Durchlaufzeit. Ziel: −60&nbsp;%. Tatsächlich erreicht: Ø6 Tage (−67&nbsp;%).</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbZeitlinie">Zeitlinie (Lehrbeispiel)</label>
+        <span class="value" data-i18n="vZeitlinie">Anforderung AN-008 (Aufbewahrungsfrist) zunächst mit 30 Jahren entworfen (v1.0), nach Rechtsprüfung am 22.09. auf 50 Jahre korrigiert, freigegeben durch Kanzlerin Dr. Feldmann am 03.10. — als REQ-015 spezifiziert.</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbZiel">Business-Ziel</label>
+        <span class="value" data-i18n="vZiel">Investition ca. 210.000&nbsp;€ (Scanstraße, Schulung, Softwareanpassung); bestandenes Barrierefreiheits-Audit; 0 Datenverlust-Vorfälle</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbSystemelemente">Wiederkehrende Systemelemente</label>
+        <span class="value" data-i18n="vSystemelemente">Feld `aufbewahrung_bis` (Scan-Datum + 50 Jahre), 98&nbsp;%-OCR-Konfidenzschwelle mit manueller Nachprüfung darunter, Verfügbarkeit ≥99,5&nbsp;% während Prüfungsphasen, unveränderliche Protokollierung jeder Änderung an einer Prüfungsentscheidung</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbRegulatorik">Regulatorischer Rahmen</label>
+        <span class="value" data-i18n="vRegulatorik">VwVfG §3a (elektronische Kommunikation), BITV 2.0 / WCAG 2.1 AA (Barrierefreiheit), DSGVO, Prüfungsordnung §12 (Quelle der Aufbewahrungsfrist), ISO/IEC 27001:2022 Anhang A.8.15 (Zugriffsschutz), DSFA-Pflicht vor Rollout</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbTools">RE/BA-Werkzeuge im Fall</label>
+        <span class="value" data-i18n="vTools">Gherkin-Akzeptanzkriterien (z.&nbsp;B. OCR-Konfidenzschwelle), Traceability-Matrix (AN-008 → REQ-015), RACI-Matrix, Stakeholder-Register mit Einfluss/Interesse</span>
+      </div>
+    </div>
+
+    <h2 data-i18n="personaHeading">Persona-Besetzung im Fall Hochschule Nordwest</h2>
+    <p data-i18n="personaIntro">Die fünf Denkraum-Personas sind repo-weit fest und tauchen auch in anderen Fallwelten auf. In diesem Fall werden die Slots „Sarah&quot; und „Herr Bachmeier&quot; bewusst nicht zweckentfremdet, sondern durch zwei fallspezifische Kontextrollen ersetzt: Herr Öztürk und Kanzlerin Dr. Feldmann.</p>
+    <div class="persona-grid">
+      <div class="persona-card">
+        <div class="p-name">Ela</div>
+        <div class="p-role" data-i18n="pRoleEla">Projektleitung</div>
+        <div class="p-quote" data-i18n="pQuoteEla">„Bei einer Hochschule tagt das Lenkungsgremium monatlich, nicht wöchentlich — dafür ist die Freigabe der Aktenordnung ein Formalakt, den ich nicht überspringen kann.“</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Knut</div>
+        <div class="p-role" data-i18n="pRoleKnut">Entwicklung</div>
+        <div class="p-quote" data-i18n="pQuoteKnut">„Bevor ich eine Schnittstelle zum Campus-Management-System baue, muss ich wissen, welche 7 Schritte wirklich nötig sind — sonst digitalisiere ich nur das Chaos.“</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Petra</div>
+        <div class="p-role" data-i18n="pRolePetra">Qualitätsmanagement</div>
+        <div class="p-quote" data-i18n="pQuotePetra">„Bei einer Akte mit 50 Jahren Aufbewahrungsfrist kann ich mir keine stillschweigende Lösch-Automatik erlauben — das muss ich vor Rollout hart verifizieren.“</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name" data-i18n="pNameOeztuerk">Herr Öztürk</div>
+        <div class="p-role" data-i18n="pRoleOeztuerk">Sachbearbeiter Prüfungsamt</div>
+        <div class="p-quote" data-i18n="pQuoteOeztuerk">„Für mich zählt, dass ich am Ende nicht mehr nacharbeiten muss als vorher — sonst hat die Digitalisierung meinen Job nicht leichter gemacht.“</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name" data-i18n="pNameFeldmann">Kanzlerin Dr. Feldmann</div>
+        <div class="p-role" data-i18n="pRoleFeldmann">Hochschulleitung</div>
+        <div class="p-quote" data-i18n="pQuoteFeldmann">„Ich trage die Verantwortung gegenüber dem Landesrechnungshof — ein verlorenes Abschlusszeugnis ist für mich kein IT-Vorfall, das ist ein Politikum.“</div>
+      </div>
+    </div>
+
+    <div class="closing-box">
+      <span class="label" data-i18n="sbClosingLabel">Ein Satz, der den Fall auf den Punkt bringt</span>
+      <span class="value" data-i18n="sbClosingValue">Eine Hochschule digitalisiert ihr Prüfungsamt — nicht mit Künstlicher Intelligenz, sondern mit einer Aktenordnung, die fünfzig Jahre halten muss und barrierefrei ist, bevor sie live geht.</span>
+    </div>
+  </section>
+
+  <!-- ============ TAB 2: BUSINESS CASE ============ -->
+  <section id="businesscase" class="tab-panel">
+    <h2 data-i18n="bcTitle">Business Case: Was frühzeitige Anforderungsverifikation bei der Aufbewahrungsfrist wert war</h2>
+    <p class="subtitle" data-i18n="bcSubtitle">Von einer falsch angenommenen Frist im Entwurf zur rechtssicher freigegebenen Anforderung</p>
+
+    <h2 data-i18n="bcH1">Ausgangssituation</h2>
+    <p data-i18n="bcIntro">Die Anforderung AN-008 zur Aufbewahrungsfrist von Abschlusszeugnissen wird zunächst mit 30 Jahren entworfen (v1.0) — eine plausible, aber ungeprüfte Annahme. Erst die Rechtsprüfung am 22.09. deckt auf, dass Prüfungsordnung §12 tatsächlich 50 Jahre verlangt. Die Korrektur erfolgt vor der Freigabe durch Kanzlerin Dr. Feldmann am 03.10. — rechtzeitig, bevor die Akte produktiv geht.</p>
+
+    <h2 data-i18n="bcH2">Szenarienvergleich</h2>
+    <p class="note" data-i18n="bcScenarioNote">Hinweis: Im tatsächlichen Fall wurde die Frist rechtzeitig korrigiert (Szenario B). Szenario A ist eine hypothetische Gegenüberstellung, um den Wert dieser Verifikation sichtbar zu machen — keine reale Schadensgeschichte.</p>
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="thBlank">&nbsp;</th>
+          <th data-i18n="thScenarioA">Szenario A – Annahme bleibt ungeprüft</th>
+          <th data-i18n="thScenarioB">Szenario B – tatsächlich erfolgt: Verifikation vor Rollout</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rowlabel" data-i18n="r1label">Anforderungsverifikation</td>
+          <td data-i18n="r1a">AN-008 bleibt bei den im Entwurf angenommenen 30 Jahren, ungeprüft gegen Prüfungsordnung §12</td>
+          <td data-i18n="r1b">Petra und das Justiziariat prüfen die Frist vor Rollout gezielt gegen Prüfungsordnung §12</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="r2label">Rechtssicherheit</td>
+          <td data-i18n="r2a">Die Diskrepanz fällt erst auf, wenn ein ehemaliger Studierender nach über 30 Jahren ein Zeugnis nachfordert — die Akte ist dann bereits gelöscht</td>
+          <td data-i18n="r2b">AN-008 wird vor Freigabe durch Kanzlerin Dr. Feldmann auf 50 Jahre korrigiert (Rechtsprüfung 22.09., Freigabe 03.10., spezifiziert als REQ-015)</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="r3label">Barrierefreiheit</td>
+          <td data-i18n="r3a">WCAG-/BITV-Anforderungen werden erst nach dem Rollout nachgerüstet, weil sie nicht von Anfang an mit Herr Öztürk abgestimmt sind</td>
+          <td data-i18n="r3b">Der Barrierefreiheits-Linter läuft ab dem ersten Commit mit, externe WCAG-Zertifizierung vor Abnahme</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="r4label">Durchlaufzeit Widerspruchsverfahren</td>
+          <td data-i18n="r4a">Bleibt nahe Ø18 Tagen, weil die 7 nötigen Schritte nicht vorab mit Knut geklärt sind</td>
+          <td data-i18n="r4b">Ø6 Tage (−67&nbsp;%) durch eine vorab klar spezifizierte Schnittstelle zum Campus-Management-System</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="r5label">Stakeholder-Effekt</td>
+          <td data-i18n="r5a">Kanzlerin Dr. Feldmann müsste im Nachhinein gegenüber dem Landesrechnungshof einen Datenverlust rechtfertigen</td>
+          <td data-i18n="r5b">Kanzlerin Dr. Feldmann trägt die Freigabe wissentlich, mit dokumentierter Rechtsprüfung im Rücken</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 data-i18n="bcH3">Quantifizierter Impact (illustrative Rechnung für die Trainingsübung)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="thCost">Kostenfaktor</th>
+          <th data-i18n="thWithout">Ohne frühe Verifikation</th>
+          <th data-i18n="thWith">Mit früher Verifikation (tatsächlich erfolgt)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rowlabel" data-i18n="i1label">Rechtsrisiko vorzeitiger Löschung</td>
+          <td data-i18n="i1a">Potenziell nicht wiederherstellbarer Datenverlust bei Abschlusszeugnissen, Verstoß gegen Prüfungsordnung §12</td>
+          <td data-i18n="i1b">vermieden</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="i2label">Durchlaufzeit Widerspruchsverfahren</td>
+          <td data-i18n="i2a">bleibt bei Ø18 Tagen ohne früh geklärte Schnittstelle</td>
+          <td data-i18n="i2b">Ø6 Tage (−67&nbsp;%, tatsächlich erreicht)</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="i3label">Investition (Scanstraße, Schulung, Softwareanpassung)</td>
+          <td data-i18n="i3a">ca. 210.000&nbsp;€ — unabhängig vom Verifikationszeitpunkt fällig</td>
+          <td data-i18n="i3b">ca. 210.000&nbsp;€ — unabhängig vom Verifikationszeitpunkt fällig</td>
+        </tr>
+        <tr class="total">
+          <td class="rowlabel" data-i18n="totlabel">Geschätzte Gesamtwirkung</td>
+          <td data-i18n="totdash">—</td>
+          <td data-i18n="totval">Vermiedenes Rechtsrisiko + Ø6 statt 18 Tage Durchlaufzeit + bestandenes Barrierefreiheits-Audit</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note" data-i18n="bcNote">Hinweis: Die Zahlen zur Durchlaufzeit (Ø18 → Ø6 Tage) und zur Investition (ca. 210.000&nbsp;€) sind reale Kennzahlen aus dem Fall selbst; das „ohne&quot;-Szenario zum Rechtsrisiko ist eine hypothetische Gegenüberstellung zur Verdeutlichung des Werts der tatsächlich erfolgten Verifikation.</p>
+
+    <h2 data-i18n="bcH4">Weicher Impact</h2>
+    <ul class="impact-list">
+      <li data-i18n="soft1">Vertrauen zwischen Hochschulleitung, IT und Justiziariat wächst, weil rechtliche Risiken vor Rollout statt danach sichtbar werden</li>
+      <li data-i18n="soft2">Die korrigierte Aufbewahrungsfrist-Story wird zur Vorlage dafür, wie Anforderungen gegen die tatsächliche Rechtsgrundlage statt gegen bloße Annahmen verifiziert werden</li>
+      <li data-i18n="soft3">Barrierefreiheit wird Teil der Entwicklungsroutine (Linter bei jedem Commit) statt Nachrüstung am Ende</li>
+    </ul>
+
+    <h2 data-i18n="bcH5">Kernaussage</h2>
+    <div class="quote-box" data-i18n="bcQuote">„Eine falsch angenommene Aufbewahrungsfrist fällt nicht sofort auf — sie fällt erst auf, wenn es zu spät ist, sie zu korrigieren.“</div>
+  </section>
+
+</main>
+
+<div class="crosslink">
+  <span data-i18n="cl-intro">Tools, die den Fall Hochschule Nordwest als Fallbeispiel nutzen:</span>
+  <ul>
+    <li><a href="./se-lifecycle-lernreise.html" data-i18n="cl-1-name">SE-Lifecycle-Lernreise</a> — <span data-i18n="cl-1-desc">begleitet den Fall über alle elf SWEBOK-Stationen, inkl. Architektur- und Barrierefreiheits-Entscheidungen — hier stehen nur die Kernfakten dazu.</span></li>
+    <li><a href="./ba-lifecycle-lernreise.html" data-i18n="cl-2-name">BA-Lifecycle-Lernreise</a> — <span data-i18n="cl-2-desc">begleitet den Fall über alle sechs BABOK-Stationen und liefert die meisten Zahlen (Budget, Durchlaufzeit, AN-008/REQ-015), die hier zusammengefasst sind.</span></li>
+    <li><a href="./stakeholder-management-kompendium-fachbuch.html" data-i18n="cl-3-name">Stakeholder-Management-Kompendium</a> — <span data-i18n="cl-3-desc">nutzt den Fall als Übungsbeispiel für Stakeholder-Register und Engagement-Level, ohne die Fallfakten selbst zusammenzufassen.</span></li>
+  </ul>
+</div>
+
+<footer>
+  <div class="footer-sig">
+    <strong data-i18n="sigName">Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" data-i18n="sigLink">www.michaela-kuehn.com</a><br>
+    <span data-i18n="normList">VwVfG §3a · BITV 2.0 · WCAG 2.1 AA · DSGVO</span><br>
+    <span data-i18n="auditLine">Zuletzt geprüft: 23.09.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+  </div>
+  <div class="footer-details">
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="fSystemHead">Systemprompt</summary>
+      <div class="footer-content footer-mono" data-i18n="fSystemBody">Baue eine einzelne, offlinefähige HTML-Referenzseite (kein Trainingstool im klassischen Sinn, keine Übung, keine Stationen) für die Fallstudienwelt "Hochschule Nordwest / Digitale Studierendenakte", die repo-weit als wiederkehrendes Fallbeispiel dient — als bewusster Nicht-KI-Kontrastfall zu Vantera/TalentMatch AI.
+
+AUSLOESER
+Nutzerin baut fortlaufend neue Tools auf demselben Fall auf und brauchte eine einzige verbindliche Quelle für die Fallfakten (Institution, Personas, Prozess, Zahlen), um Konsistenz über künftige Tools hinweg sicherzustellen — ausdrücklich KEIN Formular zum Selbst-Ausfüllen (anders als tools/ba-steckbrief-business-case.html), sondern eine feste Faktensammlung. Gleiches Grundmuster wie tools/vantera-talentmatch-steckbrief.html, eigene Farbwelt (Bordeaux/Messing statt Indigo).
+
+STRUKTUR
+- Topbar, dunkler Hero, zwei Tabs (Steckbrief / Business Case), vierteiliger Footer, Crosslink-Block.
+- Tab "Steckbrief": Faktenraster (Institution, Projekt/System, Einstufung, Bereich, Besonderheit, Anwendungsfall, Prozess-Kurzfassung, Zeitlinie, Business-Ziel, wiederkehrende Systemelemente, Regulatorik, RE/BA-Werkzeuge) als reine Lesefelder, plus Persona-Cast-Karten mit Zitat je Persona, plus Kernsatz-Box.
+- Tab "Business Case": Szenarienvergleich rund um die AN-008-Aufbewahrungsfrist-Korrektur (30 vs. 50 Jahre), quantifizierte Impact-Tabelle, weicher Impact, Kernaussage-Zitat.
+- Crosslink-Block zu den drei Tools, die den Fall Hochschule Nordwest (mit Kanzlerin Dr. Feldmann / Herr Öztürk als Personas) tatsächlich nutzen.
+
+WICHTIGER HINWEIS ZUR FALLABGRENZUNG
+Der Repo enthält DREI unterschiedliche, nicht austauschbare Studierendenakte-Institutionen: "Hochschule Nordwest" (dieser Steckbrief, mit Persona-Cast), "Hochschule NOVA" (tools/studierendenakte-qualitaet.html, ausdrücklich rollenbasiert ohne Personas) und "ABC-Hochschule" (tools/pflichtenheft-generator.html, aus einem realistischen Lastenheft-Korpus mit eigenen Zahlen wie ~30.000 Studierenden, FlexNow, HIS-SOS). Diese drei NIEMALS vermischen — dieser Steckbrief bezieht sich ausschließlich auf Hochschule Nordwest.
+
+FAKTENBASIS (aus bestehenden Tools übernommen, nicht neu erfunden)
+- Institution "Hochschule Nordwest (fiktiv)", Prüfungsamt-Prozesse, Rechtsrahmen VwVfG §3a/BITV 2.0/WCAG 2.1 AA/DSGVO (Quelle: tools/se-lifecycle-lernreise.html, tools/ba-lifecycle-lernreise.html).
+- 50-Jahres-Aufbewahrungsfrist, AN-008/REQ-015-Story (30 → 50 Jahre, Rechtsprüfung 22.09., Freigabe 03.10. durch Kanzlerin Dr. Feldmann), Durchlaufzeit Ø18 → Ø6 Tage (−67&nbsp;%), Investition ca. 210.000&nbsp;€, 98&nbsp;%-OCR-Schwelle, Verfügbarkeit ≥99,5&nbsp;% (Quelle: tools/ba-lifecycle-lernreise.html).
+- Personas Ela/Knut/Petra unverändert, Sarah-Slot → Herr Öztürk (Sachbearbeiter Prüfungsamt), Herr-Bachmeier-Slot → Kanzlerin Dr. Feldmann (Hochschulleitung); Zitate wortgleich aus tools/se-lifecycle-lernreise.html und tools/ba-lifecycle-lernreise.html übernommen.
+- Eine abweichende KI-Framing-Formulierung in tools/stakeholder-management-kompendium-fachbuch.html wurde geprüft, aber bewusst nicht übernommen — maßgeblich ist die durchgehend "kein KI-System"-Linie der beiden Lifecycle-Lernreisen.
+
+DESIGN-VORGABEN
+- Weißer Grundhintergrund, color-scheme: light, kein Dark Mode.
+- Eigene Akzentfarbe (Bordeaux/Messing) zur Unterscheidung von Velaris (Grün/Petrol) und Vantera/TalentMatch AI (Indigo).
+- Radius-Skala wie Velaris-Vorbild: 16px Karten, 999px Meta-Controls, 4px schmale Akzentboxen.
+- Mindestschriftgrößen 16px Fließtext / 14px Sekundärtext, vierstufiger kumulativer Beamer-Modus.
+- Signatur IMMER position:fixed (K21) — kein Rückfall auf position:static unter 900px, stattdessen Padding reduziert und im Topbar Platz reserviert.
+
+PFLICHT
+DE/EN-Sprachtoggle ohne Reload (data-i18n-Attribute + JS-Objekt), deutscher Inhalt auch ohne JS lesbar; nur click-Events, kein HTML5-Drag-and-Drop; keine fetch()-Aufrufe, kein externes CDN.
+
+NICHT TUN
+- Keine echten Institutionsnamen — der Fall bleibt fiktiv, auch wenn Normen/Regulatorik real sind.
+- Keine neu erfundenen Fallfakten, die bestehenden Tools widersprechen könnten — bei Unsicherheit im Zweifel offen lassen statt zu erfinden (z. B. keine Studierendenzahl, da in keinem Nordwest-Tool beziffert).
+- Keine Fakten aus "Hochschule NOVA" oder "ABC-Hochschule" einmischen — das sind eigenständige, nicht austauschbare Varianten.
+- Kein Formular/keine Eingabefelder wie bei Velaris — diese Seite ist Referenz, kein Reflexions-Werkzeug.</div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="fHandbuchHead">Handbuch</summary>
+      <div class="footer-content footer-sans" data-i18n="fHandbuchBody">Diese Seite ist als Nachschlagewerk gedacht, nicht als Übung: Bevor ein neues Tool zum Fall Hochschule Nordwest entsteht, hier die Fakten (Aufbewahrungsfrist, Zeitlinie, Zahlen, Persona-Zitate) prüfen, statt sie aus dem Gedächtnis neu zu erfinden — so bleiben alle Tools zueinander konsistent. Besonders wichtig: Der Repo kennt zwei weitere, eigenständige Studierendenakte-Varianten (Hochschule NOVA, ABC-Hochschule) — deren Zahlen und Rollen gehören NICHT in diesen Fall. Reiter "Steckbrief" bündelt die harten Fakten und die Persona-Besetzung; Reiter "Business Case" liefert eine wiederverwendbare Erzählung rund um die AN-008-Aufbewahrungsfrist-Korrektur, die sich für Vortragszwecke eignet, wann immer der Wert früher Anforderungsverifikation gezeigt werden soll. Sprachumschaltung wirkt sofort auf beide Reiter inkl. Footer. Beamer-Button vergrößert die Schrift stufenweise; Footer und Crosslink-Block werden dabei ausgeblendet.</div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="fVortragHead">Vortrags-Skript</summary>
+      <div class="footer-content footer-sans" data-i18n="fVortragBody">(Reiter "Steckbrief" ist aktiv.) Einstieg: „Bevor wir tiefer in den Fall Hochschule Nordwest einsteigen, kurz die Eckdaten: eine Hochschule digitalisiert ihr Prüfungsamt — bewusst ohne KI, als Kontrastfall zum Recruiting-Fall Vantera." Auf die Identity-Row zeigen: Institution, Projekt, Einstufung. Auf die Zeitlinie zeigen: „Die Aufbewahrungsfrist war im ersten Entwurf mit dreißig Jahren angesetzt — die Rechtsprüfung hat aufgedeckt, dass es fünfzig sein müssen. Das ist kein Nebendetail, das ist ein potenzieller Rechtsverstoß, der rechtzeitig verhindert wurde." Persona-Karten kurz durchgehen, besonders Kanzlerin Dr. Feldmanns Zitat zur Verantwortung gegenüber dem Landesrechnungshof. (Auf den Tab "Business Case" klicken.) Überleitung: „Was wäre passiert, wenn diese Prüfung nicht rechtzeitig stattgefunden hätte? Genau das zeigt dieser Vergleich." Szenario A vorlesen, dann Szenario B — deutlich machen, dass A hypothetisch ist. Durchlaufzeit-Verbesserung (18 auf 6 Tage) aus der Impact-Tabelle hervorheben — das ist die reale, tatsächlich erreichte Kennzahl. Abschluss mit der Kernaussage. Regie-Hinweis: Diese Seite ersetzt keine Fallbeschreibung im jeweiligen Tool selbst — sie ist die Referenz dahinter, falls Teilnehmende nach Hintergrund fragen. Nicht mit "Hochschule NOVA" oder "ABC-Hochschule" verwechseln, falls Teilnehmende diese anderen Tools kennen.</div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="fNormenHead">Normen-Register</summary>
+      <div class="footer-content">
+        <table class="footer-table">
+          <thead><tr><th data-i18n="nrCol1">Framework/Quelle</th><th data-i18n="nrCol2">Fassung/Status</th><th data-i18n="nrCol3">Bezug im Tool</th></tr></thead>
+          <tbody>
+            <tr><td>VwVfG §3a</td><td data-i18n="nrVwVfG">Aktuell — Regelt die Zulässigkeit elektronischer Kommunikation im Verwaltungsverfahren</td><td data-i18n="nrVwVfGUse">Rechtsrahmen im Steckbrief; Grundlage für elektronische Bescheide im Prozess</td></tr>
+            <tr><td>BITV 2.0 / WCAG 2.1 AA</td><td data-i18n="nrBITV">Aktuell — deutsche Barrierefreie-Informationstechnik-Verordnung, gekoppelt an internationale WCAG-Stufe AA</td><td data-i18n="nrBITVUse">Barrierefreiheits-Anforderung an die Antragsstrecke</td></tr>
+            <tr><td>Prüfungsordnung §12 (fiktiv, fallintern)</td><td data-i18n="nrPO">Fallinterne Rechtsgrundlage der Hochschule Nordwest</td><td data-i18n="nrPOUse">Quelle der 50-Jahres-Aufbewahrungsfrist (AN-008/REQ-015)</td></tr>
+            <tr><td>ISO/IEC 27001:2022 Anhang A.8.15</td><td data-i18n="nrISO27001">Aktuell</td><td data-i18n="nrISO27001Use">Mitigation für unbefugten Zugriff auf gescannte Prüfungsunterlagen</td></tr>
+          </tbody>
+        </table>
+        <p data-i18n="nrNote">Stand der Prüfung: 23.09.2026. Fallfakten stammen aus bereits bestehenden Denkraum-Tools (siehe Systemprompt-Box); Prüfungsordnung §12 ist eine fallinterne, fiktive Rechtsgrundlage — bei Weiterverwendung in neuen Materialien den Kontext (fiktiver Fall vs. reale Norm) klar kennzeichnen.</p>
+      </div>
+    </details>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var i18n = {
+    backlink: {en:"← Back to homepage"},
+    sigLink: {en:"www.michaela-kuehn.com"},
+    normList: {en:"VwVfG §3a · BITV 2.0 · WCAG 2.1 AA · GDPR"},
+    auditLine: {en:"Last reviewed: 23 Sept 2026 · Status: ✅ Certified · See audit log for details"},
+
+    pageTitle: {en:"Case World Profile &amp; Business Case — Hochschule Nordwest / Digital Student Records"},
+    pageSubtitle: {en:"Reference page for the \"Hochschule Nordwest\" case world (fictional) · consistent facts for new Denkraum tools"},
+    tabSteckbrief: {en:"Profile"},
+    tabBusinessCase: {en:"Business Case"},
+
+    sbHeading: {en:"Profile — Hochschule Nordwest"},
+    sbSubtitle: {en:"Public administration · examinations office · digitising student records — deliberately a non-AI contrast case to Vantera/TalentMatch AI"},
+    purposeBox: {en:"This page is not a standalone training tool — it is a reference: it records the facts about the \"Hochschule Nordwest\" case world already established across several Denkraum tools, so new tools on this case stay consistent. All details are fictional, but mirrored against real standards (VwVfG, BITV, WCAG and others). A differing wording in `stakeholder-management-kompendium-fachbuch.html`, which attributes light AI-assisted classification to this case, is deliberately not adopted here — the line consistently followed across the lifecycle journeys, \"no AI system\", is authoritative."},
+
+    sbInstitution: {en:"Institution"},
+    vInstitution: {en:"Hochschule Nordwest (fictional)"},
+    sbProduct: {en:"Project / System"},
+    vProduct: {en:"Digital student records (\"E-file\") — no separate product name"},
+    sbClassification: {en:"Classification"},
+    vClassification: {en:"Classic public-sector administrative digitisation — explicitly <strong>not an AI system</strong>, a deliberate contrast case to Vantera/TalentMatch AI"},
+
+    sbBereich: {en:"Domain"},
+    vBereich: {en:"A university's examinations office: grade transcripts, degree certificates, appeals procedures, disability accommodations, enrolment"},
+    sbBesonderheit: {en:"Special constraint"},
+    vBesonderheit: {en:"50-year retention period for degree certificates instead of a deletion duty — shapes architecture and format decisions (no cloud-native format, due to vendor lock-in risk over 50 years)"},
+    sbUsecase: {en:"Use case"},
+    vUsecase: {en:"Digitising the appeals procedure (paper file → e-file) with an interface to the campus management system"},
+    sbProzess: {en:"Process (short form)"},
+    vProzess: {en:"As-is: 7 manual steps, avg. 18 days turnaround. Target: −60%. Actually achieved: avg. 6 days (−67%)."},
+    sbZeitlinie: {en:"Timeline (teaching example)"},
+    vZeitlinie: {en:"Requirement AN-008 (retention period) was first drafted at 30 years (v1.0); after legal review on 22 Sep it was corrected to 50 years, approved by Chancellor Dr. Feldmann on 3 Oct — specified as REQ-015."},
+    sbZiel: {en:"Business goal"},
+    vZiel: {en:"Investment approx. €210,000 (scanning line, training, software adaptation); passed accessibility audit; 0 data-loss incidents"},
+    sbSystemelemente: {en:"Recurring system elements"},
+    vSystemelemente: {en:"Field `aufbewahrung_bis` (scan date + 50 years), 98% OCR confidence threshold with manual review below it, availability ≥99.5% during exam periods, immutable logging of every change to an exam decision"},
+    sbRegulatorik: {en:"Regulatory framework"},
+    vRegulatorik: {en:"VwVfG §3a (electronic communication), BITV 2.0 / WCAG 2.1 AA (accessibility), GDPR, examination regulations §12 (source of the retention period), ISO/IEC 27001:2022 Annex A.8.15 (access protection), mandatory DPIA before rollout"},
+    sbTools: {en:"RE/BA tooling in the case"},
+    vTools: {en:"Gherkin acceptance criteria (e.g. OCR confidence threshold), traceability matrix (AN-008 → REQ-015), RACI matrix, stakeholder register with influence/interest"},
+
+    personaHeading: {en:"Persona cast in the Hochschule Nordwest case"},
+    personaIntro: {en:"The five Denkraum personas are fixed across the whole repo and appear in other case worlds too. In this case, the \"Sarah\" and \"Herr Bachmeier\" slots are deliberately not repurposed, but replaced by two case-specific context roles: Herr Öztürk and Chancellor Dr. Feldmann."},
+    pRoleEla: {en:"Project lead"},
+    pQuoteEla: {en:"\"At a university, the steering committee meets monthly, not weekly — but signing off the filing rules is a formal act I can't skip.\""},
+    pRoleKnut: {en:"Development"},
+    pQuoteKnut: {en:"\"Before I build an interface to the campus management system, I need to know which of the 7 steps are actually necessary — otherwise I'm just digitising the chaos.\""},
+    pRolePetra: {en:"Quality management"},
+    pQuotePetra: {en:"\"With a file that has a 50-year retention period, I can't allow a silent auto-delete — I have to verify that rigorously before rollout.\""},
+    pNameOeztuerk: {en:"Herr Öztürk"},
+    pRoleOeztuerk: {en:"Examinations office clerk"},
+    pQuoteOeztuerk: {en:"\"What matters to me is that I don't end up with more rework than before — otherwise digitisation hasn't made my job any easier.\""},
+    pNameFeldmann: {en:"Chancellor Dr. Feldmann"},
+    pRoleFeldmann: {en:"University leadership"},
+    pQuoteFeldmann: {en:"\"I'm accountable to the state audit office — a lost degree certificate is not an IT incident to me, it's a political matter.\""},
+
+    sbClosingLabel: {en:"One sentence that sums up the case"},
+    sbClosingValue: {en:"A university digitises its examinations office — not with artificial intelligence, but with a filing system that has to hold for fifty years and be accessible before it goes live."},
+
+    bcTitle: {en:"Business Case: What early requirements verification was worth for the retention period"},
+    bcSubtitle: {en:"From a wrongly assumed period in a draft to a legally sound, approved requirement"},
+    bcH1: {en:"Starting Situation"},
+    bcIntro: {en:"Requirement AN-008 on the retention period for degree certificates is first drafted at 30 years (v1.0) — a plausible but unverified assumption. Only the legal review on 22 Sep reveals that examination regulations §12 actually require 50 years. The correction happens before approval by Chancellor Dr. Feldmann on 3 Oct — in time, before the file system goes live."},
+    bcH2: {en:"Scenario Comparison"},
+    bcScenarioNote: {en:"Note: In the actual case, the period was corrected in time (Scenario B). Scenario A is a hypothetical comparison to make the value of this verification visible — not a real damage story."},
+    thBlank: {en:"&nbsp;"},
+    thScenarioA: {en:"Scenario A – assumption stays unverified"},
+    thScenarioB: {en:"Scenario B – what actually happened: verification before rollout"},
+    r1label: {en:"Requirements verification"},
+    r1a: {en:"AN-008 stays at the 30 years assumed in the draft, unverified against examination regulations §12"},
+    r1b: {en:"Petra and the legal office specifically verify the period against examination regulations §12 before rollout"},
+    r2label: {en:"Legal certainty"},
+    r2a: {en:"The discrepancy only surfaces when a former student requests a certificate after more than 30 years — the file has already been deleted by then"},
+    r2b: {en:"AN-008 is corrected to 50 years before approval by Chancellor Dr. Feldmann (legal review 22 Sep, approval 3 Oct, specified as REQ-015)"},
+    r3label: {en:"Accessibility"},
+    r3a: {en:"WCAG/BITV requirements are retrofitted only after rollout, because they weren't aligned with Herr Öztürk from the start"},
+    r3b: {en:"The accessibility linter runs from the very first commit, external WCAG certification before acceptance"},
+    r4label: {en:"Appeals procedure turnaround"},
+    r4a: {en:"Stays close to an average of 18 days, because the 7 necessary steps weren't clarified with Knut beforehand"},
+    r4b: {en:"Average 6 days (−67%) through an interface to the campus management system specified clearly in advance"},
+    r5label: {en:"Stakeholder effect"},
+    r5a: {en:"Chancellor Dr. Feldmann would have to justify a data loss to the state audit office after the fact"},
+    r5b: {en:"Chancellor Dr. Feldmann signs off knowingly, backed by a documented legal review"},
+    bcH3: {en:"Quantified Impact (illustrative figures for the training exercise)"},
+    thCost: {en:"Cost factor"},
+    thWithout: {en:"Without early verification"},
+    thWith: {en:"With early verification (what actually happened)"},
+    i1label: {en:"Legal risk from premature deletion"},
+    i1a: {en:"Potentially unrecoverable data loss of degree certificates, violation of examination regulations §12"},
+    i1b: {en:"avoided"},
+    i2label: {en:"Appeals procedure turnaround"},
+    i2a: {en:"stays at an average of 18 days without an early-clarified interface"},
+    i2b: {en:"average 6 days (−67%, actually achieved)"},
+    i3label: {en:"Investment (scanning line, training, software adaptation)"},
+    i3a: {en:"approx. €210,000 — due regardless of verification timing"},
+    i3b: {en:"approx. €210,000 — due regardless of verification timing"},
+    totlabel: {en:"Estimated overall effect"},
+    totdash: {en:"—"},
+    totval: {en:"Avoided legal risk + 6 instead of 18 days turnaround + passed accessibility audit"},
+    bcNote: {en:"Note: the turnaround figures (avg. 18 → avg. 6 days) and the investment (approx. €210,000) are real figures from the case itself; the \"without\" scenario on legal risk is a hypothetical comparison to illustrate the value of the verification that actually took place."},
+    bcH4: {en:"Soft Impact"},
+    soft1: {en:"Trust between university leadership, IT and the legal office grows because legal risks surface before rollout instead of afterwards"},
+    soft2: {en:"The corrected retention-period story becomes a template for verifying requirements against the actual legal basis rather than mere assumptions"},
+    soft3: {en:"Accessibility becomes part of the development routine (linter on every commit) instead of a late retrofit"},
+    bcH5: {en:"Key Message"},
+    bcQuote: {en:"\"A wrongly assumed retention period doesn't show up immediately — it shows up once it's too late to correct it.\""},
+
+    "cl-intro": {en:"Tools that use the Hochschule Nordwest case as their example:"},
+    "cl-1-name": {en:"SE Lifecycle Journey"},
+    "cl-1-desc": {en:"follows the case across all eleven SWEBOK stations, including architecture and accessibility decisions; here only the core facts are listed."},
+    "cl-2-name": {en:"BA Lifecycle Journey"},
+    "cl-2-desc": {en:"follows the case across all six BABOK stations and provides most of the figures (budget, turnaround, AN-008/REQ-015) summarised here."},
+    "cl-3-name": {en:"Stakeholder Management Compendium"},
+    "cl-3-desc": {en:"uses the case as a worked exercise for the stakeholder register and engagement levels, without summarising the case facts itself."},
+
+    fSystemHead: {en:"System Prompt"},
+    fSystemBody: {en:"Build a single, offline-capable HTML reference page (not a training tool in the classic sense — no exercise, no stations) for the \"Hochschule Nordwest / Digital Student Records\" case world, serving as a recurring example across the repo — a deliberate non-AI contrast case to Vantera/TalentMatch AI.\n\nTRIGGER\nThe user keeps building new tools on the same case and needed one authoritative source for the case facts (institution, personas, process, numbers) to keep consistency across future tools — explicitly NOT a fill-in form (unlike tools/ba-steckbrief-business-case.html), but a fixed fact collection. Same base pattern as tools/vantera-talentmatch-steckbrief.html, own colour palette (bordeaux/brass instead of indigo).\n\nSTRUCTURE\n- Topbar, dark hero, two tabs (Profile / Business Case), four-part footer, crosslink block.\n- \"Profile\" tab: fact grid (institution, project/system, classification, domain, special constraint, use case, process short form, timeline, business goal, recurring system elements, regulatory framework, RE/BA tooling) as read-only fields, plus persona-cast cards with a quote per persona, plus a one-sentence closing box.\n- \"Business Case\" tab: scenario comparison around the AN-008 retention-period correction (30 vs. 50 years), quantified impact table, soft impact, key-message quote.\n- Crosslink block to the three tools that genuinely use the Hochschule Nordwest case (with Chancellor Dr. Feldmann / Herr Öztürk as personas).\n\nIMPORTANT CASE-BOUNDARY NOTE\nThe repo contains THREE different, non-interchangeable student-records institutions: \"Hochschule Nordwest\" (this profile, with persona cast), \"Hochschule NOVA\" (tools/studierendenakte-qualitaet.html, explicitly role-based without personas) and \"ABC-Hochschule\" (tools/pflichtenheft-generator.html, drawn from a realistic tender-document corpus with its own figures such as ~30,000 students, FlexNow, HIS-SOS). Never mix these three — this profile refers exclusively to Hochschule Nordwest.\n\nFACT BASE (taken from existing tools, not newly invented)\n- Institution \"Hochschule Nordwest (fictional)\", examinations-office processes, legal framework VwVfG §3a/BITV 2.0/WCAG 2.1 AA/GDPR (source: tools/se-lifecycle-lernreise.html, tools/ba-lifecycle-lernreise.html).\n- 50-year retention period, AN-008/REQ-015 story (30 → 50 years, legal review 22 Sep, approval 3 Oct by Chancellor Dr. Feldmann), turnaround avg. 18 → avg. 6 days (−67%), investment approx. €210,000, 98% OCR threshold, availability ≥99.5% (source: tools/ba-lifecycle-lernreise.html).\n- Personas Ela/Knut/Petra unchanged, Sarah slot → Herr Öztürk (examinations office clerk), Herr Bachmeier slot → Chancellor Dr. Feldmann (university leadership); quotes taken verbatim from tools/se-lifecycle-lernreise.html and tools/ba-lifecycle-lernreise.html.\n- A differing AI-framing wording in tools/stakeholder-management-kompendium-fachbuch.html was checked but deliberately not adopted — the consistent \"no AI system\" line of both lifecycle journeys is authoritative.\n\nDESIGN REQUIREMENTS\n- White background, color-scheme: light, no dark mode.\n- Own accent colour (bordeaux/brass) to distinguish from Velaris (green/petrol) and Vantera/TalentMatch AI (indigo).\n- Radius scale as in the Velaris model: 16px cards, 999px meta-controls, 4px narrow accent boxes.\n- Minimum font sizes 16px body / 14px secondary text, four-stage cumulative beamer mode.\n- Signature ALWAYS position:fixed (K21) — no fallback to position:static under 900px, padding reduced and space reserved in the topbar instead.\n\nREQUIRED\nDE/EN language toggle with no reload (data-i18n attributes + JS translation object), German content readable without JS; click events only, no HTML5 drag-and-drop; no fetch() calls, no external CDN.\n\nDO NOT\n- Use real institution names — the case stays fictional even though the standards/regulation are real.\n- Invent new case facts that could contradict existing tools — when unsure, leave it open rather than inventing (e.g. no student headcount, since none is given in any Nordwest tool).\n- Mix in facts from \"Hochschule NOVA\" or \"ABC-Hochschule\" — these are separate, non-interchangeable variants.\n- Add a form/input fields like Velaris — this page is a reference, not a reflection exercise."},
+    fHandbuchHead: {en:"Handbook"},
+    fHandbuchBody: {en:"This page is meant as a reference work, not an exercise: before building a new tool on the Hochschule Nordwest case, check the facts here (retention period, timeline, figures, persona quotes) instead of reinventing them from memory — that is how all tools on this case stay consistent with each other. Especially important: the repo knows two further, separate student-records variants (Hochschule NOVA, ABC-Hochschule) — their figures and roles do NOT belong in this case. The \"Profile\" tab bundles the hard facts and the persona cast; the \"Business Case\" tab provides a reusable narrative around the AN-008 retention-period correction, suited for presentation purposes whenever the value of early requirements verification needs demonstrating. The language toggle affects both tabs including the footer immediately. The beamer button enlarges text stepwise; the footer and crosslink block are hidden while active."},
+    fVortragHead: {en:"Presenter Script"},
+    fVortragBody: {en:"(The \"Profile\" tab is active.) Opening: \"Before we go deeper into the Hochschule Nordwest case, quickly the key facts: a university is digitising its examinations office — deliberately without AI, as a contrast case to the Vantera recruiting case.\" Point to the identity row: institution, project, classification. Point to the timeline: \"The retention period was set at thirty years in the first draft — the legal review revealed it has to be fifty. That's not a minor detail, that's a potential legal violation that was caught in time.\" Walk through the persona cards briefly, especially Chancellor Dr. Feldmann's quote on accountability to the state audit office. (Click the \"Business Case\" tab.) Transition: \"What would have happened if this review hadn't taken place in time? That's exactly what this comparison shows.\" Read out Scenario A, then Scenario B — make clear that A is hypothetical. Highlight the turnaround improvement (18 to 6 days) in the impact table — that is the real, actually achieved figure. Close with the key message. Directing note: this page does not replace the case description inside each tool itself — it is the reference behind it, for when participants ask about the background. Don't confuse it with \"Hochschule NOVA\" or \"ABC-Hochschule\" if participants know those other tools."},
+    fNormenHead: {en:"Standards Register"},
+    nrCol1: {en:"Framework/Source"},
+    nrCol2: {en:"Version/Status"},
+    nrCol3: {en:"Used in tool for"},
+    nrVwVfG: {en:"Current — governs the validity of electronic communication in administrative procedures"},
+    nrVwVfGUse: {en:"Legal framework in the profile; basis for electronic notices in the process"},
+    nrBITV: {en:"Current — German Accessible Information Technology Ordinance, aligned with international WCAG level AA"},
+    nrBITVUse: {en:"Accessibility requirement for the application form"},
+    nrPO: {en:"Case-internal legal basis of Hochschule Nordwest"},
+    nrPOUse: {en:"Source of the 50-year retention period (AN-008/REQ-015)"},
+    nrISO27001: {en:"Current"},
+    nrISO27001Use: {en:"Mitigation for unauthorised access to scanned exam files"},
+    nrNote: {en:"Reviewed: 23 Sept 2026. Case facts are drawn from existing Denkraum tools (see system-prompt box); examination regulations §12 is a case-internal, fictional legal basis — when reused in new materials, clearly mark the context (fictional case vs. real standard)."}
+  };
+
+  var currentLang = "de";
+  var deCache = {};
+
+  function collectGerman(){
+    var els = document.querySelectorAll("[data-i18n]");
+    els.forEach(function(el){
+      var key = el.getAttribute("data-i18n");
+      if (!(key in deCache)) deCache[key] = el.innerHTML;
+    });
+  }
+
+  function applyLang(lang){
+    var els = document.querySelectorAll("[data-i18n]");
+    els.forEach(function(el){
+      var key = el.getAttribute("data-i18n");
+      if (lang === "en" && i18n[key] && i18n[key].en !== undefined){
+        el.innerHTML = i18n[key].en;
+      } else if (deCache[key] !== undefined){
+        el.innerHTML = deCache[key];
+      }
+    });
+    document.documentElement.lang = lang;
+  }
+
+  var langBtn = document.getElementById("langBtn");
+  langBtn.addEventListener("click", function(){
+    collectGerman();
+    currentLang = (currentLang === "de") ? "en" : "de";
+    langBtn.textContent = (currentLang === "de") ? "EN" : "DE";
+    applyLang(currentLang);
+  });
+
+  var BEAMER_LEVELS = [
+    { classes: [],                                    label: "☀ Beamer" },
+    { classes: ["beamer"],                             label: "☀ Beamer XL" },
+    { classes: ["beamer", "beamer-xl"],                label: "☀ Beamer XXL" },
+    { classes: ["beamer", "beamer-xl", "beamer-xxl"],  label: "☀ Normal" }
+  ];
+  var beamerLevel = 0;
+  var beamerBtn = document.getElementById("beamerBtn");
+
+  beamerBtn.addEventListener("click", function(){
+    beamerLevel = (beamerLevel + 1) % BEAMER_LEVELS.length;
+    document.documentElement.classList.remove("beamer", "beamer-xl", "beamer-xxl");
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    beamerBtn.textContent = BEAMER_LEVELS[beamerLevel].label;
+  });
+
+  var tabBtns = document.querySelectorAll(".tab-btn");
+  tabBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      tabBtns.forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      var target = btn.getAttribute("data-tab");
+      document.querySelectorAll(".tab-panel").forEach(function(panel){
+        panel.classList.toggle("active", panel.id === target);
+      });
+    });
+  });
+
+  collectGerman();
+})();
+</script>
+
+</body>
+</html>

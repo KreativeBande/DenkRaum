@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Fallwelt-Steckbrief &amp; Business Case — Vantera Systemtechnik GmbH / TalentMatch AI</title>
+<style>
+  :root{
+    --accent: #3730a3;
+    --accent2: #c98a2b;
+    --dark: #1a2138;
+    --lightbg: #f4f5fa;
+    --amberbg: #fbf3e6;
+    --border: #ccd0dd;
+    --grey: #5a5f6e;
+  }
+  html{ color-scheme: light; }
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    padding:0 0 40px 0;
+    background:#ffffff;
+    color:#1a1a1a;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    font-size:16px;
+    line-height:1.5;
+  }
+
+  /* ---------- Topbar: Zurück-Link + Meta-Controls (Pflicht) ---------- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+    padding:16px 24px 0 24px;
+  }
+  .back-link{
+    display:inline-block;
+    font-size:14px;
+    font-weight:700;
+    color:var(--grey);
+    text-decoration:none;
+  }
+  .back-link:hover{ color:var(--accent); }
+  .meta-controls{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+  /* ---------- Signatur oben rechts (Pflicht, K21: immer position:fixed) ---------- */
+  .sig{
+    position:fixed;
+    top:14px;
+    right:28px;
+    font-size:14px;
+    line-height:1.3;
+    color:var(--grey);
+    background:#ffffff;
+    padding:4px 10px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    z-index:500;
+  }
+  .sig strong{ display:block; color:var(--dark); font-size:15px; }
+  .sig a{ color:var(--accent); text-decoration:none; font-weight:600; }
+  @media (max-width:900px){
+    .sig{ padding:3px 8px; }
+    .topbar{ padding:16px 235px 0 24px; }
+  }
+
+  .btn-ghost{
+    min-height:44px; min-width:44px;
+    padding:9px 20px;
+    font-size:15px;
+    font-weight:700;
+    border-radius:999px;
+    border:1.5px solid var(--border);
+    background:#ffffff;
+    color:var(--grey);
+    cursor:pointer;
+  }
+  .btn-ghost:hover{ border-color:var(--accent); color:var(--accent); }
+
+  /* ---------- Beamer-Modus-Button (K18, vierstufig, kanonisches Muster) ---------- */
+  .beamer-btn{
+    background:transparent; border:1.5px solid var(--border);
+    color:var(--grey); font-size:15px; font-weight:700;
+    padding:9px 20px; min-height:44px;
+    border-radius:999px; cursor:pointer;
+  }
+  .beamer-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  html.beamer .beamer-btn,
+  html.beamer-xl .beamer-btn,
+  html.beamer-xxl .beamer-btn{ background:var(--dark); color:#fff; border-color:var(--dark); }
+
+  header.hero{
+    background:var(--dark);
+    color:#ffffff;
+    padding:22px 24px 22px 24px;
+    margin-top:12px;
+  }
+  header.hero h1{
+    margin:0 0 6px 0;
+    font-size:26px;
+    font-weight:800;
+  }
+  header.hero p{
+    margin:0;
+    font-size:15px;
+    color:#d2d5e6;
+  }
+
+  nav.tabs{
+    display:flex;
+    gap:8px;
+    padding:14px 24px 0 24px;
+    border-bottom:2px solid var(--border);
+    flex-wrap:wrap;
+  }
+  .tab-btn{
+    min-height:44px;
+    padding:10px 20px;
+    font-size:16px;
+    font-weight:700;
+    border:none;
+    background:none;
+    color:var(--grey);
+    cursor:pointer;
+    border-bottom:4px solid transparent;
+  }
+  .tab-btn.active{
+    color:var(--accent);
+    border-bottom:4px solid var(--accent);
+  }
+
+  main{ padding:24px; max-width:1200px; margin:0 auto; }
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; }
+
+  h2{
+    color:var(--accent);
+    font-size:20px;
+    margin:28px 0 10px 0;
+  }
+  h2:first-child{ margin-top:0; }
+  p{ font-size:16px; }
+  .subtitle{
+    color:var(--accent);
+    font-style:italic;
+    font-size:16px;
+    margin-bottom:8px;
+  }
+  .purpose-box{
+    background:var(--lightbg); border:1px solid var(--border); border-left:6px solid var(--accent);
+    border-radius:4px; padding:14px 18px; margin-bottom:20px; font-size:16px;
+  }
+
+  /* ---- Steckbrief-Faktenraster (read-only, kein Formular) ---- */
+  .identity-row{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:14px;
+    margin-bottom:18px;
+  }
+  .field-box{
+    background:var(--lightbg);
+    border:1px solid var(--border);
+    border-radius:16px;
+    box-shadow:0 6px 16px rgba(26,33,56,.03);
+    padding:14px 16px;
+  }
+  .field-box label{
+    display:block;
+    font-weight:700;
+    color:var(--accent);
+    font-size:14px;
+    margin-bottom:4px;
+  }
+  .field-box .value{
+    font-size:16px;
+    color:#26283a;
+  }
+  .grid-fields{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:14px;
+    margin-bottom:18px;
+  }
+  @media (max-width: 900px){
+    .identity-row{ grid-template-columns: 1fr; }
+    .grid-fields{ grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px){
+    .grid-fields{ grid-template-columns: 1fr; }
+  }
+
+  /* ---- Persona-Cast ---- */
+  .persona-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:14px; margin-bottom:20px; }
+  .persona-card{ background:#ffffff; border:1px solid var(--border); border-radius:16px; padding:14px 16px; }
+  .persona-card .p-name{ font-weight:800; color:var(--accent); font-size:16px; }
+  .persona-card .p-role{ font-size:14px; color:var(--grey); margin:2px 0 8px 0; }
+  .persona-card .p-quote{ font-size:15px; font-style:italic; color:#26283a; }
+
+  .closing-box{
+    background:var(--amberbg);
+    border:1px solid #e6cfa0;
+    border-left:6px solid var(--accent2);
+    border-radius:4px;
+    padding:14px 18px;
+  }
+  .closing-box .label{ display:block; color:var(--accent2); font-weight:700; font-size:15px; margin-bottom:6px; }
+  .closing-box .value{ font-size:17px; font-weight:700; color:#3a2c0d; }
+
+  /* ---- Business Case ---- */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:22px;
+    font-size:15px;
+  }
+  th, td{
+    border:1px solid var(--border);
+    padding:10px 12px;
+    text-align:left;
+    vertical-align:top;
+  }
+  th{
+    background:var(--dark);
+    color:#ffffff;
+    font-size:14px;
+  }
+  td.rowlabel{ background:var(--lightbg); font-weight:700; }
+  tr.total td{ background:var(--amberbg); font-weight:700; }
+  ul.impact-list{ font-size:16px; }
+  .quote-box{
+    border-left:6px solid var(--accent2);
+    background:var(--amberbg);
+    border-radius:4px;
+    padding:14px 18px;
+    font-size:18px;
+    font-weight:700;
+    font-style:italic;
+    color:var(--accent2);
+    margin:14px 0 8px 0;
+  }
+  .note{
+    font-style:italic;
+    color:var(--grey);
+    font-size:14px;
+  }
+
+  /* ---- Crosslink ---- */
+  .crosslink{ margin:0 24px 20px 24px; font-size:14px; color:var(--grey); max-width:1152px; }
+  .crosslink a{ color:var(--accent); font-weight:700; text-decoration:none; }
+  .crosslink a:hover{ text-decoration:underline; }
+  .crosslink ul{ margin:8px 0 0; padding-left:20px; columns: 2; column-gap:24px; }
+  .crosslink li{ margin-bottom:4px; break-inside: avoid; }
+  @media (max-width:700px){ .crosslink ul{ columns:1; } }
+
+  /* ---- Footer ---- */
+  footer{
+    margin-top:16px;
+    padding:20px 24px 30px 24px;
+    max-width:1200px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .footer-sig{
+    font-size:14px; color:var(--grey); margin-bottom:16px; line-height:1.6;
+  }
+  .footer-sig strong{ color:var(--dark); font-size:15px; }
+  .footer-details{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:14px;
+  }
+  @media (max-width: 900px){ .footer-details{ grid-template-columns: 1fr; } }
+  .footer-box{
+    background:var(--lightbg);
+    border:1px solid var(--border);
+    border-radius:16px;
+    overflow:hidden;
+  }
+  .footer-summary{
+    cursor:pointer; font-weight:700; font-size:16px; padding:12px 14px;
+    min-height:44px; display:flex; align-items:center; color:var(--dark);
+  }
+  .footer-content{ padding:0 14px 14px 14px; font-size:16px; color:#333; }
+  .footer-mono{ font-family: Consolas, "Courier New", monospace; white-space:pre-wrap; font-size:14px; line-height:1.5; }
+  .footer-sans{ font-size:16px; line-height:1.55; }
+  .footer-table{ width:100%; border-collapse:collapse; font-size:14px; }
+  .footer-table td, .footer-table th{
+    border-bottom:1px solid var(--border); padding:6px 6px; text-align:left; vertical-align:top;
+  }
+
+  /* ---------- Beamer-Modus (K18, vierstufig, kumulativ) ---------- */
+  html.beamer body,
+  html.beamer p, html.beamer li,
+  html.beamer .field-box .value, html.beamer .persona-card .p-quote,
+  html.beamer .closing-box .value,
+  html.beamer .quote-box,
+  html.beamer td{ font-size:22px; }
+  html.beamer h2{ font-size:44px; }
+  html.beamer .subtitle, html.beamer .field-box label, html.beamer .persona-card .p-role,
+  html.beamer .persona-card .p-name, html.beamer th,
+  html.beamer .tab-btn, html.beamer .closing-box .label{ font-size:15px; }
+  html.beamer .beamer-btn, html.beamer .btn-ghost{ font-size:16px; min-height:52px; }
+  html.beamer header.hero h1{ font-size:34px; }
+  html.beamer header.hero p{ font-size:18px; }
+
+  html.beamer-xl body,
+  html.beamer-xl p, html.beamer-xl li,
+  html.beamer-xl .field-box .value, html.beamer-xl .persona-card .p-quote,
+  html.beamer-xl .closing-box .value,
+  html.beamer-xl .quote-box,
+  html.beamer-xl td{ font-size:28px; }
+  html.beamer-xl h2{ font-size:54px; }
+  html.beamer-xl .subtitle, html.beamer-xl .field-box label, html.beamer-xl .persona-card .p-role,
+  html.beamer-xl .persona-card .p-name, html.beamer-xl th,
+  html.beamer-xl .tab-btn, html.beamer-xl .closing-box .label{ font-size:18px; }
+  html.beamer-xl .beamer-btn, html.beamer-xl .btn-ghost{ font-size:18px; min-height:56px; }
+  html.beamer-xl header.hero h1{ font-size:40px; }
+  html.beamer-xl header.hero p{ font-size:21px; }
+
+  html.beamer-xxl body,
+  html.beamer-xxl p, html.beamer-xxl li,
+  html.beamer-xxl .field-box .value, html.beamer-xxl .persona-card .p-quote,
+  html.beamer-xxl .closing-box .value,
+  html.beamer-xxl .quote-box,
+  html.beamer-xxl td{ font-size:34px; }
+  html.beamer-xxl h2{ font-size:64px; }
+  html.beamer-xxl .subtitle, html.beamer-xxl .field-box label, html.beamer-xxl .persona-card .p-role,
+  html.beamer-xxl .persona-card .p-name, html.beamer-xxl th,
+  html.beamer-xxl .tab-btn, html.beamer-xxl .closing-box .label{ font-size:21px; }
+  html.beamer-xxl .beamer-btn, html.beamer-xxl .btn-ghost{ font-size:20px; min-height:60px; }
+  html.beamer-xxl header.hero h1{ font-size:46px; }
+  html.beamer-xxl header.hero p{ font-size:24px; }
+
+  html.beamer{ --grey:#3D4A5C; }
+  html.beamer-xl{ --grey:#3D4A5C; }
+  html.beamer-xxl{ --grey:#3D4A5C; }
+
+  html.beamer footer, html.beamer-xl footer, html.beamer-xxl footer,
+  html.beamer .crosslink, html.beamer-xl .crosslink, html.beamer-xxl .crosslink{ display:none; }
+</style>
+</head>
+<body>
+
+<div class="sig"><strong data-i18n="sigName">Michaela Kühn</strong><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener">www.michaela-kuehn.com</a></div>
+
+<header class="topbar">
+  <a class="back-link" href="../index.html" data-i18n="backlink">← Zurück zur Startseite</a>
+  <div class="meta-controls">
+    <button id="langBtn" type="button" class="btn-ghost">EN</button>
+    <button id="beamerBtn" type="button" class="beamer-btn" title="Vergrößert die Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">☀ Beamer</button>
+  </div>
+</header>
+
+<header class="hero">
+  <h1 data-i18n="pageTitle">Fallwelt-Steckbrief &amp; Business Case — Vantera Systemtechnik GmbH / TalentMatch AI</h1>
+  <p data-i18n="pageSubtitle">Referenzseite für die Fallstudienwelt „Vantera/TalentMatch AI&quot; (fiktiv) · konsistente Fakten für neue Denkraum-Tools</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="steckbrief" type="button" data-i18n="tabSteckbrief">Steckbrief</button>
+  <button class="tab-btn" data-tab="businesscase" type="button" data-i18n="tabBusinessCase">Business Case</button>
+</nav>
+
+<main>
+
+  <!-- ============ TAB 1: STECKBRIEF ============ -->
+  <section id="steckbrief" class="tab-panel active">
+    <h2 data-i18n="sbHeading">Steckbrief — Vantera Systemtechnik GmbH</h2>
+    <p class="subtitle" data-i18n="sbSubtitle">Maschinen- und Anlagenbau · 340 Mitarbeitende · führt TalentMatch AI zur Bewerbungssichtung ein</p>
+
+    <div class="purpose-box" data-i18n="purposeBox">Diese Seite ist kein eigenständiges Trainingstool, sondern eine Referenz: Sie hält die in der Vantera/TalentMatch-AI-Fallwelt bereits über viele Denkraum-Tools hinweg etablierten Fakten fest, damit neue Tools zu diesem Fall konsistent bleiben. Alle Angaben sind fiktiv, aber an echten Standards (EU AI Act, ISO 25010 u.a.) gespiegelt.</div>
+
+    <div class="identity-row">
+      <div class="field-box">
+        <label data-i18n="sbCompany">Unternehmen</label>
+        <span class="value" data-i18n="vCompany">Vantera Systemtechnik GmbH</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbProduct">System / Produkt</label>
+        <span class="value" data-i18n="vProduct">TalentMatch AI (auch: „Vantera Connect&quot;)</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbClassification">Einstufung</label>
+        <span class="value" data-i18n="vClassification">Hochrisiko-KI-System nach EU AI Act, Anhang III Nr. 4 (Beschäftigung/Personalauswahl)</span>
+      </div>
+    </div>
+
+    <div class="grid-fields">
+      <div class="field-box">
+        <label data-i18n="sbBranche">Branche</label>
+        <span class="value" data-i18n="vBranche">Maschinen- und Anlagenbau — TalentMatch AI ist ein internes HR-System, kein verkauftes Produkt; Vantera hat für dieses System keinen externen Kunden.</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbGroesse">Unternehmensgröße</label>
+        <span class="value" data-i18n="vGroesse">340 Mitarbeitende</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbUsecase">Anwendungsfall</label>
+        <span class="value" data-i18n="vUsecase">KI-gestütztes Screening/Scoring eingehender Bewerbungen für offene Stellen bei Vantera selbst</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbProzess">Prozess (Kurzfassung)</label>
+        <span class="value" data-i18n="vProzess">Bewerbung eingegangen → Score berechnen → Bias-Schwellenwert prüfen → Einstellungs-/Ablehnungsentscheidung. Details und BPMN-Diagramm siehe BPMN-Anwenderkompendium.</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbZeitlinie">Zeitlinie (Lehrbeispiel)</label>
+        <span class="value" data-i18n="vZeitlinie">TalentMatch AI lief 8 Wochen als Prototyp im Einsatz, bevor überhaupt ein Business Case dafür geschrieben wurde — bewusst als Negativbeispiel für verspätete BA-Einbindung.</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbZiel">Business-Ziel</label>
+        <span class="value" data-i18n="vZiel">−50&nbsp;% Sichtungszeit gegenüber der bisherigen manuellen Vorauswahl</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbSystemelemente">Wiederkehrende Systemelemente</label>
+        <span class="value" data-i18n="vSystemelemente">Score-Profil (Data Object), Kandidatendatenbank (Data Store), Bias-Schwellenwert (Gateway/Entscheidungspunkt), Bias-Prüfungsphase (Sub-Process)</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbRegulatorik">Regulatorischer Rahmen</label>
+        <span class="value" data-i18n="vRegulatorik">EU AI Act (Verordnung (EU) 2024/1689) — Bußgeldrahmen bei Hochrisiko-Verstößen bis 15 Mio.&nbsp;€ oder 3&nbsp;% des weltweiten Jahresumsatzes, je nachdem was höher ist (Art. 99 Abs. 4)</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbTools">RE/BA-Werkzeuge im Fall</label>
+        <span class="value" data-i18n="vTools">Kein dediziertes RE-Tool eingeführt — RE-Management-Tool für Traceability/Attribute kombiniert mit dem bestehenden Confluence/Jira-Setup (Begründung: Lifecycle-Kosten eines neuen Spezialtools rechtfertigen sich für das Pilotprojekt nicht)</span>
+      </div>
+    </div>
+
+    <h2 data-i18n="personaHeading">Persona-Besetzung im Fall Vantera</h2>
+    <p data-i18n="personaIntro">Die fünf Denkraum-Personas sind repo-weit fest und tauchen auch in anderen Fallwelten auf — hier ihre feste Rolle plus ein typisches Zitat aus dem Vantera/TalentMatch-Kontext.</p>
+    <div class="persona-grid">
+      <div class="persona-card">
+        <div class="p-name">Ela</div>
+        <div class="p-role" data-i18n="pRoleEla">Projektleitung</div>
+        <div class="p-quote" data-i18n="pQuoteEla">„Die Führungskräfte brauchen sechs Kästchen, keine vierzig — sonst verlieren wir die Zuhörer in der ersten Minute.“</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Knut</div>
+        <div class="p-role" data-i18n="pRoleKnut">Entwicklung</div>
+        <div class="p-quote" data-i18n="pQuoteKnut">„Sobald ich beim Zeichnen selbst den Überblick verliere, ist das Diagramm zu groß — dann kommt ein Sub-Process rein.“</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Sarah</div>
+        <div class="p-role" data-i18n="pRoleSarah">Vertrieb</div>
+        <div class="p-quote" data-i18n="pQuoteSarah">„Die Swimlane macht sofort sichtbar, wer was macht — das ist super, wenn ich das im Kundengespräch zeigen muss.“</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Petra</div>
+        <div class="p-role" data-i18n="pRolePetra">Qualitätsmanagement / Compliance</div>
+        <div class="p-quote" data-i18n="pQuotePetra">„Der Data Store macht sichtbar, dass die Kandidatendatenbank nicht nur für einen Durchlauf existiert — das ist wichtig für die Verfolgbarkeit im Audit.“</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Herr Bachmeier</div>
+        <div class="p-role" data-i18n="pRoleBachmeier">Geschäftsführung</div>
+        <div class="p-quote" data-i18n="pQuoteBachmeier">Denkt in Reputation und Haftung — trägt als Geschäftsführer die Freigabe- und Letztverantwortung für TalentMatch AI.</div>
+      </div>
+    </div>
+
+    <div class="closing-box">
+      <span class="label" data-i18n="sbClosingLabel">Ein Satz, der den Fall auf den Punkt bringt</span>
+      <span class="value" data-i18n="sbClosingValue">Ein produzierendes Mittelstandsunternehmen führt ein Hochrisiko-KI-System für die eigene Personalauswahl ein — und lernt erst im Nachhinein, was das an Anforderungsarbeit und Nachweispflicht bedeutet.</span>
+    </div>
+  </section>
+
+  <!-- ============ TAB 2: BUSINESS CASE ============ -->
+  <section id="businesscase" class="tab-panel">
+    <h2 data-i18n="bcTitle">Business Case: Was strukturiertes RE bei TalentMatch AI wert ist</h2>
+    <p class="subtitle" data-i18n="bcSubtitle">Von acht Wochen Pilotbetrieb ohne Business Case zur audit-fähigen Anforderungsbasis</p>
+
+    <h2 data-i18n="bcH1">Ausgangssituation</h2>
+    <p data-i18n="bcIntro">Vantera Systemtechnik GmbH lässt TalentMatch AI acht Wochen lang als Prototyp laufen, bevor überhaupt ein Business Case geschrieben wird — Ela erkennt im Backlog erst nachträglich die Tragweite: ein Hochrisiko-KI-System nach EU AI Act ohne dokumentierte Anforderungsbasis, ohne Bias-Nachweis, ohne Konformitätsbewertung.</p>
+
+    <h2 data-i18n="bcH2">Szenarienvergleich</h2>
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="thBlank">&nbsp;</th>
+          <th data-i18n="thScenarioA">Szenario A – Business Case und RE erst nachträglich</th>
+          <th data-i18n="thScenarioB">Szenario B – RE von Anfang an</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rowlabel" data-i18n="r1label">Anforderungsaufnahme</td>
+          <td data-i18n="r1a">TalentMatch AI wird als Prototyp gebaut und pilotiert, bevor Anforderungen und Risikoklasse dokumentiert sind</td>
+          <td data-i18n="r1b">Knut und Ela klären Scope, Konformitätsklasse und Bias-Schwellenwert vor dem ersten Sprint</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="r2label">Regulatorische Einordnung</td>
+          <td data-i18n="r2a">Die Einstufung als Hochrisiko-System (Anhang III Nr. 4) wird erst entdeckt, als das System bereits produktiv Bewerbungen sichtet</td>
+          <td data-i18n="r2b">Petra prüft die Einstufung parallel zur fachlichen Analyse — Konformitätspflichten sind von Anfang an im Scope</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="r3label">Bias-Nachweis</td>
+          <td data-i18n="r3a">Kein dokumentierter Bias-Schwellenwert, keine Traceability zwischen Score-Profil und Entscheidung</td>
+          <td data-i18n="r3b">Bias-Schwellenwert ist benanntes Gateway im BPMN-Diagramm, Score-Profil als Data Object nachvollziehbar</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="r4label">Auswirkung</td>
+          <td data-i18n="r4a">Nacharbeit an Dokumentation und technischer Doku unter Zeitdruck, kurz vor einer möglichen Marktüberwachungs-Prüfung</td>
+          <td data-i18n="r4b">Konformitätsbewertung liegt vor, bevor das System produktiv geht — kein Rework unter Druck</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="r5label">Stakeholder-Effekt</td>
+          <td data-i18n="r5a">Herr Bachmeier erfährt aus der Presse von Compliance-Diskussionen um KI-Recruiting-Systeme und fragt nach, warum das nicht früher Thema war</td>
+          <td data-i18n="r5b">Herr Bachmeier trägt die Freigabe wissentlich, mit dokumentierter Risikoabwägung im Rücken</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 data-i18n="bcH3">Quantifizierter Impact (illustrative Rechnung für die Trainingsübung)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="thCost">Kostenfaktor</th>
+          <th data-i18n="thWithout">Ohne frühe RE-Einbindung</th>
+          <th data-i18n="thWith">Mit früher RE-Einbindung</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rowlabel" data-i18n="i1label">Nacharbeit an Dokumentation/Bias-Nachweis</td>
+          <td data-i18n="i1a">ca. 6 Wochen Nacharbeit von Knut, Petra und externer Beratung</td>
+          <td data-i18n="i1b">entfällt</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="i2label">Verzögerter Produktivstart</td>
+          <td data-i18n="i2a">Sichtungszeit-Ziel (−50&nbsp;%) wird erst Monate später erreicht statt zum geplanten Rollout</td>
+          <td data-i18n="i2b">Ziel wird zum geplanten Rollout-Termin erreicht</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="i3label">Bußgeldrisiko bei Hochrisiko-Verstoß</td>
+          <td data-i18n="i3a">Bis zu 15 Mio.&nbsp;€ oder 3&nbsp;% Jahresumsatz im Extremfall (Art. 99 Abs. 4 EU AI Act) — abhängig von Art, Schwere und Abhilfemaßnahmen</td>
+          <td data-i18n="i3b">deutlich reduziert durch dokumentierte Konformität</td>
+        </tr>
+        <tr class="total">
+          <td class="rowlabel" data-i18n="totlabel">Geschätzte Gesamtwirkung</td>
+          <td data-i18n="totdash">—</td>
+          <td data-i18n="totval">Vermiedene Nacharbeit + pünktliches Sichtungszeit-Ziel + wesentlich reduziertes Bußgeld-/Reputationsrisiko</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note" data-i18n="bcNote">Hinweis: Zahlen (Wochen, Kostenfaktoren) sind bewusst plausibel-realistisch für die Trainingsdiskussion gewählt, keine echten Unternehmenszahlen — der Bußgeldrahmen selbst ist der reale, in Art. 99 Abs. 4 EU AI Act festgelegte Rahmen, nicht illustrativ.</p>
+
+    <h2 data-i18n="bcH4">Weicher Impact</h2>
+    <ul class="impact-list">
+      <li data-i18n="soft1">Audit-Fähigkeit: nachvollziehbare Traceability zwischen Score-Profil, Bias-Schwellenwert und Einstellungsentscheidung</li>
+      <li data-i18n="soft2">Wissenstransfer: das BPMN-Diagramm und die Prozesskette werden zur Vorlage für weitere KI-gestützte Systeme bei Vantera</li>
+      <li data-i18n="soft3">Vertrauen zwischen Geschäftsführung, Entwicklung und Compliance steigt, weil Risiken früh sichtbar statt spät entdeckt werden</li>
+    </ul>
+
+    <h2 data-i18n="bcH5">Kernaussage</h2>
+    <div class="quote-box" data-i18n="bcQuote">„Acht Wochen Prototyp ohne Business Case sind kein Tempo-Vorteil — sie sind eine aufgeschobene Rechnung.“</div>
+  </section>
+
+</main>
+
+<div class="crosslink">
+  <span data-i18n="cl-intro">Tools, die den Fall Vantera/TalentMatch AI als Fallbeispiel nutzen:</span>
+  <ul>
+    <li><a href="./ireb-kompendium.html" data-i18n="cl-1-name">IREB CPRE Foundation Level Kompendium</a> — <span data-i18n="cl-1-desc">nutzt den Fall für die sieben IREB-Lerneinheiten, statt ihn als eigenständige Referenz zu beschreiben.</span></li>
+    <li><a href="./re-kompendium.html" data-i18n="cl-2-name">RE-Kompendium</a> — <span data-i18n="cl-2-desc">vergleicht IREB/BABOK/29148 am Fall, ohne die Fallfakten selbst zusammenzufassen.</span></li>
+    <li><a href="./bpmn-anwenderkompendium.html" data-i18n="cl-3-name">BPMN 2.0 in der Praxis</a> — <span data-i18n="cl-3-desc">zeigt den TalentMatch-Prozess als BPMN-Diagramm im Detail, hier stehen nur die Kernfakten dazu.</span></li>
+    <li><a href="./talentmatch-ai-sufficiency-gate.html" data-i18n="cl-4-name">TalentMatch AI vor dem Sufficiency Gate</a> — <span data-i18n="cl-4-desc">prüft ein einzelnes Recruiting-Prompt-Beispiel im RSGA-Gate, statt den Gesamtfall zu beschreiben.</span></li>
+    <li><a href="./talentmatch-ml-paradigmen.html" data-i18n="cl-5-name">TalentMatch AI — Vier ML-Paradigmen im RE/BA-Blick</a> — <span data-i18n="cl-5-desc">übersetzt ML-Paradigmen in RE/BA-Analyseaufgaben am selben Fall, ohne den Fall selbst zu dokumentieren.</span></li>
+    <li><a href="./ba-rollenwandel-explorer.html" data-i18n="cl-6-name">BA-Rollenwandel-Explorer</a> — <span data-i18n="cl-6-desc">zeigt den Rollenwandel des BA als 6-Stufen-Modell am Fall, inkl. der 8-Wochen-Pilot-Zeitlinie, die hier als Fakt festgehalten ist.</span></li>
+  </ul>
+</div>
+
+<footer>
+  <div class="footer-sig">
+    <strong data-i18n="sigName">Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" data-i18n="sigLink">www.michaela-kuehn.com</a><br>
+    <span data-i18n="normList">EU AI Act (Verordnung (EU) 2024/1689) · IREB CPRE · BABOK® v3</span><br>
+    <span data-i18n="auditLine">Zuletzt geprüft: 23.09.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+  </div>
+  <div class="footer-details">
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="fSystemHead">Systemprompt</summary>
+      <div class="footer-content footer-mono" data-i18n="fSystemBody">Baue eine einzelne, offlinefähige HTML-Referenzseite (kein Trainingstool im klassischen Sinn, keine Übung, keine Stationen) für die Fallstudienwelt "Vantera Systemtechnik GmbH / TalentMatch AI", die repo-weit in 19+ Denkraum-Tools als wiederkehrendes Fallbeispiel dient.
+
+AUSLOESER
+Nutzerin baut fortlaufend neue Tools auf demselben Fall auf und brauchte eine einzige verbindliche Quelle für die Fallfakten (Firma, Personas, Prozess, Zahlen), um Konsistenz über künftige Tools hinweg sicherzustellen — ausdrücklich KEIN Formular zum Selbst-Ausfüllen (anders als tools/ba-steckbrief-business-case.html), sondern eine feste Faktensammlung.
+
+STRUKTUR
+- Gleiches Grundmuster wie tools/ba-steckbrief-business-case.html (Vorbild): Topbar, dunkler Hero, zwei Tabs (Steckbrief / Business Case), vierteiliger Footer, Crosslink-Block.
+- Tab "Steckbrief": Faktenraster (Unternehmen, Produkt, Einstufung, Branche, Größe, Anwendungsfall, Prozess-Kurzfassung, Zeitlinie, Business-Ziel, wiederkehrende Systemelemente, Regulatorik, RE/BA-Werkzeuge) als reine Lesefelder (KEINE input/textarea-Formularfelder wie bei Velaris, da es keine Trainee-Selbstreflexion ist), plus Persona-Cast-Karten mit Zitat je Persona, plus Kernsatz-Box.
+- Tab "Business Case": Szenarienvergleich (RE nachträglich vs. von Anfang an), quantifizierte Impact-Tabelle, weicher Impact, Kernaussage-Zitat.
+- Crosslink-Block zu allen Tools, die den Fall nutzen (kuratiert, nicht vollständig — bei 19 nutzenden Tools eine Auswahl der thematisch nächsten).
+
+FAKTENBASIS (aus bestehenden Tools übernommen, nicht neu erfunden)
+- Vantera Systemtechnik GmbH: Maschinen- und Anlagenbau, 340 Mitarbeitende (Quelle: tools/ba-rollenwandel-explorer.html).
+- TalentMatch AI lief 8 Wochen als Prototyp vor dem ersten Business Case (dieselbe Quelle) — bewusstes Negativbeispiel für späte BA-Einbindung.
+- Business-Ziel: −50 % Sichtungszeit (dieselbe Quelle).
+- EU AI Act Anhang III Nr. 4, Hochrisiko-Einstufung (Quelle: tools/bpmn-anwenderkompendium.html Normen-Register).
+- Prozessschritte, Score-Profil, Kandidatendatenbank, Bias-Schwellenwert (Quelle: tools/bpmn-anwenderkompendium.html Stationen 1-5).
+- Personas Ela/Knut/Sarah/Petra/Herr Bachmeier: repo-weit feste Rollenzuordnung (Design-Standards), Zitate wortgleich aus tools/bpmn-anwenderkompendium.html übernommen für Konsistenz.
+- Bußgeldrahmen EU AI Act Art. 99 Abs. 4 (15 Mio. €/3 % Jahresumsatz): per gezielter Websuche am 23.09.2026 verifiziert, kein Trainingswissen.
+
+DESIGN-VORGABEN
+- Weißer Grundhintergrund, color-scheme: light, kein Dark Mode.
+- Eigene Akzentfarbe (Indigo) zur Unterscheidung von Velaris (Grün/Petrol) und den anderen Fallwelt-Steckbriefen (Studierendenakte, NovaTrade), sobald diese existieren.
+- Radius-Skala wie Velaris-Vorbild: 16px Karten, 999px Meta-Controls, 4px schmale Akzentboxen (Purpose-Box, Kernsatz, Zitat).
+- Mindestschriftgrößen 16px Fließtext / 14px Sekundärtext, vierstufiger kumulativer Beamer-Modus.
+- Signatur IMMER position:fixed (K21) — kein Rückfall auf position:static unter 900px, stattdessen Padding reduziert und im Topbar Platz reserviert.
+
+PFLICHT
+DE/EN-Sprachtoggle ohne Reload (data-i18n-Attribute + JS-Objekt), deutscher Inhalt auch ohne JS lesbar; nur click-Events, kein HTML5-Drag-and-Drop; keine fetch()-Aufrufe, kein externes CDN.
+
+NICHT TUN
+- Keine echten Unternehmens-/Systemnamen — der Fall bleibt fiktiv, auch wenn Normen/Regulatorik real sind.
+- Keine neu erfundenen Fallfakten, die bestehenden Tools widersprechen könnten — bei Unsicherheit im Zweifel offen lassen statt zu erfinden.
+- Bußgeldrahmen nicht als "illustrativ" kennzeichnen — er ist real, nur die begleitenden Wochen-/Kostenschätzungen im Business Case sind illustrativ.
+- Kein Formular/keine Eingabefelder wie bei Velaris — diese Seite ist Referenz, kein Reflexions-Werkzeug.</div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="fHandbuchHead">Handbuch</summary>
+      <div class="footer-content footer-sans" data-i18n="fHandbuchBody">Diese Seite ist als Nachschlagewerk gedacht, nicht als Übung: Bevor ein neues Tool zum Fall Vantera/TalentMatch AI entsteht, hier die Fakten (Unternehmensgröße, Zeitlinie, Zahlen, Persona-Zitate) prüfen, statt sie aus dem Gedächtnis neu zu erfinden — so bleiben alle Tools zueinander konsistent. Reiter "Steckbrief" bündelt die harten Fakten und die Persona-Besetzung; Reiter "Business Case" liefert eine wiederverwendbare Erzählung (RE nachträglich vs. von Anfang an), die sich für Vortragszwecke eignet, wann immer der Wert früher Anforderungsarbeit am Fall gezeigt werden soll. Sprachumschaltung wirkt sofort auf beide Reiter inkl. Footer. Beamer-Button vergrößert die Schrift stufenweise; Footer und Crosslink-Block werden dabei ausgeblendet.</div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="fVortragHead">Vortrags-Skript</summary>
+      <div class="footer-content footer-sans" data-i18n="fVortragBody">(Reiter "Steckbrief" ist aktiv.) Einstieg: „Bevor wir tiefer in den Fall Vantera/TalentMatch AI einsteigen, kurz die Eckdaten: ein Maschinenbauer mit 340 Mitarbeitenden führt ein Hochrisiko-KI-System für die eigene Personalauswahl ein." Auf die Identity-Row zeigen: Unternehmen, Produkt, Einstufung. Auf die Zeitlinie zeigen: „Acht Wochen lief das System als Prototyp — ohne Business Case. Das ist kein Einzelfall, das ist die Regel, wenn KI-Projekte schneller laufen als die Anforderungsarbeit." Persona-Karten kurz durchgehen, besonders Herr Bachmeiers Zitat zu Reputation und Haftung. (Auf den Tab "Business Case" klicken.) Überleitung: „Was hätte es gekostet, das von Anfang an strukturiert zu machen? Genau das zeigt dieser Vergleich." Szenario A vorlesen, dann Szenario B. Bußgeldrahmen aus der Impact-Tabelle hervorheben — das ist der einzige Wert in der Tabelle, der nicht illustrativ, sondern der reale EU-AI-Act-Rahmen ist. Abschluss mit der Kernaussage. Regie-Hinweis: Diese Seite ersetzt keine Fallbeschreibung im jeweiligen Tool selbst — sie ist die Referenz dahinter, falls Teilnehmende nach Hintergrund fragen.</div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="fNormenHead">Normen-Register</summary>
+      <div class="footer-content">
+        <table class="footer-table">
+          <thead><tr><th data-i18n="nrCol1">Framework/Quelle</th><th data-i18n="nrCol2">Fassung/Status</th><th data-i18n="nrCol3">Bezug im Tool</th></tr></thead>
+          <tbody>
+            <tr><td>EU AI Act (Verordnung (EU) 2024/1689)</td><td data-i18n="nrAIAct">In Kraft — Hochrisiko-Einstufung nach Anhang III Nr. 4; Bußgeldrahmen Art. 99 Abs. 4: bis 15 Mio. € oder 3 % Weltjahresumsatz (je nachdem was höher ist), per Websuche verifiziert 23.09.2026</td><td data-i18n="nrAIActUse">Einstufung im Steckbrief, Bußgeldrahmen im Business Case</td></tr>
+            <tr><td>IREB CPRE</td><td data-i18n="nrIREB">Aktuell (siehe IREB-Kompendium, v3.3.0)</td><td data-i18n="nrIREBUse">Referenzrahmen für die im Fall verwendete RE-Terminologie</td></tr>
+            <tr><td>BABOK® Guide v3 (IIBA)</td><td data-i18n="nrBABOK">Aktuell (v3.0, 2015)</td><td data-i18n="nrBABOKUse">Referenzrahmen für Business-Case-Struktur und BA-Rollenverständnis</td></tr>
+          </tbody>
+        </table>
+        <p data-i18n="nrNote">Stand der Prüfung: 23.09.2026. Fallfakten stammen aus bereits bestehenden Denkraum-Tools (siehe Systemprompt-Box); der EU-AI-Act-Bußgeldrahmen wurde gezielt gegengeprüft — bei Weiterverwendung in neuen Materialien erneut gegen aktuellen Stand prüfen.</p>
+      </div>
+    </details>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var i18n = {
+    backlink: {en:"← Back to homepage"},
+    sigLink: {en:"www.michaela-kuehn.com"},
+    normList: {en:"EU AI Act (Regulation (EU) 2024/1689) · IREB CPRE · BABOK® v3"},
+    auditLine: {en:"Last reviewed: 23 Sept 2026 · Status: ✅ Certified · See audit log for details"},
+
+    pageTitle: {en:"Case World Profile &amp; Business Case — Vantera Systemtechnik GmbH / TalentMatch AI"},
+    pageSubtitle: {en:"Reference page for the \"Vantera/TalentMatch AI\" case world (fictional) · consistent facts for new Denkraum tools"},
+    tabSteckbrief: {en:"Profile"},
+    tabBusinessCase: {en:"Business Case"},
+
+    sbHeading: {en:"Profile — Vantera Systemtechnik GmbH"},
+    sbSubtitle: {en:"Machinery and plant engineering · 340 employees · introducing TalentMatch AI for applicant screening"},
+    purposeBox: {en:"This page is not a standalone training tool — it is a reference: it records the facts about the Vantera/TalentMatch AI case world already established across many Denkraum tools, so new tools on this case stay consistent. All details are fictional, but mirrored against real standards (EU AI Act, ISO 25010 and others)."},
+
+    sbCompany: {en:"Company"},
+    vCompany: {en:"Vantera Systemtechnik GmbH"},
+    sbProduct: {en:"System / Product"},
+    vProduct: {en:"TalentMatch AI (also: \"Vantera Connect\")"},
+    sbClassification: {en:"Classification"},
+    vClassification: {en:"High-risk AI system under the EU AI Act, Annex III No. 4 (employment/worker management)"},
+
+    sbBranche: {en:"Industry"},
+    vBranche: {en:"Machinery and plant engineering — TalentMatch AI is an internal HR system, not a product Vantera sells; there is no external customer for this system."},
+    sbGroesse: {en:"Company size"},
+    vGroesse: {en:"340 employees"},
+    sbUsecase: {en:"Use case"},
+    vUsecase: {en:"AI-supported screening/scoring of incoming applications for open roles at Vantera itself"},
+    sbProzess: {en:"Process (short form)"},
+    vProzess: {en:"Application received → calculate score → check bias threshold → hire/reject decision. Details and the BPMN diagram: see the BPMN compendium."},
+    sbZeitlinie: {en:"Timeline (teaching example)"},
+    vZeitlinie: {en:"TalentMatch AI ran as a prototype for 8 weeks before a business case for it was even written — a deliberate negative example of late BA involvement."},
+    sbZiel: {en:"Business goal"},
+    vZiel: {en:"−50% screening time compared to the previous manual pre-selection"},
+    sbSystemelemente: {en:"Recurring system elements"},
+    vSystemelemente: {en:"Score profile (data object), candidate database (data store), bias threshold (gateway/decision point), bias review phase (sub-process)"},
+    sbRegulatorik: {en:"Regulatory framework"},
+    vRegulatorik: {en:"EU AI Act (Regulation (EU) 2024/1689) — fines for high-risk violations up to €15M or 3% of global annual turnover, whichever is higher (Art. 99(4))"},
+    sbTools: {en:"RE/BA tooling in the case"},
+    vTools: {en:"No dedicated RE tool introduced — a requirements-management tool for traceability/attributes combined with the existing Confluence/Jira setup (rationale: the lifecycle cost of a new specialist tool isn't justified for the pilot project)"},
+
+    personaHeading: {en:"Persona cast in the Vantera case"},
+    personaIntro: {en:"The five Denkraum personas are fixed across the whole repo and appear in other case worlds too — here is their fixed role plus a typical quote from the Vantera/TalentMatch context."},
+    pRoleEla: {en:"Project lead"},
+    pQuoteEla: {en:"\"Management needs six boxes, not forty — otherwise we lose the audience in the first minute.\""},
+    pRoleKnut: {en:"Development"},
+    pQuoteKnut: {en:"\"Once I lose the overview myself while drawing it, the diagram is too big — that is when a sub-process comes in.\""},
+    pRoleSarah: {en:"Sales"},
+    pQuoteSarah: {en:"\"The swimlane makes it immediately visible who does what — that is great when I have to show it in a client conversation.\""},
+    pRolePetra: {en:"Quality management / compliance"},
+    pQuotePetra: {en:"\"The data store makes it visible that the candidate database is not just for one run — that matters for traceability in the audit.\""},
+    pRoleBachmeier: {en:"Executive management"},
+    pQuoteBachmeier: {en:"Thinks in terms of reputation and liability — as managing director, carries sign-off and ultimate responsibility for TalentMatch AI."},
+
+    sbClosingLabel: {en:"One sentence that sums up the case"},
+    sbClosingValue: {en:"A mid-sized manufacturing company introduces a high-risk AI system for its own hiring decisions — and only afterwards learns what that means in requirements work and proof obligations."},
+
+    bcTitle: {en:"Business Case: What structured RE is worth for TalentMatch AI"},
+    bcSubtitle: {en:"From eight weeks of unmanaged pilot operation to an audit-ready requirements baseline"},
+    bcH1: {en:"Starting Situation"},
+    bcIntro: {en:"Vantera Systemtechnik GmbH runs TalentMatch AI as a prototype for eight weeks before a business case is even written — Ela only realises the scale of it afterwards, looking at the backlog: a high-risk AI system under the EU AI Act with no documented requirements baseline, no bias evidence, no conformity assessment."},
+    bcH2: {en:"Scenario Comparison"},
+    thBlank: {en:"&nbsp;"},
+    thScenarioA: {en:"Scenario A – Business case and RE only afterwards"},
+    thScenarioB: {en:"Scenario B – RE from the start"},
+    r1label: {en:"Requirements elicitation"},
+    r1a: {en:"TalentMatch AI is built and piloted as a prototype before requirements and risk classification are documented"},
+    r1b: {en:"Knut and Ela clarify scope, conformance class and bias threshold before the first sprint"},
+    r2label: {en:"Regulatory classification"},
+    r2a: {en:"The high-risk classification (Annex III No. 4) is only discovered once the system is already screening applications in production"},
+    r2b: {en:"Petra checks the classification alongside the business analysis — conformity obligations are in scope from day one"},
+    r3label: {en:"Bias evidence"},
+    r3a: {en:"No documented bias threshold, no traceability between the score profile and the decision"},
+    r3b: {en:"The bias threshold is a named gateway in the BPMN diagram, the score profile is traceable as a data object"},
+    r4label: {en:"Impact"},
+    r4a: {en:"Rework on documentation and technical file under time pressure, shortly before a possible market-surveillance check"},
+    r4b: {en:"The conformity assessment is in place before the system goes live — no rework under pressure"},
+    r5label: {en:"Stakeholder effect"},
+    r5a: {en:"Herr Bachmeier learns from the press about compliance discussions around AI recruiting systems and asks why this wasn't raised earlier"},
+    r5b: {en:"Herr Bachmeier signs off knowingly, backed by a documented risk assessment"},
+    bcH3: {en:"Quantified Impact (illustrative figures for the training exercise)"},
+    thCost: {en:"Cost factor"},
+    thWithout: {en:"Without early RE involvement"},
+    thWith: {en:"With early RE involvement"},
+    i1label: {en:"Rework on documentation/bias evidence"},
+    i1a: {en:"approx. 6 weeks of rework by Knut, Petra and external consulting"},
+    i1b: {en:"avoided"},
+    i2label: {en:"Delayed go-live"},
+    i2a: {en:"The screening-time goal (−50%) is only reached months later instead of at the planned rollout"},
+    i2b: {en:"the goal is reached at the planned rollout date"},
+    i3label: {en:"Fine risk for a high-risk violation"},
+    i3a: {en:"Up to €15M or 3% of annual turnover in the worst case (Art. 99(4) EU AI Act) — depending on nature, severity and remediation"},
+    i3b: {en:"significantly reduced through documented conformity"},
+    totlabel: {en:"Estimated overall effect"},
+    totdash: {en:"—"},
+    totval: {en:"Avoided rework + on-time screening-time goal + substantially reduced fine/reputational risk"},
+    bcNote: {en:"Note: figures (weeks, cost factors) are deliberately plausible-realistic for training discussion, not actual company figures — the fine range itself is the real range set out in Art. 99(4) of the EU AI Act, not illustrative."},
+    bcH4: {en:"Soft Impact"},
+    soft1: {en:"Audit readiness: traceable link between score profile, bias threshold and hiring decision"},
+    soft2: {en:"Knowledge transfer: the BPMN diagram and process chain become a template for further AI-supported systems at Vantera"},
+    soft3: {en:"Trust between management, development and compliance grows because risks surface early instead of late"},
+    bcH5: {en:"Key Message"},
+    bcQuote: {en:"\"Eight weeks of prototyping without a business case is not a speed advantage — it is a deferred bill.\""},
+
+    "cl-intro": {en:"Tools that use the Vantera/TalentMatch AI case as their example:"},
+    "cl-1-name": {en:"IREB CPRE Foundation Level Compendium"},
+    "cl-1-desc": {en:"uses the case for its seven IREB learning units, rather than describing it as a standalone reference."},
+    "cl-2-name": {en:"RE Compendium"},
+    "cl-2-desc": {en:"compares IREB/BABOK/29148 on the case, without summarising the case facts themselves."},
+    "cl-3-name": {en:"BPMN 2.0 in Practice"},
+    "cl-3-desc": {en:"shows the TalentMatch process as a detailed BPMN diagram; here only the core facts about it are listed."},
+    "cl-4-name": {en:"TalentMatch AI Before the Sufficiency Gate"},
+    "cl-4-desc": {en:"checks a single recruiting prompt example against the RSGA gate, rather than describing the case as a whole."},
+    "cl-5-name": {en:"TalentMatch AI — Four ML Paradigms in an RE/BA View"},
+    "cl-5-desc": {en:"translates ML paradigms into RE/BA analysis tasks on the same case, without documenting the case itself."},
+    "cl-6-name": {en:"BA Role-Shift Explorer"},
+    "cl-6-desc": {en:"shows the BA's role shift as a 6-stage model on the case, including the 8-week pilot timeline recorded here as fact."},
+
+    fSystemHead: {en:"System Prompt"},
+    fSystemBody: {en:"Build a single, offline-capable HTML reference page (not a training tool in the classic sense — no exercise, no stations) for the \"Vantera Systemtechnik GmbH / TalentMatch AI\" case world, which serves as a recurring example across 19+ Denkraum tools.\n\nTRIGGER\nThe user keeps building new tools on the same case and needed one authoritative source for the case facts (company, personas, process, numbers) to keep consistency across future tools — explicitly NOT a fill-in form (unlike tools/ba-steckbrief-business-case.html), but a fixed fact collection.\n\nSTRUCTURE\n- Same base pattern as tools/ba-steckbrief-business-case.html (the model): topbar, dark hero, two tabs (Profile / Business Case), four-part footer, crosslink block.\n- \"Profile\" tab: a fact grid (company, product, classification, industry, size, use case, process short form, timeline, business goal, recurring system elements, regulatory framework, RE/BA tooling) as read-only fields (NOT input/textarea form fields like Velaris, since this is not trainee self-reflection), plus persona-cast cards with a quote per persona, plus a one-sentence closing box.\n- \"Business Case\" tab: scenario comparison (RE only afterwards vs. from the start), quantified impact table, soft impact, key-message quote.\n- Crosslink block to tools that use the case (curated, not exhaustive — a selection of the most relevant ones out of 19+ using tools).\n\nFACT BASE (taken from existing tools, not newly invented)\n- Vantera Systemtechnik GmbH: machinery and plant engineering, 340 employees (source: tools/ba-rollenwandel-explorer.html).\n- TalentMatch AI ran as a prototype for 8 weeks before the first business case (same source) — deliberate negative example of late BA involvement.\n- Business goal: −50% screening time (same source).\n- EU AI Act Annex III No. 4, high-risk classification (source: tools/bpmn-anwenderkompendium.html standards register).\n- Process steps, score profile, candidate database, bias threshold (source: tools/bpmn-anwenderkompendium.html stations 1-5).\n- Personas Ela/Knut/Sarah/Petra/Herr Bachmeier: fixed role assignment across the repo (design standards), quotes taken verbatim from tools/bpmn-anwenderkompendium.html for consistency.\n- EU AI Act Art. 99(4) fine range (€15M/3% turnover): verified via targeted web search on 23 Sept 2026, not from training knowledge.\n\nDESIGN REQUIREMENTS\n- White background, color-scheme: light, no dark mode.\n- Own accent colour (indigo) to distinguish from Velaris (green/petrol) and the other case-world profiles (student file, NovaTrade) once they exist.\n- Radius scale as in the Velaris model: 16px cards, 999px meta-controls, 4px narrow accent boxes (purpose box, key sentence, quote).\n- Minimum font sizes 16px body / 14px secondary text, four-stage cumulative beamer mode.\n- Signature ALWAYS position:fixed (K21) — no fallback to position:static under 900px, padding reduced and space reserved in the topbar instead.\n\nREQUIRED\nDE/EN language toggle with no reload (data-i18n attributes + JS translation object), German content readable without JS; click events only, no HTML5 drag-and-drop; no fetch() calls, no external CDN.\n\nDO NOT\n- Use real company/system names — the case stays fictional even though the standards/regulation are real.\n- Invent new case facts that could contradict existing tools — when unsure, leave it open rather than inventing.\n- Label the fine range as \"illustrative\" — it is real; only the accompanying week/cost estimates in the business case are illustrative.\n- Add a form/input fields like Velaris — this page is a reference, not a reflection exercise."},
+    fHandbuchHead: {en:"Handbook"},
+    fHandbuchBody: {en:"This page is meant as a reference work, not an exercise: before building a new tool on the Vantera/TalentMatch AI case, check the facts here (company size, timeline, figures, persona quotes) instead of reinventing them from memory — that is how all tools on this case stay consistent with each other. The \"Profile\" tab bundles the hard facts and the persona cast; the \"Business Case\" tab provides a reusable narrative (RE only afterwards vs. from the start) suited for presentation purposes whenever the value of early requirements work needs demonstrating on this case. The language toggle affects both tabs including the footer immediately. The beamer button enlarges text stepwise; the footer and crosslink block are hidden while active."},
+    fVortragHead: {en:"Presenter Script"},
+    fVortragBody: {en:"(The \"Profile\" tab is active.) Opening: \"Before we go deeper into the Vantera/TalentMatch AI case, quickly the key facts: a machinery manufacturer with 340 employees is introducing a high-risk AI system for its own hiring decisions.\" Point to the identity row: company, product, classification. Point to the timeline: \"The system ran as a prototype for eight weeks — without a business case. That is not an exception, it is the rule whenever AI projects move faster than the requirements work.\" Walk through the persona cards briefly, especially Herr Bachmeier's quote on reputation and liability. (Click the \"Business Case\" tab.) Transition: \"What would it have cost to do this in a structured way from the start? That's exactly what this comparison shows.\" Read out Scenario A, then Scenario B. Highlight the fine range in the impact table — it is the one value in the table that is not illustrative but the real EU AI Act range. Close with the key message. Directing note: this page does not replace the case description inside each tool itself — it is the reference behind it, for when participants ask about the background."},
+    fNormenHead: {en:"Standards Register"},
+    fNormenBody: {en:"EU AI Act (Regulation (EU) 2024/1689): in force — high-risk classification under Annex III No. 4; fine range Art. 99(4): up to €15M or 3% of global annual turnover (whichever is higher), verified via web search 23 Sept 2026. IREB CPRE: current (see IREB compendium, v3.3.0). BABOK® Guide v3 (IIBA): current (v3.0, 2015). Reviewed: 23 Sept 2026. Case facts are drawn from existing Denkraum tools (see system-prompt box); the EU AI Act fine range was specifically re-checked — re-verify against current status before further use in new materials."},
+    nrCol1: {en:"Framework/Source"},
+    nrCol2: {en:"Version/Status"},
+    nrCol3: {en:"Used in tool for"},
+    nrAIAct: {en:"In force — high-risk classification under Annex III No. 4; fine range Art. 99(4): up to €15M or 3% of global annual turnover (whichever is higher), verified via web search 23 Sept 2026"},
+    nrAIActUse: {en:"Classification in the profile, fine range in the business case"},
+    nrIREB: {en:"Current (see IREB compendium, v3.3.0)"},
+    nrIREBUse: {en:"Reference framework for the RE terminology used in the case"},
+    nrBABOK: {en:"Current (v3.0, 2015)"},
+    nrBABOKUse: {en:"Reference framework for business-case structure and BA role understanding"},
+    nrNote: {en:"Reviewed: 23 Sept 2026. Case facts are drawn from existing Denkraum tools (see system-prompt box); the EU AI Act fine range was specifically re-checked — re-verify against current status before further use in new materials."}
+  };
+
+  var currentLang = "de";
+  var deCache = {};
+
+  function collectGerman(){
+    var els = document.querySelectorAll("[data-i18n]");
+    els.forEach(function(el){
+      var key = el.getAttribute("data-i18n");
+      if (!(key in deCache)) deCache[key] = el.innerHTML;
+    });
+  }
+
+  function applyLang(lang){
+    var els = document.querySelectorAll("[data-i18n]");
+    els.forEach(function(el){
+      var key = el.getAttribute("data-i18n");
+      if (lang === "en" && i18n[key] && i18n[key].en !== undefined){
+        el.innerHTML = i18n[key].en;
+      } else if (deCache[key] !== undefined){
+        el.innerHTML = deCache[key];
+      }
+    });
+    document.documentElement.lang = lang;
+  }
+
+  var langBtn = document.getElementById("langBtn");
+  langBtn.addEventListener("click", function(){
+    collectGerman();
+    currentLang = (currentLang === "de") ? "en" : "de";
+    langBtn.textContent = (currentLang === "de") ? "EN" : "DE";
+    applyLang(currentLang);
+  });
+
+  var BEAMER_LEVELS = [
+    { classes: [],                                    label: "☀ Beamer" },
+    { classes: ["beamer"],                             label: "☀ Beamer XL" },
+    { classes: ["beamer", "beamer-xl"],                label: "☀ Beamer XXL" },
+    { classes: ["beamer", "beamer-xl", "beamer-xxl"],  label: "☀ Normal" }
+  ];
+  var beamerLevel = 0;
+  var beamerBtn = document.getElementById("beamerBtn");
+
+  beamerBtn.addEventListener("click", function(){
+    beamerLevel = (beamerLevel + 1) % BEAMER_LEVELS.length;
+    document.documentElement.classList.remove("beamer", "beamer-xl", "beamer-xxl");
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    beamerBtn.textContent = BEAMER_LEVELS[beamerLevel].label;
+  });
+
+  var tabBtns = document.querySelectorAll(".tab-btn");
+  tabBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      tabBtns.forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      var target = btn.getAttribute("data-tab");
+      document.querySelectorAll(".tab-panel").forEach(function(panel){
+        panel.classList.toggle("active", panel.id === target);
+      });
+    });
+  });
+
+  collectGerman();
+})();
+</script>
+
+</body>
+</html>
