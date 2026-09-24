@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Fallwelt-Steckbrief &amp; Business Case — NovaTrade Systems GmbH / NovaTrade Pulse</title>
+<style>
+  :root{
+    --accent: #16406b;
+    --accent2: #c99a2e;
+    --dark: #101826;
+    --lightbg: #f2f5f8;
+    --amberbg: #faf3e0;
+    --border: #ccd4dd;
+    --grey: #545f6b;
+  }
+  html{ color-scheme: light; }
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    padding:0 0 40px 0;
+    background:#ffffff;
+    color:#1a1a1a;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    font-size:16px;
+    line-height:1.5;
+  }
+
+  /* ---------- Topbar: Zurück-Link + Meta-Controls (Pflicht) ---------- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+    padding:16px 24px 0 24px;
+  }
+  .back-link{
+    display:inline-block;
+    font-size:14px;
+    font-weight:700;
+    color:var(--grey);
+    text-decoration:none;
+  }
+  .back-link:hover{ color:var(--accent); }
+  .meta-controls{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+  /* ---------- Signatur oben rechts (Pflicht, K21: immer position:fixed) ---------- */
+  .sig{
+    position:fixed;
+    top:14px;
+    right:28px;
+    font-size:14px;
+    line-height:1.3;
+    color:var(--grey);
+    background:#ffffff;
+    padding:4px 10px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    z-index:500;
+  }
+  .sig strong{ display:block; color:var(--dark); font-size:15px; }
+  .sig a{ color:var(--accent); text-decoration:none; font-weight:600; }
+  @media (max-width:900px){
+    .sig{ padding:3px 8px; }
+    .topbar{ padding:16px 235px 0 24px; }
+  }
+
+  .btn-ghost{
+    min-height:44px; min-width:44px;
+    padding:9px 20px;
+    font-size:15px;
+    font-weight:700;
+    border-radius:999px;
+    border:1.5px solid var(--border);
+    background:#ffffff;
+    color:var(--grey);
+    cursor:pointer;
+  }
+  .btn-ghost:hover{ border-color:var(--accent); color:var(--accent); }
+
+  /* ---------- Beamer-Modus-Button (K18, vierstufig, kanonisches Muster) ---------- */
+  .beamer-btn{
+    background:transparent; border:1.5px solid var(--border);
+    color:var(--grey); font-size:15px; font-weight:700;
+    padding:9px 20px; min-height:44px;
+    border-radius:999px; cursor:pointer;
+  }
+  .beamer-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  html.beamer .beamer-btn,
+  html.beamer-xl .beamer-btn,
+  html.beamer-xxl .beamer-btn{ background:var(--dark); color:#fff; border-color:var(--dark); }
+
+  header.hero{
+    background:var(--dark);
+    color:#ffffff;
+    padding:22px 24px 22px 24px;
+    margin-top:12px;
+  }
+  header.hero h1{
+    margin:0 0 6px 0;
+    font-size:26px;
+    font-weight:800;
+  }
+  header.hero p{
+    margin:0;
+    font-size:15px;
+    color:#cfd7e0;
+  }
+
+  nav.tabs{
+    display:flex;
+    gap:8px;
+    padding:14px 24px 0 24px;
+    border-bottom:2px solid var(--border);
+    flex-wrap:wrap;
+  }
+  .tab-btn{
+    min-height:44px;
+    padding:10px 20px;
+    font-size:16px;
+    font-weight:700;
+    border:none;
+    background:none;
+    color:var(--grey);
+    cursor:pointer;
+    border-bottom:4px solid transparent;
+  }
+  .tab-btn.active{
+    color:var(--accent);
+    border-bottom:4px solid var(--accent);
+  }
+
+  main{ padding:24px; max-width:1200px; margin:0 auto; }
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; }
+
+  h2{
+    color:var(--accent);
+    font-size:20px;
+    margin:28px 0 10px 0;
+  }
+  h2:first-child{ margin-top:0; }
+  p{ font-size:16px; }
+  .subtitle{
+    color:var(--accent);
+    font-style:italic;
+    font-size:16px;
+    margin-bottom:8px;
+  }
+  .purpose-box{
+    background:var(--lightbg); border:1px solid var(--border); border-left:6px solid var(--accent);
+    border-radius:4px; padding:14px 18px; margin-bottom:20px; font-size:16px;
+  }
+
+  /* ---- Steckbrief-Faktenraster (read-only, kein Formular) ---- */
+  .identity-row{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:14px;
+    margin-bottom:18px;
+  }
+  .field-box{
+    background:var(--lightbg);
+    border:1px solid var(--border);
+    border-radius:16px;
+    box-shadow:0 6px 16px rgba(16,24,38,.03);
+    padding:14px 16px;
+  }
+  .field-box label{
+    display:block;
+    font-weight:700;
+    color:var(--accent);
+    font-size:14px;
+    margin-bottom:4px;
+  }
+  .field-box .value{
+    font-size:16px;
+    color:#20242c;
+  }
+  .grid-fields{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:14px;
+    margin-bottom:18px;
+  }
+  @media (max-width: 900px){
+    .identity-row{ grid-template-columns: 1fr; }
+    .grid-fields{ grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px){
+    .grid-fields{ grid-template-columns: 1fr; }
+  }
+
+  /* ---- Persona-Cast ---- */
+  .persona-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:14px; margin-bottom:20px; }
+  .persona-card{ background:#ffffff; border:1px solid var(--border); border-radius:16px; padding:14px 16px; }
+  .persona-card .p-name{ font-weight:800; color:var(--accent); font-size:16px; }
+  .persona-card .p-role{ font-size:14px; color:var(--grey); margin:2px 0 8px 0; }
+  .persona-card .p-quote{ font-size:15px; font-style:italic; color:#20242c; }
+
+  .closing-box{
+    background:var(--amberbg);
+    border:1px solid #e6d3a3;
+    border-left:6px solid var(--accent2);
+    border-radius:4px;
+    padding:14px 18px;
+  }
+  .closing-box .label{ display:block; color:var(--accent2); font-weight:700; font-size:15px; margin-bottom:6px; }
+  .closing-box .value{ font-size:17px; font-weight:700; color:#3a2f0f; }
+
+  /* ---- Business Case ---- */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:22px;
+    font-size:15px;
+  }
+  th, td{
+    border:1px solid var(--border);
+    padding:10px 12px;
+    text-align:left;
+    vertical-align:top;
+  }
+  th{
+    background:var(--dark);
+    color:#ffffff;
+    font-size:14px;
+  }
+  td.rowlabel{ background:var(--lightbg); font-weight:700; }
+  tr.total td{ background:var(--amberbg); font-weight:700; }
+  ul.impact-list{ font-size:16px; }
+  .quote-box{
+    border-left:6px solid var(--accent2);
+    background:var(--amberbg);
+    border-radius:4px;
+    padding:14px 18px;
+    font-size:18px;
+    font-weight:700;
+    font-style:italic;
+    color:#7a5c1a;
+    margin:14px 0 8px 0;
+  }
+  .note{
+    font-style:italic;
+    color:var(--grey);
+    font-size:14px;
+  }
+
+  /* ---- Crosslink ---- */
+  .crosslink{ margin:0 24px 20px 24px; font-size:14px; color:var(--grey); max-width:1152px; }
+  .crosslink a{ color:var(--accent); font-weight:700; text-decoration:none; }
+  .crosslink a:hover{ text-decoration:underline; }
+  .crosslink ul{ margin:8px 0 0; padding-left:20px; }
+  .crosslink li{ margin-bottom:4px; }
+
+  /* ---- Footer ---- */
+  footer{
+    margin-top:16px;
+    padding:20px 24px 30px 24px;
+    max-width:1200px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .footer-sig{
+    font-size:14px; color:var(--grey); margin-bottom:16px; line-height:1.6;
+  }
+  .footer-sig strong{ color:var(--dark); font-size:15px; }
+  .footer-details{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:14px;
+  }
+  @media (max-width: 900px){ .footer-details{ grid-template-columns: 1fr; } }
+  .footer-box{
+    background:var(--lightbg);
+    border:1px solid var(--border);
+    border-radius:16px;
+    overflow:hidden;
+  }
+  .footer-summary{
+    cursor:pointer; font-weight:700; font-size:16px; padding:12px 14px;
+    min-height:44px; display:flex; align-items:center; color:var(--dark);
+  }
+  .footer-content{ padding:0 14px 14px 14px; font-size:16px; color:#333; }
+  .footer-mono{ font-family: Consolas, "Courier New", monospace; white-space:pre-wrap; font-size:14px; line-height:1.5; }
+  .footer-sans{ font-size:16px; line-height:1.55; }
+  .footer-table{ width:100%; border-collapse:collapse; font-size:14px; }
+  .footer-table td, .footer-table th{
+    border-bottom:1px solid var(--border); padding:6px 6px; text-align:left; vertical-align:top;
+  }
+
+  /* ---------- Beamer-Modus (K18, vierstufig, kumulativ) ---------- */
+  html.beamer body,
+  html.beamer p, html.beamer li,
+  html.beamer .field-box .value, html.beamer .persona-card .p-quote,
+  html.beamer .closing-box .value,
+  html.beamer .quote-box,
+  html.beamer td{ font-size:22px; }
+  html.beamer h2{ font-size:44px; }
+  html.beamer .subtitle, html.beamer .field-box label, html.beamer .persona-card .p-role,
+  html.beamer .persona-card .p-name, html.beamer th,
+  html.beamer .tab-btn, html.beamer .closing-box .label{ font-size:15px; }
+  html.beamer .beamer-btn, html.beamer .btn-ghost{ font-size:16px; min-height:52px; }
+  html.beamer header.hero h1{ font-size:34px; }
+  html.beamer header.hero p{ font-size:18px; }
+
+  html.beamer-xl body,
+  html.beamer-xl p, html.beamer-xl li,
+  html.beamer-xl .field-box .value, html.beamer-xl .persona-card .p-quote,
+  html.beamer-xl .closing-box .value,
+  html.beamer-xl .quote-box,
+  html.beamer-xl td{ font-size:28px; }
+  html.beamer-xl h2{ font-size:54px; }
+  html.beamer-xl .subtitle, html.beamer-xl .field-box label, html.beamer-xl .persona-card .p-role,
+  html.beamer-xl .persona-card .p-name, html.beamer-xl th,
+  html.beamer-xl .tab-btn, html.beamer-xl .closing-box .label{ font-size:18px; }
+  html.beamer-xl .beamer-btn, html.beamer-xl .btn-ghost{ font-size:18px; min-height:56px; }
+  html.beamer-xl header.hero h1{ font-size:40px; }
+  html.beamer-xl header.hero p{ font-size:21px; }
+
+  html.beamer-xxl body,
+  html.beamer-xxl p, html.beamer-xxl li,
+  html.beamer-xxl .field-box .value, html.beamer-xxl .persona-card .p-quote,
+  html.beamer-xxl .closing-box .value,
+  html.beamer-xxl .quote-box,
+  html.beamer-xxl td{ font-size:34px; }
+  html.beamer-xxl h2{ font-size:64px; }
+  html.beamer-xxl .subtitle, html.beamer-xxl .field-box label, html.beamer-xxl .persona-card .p-role,
+  html.beamer-xxl .persona-card .p-name, html.beamer-xxl th,
+  html.beamer-xxl .tab-btn, html.beamer-xxl .closing-box .label{ font-size:21px; }
+  html.beamer-xxl .beamer-btn, html.beamer-xxl .btn-ghost{ font-size:20px; min-height:60px; }
+  html.beamer-xxl header.hero h1{ font-size:46px; }
+  html.beamer-xxl header.hero p{ font-size:24px; }
+
+  html.beamer{ --grey:#3C4A59; }
+  html.beamer-xl{ --grey:#3C4A59; }
+  html.beamer-xxl{ --grey:#3C4A59; }
+
+  html.beamer footer, html.beamer-xl footer, html.beamer-xxl footer,
+  html.beamer .crosslink, html.beamer-xl .crosslink, html.beamer-xxl .crosslink{ display:none; }
+</style>
+</head>
+<body>
+
+<div class="sig"><strong data-i18n="sigName">Michaela Kühn</strong><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener">www.michaela-kuehn.com</a></div>
+
+<header class="topbar">
+  <a class="back-link" href="../index.html" data-i18n="backlink">← Zurück zur Startseite</a>
+  <div class="meta-controls">
+    <button id="langBtn" type="button" class="btn-ghost">EN</button>
+    <button id="beamerBtn" type="button" class="beamer-btn" title="Vergrößert die Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">☀ Beamer</button>
+  </div>
+</header>
+
+<header class="hero">
+  <h1 data-i18n="pageTitle">Fallwelt-Steckbrief &amp; Business Case — NovaTrade Systems GmbH / NovaTrade Pulse</h1>
+  <p data-i18n="pageSubtitle">Referenzseite für die Fallstudienwelt „NovaTrade Pulse&quot; (fiktiv) · konsistente Fakten für neue Denkraum-Tools</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="steckbrief" type="button" data-i18n="tabSteckbrief">Steckbrief</button>
+  <button class="tab-btn" data-tab="businesscase" type="button" data-i18n="tabBusinessCase">Business Case</button>
+</nav>
+
+<main>
+
+  <!-- ============ TAB 1: STECKBRIEF ============ -->
+  <section id="steckbrief" class="tab-panel active">
+    <h2 data-i18n="sbHeading">Steckbrief — NovaTrade Systems GmbH</h2>
+    <p class="subtitle" data-i18n="sbSubtitle">Wertpapierdienstleistung · agile Entwicklung unter MiFID-II-/WpHG-Gate — dritter Kontrastfall neben Hochrisiko-KI (Vantera) und Nicht-KI-Verwaltung (Hochschule Nordwest)</p>
+
+    <div class="purpose-box" data-i18n="purposeBox">Diese Seite ist kein eigenständiges Trainingstool, sondern eine Referenz: Sie hält die in der Fallwelt „NovaTrade Pulse&quot; bereits über mehrere Denkraum-Tools hinweg etablierten Fakten fest, damit neue Tools zu diesem Fall konsistent bleiben. Alle Angaben sind fiktiv, aber an echten Standards (MiFID II, WpHG, ISO 25010 u.a.) gespiegelt. Die Marktmissbrauchsverordnung (MAR) wird nur in einem der drei nutzenden Tools zitiert — hier als sekundäre, nicht als tragende Regulatorik geführt.</div>
+
+    <div class="identity-row">
+      <div class="field-box">
+        <label data-i18n="sbCompany">Unternehmen</label>
+        <span class="value" data-i18n="vCompany">NovaTrade Systems GmbH — lizenziertes Wertpapierdienstleistungsunternehmen</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbProduct">System / Produkt</label>
+        <span class="value" data-i18n="vProduct">NovaTrade Pulse — neue Funktion für Bruchteilsaktien-Handel ab 1&nbsp;€ in der bestehenden Trading-App</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbClassification">Einstufung</label>
+        <span class="value" data-i18n="vClassification">Reguliertes FinTech unter MiFID II / WpHG — <strong>kein KI-System</strong>, agile Entwicklung (Scrum) unter einem harten Compliance-Gate</span>
+      </div>
+    </div>
+
+    <div class="grid-fields">
+      <div class="field-box">
+        <label data-i18n="sbBranche">Branche</label>
+        <span class="value" data-i18n="vBranche">Wertpapierdienstleistung / FinTech — bestehende Handelsplattform-App, BaFin-lizenziert</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbUsecase">Anwendungsfall</label>
+        <span class="value" data-i18n="vUsecase">Bruchteilsaktien-Handel ab 1&nbsp;€ (vorher nur ganze Aktien), Zielgruppe 18–35-Jährige; 4 von 5 Konkurrenzprodukten boten das bereits an</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbProzess">Prozess (Kurzfassung)</label>
+        <span class="value" data-i18n="vProzess">Scrum, 2-Wochen-Sprints. Jedes Release durchläuft ein MiFID-II-Product-Governance-Gate vor Freigabe. Geeignetheitsprüfung vor jedem Erstkauf ist nicht verhandelbares Muss-Kriterium. Compliance-Nachweise liegen in einem separaten, auditierbaren Confluence-Bereich (WpHG §63 Dokumentationspflicht).</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbZeitlinie">Zeitlinie (Lehrbeispiel)</label>
+        <span class="value" data-i18n="vZeitlinie">Vager Auftrag „App für Bruchteilsaktien&quot; → Lücken (Compliance-Sichtbarkeit, Portfolio-Anzeige) erst in Sprint 1 sichtbar → nach Stakeholder-Mapping/MoSCoW als REQ-033 dokumentiert (Workshop mit Petra, 20.02.) → sechs Monate später: Erweiterung um neue Assetklasse dank Dokumentation in 2 Tagen statt 3 Wochen möglich.</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbZiel">Business-Ziel</label>
+        <span class="value" data-i18n="vZiel">Investition ca. 120.000&nbsp;€ über 6 Sprints; Ziel +20&nbsp;% Neukunden (18–35-Jährige). Nach 6-Wochen-Beta tatsächlich erreicht: +18&nbsp;% Neukunden, Ø Ersteinlage 47&nbsp;€, Abbruchquote Geeignetheitsprüfung 12&nbsp;% (Ziel: 8&nbsp;%).</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbSystemelemente">Wiederkehrende Systemelemente</label>
+        <span class="value" data-i18n="vSystemelemente">Order-Engine, Compliance-Gate (REQ-033/UC-05), Geeignetheitsprüfung mit Feld `geeignetheit_bestanden` (AN-011), lizenzierter Marktdaten-Feed, Order-Bestätigung &lt;100&nbsp;ms bei 5.000 gleichzeitigen Trades</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbRegulatorik">Regulatorischer Rahmen</label>
+        <span class="value" data-i18n="vRegulatorik">MiFID II (Richtlinie 2014/65/EU) Art. 16(3)/24(2) Product Governance; WpHG §63&nbsp;ff. i.&nbsp;V.&nbsp;m. MaComp-Modul BT&nbsp;5 (BaFin); sekundär: Marktmissbrauchsverordnung (MAR, VO (EU) 596/2014); ISO/IEC 27001:2022 Anhang A.8.24 (Verschlüsselung Kundenportfolio-Daten)</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="sbTools">RE/BA-Werkzeuge im Fall</label>
+        <span class="value" data-i18n="vTools">User Stories + Akzeptanzkriterien für agile Teile, klassischer Use Case (UC-05) für das Compliance-Gate, IEEE-29148-artiges Anforderungsdokument REQ-033, BABOK-Traceability-Faden AN-011, RACI (Ela=Responsible, Bachmeier=Accountable, Petra=Consulted, BaFin=Informed)</span>
+      </div>
+    </div>
+
+    <h2 data-i18n="personaHeading">Persona-Besetzung im Fall NovaTrade Pulse</h2>
+    <p data-i18n="personaIntro">Die fünf Denkraum-Personas sind repo-weit fest. Anders als bei Hochschule Nordwest werden hier keine Slots ersetzt — die fünf Namen tragen bewusst ihre kanonischen NovaTrade-/TalentMatch-Rollen (Entscheidung vom 23.08.2026, Konsistenz zum größeren Portfolio vor lokaler Rollenvarianz).</p>
+    <div class="persona-grid">
+      <div class="persona-card">
+        <div class="p-name">Ela</div>
+        <div class="p-role" data-i18n="pRoleEla">Product Owner</div>
+        <div class="p-quote" data-i18n="pQuoteEla">„Wir arbeiten in Sprints, aber die MiFID-II-Freigabe ist für mich ein hartes Gate — das verschiebe ich nicht, egal wie voll der Sprint ist.“</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Knut</div>
+        <div class="p-role" data-i18n="pRoleKnut">Entwicklung</div>
+        <div class="p-quote" data-i18n="pQuoteKnut">„Das Refinement zeigt mir sofort, welche Story als Nächstes dran ist — aber die Marktdaten-Lizenz kann ich nicht einfach im Sprint klären, das dauert länger als zwei Wochen.“</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Sarah</div>
+        <div class="p-role" data-i18n="pRoleSarah">Vertrieb</div>
+        <div class="p-quote" data-i18n="pQuoteSarah">„Die Abbruchquote von 12&nbsp;% ärgert mich als Vertrieb am meisten — jede abgebrochene Prüfung ist eine Kundin, die wir fast gewonnen hätten.“</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Petra</div>
+        <div class="p-role" data-i18n="pRolePetra">Compliance</div>
+        <div class="p-quote" data-i18n="pQuotePetra">„Jede Story, die die Geeignetheitsprüfung betrifft, ist für mich automatisch Must — da verhandle ich nicht.“</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Herr Bachmeier</div>
+        <div class="p-role" data-i18n="pRoleBachmeier">Vorstand</div>
+        <div class="p-quote" data-i18n="pQuoteBachmeier">„Ein Bußgeld wegen mangelhafter Geeignetheitsprüfung wäre für unsere BaFin-Lizenz existenzbedrohend — das wiegt schwerer als jedes Feature.“</div>
+      </div>
+    </div>
+
+    <div class="closing-box">
+      <span class="label" data-i18n="sbClosingLabel">Ein Satz, der den Fall auf den Punkt bringt</span>
+      <span class="value" data-i18n="sbClosingValue">Ein reguliertes FinTech baut eine neue Handelsfunktion im Zwei-Wochen-Rhythmus — und lernt, dass ein hartes Compliance-Gate kein Bremsklotz ist, sondern die Voraussetzung dafür, sechs Monate später in zwei Tagen statt drei Wochen weiterzubauen.</span>
+    </div>
+  </section>
+
+  <!-- ============ TAB 2: BUSINESS CASE ============ -->
+  <section id="businesscase" class="tab-panel">
+    <h2 data-i18n="bcTitle">Business Case: Was eine sauber dokumentierte Anforderung bei der Compliance-Gate-Erweiterung wert war</h2>
+    <p class="subtitle" data-i18n="bcSubtitle">Vom vagen Anruf des Vorstands zur nachnutzbaren Anforderungsdokumentation REQ-033</p>
+
+    <h2 data-i18n="bcH1">Ausgangssituation</h2>
+    <p data-i18n="bcIntro">Herr Bachmeier ruft Sarah (Vertrieb) an: „Wir brauchen eine App, mit der man Bruchteilsaktien handeln kann. Das kann doch nicht so schwer sein.“ Sarah gibt den Wunsch ungeprüft an die Entwicklung weiter. Der Sprint-1-Prototyp zeigt nicht, ob eine Order die Compliance-Prüfung bestanden hat, und keine Bruchteilsanzeige — für ein MiFID-II-/WpHG-reguliertes Handelssystem nicht nur unpräzise, sondern ein aufsichtsrechtliches Risiko.</p>
+
+    <h2 data-i18n="bcH2">Szenarienvergleich</h2>
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="thBlank">&nbsp;</th>
+          <th data-i18n="thScenarioA">Szenario A – vage Bitte direkt in den Sprint</th>
+          <th data-i18n="thScenarioB">Szenario B – tatsächlich erfolgt: strukturierte Anforderungsarbeit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rowlabel" data-i18n="r1label">Anforderungsaufnahme</td>
+          <td data-i18n="r1a">Bachmeiers vage Bitte „App für Bruchteilsaktien“ wird direkt an die Entwicklung weitergereicht, ohne Übersetzung in testbare Anforderungen</td>
+          <td data-i18n="r1b">Petra fordert Stakeholder-Mapping und MoSCoW-Priorisierung, bevor der erste Sprint startet</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="r2label">Compliance-Sichtbarkeit</td>
+          <td data-i18n="r2a">Sprint-1-Prototyp zeigt weder Compliance-Prüfungsstatus noch Bruchteilsanzeige — Bachmeier reklamiert nachträglich „Selbstverständliches“</td>
+          <td data-i18n="r2b">Compliance-Gate wird formal als REQ-033 dokumentiert (Quelle: Workshop mit Petra, 20.02., Muss-Priorität, testbares Akzeptanzkriterium)</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="r3label">Traceability</td>
+          <td data-i18n="r3a">Keine dokumentierte Verknüpfung zwischen Anforderung und regulatorischer Pflicht</td>
+          <td data-i18n="r3b">REQ-033 explizit mit REQ-028 (Order-Engine) und NFR-005 (Security) verknüpft</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="r4label">Auswirkung sechs Monate später</td>
+          <td data-i18n="r4a">Erweiterung um neue Assetklasse würde erneute Anforderungserhebung von rund drei Wochen erfordern</td>
+          <td data-i18n="r4b">Ela findet die relevanten Anforderungen dank Dokumentation in zwei Tagen wieder</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="r5label">Stakeholder-Effekt</td>
+          <td data-i18n="r5a">Herr Bachmeier reklamiert im Nachhinein fehlende Selbstverständlichkeiten</td>
+          <td data-i18n="r5b">Petras Schlusswort: „Gute Dokumentation ist keine Bürokratie für heute. Sie ist die Grundlage für jede Änderung von morgen.“</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 data-i18n="bcH3">Quantifizierter Impact (illustrative Rechnung für die Trainingsübung)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="thCost">Kostenfaktor</th>
+          <th data-i18n="thWithout">Ohne dokumentierte Anforderungen</th>
+          <th data-i18n="thWith">Mit dokumentierten Anforderungen (tatsächlich erreicht)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rowlabel" data-i18n="i1label">Wiedererschließungszeit bei Erweiterung</td>
+          <td data-i18n="i1a">ca. 3 Wochen erneute Anforderungserhebung</td>
+          <td data-i18n="i1b">2 Tage (tatsächlich erreicht dank REQ-033 u.&nbsp;a.)</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="i2label">Abbruchquote Geeignetheitsprüfung</td>
+          <td data-i18n="i2a">12&nbsp;% (Ziel war 8&nbsp;%) — unbearbeitet bliebe die Lücke bestehen</td>
+          <td data-i18n="i2b">Empfehlung dokumentiert: Fragebogen von 12 auf 5 Fragen kürzen (regulatorisch zulässiges Minimum)</td>
+        </tr>
+        <tr>
+          <td class="rowlabel" data-i18n="i3label">Investition (6 Sprints Entwicklung + Compliance-Reviews)</td>
+          <td data-i18n="i3a">ca. 120.000&nbsp;€ — unabhängig vom Dokumentationsgrad fällig</td>
+          <td data-i18n="i3b">ca. 120.000&nbsp;€ — unabhängig vom Dokumentationsgrad fällig</td>
+        </tr>
+        <tr class="total">
+          <td class="rowlabel" data-i18n="totlabel">Geschätzte Gesamtwirkung</td>
+          <td data-i18n="totdash">—</td>
+          <td data-i18n="totval">Vermiedene Wiedererhebungskosten + schnellere Erweiterungsfähigkeit + belastbare Nachweisführung gegenüber BaFin</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note" data-i18n="bcNote">Hinweis: „2 Tage statt 3 Wochen“ ist der direkte Vergleich aus dem Fall selbst (nicht nachträglich hinzugefügt); die übrigen Zahlen (Investition, Abbruchquote, Neukundenziel) sind reale Kennzahlen aus dem Fall, keine für diese Seite neu erfundenen Werte.</p>
+
+    <h2 data-i18n="bcH4">Weicher Impact</h2>
+    <ul class="impact-list">
+      <li data-i18n="soft1">Vertrauen zwischen Vorstand, Vertrieb und Compliance wächst, weil Erwartungen (Compliance-Sichtbarkeit, Portfolio-Anzeige) von Anfang an spezifiziert statt nachträglich reklamiert werden</li>
+      <li data-i18n="soft2">Ein Marktdaten-Lizenzkonflikt wird durch frühzeitige Compliance-Eskalation gelöst (lizenzierter Feed statt ungeklärter Drittanbieter-API), statt spät im Projekt zum Blocker zu werden</li>
+      <li data-i18n="soft3">Die REQ-033-Dokumentation wird zur Vorlage für die nächste Erweiterung (neue Assetklasse)</li>
+    </ul>
+
+    <h2 data-i18n="bcH5">Kernaussage</h2>
+    <div class="quote-box" data-i18n="bcQuote">„Eine vage Bitte am Telefon wird nicht dadurch zur Anforderung, dass sie schnell in einen Sprint wandert — sie wird es erst, wenn jemand sie in testbare Kriterien übersetzt.“</div>
+  </section>
+
+</main>
+
+<div class="crosslink">
+  <span data-i18n="cl-intro">Tools, die den Fall NovaTrade Pulse als Fallbeispiel nutzen:</span>
+  <ul>
+    <li><a href="./se-lifecycle-lernreise.html" data-i18n="cl-1-name">SE-Lifecycle-Lernreise</a> — <span data-i18n="cl-1-desc">begleitet den Fall über alle elf SWEBOK-Stationen als einen von drei parallelen Fällen — hier stehen nur die Kernfakten dazu.</span></li>
+    <li><a href="./ba-lifecycle-lernreise.html" data-i18n="cl-2-name">BA-Lifecycle-Lernreise</a> — <span data-i18n="cl-2-desc">begleitet den Fall über alle sechs BABOK-Stationen inkl. des vollständigen Traceability-Fadens AN-011, der hier zusammengefasst ist.</span></li>
+    <li><a href="./sarahs-weg-zum-qualitaetskuchen.html" data-i18n="cl-3-name">Sarahs Weg zum Qualitätskuchen</a> — <span data-i18n="cl-3-desc">erzählt die REQ-033-Geschichte (Bachmeiers Anruf) als vollständiges Dialog-Narrativ entlang ISO/IEC 25010, hier nur als Business-Case-Kern.</span></li>
+  </ul>
+</div>
+
+<footer>
+  <div class="footer-sig">
+    <strong data-i18n="sigName">Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" data-i18n="sigLink">www.michaela-kuehn.com</a><br>
+    <span data-i18n="normList">MiFID II · WpHG §63 ff. · MaComp BT 5 · ISO/IEC 27001:2022</span><br>
+    <span data-i18n="auditLine">Zuletzt geprüft: 23.09.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
+  </div>
+  <div class="footer-details">
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="fSystemHead">Systemprompt</summary>
+      <div class="footer-content footer-mono" data-i18n="fSystemBody">Baue eine einzelne, offlinefähige HTML-Referenzseite (kein Trainingstool im klassischen Sinn, keine Übung, keine Stationen) für die Fallstudienwelt "NovaTrade Systems GmbH / NovaTrade Pulse", die repo-weit als wiederkehrendes Fallbeispiel dient — dritter Kontrastfall neben Hochrisiko-KI (Vantera/TalentMatch AI) und Nicht-KI-Verwaltung (Hochschule Nordwest): reguliertes FinTech mit agiler Entwicklung unter einem harten Compliance-Gate.
+
+AUSLOESER
+Nutzerin baut fortlaufend neue Tools auf demselben Fall auf und brauchte eine einzige verbindliche Quelle für die Fallfakten (Unternehmen, Personas, Prozess, Zahlen), um Konsistenz über künftige Tools hinweg sicherzustellen — ausdrücklich KEIN Formular zum Selbst-Ausfüllen (anders als tools/ba-steckbrief-business-case.html), sondern eine feste Faktensammlung. Gleiches Grundmuster wie tools/vantera-talentmatch-steckbrief.html und tools/hochschule-nordwest-steckbrief.html, eigene Farbwelt (Navy/Gold statt Indigo bzw. Bordeaux/Messing).
+
+STRUKTUR
+- Topbar, dunkler Hero, zwei Tabs (Steckbrief / Business Case), vierteiliger Footer, Crosslink-Block.
+- Tab "Steckbrief": Faktenraster (Unternehmen, Produkt, Einstufung, Branche, Anwendungsfall, Prozess-Kurzfassung, Zeitlinie, Business-Ziel, wiederkehrende Systemelemente, Regulatorik, RE/BA-Werkzeuge) als reine Lesefelder, plus Persona-Cast-Karten mit Zitat je Persona, plus Kernsatz-Box.
+- Tab "Business Case": Szenarienvergleich rund um die REQ-033-Story (Bachmeiers vager Anruf → Sprint-1-Lücken → strukturierte Dokumentation → Wiedererschließung in 2 Tagen statt 3 Wochen), quantifizierte Impact-Tabelle, weicher Impact, Kernaussage-Zitat.
+- Crosslink-Block zu den drei Tools, die den Fall NovaTrade Pulse tatsächlich nutzen.
+
+WICHTIGER HINWEIS ZUR FALLTREUE
+Anders als bei "Digitale Studierendenakte" (drei nicht austauschbare Institutionsvarianten) gibt es bei NovaTrade Pulse keine konkurrierende Fallvariante — alle drei nutzenden Tools stimmen bei Firmenname, Produktname, Personabesetzung und Kern-Regulatorik überein. Eine Inkonsistenz: Die Marktmissbrauchsverordnung (MAR) wird nur in ba-lifecycle-lernreise.html zitiert, nicht in den anderen beiden Tools — deshalb hier als sekundäre, nicht als tragende Regulatorik geführt. Ebenso existieren zwei unterschiedliche Order-Latenz-Werte im Repo (<100ms in sarahs-weg-zum-qualitaetskuchen.html und se-lifecycle-lernreise.html, <200ms einmalig in ba-lifecycle-lernreise.html) — hier wurde der häufiger belegte <100ms-Wert übernommen.
+
+FAKTENBASIS (aus bestehenden Tools übernommen, nicht neu erfunden)
+- Unternehmen "NovaTrade Systems GmbH", Produkt "NovaTrade Pulse" (neue Funktion für Bruchteilsaktien-Handel ab 1€), Zielgruppe 18-35-Jährige, Scrum/2-Wochen-Sprints (Quelle: tools/se-lifecycle-lernreise.html, tools/ba-lifecycle-lernreise.html).
+- REQ-033-Story, Investition ca. 120.000€, +18% Neukunden nach Beta, Abbruchquote 12% vs. Ziel 8%, "2 Tage statt 3 Wochen"-Vergleich (Quelle: tools/ba-lifecycle-lernreise.html, tools/sarahs-weg-zum-qualitaetskuchen.html).
+- Personas Ela (Product Owner), Knut (Entwicklung), Sarah (Vertrieb), Petra (Compliance), Herr Bachmeier (Vorstand) — bewusst unverändert übernommen, keine Rollen-Slots ersetzt (anders als Hochschule Nordwest); Zitate wortgleich aus tools/ba-lifecycle-lernreise.html und tools/sarahs-weg-zum-qualitaetskuchen.html übernommen.
+- Regulatorik MiFID II Art. 16(3)/24(2), WpHG §63 ff. i.V.m. MaComp BT 5, sekundär MAR (Quelle: tools/se-lifecycle-lernreise.html Normen-Register, tools/ba-lifecycle-lernreise.html).
+
+DESIGN-VORGABEN
+- Weißer Grundhintergrund, color-scheme: light, kein Dark Mode.
+- Eigene Akzentfarbe (Navy/Gold) zur Unterscheidung von Velaris (Grün/Petrol), Vantera/TalentMatch AI (Indigo) und Hochschule Nordwest (Bordeaux/Messing).
+- Radius-Skala wie Velaris-Vorbild: 16px Karten, 999px Meta-Controls, 4px schmale Akzentboxen.
+- Mindestschriftgrößen 16px Fließtext / 14px Sekundärtext, vierstufiger kumulativer Beamer-Modus.
+- Signatur IMMER position:fixed (K21) — kein Rückfall auf position:static unter 900px, stattdessen Padding reduziert und im Topbar Platz reserviert.
+
+PFLICHT
+DE/EN-Sprachtoggle ohne Reload (data-i18n-Attribute + JS-Objekt), deutscher Inhalt auch ohne JS lesbar; nur click-Events, kein HTML5-Drag-and-Drop; keine fetch()-Aufrufe, kein externes CDN.
+
+NICHT TUN
+- Keine echten Unternehmensnamen — der Fall bleibt fiktiv, auch wenn Normen/Regulatorik real sind.
+- Keine neu erfundenen Fallfakten, die bestehenden Tools widersprechen könnten — bei Unsicherheit im Zweifel offen lassen statt zu erfinden (z. B. kein Gründungsjahr/Mitarbeiterzahl, da in keinem NovaTrade-Tool beziffert).
+- REQ-033, AN-011 und UC-05 nicht zu einer einzigen "kanonischen" ID zusammenführen — der Fall selbst hält sie als drei separate, überlappende Artefakte.
+- Kein Formular/keine Eingabefelder wie bei Velaris — diese Seite ist Referenz, kein Reflexions-Werkzeug.</div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="fHandbuchHead">Handbuch</summary>
+      <div class="footer-content footer-sans" data-i18n="fHandbuchBody">Diese Seite ist als Nachschlagewerk gedacht, nicht als Übung: Bevor ein neues Tool zum Fall NovaTrade Pulse entsteht, hier die Fakten (Compliance-Gate, Zeitlinie, Zahlen, Persona-Zitate) prüfen, statt sie aus dem Gedächtnis neu zu erfinden — so bleiben alle Tools zueinander konsistent. Anders als bei Hochschule Nordwest tragen hier alle fünf Personas ihre kanonischen NovaTrade-Rollen unverändert (Ela=Product Owner, Petra=Compliance, Bachmeier=Vorstand). Reiter "Steckbrief" bündelt die harten Fakten und die Persona-Besetzung; Reiter "Business Case" liefert eine wiederverwendbare Erzählung rund um die REQ-033-Dokumentation, die sich für Vortragszwecke eignet, wann immer der Wert strukturierter Anforderungsarbeit gegenüber vagen mündlichen Aufträgen gezeigt werden soll. Sprachumschaltung wirkt sofort auf beide Reiter inkl. Footer. Beamer-Button vergrößert die Schrift stufenweise; Footer und Crosslink-Block werden dabei ausgeblendet.</div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="fVortragHead">Vortrags-Skript</summary>
+      <div class="footer-content footer-sans" data-i18n="fVortragBody">(Reiter "Steckbrief" ist aktiv.) Einstieg: „Bevor wir tiefer in den Fall NovaTrade Pulse einsteigen, kurz die Eckdaten: ein reguliertes FinTech baut in Zwei-Wochen-Sprints eine neue Handelsfunktion — mit einem Compliance-Gate, das sich nicht verschieben lässt, egal wie voll der Sprint ist." Auf die Identity-Row zeigen: Unternehmen, Produkt, Einstufung. Auf die Zeitlinie zeigen: „Ein vager Anruf des Vorstands wurde ungeprüft in die Entwicklung gegeben — die Lücken zeigten sich erst im ersten Sprint. Nach sauberer Dokumentation als REQ-033 hat sich das ausgezahlt: sechs Monate später ließ sich der Fall in zwei Tagen statt drei Wochen weiterentwickeln." Persona-Karten kurz durchgehen, besonders Herr Bachmeiers Zitat zur BaFin-Lizenz. (Auf den Tab "Business Case" klicken.) Überleitung: „Was war der Unterschied zwischen dem vagen Anruf und der sauberen Dokumentation konkret wert? Genau das zeigt dieser Vergleich." Szenario A vorlesen, dann Szenario B. „2 Tage statt 3 Wochen" aus der Impact-Tabelle hervorheben — das ist der direkte Vergleich aus dem Fall selbst. Abschluss mit der Kernaussage. Regie-Hinweis: Diese Seite ersetzt keine Fallbeschreibung im jeweiligen Tool selbst — sie ist die Referenz dahinter, falls Teilnehmende nach Hintergrund fragen.</div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="fNormenHead">Normen-Register</summary>
+      <div class="footer-content">
+        <table class="footer-table">
+          <thead><tr><th data-i18n="nrCol1">Framework/Quelle</th><th data-i18n="nrCol2">Fassung/Status</th><th data-i18n="nrCol3">Bezug im Tool</th></tr></thead>
+          <tbody>
+            <tr><td>MiFID II (Richtlinie 2014/65/EU)</td><td data-i18n="nrMiFID">In Kraft — Product-Governance-Pflichten Art. 16(3), 24(2)</td><td data-i18n="nrMiFIDUse">Release-Gate im Steckbrief und in der Business-Case-Story</td></tr>
+            <tr><td>WpHG § 63 ff. i.V.m. MaComp (BaFin)</td><td data-i18n="nrWpHG">In Kraft — MaComp-Modul BT 5 zu Product Governance</td><td data-i18n="nrWpHGUse">Geeignetheitsprüfung, Dokumentationspflicht (REQ-033/AN-011)</td></tr>
+            <tr><td>Marktmissbrauchsverordnung (MAR, VO (EU) 596/2014)</td><td data-i18n="nrMAR">In Kraft — im Repo nur in einem von drei nutzenden Tools zitiert, hier sekundär geführt</td><td data-i18n="nrMARUse">Ergänzende Erwähnung im Regulatorik-Feld</td></tr>
+            <tr><td>ISO/IEC 27001:2022 Anhang A.8.24</td><td data-i18n="nrISO27001">Aktuell</td><td data-i18n="nrISO27001Use">Verschlüsselung/Zugriffsschutz Kundenportfolio-Daten</td></tr>
+          </tbody>
+        </table>
+        <p data-i18n="nrNote">Stand der Prüfung: 23.09.2026. Fallfakten stammen aus bereits bestehenden Denkraum-Tools (siehe Systemprompt-Box) — bei Weiterverwendung in neuen Materialien Regulatorik-Stand erneut prüfen (K17).</p>
+      </div>
+    </details>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var i18n = {
+    backlink: {en:"← Back to homepage"},
+    sigLink: {en:"www.michaela-kuehn.com"},
+    normList: {en:"MiFID II · WpHG §63 ff. · MaComp BT 5 · ISO/IEC 27001:2022"},
+    auditLine: {en:"Last reviewed: 23 Sept 2026 · Status: ✅ Certified · See audit log for details"},
+
+    pageTitle: {en:"Case World Profile &amp; Business Case — NovaTrade Systems GmbH / NovaTrade Pulse"},
+    pageSubtitle: {en:"Reference page for the \"NovaTrade Pulse\" case world (fictional) · consistent facts for new Denkraum tools"},
+    tabSteckbrief: {en:"Profile"},
+    tabBusinessCase: {en:"Business Case"},
+
+    sbHeading: {en:"Profile — NovaTrade Systems GmbH"},
+    sbSubtitle: {en:"Investment services · agile development under a MiFID II/WpHG gate — third contrast case alongside high-risk AI (Vantera) and non-AI administration (Hochschule Nordwest)"},
+    purposeBox: {en:"This page is not a standalone training tool — it is a reference: it records the facts about the \"NovaTrade Pulse\" case world already established across several Denkraum tools, so new tools on this case stay consistent. All details are fictional, but mirrored against real standards (MiFID II, WpHG, ISO 25010 and others). The Market Abuse Regulation (MAR) is cited in only one of the three tools that use this case — it is treated here as a secondary, not a load-bearing, regulation."},
+
+    sbCompany: {en:"Company"},
+    vCompany: {en:"NovaTrade Systems GmbH — a licensed investment services firm"},
+    sbProduct: {en:"System / Product"},
+    vProduct: {en:"NovaTrade Pulse — a new feature for fractional-share trading from €1 in the existing trading app"},
+    sbClassification: {en:"Classification"},
+    vClassification: {en:"Regulated FinTech under MiFID II / WpHG — <strong>not an AI system</strong>, agile development (Scrum) under a hard compliance gate"},
+
+    sbBranche: {en:"Industry"},
+    vBranche: {en:"Investment services / FinTech — existing trading-platform app, BaFin-licensed"},
+    sbUsecase: {en:"Use case"},
+    vUsecase: {en:"Fractional-share trading from €1 (previously whole shares only), target group 18–35-year-olds; 4 of 5 competitor products already offered it"},
+    sbProzess: {en:"Process (short form)"},
+    vProzess: {en:"Scrum, 2-week sprints. Every release passes a MiFID II product-governance gate before approval. A suitability assessment before every first purchase is a non-negotiable Must. Compliance evidence lives in a separate, auditable Confluence space (WpHG §63 documentation duty)."},
+    sbZeitlinie: {en:"Timeline (teaching example)"},
+    vZeitlinie: {en:"Vague request \"app for fractional shares\" → gaps (compliance visibility, portfolio display) only surface in Sprint 1 → documented as REQ-033 after stakeholder mapping/MoSCoW (workshop with Petra, 20 Feb) → six months later: extension to a new asset class possible in 2 days instead of 3 weeks thanks to documentation."},
+    sbZiel: {en:"Business goal"},
+    vZiel: {en:"Investment approx. €120,000 over 6 sprints; goal +20% new customers (18–35 age group). Actually achieved after a 6-week beta: +18% new customers, avg. first deposit €47, suitability-assessment drop-off rate 12% (target: 8%)."},
+    sbSystemelemente: {en:"Recurring system elements"},
+    vSystemelemente: {en:"Order engine, compliance gate (REQ-033/UC-05), suitability assessment with field `geeignetheit_bestanden` (AN-011), licensed market-data feed, order confirmation &lt;100ms at 5,000 concurrent trades"},
+    sbRegulatorik: {en:"Regulatory framework"},
+    vRegulatorik: {en:"MiFID II (Directive 2014/65/EU) Art. 16(3)/24(2) product governance; WpHG §63 ff. in conjunction with MaComp module BT 5 (BaFin); secondary: Market Abuse Regulation (MAR, Regulation (EU) 596/2014); ISO/IEC 27001:2022 Annex A.8.24 (encryption of customer portfolio data)"},
+    sbTools: {en:"RE/BA tooling in the case"},
+    vTools: {en:"User stories + acceptance criteria for the agile parts, a classic use case (UC-05) for the compliance gate, an IEEE-29148-style requirement document REQ-033, the BABOK traceability thread AN-011, RACI (Ela=Responsible, Bachmeier=Accountable, Petra=Consulted, BaFin=Informed)"},
+
+    personaHeading: {en:"Persona cast in the NovaTrade Pulse case"},
+    personaIntro: {en:"The five Denkraum personas are fixed across the whole repo. Unlike Hochschule Nordwest, no slots are replaced here — the five names deliberately carry their canonical NovaTrade/TalentMatch roles (decision from 23 Aug 2026, prioritising consistency with the wider portfolio over local role variance)."},
+    pRoleEla: {en:"Product owner"},
+    pQuoteEla: {en:"\"We work in sprints, but the MiFID II approval is a hard gate for me — I don't move it, however full the sprint is.\""},
+    pRoleKnut: {en:"Development"},
+    pQuoteKnut: {en:"\"Refinement shows me immediately which story is next — but I can't just resolve the market-data licence within a sprint, that takes longer than two weeks.\""},
+    pRoleSarah: {en:"Sales"},
+    pQuoteSarah: {en:"\"The 12% drop-off rate bothers me most as sales — every abandoned check is a customer we'd almost won.\""},
+    pRolePetra: {en:"Compliance"},
+    pQuotePetra: {en:"\"Any story touching the suitability assessment is automatically a Must for me — I don't negotiate on that.\""},
+    pRoleBachmeier: {en:"Executive board"},
+    pQuoteBachmeier: {en:"\"A fine for an inadequate suitability assessment would threaten our BaFin licence's very existence — that outweighs any feature.\""},
+
+    sbClosingLabel: {en:"One sentence that sums up the case"},
+    sbClosingValue: {en:"A regulated FinTech builds a new trading feature on a two-week cadence — and learns that a hard compliance gate is not a bottleneck, but the precondition for extending it in two days instead of three weeks, six months later."},
+
+    bcTitle: {en:"Business Case: What a cleanly documented requirement was worth for the compliance-gate extension"},
+    bcSubtitle: {en:"From the board's vague phone call to reusable requirement documentation REQ-033"},
+    bcH1: {en:"Starting Situation"},
+    bcIntro: {en:"Herr Bachmeier calls Sarah (sales): \"We need an app that lets people trade fractional shares. That can't be that hard.\" Sarah passes the request on to development unverified. The Sprint 1 prototype doesn't show whether an order has passed the compliance check, nor the fraction owned — for a MiFID II/WpHG-regulated trading system, not just imprecise but a supervisory risk."},
+    bcH2: {en:"Scenario Comparison"},
+    thBlank: {en:"&nbsp;"},
+    thScenarioA: {en:"Scenario A – vague request goes straight into the sprint"},
+    thScenarioB: {en:"Scenario B – what actually happened: structured requirements work"},
+    r1label: {en:"Requirements elicitation"},
+    r1a: {en:"Bachmeier's vague request \"app for fractional shares\" is passed straight to development, without translation into testable requirements"},
+    r1b: {en:"Petra insists on stakeholder mapping and MoSCoW prioritisation before the first sprint starts"},
+    r2label: {en:"Compliance visibility"},
+    r2a: {en:"The Sprint 1 prototype shows neither compliance-check status nor the fraction owned — Bachmeier complains afterwards about missing \"obvious\" things"},
+    r2b: {en:"The compliance gate is formally documented as REQ-033 (source: workshop with Petra, 20 Feb, Must priority, testable acceptance criterion)"},
+    r3label: {en:"Traceability"},
+    r3a: {en:"No documented link between the requirement and the regulatory duty"},
+    r3b: {en:"REQ-033 explicitly linked to REQ-028 (order engine) and NFR-005 (security)"},
+    r4label: {en:"Impact six months later"},
+    r4a: {en:"Extending to a new asset class would require about three weeks of re-elicitation"},
+    r4b: {en:"Ela finds the relevant requirements again in two days thanks to the documentation"},
+    r5label: {en:"Stakeholder effect"},
+    r5a: {en:"Herr Bachmeier complains afterwards about missing obvious things"},
+    r5b: {en:"Petra's closing line: \"Good documentation isn't bureaucracy for today. It's the foundation for every change tomorrow.\""},
+    bcH3: {en:"Quantified Impact (illustrative figures for the training exercise)"},
+    thCost: {en:"Cost factor"},
+    thWithout: {en:"Without documented requirements"},
+    thWith: {en:"With documented requirements (what actually happened)"},
+    i1label: {en:"Re-discovery time on extension"},
+    i1a: {en:"approx. 3 weeks of re-elicitation"},
+    i1b: {en:"2 days (actually achieved thanks to REQ-033 etc.)"},
+    i2label: {en:"Suitability-assessment drop-off rate"},
+    i2a: {en:"12% (target was 8%) — the gap would remain unaddressed"},
+    i2b: {en:"Recommendation documented: shorten the questionnaire from 12 to 5 questions (the regulatorily permissible minimum)"},
+    i3label: {en:"Investment (6 sprints of development + compliance reviews)"},
+    i3a: {en:"approx. €120,000 — due regardless of the level of documentation"},
+    i3b: {en:"approx. €120,000 — due regardless of the level of documentation"},
+    totlabel: {en:"Estimated overall effect"},
+    totdash: {en:"—"},
+    totval: {en:"Avoided re-elicitation cost + faster extensibility + robust evidence towards BaFin"},
+    bcNote: {en:"Note: \"2 days instead of 3 weeks\" is the direct comparison drawn in the case itself (not added afterwards); the other figures (investment, drop-off rate, new-customer goal) are real figures from the case, not values newly invented for this page."},
+    bcH4: {en:"Soft Impact"},
+    soft1: {en:"Trust between the board, sales and compliance grows because expectations (compliance visibility, portfolio display) are specified from the start instead of complained about afterwards"},
+    soft2: {en:"A market-data licensing conflict is resolved through early compliance escalation (a licensed feed instead of an unresolved third-party API), instead of becoming a late-project blocker"},
+    soft3: {en:"The REQ-033 documentation becomes the template for the next extension (new asset class)"},
+    bcH5: {en:"Key Message"},
+    bcQuote: {en:"\"A vague request on the phone doesn't become a requirement just by moving quickly into a sprint — it becomes one once someone translates it into testable criteria.\""},
+
+    "cl-intro": {en:"Tools that use the NovaTrade Pulse case as their example:"},
+    "cl-1-name": {en:"SE Lifecycle Journey"},
+    "cl-1-desc": {en:"follows the case across all eleven SWEBOK stations as one of three parallel cases; here only the core facts are listed."},
+    "cl-2-name": {en:"BA Lifecycle Journey"},
+    "cl-2-desc": {en:"follows the case across all six BABOK stations including the full AN-011 traceability thread summarised here."},
+    "cl-3-name": {en:"Sarah's Path to the Marble Cake of Quality"},
+    "cl-3-desc": {en:"tells the REQ-033 story (Bachmeier's phone call) as a full dialogue narrative along ISO/IEC 25010; here only as the core of the business case."},
+
+    fSystemHead: {en:"System Prompt"},
+    fSystemBody: {en:"Build a single, offline-capable HTML reference page (not a training tool in the classic sense — no exercise, no stations) for the \"NovaTrade Systems GmbH / NovaTrade Pulse\" case world, serving as a recurring example across the repo — the third contrast case alongside high-risk AI (Vantera/TalentMatch AI) and non-AI administration (Hochschule Nordwest): regulated FinTech with agile development under a hard compliance gate.\n\nTRIGGER\nThe user keeps building new tools on the same case and needed one authoritative source for the case facts (company, personas, process, numbers) to keep consistency across future tools — explicitly NOT a fill-in form (unlike tools/ba-steckbrief-business-case.html), but a fixed fact collection. Same base pattern as tools/vantera-talentmatch-steckbrief.html and tools/hochschule-nordwest-steckbrief.html, own colour palette (navy/gold instead of indigo or bordeaux/brass).\n\nSTRUCTURE\n- Topbar, dark hero, two tabs (Profile / Business Case), four-part footer, crosslink block.\n- \"Profile\" tab: fact grid (company, product, classification, industry, use case, process short form, timeline, business goal, recurring system elements, regulatory framework, RE/BA tooling) as read-only fields, plus persona-cast cards with a quote per persona, plus a one-sentence closing box.\n- \"Business Case\" tab: scenario comparison around the REQ-033 story (Bachmeier's vague phone call → Sprint 1 gaps → structured documentation → re-discovery in 2 days instead of 3 weeks), quantified impact table, soft impact, key-message quote.\n- Crosslink block to the three tools that genuinely use the NovaTrade Pulse case.\n\nIMPORTANT CASE-FIDELITY NOTE\nUnlike \"Digital Student Records\" (three non-interchangeable institution variants), NovaTrade Pulse has no competing case variant — all three using tools agree on company name, product name, persona cast and core regulation. One inconsistency: the Market Abuse Regulation (MAR) is cited only in ba-lifecycle-lernreise.html, not in the other two tools — so it is treated here as secondary, not load-bearing. Likewise two different order-latency figures exist in the repo (<100ms in sarahs-weg-zum-qualitaetskuchen.html and se-lifecycle-lernreise.html, <200ms once in ba-lifecycle-lernreise.html) — the more frequently attested <100ms figure was used here.\n\nFACT BASE (taken from existing tools, not newly invented)\n- Company \"NovaTrade Systems GmbH\", product \"NovaTrade Pulse\" (new feature for fractional-share trading from €1), target group 18-35-year-olds, Scrum/2-week sprints (source: tools/se-lifecycle-lernreise.html, tools/ba-lifecycle-lernreise.html).\n- REQ-033 story, investment approx. €120,000, +18% new customers after beta, drop-off rate 12% vs. 8% target, \"2 days instead of 3 weeks\" comparison (source: tools/ba-lifecycle-lernreise.html, tools/sarahs-weg-zum-qualitaetskuchen.html).\n- Personas Ela (product owner), Knut (development), Sarah (sales), Petra (compliance), Herr Bachmeier (executive board) — deliberately kept unchanged, no role slots replaced (unlike Hochschule Nordwest); quotes taken verbatim from tools/ba-lifecycle-lernreise.html and tools/sarahs-weg-zum-qualitaetskuchen.html.\n- Regulation MiFID II Art. 16(3)/24(2), WpHG §63 ff. in conjunction with MaComp BT 5, secondary MAR (source: tools/se-lifecycle-lernreise.html standards register, tools/ba-lifecycle-lernreise.html).\n\nDESIGN REQUIREMENTS\n- White background, color-scheme: light, no dark mode.\n- Own accent colour (navy/gold) to distinguish from Velaris (green/petrol), Vantera/TalentMatch AI (indigo) and Hochschule Nordwest (bordeaux/brass).\n- Radius scale as in the Velaris model: 16px cards, 999px meta-controls, 4px narrow accent boxes.\n- Minimum font sizes 16px body / 14px secondary text, four-stage cumulative beamer mode.\n- Signature ALWAYS position:fixed (K21) — no fallback to position:static under 900px, padding reduced and space reserved in the topbar instead.\n\nREQUIRED\nDE/EN language toggle with no reload (data-i18n attributes + JS translation object), German content readable without JS; click events only, no HTML5 drag-and-drop; no fetch() calls, no external CDN.\n\nDO NOT\n- Use real company names — the case stays fictional even though the standards/regulation are real.\n- Invent new case facts that could contradict existing tools — when unsure, leave it open rather than inventing (e.g. no founding year/employee count, since none is given in any NovaTrade tool).\n- Merge REQ-033, AN-011 and UC-05 into a single \"canonical\" ID — the case itself keeps them as three separate, overlapping artefacts.\n- Add a form/input fields like Velaris — this page is a reference, not a reflection exercise."},
+    fHandbuchHead: {en:"Handbook"},
+    fHandbuchBody: {en:"This page is meant as a reference work, not an exercise: before building a new tool on the NovaTrade Pulse case, check the facts here (compliance gate, timeline, figures, persona quotes) instead of reinventing them from memory — that is how all tools on this case stay consistent with each other. Unlike Hochschule Nordwest, all five personas here carry their canonical NovaTrade roles unchanged (Ela=product owner, Petra=compliance, Bachmeier=executive board). The \"Profile\" tab bundles the hard facts and the persona cast; the \"Business Case\" tab provides a reusable narrative around the REQ-033 documentation, suited for presentation purposes whenever the value of structured requirements work over vague verbal requests needs demonstrating. The language toggle affects both tabs including the footer immediately. The beamer button enlarges text stepwise; the footer and crosslink block are hidden while active."},
+    fVortragHead: {en:"Presenter Script"},
+    fVortragBody: {en:"(The \"Profile\" tab is active.) Opening: \"Before we go deeper into the NovaTrade Pulse case, quickly the key facts: a regulated FinTech builds a new trading feature on two-week sprints — with a compliance gate that cannot move, however full the sprint is.\" Point to the identity row: company, product, classification. Point to the timeline: \"A vague phone call from the board went straight to development unchecked — the gaps only showed up in the first sprint. Once it was properly documented as REQ-033, it paid off: six months later the case could be extended in two days instead of three weeks.\" Walk through the persona cards briefly, especially Herr Bachmeier's quote on the BaFin licence. (Click the \"Business Case\" tab.) Transition: \"What was the concrete difference between the vague call and the clean documentation worth? That's exactly what this comparison shows.\" Read out Scenario A, then Scenario B. Highlight \"2 days instead of 3 weeks\" in the impact table — that is the direct comparison drawn in the case itself. Close with the key message. Directing note: this page does not replace the case description inside each tool itself — it is the reference behind it, for when participants ask about the background."},
+    fNormenHead: {en:"Standards Register"},
+    nrCol1: {en:"Framework/Source"},
+    nrCol2: {en:"Version/Status"},
+    nrCol3: {en:"Used in tool for"},
+    nrMiFID: {en:"In force — product-governance duties Art. 16(3), 24(2)"},
+    nrMiFIDUse: {en:"Release gate in the profile and in the business-case story"},
+    nrWpHG: {en:"In force — MaComp module BT 5 on product governance"},
+    nrWpHGUse: {en:"Suitability assessment, documentation duty (REQ-033/AN-011)"},
+    nrMAR: {en:"In force — cited in only one of three using tools in the repo, treated here as secondary"},
+    nrMARUse: {en:"Supplementary mention in the regulatory field"},
+    nrISO27001: {en:"Current"},
+    nrISO27001Use: {en:"Encryption/access protection for customer portfolio data"},
+    nrNote: {en:"Reviewed: 23 Sept 2026. Case facts are drawn from existing Denkraum tools (see system-prompt box) — re-check the regulatory status before reuse in new materials (K17)."}
+  };
+
+  var currentLang = "de";
+  var deCache = {};
+
+  function collectGerman(){
+    var els = document.querySelectorAll("[data-i18n]");
+    els.forEach(function(el){
+      var key = el.getAttribute("data-i18n");
+      if (!(key in deCache)) deCache[key] = el.innerHTML;
+    });
+  }
+
+  function applyLang(lang){
+    var els = document.querySelectorAll("[data-i18n]");
+    els.forEach(function(el){
+      var key = el.getAttribute("data-i18n");
+      if (lang === "en" && i18n[key] && i18n[key].en !== undefined){
+        el.innerHTML = i18n[key].en;
+      } else if (deCache[key] !== undefined){
+        el.innerHTML = deCache[key];
+      }
+    });
+    document.documentElement.lang = lang;
+  }
+
+  var langBtn = document.getElementById("langBtn");
+  langBtn.addEventListener("click", function(){
+    collectGerman();
+    currentLang = (currentLang === "de") ? "en" : "de";
+    langBtn.textContent = (currentLang === "de") ? "EN" : "DE";
+    applyLang(currentLang);
+  });
+
+  var BEAMER_LEVELS = [
+    { classes: [],                                    label: "☀ Beamer" },
+    { classes: ["beamer"],                             label: "☀ Beamer XL" },
+    { classes: ["beamer", "beamer-xl"],                label: "☀ Beamer XXL" },
+    { classes: ["beamer", "beamer-xl", "beamer-xxl"],  label: "☀ Normal" }
+  ];
+  var beamerLevel = 0;
+  var beamerBtn = document.getElementById("beamerBtn");
+
+  beamerBtn.addEventListener("click", function(){
+    beamerLevel = (beamerLevel + 1) % BEAMER_LEVELS.length;
+    document.documentElement.classList.remove("beamer", "beamer-xl", "beamer-xxl");
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    beamerBtn.textContent = BEAMER_LEVELS[beamerLevel].label;
+  });
+
+  var tabBtns = document.querySelectorAll(".tab-btn");
+  tabBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      tabBtns.forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      var target = btn.getAttribute("data-tab");
+      document.querySelectorAll(".tab-panel").forEach(function(panel){
+        panel.classList.toggle("active", panel.id === target);
+      });
+    });
+  });
+
+  collectGerman();
+})();
+</script>
+
+</body>
+</html>
