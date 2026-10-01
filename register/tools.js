@@ -3486,6 +3486,73 @@ window.DENKRAUM_REGISTER = {
       "notiz": ""
     },
     {
+      "id": "stoerfall-labor",
+      "datei": "tools/stoerfall-labor.html",
+      "titel": "Störfall-Labor · Störung im Betriebsablauf",
+      "kurztitel": "Störfall-Labor",
+      "kurz": "Mitten im Projekt kippt eine Annahme: drei Störfälle aus bekannten Fallwelten (Hochschule Nordwest, NovaTrade, Vantera) in sechs Stationen bearbeiten, vom Signal bis zum Änderungsantrag und zur Lehre für die Schleusen. Mit Best-Practice-Regeln und Protokoll zum Herunterladen.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Priorisierung & Änderungen",
+      "aufStartseite": true,
+      "zweck": [
+        "Übung",
+        "Workshop-Canvas"
+      ],
+      "denkraum": "stoer",
+      "faeden": [
+        "re",
+        "ba",
+        "pm"
+      ],
+      "dauer": "45–60 min (Kurzfassung 15 min)",
+      "haufeSeminare": [
+        "9368",
+        "31693",
+        "34000",
+        "3525",
+        "2929",
+        "34002",
+        "3744"
+      ],
+      "einsatzkontext": [
+        "Seminar",
+        "Workshop"
+      ],
+      "fallwelten": [
+        "Hochschule Nordwest",
+        "NovaTrade Pulse",
+        "Vantera / TalentMatch AI"
+      ],
+      "themen": [
+        "Änderungsmanagement",
+        "Störraum",
+        "Stakeholder",
+        "KI-Governance"
+      ],
+      "standards": [
+        "IREB",
+        "BABOK",
+        "PMBOK",
+        "EU AI Act"
+      ],
+      "siegel": {
+        "status": null,
+        "letztesAudit": null,
+        "auditZeileImTool": null,
+        "offen": "Formales Siegel-Audit steht aus; Selbstprüfung beim Bau (01.10.2026): Muss-Kriterien erfüllt, Z9 Teilnehmenden-Version fehlt (Kann)."
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/denkraeume-navigator.html",
+        "tools/requirements-to-code-explorer.html",
+        "tools/priorisierungslabor.html",
+        "tools/stakeholder-management-kompendium-fachbuch.html"
+      ],
+      "geprueft": false,
+      "notiz": "Gebaut nach konzepte/stoerfall-labor.md, schließt die Störraum-Lücke im Fahrplan auf RE, BA und Agil/PM."
+    },
+    {
       "id": "story-mapping-kundenperspektiven",
       "datei": "tools/story-mapping-kundenperspektiven.html",
       "titel": "🗺️ Story Mapping — Kundenperspektiven",
