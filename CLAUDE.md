@@ -34,6 +34,16 @@ Buttons: Primär-/Sekundär-Aktionsbuttons 12px Radius; Meta-Controls (Beamer-Bu
 
 Umsetzung: Bestehende Tools werden schrittweise nachgezogen (nicht als Ad-hoc-Blitzumbau bei jeder Kleinigkeit), aber aktiv im Rahmen von Design-Audits — nicht erst warten, bis ohnehin ein inhaltliches Update ansteht.
 
+## Seminar-Begleitseiten (`kurse/`)
+
+Pro Seminar, das Michaela bei der Haufe Akademie hält, gibt es eine eigene Begleitseite in `kurse/` (Referenzimplementierung: `kurse/requirements-engineering-it.html`, Seminar Nr. 9368). Die Seiten sind auf `index.html` in der Rubrik „Meine Seminare bei der Haufe Akademie“ verlinkt (Kachel-Klasse `tool-card seminar`, zählt nicht in die Tool-Statistik).
+
+- **Verteiler, kein Tool:** Topbar mit Zurück-Link (`../index.html`), Signatur (K21) und vierstufigem Beamer-Button, aber kein Vier-Boxen-Footer und keine Siegel-Prüfung.
+- **Gliederung nach Themenblöcken des Seminars**, nicht nach den Rubriken der Startseite. Jede Kachel bekommt einen eigenen Satz, wofür das Tool *in diesem Seminar* taugt (keine Kopie der `index.html`-Beschreibung).
+- **Kuratieren:** nur Tools mit echtem Bezug zum Seminarinhalt; Pfade relativ zu `kurse/` (`../tools/...`).
+- **Haufe nur nennen und verlinken** (`https://www.haufe-akademie.de/<Seminarnummer>`, ohne Tracking-Parameter), kein Haufe-Logo, kein Haufe-Design.
+- **Pflege:** Bei jedem neuen Tool prüfen, auf welche Seminarseite(n) es gehört, und dort eine Kachel ergänzen.
+
 ## Konventionen für jedes Tool
 
 Jedes Tool bekommt im Header:
