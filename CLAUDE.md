@@ -34,6 +34,13 @@ Buttons: Primär-/Sekundär-Aktionsbuttons 12px Radius; Meta-Controls (Beamer-Bu
 
 Umsetzung: Bestehende Tools werden schrittweise nachgezogen (nicht als Ad-hoc-Blitzumbau bei jeder Kleinigkeit), aber aktiv im Rahmen von Design-Audits — nicht erst warten, bis ohnehin ein inhaltliches Update ansteht.
 
+## Tool-Register (`register/`)
+
+`register/tools.js` ist die führende Quelle für alle Angaben *über* die Tools (Zweck, Dauer, Seminare, Fallwelten, Normen, Siegel-Stand). Feldbeschreibung und Pflege-Regeln: `register/README.md`. Bei Widerspruch zum Notion-Tool-Katalog gilt das Register; Notion wird daraus nachgezogen.
+
+- **Vor jedem neuen Tool** im Register nach `themen`, `zweck` und `fallwelten` suchen und Michaela vorhandene Tools zum selben Thema nennen, bevor gebaut wird. Sie entscheidet: bestehendes Tool erweitern oder neu bauen.
+- **Jedes neue oder geänderte Tool** bekommt seinen Register-Eintrag im selben Pull Request.
+
 ## Seminar-Begleitseiten (`kurse/`)
 
 Pro Seminar, das Michaela bei der Haufe Akademie hält, gibt es eine eigene Begleitseite in `kurse/` (Referenzimplementierung: `kurse/requirements-engineering-it.html`, Seminar Nr. 9368). Die Seiten sind auf `index.html` in der Rubrik „Meine Seminare bei der Haufe Akademie“ verlinkt (Kachel-Klasse `tool-card seminar`, zählt nicht in die Tool-Statistik).
