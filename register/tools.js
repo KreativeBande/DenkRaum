@@ -57,8 +57,8 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Agilität",
       "aufStartseite": true,
       "zweck": [
-        "Demonstrator",
-        "Übung"
+        "Workshop-Canvas",
+        "Demonstrator"
       ],
       "dauer": null,
       "haufeSeminare": [
@@ -217,7 +217,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "ISO & Compliance",
       "aufStartseite": true,
       "zweck": [
-        "Workshop-Canvas"
+        "Übung"
       ],
       "dauer": null,
       "haufeSeminare": [
@@ -495,7 +495,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Wissen & Nachschlagen",
       "aufStartseite": true,
       "zweck": [
-        "Lernreise"
+        "Nachschlagewerk"
       ],
       "dauer": null,
       "haufeSeminare": [
@@ -542,8 +542,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Grundlagen & Funktionsweise",
       "aufStartseite": true,
       "zweck": [
-        "Opener",
-        "Lernreise"
+        "Opener"
       ],
       "dauer": null,
       "haufeSeminare": [],
@@ -631,7 +630,7 @@ window.DENKRAUM_REGISTER = {
       "aufStartseite": true,
       "zweck": [
         "Prüfungsvorbereitung",
-        "Workshop-Canvas"
+        "Übung"
       ],
       "dauer": null,
       "haufeSeminare": [],
@@ -722,6 +721,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Anforderungen erheben & schärfen",
       "aufStartseite": true,
       "zweck": [
+        "Demonstrator",
         "Workshop-Canvas"
       ],
       "dauer": null,
@@ -799,8 +799,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Wissen & Nachschlagen",
       "aufStartseite": true,
       "zweck": [
-        "Nachschlagewerk",
-        "Lernreise"
+        "Nachschlagewerk"
       ],
       "dauer": null,
       "haufeSeminare": [
@@ -936,7 +935,7 @@ window.DENKRAUM_REGISTER = {
       "aufStartseite": true,
       "zweck": [
         "Spiel",
-        "Workshop-Canvas"
+        "Übung"
       ],
       "dauer": null,
       "haufeSeminare": [
@@ -1020,6 +1019,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Wissen & Nachschlagen",
       "aufStartseite": true,
       "zweck": [
+        "Nachschlagewerk",
         "Übung"
       ],
       "dauer": null,
@@ -1113,8 +1113,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Fallstudie",
       "aufStartseite": true,
       "zweck": [
-        "Lernreise",
-        "Übung"
+        "Lernreise"
       ],
       "dauer": null,
       "haufeSeminare": [],
@@ -1195,7 +1194,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Governance, Recht & Sicherheit",
       "aufStartseite": true,
       "zweck": [
-        "Übung"
+        "Workshop-Canvas"
       ],
       "dauer": "Ganztag",
       "haufeSeminare": [],
@@ -1239,8 +1238,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Business-Analyse",
       "aufStartseite": true,
       "zweck": [
-        "Fallwelt-Referenz",
-        "Übung"
+        "Fallwelt-Referenz"
       ],
       "dauer": null,
       "haufeSeminare": [],
@@ -1286,8 +1284,8 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Projektmanagement",
       "aufStartseite": true,
       "zweck": [
-        "Prüfungsvorbereitung",
-        "Nachschlagewerk"
+        "Nachschlagewerk",
+        "Prüfungsvorbereitung"
       ],
       "dauer": null,
       "haufeSeminare": [
@@ -1329,8 +1327,8 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Wissen & Nachschlagen",
       "aufStartseite": true,
       "zweck": [
-        "Prüfungsvorbereitung",
-        "Nachschlagewerk"
+        "Nachschlagewerk",
+        "Prüfungsvorbereitung"
       ],
       "dauer": null,
       "haufeSeminare": [
@@ -1740,7 +1738,7 @@ window.DENKRAUM_REGISTER = {
       "aufStartseite": true,
       "zweck": [
         "Demonstrator",
-        "Lernreise"
+        "Übung"
       ],
       "dauer": null,
       "haufeSeminare": [
@@ -1786,7 +1784,8 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Anforderungen erheben & schärfen",
       "aufStartseite": true,
       "zweck": [
-        "Lernreise"
+        "Übung",
+        "Demonstrator"
       ],
       "dauer": null,
       "haufeSeminare": [
@@ -1901,8 +1900,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Business-Analyse",
       "aufStartseite": true,
       "zweck": [
-        "Fallwelt-Referenz",
-        "Übung"
+        "Fallwelt-Referenz"
       ],
       "dauer": null,
       "haufeSeminare": [],
@@ -1948,8 +1946,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "OKR",
       "aufStartseite": true,
       "zweck": [
-        "Workshop-Canvas",
-        "Lernreise"
+        "Demonstrator"
       ],
       "dauer": null,
       "haufeSeminare": [
@@ -2030,6 +2027,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Simulationen & Labore",
       "aufStartseite": true,
       "zweck": [
+        "Workshop-Canvas",
         "Lernreise"
       ],
       "dauer": null,
@@ -2079,7 +2077,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "OKR",
       "aufStartseite": true,
       "zweck": [
-        "Workshop-Canvas"
+        "Demonstrator"
       ],
       "dauer": null,
       "haufeSeminare": [
@@ -2164,7 +2162,8 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Projektmanagement",
       "aufStartseite": true,
       "zweck": [
-        "Prüfungsvorbereitung"
+        "Prüfungsvorbereitung",
+        "Nachschlagewerk"
       ],
       "dauer": null,
       "haufeSeminare": [
@@ -2341,7 +2340,6 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Prompt Engineering & Anwendung",
       "aufStartseite": true,
       "zweck": [
-        "Workshop-Canvas",
         "Übung"
       ],
       "dauer": null,
@@ -2385,7 +2383,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Prompt Engineering & Anwendung",
       "aufStartseite": true,
       "zweck": [
-        "Nachschlagewerk",
+        "Lernreise",
         "Übung"
       ],
       "dauer": "2 Tage",
@@ -2475,7 +2473,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Prompt Engineering & Anwendung",
       "aufStartseite": true,
       "zweck": [
-        "Nachschlagewerk",
+        "Lernreise",
         "Übung"
       ],
       "dauer": null,
@@ -2566,8 +2564,8 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Wissen & Nachschlagen",
       "aufStartseite": true,
       "zweck": [
-        "Demonstrator",
-        "Übung"
+        "Nachschlagewerk",
+        "Demonstrator"
       ],
       "dauer": null,
       "haufeSeminare": [],
@@ -2835,7 +2833,6 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Fallstudie",
       "aufStartseite": true,
       "zweck": [
-        "Prüfungsvorbereitung",
         "Lernreise"
       ],
       "dauer": "2 Tage",
@@ -3316,8 +3313,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Business-Analyse",
       "aufStartseite": true,
       "zweck": [
-        "Fallwelt-Referenz",
-        "Übung"
+        "Fallwelt-Referenz"
       ],
       "dauer": null,
       "haufeSeminare": [],
@@ -3417,7 +3413,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Grundlagen & Funktionsweise",
       "aufStartseite": true,
       "zweck": [
-        "Nachschlagewerk"
+        "Demonstrator"
       ],
       "dauer": null,
       "haufeSeminare": [],
@@ -3534,7 +3530,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": "Grundlagen & Funktionsweise",
       "aufStartseite": true,
       "zweck": [
-        "Lernreise"
+        "Demonstrator"
       ],
       "dauer": null,
       "haufeSeminare": [],
@@ -3572,8 +3568,7 @@ window.DENKRAUM_REGISTER = {
       "bereich": null,
       "aufStartseite": true,
       "zweck": [
-        "Nachschlagewerk",
-        "Übung"
+        "Nachschlagewerk"
       ],
       "dauer": null,
       "haufeSeminare": [],

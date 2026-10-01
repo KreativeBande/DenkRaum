@@ -115,6 +115,7 @@ body{
 
 .section{margin-bottom:20px;scroll-margin-top:16px}
 .section.hidden-by-filter{display:none}
+.subsection.hidden-by-filter{display:none}
 .section-head{
   display:flex;align-items:center;gap:12px;padding:8px 0;margin-bottom:16px;
 }
@@ -168,13 +169,35 @@ body{
 .tool-card.didaktik .cta{color:var(--teal)}
 .tool-card.spiele .cta{color:var(--green)}
 .tool-card.pm .cta{color:#1E2761}
+/* ============ Art-Etiketten (aus register/tools.js) ============ */
+.kind-row{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.kind-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;
+  background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.kind-pill[data-kind="Opener"]{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.kind-pill[data-kind="Übung"]{background:var(--green-soft);color:var(--green);border-color:transparent}
+.kind-pill[data-kind="Spiel"]{background:var(--green-soft);color:var(--green);border-color:transparent}
+.kind-pill[data-kind="Demonstrator"]{background:var(--blue-soft);color:var(--blue);border-color:transparent}
+.kind-pill[data-kind="Workshop-Canvas"]{background:var(--violet-soft);color:var(--violet);border-color:transparent}
+.kind-pill[data-kind="Lernreise"]{background:var(--teal-soft);color:var(--teal);border-color:transparent}
+.kind-pill[data-kind="Nachschlagewerk"]{background:var(--amber-soft);color:var(--amber);border-color:transparent}
+.kind-pill[data-kind="Prüfungsvorbereitung"]{background:var(--coral-soft);color:var(--coral);border-color:transparent}
+.kind-filter{display:flex;flex-wrap:wrap;align-items:center;gap:8px;flex-basis:100%}
+.kind-filter-label{font-size:13px;font-weight:800;color:var(--muted);margin-right:4px}
+.kind-chip{
+  border:1.5px solid var(--line);background:#fff;color:var(--muted);
+  padding:6px 13px;border-radius:999px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;
+  transition:all .15s ease;white-space:nowrap;
+}
+.kind-chip:hover{border-color:var(--accent);color:var(--ink)}
+.kind-chip.active{background:var(--ink);border-color:var(--ink);color:#fff}
+
 .new-badge{
   position:absolute;top:16px;right:16px;background:var(--accent);color:#fff;
   font-size:10.5px;font-weight:800;letter-spacing:.04em;padding:3px 8px;border-radius:999px;
 }
 
 @media(prefers-reduced-motion:reduce){
-  .tool-card,#searchInput,.filter-chip{transition:none}
+  .tool-card,#searchInput,.filter-chip,.kind-chip{transition:none}
   html{scroll-behavior:auto}
 }
 
@@ -183,6 +206,8 @@ body{
   .hero{padding:24px 20px 20px}
   .signature{top:8px;right:12px;padding:5px 10px;font-size:11px}
   .finder{flex-direction:column;align-items:stretch}
+  .search-box{flex:0 0 auto;min-width:0}
+  .kind-filter{flex-basis:auto}
   .result-count{margin-left:0}
   .kbd-hint{display:none}
 }
@@ -220,12 +245,15 @@ body{
       <button type="button" class="filter-chip" data-filter="uebungen" role="tab" aria-selected="false">Übungen</button>
     </nav>
     <span class="result-count" id="resultCount"></span>
+    <div class="kind-filter" id="kindFilter" role="group" aria-label="Art des Tools" hidden>
+      <span class="kind-filter-label">Art:</span>
+    </div>
   </div>
 
   <div class="empty-state" id="emptyState">
     <div class="big">🔍</div>
     <div>Keine Tools gefunden.</div>
-    <button id="resetFilters">Suche zurücksetzen</button>
+    <button id="resetFilters">Filter zurücksetzen</button>
   </div>
 
   <section class="section" data-cat="about" id="section-about">
@@ -854,6 +882,7 @@ body{
   </section>
 </div>
 
+<script src="./register/tools.js"></script>
 <script>
 (function(){
   var cards = Array.prototype.slice.call(document.querySelectorAll(".tool-card"));
@@ -877,6 +906,61 @@ body{
     return card.dataset.text;
   }
 
+  // Art-Etiketten und Art-Filter aus dem Tool-Register (register/tools.js).
+  // Fehlt das Register (z. B. Datei nicht mitkopiert), bleibt die Seite wie bisher.
+  var KIND_ORDER = ["Opener","Übung","Spiel","Demonstrator","Workshop-Canvas","Lernreise","Nachschlagewerk","Prüfungsvorbereitung","Fallwelt-Referenz"];
+  var activeKind = "all";
+  var kindChips = [];
+  var register = window.DENKRAUM_REGISTER;
+  if(register && register.tools){
+    var byFile = {};
+    register.tools.forEach(function(t){ byFile[t.datei] = t; });
+    var used = {};
+    cards.forEach(function(card){
+      var href = (card.getAttribute("href") || "").replace(/^\.\//, "");
+      if(href.indexOf("#") !== -1) return;
+      var t = byFile[href];
+      if(!t || !t.zweck || !t.zweck.length) return;
+      card.dataset.kinds = "|" + t.zweck.join("|") + "|";
+      var row = document.createElement("div");
+      row.className = "kind-row";
+      t.zweck.forEach(function(k){
+        used[k] = (used[k] || 0) + 1;
+        var pill = document.createElement("span");
+        pill.className = "kind-pill";
+        pill.dataset.kind = k;
+        pill.textContent = k;
+        row.appendChild(pill);
+      });
+      var h3 = card.querySelector("h3");
+      if(h3) h3.insertAdjacentElement("afterend", row);
+    });
+    var kindFilter = document.getElementById("kindFilter");
+    ["all"].concat(KIND_ORDER.filter(function(k){ return used[k]; })).forEach(function(k){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "kind-chip" + (k === "all" ? " active" : "");
+      b.dataset.kind = k;
+      b.textContent = k === "all" ? "Alle" : k + " (" + used[k] + ")";
+      b.setAttribute("aria-pressed", k === "all" ? "true" : "false");
+      b.addEventListener("click", function(){
+        activeKind = k;
+        kindChips.forEach(function(c){
+          var on = c.dataset.kind === k;
+          c.classList.toggle("active", on);
+          c.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+        applyFilters();
+      });
+      kindChips.push(b);
+      kindFilter.appendChild(b);
+    });
+    kindFilter.hidden = false;
+  }
+  function kindOk(card){
+    return activeKind === "all" || (card.dataset.kinds || "").indexOf("|" + activeKind + "|") !== -1;
+  }
+
   var activeTab = "all";
   var tabBeforeSearch = null;
 
@@ -894,6 +978,7 @@ body{
   function applyFilters(){
     var query = searchInput.value.trim().toLowerCase();
     var visibleTotal = 0;
+    var anyVisible = 0;
     var allTotal = 0;
 
     sections.forEach(function(section){
@@ -907,20 +992,27 @@ body{
       }
 
       var sectionCards = section.querySelectorAll(".tool-card");
-      allTotal += sectionCards.length;
+      var isSeminar = section.dataset.cat === "seminare";
+      if(!isSeminar) allTotal += sectionCards.length;
 
       var visibleInSection = 0;
       sectionCards.forEach(function(card){
-        var show = !query || cardText(card).indexOf(query) !== -1;
+        var show = (!query || cardText(card).indexOf(query) !== -1) && kindOk(card);
         card.classList.toggle("hidden-by-filter", !show);
         if(show) visibleInSection++;
       });
-      visibleTotal += visibleInSection;
+      var filtering = !!query || activeKind !== "all";
+      section.querySelectorAll(".subsection").forEach(function(sub){
+        var anyCard = sub.querySelector(".tool-card:not(.hidden-by-filter)");
+        sub.classList.toggle("hidden-by-filter", filtering && !anyCard);
+      });
+      if(!isSeminar) visibleTotal += visibleInSection;
+      anyVisible += visibleInSection;
 
-      section.classList.toggle("hidden-by-filter", !!query && visibleInSection === 0);
+      section.classList.toggle("hidden-by-filter", (!!query || activeKind !== "all") && visibleInSection === 0);
 
       if(countEl){
-        countEl.textContent = query
+        countEl.textContent = (query || activeKind !== "all")
           ? visibleInSection + " Treffer"
           : sectionCards.length + (section.dataset.cat === "seminare"
               ? (sectionCards.length === 1 ? " Seminar" : " Seminare")
@@ -928,8 +1020,8 @@ body{
       }
     });
 
-    emptyState.classList.toggle("show", query ? visibleTotal === 0 : false);
-    resultCount.textContent = query ? visibleTotal + " von " + allTotal + " Tools" : "";
+    emptyState.classList.toggle("show", (query || activeKind !== "all") ? anyVisible === 0 : false);
+    resultCount.textContent = (query || activeKind !== "all") ? visibleTotal + " von " + allTotal + " Tools" : "";
   }
 
   chips.forEach(function(chip){
@@ -960,6 +1052,7 @@ body{
 
   document.getElementById("resetFilters").addEventListener("click", function(){
     searchInput.value = "";
+    if(kindChips.length){ kindChips[0].click(); }
     if(tabBeforeSearch !== null){
       setActiveTab(tabBeforeSearch);
       tabBeforeSearch = null;
