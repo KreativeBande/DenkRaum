@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seminar KI-Prompting RE/BA · Denkraum</title>
+<style>
+:root{
+  --bg:#f6f8fc;
+  --panel:#ffffff;
+  --ink:#1f2937;
+  --ink-dim:#4b5563;
+  --muted:#6b7280;
+  --line:#d9e1ea;
+  --accent:#b91c1c;
+  --accent-soft:#fee2e2;
+  --amber:#92400e;
+  --amber-soft:#fef3c7;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at top left, #fff7f7 0%, transparent 22%),
+    radial-gradient(circle at top right, #eef4ff 0%, transparent 20%),
+    linear-gradient(180deg,#fbfcff 0%,#f4f6fa 100%);
+  min-height:100vh;
+}
+.wrap{max-width:1200px;margin:0 auto;padding:24px}
+
+/* ============ Topbar ============ */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  margin:0 0 18px;padding-right:230px;min-height:44px;
+}
+.back-link{color:var(--ink-dim);font-size:15px;font-weight:600;text-decoration:none}
+.back-link:hover{color:var(--accent)}
+.beamer-btn{
+  background:transparent;border:1.5px solid var(--line);
+  color:var(--ink-dim);font-size:15px;padding:10px 20px;font-family:inherit;font-weight:600;
+  border-radius:999px;cursor:pointer;
+}
+.beamer-btn:hover{border-color:var(--accent)}
+html.beamer .beamer-btn,
+html.beamer-xl .beamer-btn,
+html.beamer-xxl .beamer-btn{ background:var(--ink); color:#fff; border-color:var(--ink); }
+
+.signature{
+  position:fixed;top:14px;right:28px;z-index:500;
+  text-align:right;font-size:13px;color:var(--ink);
+  line-height:1.4;white-space:nowrap;
+  background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:12px;
+  padding:6px 13px;box-shadow:0 6px 16px rgba(15,23,42,.08)
+}
+.signature strong{display:block}
+.signature a{color:var(--accent);text-decoration:none;font-size:12px}
+.signature a:hover{text-decoration:underline}
+
+/* ============ Hero ============ */
+.hero{
+  background:rgba(255,255,255,.96);
+  border:1px solid var(--line);
+  border-radius:28px;
+  box-shadow:0 16px 34px rgba(15,23,42,.08);
+  padding:32px 32px 26px;
+  margin-bottom:28px;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;font-weight:700;font-size:13px;
+  background:var(--amber-soft);color:var(--amber);margin-bottom:14px;
+}
+.hero h1{margin:0 0 12px 0;font-size:clamp(28px,4vw,42px);line-height:1.1;color:var(--ink)}
+.hero .lead{margin:0 0 16px;color:var(--ink-dim);font-size:17px;line-height:1.6}
+.facts{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;padding:0;list-style:none}
+.facts li{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;
+  background:var(--bg);border:1px solid var(--line);font-size:13.5px;font-weight:700;color:var(--muted)
+}
+.facts strong{color:var(--ink)}
+.haufe-link{
+  display:inline-block;padding:11px 20px;border-radius:12px;background:var(--ink);color:#fff;
+  font-weight:700;font-size:15px;text-decoration:none
+}
+.haufe-link:hover{background:var(--accent)}
+
+/* ============ Module ============ */
+.module{margin-bottom:30px;scroll-margin-top:16px}
+.module-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+.module-no{
+  flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+  width:34px;height:34px;border-radius:999px;background:var(--accent-soft);color:var(--accent);
+  font-weight:800;font-size:15px
+}
+.module h2{margin:0;font-size:22px;line-height:1.25}
+.module-intro{margin:0 0 14px 48px;color:var(--muted);font-size:16px;line-height:1.55}
+
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.tool-card{
+  display:flex;flex-direction:column;
+  border:1px solid var(--line);
+  border-left:4px solid var(--amber);
+  border-radius:16px;
+  background:#fff;
+  padding:20px 22px;
+  box-shadow:0 6px 16px rgba(15,23,42,.03);
+  text-decoration:none;color:inherit;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.tool-card:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(15,23,42,.10)}
+.tool-card h3{margin:0 0 8px 0;font-size:18px;line-height:1.3;color:var(--ink)}
+.tool-card p{margin:0;color:var(--ink-dim);font-size:16px;line-height:1.55;flex:1}
+.tool-card .cta{margin-top:14px;font-size:14px;font-weight:700;color:var(--accent)}
+
+.note{
+  margin:8px 0 28px;padding:14px 18px;border-left:4px solid var(--amber);border-radius:4px;
+  background:var(--amber-soft);color:var(--amber);font-size:14px;line-height:1.55
+}
+.footer{
+  border-top:1px solid var(--line);padding-top:16px;margin-top:10px;color:var(--muted);font-size:14px;line-height:1.6
+}
+.footer a{color:var(--accent);text-decoration:none;font-weight:700}
+
+.hero h1, .hero .lead, .module h2, .tool-card h3, .tool-card p, .module-intro{overflow-wrap:break-word;hyphens:auto}
+.tool-grid > *, .module h2{min-width:0}
+
+/* ============ Beamer-Modus (vierstufig) ============ */
+html.beamer{ --ink-dim:#3D4A5C; }
+html.beamer .tool-card p, html.beamer .module-intro, html.beamer .hero .lead{ font-size:22px; }
+html.beamer .module h2{ font-size:44px; }
+html.beamer .tool-card h3{ font-size:26px; }
+html.beamer .tool-card .cta, html.beamer .facts li, html.beamer .eyebrow{ font-size:15px; }
+html.beamer .module-no{ width:48px;height:48px;font-size:20px; }
+html.beamer .module-intro{ margin-left:62px; color:var(--ink-dim); }
+html.beamer .tool-grid{ grid-template-columns:repeat(auto-fit,minmax(380px,1fr)); }
+html.beamer .footer, html.beamer .note{ display:none; }
+
+html.beamer-xl .tool-card p, html.beamer-xl .module-intro, html.beamer-xl .hero .lead{ font-size:28px; }
+html.beamer-xl .module h2{ font-size:54px; }
+html.beamer-xl .tool-card h3{ font-size:32px; }
+html.beamer-xl .tool-card .cta, html.beamer-xl .facts li, html.beamer-xl .eyebrow{ font-size:18px; }
+html.beamer-xl .tool-grid{ grid-template-columns:repeat(auto-fit,minmax(460px,1fr)); }
+
+html.beamer-xxl .tool-card p, html.beamer-xxl .module-intro, html.beamer-xxl .hero .lead{ font-size:34px; }
+html.beamer-xxl .module h2{ font-size:64px; }
+html.beamer-xxl .tool-card h3{ font-size:38px; }
+html.beamer-xxl .tool-card .cta, html.beamer-xxl .facts li, html.beamer-xxl .eyebrow{ font-size:21px; }
+html.beamer-xxl .tool-grid{ grid-template-columns:1fr; }
+
+@media(prefers-reduced-motion:reduce){
+  .tool-card{transition:none}
+  html{scroll-behavior:auto}
+}
+@media(max-width:640px){
+  .wrap{padding:16px}
+  .hero{padding:24px 20px 20px}
+  .topbar{padding-right:0;margin-top:52px}
+  .signature{top:8px;right:12px;padding:5px 10px;font-size:11px}
+  .signature a{font-size:10.5px}
+  .module-intro{margin-left:0}
+  html.beamer .module-intro{margin-left:0}
+  html.beamer .tool-grid, html.beamer-xl .tool-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="signature"><strong>Michaela Kühn</strong><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></div>
+
+<div class="wrap">
+  <div class="topbar">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <button type="button" class="beamer-btn" id="beamerBtn">☀ Beamer</button>
+  </div>
+
+  <section class="hero">
+    <span class="eyebrow">Seminar bei der Haufe Akademie · Nr. 41851</span>
+    <h1>KI-Prompting im Requirements Engineering und in der Business Analyse</h1>
+    <p class="lead">Ihre Werkzeugkiste zum Seminar: Hier finden Sie alle Denkraum-Tools, die wir im Seminar einsetzen oder die sich zum Vertiefen danach eignen. Sie sind entlang der Seminarthemen sortiert, von der Funktionsweise generativer KI über zielgerichtete Prompts und Megaprompts bis zur KI-gestützten Prüfung von Anforderungen. Alle Tools laufen direkt im Browser, ohne Anmeldung.</p>
+    <ul class="facts">
+      <li><strong>2</strong> Seminartage</li>
+      <li><strong id="toolCount">0</strong> Tools</li>
+      <li><strong>6</strong> Themenblöcke</li>
+    </ul>
+    <a class="haufe-link" href="https://www.haufe-akademie.de/41851" target="_blank" rel="noopener noreferrer">Zum Seminar bei der Haufe Akademie →</a>
+  </section>
+
+  <section class="module" id="m1">
+    <div class="module-head"><span class="module-no">1</span><h2>Wie generative KI arbeitet</h2></div>
+    <p class="module-intro">Funktionsweise und Einsatzgebiete: warum dieselbe Frage unterschiedliche Antworten bekommt.</p>
+    <div class="tool-grid">
+      <a class="tool-card" href="../tools/ki-prompt-blackbox-simulator.html">
+        <h3>Prompt-Black-Box-Simulator</h3>
+        <p>Live sehen, wie ein Prompt Tokenisierung, Kontext und Wahrscheinlichkeiten durchläuft, und welche Hebel die Antwort verbessern.</p>
+        <span class="cta">Simulator starten →</span>
+      </a>
+      <a class="tool-card" href="../tools/wie-ki-durch-projekte-denkt.html">
+        <h3>Wie KI durch Projekte denkt</h3>
+        <p>Ein Projekt, elf Schritte: zeigt, dass Prompt Engineering derselben Denkstruktur folgt wie Requirements Engineering.</p>
+        <span class="cta">Schritte ansehen →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="module" id="m2">
+    <div class="module-head"><span class="module-no">2</span><h2>Zielgerichtet prompten</h2></div>
+    <p class="module-intro">Prompts gezielt formulieren und systematisch weiterentwickeln.</p>
+    <div class="tool-grid">
+      <a class="tool-card" href="../tools/prompt-builder.html">
+        <h3>Prompt-Builder</h3>
+        <p>Rolle, Kontext, Aufgabe, Format, Kriterien: In fünf Bausteinen wächst ein vollständiger Prompt zum Kopieren.</p>
+        <span class="cta">Prompt bauen →</span>
+      </a>
+      <a class="tool-card" href="../tools/der-eisberg-des-promptens.html">
+        <h3>Der Eisberg des Promptens</h3>
+        <p>Drei Ebenen der KI-Steuerung: Was man sieht, und was unter der Oberfläche den Unterschied macht.</p>
+        <span class="cta">Eisberg erkunden →</span>
+      </a>
+      <a class="tool-card" href="../tools/promptschule-trainingsleitfaden.html">
+        <h3>PromptSchule Trainingsleitfaden</h3>
+        <p>Sechs Prompt-Frameworks zum Durchklicken, zehn Übungen und eine kopierfertige Prompt-Bibliothek.</p>
+        <span class="cta">Leitfaden öffnen →</span>
+      </a>
+      <a class="tool-card" href="../tools/escape-room-ki-prompting.html">
+        <h3>Escape Room: KI-Prompting</h3>
+        <p>Sieben Türen bis zum fertigen Systemprompt. Die spielerische Übung zum Abschluss des ersten Tages.</p>
+        <span class="cta">Escape Room betreten →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="module" id="m3">
+    <div class="module-head"><span class="module-no">3</span><h2>Megaprompts, Denkprozesse und eigene Assistenten</h2></div>
+    <p class="module-intro">Wiederverwendbare Megaprompts, modellierte Denkprozesse und Custom GPTs ohne Programmierung.</p>
+    <div class="tool-grid">
+      <a class="tool-card" href="../tools/prompt-engineering-academy.html">
+        <h3>Prompt Engineering Academy</h3>
+        <p>Zwölf Missionen bis zur Engineering-Challenge, mit Megaprompt-Bibliothek und Mustern für eigene Assistenten.</p>
+        <span class="cta">Academy öffnen →</span>
+      </a>
+      <a class="tool-card" href="../tools/notebooklm-masterprompt-bibliothek.html">
+        <h3>NotebookLM-Masterprompt-Bibliothek</h3>
+        <p>Rund 60 einsatzbereite Masterprompts, durchsuchbar und nach Framework sortiert.</p>
+        <span class="cta">Bibliothek öffnen →</span>
+      </a>
+      <a class="tool-card" href="../tools/vom-prompt-zum-agenten.html">
+        <h3>Vom Prompt zum Agenten</h3>
+        <p>Vom einzelnen Prompt über Kontext und Schleifen bis zum Agenten: wann welche Stufe der KI-Steuerung sinnvoll ist.</p>
+        <span class="cta">Stufen ansehen →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="module" id="m4">
+    <div class="module-head"><span class="module-no">4</span><h2>Texte und Strukturen umwandeln</h2></div>
+    <p class="module-intro">Von der Ausschreibung zum Angebot, vom Angebot zum Pflichtenheft.</p>
+    <div class="tool-grid">
+      <a class="tool-card" href="../tools/pflichtenheft-generator.html">
+        <h3>Pflichtenheft-Generator</h3>
+        <p>Aus einer Ausschreibung Schritt für Schritt ein Pflichtenheft ableiten. Jede Regel ist sichtbar, genau die Logik, die man einer KI als Anweisung mitgibt.</p>
+        <span class="cta">Pflichtenheft ableiten →</span>
+      </a>
+      <a class="tool-card" href="../tools/fragenautomat.html">
+        <h3>Fragenautomat</h3>
+        <p>Klärungsfragen regelbasiert aus einem Lastenheft ziehen. Die Vorlage für einen eigenen Prüf-Prompt.</p>
+        <span class="cta">Fragen extrahieren →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="module" id="m5">
+    <div class="module-head"><span class="module-no">5</span><h2>Anforderungen mit KI prüfen</h2></div>
+    <p class="module-intro">User Stories gegen Key Results validieren, Anforderungsdokumente auf Vollständigkeit und Klarheit prüfen, Akzeptanzkriterien absichern.</p>
+    <div class="tool-grid">
+      <a class="tool-card" href="../tools/zettelkasten-prompt-engineering-re.html">
+        <h3>Prompt Engineering ist Requirements Engineering für KI</h3>
+        <p>Die gemeinsamen Prinzipien beider Disziplinen, und die Risiken, die beide gefährden.</p>
+        <span class="cta">Zettelkasten öffnen →</span>
+      </a>
+      <a class="tool-card" href="../tools/klarheits-sprint/index.html">
+        <h3>Klarheits-Sprint</h3>
+        <p>Die Qualitätskriterien für Anforderungen, die man der KI als Prüfmaßstab vorgibt.</p>
+        <span class="cta">Sprint starten →</span>
+      </a>
+      <a class="tool-card" href="../tools/okr-kaskade.html">
+        <h3>OKR-Kaskade</h3>
+        <p>Von Key Results bis zur User Story: Grundlage, um Stories mit KI gegen ihre Ziele zu prüfen.</p>
+        <span class="cta">Kaskade öffnen →</span>
+      </a>
+      <a class="tool-card" href="../tools/requirements-to-code-explorer.html">
+        <h3>Requirements-to-Code Explorer</h3>
+        <p>Vom Wunsch bis zum Akzeptanzkriterium in Gherkin: Was eine KI-gestützte Prüfung am Ende absichern muss.</p>
+        <span class="cta">Explorer öffnen →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="module" id="m6">
+    <div class="module-head"><span class="module-no">6</span><h2>Sicher und verantwortungsvoll einsetzen</h2></div>
+    <p class="module-intro">Datenschutz, Ergebnisprüfung und die Grenzen der Werkzeuge.</p>
+    <div class="tool-grid">
+      <a class="tool-card" href="../tools/ki-werkbank.html">
+        <h3>KI-Werkbank</h3>
+        <p>ChatGPT, Claude, Copilot und Gemini im Vergleich, mit Datenschutz-Ampel, Anonymisierer und Checkliste für die Ergebnisprüfung.</p>
+        <span class="cta">Werkbank öffnen →</span>
+      </a>
+      <a class="tool-card" href="../tools/prompt-injection-demo.html">
+        <h3>Prompt-Injection-Demo</h3>
+        <p>Wie versteckte Anweisungen in Dokumenten eine KI umlenken, wichtig, sobald man Ausschreibungen oder Lastenhefte hochlädt.</p>
+        <span class="cta">Demo starten →</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="note">Die Themenblöcke folgen den veröffentlichten Seminarinhalten. Die konkrete Reihenfolge im Seminar kann davon abweichen.</div>
+
+  <footer class="footer">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a><br>
+    Begleitseite zum Seminar „KI-Prompting im Requirements Engineering und in der Business Analyse“ (Haufe Akademie, Nr. 41851). Alle Tools sind eigene Trainingswerkzeuge aus dem Denkraum.
+  </footer>
+</div>
+
+<script>
+document.getElementById('toolCount').textContent = new Set(Array.from(document.querySelectorAll('.tool-card'), a => a.getAttribute('href'))).size;
+
+const BEAMER_LEVELS = [
+  { classes: [],                                    label: '☀ Beamer' },
+  { classes: ['beamer'],                             label: '☀ Beamer XL' },
+  { classes: ['beamer', 'beamer-xl'],                label: '☀ Beamer XXL' },
+  { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: '☀ Normal' }
+];
+let beamerLevel = 0;
+function applyBeamer(){
+  document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+  BEAMER_LEVELS[beamerLevel].classes.forEach(c => document.documentElement.classList.add(c));
+  document.getElementById('beamerBtn').textContent = BEAMER_LEVELS[beamerLevel].label;
+}
+try { beamerLevel = Math.min(3, Math.max(0, parseInt(sessionStorage.getItem('kursBeamer') || '0', 10) || 0)); } catch(e) {}
+applyBeamer();
+document.getElementById('beamerBtn').addEventListener('click', function(){
+  beamerLevel = (beamerLevel + 1) % 4;
+  applyBeamer();
+  try { sessionStorage.setItem('kursBeamer', String(beamerLevel)); } catch(e) {}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seminar RE Projekte starten · Denkraum</title>
+<style>
+:root{
+  --bg:#f6f8fc;
+  --panel:#ffffff;
+  --ink:#1f2937;
+  --ink-dim:#4b5563;
+  --muted:#6b7280;
+  --line:#d9e1ea;
+  --accent:#b91c1c;
+  --accent-soft:#fee2e2;
+  --amber:#92400e;
+  --amber-soft:#fef3c7;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at top left, #fff7f7 0%, transparent 22%),
+    radial-gradient(circle at top right, #eef4ff 0%, transparent 20%),
+    linear-gradient(180deg,#fbfcff 0%,#f4f6fa 100%);
+  min-height:100vh;
+}
+.wrap{max-width:1200px;margin:0 auto;padding:24px}
+
+/* ============ Topbar ============ */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  margin:0 0 18px;padding-right:230px;min-height:44px;
+}
+.back-link{color:var(--ink-dim);font-size:15px;font-weight:600;text-decoration:none}
+.back-link:hover{color:var(--accent)}
+.beamer-btn{
+  background:transparent;border:1.5px solid var(--line);
+  color:var(--ink-dim);font-size:15px;padding:10px 20px;font-family:inherit;font-weight:600;
+  border-radius:999px;cursor:pointer;
+}
+.beamer-btn:hover{border-color:var(--accent)}
+html.beamer .beamer-btn,
+html.beamer-xl .beamer-btn,
+html.beamer-xxl .beamer-btn{ background:var(--ink); color:#fff; border-color:var(--ink); }
+
+.signature{
+  position:fixed;top:14px;right:28px;z-index:500;
+  text-align:right;font-size:13px;color:var(--ink);
+  line-height:1.4;white-space:nowrap;
+  background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:12px;
+  padding:6px 13px;box-shadow:0 6px 16px rgba(15,23,42,.08)
+}
+.signature strong{display:block}
+.signature a{color:var(--accent);text-decoration:none;font-size:12px}
+.signature a:hover{text-decoration:underline}
+
+/* ============ Hero ============ */
+.hero{
+  background:rgba(255,255,255,.96);
+  border:1px solid var(--line);
+  border-radius:28px;
+  box-shadow:0 16px 34px rgba(15,23,42,.08);
+  padding:32px 32px 26px;
+  margin-bottom:28px;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;font-weight:700;font-size:13px;
+  background:var(--amber-soft);color:var(--amber);margin-bottom:14px;
+}
+.hero h1{margin:0 0 12px 0;font-size:clamp(28px,4vw,42px);line-height:1.1;color:var(--ink)}
+.hero .lead{margin:0 0 16px;color:var(--ink-dim);font-size:17px;line-height:1.6}
+.facts{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;padding:0;list-style:none}
+.facts li{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;
+  background:var(--bg);border:1px solid var(--line);font-size:13.5px;font-weight:700;color:var(--muted)
+}
+.facts strong{color:var(--ink)}
+.haufe-link{
+  display:inline-block;padding:11px 20px;border-radius:12px;background:var(--ink);color:#fff;
+  font-weight:700;font-size:15px;text-decoration:none
+}
+.haufe-link:hover{background:var(--accent)}
+
+/* ============ Module ============ */
+.module{margin-bottom:30px;scroll-margin-top:16px}
+.module-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+.module-no{
+  flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+  width:34px;height:34px;border-radius:999px;background:var(--accent-soft);color:var(--accent);
+  font-weight:800;font-size:15px
+}
+.module h2{margin:0;font-size:22px;line-height:1.25}
+.module-intro{margin:0 0 14px 48px;color:var(--muted);font-size:16px;line-height:1.55}
+
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.tool-card{
+  display:flex;flex-direction:column;
+  border:1px solid var(--line);
+  border-left:4px solid var(--amber);
+  border-radius:16px;
+  background:#fff;
+  padding:20px 22px;
+  box-shadow:0 6px 16px rgba(15,23,42,.03);
+  text-decoration:none;color:inherit;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.tool-card:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(15,23,42,.10)}
+.tool-card h3{margin:0 0 8px 0;font-size:18px;line-height:1.3;color:var(--ink)}
+.tool-card p{margin:0;color:var(--ink-dim);font-size:16px;line-height:1.55;flex:1}
+.tool-card .cta{margin-top:14px;font-size:14px;font-weight:700;color:var(--accent)}
+
+.note{
+  margin:8px 0 28px;padding:14px 18px;border-left:4px solid var(--amber);border-radius:4px;
+  background:var(--amber-soft);color:var(--amber);font-size:14px;line-height:1.55
+}
+.footer{
+  border-top:1px solid var(--line);padding-top:16px;margin-top:10px;color:var(--muted);font-size:14px;line-height:1.6
+}
+.footer a{color:var(--accent);text-decoration:none;font-weight:700}
+
+.hero h1, .hero .lead, .module h2, .tool-card h3, .tool-card p, .module-intro{overflow-wrap:break-word;hyphens:auto}
+.tool-grid > *, .module h2{min-width:0}
+
+/* ============ Beamer-Modus (vierstufig) ============ */
+html.beamer{ --ink-dim:#3D4A5C; }
+html.beamer .tool-card p, html.beamer .module-intro, html.beamer .hero .lead{ font-size:22px; }
+html.beamer .module h2{ font-size:44px; }
+html.beamer .tool-card h3{ font-size:26px; }
+html.beamer .tool-card .cta, html.beamer .facts li, html.beamer .eyebrow{ font-size:15px; }
+html.beamer .module-no{ width:48px;height:48px;font-size:20px; }
+html.beamer .module-intro{ margin-left:62px; color:var(--ink-dim); }
+html.beamer .tool-grid{ grid-template-columns:repeat(auto-fit,minmax(380px,1fr)); }
+html.beamer .footer, html.beamer .note{ display:none; }
+
+html.beamer-xl .tool-card p, html.beamer-xl .module-intro, html.beamer-xl .hero .lead{ font-size:28px; }
+html.beamer-xl .module h2{ font-size:54px; }
+html.beamer-xl .tool-card h3{ font-size:32px; }
+html.beamer-xl .tool-card .cta, html.beamer-xl .facts li, html.beamer-xl .eyebrow{ font-size:18px; }
+html.beamer-xl .tool-grid{ grid-template-columns:repeat(auto-fit,minmax(460px,1fr)); }
+
+html.beamer-xxl .tool-card p, html.beamer-xxl .module-intro, html.beamer-xxl .hero .lead{ font-size:34px; }
+html.beamer-xxl .module h2{ font-size:64px; }
+html.beamer-xxl .tool-card h3{ font-size:38px; }
+html.beamer-xxl .tool-card .cta, html.beamer-xxl .facts li, html.beamer-xxl .eyebrow{ font-size:21px; }
+html.beamer-xxl .tool-grid{ grid-template-columns:1fr; }
+
+@media(prefers-reduced-motion:reduce){
+  .tool-card{transition:none}
+  html{scroll-behavior:auto}
+}
+@media(max-width:640px){
+  .wrap{padding:16px}
+  .hero{padding:24px 20px 20px}
+  .topbar{padding-right:0;margin-top:52px}
+  .signature{top:8px;right:12px;padding:5px 10px;font-size:11px}
+  .signature a{font-size:10.5px}
+  .module-intro{margin-left:0}
+  html.beamer .module-intro{margin-left:0}
+  html.beamer .tool-grid, html.beamer-xl .tool-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="signature"><strong>Michaela Kühn</strong><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></div>
+
+<div class="wrap">
+  <div class="topbar">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <button type="button" class="beamer-btn" id="beamerBtn">☀ Beamer</button>
+  </div>
+
+  <section class="hero">
+    <span class="eyebrow">Seminar bei der Haufe Akademie · Nr. 31693</span>
+    <h1>Requirements Engineering: Projekte erfolgreich starten</h1>
+    <p class="lead">Ihre Werkzeugkiste zum Seminar: Hier finden Sie alle Denkraum-Tools, die wir im Seminar einsetzen oder die sich zum Vertiefen danach eignen. Sie sind entlang der Seminarthemen sortiert, von den Basics der Anforderungsanalyse über Projektkontext, Stakeholder und Dokumentation bis zum aktiven Anforderungsmanagement. Alle Tools laufen direkt im Browser, ohne Anmeldung.</p>
+    <ul class="facts">
+      <li><strong>5</strong> Module</li>
+      <li><strong id="toolCount">0</strong> Tools</li>
+      <li><strong>5</strong> Themenblöcke</li>
+    </ul>
+    <a class="haufe-link" href="https://www.haufe-akademie.de/31693" target="_blank" rel="noopener noreferrer">Zum Seminar bei der Haufe Akademie →</a>
+  </section>
+
+  <section class="module" id="m1">
+    <div class="module-head"><span class="module-no">1</span><h2>Startphase: Basics der Anforderungsanalyse</h2></div>
+    <p class="module-intro">Was Anforderungen sind und wie man sie nach Qualitätskriterien formuliert.</p>
+    <div class="tool-grid">
+      <a class="tool-card" href="../tools/anforderungsreise.html">
+        <h3>Anforderungs-Reise durch die Räume</h3>
+        <p>Eine Anforderung wandert von der Idee bis zum Testfall. Die Landkarte für alle fünf Module.</p>
+        <span class="cta">Reise starten →</span>
+      </a>
+      <a class="tool-card" href="../tools/klarheits-sprint/index.html">
+        <h3>Klarheits-Sprint</h3>
+        <p>Ein vager Satz wird in vier Stationen zu einer prüfbaren Anforderung. Die Übung zu den Qualitätskriterien.</p>
+        <span class="cta">Sprint starten →</span>
+      </a>
+      <a class="tool-card" href="../tools/sarahs-weg-zum-qualitaetskuchen.html">
+        <h3>Sarahs Weg zum Qualitätskuchen</h3>
+        <p>Die Marmorkuchen-Geschichte: Wie aus „gut“ messbare Anforderungen werden.</p>
+        <span class="cta">Geschichte öffnen →</span>
+      </a>
+      <a class="tool-card" href="../tools/ireb-kompendium.html">
+        <h3>IREB CPRE Foundation Level Kompendium</h3>
+        <p>Die Kernaussagen des IREB-Lehrplans, zum Nachschlagen und für die Zertifizierung.</p>
+        <span class="cta">Lehrplan öffnen →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="module" id="m2">
+    <div class="module-head"><span class="module-no">2</span><h2>Anforderungen identifizieren I: Projektkontext und Umfeld</h2></div>
+    <p class="module-intro">Wo kommen Anforderungen her? Umfeldanalyse vor dem ersten Interview.</p>
+    <div class="tool-grid">
+      <a class="tool-card" href="../tools/denkraum_v3_adaptive_engine.html">
+        <h3>Adaptive Denkraum Engine</h3>
+        <p>Aus einer Problemstellung ableiten, welche Fragen, Räume und Normen relevant sind. Eine strukturierte Umfeldanalyse.</p>
+        <span class="cta">Losdenken →</span>
+      </a>
+      <a class="tool-card" href="../tools/ebike-anforderungssimulator.html">
+        <h3>Anforderungssimulator: E-Bike-Beschaffung</h3>
+        <p>Fünf Fachbereiche, ein Projekt: Wie Umfeld, Normen und Beteiligte die Anforderungen prägen.</p>
+        <span class="cta">Simulation starten →</span>
+      </a>
+      <a class="tool-card" href="../tools/fragenautomat.html">
+        <h3>Fragenautomat</h3>
+        <p>Die offenen Klärungsfragen aus einem Lastenheft ziehen, bevor sie teuer werden.</p>
+        <span class="cta">Fragen extrahieren →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="module" id="m3">
+    <div class="module-head"><span class="module-no">3</span><h2>Anforderungen identifizieren II: Stakeholder, klassisch und agil</h2></div>
+    <p class="module-intro">Stakeholderanalyse und Ermittlungstechniken für beide Welten.</p>
+    <div class="tool-grid">
+      <a class="tool-card" href="../tools/stakeholder-memory.html">
+        <h3>Stakeholder Memory</h3>
+        <p>Personas gegen ihre Zitate matchen und das echte Bedürfnis hinter der Aussage entdecken.</p>
+        <span class="cta">Memory spielen →</span>
+      </a>
+      <a class="tool-card" href="../tools/stakeholder-management-kompendium-fachbuch.html">
+        <h3>Stakeholder Management Kompendium</h3>
+        <p>Vertiefung zum Nachlesen: Identifikation, Macht-Interesse-Matrix, Salience Model.</p>
+        <span class="cta">Kompendium öffnen →</span>
+      </a>
+      <a class="tool-card" href="../tools/pflichtenheft-generator.html">
+        <h3>Pflichtenheft-Generator</h3>
+        <p>Der klassische Weg: aus einer Ausschreibung Schritt für Schritt ein Pflichtenheft ableiten.</p>
+        <span class="cta">Pflichtenheft ableiten →</span>
+      </a>
+      <a class="tool-card" href="../tools/story-mapping-kundenperspektiven.html">
+        <h3>Story Mapping: Kundenperspektiven</h3>
+        <p>Der agile Weg: vier Kundenperspektiven auf derselben Story Map.</p>
+        <span class="cta">Story Map öffnen →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="module" id="m4">
+    <div class="module-head"><span class="module-no">4</span><h2>Anforderungen dokumentieren: Sprache und Visualisierung</h2></div>
+    <p class="module-intro">Verständlich schreiben, gemeinsam verstehen, anschaulich darstellen.</p>
+    <div class="tool-grid">
+      <a class="tool-card" href="../tools/re-szenensammlung.html">
+        <h3>RE-Szenensammlung</h3>
+        <p>Eine Anforderung, drei Rollen: sechs Alltagsszenen, in denen Sprache zu Missverständnissen führt, und wie man sie auflöst.</p>
+        <span class="cta">Szenen ansehen →</span>
+      </a>
+      <a class="tool-card" href="../tools/fa-nfa-rollen-spuren.html">
+        <h3>FA → NFA: Die Spuren einer Anforderung</h3>
+        <p>Funktionale und nicht-funktionale Anforderungen sauber trennen und vollständig erfassen.</p>
+        <span class="cta">Spuren verfolgen →</span>
+      </a>
+      <a class="tool-card" href="../tools/user-story-puzzle.html">
+        <h3>User Story Puzzle</h3>
+        <p>User Stories mit Akzeptanzkriterien richtig formulieren, in fünf Levels.</p>
+        <span class="cta">Puzzeln →</span>
+      </a>
+      <a class="tool-card" href="../tools/ein-fall-35-blickwinkel.html">
+        <h3>Ein Fall, 35 Blickwinkel</h3>
+        <p>Ein Fall in 35 Diagrammarten: Welche Visualisierung beantwortet welche Frage?</p>
+        <span class="cta">Blickwinkel wechseln →</span>
+      </a>
+      <a class="tool-card" href="../tools/bpmn-anwenderkompendium.html">
+        <h3>BPMN 2.0 in der Praxis</h3>
+        <p>Prozesse nach Norm modellieren: Diagrammwahl, Detailtiefe, typische Fehler.</p>
+        <span class="cta">Leitfaden öffnen →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="module" id="m5">
+    <div class="module-head"><span class="module-no">5</span><h2>Anforderungen managen und in die Praxis übertragen</h2></div>
+    <p class="module-intro">Aktives Anforderungsmanagement etablieren und Methoden in den eigenen Alltag mitnehmen.</p>
+    <div class="tool-grid">
+      <a class="tool-card" href="../tools/priorisierungslabor.html">
+        <h3>Priorisierungslabor</h3>
+        <p>Anforderungen bewerten und priorisieren, entlang der Artefakt-Kette vom Business Case bis zum Akzeptanzkriterium.</p>
+        <span class="cta">Labor betreten →</span>
+      </a>
+      <a class="tool-card" href="../tools/anforderungsboard-iso.html">
+        <h3>Anforderungs-Board</h3>
+        <p>Anforderungen klassifizieren: funktional, Qualitätsanforderung, Sicherheitsmaßnahme oder Normvorgabe?</p>
+        <span class="cta">Karten sortieren →</span>
+      </a>
+      <a class="tool-card" href="../tools/requirements-to-code-explorer.html">
+        <h3>Requirements-to-Code Explorer</h3>
+        <p>Nachverfolgbarkeit vom unscharfen Wunsch bis zum Akzeptanztest.</p>
+        <span class="cta">Explorer öffnen →</span>
+      </a>
+      <a class="tool-card" href="../tools/re-kompendium.html">
+        <h3>RE-Kompendium</h3>
+        <p>IREB, BABOK® und ISO/IEC/IEEE 29148 im Vergleich: das Nachschlagewerk für die Zeit nach dem Seminar.</p>
+        <span class="cta">Nachschlagen →</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="note">Die Themenblöcke entsprechen den fünf Modulen des Seminars laut Seminarbeschreibung.</div>
+
+  <footer class="footer">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a><br>
+    Begleitseite zum Seminar „Requirements Engineering: Projekte erfolgreich starten“ (Haufe Akademie, Nr. 31693). Alle Tools sind eigene Trainingswerkzeuge aus dem Denkraum.
+  </footer>
+</div>
+
+<script>
+document.getElementById('toolCount').textContent = new Set(Array.from(document.querySelectorAll('.tool-card'), a => a.getAttribute('href'))).size;
+
+const BEAMER_LEVELS = [
+  { classes: [],                                    label: '☀ Beamer' },
+  { classes: ['beamer'],                             label: '☀ Beamer XL' },
+  { classes: ['beamer', 'beamer-xl'],                label: '☀ Beamer XXL' },
+  { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: '☀ Normal' }
+];
+let beamerLevel = 0;
+function applyBeamer(){
+  document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+  BEAMER_LEVELS[beamerLevel].classes.forEach(c => document.documentElement.classList.add(c));
+  document.getElementById('beamerBtn').textContent = BEAMER_LEVELS[beamerLevel].label;
+}
+try { beamerLevel = Math.min(3, Math.max(0, parseInt(sessionStorage.getItem('kursBeamer') || '0', 10) || 0)); } catch(e) {}
+applyBeamer();
+document.getElementById('beamerBtn').addEventListener('click', function(){
+  beamerLevel = (beamerLevel + 1) % 4;
+  applyBeamer();
+  try { sessionStorage.setItem('kursBeamer', String(beamerLevel)); } catch(e) {}
+});
+</script>
+</body>
+</html>
