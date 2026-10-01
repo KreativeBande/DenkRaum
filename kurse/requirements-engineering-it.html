@@ -123,6 +123,9 @@ html.beamer-xxl .beamer-btn{ background:var(--ink); color:#fff; border-color:var
 }
 .footer a{color:var(--accent);text-decoration:none;font-weight:700}
 
+.hero h1, .module h2, .tool-card h3, .tool-card p, .module-intro{overflow-wrap:break-word;hyphens:auto}
+.tool-grid > *, .module h2{min-width:0}
+
 /* ============ Beamer-Modus (vierstufig) ============ */
 html.beamer{ --ink-dim:#3D4A5C; }
 html.beamer .tool-card p, html.beamer .module-intro, html.beamer .hero .lead{ font-size:22px; }
@@ -367,7 +370,7 @@ html.beamer-xxl .tool-grid{ grid-template-columns:1fr; }
 </div>
 
 <script>
-document.getElementById('toolCount').textContent = document.querySelectorAll('.tool-card').length;
+document.getElementById('toolCount').textContent = new Set(Array.from(document.querySelectorAll('.tool-card'), a => a.getAttribute('href'))).size;
 
 const BEAMER_LEVELS = [
   { classes: [],                                    label: '☀ Beamer' },
