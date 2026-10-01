@@ -1,6 +1,6 @@
 # Konzept · Störfall-Labor „Störung im Betriebsablauf“
 
-Stand: 01.10.2026 · Status: **Entwurf zur Freigabe** · noch kein Code
+Stand: 01.10.2026 · Status: **umgesetzt** in `tools/stoerfall-labor.html` (Entscheidungen: Name ja, drei Störfälle, Protokoll zum Herunterladen, Best-Practice-Leitfaden statt Praxisfall)
 
 ## 1. Warum dieses Tool
 
