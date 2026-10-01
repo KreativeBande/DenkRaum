@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Denkraum-Fahrplan</title>
+<style>
+:root{
+  --bg:#f6f8fc;
+  --panel:#ffffff;
+  --ink:#1f2937;
+  --ink-dim:#4b5563;
+  --muted:#6b7280;
+  --line:#d9e1ea;
+  --accent:#b91c1c;
+  --re:#b91c1c;   --re-soft:#fee2e2;
+  --ba:#c2410c;   --ba-soft:#ffedd5;
+  --ki:#1d4ed8;   --ki-soft:#dbeafe;
+  --pm:#6d28d9;   --pm-soft:#ede9fe;
+  --none:#64748b; --none-soft:#f1f5f9;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at top left, #fff7f7 0%, transparent 22%),
+    radial-gradient(circle at top right, #eef4ff 0%, transparent 20%),
+    linear-gradient(180deg,#fbfcff 0%,#f4f6fa 100%);
+  min-height:100vh;
+}
+.wrap{max-width:1360px;margin:0 auto;padding:24px}
+
+/* ============ Topbar & Signatur ============ */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 18px;padding-right:230px;min-height:44px}
+.back-link{color:var(--ink-dim);font-size:15px;font-weight:600;text-decoration:none}
+.back-link:hover{color:var(--accent)}
+.beamer-btn{
+  background:transparent;border:1.5px solid var(--line);
+  color:var(--ink-dim);font-size:15px;padding:10px 20px;font-family:inherit;font-weight:600;
+  border-radius:999px;cursor:pointer;
+}
+.beamer-btn:hover{border-color:var(--accent)}
+html.beamer .beamer-btn, html.beamer-xl .beamer-btn, html.beamer-xxl .beamer-btn{background:var(--ink);color:#fff;border-color:var(--ink)}
+.signature{
+  position:fixed;top:14px;right:28px;z-index:500;
+  text-align:right;font-size:13px;color:var(--ink);line-height:1.4;white-space:nowrap;
+  background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:12px;
+  padding:6px 13px;box-shadow:0 6px 16px rgba(15,23,42,.08)
+}
+.signature strong{display:block}
+.signature a{color:var(--accent);text-decoration:none;font-size:12px}
+.signature a:hover{text-decoration:underline}
+
+/* ============ Hero ============ */
+.hero{
+  background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;
+  box-shadow:0 16px 34px rgba(15,23,42,.08);padding:32px 32px 26px;margin-bottom:20px;
+}
+.eyebrow{display:inline-flex;padding:7px 14px;border-radius:999px;font-weight:700;font-size:13px;background:var(--re-soft);color:var(--re);margin-bottom:14px}
+.hero h1{margin:0 0 12px;font-size:clamp(28px,4vw,42px);line-height:1.1}
+.hero .lead{margin:0;color:var(--ink-dim);font-size:17px;line-height:1.6}
+
+/* ============ Steuerung ============ */
+.controls{
+  background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:20px;
+  box-shadow:0 10px 24px rgba(15,23,42,.05);padding:16px 20px;margin-bottom:24px;
+  display:grid;gap:12px;
+}
+.ctl-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.ctl-label{font-size:13px;font-weight:800;color:var(--muted);min-width:70px}
+.chip{
+  border:1.5px solid var(--line);background:#fff;color:var(--ink-dim);
+  padding:7px 14px;border-radius:12px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;
+  display:inline-flex;align-items:center;gap:7px;
+}
+.chip:hover{border-color:var(--ink)}
+.chip.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip .sw{width:12px;height:12px;border-radius:999px;display:inline-block}
+.ctl-hint{font-size:13px;color:var(--muted)}
+
+/* ============ Bänder (Rundreise / Basislager) ============ */
+.band{
+  background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 16px rgba(15,23,42,.03);
+  padding:16px 20px;margin-bottom:20px;
+}
+.band h2{margin:0 0 4px;font-size:18px}
+.band p{margin:0 0 12px;color:var(--muted);font-size:14px}
+.band .stops{display:flex;flex-wrap:wrap;gap:8px}
+.band.ring{border:2px dashed var(--line)}
+
+/* ============ Plan ============ */
+.map{
+  background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 6px 16px rgba(15,23,42,.03);
+  padding:8px 16px 16px;margin-bottom:20px;
+}
+.map-head, .line-row{display:grid;grid-template-columns:170px repeat(5,minmax(0,1fr));column-gap:10px}
+.map-head{border-bottom:1px solid var(--line);padding:10px 0 12px;margin-bottom:6px}
+.room-head{text-align:center}
+.room-head .ic{font-size:24px;display:block}
+.room-head .nm{font-weight:800;font-size:15px;display:block}
+.room-head .lf{font-size:13px;color:var(--muted)}
+.line-row{position:relative;padding:14px 0 18px;border-bottom:1px solid #eef2f7}
+.line-row:last-child{border-bottom:0}
+.line-row::before{
+  content:"";position:absolute;left:180px;right:0;top:27px;height:6px;border-radius:999px;background:var(--c);z-index:0;
+}
+.line-label{display:flex;flex-direction:column;justify-content:flex-start;padding-top:12px;position:relative;z-index:1}
+.line-label .ln{font-weight:800;font-size:16px;color:var(--c)}
+.line-label .lc{font-size:13px;color:var(--muted)}
+.cell{position:relative;z-index:1;display:flex;flex-direction:column;align-items:stretch;gap:6px;min-width:0}
+.cell-room{display:none}
+.dot{
+  width:26px;height:26px;border-radius:999px;background:#fff;border:6px solid var(--c);
+  margin:4px auto 6px;flex:0 0 auto;
+}
+.cell.gap .dot{border:3px dashed #9aa5b4;background:#f8fafc}
+.gap-note{text-align:center;font-size:13px;font-weight:700;color:#8b95a3}
+
+.stop{
+  display:block;text-decoration:none;color:var(--ink);background:#fff;
+  border:1px solid var(--line);border-left:5px solid var(--c, var(--none));border-radius:12px;
+  padding:7px 10px;font-size:14px;line-height:1.3;font-weight:600;
+  overflow-wrap:break-word;hyphens:auto;
+  transition:opacity .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.stop:hover{box-shadow:0 8px 18px rgba(15,23,42,.10);transform:translateY(-1px)}
+.stop .xfer{display:inline-flex;gap:3px;margin-left:6px;vertical-align:middle}
+.stop .xfer i{width:9px;height:9px;border-radius:999px;display:inline-block}
+.band .stop{display:inline-block}
+.stop.dim{opacity:.18}
+.stop.hit{box-shadow:0 0 0 3px rgba(31,41,55,.18)}
+.line-row.hidden, .band .stop.hidden{display:none}
+
+.summary{
+  margin:0 0 20px;padding:14px 18px;border-left:4px solid var(--re);border-radius:4px;
+  background:var(--re-soft);color:#7f1d1d;font-size:15px;line-height:1.6
+}
+.summary strong{color:#7f1d1d}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:var(--muted);margin:-6px 0 18px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend .dot-mini{width:14px;height:14px;border-radius:999px;border:4px solid var(--ink);background:#fff;display:inline-block}
+.legend .gap-mini{width:14px;height:14px;border-radius:999px;border:2px dashed #9aa5b4;display:inline-block}
+.footer{border-top:1px solid var(--line);padding-top:16px;margin-top:10px;color:var(--muted);font-size:14px;line-height:1.6}
+.footer a{color:var(--accent);text-decoration:none;font-weight:700}
+
+/* ============ Gestapelte Ansicht (schmal & Beamer XL/XXL) ============ */
+@media(max-width:900px){
+  .map-head{display:none}
+  .line-row{display:block;padding:12px 0 18px}
+  .line-row::before{left:12px;right:auto;top:52px;bottom:18px;width:6px;height:auto}
+  .line-label{padding:0 0 8px}
+  .cell{flex-direction:row;flex-wrap:wrap;align-items:center;padding:4px 0 10px 44px;gap:6px}
+  .cell .dot{position:absolute;left:2px;top:2px;margin:0;width:26px;height:26px}
+  .cell-room{display:block;flex-basis:100%;font-weight:800;font-size:14px;color:var(--ink-dim)}
+  .gap-note{text-align:left}
+}
+html.beamer-xl .map-head, html.beamer-xxl .map-head{display:none}
+html.beamer-xl .line-row, html.beamer-xxl .line-row{display:block;padding:12px 0 18px}
+html.beamer-xl .line-row::before, html.beamer-xxl .line-row::before{left:14px;right:auto;top:72px;bottom:18px;width:8px;height:auto}
+html.beamer-xl .line-label, html.beamer-xxl .line-label{padding:0 0 8px}
+html.beamer-xl .cell, html.beamer-xxl .cell{flex-direction:row;flex-wrap:wrap;align-items:center;padding:4px 0 14px 56px;gap:8px}
+html.beamer-xl .cell .dot, html.beamer-xxl .cell .dot{position:absolute;left:2px;top:6px;margin:0;width:34px;height:34px}
+html.beamer-xl .cell-room, html.beamer-xxl .cell-room{display:block;flex-basis:100%;font-weight:800;color:var(--ink-dim)}
+html.beamer-xl .gap-note, html.beamer-xxl .gap-note{text-align:left}
+
+/* ============ Beamer-Modus (vierstufig) ============ */
+html.beamer{ --ink-dim:#3D4A5C; }
+html.beamer .hero .lead, html.beamer .stop, html.beamer .summary, html.beamer .band p{ font-size:22px; }
+html.beamer .band h2, html.beamer .line-label .ln{ font-size:44px; }
+html.beamer .room-head .nm, html.beamer .cell-room{ font-size:26px; }
+html.beamer .chip, html.beamer .ctl-label, html.beamer .room-head .lf, html.beamer .line-label .lc, html.beamer .gap-note, html.beamer .legend, html.beamer .eyebrow{ font-size:15px; }
+html.beamer .map-head, html.beamer .line-row{ grid-template-columns:220px repeat(5,minmax(0,1fr)); }
+html.beamer .line-row::before{ left:230px; top:31px; }
+html.beamer .footer, html.beamer .ctl-hint{ display:none; }
+
+html.beamer-xl .hero .lead, html.beamer-xl .stop, html.beamer-xl .summary, html.beamer-xl .band p{ font-size:28px; }
+html.beamer-xl .band h2, html.beamer-xl .line-label .ln{ font-size:54px; }
+html.beamer-xl .cell-room{ font-size:32px; }
+html.beamer-xl .chip, html.beamer-xl .ctl-label, html.beamer-xl .line-label .lc, html.beamer-xl .gap-note, html.beamer-xl .legend, html.beamer-xl .eyebrow{ font-size:18px; }
+
+html.beamer-xxl .hero .lead, html.beamer-xxl .stop, html.beamer-xxl .summary, html.beamer-xxl .band p{ font-size:34px; }
+html.beamer-xxl .band h2, html.beamer-xxl .line-label .ln{ font-size:64px; }
+html.beamer-xxl .cell-room{ font-size:38px; }
+html.beamer-xxl .chip, html.beamer-xxl .ctl-label, html.beamer-xxl .line-label .lc, html.beamer-xxl .gap-note, html.beamer-xxl .legend, html.beamer-xxl .eyebrow{ font-size:21px; }
+
+.hero h1, .hero .lead, .band h2, .line-label .ln{overflow-wrap:break-word;hyphens:auto}
+
+@media(prefers-reduced-motion:reduce){ .stop{transition:none} }
+@media(max-width:640px){
+  .wrap{padding:16px}
+  .hero{padding:24px 20px 20px}
+  .topbar{padding-right:0;margin-top:52px}
+  .signature{top:8px;right:12px;padding:5px 10px;font-size:11px}
+  .signature a{font-size:10.5px}
+  .ctl-label{min-width:0;flex-basis:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="signature"><strong>Michaela Kühn</strong><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></div>
+
+<div class="wrap">
+  <div class="topbar">
+    <a class="back-link" href="./index.html">← Zurück zur Startseite</a>
+    <button type="button" class="beamer-btn" id="beamerBtn">☀ Beamer</button>
+  </div>
+
+  <section class="hero">
+    <span class="eyebrow">Roter Faden · Entwurf</span>
+    <h1>Denkraum-Fahrplan</h1>
+    <p class="lead">Jede Disziplin geht denselben Denkweg: vom Impuls im Möglichkeitsraum über das Verstehen im Analyseraum und das Festlegen im Lösungsraum bis zur Umsetzung und zu dem, was sich danach verändert. Jeder Faden ist eine eigene Linie durch diese fünf Räume, jedes Tool eine Haltestelle. Tools, die auf mehreren Fäden liegen, sind Umsteigepunkte. Wählen Sie ein Seminar, um seine Haltestellen hervorzuheben.</p>
+  </section>
+
+  <div class="controls">
+    <div class="ctl-row" id="lineFilter"><span class="ctl-label">Faden:</span></div>
+    <div class="ctl-row" id="semFilter"><span class="ctl-label">Seminar:</span></div>
+  </div>
+
+  <div class="summary" id="summary"></div>
+
+  <div class="legend">
+    <span><i class="dot-mini"></i> Station mit Tools</span>
+    <span><i class="gap-mini"></i> Lücke: noch kein Tool</span>
+    <span>● ● kleine Punkte hinter einem Tool = liegt auch auf diesen Fäden (Umsteigepunkt)</span>
+  </div>
+
+  <section class="band ring" id="ringBand">
+    <h2>🔄 Rundreisen</h2>
+    <p>Diese Tools fahren selbst durch alle fünf Räume. Sie sind der rote Faden im Kleinen und eignen sich als Überblick zu Beginn oder als Wiederholung am Ende.</p>
+    <div class="stops"></div>
+  </section>
+
+  <section class="map" id="map" aria-label="Fahrplan: Fäden durch die fünf Denkräume">
+    <div class="map-head" id="mapHead"><div></div></div>
+  </section>
+
+  <section class="band" id="baseBand">
+    <h2>🏕️ Basislager</h2>
+    <p>Nachschlagewerke, Fallwelten und Prüfungsvorbereitung. Von hier aus startet man in jeden Raum und kehrt immer wieder zurück.</p>
+    <div class="stops"></div>
+  </section>
+
+  <footer class="footer">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a><br>
+    Entwurf. Die Zuordnung der Tools zu Räumen und Fäden kommt aus dem Tool-Register und wird dort gepflegt. Denkräume nach dem Denkräume-Navigator: Möglichkeitsraum, Analyseraum, Lösungsraum, Umsetzungsraum, Störraum.
+  </footer>
+</div>
+
+<script src="./register/tools.js"></script>
+<script>
+(function(){
+  var R = window.DENKRAUM_REGISTER;
+  if(!R){ document.getElementById('summary').textContent = 'Das Tool-Register (register/tools.js) konnte nicht geladen werden.'; return; }
+
+  var ROOMS = R.denkraeume.filter(function(r){ return ['moeglichkeit','analyse','loesung','umsetzung','stoer'].indexOf(r.id) !== -1; });
+  var LINES = R.faeden;
+  var COLOR = { re:'var(--re)', ba:'var(--ba)', ki:'var(--ki)', pm:'var(--pm)' };
+  var SHORT = { re:'RE', ba:'BA', ki:'KI', pm:'Agil/PM' };
+  var stopEls = [];
+
+  function el(tag, cls, text){
+    var e = document.createElement(tag);
+    if(cls) e.className = cls;
+    if(text != null) e.textContent = text;
+    return e;
+  }
+  function makeStop(t, line){
+    var a = el('a', 'stop', t.kurztitel || t.titel);
+    a.href = './' + t.datei;
+    a.title = t.titel + (t.kurz ? ' — ' + t.kurz : '');
+    var c = line || t.faeden[0];
+    a.style.setProperty('--c', c ? COLOR[c] : 'var(--none)');
+    a.dataset.sem = '|' + (t.haufeSeminare || []).join('|') + '|';
+    a.dataset.lines = '|' + t.faeden.join('|') + '|';
+    var others = t.faeden.filter(function(f){ return f !== line; });
+    if(line ? others.length : t.faeden.length > 1){
+      var x = el('span', 'xfer');
+      (line ? others : t.faeden.slice(1)).forEach(function(f){
+        var i = el('i'); i.style.background = COLOR[f]; i.title = 'auch auf dem Faden ' + SHORT[f]; x.appendChild(i);
+      });
+      a.appendChild(x);
+    }
+    stopEls.push(a);
+    return a;
+  }
+
+  // Kopfzeile mit den fünf Räumen
+  var head = document.getElementById('mapHead');
+  ROOMS.forEach(function(r){
+    var h = el('div', 'room-head');
+    h.appendChild(el('span', 'ic', r.icon));
+    h.appendChild(el('span', 'nm', r.name));
+    h.appendChild(el('span', 'lf', r.leitfrage));
+    head.appendChild(h);
+  });
+
+  // Eine Zeile pro Faden
+  var map = document.getElementById('map');
+  var gaps = {};
+  LINES.forEach(function(L){
+    var row = el('div', 'line-row');
+    row.dataset.line = L.id;
+    row.style.setProperty('--c', COLOR[L.id]);
+    var lab = el('div', 'line-label');
+    lab.appendChild(el('span', 'ln', L.name));
+    var count = R.tools.filter(function(t){ return t.faeden.indexOf(L.id) !== -1 && ROOMS.some(function(r){ return r.id === t.denkraum; }); }).length;
+    lab.appendChild(el('span', 'lc', count + ' Haltestellen'));
+    row.appendChild(lab);
+    gaps[L.id] = [];
+    ROOMS.forEach(function(r){
+      var cell = el('div', 'cell');
+      cell.appendChild(el('div', 'dot'));
+      cell.appendChild(el('span', 'cell-room', r.icon + ' ' + r.name));
+      var ts = R.tools.filter(function(t){ return t.denkraum === r.id && t.faeden.indexOf(L.id) !== -1; });
+      if(!ts.length){
+        cell.classList.add('gap');
+        cell.appendChild(el('div', 'gap-note', 'Lücke'));
+        gaps[L.id].push(r);
+      }
+      ts.forEach(function(t){ cell.appendChild(makeStop(t, L.id)); });
+      row.appendChild(cell);
+    });
+    map.appendChild(row);
+  });
+
+  // Bänder
+  function fillBand(id, roomId){
+    var box = document.querySelector('#' + id + ' .stops');
+    R.tools.filter(function(t){ return t.denkraum === roomId; })
+      .sort(function(a,b){ return (a.faeden[0]||'zz').localeCompare(b.faeden[0]||'zz') || a.kurztitel.localeCompare(b.kurztitel, 'de'); })
+      .forEach(function(t){ box.appendChild(makeStop(t, null)); });
+  }
+  fillBand('ringBand', 'rundreise');
+  fillBand('baseBand', 'basislager');
+
+  // Zusammenfassung der Lücken
+  var sum = document.getElementById('summary');
+  var parts = LINES.filter(function(L){ return gaps[L.id].length; }).map(function(L){
+    return '<strong>' + SHORT[L.id] + '</strong>: ' + gaps[L.id].map(function(r){ return r.icon + ' ' + r.name; }).join(', ');
+  });
+  sum.innerHTML = parts.length
+    ? 'Hier reißt der Faden noch: ' + parts.join(' · ') + '. Das sind die naheliegenden Plätze für neue Tools.'
+    : 'Jeder Faden hat in jedem Raum mindestens eine Haltestelle.';
+
+  // Filter
+  var activeLine = 'all', activeSem = 'all';
+  function apply(){
+    document.querySelectorAll('.line-row').forEach(function(row){
+      row.classList.toggle('hidden', activeLine !== 'all' && row.dataset.line !== activeLine);
+    });
+    stopEls.forEach(function(s){
+      var inBand = !!s.closest('.band');
+      var lineOk = activeLine === 'all' || s.dataset.lines.indexOf('|' + activeLine + '|') !== -1;
+      s.classList.toggle('hidden', inBand && !lineOk);
+      var semOk = activeSem === 'all' || s.dataset.sem.indexOf('|' + activeSem + '|') !== -1;
+      s.classList.toggle('dim', !semOk);
+      s.classList.toggle('hit', activeSem !== 'all' && semOk);
+    });
+  }
+  function chipRow(container, items, onPick){
+    var chips = [];
+    items.forEach(function(it){
+      var b = el('button', 'chip' + (it.id === 'all' ? ' active' : ''));
+      b.type = 'button';
+      if(it.color){ var sw = el('span', 'sw'); sw.style.background = it.color; b.appendChild(sw); }
+      b.appendChild(document.createTextNode(it.label));
+      if(it.title) b.title = it.title;
+      b.setAttribute('aria-pressed', it.id === 'all' ? 'true' : 'false');
+      b.addEventListener('click', function(){
+        chips.forEach(function(c){ c.classList.toggle('active', c === b); c.setAttribute('aria-pressed', c === b ? 'true' : 'false'); });
+        onPick(it.id);
+        apply();
+      });
+      chips.push(b);
+      container.appendChild(b);
+    });
+  }
+  chipRow(document.getElementById('lineFilter'),
+    [{id:'all', label:'Alle'}].concat(LINES.map(function(L){ return {id:L.id, label:L.name, color:COLOR[L.id]}; })),
+    function(id){ activeLine = id; });
+  chipRow(document.getElementById('semFilter'),
+    [{id:'all', label:'Keins'}].concat(R.seminare.map(function(s){ return {id:s.nr, label:s.kurz, title:'Haufe-Seminar Nr. ' + s.nr + ': ' + s.titel}; })),
+    function(id){ activeSem = id; });
+  var hint = el('span', 'ctl-hint', 'Hervorgehoben bleiben nur die Tools, die auf der jeweiligen Seminarseite verlinkt sind.');
+  document.getElementById('semFilter').appendChild(hint);
+  apply();
+})();
+
+const BEAMER_LEVELS = [
+  { classes: [],                                    label: '☀ Beamer' },
+  { classes: ['beamer'],                             label: '☀ Beamer XL' },
+  { classes: ['beamer', 'beamer-xl'],                label: '☀ Beamer XXL' },
+  { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: '☀ Normal' }
+];
+let beamerLevel = 0;
+document.getElementById('beamerBtn').addEventListener('click', function(){
+  beamerLevel = (beamerLevel + 1) % 4;
+  document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+  BEAMER_LEVELS[beamerLevel].classes.forEach(c => document.documentElement.classList.add(c));
+  this.textContent = BEAMER_LEVELS[beamerLevel].label;
+});
+</script>
+</body>
+</html>

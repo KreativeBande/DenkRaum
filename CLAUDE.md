@@ -39,7 +39,8 @@ Umsetzung: Bestehende Tools werden schrittweise nachgezogen (nicht als Ad-hoc-Bl
 `register/tools.js` ist die führende Quelle für alle Angaben *über* die Tools (Zweck, Dauer, Seminare, Fallwelten, Normen, Siegel-Stand). Feldbeschreibung und Pflege-Regeln: `register/README.md`. Bei Widerspruch zum Notion-Tool-Katalog gilt das Register; Notion wird daraus nachgezogen.
 
 - **Vor jedem neuen Tool** im Register nach `themen`, `zweck` und `fallwelten` suchen und Michaela vorhandene Tools zum selben Thema nennen, bevor gebaut wird. Sie entscheidet: bestehendes Tool erweitern oder neu bauen.
-- **Jedes neue oder geänderte Tool** bekommt seinen Register-Eintrag im selben Pull Request.
+- **Jedes neue oder geänderte Tool** bekommt seinen Register-Eintrag im selben Pull Request, inklusive `denkraum` und `faeden`.
+- **Fahrplan (`fahrplan.html`)**: zeigt den roten Faden — vier Fäden (RE, BA, KI & Prompting, Agil & PM) als Linien durch die fünf Denkräume der Navigator-Fassung, Tools als Haltestellen, gespeist allein aus dem Register. Keine Tool-Liste von Hand in die Seite schreiben. Lücken (Raum ohne Tool auf einem Faden) sind gewollt sichtbar und Kandidaten für neue Tools.
 
 ## Seminar-Begleitseiten (`kurse/`)
 

@@ -15,7 +15,10 @@ Erstbefüllung am 01.10.2026 automatisch aus `index.html`, `kurse/`, dem Notion-
 | `titel`, `kurz` | Titel und Kurzbeschreibung wie auf der Startseite |
 | `rubrik`, `bereich` | Rubrik und Unterrubrik auf der Startseite (`null`, wenn nicht verlinkt) |
 | `aufStartseite` | ob das Tool auf `index.html` verlinkt ist |
+| `kurztitel` | kurzer Name für Fahrplan und Chips |
 | `zweck` | 1–2 aus: `Opener`, `Demonstrator`, `Übung`, `Spiel`, `Workshop-Canvas`, `Lernreise`, `Nachschlagewerk`, `Prüfungsvorbereitung`, `Fallwelt-Referenz`, `Über mich` |
+| `denkraum` | `moeglichkeit`, `analyse`, `loesung`, `umsetzung`, `stoer` (Navigator-Fassung), `rundreise` (führt durch alle Räume) oder `basislager` (Nachschlagen, Fallwelten, Prüfung) |
+| `faeden` | Linien im Fahrplan: `re`, `ba`, `ki`, `pm` (mehrere = Umsteigepunkt, leer = keinem Faden zugeordnet) |
 | `dauer` | typische Einsatzdauer im Seminar, z. B. `"15 min"`, `"Ganztag"`, `null` = noch offen |
 | `haufeSeminare` | Seminarnummern aus `kurse/`, in denen das Tool verlinkt ist |
 | `einsatzkontext` | wie Notion: `Workshop`, `Seminar`, `IT-Tage`, `GPM-Konferenz`, `Coaching` |
