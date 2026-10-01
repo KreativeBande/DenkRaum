@@ -40,6 +40,7 @@ Umsetzung: Bestehende Tools werden schrittweise nachgezogen (nicht als Ad-hoc-Bl
 
 - **Vor jedem neuen Tool** im Register nach `themen`, `zweck` und `fallwelten` suchen und Michaela vorhandene Tools zum selben Thema nennen, bevor gebaut wird. Sie entscheidet: bestehendes Tool erweitern oder neu bauen.
 - **Jedes neue oder geänderte Tool** bekommt seinen Register-Eintrag im selben Pull Request, inklusive `denkraum` und `faeden`.
+- **Nach jeder Register-Änderung** die Versionsnummer in `register/tools.js?v=…` in `index.html` und `fahrplan.html` hochzählen — sonst liefert der Browser-Cache (GitHub Pages, bis 10 min) die alte Fassung und der Fahrplan bleibt leer.
 - **Fahrplan (`fahrplan.html`)**: zeigt den roten Faden — vier Fäden (RE, BA, KI & Prompting, Agil & PM) als Linien durch die fünf Denkräume der Navigator-Fassung, Tools als Haltestellen, gespeist allein aus dem Register. Keine Tool-Liste von Hand in die Seite schreiben. Lücken (Raum ohne Tool auf einem Faden) sind gewollt sichtbar und Kandidaten für neue Tools.
 
 ## Seminar-Begleitseiten (`kurse/`)

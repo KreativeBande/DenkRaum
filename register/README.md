@@ -2,6 +2,8 @@
 
 `register/tools.js` ist die **führende Quelle** für alle Angaben *über* die DenkRaum-Tools: wofür ein Tool gedacht ist, in welchen Seminaren es vorkommt, welche Fallwelt und Normen es nutzt und wie der Siegel-Stand ist. Startseite, Seminarseiten und der Notion-Tool-Katalog sollen sich nach diesem Register richten, nicht umgekehrt.
 
+Seiten binden die Datei mit Versionsnummer ein (`register/tools.js?v=JJJJ-MM-TT-n`, derzeit in `index.html` und `fahrplan.html`). **Nach jeder Änderung am Register die Nummer in beiden Seiten hochzählen**, sonst zeigen Browser bis zu 10 Minuten (GitHub-Pages-Cache) die alte Fassung, und Seiten, die neue Felder erwarten, bleiben leer.
+
 Die Datei ist bewusst eine Skript-Datei (`window.DENKRAUM_REGISTER = {...}`) und kein `.json`: So kann eine HTML-Seite sie per `<script src>` laden, auch offline als `file://` (K1).
 
 Erstbefüllung am 01.10.2026 automatisch aus `index.html`, `kurse/`, dem Notion-Tool-Katalog und den Tool-Dateien. Alle Einträge stehen deshalb auf `"geprueft": false`, bis Michaela sie bestätigt hat.

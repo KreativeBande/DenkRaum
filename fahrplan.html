@@ -249,11 +249,15 @@ html.beamer-xxl .chip, html.beamer-xxl .ctl-label, html.beamer-xxl .line-label .
   </footer>
 </div>
 
-<script src="./register/tools.js"></script>
+<script src="./register/tools.js?v=2026-10-01-3"></script>
 <script>
 (function(){
   var R = window.DENKRAUM_REGISTER;
   if(!R){ document.getElementById('summary').textContent = 'Das Tool-Register (register/tools.js) konnte nicht geladen werden.'; return; }
+  if(!R.denkraeume || !R.faeden){
+    document.getElementById('summary').textContent = 'Ihr Browser hat noch eine ältere Fassung des Tool-Registers zwischengespeichert. Bitte die Seite neu laden (bei Bedarf nach ein paar Minuten noch einmal).';
+    return;
+  }
 
   var ROOMS = R.denkraeume.filter(function(r){ return ['moeglichkeit','analyse','loesung','umsetzung','stoer'].indexOf(r.id) !== -1; });
   var LINES = R.faeden;
