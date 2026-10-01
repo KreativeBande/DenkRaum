@@ -20,6 +20,7 @@ Erstbefüllung am 01.10.2026 automatisch aus `index.html`, `kurse/`, dem Notion-
 | `kurztitel` | kurzer Name für Fahrplan und Chips |
 | `zweck` | 1–2 aus: `Opener`, `Demonstrator`, `Übung`, `Spiel`, `Workshop-Canvas`, `Lernreise`, `Nachschlagewerk`, `Prüfungsvorbereitung`, `Fallwelt-Referenz`, `Über mich` |
 | `denkraum` | `moeglichkeit`, `analyse`, `loesung`, `umsetzung`, `stoer` (Navigator-Fassung), `rundreise` (führt durch alle Räume) oder `basislager` (Nachschlagen, Fallwelten, Prüfung) |
+| (Listen) | `denkraeume` (mit `name_en`, `leitfrage_en`), `faeden` (mit `name_en`), `seminare` (mit `kurz`, `kurz_en`): englische Fassungen für den Sprachumschalter im Fahrplan |
 | `faeden` | Linien im Fahrplan: `re`, `ba`, `ki`, `pm` (mehrere = Umsteigepunkt, leer = keinem Faden zugeordnet) |
 | `dauer` | typische Einsatzdauer im Seminar, z. B. `"15 min"`, `"Ganztag"`, `null` = noch offen |
 | `haufeSeminare` | Seminarnummern aus `kurse/`, in denen das Tool verlinkt ist |

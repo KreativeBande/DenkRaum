@@ -79,6 +79,7 @@ html.beamer .beamer-btn, html.beamer-xl .beamer-btn, html.beamer-xxl .beamer-btn
 .chip.active{background:var(--ink);border-color:var(--ink);color:#fff}
 .chip .sw{width:12px;height:12px;border-radius:999px;display:inline-block}
 .ctl-hint{font-size:13px;color:var(--muted)}
+.ctrls{display:flex;gap:8px;flex-wrap:wrap}
 
 /* ============ Bänder (Rundreise / Basislager) ============ */
 .band{
@@ -204,32 +205,32 @@ html.beamer-xxl .chip, html.beamer-xxl .ctl-label, html.beamer-xxl .line-label .
 
 <div class="wrap">
   <div class="topbar">
-    <a class="back-link" href="./index.html">← Zurück zur Startseite</a>
-    <button type="button" class="beamer-btn" id="beamerBtn">☀ Beamer</button>
+    <a class="back-link" href="./index.html" data-i18n-en="← Back to home page">← Zurück zur Startseite</a>
+    <div class="ctrls"><button type="button" class="beamer-btn" id="beamerBtn">☀ Beamer</button><button type="button" class="beamer-btn" id="langBtn">EN</button></div>
   </div>
 
   <section class="hero">
-    <span class="eyebrow">Roter Faden · Entwurf</span>
-    <h1>Denkraum-Fahrplan</h1>
-    <p class="lead">Jede Disziplin geht denselben Denkweg: vom Impuls im Möglichkeitsraum über das Verstehen im Analyseraum und das Festlegen im Lösungsraum bis zur Umsetzung und zu dem, was sich danach verändert. Jeder Faden ist eine eigene Linie durch diese fünf Räume, jedes Tool eine Haltestelle. Tools, die auf mehreren Fäden liegen, sind Umsteigepunkte. Wählen Sie ein Seminar, um seine Haltestellen hervorzuheben.</p>
+    <span class="eyebrow" data-i18n-en="Common thread · draft">Roter Faden · Entwurf</span>
+    <h1 data-i18n-en="Denkraum route map">Denkraum-Fahrplan</h1>
+    <p class="lead" data-i18n-en="Every discipline follows the same path of thinking: from the impulse in the possibility room, through understanding in the analysis room and defining in the solution room, to implementation and to whatever changes afterwards. Each thread is a line of its own through these five rooms, each tool a stop. Tools that lie on several threads are interchange points. Choose a seminar to highlight its stops. Tool names are shown in their original language.">Jede Disziplin geht denselben Denkweg: vom Impuls im Möglichkeitsraum über das Verstehen im Analyseraum und das Festlegen im Lösungsraum bis zur Umsetzung und zu dem, was sich danach verändert. Jeder Faden ist eine eigene Linie durch diese fünf Räume, jedes Tool eine Haltestelle. Tools, die auf mehreren Fäden liegen, sind Umsteigepunkte. Wählen Sie ein Seminar, um seine Haltestellen hervorzuheben.</p>
   </section>
 
   <div class="controls">
-    <div class="ctl-row" id="lineFilter"><span class="ctl-label">Faden:</span></div>
-    <div class="ctl-row" id="semFilter"><span class="ctl-label">Seminar:</span></div>
+    <div class="ctl-row" id="lineFilter"><span class="ctl-label" data-i18n-en="Thread:">Faden:</span></div>
+    <div class="ctl-row" id="semFilter"><span class="ctl-label" data-i18n-en="Seminar:">Seminar:</span></div>
   </div>
 
   <div class="summary" id="summary"></div>
 
   <div class="legend">
-    <span><i class="dot-mini"></i> Station mit Tools</span>
-    <span><i class="gap-mini"></i> Lücke: noch kein Tool</span>
-    <span>● ● kleine Punkte hinter einem Tool = liegt auch auf diesen Fäden (Umsteigepunkt)</span>
+    <span><i class="dot-mini"></i> <span data-i18n-en="Station with tools">Station mit Tools</span></span>
+    <span><i class="gap-mini"></i> <span data-i18n-en="Gap: no tool yet">Lücke: noch kein Tool</span></span>
+    <span data-i18n-en="● ● small dots after a tool = also lies on these threads (interchange point)">● ● kleine Punkte hinter einem Tool = liegt auch auf diesen Fäden (Umsteigepunkt)</span>
   </div>
 
   <section class="band ring" id="ringBand">
-    <h2>🔄 Rundreisen</h2>
-    <p>Diese Tools fahren selbst durch alle fünf Räume. Sie sind der rote Faden im Kleinen und eignen sich als Überblick zu Beginn oder als Wiederholung am Ende.</p>
+    <h2 data-i18n-en="🔄 Round trips">🔄 Rundreisen</h2>
+    <p data-i18n-en="These tools travel through all five rooms themselves. They are the common thread in miniature and work as an overview at the start or as a recap at the end.">Diese Tools fahren selbst durch alle fünf Räume. Sie sind der rote Faden im Kleinen und eignen sich als Überblick zu Beginn oder als Wiederholung am Ende.</p>
     <div class="stops"></div>
   </section>
 
@@ -238,174 +239,222 @@ html.beamer-xxl .chip, html.beamer-xxl .ctl-label, html.beamer-xxl .line-label .
   </section>
 
   <section class="band" id="baseBand">
-    <h2>🏕️ Basislager</h2>
-    <p>Nachschlagewerke, Fallwelten und Prüfungsvorbereitung. Von hier aus startet man in jeden Raum und kehrt immer wieder zurück.</p>
+    <h2 data-i18n-en="🏕️ Base camp">🏕️ Basislager</h2>
+    <p data-i18n-en="Reference works, case worlds and exam preparation. From here you set off into any room and keep coming back.">Nachschlagewerke, Fallwelten und Prüfungsvorbereitung. Von hier aus startet man in jeden Raum und kehrt immer wieder zurück.</p>
     <div class="stops"></div>
   </section>
 
   <footer class="footer">
     <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a><br>
-    Entwurf. Die Zuordnung der Tools zu Räumen und Fäden kommt aus dem Tool-Register und wird dort gepflegt. Denkräume nach dem Denkräume-Navigator: Möglichkeitsraum, Analyseraum, Lösungsraum, Umsetzungsraum, Störraum.
+    <span data-i18n-en="Draft. The assignment of tools to rooms and threads comes from the tool register and is maintained there. Rooms according to the Denkräume-Navigator: possibility room, analysis room, solution room, implementation room, disruption room.">Entwurf. Die Zuordnung der Tools zu Räumen und Fäden kommt aus dem Tool-Register und wird dort gepflegt. Denkräume nach dem Denkräume-Navigator: Möglichkeitsraum, Analyseraum, Lösungsraum, Umsetzungsraum, Störraum.</span>
   </footer>
 </div>
 
-<script src="./register/tools.js?v=2026-10-01-4"></script>
+<script src="./register/tools.js?v=2026-10-01-6"></script>
 <script>
 (function(){
-  var R = window.DENKRAUM_REGISTER;
-  if(!R){ document.getElementById('summary').textContent = 'Das Tool-Register (register/tools.js) konnte nicht geladen werden.'; return; }
-  if(!R.denkraeume || !R.faeden){
-    document.getElementById('summary').textContent = 'Ihr Browser hat noch eine ältere Fassung des Tool-Registers zwischengespeichert. Bitte die Seite neu laden (bei Bedarf nach ein paar Minuten noch einmal).';
-    return;
-  }
+  var root = document.documentElement;
+  var lang = 'de';
+  function store(k,v){ try{ if(v===undefined){ return window.sessionStorage.getItem(k); } window.sessionStorage.setItem(k,v); }catch(e){ return null; } }
 
-  var ROOMS = R.denkraeume.filter(function(r){ return ['moeglichkeit','analyse','loesung','umsetzung','stoer'].indexOf(r.id) !== -1; });
-  var LINES = R.faeden;
-  var COLOR = { re:'var(--re)', ba:'var(--ba)', ki:'var(--ki)', pm:'var(--pm)' };
-  var SHORT = { re:'RE', ba:'BA', ki:'KI', pm:'Agil/PM' };
-  var stopEls = [];
+  var BEAMER_LEVELS = [
+    { classes: [],                                    label: {de:'☀ Beamer',     en:'☀ Projector'} },
+    { classes: ['beamer'],                             label: {de:'☀ Beamer XL',  en:'☀ Projector XL'} },
+    { classes: ['beamer', 'beamer-xl'],                label: {de:'☀ Beamer XXL', en:'☀ Projector XXL'} },
+    { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: {de:'☀ Normal',     en:'☀ Normal'} }
+  ];
+  var beamerLevel = 0;
+  document.getElementById('beamerBtn').addEventListener('click', function(){
+    beamerLevel = (beamerLevel + 1) % 4;
+    root.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ root.classList.add(c); });
+    this.textContent = BEAMER_LEVELS[beamerLevel].label[lang];
+  });
 
-  function el(tag, cls, text){
-    var e = document.createElement(tag);
-    if(cls) e.className = cls;
-    if(text != null) e.textContent = text;
-    return e;
-  }
-  function makeStop(t, line){
-    var a = el('a', 'stop', t.kurztitel || t.titel);
-    a.href = './' + t.datei;
-    a.title = t.titel + (t.kurz ? ' — ' + t.kurz : '');
-    var c = line || t.faeden[0];
-    a.style.setProperty('--c', c ? COLOR[c] : 'var(--none)');
-    a.dataset.sem = '|' + (t.haufeSeminare || []).join('|') + '|';
-    a.dataset.lines = '|' + t.faeden.join('|') + '|';
-    var others = t.faeden.filter(function(f){ return f !== line; });
-    if(line ? others.length : t.faeden.length > 1){
-      var x = el('span', 'xfer');
-      (line ? others : t.faeden.slice(1)).forEach(function(f){
-        var i = el('i'); i.style.background = COLOR[f]; i.title = 'auch auf dem Faden ' + SHORT[f]; x.appendChild(i);
-      });
-      a.appendChild(x);
+  // Sprache: jedes Element mit data-i18n-en wird umgeschaltet (fest im HTML wie vom Skript erzeugt)
+  function applyLang(){
+    var els = document.querySelectorAll('[data-i18n-en]');
+    for(var i=0;i<els.length;i++){
+      var e = els[i];
+      if(e._de === undefined){ e._de = e.innerHTML; }
+      e.innerHTML = lang === 'en' ? e.getAttribute('data-i18n-en') : e._de;
     }
-    stopEls.push(a);
-    return a;
+    var ts = document.querySelectorAll('[data-title-en]');
+    for(var j=0;j<ts.length;j++){
+      var t = ts[j];
+      if(t._detitle === undefined){ t._detitle = t.getAttribute('title'); }
+      t.setAttribute('title', lang === 'en' ? t.getAttribute('data-title-en') : t._detitle);
+    }
+    root.setAttribute('lang', lang);
+    document.getElementById('langBtn').textContent = lang === 'en' ? 'DE' : 'EN';
+    document.getElementById('beamerBtn').textContent = BEAMER_LEVELS[beamerLevel].label[lang];
   }
-
-  // Kopfzeile mit den fünf Räumen
-  var head = document.getElementById('mapHead');
-  ROOMS.forEach(function(r){
-    var h = el('div', 'room-head');
-    h.appendChild(el('span', 'ic', r.icon));
-    h.appendChild(el('span', 'nm', r.name));
-    h.appendChild(el('span', 'lf', r.leitfrage));
-    head.appendChild(h);
+  document.getElementById('langBtn').addEventListener('click', function(){
+    lang = lang === 'de' ? 'en' : 'de'; store('fp-lang', lang); applyLang();
   });
 
-  // Eine Zeile pro Faden
-  var map = document.getElementById('map');
-  var gaps = {};
-  LINES.forEach(function(L){
-    var row = el('div', 'line-row');
-    row.dataset.line = L.id;
-    row.style.setProperty('--c', COLOR[L.id]);
-    var lab = el('div', 'line-label');
-    lab.appendChild(el('span', 'ln', L.name));
-    var count = R.tools.filter(function(t){ return t.faeden.indexOf(L.id) !== -1 && ROOMS.some(function(r){ return r.id === t.denkraum; }); }).length;
-    lab.appendChild(el('span', 'lc', count + ' Haltestellen'));
-    row.appendChild(lab);
-    gaps[L.id] = [];
-    ROOMS.forEach(function(r){
-      var cell = el('div', 'cell');
-      cell.appendChild(el('div', 'dot'));
-      cell.appendChild(el('span', 'cell-room', r.icon + ' ' + r.name));
-      var ts = R.tools.filter(function(t){ return t.denkraum === r.id && t.faeden.indexOf(L.id) !== -1; });
-      if(!ts.length){
-        cell.classList.add('gap');
-        cell.appendChild(el('div', 'gap-note', 'Lücke'));
-        gaps[L.id].push(r);
+  var R = window.DENKRAUM_REGISTER;
+  function fail(de, en){ var s = document.getElementById('summary'); s.textContent = de; s.setAttribute('data-i18n-en', en); }
+  if(!R){ fail('Das Tool-Register (register/tools.js) konnte nicht geladen werden.', 'The tool register (register/tools.js) could not be loaded.'); }
+  else if(!R.denkraeume || !R.faeden){
+    fail('Ihr Browser hat noch eine ältere Fassung des Tool-Registers zwischengespeichert. Bitte die Seite neu laden (bei Bedarf nach ein paar Minuten noch einmal).',
+         'Your browser still has an older version of the tool register cached. Please reload the page (if necessary again after a few minutes).');
+  } else { build(); }
+  if(store('fp-lang') === 'en'){ lang = 'en'; }
+  applyLang();
+
+  function build(){
+    var ROOMS = R.denkraeume.filter(function(r){ return ['moeglichkeit','analyse','loesung','umsetzung','stoer'].indexOf(r.id) !== -1; });
+    var LINES = R.faeden;
+    var COLOR = { re:'var(--re)', ba:'var(--ba)', ki:'var(--ki)', pm:'var(--pm)' };
+    var SHORT = { re:{de:'RE',en:'RE'}, ba:{de:'BA',en:'BA'}, ki:{de:'KI',en:'AI'}, pm:{de:'Agil/PM',en:'Agile/PM'} };
+    var stopEls = [];
+    function en(o, k){ return o[k + '_en'] || o[k]; }
+    function esc(x){ return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function el(tag, cls, text){
+      var e = document.createElement(tag);
+      if(cls) e.className = cls;
+      if(text != null) e.textContent = text;
+      return e;
+    }
+    function tr(tag, cls, de, enText){
+      var e = el(tag, cls, de);
+      e.setAttribute('data-i18n-en', esc(enText));
+      return e;
+    }
+    function makeStop(t, line){
+      var a = el('a', 'stop', t.kurztitel || t.titel);
+      a.href = './' + t.datei;
+      a.title = t.titel + (t.kurz ? ' — ' + t.kurz : '');
+      var c = line || t.faeden[0];
+      a.style.setProperty('--c', c ? COLOR[c] : 'var(--none)');
+      a.dataset.sem = '|' + (t.haufeSeminare || []).join('|') + '|';
+      a.dataset.lines = '|' + t.faeden.join('|') + '|';
+      var others = t.faeden.filter(function(f){ return f !== line; });
+      if(line ? others.length : t.faeden.length > 1){
+        var x = el('span', 'xfer');
+        (line ? others : t.faeden.slice(1)).forEach(function(f){
+          var i = el('i'); i.style.background = COLOR[f];
+          i.title = 'auch auf dem Faden ' + SHORT[f].de; i.setAttribute('data-title-en', 'also on the thread ' + SHORT[f].en);
+          x.appendChild(i);
+        });
+        a.appendChild(x);
       }
-      ts.forEach(function(t){ cell.appendChild(makeStop(t, L.id)); });
-      row.appendChild(cell);
-    });
-    map.appendChild(row);
-  });
+      stopEls.push(a);
+      return a;
+    }
 
-  // Bänder
-  function fillBand(id, roomId){
-    var box = document.querySelector('#' + id + ' .stops');
-    R.tools.filter(function(t){ return t.denkraum === roomId; })
-      .sort(function(a,b){ return (a.faeden[0]||'zz').localeCompare(b.faeden[0]||'zz') || a.kurztitel.localeCompare(b.kurztitel, 'de'); })
-      .forEach(function(t){ box.appendChild(makeStop(t, null)); });
-  }
-  fillBand('ringBand', 'rundreise');
-  fillBand('baseBand', 'basislager');
-
-  // Zusammenfassung der Lücken
-  var sum = document.getElementById('summary');
-  var parts = LINES.filter(function(L){ return gaps[L.id].length; }).map(function(L){
-    return '<strong>' + SHORT[L.id] + '</strong>: ' + gaps[L.id].map(function(r){ return r.icon + ' ' + r.name; }).join(', ');
-  });
-  sum.innerHTML = parts.length
-    ? 'Hier reißt der Faden noch: ' + parts.join(' · ') + '. Das sind die naheliegenden Plätze für neue Tools.'
-    : 'Jeder Faden hat in jedem Raum mindestens eine Haltestelle.';
-
-  // Filter
-  var activeLine = 'all', activeSem = 'all';
-  function apply(){
-    document.querySelectorAll('.line-row').forEach(function(row){
-      row.classList.toggle('hidden', activeLine !== 'all' && row.dataset.line !== activeLine);
+    // Kopfzeile mit den fünf Räumen
+    var head = document.getElementById('mapHead');
+    ROOMS.forEach(function(r){
+      var h = el('div', 'room-head');
+      h.appendChild(el('span', 'ic', r.icon));
+      h.appendChild(tr('span', 'nm', r.name, en(r, 'name')));
+      h.appendChild(tr('span', 'lf', r.leitfrage, en(r, 'leitfrage')));
+      head.appendChild(h);
     });
-    stopEls.forEach(function(s){
-      var inBand = !!s.closest('.band');
-      var lineOk = activeLine === 'all' || s.dataset.lines.indexOf('|' + activeLine + '|') !== -1;
-      s.classList.toggle('hidden', inBand && !lineOk);
-      var semOk = activeSem === 'all' || s.dataset.sem.indexOf('|' + activeSem + '|') !== -1;
-      s.classList.toggle('dim', !semOk);
-      s.classList.toggle('hit', activeSem !== 'all' && semOk);
-    });
-  }
-  function chipRow(container, items, onPick){
-    var chips = [];
-    items.forEach(function(it){
-      var b = el('button', 'chip' + (it.id === 'all' ? ' active' : ''));
-      b.type = 'button';
-      if(it.color){ var sw = el('span', 'sw'); sw.style.background = it.color; b.appendChild(sw); }
-      b.appendChild(document.createTextNode(it.label));
-      if(it.title) b.title = it.title;
-      b.setAttribute('aria-pressed', it.id === 'all' ? 'true' : 'false');
-      b.addEventListener('click', function(){
-        chips.forEach(function(c){ c.classList.toggle('active', c === b); c.setAttribute('aria-pressed', c === b ? 'true' : 'false'); });
-        onPick(it.id);
-        apply();
+
+    // Eine Zeile pro Faden
+    var map = document.getElementById('map');
+    var gaps = {};
+    LINES.forEach(function(L){
+      var row = el('div', 'line-row');
+      row.dataset.line = L.id;
+      row.style.setProperty('--c', COLOR[L.id]);
+      var lab = el('div', 'line-label');
+      lab.appendChild(tr('span', 'ln', L.name, en(L, 'name')));
+      var count = R.tools.filter(function(t){ return t.faeden.indexOf(L.id) !== -1 && ROOMS.some(function(r){ return r.id === t.denkraum; }); }).length;
+      lab.appendChild(tr('span', 'lc', count + ' Haltestellen', count + ' stops'));
+      row.appendChild(lab);
+      gaps[L.id] = [];
+      ROOMS.forEach(function(r){
+        var cell = el('div', 'cell');
+        cell.appendChild(el('div', 'dot'));
+        cell.appendChild(tr('span', 'cell-room', r.icon + ' ' + r.name, r.icon + ' ' + en(r, 'name')));
+        var ts = R.tools.filter(function(t){ return t.denkraum === r.id && t.faeden.indexOf(L.id) !== -1; });
+        if(!ts.length){
+          cell.classList.add('gap');
+          cell.appendChild(tr('div', 'gap-note', 'Lücke', 'Gap'));
+          gaps[L.id].push(r);
+        }
+        ts.forEach(function(t){ cell.appendChild(makeStop(t, L.id)); });
+        row.appendChild(cell);
       });
-      chips.push(b);
-      container.appendChild(b);
+      map.appendChild(row);
     });
-  }
-  chipRow(document.getElementById('lineFilter'),
-    [{id:'all', label:'Alle'}].concat(LINES.map(function(L){ return {id:L.id, label:L.name, color:COLOR[L.id]}; })),
-    function(id){ activeLine = id; });
-  chipRow(document.getElementById('semFilter'),
-    [{id:'all', label:'Keins'}].concat(R.seminare.map(function(s){ return {id:s.nr, label:s.kurz, title:'Haufe-Seminar Nr. ' + s.nr + ': ' + s.titel}; })),
-    function(id){ activeSem = id; });
-  var hint = el('span', 'ctl-hint', 'Hervorgehoben bleiben nur die Tools, die auf der jeweiligen Seminarseite verlinkt sind.');
-  document.getElementById('semFilter').appendChild(hint);
-  apply();
-})();
 
-const BEAMER_LEVELS = [
-  { classes: [],                                    label: '☀ Beamer' },
-  { classes: ['beamer'],                             label: '☀ Beamer XL' },
-  { classes: ['beamer', 'beamer-xl'],                label: '☀ Beamer XXL' },
-  { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: '☀ Normal' }
-];
-let beamerLevel = 0;
-document.getElementById('beamerBtn').addEventListener('click', function(){
-  beamerLevel = (beamerLevel + 1) % 4;
-  document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
-  BEAMER_LEVELS[beamerLevel].classes.forEach(c => document.documentElement.classList.add(c));
-  this.textContent = BEAMER_LEVELS[beamerLevel].label;
-});
+    // Bänder
+    function fillBand(id, roomId){
+      var box = document.querySelector('#' + id + ' .stops');
+      R.tools.filter(function(t){ return t.denkraum === roomId; })
+        .sort(function(a,b){ return (a.faeden[0]||'zz').localeCompare(b.faeden[0]||'zz') || a.kurztitel.localeCompare(b.kurztitel, 'de'); })
+        .forEach(function(t){ box.appendChild(makeStop(t, null)); });
+    }
+    fillBand('ringBand', 'rundreise');
+    fillBand('baseBand', 'basislager');
+
+    // Zusammenfassung der Lücken
+    var withGaps = LINES.filter(function(L){ return gaps[L.id].length; });
+    function partsFor(k){
+      return withGaps.map(function(L){
+        return '<strong>' + SHORT[L.id][k] + '</strong>: ' + gaps[L.id].map(function(r){ return r.icon + ' ' + esc(k === 'en' ? en(r, 'name') : r.name); }).join(', ');
+      }).join(' · ');
+    }
+    var sum = document.getElementById('summary');
+    if(withGaps.length){
+      sum.innerHTML = 'Hier reißt der Faden noch: ' + partsFor('de') + '. Das sind die naheliegenden Plätze für neue Tools.';
+      sum.setAttribute('data-i18n-en', 'The thread still breaks here: ' + partsFor('en') + '. These are the obvious places for new tools.');
+    } else {
+      sum.textContent = 'Jeder Faden hat in jedem Raum mindestens eine Haltestelle.';
+      sum.setAttribute('data-i18n-en', 'Every thread has at least one stop in every room.');
+    }
+
+    // Filter
+    var activeLine = 'all', activeSem = 'all';
+    function apply(){
+      document.querySelectorAll('.line-row').forEach(function(row){
+        row.classList.toggle('hidden', activeLine !== 'all' && row.dataset.line !== activeLine);
+      });
+      stopEls.forEach(function(s){
+        var inBand = !!s.closest('.band');
+        var lineOk = activeLine === 'all' || s.dataset.lines.indexOf('|' + activeLine + '|') !== -1;
+        s.classList.toggle('hidden', inBand && !lineOk);
+        var semOk = activeSem === 'all' || s.dataset.sem.indexOf('|' + activeSem + '|') !== -1;
+        s.classList.toggle('dim', !semOk);
+        s.classList.toggle('hit', activeSem !== 'all' && semOk);
+      });
+    }
+    function chipRow(container, items, onPick){
+      var chips = [];
+      items.forEach(function(it){
+        var b = el('button', 'chip' + (it.id === 'all' ? ' active' : ''));
+        b.type = 'button';
+        if(it.color){ var sw = el('span', 'sw'); sw.style.background = it.color; b.appendChild(sw); }
+        b.appendChild(tr('span', '', it.label, it.labelEn));
+        if(it.title){ b.title = it.title; b.setAttribute('data-title-en', it.titleEn); }
+        b.setAttribute('aria-pressed', it.id === 'all' ? 'true' : 'false');
+        b.addEventListener('click', function(){
+          chips.forEach(function(c){ c.classList.toggle('active', c === b); c.setAttribute('aria-pressed', c === b ? 'true' : 'false'); });
+          onPick(it.id);
+          apply();
+        });
+        chips.push(b);
+        container.appendChild(b);
+      });
+    }
+    chipRow(document.getElementById('lineFilter'),
+      [{id:'all', label:'Alle', labelEn:'All'}].concat(LINES.map(function(L){ return {id:L.id, label:L.name, labelEn:en(L, 'name'), color:COLOR[L.id]}; })),
+      function(id){ activeLine = id; });
+    chipRow(document.getElementById('semFilter'),
+      [{id:'all', label:'Keins', labelEn:'None'}].concat(R.seminare.map(function(s){
+        return {id:s.nr, label:s.kurz, labelEn:en(s, 'kurz'), title:'Haufe-Seminar Nr. ' + s.nr + ': ' + s.titel, titleEn:'Haufe seminar no. ' + s.nr + ' (German-language course): ' + s.titel};
+      })),
+      function(id){ activeSem = id; });
+    document.getElementById('semFilter').appendChild(tr('span', 'ctl-hint', 'Hervorgehoben bleiben nur die Tools, die auf der jeweiligen Seminarseite verlinkt sind.', 'Only the tools linked on the respective seminar page stay highlighted.'));
+    apply();
+  }
+})();
 </script>
 </body>
 </html>

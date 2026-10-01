@@ -10,61 +10,79 @@ window.DENKRAUM_REGISTER = {
       "id": "moeglichkeit",
       "icon": "💡",
       "name": "Möglichkeitsraum",
-      "leitfrage": "Impuls wahrnehmen"
+      "leitfrage": "Impuls wahrnehmen",
+      "name_en": "Possibility room",
+      "leitfrage_en": "Perceive the impulse"
     },
     {
       "id": "analyse",
       "icon": "🔍",
       "name": "Analyseraum",
-      "leitfrage": "Warum verstehen"
+      "leitfrage": "Warum verstehen",
+      "name_en": "Analysis room",
+      "leitfrage_en": "Understand the why"
     },
     {
       "id": "loesung",
       "icon": "🎯",
       "name": "Lösungsraum",
-      "leitfrage": "Was definieren"
+      "leitfrage": "Was definieren",
+      "name_en": "Solution room",
+      "leitfrage_en": "Define the what"
     },
     {
       "id": "umsetzung",
       "icon": "⚙️",
       "name": "Umsetzungsraum",
-      "leitfrage": "Wie realisieren"
+      "leitfrage": "Wie realisieren",
+      "name_en": "Implementation room",
+      "leitfrage_en": "Realise the how"
     },
     {
       "id": "stoer",
       "icon": "🚨",
       "name": "Störraum",
-      "leitfrage": "Was verändert sich"
+      "leitfrage": "Was verändert sich",
+      "name_en": "Disruption room",
+      "leitfrage_en": "What changes"
     },
     {
       "id": "rundreise",
       "icon": "🔄",
       "name": "Rundreise",
-      "leitfrage": "Führt durch alle fünf Räume"
+      "leitfrage": "Führt durch alle fünf Räume",
+      "name_en": "Round trip",
+      "leitfrage_en": "Leads through all five rooms"
     },
     {
       "id": "basislager",
       "icon": "🏕️",
       "name": "Basislager",
-      "leitfrage": "Nachschlagen, Fallwelten, Prüfungsvorbereitung"
+      "leitfrage": "Nachschlagen, Fallwelten, Prüfungsvorbereitung",
+      "name_en": "Base camp",
+      "leitfrage_en": "Reference works, case worlds, exam preparation"
     }
   ],
   "faeden": [
     {
       "id": "re",
-      "name": "Requirements Engineering"
+      "name": "Requirements Engineering",
+      "name_en": "Requirements engineering"
     },
     {
       "id": "ba",
-      "name": "Business-Analyse"
+      "name": "Business-Analyse",
+      "name_en": "Business analysis"
     },
     {
       "id": "ki",
-      "name": "KI & Prompting"
+      "name": "KI & Prompting",
+      "name_en": "AI & prompting"
     },
     {
       "id": "pm",
-      "name": "Agil & Projektmanagement"
+      "name": "Agil & Projektmanagement",
+      "name_en": "Agile & project management"
     }
   ],
   "seminare": [
@@ -72,49 +90,57 @@ window.DENKRAUM_REGISTER = {
       "nr": "9368",
       "kurz": "RE · Moderne Anforderungsanalyse",
       "titel": "Requirements Engineering: Moderne Anforderungsanalyse für die IT",
-      "datei": "kurse/requirements-engineering-it.html"
+      "datei": "kurse/requirements-engineering-it.html",
+      "kurz_en": "RE · Modern requirements analysis"
     },
     {
       "nr": "31693",
       "kurz": "RE · Projekte erfolgreich starten",
       "titel": "Requirements Engineering: Projekte erfolgreich starten",
-      "datei": "kurse/requirements-engineering-projekte-starten.html"
+      "datei": "kurse/requirements-engineering-projekte-starten.html",
+      "kurz_en": "RE · Starting projects successfully"
     },
     {
       "nr": "3744",
       "kurz": "Agile Business Analyst:in",
       "titel": "Der:Die Agile Business Analyst:in",
-      "datei": "kurse/agile-business-analyst.html"
+      "datei": "kurse/agile-business-analyst.html",
+      "kurz_en": "Agile business analyst"
     },
     {
       "nr": "41851",
       "kurz": "KI-Prompting in RE & BA",
       "titel": "KI-Prompting im Requirements Engineering und in der Business Analyse",
-      "datei": "kurse/ki-prompting-re-ba.html"
+      "datei": "kurse/ki-prompting-re-ba.html",
+      "kurz_en": "AI prompting in RE & BA"
     },
     {
       "nr": "34000",
       "kurz": "Agile Projekte aufsetzen",
       "titel": "Agile Projekte richtig aufsetzen und steuern",
-      "datei": "kurse/agile-projekte-aufsetzen.html"
+      "datei": "kurse/agile-projekte-aufsetzen.html",
+      "kurz_en": "Setting up agile projects"
     },
     {
       "nr": "3525",
       "kurz": "Agiles PM für Fortgeschrittene",
       "titel": "Agiles Projektmanagement für Fortgeschrittene",
-      "datei": "kurse/agiles-pm-fortgeschrittene.html"
+      "datei": "kurse/agiles-pm-fortgeschrittene.html",
+      "kurz_en": "Advanced agile PM"
     },
     {
       "nr": "2929",
       "kurz": "Hybrides PM II",
       "titel": "Hybrides Projektmanagement II",
-      "datei": "kurse/hybrides-projektmanagement-2.html"
+      "datei": "kurse/hybrides-projektmanagement-2.html",
+      "kurz_en": "Hybrid PM II"
     },
     {
       "nr": "34002",
       "kurz": "OKR · Agiles Teammanagement",
       "titel": "Objectives and Key Results: Agiles Teammanagement",
-      "datei": "kurse/okr-agiles-teammanagement.html"
+      "datei": "kurse/okr-agiles-teammanagement.html",
+      "kurz_en": "OKR · Agile team management"
     }
   ],
   "tools": [
