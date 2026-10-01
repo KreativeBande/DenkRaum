@@ -3539,7 +3539,7 @@ window.DENKRAUM_REGISTER = {
         "status": null,
         "letztesAudit": null,
         "auditZeileImTool": null,
-        "offen": "Formales Siegel-Audit steht aus; Selbstprüfung beim Bau (01.10.2026): Muss-Kriterien erfüllt, Z9 Teilnehmenden-Version fehlt (Kann)."
+        "offen": "Formales Siegel-Audit steht aus; Selbstprüfung beim Bau (01.10.2026): Muss-Kriterien erfüllt, Vertiefungs-Toggle (K22) umgesetzt; Z9 Teilnehmenden-Version fehlt (Kann)."
       },
       "beamer": "4-stufig",
       "sprecherSkript": true,
