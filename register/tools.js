@@ -5,6 +5,50 @@
  */
 window.DENKRAUM_REGISTER = {
   "stand": "2026-10-01",
+  "denkraeume": [
+    {
+      "id": "moeglichkeit",
+      "icon": "💡",
+      "name": "Möglichkeitsraum",
+      "leitfrage": "Impuls wahrnehmen"
+    },
+    {
+      "id": "analyse",
+      "icon": "🔍",
+      "name": "Analyseraum",
+      "leitfrage": "Warum verstehen"
+    },
+    {
+      "id": "loesung",
+      "icon": "🎯",
+      "name": "Lösungsraum",
+      "leitfrage": "Was definieren"
+    },
+    {
+      "id": "umsetzung",
+      "icon": "⚙️",
+      "name": "Umsetzungsraum",
+      "leitfrage": "Wie realisieren"
+    },
+    {
+      "id": "stoer",
+      "icon": "🚨",
+      "name": "Störraum",
+      "leitfrage": "Was verändert sich"
+    },
+    {
+      "id": "rundreise",
+      "icon": "🔄",
+      "name": "Rundreise",
+      "leitfrage": "Führt durch alle fünf Räume"
+    },
+    {
+      "id": "basislager",
+      "icon": "🏕️",
+      "name": "Basislager",
+      "leitfrage": "Nachschlagen, Fallwelten, Prüfungsvorbereitung"
+    }
+  ],
   "seminare": [
     {
       "nr": "3744",
@@ -60,6 +104,7 @@ window.DENKRAUM_REGISTER = {
         "Workshop-Canvas",
         "Demonstrator"
       ],
+      "denkraum": "analyse",
       "dauer": null,
       "haufeSeminare": [
         "3744",
@@ -102,6 +147,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "umsetzung",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -145,6 +191,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Workshop-Canvas"
       ],
+      "denkraum": "stoer",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -183,6 +230,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Prüfungsvorbereitung"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [],
@@ -219,6 +267,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Übung"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [
         "9368",
@@ -261,6 +310,7 @@ window.DENKRAUM_REGISTER = {
         "Demonstrator",
         "Lernreise"
       ],
+      "denkraum": "rundreise",
       "dauer": null,
       "haufeSeminare": [
         "9368",
@@ -297,6 +347,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Lernreise"
       ],
+      "denkraum": "rundreise",
       "dauer": null,
       "haufeSeminare": [
         "3744",
@@ -354,6 +405,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "rundreise",
       "dauer": null,
       "haufeSeminare": [
         "3744"
@@ -406,6 +458,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Übung"
       ],
+      "denkraum": "analyse",
       "dauer": null,
       "haufeSeminare": [
         "3744"
@@ -450,6 +503,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Nachschlagewerk"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [
         "3744"
@@ -497,6 +551,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Nachschlagewerk"
       ],
+      "denkraum": "analyse",
       "dauer": null,
       "haufeSeminare": [
         "3744",
@@ -544,6 +599,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Opener"
       ],
+      "denkraum": "moeglichkeit",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -588,6 +644,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "moeglichkeit",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -632,6 +689,7 @@ window.DENKRAUM_REGISTER = {
         "Prüfungsvorbereitung",
         "Übung"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -674,6 +732,7 @@ window.DENKRAUM_REGISTER = {
         "Workshop-Canvas",
         "Demonstrator"
       ],
+      "denkraum": "rundreise",
       "dauer": "Ganztag",
       "haufeSeminare": [
         "3744"
@@ -724,6 +783,7 @@ window.DENKRAUM_REGISTER = {
         "Demonstrator",
         "Workshop-Canvas"
       ],
+      "denkraum": "rundreise",
       "dauer": null,
       "haufeSeminare": [
         "31693"
@@ -761,6 +821,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Opener"
       ],
+      "denkraum": "moeglichkeit",
       "dauer": null,
       "haufeSeminare": [
         "41851",
@@ -801,6 +862,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Nachschlagewerk"
       ],
+      "denkraum": "analyse",
       "dauer": null,
       "haufeSeminare": [
         "3744",
@@ -849,6 +911,7 @@ window.DENKRAUM_REGISTER = {
         "Demonstrator",
         "Übung"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [
         "9368",
@@ -890,6 +953,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Nachschlagewerk"
       ],
+      "denkraum": "analyse",
       "dauer": null,
       "haufeSeminare": [
         "3744",
@@ -937,6 +1001,7 @@ window.DENKRAUM_REGISTER = {
         "Spiel",
         "Übung"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [
         "41851"
@@ -983,6 +1048,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Workshop-Canvas"
       ],
+      "denkraum": "stoer",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -1022,6 +1088,7 @@ window.DENKRAUM_REGISTER = {
         "Nachschlagewerk",
         "Übung"
       ],
+      "denkraum": "analyse",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -1067,6 +1134,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [
         "3525",
@@ -1115,6 +1183,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Lernreise"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -1157,6 +1226,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Übung"
       ],
+      "denkraum": "analyse",
       "dauer": null,
       "haufeSeminare": [
         "41851",
@@ -1196,6 +1266,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Workshop-Canvas"
       ],
+      "denkraum": "stoer",
       "dauer": "Ganztag",
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -1240,6 +1311,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Fallwelt-Referenz"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -1287,6 +1359,7 @@ window.DENKRAUM_REGISTER = {
         "Nachschlagewerk",
         "Prüfungsvorbereitung"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [
         "2929"
@@ -1330,6 +1403,7 @@ window.DENKRAUM_REGISTER = {
         "Nachschlagewerk",
         "Prüfungsvorbereitung"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [
         "9368",
@@ -1378,6 +1452,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -1420,6 +1495,7 @@ window.DENKRAUM_REGISTER = {
         "Nachschlagewerk",
         "Demonstrator"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [
         "9368"
@@ -1465,6 +1541,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Nachschlagewerk"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -1514,6 +1591,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "analyse",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [],
@@ -1548,6 +1626,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "moeglichkeit",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -1588,6 +1667,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Nachschlagewerk"
       ],
+      "denkraum": "moeglichkeit",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -1624,6 +1704,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "analyse",
       "dauer": null,
       "haufeSeminare": [
         "41851"
@@ -1661,6 +1742,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Workshop-Canvas"
       ],
+      "denkraum": "stoer",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [],
@@ -1695,6 +1777,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "analyse",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -1740,6 +1823,7 @@ window.DENKRAUM_REGISTER = {
         "Demonstrator",
         "Übung"
       ],
+      "denkraum": "umsetzung",
       "dauer": null,
       "haufeSeminare": [
         "41851"
@@ -1787,6 +1871,7 @@ window.DENKRAUM_REGISTER = {
         "Übung",
         "Demonstrator"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [
         "41851",
@@ -1824,6 +1909,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Nachschlagewerk"
       ],
+      "denkraum": "moeglichkeit",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -1858,6 +1944,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Nachschlagewerk"
       ],
+      "denkraum": "umsetzung",
       "dauer": null,
       "haufeSeminare": [
         "41851"
@@ -1902,6 +1989,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Fallwelt-Referenz"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -1948,6 +2036,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "rundreise",
       "dauer": null,
       "haufeSeminare": [
         "34000",
@@ -1987,6 +2076,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "rundreise",
       "dauer": null,
       "haufeSeminare": [
         "3744",
@@ -2030,6 +2120,7 @@ window.DENKRAUM_REGISTER = {
         "Workshop-Canvas",
         "Lernreise"
       ],
+      "denkraum": "rundreise",
       "dauer": null,
       "haufeSeminare": [
         "34000",
@@ -2079,6 +2170,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "umsetzung",
       "dauer": null,
       "haufeSeminare": [
         "34000",
@@ -2118,6 +2210,7 @@ window.DENKRAUM_REGISTER = {
         "Übung",
         "Demonstrator"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [
         "41851",
@@ -2165,6 +2258,7 @@ window.DENKRAUM_REGISTER = {
         "Prüfungsvorbereitung",
         "Nachschlagewerk"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [
         "3525",
@@ -2208,6 +2302,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Übung"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [
         "3744",
@@ -2260,6 +2355,7 @@ window.DENKRAUM_REGISTER = {
         "Demonstrator",
         "Übung"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -2306,6 +2402,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Übung"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -2342,6 +2439,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Übung"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [
         "41851"
@@ -2386,6 +2484,7 @@ window.DENKRAUM_REGISTER = {
         "Lernreise",
         "Übung"
       ],
+      "denkraum": "loesung",
       "dauer": "2 Tage",
       "haufeSeminare": [
         "41851"
@@ -2433,6 +2532,7 @@ window.DENKRAUM_REGISTER = {
         "Demonstrator",
         "Übung"
       ],
+      "denkraum": "stoer",
       "dauer": null,
       "haufeSeminare": [
         "41851"
@@ -2476,6 +2576,7 @@ window.DENKRAUM_REGISTER = {
         "Lernreise",
         "Übung"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [
         "41851"
@@ -2517,6 +2618,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Nachschlagewerk"
       ],
+      "denkraum": "analyse",
       "dauer": null,
       "haufeSeminare": [
         "3744",
@@ -2567,6 +2669,7 @@ window.DENKRAUM_REGISTER = {
         "Nachschlagewerk",
         "Demonstrator"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -2610,6 +2713,7 @@ window.DENKRAUM_REGISTER = {
         "Nachschlagewerk",
         "Demonstrator"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -2656,6 +2760,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Nachschlagewerk"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [
         "9368",
@@ -2703,6 +2808,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Lernreise"
       ],
+      "denkraum": "analyse",
       "dauer": null,
       "haufeSeminare": [
         "3744",
@@ -2744,6 +2850,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [
         "9368"
@@ -2789,6 +2896,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "rundreise",
       "dauer": null,
       "haufeSeminare": [
         "41851",
@@ -2835,6 +2943,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Lernreise"
       ],
+      "denkraum": "loesung",
       "dauer": "2 Tage",
       "haufeSeminare": [
         "2929",
@@ -2888,6 +2997,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Lernreise"
       ],
+      "denkraum": "rundreise",
       "dauer": null,
       "haufeSeminare": [
         "2929"
@@ -2942,6 +3052,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Nachschlagewerk"
       ],
+      "denkraum": "analyse",
       "dauer": null,
       "haufeSeminare": [
         "3744",
@@ -2998,6 +3109,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Spiel"
       ],
+      "denkraum": "analyse",
       "dauer": null,
       "haufeSeminare": [
         "3744",
@@ -3045,6 +3157,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Über mich"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [],
@@ -3076,6 +3189,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Übung"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [
         "3744",
@@ -3124,6 +3238,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Nachschlagewerk"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -3172,6 +3287,7 @@ window.DENKRAUM_REGISTER = {
         "Demonstrator",
         "Lernreise"
       ],
+      "denkraum": "umsetzung",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -3219,6 +3335,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Lernreise"
       ],
+      "denkraum": "analyse",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -3268,6 +3385,7 @@ window.DENKRAUM_REGISTER = {
         "Spiel",
         "Übung"
       ],
+      "denkraum": "loesung",
       "dauer": null,
       "haufeSeminare": [
         "3744",
@@ -3315,6 +3433,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Fallwelt-Referenz"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -3364,6 +3483,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "umsetzung",
       "dauer": null,
       "haufeSeminare": [
         "41851"
@@ -3415,6 +3535,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "umsetzung",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -3455,6 +3576,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "umsetzung",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -3494,6 +3616,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "analyse",
       "dauer": null,
       "haufeSeminare": [
         "41851"
@@ -3532,6 +3655,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Demonstrator"
       ],
+      "denkraum": "umsetzung",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [],
@@ -3570,6 +3694,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Nachschlagewerk"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [],
       "einsatzkontext": [
@@ -3613,6 +3738,7 @@ window.DENKRAUM_REGISTER = {
       "zweck": [
         "Nachschlagewerk"
       ],
+      "denkraum": "basislager",
       "dauer": null,
       "haufeSeminare": [
         "41851",
