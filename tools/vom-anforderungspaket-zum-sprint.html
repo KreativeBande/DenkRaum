@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Vom Anforderungspaket zum Sprint – Umsetzungsraum</title>
+<style>
+
+html,body{color-scheme:light}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#fbfffe;--panel:#ffffff;--ink:#10231f;--muted:#4f625e;--line:#d3e6e2;
+  --accent:#0f766e;--accent-soft:#ccfbf1;--accent-ink:#ffffff;
+  --good:#166534;--good-soft:#e8f6ec;--warn:#92400e;--warn-soft:#fdeede;
+  --card:#f2faf8;
+  --mono:ui-monospace,"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  --sans:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body{background:radial-gradient(circle at top left,#d9f5ef 0%,transparent 24%),radial-gradient(circle at top right,#e7f3fb 0%,transparent 22%),var(--bg)}
+button{font-family:var(--sans);touch-action:manipulation}
+a{color:var(--accent)}
+.signature{position:fixed;top:14px;right:28px;z-index:1000;text-align:right;line-height:1.3;font-size:14px;background:rgba(251,255,254,.94);padding:4px 10px;border-radius:8px;max-width:70vw}
+.signature strong{display:block;font-size:15px;color:var(--ink)}
+.signature a{font-size:14px;text-decoration:none;font-weight:600}
+.wrap{max-width:1180px;margin:0 auto;padding:76px 28px 40px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.back-link{font-size:15px;font-weight:700;color:var(--accent);text-decoration:none}
+.back-link:hover{text-decoration:underline}
+.ctrls{display:flex;gap:10px;flex-wrap:wrap}
+.beamer-btn,.lang-btn{background:transparent;border:1.5px solid var(--line);color:var(--muted);font-size:15px;padding:10px 20px;border-radius:999px;cursor:pointer;min-height:44px}
+.beamer-btn:hover,.lang-btn:hover{border-color:var(--accent)}
+html.beamer .beamer-btn,html.beamer-xl .beamer-btn,html.beamer-xxl .beamer-btn{background:var(--ink);color:#fff;border-color:var(--ink)}
+.hero{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;box-shadow:0 16px 34px rgba(16,35,31,.08);padding:36px 36px 30px;margin:0 0 26px}
+.eyebrow{display:block;font-size:14px;letter-spacing:.12em;font-weight:700;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
+h1{margin:0 0 10px;font-size:clamp(28px,4vw,42px);line-height:1.1;letter-spacing:-.01em}
+h1 span{color:var(--accent)}
+.lead{margin:0;font-size:18px;line-height:1.6}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 16px rgba(16,35,31,.03);padding:24px 26px;margin-bottom:22px}
+.panel h2{margin:0 0 6px;font-size:24px}
+.panel .sub{margin:0 0 16px;color:var(--muted);font-size:16px}
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.tcard h3{margin:0 0 4px;font-size:17px;color:var(--accent)}
+.tcard p{margin:0;font-size:15px;line-height:1.5}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.imp{text-align:left;background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:18px 20px;cursor:pointer;min-height:48px;box-shadow:0 6px 16px rgba(16,35,31,.03);transition:border-color .15s,background .15s;color:var(--ink)}
+.imp:hover,.imp.sel{border-color:var(--accent);background:var(--accent-soft)}
+.imp .who{display:block;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:6px}
+.imp .qt{display:block;font-size:18px;line-height:1.5;font-weight:600}
+#flow{display:none}
+#flow.show{display:block}
+.track{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.pill{border-radius:999px;border:1.5px solid var(--line);padding:6px 14px;font-size:14px;font-weight:700;color:var(--muted);background:#fff}
+.pill.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.pill.done{background:var(--good-soft);border-color:#b8dfc4;color:var(--good)}
+.quote{border-left:5px solid var(--accent);background:var(--accent-soft);border-radius:4px;padding:16px 20px;font-size:19px;font-weight:600;line-height:1.55;margin:0 0 18px;color:#5a2d06}
+.quote small{display:block;font-size:14px;font-weight:700;margin-top:8px;color:var(--muted);letter-spacing:.04em}
+.qline{font-size:20px;font-weight:700;margin:0 0 12px}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;background:#fff;border:2px solid var(--line);border-radius:12px;padding:14px 18px;font-size:17px;line-height:1.5;color:var(--ink);cursor:pointer;min-height:48px}
+.opt:hover:not([disabled]){border-color:var(--accent);background:var(--accent-soft)}
+.opt[disabled]{cursor:default}
+.opt .nm{font-weight:700;display:block}
+.opt .ds{display:block;color:var(--muted);font-size:15px;margin-top:2px}
+.opt.ok{border-color:#4ea36a;background:var(--good-soft)}
+.opt.bad{border-color:#d28a4c;background:var(--warn-soft)}
+.opt .mark{font-weight:800;margin-right:6px}
+.fb{margin-top:16px;border:1px solid var(--line);border-left:6px solid var(--accent);background:var(--card);border-radius:4px;padding:16px 20px}
+.fb.hit{border-left-color:#4ea36a}
+.fb p{margin:0 0 8px;font-size:17px;line-height:1.55}
+.fb p:last-child{margin-bottom:0}
+.fb .tag{font-weight:800}
+.fb .ansbox{margin-top:10px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:12px 14px;font-size:17px}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.btn{background:var(--accent);color:var(--accent-ink);border:2px solid var(--accent);border-radius:12px;padding:12px 22px;font-size:16px;font-weight:700;cursor:pointer;min-height:48px}
+.btn:hover{filter:brightness(.93)}
+.btn.ghost{background:#fff;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--accent)}
+.card-out{border:2px solid var(--ink);border-radius:16px;background:var(--card);padding:22px 26px;margin:22px 0;box-shadow:0 10px 24px rgba(16,35,31,.06)}
+.card-out h2{margin:0 0 2px;font-size:24px}
+.card-out .sub{margin:0 0 14px;color:var(--muted);font-size:16px}
+.row{display:grid;grid-template-columns:200px 1fr;gap:6px 16px;padding:10px 0;border-top:1px solid var(--line)}
+.row .lb{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);padding-top:2px}
+.row .vl{font-size:17px}
+.row ul{margin:0;padding-left:18px}
+.score{display:inline-block;margin-top:10px;border-radius:999px;background:var(--ink);color:#fff;font-weight:700;font-size:14px;padding:6px 16px}
+.ptabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.ptab{border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-size:15px;font-weight:700;padding:10px 18px;cursor:pointer;min-height:44px}.ptab:hover{border-color:var(--accent)}.ptab.on{background:var(--ink);border-color:var(--ink);color:#fff}.pp{margin:0 0 10px;font-size:17px;color:var(--muted)}.pbody[hidden]{display:none}.pfill{margin:0 0 12px;font-size:15px;font-weight:600;color:var(--good)}.pfill[hidden]{display:none}
+
+.code{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-family:var(--mono);font-size:15px;line-height:1.6;white-space:pre-wrap}
+.copy{margin-top:10px}
+
+.chain{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 16px}
+.chain .pill{font-size:15px}
+.chain .arr{color:var(--muted);font-weight:700}
+.stand{border:1px solid var(--line);border-left:6px solid var(--accent);background:var(--card);border-radius:4px;padding:14px 18px;margin:0 0 16px}
+.stand b{display:block;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.stand p{margin:0;font-size:17px;line-height:1.55}
+.chk{display:grid;gap:10px}
+.chkrow{border:2px solid var(--line);border-radius:12px;background:#fff;padding:14px 18px}
+.chkrow .stmt{font-size:17px;line-height:1.5;margin:0 0 10px;font-weight:600}
+.chkrow .btns{display:flex;gap:10px;flex-wrap:wrap}
+.tgl{background:#fff;color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:10px 22px;font-size:16px;font-weight:700;cursor:pointer;min-height:48px}
+.tgl:hover:not([disabled]){border-color:var(--accent);background:var(--accent-soft)}
+.tgl[disabled]{cursor:default}
+.tgl.picked{border-color:var(--ink);background:var(--ink);color:#fff}
+.chkrow.ok{border-color:#4ea36a;background:var(--good-soft)}
+.chkrow.bad{border-color:#d28a4c;background:var(--warn-soft)}
+.chkrow .wy{margin:10px 0 0;font-size:17px;line-height:1.5}
+.verdict{margin-top:16px;border:2px solid var(--ink);border-radius:12px;background:var(--card);padding:16px 20px}
+.verdict .vh{font-size:20px;font-weight:800;margin:0 0 6px}
+.verdict p{margin:0;font-size:17px;line-height:1.55}
+.verdict.v0{border-color:#4ea36a}.verdict.v1{border-color:#d9a441}.verdict.v2{border-color:#d28a4c}
+.row ul.rl{margin:0;padding-left:18px}
+.row .gk{font-family:var(--mono);font-size:16px;line-height:1.6}
+.mk{display:inline-block;min-width:76px;font-weight:800}
+.mk.ok{color:var(--good)}.mk.op{color:var(--warn)}
+.ansbox ul{margin:6px 0 0;padding-left:20px}
+.ansbox li{margin-bottom:4px}
+.crosslink{margin-top:20px;font-size:14px;color:var(--muted)}
+.crosslink a{color:var(--accent);font-weight:700;text-decoration:none}
+.crosslink a:hover{text-decoration:underline}
+.crosslink ul{margin:8px 0 0;padding-left:20px}
+.crosslink li{margin-bottom:4px}
+footer{max-width:1180px;margin:40px auto 40px;padding:0 28px}
+.footer-sig{font-size:14px;color:var(--muted);margin:0 0 16px;line-height:1.6}
+.footer-sig a{text-decoration:none;font-weight:600}
+.footer-details{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:start}
+.footer-box{border:1px solid var(--line);border-radius:16px;background:var(--panel);overflow:hidden}
+.footer-box[open]{grid-column:1/-1}
+.footer-summary{cursor:pointer;padding:12px 16px;font-weight:700;font-size:15px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.footer-summary::-webkit-details-marker{display:none}
+.footer-summary:after{content:"+";color:var(--accent);font-size:18px}
+.footer-box[open] .footer-summary:after{content:"–"}
+.footer-content{padding:0 16px 16px}
+.footer-mono{font-family:var(--mono);font-size:14px;line-height:1.55}
+.footer-mono div{white-space:pre-wrap}
+.footer-sans{font-size:16px;line-height:1.6}
+.footer-table{width:100%;border-collapse:collapse;font-size:15px}
+.footer-table td,.footer-table th{text-align:left;padding:6px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.skript-step{margin-bottom:12px}
+.footer-glossary{margin:0}
+.footer-glossary dt{font-weight:700;color:var(--ink);font-size:15px;margin-top:12px}
+.footer-glossary dt:first-child{margin-top:0}
+.footer-glossary dd{margin:2px 0 0;color:var(--muted);font-size:14px;line-height:1.5}
+@media(max-width:900px){
+  .footer-details{grid-template-columns:1fr}
+  .tgrid{grid-template-columns:repeat(2,1fr)}
+  .cards{grid-template-columns:1fr}
+  .row{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .wrap{padding:64px 16px 32px}
+  .signature{top:6px;right:10px;padding:3px 8px;max-width:60vw}
+  .hero{padding:22px 18px}
+  .panel{padding:18px}
+  .tgrid{grid-template-columns:1fr}
+  footer{padding:0 16px}
+}
+/* Beamer vierstufig, kumulativ */
+html.beamer{--muted:#3D4A5C}
+html.beamer .wrap{max-width:1400px}
+html.beamer .lead,html.beamer .panel .sub,html.beamer .fb p,html.beamer .opt,html.beamer .row .vl,html.beamer .tcard p,html.beamer .quote,html.beamer .imp .qt,html.beamer .qline{font-size:22px}
+html.beamer h1{font-size:46px}
+html.beamer .panel h2,html.beamer .card-out h2{font-size:44px}
+html.beamer .pp,html.beamer .code{font-size:22px}html.beamer .ptab{font-size:15px}html.beamer .pfill{font-size:15px}
+html.beamer .eyebrow,html.beamer .imp .who,html.beamer .opt .ds,html.beamer .row .lb,html.beamer .pill,html.beamer .quote small,html.beamer .crosslink,html.beamer .score,html.beamer .tcard h3{font-size:15px}
+html.beamer footer{display:none}
+html.beamer-xl .lead,html.beamer-xl .panel .sub,html.beamer-xl .fb p,html.beamer-xl .opt,html.beamer-xl .row .vl,html.beamer-xl .tcard p,html.beamer-xl .quote,html.beamer-xl .imp .qt,html.beamer-xl .qline{font-size:28px}
+html.beamer-xl h1{font-size:54px}
+html.beamer-xl .panel h2,html.beamer-xl .card-out h2{font-size:54px}
+html.beamer-xl .pp,html.beamer-xl .code{font-size:28px}html.beamer-xl .ptab{font-size:18px}html.beamer-xl .pfill{font-size:18px}
+html.beamer-xl .eyebrow,html.beamer-xl .imp .who,html.beamer-xl .opt .ds,html.beamer-xl .row .lb,html.beamer-xl .pill,html.beamer-xl .quote small,html.beamer-xl .crosslink,html.beamer-xl .score,html.beamer-xl .tcard h3{font-size:18px}
+html.beamer-xl .tgrid{grid-template-columns:repeat(2,1fr)}
+html.beamer-xxl .lead,html.beamer-xxl .panel .sub,html.beamer-xxl .fb p,html.beamer-xxl .opt,html.beamer-xxl .row .vl,html.beamer-xxl .tcard p,html.beamer-xxl .quote,html.beamer-xxl .imp .qt,html.beamer-xxl .qline{font-size:34px}
+html.beamer-xxl h1{font-size:60px}
+html.beamer-xxl .panel h2,html.beamer-xxl .card-out h2{font-size:64px}
+html.beamer-xxl .pp,html.beamer-xxl .code{font-size:34px}html.beamer-xxl .ptab{font-size:21px}html.beamer-xxl .pfill{font-size:21px}
+html.beamer-xxl .eyebrow,html.beamer-xxl .imp .who,html.beamer-xxl .opt .ds,html.beamer-xxl .row .lb,html.beamer-xxl .pill,html.beamer-xxl .quote small,html.beamer-xxl .crosslink,html.beamer-xxl .score,html.beamer-xxl .tcard h3{font-size:21px}
+html.beamer-xxl .tgrid{grid-template-columns:1fr}
+html.beamer-xxl .cards{grid-template-columns:1fr}
+html.beamer .row,html.beamer-xl .row,html.beamer-xxl .row{grid-template-columns:1fr}
+
+html.beamer .stand p,html.beamer .chkrow .stmt,html.beamer .chkrow .wy,html.beamer .verdict p,html.beamer .row .gk,html.beamer .tgl,html.beamer .ansbox{font-size:22px}
+html.beamer .verdict .vh{font-size:30px}
+html.beamer .stand b,html.beamer .chain .pill,html.beamer .mk{font-size:15px}
+html.beamer-xl .stand p,html.beamer-xl .chkrow .stmt,html.beamer-xl .chkrow .wy,html.beamer-xl .verdict p,html.beamer-xl .row .gk,html.beamer-xl .tgl,html.beamer-xl .ansbox{font-size:28px}
+html.beamer-xl .verdict .vh{font-size:36px}
+html.beamer-xl .stand b,html.beamer-xl .chain .pill,html.beamer-xl .mk{font-size:18px}
+html.beamer-xxl .stand p,html.beamer-xxl .chkrow .stmt,html.beamer-xxl .chkrow .wy,html.beamer-xxl .verdict p,html.beamer-xxl .row .gk,html.beamer-xxl .tgl,html.beamer-xxl .ansbox{font-size:34px}
+html.beamer-xxl .verdict .vh{font-size:42px}
+html.beamer-xxl .stand b,html.beamer-xxl .chain .pill,html.beamer-xxl .mk{font-size:21px}
+@media(max-width:640px){.chkrow .btns .tgl{flex:1 1 auto}}
+@media print{.topbar,.signature,footer,.acts{display:none}}
+</style>
+</head>
+<body>
+<div class="signature"><strong>Michaela Kühn</strong><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></div>
+<div class="wrap">
+<div class="topbar"><a class="back-link" href="../index.html" data-i18n-en="← Back to home page">← Zurück zur Startseite</a><div class="ctrls"><button type="button" class="beamer-btn" id="beamerBtn">☀ Beamer</button><button type="button" class="lang-btn" id="langBtn">EN</button></div></div>
+
+<header class="hero">
+<span class="eyebrow" data-i18n-en="⚙️ Implementation room · hand over to the team">⚙️ Umsetzungsraum · Übergabe ans Team</span>
+<h1 data-i18n-en="From requirements package to sprint">Vom Anforderungspaket zum Sprint</h1>
+<p class="lead" data-i18n-en="A clarified spark is not yet a work package. For a team to get started in the sprint it needs a user story, verifiable acceptance criteria and a handover in which open points are on the table. Here you practise this way with the four sparks from “Vom Impuls zur Anforderung”. The case is the digital student file at Hochschule Nordwest. We assume that the spark was sharpened beforehand in the analysis and solution rooms.">Ein geklärter Funke ist noch kein Arbeitspaket. Damit ein Team im Sprint loslegen kann, braucht es eine User Story, prüfbare Akzeptanzkriterien und eine Übergabe, bei der offene Punkte auf dem Tisch liegen. Hier üben Sie diesen Weg an den vier Funken aus „Vom Impuls zur Anforderung“. Der Fall ist die Digitale Studierendenakte der Hochschule Nordwest. Wir setzen voraus, dass der Funke zuvor im Analyse- und Lösungsraum geschärft wurde.</p>
+</header>
+
+<section class="panel">
+<h2 data-i18n-en="Four building blocks of a package">Vier Bausteine eines Pakets</h2>
+<div class="chain"><span class="pill" data-i18n-en="Target picture: Vision &amp; Zielbild-Werkstatt">Zielbild: Vision &amp; Zielbild-Werkstatt</span><span class="arr">→</span><span class="pill" data-i18n-en="Spark: Vom Impuls zur Anforderung">Funke: Vom Impuls zur Anforderung</span><span class="arr">→</span><span class="pill on" data-i18n-en="Handover: this tool">Übergabe: dieses Tool</span></div>
+<p class="sub" data-i18n-en="Each building block answers one question the team asks before it starts.">Jeder Baustein beantwortet eine Frage, die das Team stellt, bevor es startet.</p>
+<div class="tgrid"><div class="tcard"><h3><span data-i18n-en="User story">User Story</span></h3><p><span data-i18n-en="Who needs what, what for? Role, wish, benefit, without revealing the technology.">Wer braucht was, wozu? Rolle, Wunsch, Nutzen, ohne die Technik zu verraten.</span></p></div><div class="tcard"><h3><span data-i18n-en="Acceptance criteria">Akzeptanzkriterien</span></h3><p><span data-i18n-en="How do you recognise that it is met? Verifiable, in the format Given / When / Then.">Woran erkennt man, dass es erfüllt ist? Prüfbar, im Format Gegeben / Wenn / Dann.</span></p></div><div class="tcard"><h3><span data-i18n-en="Definition of Ready">Definition of Ready</span></h3><p><span data-i18n-en="What is still missing before the team can start? Name open points honestly.">Was fehlt noch, bevor das Team starten kann? Offene Punkte ehrlich benennen.</span></p></div><div class="tcard"><h3><span data-i18n-en="Handover">Übergabe</span></h3><p><span data-i18n-en="A conversation, not a drop-off: ask the team what it needs.">Ein Gespräch, kein Abgeben: Das Team fragen, was es braucht.</span></p></div></div>
+</section>
+
+<section class="panel" id="pick">
+<h2 id="pickT">1 · Funken wählen</h2>
+<p class="sub" id="pickH">Vier Anforderungsfunken aus „Vom Impuls zur Anforderung“. Welchen machen wir sprintreif?</p>
+<div class="cards" id="cards"></div>
+</section>
+
+<section class="panel" id="flow" aria-live="polite">
+<div id="stage"></div>
+</section>
+<div id="outCard"></div>
+
+<section class="panel">
+<h2 data-i18n-en="The same moment when prompting">Derselbe Moment beim Prompten</h2>
+<p class="sub" data-i18n-en="Anyone who hands an AI a spark and says “Make this a story” lets it guess. The same steps help here too, each with its own prompt. Choose a step, copy the prompt and put your own spark in place of the dots.">Wer einer KI einen Funken gibt und sagt „Mach daraus eine Story“, lässt sie raten. Dieselben Schritte helfen auch hier, jeder mit einem eigenen Prompt. Wählen Sie einen Schritt, kopieren Sie den Prompt und setzen Sie Ihren eigenen Funken an die Stelle der Punkte.</p>
+<div class="ptabs" role="tablist"><button type="button" class="ptab on" role="tab" data-p="0" aria-selected="true"><span data-i18n-en="1 · Story">1 · Story</span></button><button type="button" class="ptab" role="tab" data-p="1" aria-selected="false"><span data-i18n-en="2 · Criteria">2 · Kriterien</span></button><button type="button" class="ptab" role="tab" data-p="2" aria-selected="false"><span data-i18n-en="3 · Ready check">3 · Ready-Check</span></button><button type="button" class="ptab" role="tab" data-p="3" aria-selected="false"><span data-i18n-en="4 · Refinement">4 · Refinement</span></button><button type="button" class="ptab" role="tab" data-p="4" aria-selected="false"><span data-i18n-en="Compact">Kompakt</span></button></div>
+<p class="pfill" id="pfill" hidden></p>
+<div class="pbody" data-p="0"><p class="pp"><span data-i18n-en="The spark becomes a user story.">Der Funke wird zur User Story.</span></p><div class="code ptxt" data-de="Forme den folgenden Anforderungsfunken in eine User Story um: „Als &lt;Rolle&gt; möchte ich &lt;Wunsch&gt;, damit &lt;Nutzen&gt;.“ Die Rolle muss ein konkreter Mensch oder eine konkrete Funktion sein, der Wunsch lösungsneutral, der Nutzen aus dem Funken ableitbar. Wenn dir Angaben fehlen, frage nach, statt sie zu erfinden.
+
+Funke: „…“" data-i18n-en="Turn the following requirement spark into a user story: “As a &lt;role&gt; I want &lt;wish&gt; so that &lt;benefit&gt;.” The role must be a concrete person or function, the wish solution-neutral, the benefit derivable from the spark. If information is missing, ask instead of inventing it.
+
+Spark: “…”">Forme den folgenden Anforderungsfunken in eine User Story um: „Als &lt;Rolle&gt; möchte ich &lt;Wunsch&gt;, damit &lt;Nutzen&gt;.“ Die Rolle muss ein konkreter Mensch oder eine konkrete Funktion sein, der Wunsch lösungsneutral, der Nutzen aus dem Funken ableitbar. Wenn dir Angaben fehlen, frage nach, statt sie zu erfinden.
+
+Funke: „…“</div></div><div class="pbody" data-p="1" hidden><p class="pp"><span data-i18n-en="The story gets verifiable criteria.">Die Story bekommt prüfbare Kriterien.</span></p><div class="code ptxt" data-de="Schreibe zu dieser User Story höchstens drei Akzeptanzkriterien im Format Gegeben / Wenn / Dann. Jedes muss prüfbar sein und darf keine Technik vorschreiben. Markiere jede Zahl, die ich dir nicht genannt habe, als „abzustimmen“.
+
+User Story: …" data-i18n-en="Write at most three acceptance criteria for this user story in the format Given / When / Then. Each must be verifiable and must not prescribe technology. Mark every number I did not give you as “to be agreed”.
+
+User story: …">Schreibe zu dieser User Story höchstens drei Akzeptanzkriterien im Format Gegeben / Wenn / Dann. Jedes muss prüfbar sein und darf keine Technik vorschreiben. Markiere jede Zahl, die ich dir nicht genannt habe, als „abzustimmen“.
+
+User Story: …</div></div><div class="pbody" data-p="2" hidden><p class="pp"><span data-i18n-en="The AI checks against the Definition of Ready.">Die KI prüft gegen die Definition of Ready.</span></p><div class="code ptxt" data-de="Prüfe diese User Story mit ihren Akzeptanzkriterien gegen meine Definition of Ready: Rolle und Nutzen benannt, Kriterien prüfbar, Abhängigkeiten geklärt, Ansprechperson bekannt, Umfang schätzbar. Nenne je Punkt „erfüllt“ oder „offen“ mit einem Satz Begründung und sage, welcher offene Punkt den Start am stärksten blockiert. Erfinde keine Fakten.
+
+Story und Kriterien: …" data-i18n-en="Check this user story with its acceptance criteria against my Definition of Ready: role and benefit named, criteria verifiable, dependencies clarified, contact person known, scope estimable. For each point say “met” or “open” with one sentence of reasoning and say which open point blocks the start the most. Do not invent facts.
+
+Story and criteria: …">Prüfe diese User Story mit ihren Akzeptanzkriterien gegen meine Definition of Ready: Rolle und Nutzen benannt, Kriterien prüfbar, Abhängigkeiten geklärt, Ansprechperson bekannt, Umfang schätzbar. Nenne je Punkt „erfüllt“ oder „offen“ mit einem Satz Begründung und sage, welcher offene Punkt den Start am stärksten blockiert. Erfinde keine Fakten.
+
+Story und Kriterien: …</div></div><div class="pbody" data-p="3" hidden><p class="pp"><span data-i18n-en="The AI proposes questions for refinement.">Die KI schlägt Fragen fürs Refinement vor.</span></p><div class="code ptxt" data-de="Formuliere fünf Fragen, die ich dem Entwicklungsteam im Refinement stellen kann. Die erste fragt offen, was das Team braucht, um zu schätzen und zu testen. Eine fragt nach der riskantesten Annahme. Keine darf eine Technik vorgeben.
+
+Story und Kriterien: …" data-i18n-en="Phrase five questions I can ask the development team in refinement. The first asks openly what the team needs in order to estimate and test. One asks about the riskiest assumption. None may prescribe a technology.
+
+Story and criteria: …">Formuliere fünf Fragen, die ich dem Entwicklungsteam im Refinement stellen kann. Die erste fragt offen, was das Team braucht, um zu schätzen und zu testen. Eine fragt nach der riskantesten Annahme. Keine darf eine Technik vorgeben.
+
+Story und Kriterien: …</div></div><div class="pbody" data-p="4" hidden><p class="pp"><span data-i18n-en="All steps in one prompt when time is short.">Alle Schritte in einem Prompt, wenn es schnell gehen muss.</span></p><div class="code ptxt" data-de="Bevor du loslegst: Forme meinen Funken in eine User Story um (Rolle, Wunsch, Nutzen), schreibe höchstens drei Akzeptanzkriterien (Gegeben / Wenn / Dann) und nenne, was für einen Sprintstart noch offen ist. Frage nach, wenn dir Angaben fehlen.
+
+Funke: „…“" data-i18n-en="Before you start: turn my spark into a user story (role, wish, benefit), write at most three acceptance criteria (Given / When / Then) and say what is still open for a sprint start. Ask if information is missing.
+
+Spark: “…”">Bevor du loslegst: Forme meinen Funken in eine User Story um (Rolle, Wunsch, Nutzen), schreibe höchstens drei Akzeptanzkriterien (Gegeben / Wenn / Dann) und nenne, was für einen Sprintstart noch offen ist. Frage nach, wenn dir Angaben fehlen.
+
+Funke: „…“</div></div>
+<button type="button" class="btn ghost copy" id="copyBtn">Prompt kopieren</button>
+</section>
+
+<div class="crosslink">
+<span data-i18n-en="Related Denkraum tools on this topic:">Verwandte Denkraum-Tools zu diesem Thema:</span>
+<ul>
+<li><a href="./vom-impuls-zur-anforderung.html">Vom Impuls zur Anforderung</a> – <span data-i18n-en="the predecessor: this is where the spark is made that this tool takes over.">der Vorgänger: Hier entsteht der Funke, den dieses Tool übernimmt.</span></li><li><a href="./vision-zielbild-werkstatt.html">Vision & Zielbild-Werkstatt</a> – <span data-i18n-en="provides the target picture requirements are derived from. This tool continues the chain after it.">liefert das Zielbild, aus dem Anforderungen abgeleitet werden. Dieses Tool setzt die Kette dahinter fort.</span></li><li><a href="./user-story-puzzle.html">User Story Puzzle</a> – <span data-i18n-en="practises story building blocks and the INVEST criteria on an example backlog, while this tool goes the way from spark to a package ready for handover.">übt die Story-Bausteine und die INVEST-Kriterien an einem Beispiel-Backlog, während dieses Tool den Weg vom Funken zum übergabefähigen Paket geht.</span></li><li><a href="./story-mapping-kundenperspektiven.html">Story Mapping Kundenperspektiven</a> – <span data-i18n-en="arranges finished stories along a journey and slices releases. That comes after the package.">ordnet fertige Stories entlang einer Reise und schneidet Releases. Das kommt nach dem Paket.</span></li><li><a href="./hochschule-nordwest-steckbrief.html"><span data-i18n-en="Case world Hochschule Nordwest">Fallwelt Hochschule Nordwest</span></a> – <span data-i18n-en="the reference page with all case facts used here.">die Referenzseite mit allen Fallfakten, die hier verwendet werden.</span></li>
+</ul>
+</div>
+</div>
+
+<footer>
+<p class="footer-sig"><strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a> · IREB CPRE FL v3.3.0 · BABOK® Guide v3 · Scrum Guide 2020 · ISO/IEC/IEEE 29148:2018</p>
+<div class="footer-details">
+<details class="footer-box"><summary class="footer-summary">⚙️ <span data-i18n-en="System prompt">Systemprompt</span></summary><div class="footer-content footer-mono"><div data-i18n-en="ROLE: You build an interactive single-file HTML training tool for Michaela Kühn (www.michaela-kuehn.com) in the DenkRaum repo. It sits in the implementation room (“realise the how”) and continues the chain “Vision &amp;amp; Zielbild-Werkstatt” → “Vom Impuls zur Anforderung”.
+
+GOAL: Participants practise turning a clarified requirement spark into a package that can be built: user story, acceptance criteria, Definition of Ready, handover to the team. Audience: requirements engineers, business analysts and project managers without prior AI knowledge. It is assumed that the spark was sharpened beforehand in the analysis and solution rooms.
+
+STRUCTURE
+1. Top bar (own row): back link ../index.html on the left; on the right a projector button (four levels: normal, Beamer, Beamer XL, Beamer XXL; cumulative classes beamer, beamer-xl, beamer-xxl on html; the label shows the next action; footer hidden from level 1) and a DE/EN button. Signature (bold name, website link) position:fixed at top right, also on mobile.
+2. Hero at full width without max-width: eyebrow, H1, lead. No flex neighbour in the same row.
+3. Panel “Four building blocks of a package” with a chain row (target picture → spark → handover): user story, acceptance criteria, Definition of Ready, handover, one explanatory sentence each.
+4. Choose a spark: four cards from the Hochschule Nordwest case world (digital student file), each the spark from “Vom Impuls zur Anforderung” with a fixed persona (Herr Öztürk, Knut, Kanzlerin Dr. Feldmann, Ela).
+5. Four stations, each a question to the team with three options and immediate resolution (rationale for every option): (1) user story, (2) acceptance criteria in the format Given / When / Then, (3) Definition of Ready: which open point blocks the start the most, followed by a “Next step”, (4) handover: opening question in refinement, followed by three example questions. The question of every station is case-specific per spark, never the same wording. Exactly one correct option per station, its position varies.
+6. Handover check as a fifth step: status of the package as an exercise assumption, four statements, each “Met” or “Open” with immediate resolution; then an assessment (ready, ready with a caveat, not sprint-ready yet), derived from the number of open points.
+7. Result “handover card”: spark, story, criteria, Definition of Ready status, biggest open point, questions for refinement, assessment, two follow-up tools, hit count. Download as Markdown in the selected language.
+8. Panel “The same moment when prompting”: five tabs with copyable prompts (story, criteria, ready check, refinement questions, compact). Placeholder “…” for your own spark; one copy button for the visible prompt.
+9. Crosslink block “Related Denkraum tools” before the footer; footer with the four mandatory boxes plus glossary.
+
+CONTENT: Use only facts from the case world (paper file, seven steps, 50-year retention under examination regulations §12, steering committee monthly, state audit office). Mark numbers the case does not know as to be agreed. The “status of the package” in the check is an exercise assumption and is labelled as such. Every wrong option explains why it is too vague, too early or a hidden solution at this point. The Definition of Ready is an agreement of the team, not part of the Scrum Guide.
+
+DESIGN: Light background, petrol accent (#0f766e), soft touch: cards 16px radius with a subtle shadow, buttons 12px, pills 999px, hero 28px. No dark mode (color-scheme: light). Body text at least 16px, secondary text at least 14px, click targets at least 48px high; projector size table: body 22/28/34px, panel headings 44/54/64px, secondary 15/18/21px, --muted from level 1 on #3D4A5C.
+
+TECH: One file, everything inline, no external requests (offline capable). State in memory only; language optionally in sessionStorage with try/catch. Bilingual German/English without reload: all visible texts including all footer boxes. Persona names stay identical in both languages.
+
+DO NOT: no new personas, no new case world; no quiz language like “Wrong!”, give a rationale instead; do not prescribe product names as solutions; no legal advice; no standard version from memory, check the status before use; no time agenda in the tool.">ROLLE: Du baust ein interaktives Einzeldatei-HTML-Trainingstool für Michaela Kühn (www.michaela-kuehn.com) im DenkRaum-Repo. Es liegt im Umsetzungsraum („Wie realisieren“) und setzt die Kette „Vision &amp; Zielbild-Werkstatt“ → „Vom Impuls zur Anforderung“ fort.
+
+ZIEL: Teilnehmende üben, aus einem geklärten Anforderungsfunken ein umsetzbares Paket zu machen: User Story, Akzeptanzkriterien, Definition of Ready, Übergabe ans Team. Zielgruppe: Requirements Engineers, Business Analysts und Projektleitungen ohne KI-Vorwissen. Vorausgesetzt wird, dass der Funke zuvor im Analyse- und Lösungsraum geschärft wurde.
+
+STRUKTUR
+1. Topbar (eigene Zeile): Zurück-Link ../index.html links; rechts Beamer-Button (vierstufig: Normal, Beamer, Beamer XL, Beamer XXL; kumulative Klassen beamer, beamer-xl, beamer-xxl auf html; Label zeigt die nächste Aktion; Footer ab Stufe 1 ausgeblendet) und DE/EN-Button. Signatur (Name fett, Website-Link) position:fixed oben rechts, auch auf dem Handy.
+2. Hero in voller Breite ohne max-width: Eyebrow, H1, Lead. Kein Flex-Nachbar in derselben Zeile.
+3. Panel „Vier Bausteine eines Pakets“ mit einer Kettenzeile (Zielbild → Funke → Übergabe): User Story, Akzeptanzkriterien, Definition of Ready, Übergabe, je ein erklärender Satz.
+4. Funken wählen: vier Karten aus der Fallwelt Hochschule Nordwest (Digitale Studierendenakte), je der Funke aus „Vom Impuls zur Anforderung“ mit fester Persona (Herr Öztürk, Knut, Kanzlerin Dr. Feldmann, Ela).
+5. Vier Stationen, je eine Frage ans Team mit drei Auswahloptionen und sofortiger Auflösung (Begründung zu jeder Option): (1) User Story, (2) Akzeptanzkriterien im Format Gegeben / Wenn / Dann, (3) Definition of Ready: welcher offene Punkt blockiert den Start am stärksten, danach ein „Nächster Schritt“, (4) Übergabe: Eröffnungsfrage im Refinement, danach drei Beispielfragen. Die Frage jeder Station ist je Funke fallspezifisch, nie dieselbe Formulierung. Pro Station genau eine richtige Option, die Position wechselt.
+6. Übergabe-Check als fünfter Schritt: Stand des Pakets als Übungsannahme, vier Aussagen, je „Erfüllt“ oder „Offen“ mit sofortiger Auflösung; danach Einschätzung (bereit, bereit mit Vorbehalt, noch nicht sprintreif), abgeleitet aus der Zahl offener Punkte.
+7. Ergebnis „Übergabe-Karte“: Funke, Story, Kriterien, Stand der Definition of Ready, größter offener Punkt, Fragen fürs Refinement, Einschätzung, zwei Folge-Tools, Trefferzahl. Download als Markdown in der gewählten Sprache.
+8. Panel „Derselbe Moment beim Prompten“: fünf Reiter mit kopierbaren Prompts (Story, Kriterien, Ready-Check, Refinement-Fragen, kompakt). Platzhalter „…“ für den eigenen Funken; ein Kopieren-Knopf für den sichtbaren Prompt.
+9. Crosslink-Block „Verwandte Denkraum-Tools“ vor dem Footer; Footer mit den vier Pflichtboxen plus Glossar.
+
+INHALT: Nur Fakten der Fallwelt verwenden (Papierakte, sieben Schritte, 50 Jahre Aufbewahrung nach Prüfungsordnung §12, Lenkungsgremium monatlich, Landesrechnungshof). Zahlen, die der Fall nicht kennt, als abzustimmend kennzeichnen. Der „Stand des Pakets“ im Check ist eine Übungsannahme und wird so benannt. Jede falsche Option erklärt, warum sie an dieser Stelle zu unscharf, zu früh oder eine versteckte Lösung ist. Die Definition of Ready ist eine Vereinbarung des Teams, kein Bestandteil des Scrum Guide.
+
+DESIGN: Heller Grund, Akzent Petrol (#0f766e), weicher Griff: Karten 16px Radius mit dezentem Schatten, Buttons 12px, Pills 999px, Hero 28px. Kein Dark Mode (color-scheme: light). Fließtext mindestens 16px, Sekundärtext mindestens 14px, Klickflächen mindestens 48px hoch; Größentabelle für Beamer: Fließtext 22/28/34px, Panel-Überschriften 44/54/64px, Sekundärtext 15/18/21px, --muted ab Stufe 1 auf #3D4A5C.
+
+TECHNIK: Eine Datei, alles inline, keine externen Anfragen (offlinefähig). Zustand nur im Speicher; Sprache optional in sessionStorage mit try/catch. Zweisprachig Deutsch/Englisch ohne Neuladen: alle sichtbaren Texte inklusive aller Footer-Boxen. Namen der Personas bleiben in beiden Sprachen gleich.
+
+NICHT TUN: keine neuen Personas, keine neue Fallwelt; keine Quizsprache wie „Falsch!“, sondern eine Begründung; keine Produktnamen als Lösung vorgeben; keine Rechtsberatung; keine Normversion aus dem Gedächtnis, Stand vor Einsatz prüfen; keine Zeitagenda im Tool.</div></div></details><details class="footer-box"><summary class="footer-summary">📘 <span data-i18n-en="Handbook">Handbuch</span></summary><div class="footer-content footer-sans"><div data-i18n-en="&lt;p&gt;&lt;b&gt;Framework: RISEN&lt;/b&gt; (role, instructions, steps, end goal, narrowing). It fits because the tool has a fixed sequence: four stations and a check with a clear end product, the handover card.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;The five dimensions in the tool:&lt;/b&gt;&lt;br&gt;&lt;i&gt;Role&lt;/i&gt;: The trainer moderates, the tool asks the question to the team, not the solution.&lt;br&gt;&lt;i&gt;Task&lt;/i&gt;: Turn a spark into a package a team can take up in the sprint.&lt;br&gt;&lt;i&gt;Context&lt;/i&gt;: Hochschule Nordwest case world, four fixed personas, the sparks from “Vom Impuls zur Anforderung”.&lt;br&gt;&lt;i&gt;Format&lt;/i&gt;: One multiple-choice question per station, immediate rationale, a check with an assessment, a card to take away.&lt;br&gt;&lt;i&gt;Narrowing&lt;/i&gt;: only facts of the case, no product names, no legal advice.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Key learning point:&lt;/b&gt; A spark is not yet an assignment for a team. Only a story, verifiable criteria and an honest look at what is still missing make it ready for handover. The handover is a conversation in which the team finds gaps, not a drop-off.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Rebuild tip:&lt;/b&gt; For your own spark five building blocks are enough: a story, a criterion in the format Given / When / Then, a status with two or three open points, an opening question for refinement and a next action. Always justify wrong options as “too vague”, “too early” or “hidden solution”. Not every spark becomes a story: constraints such as Ela’s approval enter the backlog as a precondition with a date.&lt;/p&gt;"><p><b>Framework: RISEN</b> (Rolle, Instruktionen, Schritte, Endziel, Eingrenzung). Es passt, weil das Tool eine feste Schrittfolge hat: vier Stationen und ein Check mit einem klaren Endprodukt, der Übergabe-Karte.</p>
+<p><b>Die fünf Dimensionen im Tool:</b><br><i>Rolle</i>: Die Trainerin ist Moderatorin, das Tool stellt die Frage ans Team, nicht die Lösung.<br><i>Aufgabe</i>: Aus einem Funken ein Paket machen, das ein Team im Sprint aufnehmen kann.<br><i>Kontext</i>: Fallwelt Hochschule Nordwest, vier feste Personas, die Funken aus „Vom Impuls zur Anforderung“.<br><i>Format</i>: Auswahlfrage je Station, sofortige Begründung, Check mit Einschätzung, Karte zum Mitnehmen.<br><i>Eingrenzung</i>: nur Fakten des Falls, keine Produktnamen, keine Rechtsberatung.</p>
+<p><b>Zentraler Lernhinweis:</b> Ein Funke ist noch kein Auftrag an ein Team. Erst Story, prüfbare Kriterien und ein ehrlicher Blick auf das, was noch fehlt, machen ihn übergabefähig. Die Übergabe ist ein Gespräch, in dem das Team Lücken findet, keine Abgabe.</p>
+<p><b>Nachbau-Tipp:</b> Für einen eigenen Funken genügen fünf Bausteine: eine Story, ein Kriterium im Format Gegeben / Wenn / Dann, ein Stand mit zwei bis drei offenen Punkten, eine Eröffnungsfrage für das Refinement und eine nächste Handlung. Falsche Optionen immer als „zu unscharf“, „zu früh“ oder „versteckte Lösung“ begründen. Nicht jeder Funke wird eine Story: Randbedingungen wie Elas Freigabe kommen als Vorbedingung mit Termin ins Backlog.</p></div></div></details><details class="footer-box"><summary class="footer-summary">🎤 <span data-i18n-en="Talk script">Vortrags-Skript</span></summary><div class="footer-content footer-sans"><div data-i18n-en="&lt;div class=&quot;skript-step&quot;&gt;&lt;b&gt;Introduction&lt;/b&gt;&lt;br&gt;&lt;i&gt;(Top of the page, show hero and the panel “Four building blocks”)&lt;/i&gt;&lt;br&gt;“A clarified spark is not yet a work package. Today we practise the step that makes it usable for a team: write it down, make it verifiable, name honestly what is missing, and then hand it over in conversation.”&lt;br&gt;Transition: “Four sparks are on the table. Who picks one?”&lt;/div&gt;&lt;div class=&quot;skript-step&quot;&gt;&lt;b&gt;Choose a spark&lt;/b&gt;&lt;br&gt;&lt;i&gt;(Let someone click a card, read the spark aloud)&lt;/i&gt;&lt;br&gt;“You know this sentence from the predecessor tool. It is already clarified and verifiable. Today we ask: is that enough for a development team to get started?”&lt;br&gt;Transition: “First, we turn it into a story.”&lt;/div&gt;&lt;div class=&quot;skript-step&quot;&gt;&lt;b&gt;Station 1 · User story&lt;/b&gt;&lt;br&gt;&lt;i&gt;(Let the group vote, then click)&lt;/i&gt;&lt;br&gt;“Who needs it, what should they be able to do, what for? Make sure the story does not reveal what it will be built with.”&lt;br&gt;Transition: “Now we make it verifiable.”&lt;/div&gt;&lt;div class=&quot;skript-step&quot;&gt;&lt;b&gt;Station 2 · Acceptance criteria&lt;/b&gt;&lt;br&gt;&lt;i&gt;(Read out three versions, group chooses)&lt;/i&gt;&lt;br&gt;“For each criterion ask yourself: could I build a test from it tomorrow? Given the starting point, when something happens, then a result you can see.”&lt;br&gt;Transition: “Now the team asks: can we start?”&lt;/div&gt;&lt;div class=&quot;skript-step&quot;&gt;&lt;b&gt;Station 3 · Definition of Ready&lt;/b&gt;&lt;br&gt;&lt;i&gt;(Choose the open point, then read out the “Next step”)&lt;/i&gt;&lt;br&gt;“The Definition of Ready is an agreement of the team, not part of the Scrum Guide. It helps when it triggers conversations and harms when it becomes a hurdle. Which open point holds up the start the most?”&lt;br&gt;Transition: “Then we prepare the handover.”&lt;/div&gt;&lt;div class=&quot;skript-step&quot;&gt;&lt;b&gt;Station 4 · Handover&lt;/b&gt;&lt;br&gt;&lt;i&gt;(Choose the opening question, then show the three example questions)&lt;/i&gt;&lt;br&gt;“The handover is not dropping something off but a conversation. Whoever first asks the team what it needs learns the gaps before they appear in the sprint.”&lt;br&gt;Transition: “Finally we check the whole package.”&lt;/div&gt;&lt;div class=&quot;skript-step&quot;&gt;&lt;b&gt;Handover check&lt;/b&gt;&lt;br&gt;&lt;i&gt;(Read out the status, let each statement be decided separately)&lt;/i&gt;&lt;br&gt;“The status is an exercise assumption. For each statement decide: met or open? Afterwards we see whether the package is ready.”&lt;br&gt;Transition: “Then we show the card you take into refinement.”&lt;/div&gt;&lt;div class=&quot;skript-step&quot;&gt;&lt;b&gt;Bridge to AI&lt;/b&gt;&lt;br&gt;&lt;i&gt;(Show the panel “The same moment when prompting”, read out the example prompt)&lt;/i&gt;&lt;br&gt;“An AI can draft story and criteria too. But it knows neither examination regulations §12 nor the audit office. It checks against your Definition of Ready if you tell it what that is. Prompt engineering is requirements engineering for AI systems.”&lt;/div&gt;&lt;p&gt;Stage directions: Full version with one spark about 20 minutes, with all four sparks in small groups about 40 to 50 minutes. With small groups give each group a different spark and compare the cards at the end. Do not click straight away: let people vote first, then reveal. Read the example questions for refinement aloud and let the group play one of them in a role-play. The closing line about AI comes last.&lt;/p&gt;"><div class="skript-step"><b>Einstieg</b><br><i>(Seite oben, Hero und Panel „Vier Bausteine“ zeigen)</i><br>„Ein geklärter Funke ist noch kein Arbeitspaket. Heute üben wir den Schritt, der ihn für ein Team nutzbar macht: aufschreiben, prüfbar machen, ehrlich benennen, was fehlt, und dann im Gespräch übergeben.“<br>Übergang: „Vier Funken liegen auf dem Tisch. Wer wählt einen?“</div><div class="skript-step"><b>Funken wählen</b><br><i>(Eine Karte anklicken lassen, Funken laut vorlesen)</i><br>„Diesen Satz kennen Sie aus dem Vorgänger-Tool. Er ist schon geklärt und prüfbar. Heute fragen wir: Reicht das einem Entwicklungsteam, um loszulegen?“<br>Übergang: „Als Erstes machen wir eine Story daraus.“</div><div class="skript-step"><b>Station 1 · User Story</b><br><i>(Gruppe abstimmen lassen, dann klicken)</i><br>„Wer braucht es, was soll er tun können, wozu? Achten Sie darauf, dass die Story nicht verrät, womit es gebaut wird.“<br>Übergang: „Jetzt machen wir es prüfbar.“</div><div class="skript-step"><b>Station 2 · Akzeptanzkriterien</b><br><i>(Drei Fassungen vorlesen, Gruppe wählt)</i><br>„Fragen Sie sich bei jedem Kriterium: Könnte ich daraus morgen einen Test bauen? Gegeben die Ausgangslage, wenn etwas geschieht, dann ein Ergebnis, das man sehen kann.“<br>Übergang: „Jetzt fragt das Team: Können wir starten?“</div><div class="skript-step"><b>Station 3 · Definition of Ready</b><br><i>(Offenen Punkt wählen, danach den „Nächsten Schritt“ vorlesen)</i><br>„Die Definition of Ready ist eine Vereinbarung des Teams, nicht Teil des Scrum Guide. Sie hilft, wenn sie Gespräche auslöst, und schadet, wenn sie zur Hürde wird. Welcher offene Punkt hält den Start am stärksten auf?“<br>Übergang: „Dann bereiten wir die Übergabe vor.“</div><div class="skript-step"><b>Station 4 · Übergabe</b><br><i>(Eröffnungsfrage wählen, danach die drei Beispielfragen zeigen)</i><br>„Die Übergabe ist kein Abgeben, sondern ein Gespräch. Wer das Team zuerst fragt, was es braucht, erfährt die Lücken, bevor sie im Sprint auftauchen.“<br>Übergang: „Zum Schluss prüfen wir das ganze Paket.“</div><div class="skript-step"><b>Übergabe-Check</b><br><i>(Stand vorlesen, jede Aussage einzeln entscheiden lassen)</i><br>„Der Stand ist eine Übungsannahme. Entscheiden Sie bei jeder Aussage: erfüllt oder offen? Danach sehen wir, ob das Paket bereit ist.“<br>Übergang: „Dann zeigen wir die Karte, die Sie mit ins Refinement nehmen.“</div><div class="skript-step"><b>Brücke zur KI</b><br><i>(Panel „Derselbe Moment beim Prompten“ zeigen, Beispielprompt vorlesen)</i><br>„Auch eine KI kann Story und Kriterien entwerfen. Aber sie kennt weder Prüfungsordnung §12 noch den Rechnungshof. Sie prüft gegen Ihre Definition of Ready, wenn Sie ihr die nennen. Prompt Engineering ist Requirements Engineering für KI-Systeme.“</div><p>Regie-Hinweise: Volle Fassung mit einem Funken etwa 20 Minuten, mit allen vier Funken in Kleingruppen etwa 40 bis 50 Minuten. Bei Kleingruppen jeder Gruppe einen anderen Funken geben und am Ende die Karten vergleichen. Nicht sofort klicken: erst abstimmen lassen, dann auflösen. Die Beispielfragen fürs Refinement laut vorlesen und die Gruppe eine davon im Rollenspiel stellen lassen. Der Schlusssatz zur KI kommt zuletzt.</p></div></div></details><details class="footer-box"><summary class="footer-summary">⚖️ <span data-i18n-en="Standards register">Normen-Register</span></summary><div class="footer-content footer-sans"><div data-i18n-en="&lt;table class=&quot;footer-table&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Framework / source&lt;/th&gt;&lt;th&gt;Version / status&lt;/th&gt;&lt;th&gt;Use in the tool&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;IREB CPRE Foundation Level&lt;/td&gt;&lt;td&gt;Syllabus v3.3.0 (checked 02 October 2026)&lt;/td&gt;&lt;td&gt;Documenting and validating requirements: user story, acceptance criteria (stations 1 and 2)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;BABOK® Guide (IIBA)&lt;/td&gt;&lt;td&gt;v3; no new main version found (checked 02 October 2026)&lt;/td&gt;&lt;td&gt;Requirements Life Cycle Management and Solution Evaluation: handover, dependencies, readiness (stations 3 and 4)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Scrum Guide&lt;/td&gt;&lt;td&gt;2020 edition (checked 02 October 2026): contains the Definition of Done, but no Definition of Ready&lt;/td&gt;&lt;td&gt;The Definition of Ready is a team agreement, not a Scrum rule (station 3, check)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ISO/IEC/IEEE 29148&lt;/td&gt;&lt;td&gt;2018 edition valid; revision in ballot as Draft International Standard (checked 02 October 2026)&lt;/td&gt;&lt;td&gt;Characteristics of good requirements: verifiable, unambiguous, solution-neutral (station 2)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Gherkin (Cucumber)&lt;/td&gt;&lt;td&gt;Convention, not a standard; documentation last updated 29 September 2026 (checked 02 October 2026)&lt;/td&gt;&lt;td&gt;Keywords Given / When / Then in the acceptance criteria (station 2)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Denkräume-Navigator (DenkRaum)&lt;/td&gt;&lt;td&gt;internal&lt;/td&gt;&lt;td&gt;Implementation room “Realise the how” as continuation of possibility and solution rooms&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;Status checked on 02 October 2026. Check again before using in new materials.&lt;/p&gt;"><table class="footer-table"><thead><tr><th>Framework / Quelle</th><th>Fassung / Status</th><th>Bezug im Tool</th></tr></thead><tbody><tr><td>IREB CPRE Foundation Level</td><td>Lehrplan v3.3.0 (geprüft 02.10.2026)</td><td>Anforderungen dokumentieren und validieren: User Story, Akzeptanzkriterien (Stationen 1 und 2)</td></tr><tr><td>BABOK® Guide (IIBA)</td><td>v3; keine neue Hauptversion gefunden (geprüft 02.10.2026)</td><td>Requirements Life Cycle Management und Solution Evaluation: Übergabe, Abhängigkeiten, Bereitschaft (Stationen 3 und 4)</td></tr><tr><td>Scrum Guide</td><td>Fassung 2020 (geprüft 02.10.2026): Definition of Done ist enthalten, eine Definition of Ready nicht</td><td>Die Definition of Ready ist eine Team-Vereinbarung, keine Scrum-Regel (Station 3, Check)</td></tr><tr><td>ISO/IEC/IEEE 29148</td><td>Ausgabe 2018 gültig; Überarbeitung als Draft International Standard in Abstimmung (geprüft 02.10.2026)</td><td>Merkmale guter Anforderungen: prüfbar, eindeutig, lösungsneutral (Station 2)</td></tr><tr><td>Gherkin (Cucumber)</td><td>Konvention, keine Norm; Dokumentation zuletzt aktualisiert am 29.09.2026 (geprüft 02.10.2026)</td><td>Schlüsselwörter Gegeben / Wenn / Dann in den Akzeptanzkriterien (Station 2)</td></tr><tr><td>Denkräume-Navigator (DenkRaum)</td><td>intern</td><td>Umsetzungsraum „Wie realisieren“ als Fortsetzung von Möglichkeits- und Lösungsraum</td></tr></tbody></table><p>Stand geprüft am 02.10.2026. Vor dem Einsatz in neuen Materialien erneut prüfen.</p></div></div></details><details class="footer-box"><summary class="footer-summary">📖 <span data-i18n-en="Glossary">Glossar</span></summary><div class="footer-content footer-sans"><div data-i18n-en="&lt;dl class=&quot;footer-glossary&quot;&gt;&lt;dt&gt;Requirements package&lt;/dt&gt;&lt;dd&gt;Everything a team needs to take up a requirement: user story, acceptance criteria and an honest status of readiness.&lt;/dd&gt;&lt;dt&gt;Spark&lt;/dt&gt;&lt;dd&gt;The first verifiable sentence on an impulse, result of the predecessor tool “Vom Impuls zur Anforderung”.&lt;/dd&gt;&lt;dt&gt;User story&lt;/dt&gt;&lt;dd&gt;A requirement in one sentence: As a &lt;role&gt; I want &lt;wish&gt; so that &lt;benefit&gt;.&lt;/dd&gt;&lt;dt&gt;Acceptance criterion&lt;/dt&gt;&lt;dd&gt;A condition by which you recognise that the story is met. It must be verifiable.&lt;/dd&gt;&lt;dt&gt;Gherkin&lt;/dt&gt;&lt;dd&gt;A way of writing criteria with the keywords Given, When, Then.&lt;/dd&gt;&lt;dt&gt;Definition of Ready&lt;/dt&gt;&lt;dd&gt;An agreement of the team on when an item is ready for the sprint. Not part of the Scrum Guide.&lt;/dd&gt;&lt;dt&gt;Refinement&lt;/dt&gt;&lt;dd&gt;The conversation in which a team clarifies, estimates and prepares backlog items for the sprint.&lt;/dd&gt;&lt;dt&gt;Backlog&lt;/dt&gt;&lt;dd&gt;The ordered list of what a team is to implement.&lt;/dd&gt;&lt;dt&gt;Sprint&lt;/dt&gt;&lt;dd&gt;A fixed period in which a team implements a selection from the backlog.&lt;/dd&gt;&lt;dt&gt;Precondition&lt;/dt&gt;&lt;dd&gt;Something that must exist before work can start, such as an approval. Stands in the backlog with a date.&lt;/dd&gt;&lt;/dl&gt;"><dl class="footer-glossary"><dt>Anforderungspaket</dt><dd>Alles, was ein Team braucht, um eine Anforderung aufzunehmen: User Story, Akzeptanzkriterien und ein ehrlicher Stand der Bereitschaft.</dd><dt>Funke</dt><dd>Der erste prüfbare Satz zu einem Impuls, Ergebnis des Vorgänger-Tools „Vom Impuls zur Anforderung“.</dd><dt>User Story</dt><dd>Eine Anforderung in einem Satz: Als <Rolle> möchte ich <Wunsch>, damit <Nutzen>.</dd><dt>Akzeptanzkriterium</dt><dd>Eine Bedingung, an der man erkennt, dass die Story erfüllt ist. Sie muss prüfbar sein.</dd><dt>Gherkin</dt><dd>Eine Schreibweise für Kriterien mit den Schlüsselwörtern Gegeben, Wenn, Dann (englisch Given, When, Then).</dd><dt>Definition of Ready</dt><dd>Eine Vereinbarung des Teams darüber, wann ein Eintrag bereit für den Sprint ist. Kein Teil des Scrum Guide.</dd><dt>Refinement</dt><dd>Das Gespräch, in dem ein Team Einträge des Backlogs klärt, schätzt und für den Sprint vorbereitet.</dd><dt>Backlog</dt><dd>Die geordnete Liste dessen, was ein Team umsetzen soll.</dd><dt>Sprint</dt><dd>Ein festgelegter Zeitraum, in dem ein Team eine Auswahl aus dem Backlog umsetzt.</dd><dt>Vorbedingung</dt><dd>Etwas, das vorliegen muss, bevor die Arbeit starten kann, etwa eine Freigabe. Steht mit Termin im Backlog.</dd></dl></div></div></details>
+</div>
+</footer>
+<script>
+(function(){
+  var D = {"pk": [{"id": "oeztuerk", "who": "Herr Öztürk", "role": {"de": "Sachbearbeiter Prüfungsamt", "en": "Examinations office clerk"}, "spark": {"de": "„Sachbearbeitende finden einen Widerspruchsvorgang über Name oder Matrikelnummer in höchstens 30 Sekunden (Wert mit dem Prüfungsamt abzustimmen).“", "en": "“Case handlers find an objection case by name or matriculation number in at most 30 seconds (value to be agreed with the examinations office).”"}, "ask": [{"de": "Aus Herrn Öztürks Funken soll eine User Story werden. Welche Fassung gibt dem Team Rolle, Wunsch und Nutzen, ohne die Lösung vorzugeben?", "en": "Herr Öztürk’s spark is to become a user story. Which version gives the team role, wish and benefit without prescribing the solution?"}, {"de": "Welche Akzeptanzkriterien kann das Team direkt in einen Test übersetzen?", "en": "Which acceptance criteria can the team turn directly into a test?"}, {"de": "Das Team fragt: „Ist das schon bereit für den Sprint?“ Welcher offene Punkt blockiert den Start am stärksten?", "en": "The team asks: “Is this ready for the sprint?” Which open point blocks the start the most?"}, {"de": "Refinement mit dem Team. Mit welcher Frage eröffnen Sie die Übergabe?", "en": "Refinement with the team. Which question do you open the handover with?"}], "st": [[{"t": {"de": "Als Nutzer möchte ich eine Suchfunktion, damit alles schneller geht.", "en": "As a user I want a search function so that everything goes faster."}, "ok": false, "why": {"de": "Die Rolle ist zu allgemein (welcher Nutzer?), der Nutzen unscharf („alles“, „schneller“), und „Suchfunktion“ ist schon die halbe Lösung. Das Team könnte weder schätzen noch testen.", "en": "The role is too general (which user?), the benefit vague (“everything”, “faster”), and “search function” is already half the solution. The team could neither estimate nor test."}}, {"t": {"de": "Als Sachbearbeiter im Prüfungsamt möchte ich einen Widerspruchsvorgang über Name oder Matrikelnummer finden, damit ich nicht mehr den halben Vormittag mit Suchen in Papiermappen verbringe.", "en": "As a case handler in the examinations office I want to find an objection case by name or matriculation number, so that I no longer spend half the morning searching paper folders."}, "ok": true, "why": {"de": "Die Rolle ist ein Mensch mit Aufgabe, der Wunsch bleibt lösungsneutral („finden“, nicht „Volltextsuche“), der Nutzen stammt aus Herrn Öztürks Impuls. Die 30 Sekunden gehören nicht in die Story, sondern in die Akzeptanzkriterien.", "en": "The role is a person with a task, the wish stays solution-neutral (“find”, not “full-text search”), the benefit comes from Herr Öztürk’s impulse. The 30 seconds do not belong in the story but in the acceptance criteria."}}, {"t": {"de": "Als Prüfungsamt möchte ich eine Volltextsuche mit Indexierung aller gescannten Akten einführen.", "en": "As the examinations office I want to introduce a full-text search with indexing of all scanned files."}, "ok": false, "why": {"de": "Eine verkleidete Lösung: Volltextsuche und Indexierung sind Technik. Die Rolle ist eine Abteilung statt eines Menschen, und der Nutzen fehlt ganz.", "en": "A disguised solution: full-text search and indexing are technology. The role is a department rather than a person, and the benefit is missing entirely."}}], [{"t": {"de": "Die Suche ist schnell und benutzerfreundlich.", "en": "The search is fast and user-friendly."}, "ok": false, "why": {"de": "Nicht prüfbar: Wie schnell ist schnell, und wer entscheidet, was benutzerfreundlich heißt? Ein Kriterium, bei dem man sich nach dem Sprint streitet, ist keines.", "en": "Not verifiable: how fast is fast, and who decides what user-friendly means? A criterion you argue about after the sprint is no criterion."}}, {"t": {"de": "Die Suche nutzt einen Index und liefert die Treffer nach Relevanz sortiert.", "en": "The search uses an index and returns the results sorted by relevance."}, "ok": false, "why": {"de": "Das beschreibt Technik statt Ergebnis, und „Relevanz“ bleibt ungeprüft. Außerdem bindet es das Team an eine Lösung, die es vielleicht besser wüsste.", "en": "This describes technology instead of outcome, and “relevance” stays unchecked. It also ties the team to a solution it might know better."}}, {"t": {"de": "Gegeben ein Widerspruchsvorgang ist im System angelegt, wenn ich Name oder Matrikelnummer der Antragstellerin eingebe, dann erscheint der Vorgang in höchstens 30 Sekunden in der Trefferliste (Wert mit dem Prüfungsamt abzustimmen).", "en": "Given an objection case exists in the system, when I enter the applicant’s name or matriculation number, then the case appears in the result list within 30 seconds at most (value to be agreed with the examinations office)."}, "ok": true, "why": {"de": "Ausgangslage, Handlung und prüfbares Ergebnis stehen getrennt da, das Team kann daraus direkt einen Test bauen. Die Zahl ist ehrlich als „abzustimmen“ markiert, statt eine Genauigkeit vorzutäuschen.", "en": "Starting point, action and verifiable result are separate, the team can build a test straight from it. The number is honestly marked “to be agreed” instead of feigning precision."}}], [{"t": {"de": "Die Daten zum Suchen fehlen: Die Papierakten sind noch nicht gescannt. Ohne digitale Akten gibt es nichts zu finden.", "en": "The data to search is missing: the paper files have not been scanned yet. Without digital files there is nothing to find."}, "ok": true, "why": {"de": "Das ist eine Abhängigkeit. Die Scanstraße gehört zur Investition, ist aber noch nicht Teil dieses Pakets. Ohne Daten kann das Team das Kriterium im Sprint nicht einmal abnehmen.", "en": "This is a dependency. The scanning line is part of the investment but not yet part of this package. Without data the team cannot even accept the criterion in the sprint."}}, {"t": {"de": "Der Wert „30 Sekunden“ ist noch nicht mit dem Prüfungsamt abgestimmt.", "en": "The value “30 seconds” has not yet been agreed with the examinations office."}, "ok": false, "why": {"de": "Auch das ist offen, aber im Refinement in einem kurzen Gespräch zu klären, und das Team kann zunächst mit einem vorläufigen Wert testen. Fehlende Daten dagegen blockieren den Test selbst.", "en": "This is open too, but can be settled in a short conversation during refinement, and the team can test with a provisional value at first. Missing data, in contrast, blocks the test itself."}}, {"t": {"de": "Die Farbgestaltung der Trefferliste ist noch nicht festgelegt.", "en": "The colour design of the result list has not been fixed yet."}, "ok": false, "why": {"de": "Gestaltung kann im Sprint entstehen und blockiert den Start nicht. Es ist ein Detail, das gern als Grund für „noch nicht bereit“ genannt wird, ohne dass es eines ist.", "en": "Design can emerge during the sprint and does not block the start. It is a detail often named as a reason for “not ready yet” without being one."}}], [{"t": {"de": "„Ist das für alle klar? Dann starten wir.“", "en": "“Is this clear to everyone? Then we start.”"}, "ok": false, "why": {"de": "Eine geschlossene Frage, bei der Schweigen wie Zustimmung wirkt. Lücken bleiben unentdeckt und tauchen mitten im Sprint auf.", "en": "A closed question where silence looks like agreement. Gaps stay undiscovered and show up in the middle of the sprint."}}, {"t": {"de": "„Setzen Sie die Suche bitte mit der Technik um, die wir im Haus haben.“", "en": "“Please build the search with the technology we already have in-house.”"}, "ok": false, "why": {"de": "Eine Lösungsvorgabe gegen die Erfahrung des Teams. Aus Mitdenkenden werden Ausführende, und die Story hat dafür keinen Grund.", "en": "A solution prescribed against the team’s experience. Thinkers become executors, and the story gives no reason for it."}}, {"t": {"de": "„Was brauchen Sie von uns, damit Sie diese Story schätzen und testen können?“", "en": "“What do you need from us so that you can estimate and test this story?”"}, "ok": true, "why": {"de": "Eine offene Frage nach dem Informationsbedarf des Teams. Sie lädt dazu ein, fehlende Daten oder offene Abstimmungen anzusprechen. Die Übergabe wird zum Gespräch statt zur Abgabe.", "en": "An open question about the team’s information needs. It invites the team to raise missing data or open agreements. The handover becomes a conversation instead of a drop-off."}}]], "act3": {"de": "Nächster Schritt: Den Scan der Akten als Vorbedingung ins Paket schreiben und mit Ela den Scantermin klären. Den Wert „30 Sekunden“ nebenbei mit dem Prüfungsamt abstimmen.", "en": "Next step: write the scanning of the files into the package as a precondition and agree the scan date with Ela. Settle the value “30 seconds” with the examinations office on the side."}, "refine": [{"de": "Was brauchen Sie von uns, damit Sie diese Story schätzen und testen können?", "en": "What do you need from us so that you can estimate and test this story?"}, {"de": "Welche Annahme in der Story halten Sie für die riskanteste?", "en": "Which assumption in the story do you consider the riskiest?"}, {"de": "Mit welchen Testdaten können Sie die 30 Sekunden realistisch prüfen?", "en": "With what test data can you check the 30 seconds realistically?"}], "stand": {"de": "Story und Kriterium stehen. Die 30 Sekunden stammen aus einer ersten Schätzung und sind mit dem Prüfungsamt noch nicht abgestimmt. Die Papierakten sind noch nicht gescannt. Gesucht wird über Name oder Matrikelnummer.", "en": "Story and criterion are in place. The 30 seconds come from a first estimate and have not been agreed with the examinations office. The paper files have not been scanned yet. The search runs via name or matriculation number."}, "chk": [{"t": {"de": "Rolle und Nutzen sind in der Story benannt.", "en": "Role and benefit are named in the story."}, "met": true, "why": {"de": "Ja: Sachbearbeiter im Prüfungsamt, Nutzen ist der gesparte Vormittag.", "en": "Yes: case handler in the examinations office, the benefit is the saved morning."}}, {"t": {"de": "Die 30 Sekunden sind mit dem Prüfungsamt abgestimmt.", "en": "The 30 seconds are agreed with the examinations office."}, "met": false, "why": {"de": "Nein: Der Wert ist eine erste Schätzung und bleibt „abzustimmen“.", "en": "No: the value is a first estimate and stays “to be agreed”."}}, {"t": {"de": "Die Akten, in denen gesucht wird, liegen digital vor.", "en": "The files to be searched exist digitally."}, "met": false, "why": {"de": "Nein: Die Papierakten sind noch nicht gescannt.", "en": "No: the paper files have not been scanned yet."}}, {"t": {"de": "Die Suchfelder sind festgelegt.", "en": "The search fields are fixed."}, "met": true, "why": {"de": "Ja: Name oder Matrikelnummer.", "en": "Yes: name or matriculation number."}}], "verd": {"de": "Zwei Punkte sind offen, einer davon blockiert den Test. Nehmen Sie das Paket ins Refinement mit, aber noch nicht in den Sprint.", "en": "Two points are open, one of them blocks the test. Take the package to refinement, but not yet into the sprint."}, "tools": ["usp", "map"]}, {"id": "knut", "who": "Knut", "role": {"de": "Entwicklung", "en": "Development"}, "spark": {"de": "„Berechtigte können eine Akte von jedem Arbeitsplatz aus einsehen, ohne eine Papiermappe zu bewegen.“", "en": "“Authorised persons can view a file from any workstation without moving a paper folder.”"}, "ask": [{"de": "Aus Knuts Funken soll eine User Story werden. Welche Fassung hält Rolle, Wunsch und Nutzen zusammen, ohne die Cloud schon zu setzen?", "en": "Knut’s spark is to become a user story. Which version holds role, wish and benefit together without already fixing the cloud?"}, {"de": "Welche Akzeptanzkriterien decken sowohl die Berechtigten als auch die Nicht-Berechtigten ab?", "en": "Which acceptance criteria cover both the authorised and the non-authorised?"}, {"de": "Das Team fragt: „Gibt es noch etwas, das den Entwurf kippen kann?“ Welcher Punkt der Definition of Ready ist ungeklärt?", "en": "The team asks: “Is there anything left that could topple the draft?” Which point of the Definition of Ready is unresolved?"}, {"de": "Knut hat die Cloud bereits gesetzt. Wie gehen Sie damit in der Übergabe um?", "en": "Knut has already set the cloud. How do you handle that in the handover?"}], "st": [[{"t": {"de": "Als berechtigte Mitarbeiterin im Prüfungsamt möchte ich eine Akte an meinem Arbeitsplatz einsehen, damit ich keine Papiermappe holen oder weitergeben muss.", "en": "As an authorised employee in the examinations office I want to view a file at my workstation, so that I do not have to fetch or hand on a paper folder."}, "ok": true, "why": {"de": "Die Rolle ist konkret und trägt den Zugriffsschutz schon im Wort „berechtigt“. Der Wunsch ist lösungsneutral, und der Nutzen aus dem Impuls (keine Mappen mehr bewegen) steht im „damit“-Teil.", "en": "The role is concrete and carries access protection in the word “authorised”. The wish is solution-neutral, and the benefit from the impulse (no more moving folders) stands in the “so that” part."}}, {"t": {"de": "Als Entwickler möchte ich alle Akten in die Cloud migrieren, damit die Architektur zeitgemäß ist.", "en": "As a developer I want to migrate all files to the cloud, so that the architecture is up to date."}, "ok": false, "why": {"de": "Die Rolle ist der Bauende statt der Nutzende, der Nutzen ein technischer Selbstzweck. „Cloud“ ist die Lösung, und die 50-Jahres-Aufbewahrung ist noch nicht bedacht.", "en": "The role is the builder instead of the user, the benefit a technical end in itself. “Cloud” is the solution, and the 50-year retention has not been considered."}}, {"t": {"de": "Als Hochschule möchte ich Digitalisierung, damit wir moderner werden.", "en": "As the university I want digitalisation, so that we become more modern."}, "ok": false, "why": {"de": "Die Rolle ist keine Person, der Nutzen nicht prüfbar, und der Wunsch ist so groß, dass er kein Team in einem Sprint erledigt. Das ist Stoff für eine ganze Vision, nicht für eine Story.", "en": "The role is not a person, the benefit is not verifiable, and the wish is so big that no team finishes it in one sprint. That is material for a whole vision, not a story."}}], [{"t": {"de": "Die Akte ist von überall erreichbar.", "en": "The file is accessible from anywhere."}, "ok": false, "why": {"de": "„Überall“ hat keine Grenze und kein „für wen“. Als Kriterium gelesen wäre jeder Zugriff erlaubt, eine Sicherheitslücke als Anforderung.", "en": "“Anywhere” has no limit and no “for whom”. Read as a criterion, any access would be allowed, a security gap as a requirement."}}, {"t": {"de": "Gegeben ich bin als berechtigte Person angemeldet, wenn ich die Akte einer Studierenden an meinem Arbeitsplatz öffne, dann sehe ich alle Teile der Akte. Gegeben ich bin nicht berechtigt, wenn ich dieselbe Akte öffne, dann wird der Zugriff verweigert und protokolliert.", "en": "Given I am logged in as an authorised person, when I open a student’s file at my workstation, then I see all parts of the file. Given I am not authorised, when I open the same file, then access is denied and logged."}, "ok": true, "why": {"de": "Zwei Fälle, beide prüfbar: Wer berechtigt ist, sieht alles, wer es nicht ist, wird abgewiesen. So steckt der Zugriffsschutz im Kriterium, statt später nachgerüstet zu werden.", "en": "Two cases, both verifiable: whoever is authorised sees everything, whoever is not is turned away. Access protection thus sits in the criterion instead of being retrofitted later."}}, {"t": {"de": "Die Akte wird in einem Cloud-Speicher abgelegt und im Browser angezeigt.", "en": "The file is stored in a cloud storage and displayed in the browser."}, "ok": false, "why": {"de": "Das ist Lösung statt Ergebnis, und es sagt nicht, woran man Erfolg erkennt. Außerdem legt es sich auf Cloud fest, bevor die 50-Jahres-Frist geprüft ist.", "en": "This is solution instead of outcome, and it does not say how success is recognised. It also commits to cloud before the 50-year period has been checked."}}], [{"t": {"de": "Ob die Akte als PDF oder als Bildfolge angezeigt wird.", "en": "Whether the file is displayed as a PDF or as an image sequence."}, "ok": false, "why": {"de": "Ein Darstellungsdetail, das das Team im Sprint entscheiden kann. Es kippt die Story nicht.", "en": "A display detail the team can decide in the sprint. It does not topple the story."}}, {"t": {"de": "Ob die Funktion „Aktenansicht“ oder „Akteneinsicht“ heißt.", "en": "Whether the function is called “file view” or “file inspection”."}, "ok": false, "why": {"de": "Eine Namensfrage, die sich jederzeit ändern lässt. Als Blocker taugt sie nicht, weil nichts Tragendes daran hängt.", "en": "A naming question that can be changed at any time. It does not work as a blocker because nothing load-bearing hangs on it."}}, {"t": {"de": "Die Lösungsidee „Cloud“ ist noch nicht gegen die 50-Jahres-Aufbewahrung (Prüfungsordnung §12) geprüft.", "en": "The solution idea “cloud” has not been checked against the 50-year retention (examination regulations §12)."}, "ok": true, "why": {"de": "Diese Annahme trägt den Entwurf. Ein Cloud-natives Format kann über 50 Jahre ein Lock-in-Risiko sein. Zeigt sich das erst im Sprint, ist die Arbeit womöglich umsonst.", "en": "This assumption carries the draft. A cloud-native format can be a lock-in risk over 50 years. If that only shows up in the sprint, the work may have been in vain."}}], [{"t": {"de": "„Die Cloud ist gesetzt, dann fangen wir an.“", "en": "“The cloud is set, so we start.”"}, "ok": false, "why": {"de": "Eine Lösung wird übernommen, ohne dass jemand das Problem dahinter benannt hat. Die Annahme bleibt ungeprüft im Paket sitzen.", "en": "A solution is adopted without anyone naming the problem behind it. The assumption stays unchecked in the package."}}, {"t": {"de": "„Welches Problem soll die Cloud für uns lösen, und was spricht über 50 Jahre dagegen?“ Dazu die Prüfung als Aufgabe ins Paket schreiben.", "en": "“Which problem is the cloud meant to solve for us, and what speaks against it over 50 years?” Also write the check into the package as a task."}, "ok": true, "why": {"de": "Die Lösungsidee wird ernst genommen und das Problem dahinter erfragt. Die offene Prüfung steht sichtbar im Paket, statt zu verschwinden.", "en": "The solution idea is taken seriously and the problem behind it is asked about. The open check stands visibly in the package instead of disappearing."}}, {"t": {"de": "„Die Cloud ist verboten.“", "en": "“The cloud is forbidden.”"}, "ok": false, "why": {"de": "Ein Verbot ohne Prüfung ersetzt eine ungeprüfte Annahme durch eine andere und macht aus der Klärung einen Streit. Die Antwort wäre die Prüfung gegen die Frist, nicht ein Machtwort.", "en": "A ban without a check replaces one unchecked assumption with another and turns clarification into a quarrel. The answer would be the check against the period, not a word of command."}}]], "act3": {"de": "Nächster Schritt: Die Prüfung gegen die 50-Jahres-Frist als Aufgabe ins Paket schreiben und Petra als Prüferin benennen. Erst danach über die Speicherform entscheiden.", "en": "Next step: write the check against the 50-year period into the package as a task and name Petra as the checker. Decide on the storage form only afterwards."}, "refine": [{"de": "Was brauchen Sie von uns, damit Sie diese Story schätzen und testen können?", "en": "What do you need from us so that you can estimate and test this story?"}, {"de": "Welches Problem soll die Cloud für Sie lösen, und welche Alternativen haben Sie erwogen?", "en": "Which problem is the cloud meant to solve for you, and which alternatives have you considered?"}, {"de": "Wie lässt sich eine Akte nach 50 Jahren noch öffnen, wenn der Anbieter nicht mehr existiert?", "en": "How can a file still be opened after 50 years if the provider no longer exists?"}], "stand": {"de": "Story und Kriterien stehen. „Cloud“ ist die Lösungsidee der Entwicklung und noch nicht gegen die 50-Jahres-Aufbewahrung (Prüfungsordnung §12) geprüft. Wer „berechtigt“ ist, haben Petra und das Prüfungsamt festgelegt. Der Umfang ist klein und passt in einen Sprint.", "en": "Story and criteria are in place. “Cloud” is development’s solution idea and has not yet been checked against the 50-year retention (examination regulations §12). Petra and the examinations office have defined who is “authorised”. The scope is small and fits into one sprint."}, "chk": [{"t": {"de": "Rolle und Nutzen sind in der Story benannt.", "en": "Role and benefit are named in the story."}, "met": true, "why": {"de": "Ja: berechtigte Mitarbeiterin, Nutzen ist der Wegfall der Papiermappe.", "en": "Yes: authorised employee, the benefit is no more paper folders."}}, {"t": {"de": "Wer „berechtigt“ ist, steht fest.", "en": "Who is “authorised” has been defined."}, "met": true, "why": {"de": "Ja: Petra und das Prüfungsamt haben es festgelegt.", "en": "Yes: Petra and the examinations office have defined it."}}, {"t": {"de": "Die Lösungsidee „Cloud“ ist gegen die 50-Jahres-Frist geprüft.", "en": "The solution idea “cloud” has been checked against the 50-year period."}, "met": false, "why": {"de": "Nein: Diese Prüfung steht aus und ist die tragende Annahme.", "en": "No: this check is still pending and is the load-bearing assumption."}}, {"t": {"de": "Der Umfang passt in einen Sprint.", "en": "The scope fits into one sprint."}, "met": true, "why": {"de": "Ja: Er ist klein.", "en": "Yes: it is small."}}], "verd": {"de": "Ein Punkt ist offen, aber er trägt den Entwurf. Das Paket kann ins Refinement, die Prüfung gehört als erste Aufgabe in den Sprint.", "en": "One point is open, but it carries the draft. The package can go to refinement, the check belongs in the sprint as its first task."}, "tools": ["usp", "fanfa"]}, {"id": "feldmann", "who": "Kanzlerin Dr. Feldmann", "role": {"de": "Hochschulleitung", "en": "University management"}, "spark": {"de": "„Das System protokolliert jede Änderung an einer Prüfungsentscheidung mit Person, Zeitpunkt und Inhalt, und die Einträge sind nachträglich nicht veränderbar.“", "en": "“The system logs every change to an examination decision with person, time and content, and the entries cannot be changed afterwards.”"}, "ask": [{"de": "Aus Kanzlerin Dr. Feldmanns Funken soll eine User Story werden. Welche Fassung nennt Rolle, Wunsch und Nutzen so, dass der Landesrechnungshof darin vorkommt?", "en": "Kanzlerin Dr. Feldmann’s spark is to become a user story. Which version names role, wish and benefit so that the state audit office appears in it?"}, {"de": "Welche Akzeptanzkriterien prüfen beide Hälften des Funkens: den Inhalt der Einträge und ihre Unveränderbarkeit?", "en": "Which acceptance criteria test both halves of the spark: the content of the entries and their immutability?"}, {"de": "Das Team fragt: „Woran erkennen wir im Sprint-Review, dass es genügt?“ Welcher offene Punkt der Definition of Ready ist der wichtigste?", "en": "The team asks: “How do we recognise in the sprint review that it is enough?” Which open point of the Definition of Ready matters most?"}, {"de": "Kanzlerin Dr. Feldmann kommt zur Übergabe. Wie nutzen Sie ihre Zeit?", "en": "Kanzlerin Dr. Feldmann comes to the handover. How do you use her time?"}], "st": [[{"t": {"de": "Als Kanzlerin möchte ich ein Audit-Log-Modul mit Hashkette, damit alles sicher ist.", "en": "As chancellor I want an audit log module with a hash chain, so that everything is secure."}, "ok": false, "why": {"de": "Eine verkappte Lösung („Hashkette“) und ein Nutzen, der nichts misst („sicher“). Das Team kann nicht erkennen, was am Ende nachgewiesen werden soll.", "en": "A disguised solution (“hash chain”) and a benefit that measures nothing (“secure”). The team cannot tell what is ultimately to be proven."}}, {"t": {"de": "Als Prüfungsamt möchte ich, dass alles dokumentiert wird.", "en": "As the examinations office I want everything to be documented."}, "ok": false, "why": {"de": "Die Rolle ist eine Abteilung, und „alles“ hat keine Grenze. Ohne Anlass und Nutzen weiß das Team nicht, was dokumentiert werden soll und wofür.", "en": "The role is a department, and “everything” has no limit. Without occasion and benefit the team does not know what is to be documented and what for."}}, {"t": {"de": "Als Kanzlerin möchte ich nachvollziehen können, wer wann welche Prüfungsentscheidung geändert hat, damit ich dem Landesrechnungshof jeden Widerspruch lückenlos belegen kann.", "en": "As chancellor I want to be able to trace who changed which examination decision and when, so that I can prove every objection without gaps to the state audit office."}, "ok": true, "why": {"de": "Die Rolle trägt die Verantwortung, der Wunsch („nachvollziehen“) lässt die Technik offen, und der Nutzen (Nachweis gegenüber dem Rechnungshof) stammt direkt aus dem Impuls.", "en": "The role bears the responsibility, the wish (“trace”) leaves the technology open, and the benefit (proof to the audit office) comes straight from the impulse."}}], [{"t": {"de": "Gegeben eine Prüfungsentscheidung wird geändert, dann enthält das Protokoll Person, Zeitpunkt und neuen Inhalt der Änderung. Gegeben ein Protokolleintrag existiert, wenn jemand versucht, ihn zu ändern oder zu löschen, dann wird der Versuch abgelehnt.", "en": "Given an examination decision is changed, then the log contains person, time and new content of the change. Given a log entry exists, when someone tries to change or delete it, then the attempt is rejected."}, "ok": true, "why": {"de": "Beide Hälften des Funkens werden zu Tests: Was im Eintrag stehen muss und dass er sich nicht verändern lässt. Das Team kann beide Fälle im Sprint-Review vorführen.", "en": "Both halves of the spark become tests: what must be in the entry and that it cannot be changed. The team can demonstrate both cases in the sprint review."}}, {"t": {"de": "Änderungen werden irgendwo gespeichert.", "en": "Changes are stored somewhere."}, "ok": false, "why": {"de": "Nicht prüfbar: „irgendwo“ ist kein Ort, und weder Person noch Zeitpunkt noch Unveränderbarkeit kommen vor. Der Funke ginge verloren.", "en": "Not verifiable: “somewhere” is not a place, and neither person nor time nor immutability appears. The spark would be lost."}}, {"t": {"de": "Das Protokoll wird täglich gesichert.", "en": "The log is backed up daily."}, "ok": false, "why": {"de": "Eine Sicherung ist keine Nachvollziehbarkeit. Das Kriterium prüft weder, was im Eintrag steht, noch, ob er unverändert bleibt.", "en": "A backup is not traceability. The criterion checks neither what is in the entry nor whether it stays unchanged."}}], [{"t": {"de": "Die genaue Anzahl der Protokolleinträge pro Jahr ist nicht bekannt.", "en": "The exact number of log entries per year is not known."}, "ok": false, "why": {"de": "Ein grobes Mengengerüst genügt für den Start, die genaue Zahl zeigt sich erst im Betrieb. Das ist keine Voraussetzung für den ersten Sprint.", "en": "A rough volume estimate is enough to start, the exact number only shows in operation. It is not a precondition for the first sprint."}}, {"t": {"de": "Was der Landesrechnungshof als Nachweis akzeptiert, ist nicht geklärt.", "en": "What the state audit office accepts as proof has not been clarified."}, "ok": true, "why": {"de": "Ohne diese Klärung weiß das Team nicht, wann das Kriterium „erfüllt“ ist. Es baut womöglich einen Nachweis, den der Rechnungshof nicht anerkennt. Das muss vor dem Sprintstart geklärt sein.", "en": "Without this clarification the team does not know when the criterion is “met”. It may build a proof the audit office does not recognise. This must be settled before the sprint starts."}}, {"t": {"de": "Der Name der Protokoll-Ansicht ist noch nicht festgelegt.", "en": "The name of the log view has not been fixed yet."}, "ok": false, "why": {"de": "Ein Etikett, das jederzeit nachgeholt werden kann. Es hat mit der Tragfähigkeit des Pakets nichts zu tun.", "en": "A label that can be added at any time. It has nothing to do with the viability of the package."}}], [{"t": {"de": "„Woran erkennt der Rechnungshof, dass der Nachweis genügt, und wer kann das für uns klären?“", "en": "“How does the audit office recognise that the proof is sufficient, and who can clarify that for us?”"}, "ok": true, "why": {"de": "Die Frage richtet sich auf das, was nur Kanzlerin Dr. Feldmann entscheiden kann: den anerkannten Nachweis. Sie nennt zugleich einen Weg, die offene Lücke zu schließen.", "en": "The question targets what only Kanzlerin Dr. Feldmann can decide: the accepted proof. It also names a way to close the open gap."}}, {"t": {"de": "Ihr den Entwurf vorlesen und um Unterschrift bitten.", "en": "Read her the draft and ask for a signature."}, "ok": false, "why": {"de": "Abnicken statt Klären. Die Unterschrift beruhigt, beantwortet aber die offene Frage nach dem Nachweis nicht.", "en": "Nodding through instead of clarifying. The signature reassures but does not answer the open question about the proof."}}, {"t": {"de": "Ihr die technische Architektur des Protokolls erklären.", "en": "Explain the technical architecture of the log to her."}, "ok": false, "why": {"de": "Das Gespräch verfehlt ihre Rolle: Sie entscheidet über den Nachweis, nicht über die Technik. Ihre Zeit ginge für das Falsche drauf.", "en": "The conversation misses her role: she decides about the proof, not about the technology. Her time would go to the wrong thing."}}]], "act3": {"de": "Nächster Schritt: Mit Kanzlerin Dr. Feldmann klären, welchen Nachweis der Rechnungshof anerkennt, und die Antwort als Kriterium ins Paket aufnehmen.", "en": "Next step: clarify with Kanzlerin Dr. Feldmann which proof the audit office recognises and add the answer to the package as a criterion."}, "refine": [{"de": "Was brauchen Sie von uns, damit Sie diese Story schätzen und testen können?", "en": "What do you need from us so that you can estimate and test this story?"}, {"de": "Welche Änderungen an einer Prüfungsentscheidung müssen protokolliert werden?", "en": "Which changes to an examination decision have to be logged?"}, {"de": "Wie zeigen wir im Sprint-Review, dass ein Eintrag sich nicht verändern lässt?", "en": "How do we show in the sprint review that an entry cannot be changed?"}], "stand": {"de": "Story und Kriterien stehen. Was der Landesrechnungshof als Nachweis akzeptiert, ist nicht geklärt. Die Kriterien nennen Person, Zeitpunkt und Inhalt jeder Änderung. Der Umfang ist mittelgroß, das Team kann ihn schätzen.", "en": "Story and criteria are in place. What the state audit office accepts as proof has not been clarified. The criteria name person, time and content of every change. The scope is medium, the team can estimate it."}, "chk": [{"t": {"de": "Rolle und Nutzen sind in der Story benannt.", "en": "Role and benefit are named in the story."}, "met": true, "why": {"de": "Ja: Kanzlerin, Nutzen ist der lückenlose Beleg gegenüber dem Rechnungshof.", "en": "Yes: chancellor, the benefit is gapless proof to the audit office."}}, {"t": {"de": "Die Kriterien nennen Person, Zeitpunkt und Inhalt jeder Änderung.", "en": "The criteria name person, time and content of every change."}, "met": true, "why": {"de": "Ja: Das steht im Stand des Pakets.", "en": "Yes: that is stated in the status of the package."}}, {"t": {"de": "Es ist geklärt, was der Landesrechnungshof als Nachweis akzeptiert.", "en": "It is clarified what the state audit office accepts as proof."}, "met": false, "why": {"de": "Nein: Genau diese Klärung fehlt.", "en": "No: exactly this clarification is missing."}}, {"t": {"de": "Das Team kann den Umfang schätzen.", "en": "The team can estimate the scope."}, "met": true, "why": {"de": "Ja: mittelgroß und schätzbar.", "en": "Yes: medium-sized and estimable."}}], "verd": {"de": "Ein Punkt ist offen, aber er liegt außerhalb des Teams. Klären Sie ihn mit Kanzlerin Dr. Feldmann, bevor der Sprint beginnt.", "en": "One point is open, but it lies outside the team. Clarify it with Kanzlerin Dr. Feldmann before the sprint begins."}, "tools": ["req2code", "usp"]}, {"id": "ela", "who": "Ela", "role": {"de": "Projektleitung", "en": "Project lead"}, "spark": {"de": "„Vor dem Rollout liegt die vom Lenkungsgremium freigegebene Aktenordnung vor.“", "en": "“Before the rollout, the filing regulations approved by the steering committee are in place.”"}, "ask": [{"de": "Elas Funke ist eine Randbedingung, keine Funktion. Wie kommt sie ins Backlog?", "en": "Ela’s spark is a constraint, not a function. How does it get into the backlog?"}, {"de": "Welche Akzeptanzkriterien machen die Freigabe prüfbar?", "en": "Which acceptance criteria make the approval verifiable?"}, {"de": "Das Team fragt: „Können wir starten?“ Welcher offene Punkt hält den Start am stärksten auf?", "en": "The team asks: “Can we start?” Which open point holds up the start the most?"}, {"de": "Das Team fragt: „Warum hängen wir an dieser Freigabe?“ Was antworten Sie?", "en": "The team asks: “Why are we dependent on this approval?” What do you answer?"}], "st": [[{"t": {"de": "Als Entwicklerin möchte ich die Aktenordnung in die Software einbauen.", "en": "As a developer I want to build the filing regulations into the software."}, "ok": false, "why": {"de": "Die Aktenordnung ist ein Dokument mit einem Beschluss, nichts, was man „einbaut“. Die Zuordnung verfehlt, wer hier handelt.", "en": "The filing regulations are a document with a resolution, nothing you “build in”. The assignment misses who acts here."}}, {"t": {"de": "Als Lenkungsgremium möchte ich die Aktenordnung samt rechtlich geprüfter Aufbewahrungsfrist freigeben, damit die E-Akte rechtssicher starten kann. Im Backlog steht das als Vorbedingung mit Termin, nicht als Entwicklungsaufgabe.", "en": "As the steering committee I want to approve the filing regulations including the legally checked retention period, so that the e-file can start on a sound legal footing. In the backlog this is a precondition with a date, not a development task."}, "ok": true, "why": {"de": "Nicht jeder Funke wird eine Funktion. Die Freigabe ist Voraussetzung. Die Rolle ist das Gremium, das entscheidet, und der Termin (die nächste monatliche Sitzung) macht die Abhängigkeit in der Planung sichtbar.", "en": "Not every spark becomes a function. The approval is a precondition. The role is the committee that decides, and the date (the next monthly meeting) makes the dependency visible in the planning."}}, {"t": {"de": "Gar nicht aufnehmen: Die Freigabe ist Sache des Gremiums, nicht des Teams.", "en": "Do not include it at all: the approval is the committee’s business, not the team’s."}, "ok": false, "why": {"de": "Was nicht im Backlog steht, wird nicht geplant. Verzögert sich die Freigabe um einen Monat, rutscht alles andere mit, und niemand hat es kommen sehen.", "en": "What is not in the backlog is not planned. If the approval slips by a month, everything else slips with it, and nobody saw it coming."}}], [{"t": {"de": "Das Gremium sieht die Aktenordnung rechtzeitig.", "en": "The committee sees the filing regulations in time."}, "ok": false, "why": {"de": "„Rechtzeitig“ ist nicht prüfbar. Rechtzeitig wofür, und bis wann? Und „sehen“ ist weit entfernt von „freigeben“.", "en": "“In time” is not verifiable. In time for what, and by when? And “seeing” is far from “approving”."}}, {"t": {"de": "Die Aktenordnung ist vollständig und fehlerfrei.", "en": "The filing regulations are complete and free of errors."}, "ok": false, "why": {"de": "Vollständig gegenüber welchem Maßstab, fehlerfrei nach wessen Urteil? Das Kriterium lässt sich nicht abhaken und führt zu Streit.", "en": "Complete against which yardstick, error-free by whose judgement? The criterion cannot be ticked off and leads to argument."}}, {"t": {"de": "Gegeben die Aktenordnung liegt als Entwurf mit rechtlich geprüfter Aufbewahrungsfrist vor, wenn das Lenkungsgremium in seiner monatlichen Sitzung tagt, dann liegt ein dokumentierter Beschluss über die Freigabe vor.", "en": "Given the filing regulations exist as a draft with a legally checked retention period, when the steering committee meets in its monthly session, then a documented resolution on the approval exists."}, "ok": true, "why": {"de": "Ausgangslage, Ereignis und Ergebnis sind benannt. Das Ergebnis ist ein Beschluss, den man vorzeigen kann, und der Termin ist die monatliche Sitzung.", "en": "Starting point, event and result are named. The result is a resolution that can be shown, and the date is the monthly meeting."}}], [{"t": {"de": "Die Vorlage für das Gremium fehlt. Ohne Vorlage kann das Gremium in der nächsten Sitzung nicht entscheiden.", "en": "The submission for the committee is missing. Without it the committee cannot decide at the next meeting."}, "ok": true, "why": {"de": "Das ist der engste Engpass: Das Gremium tagt nur monatlich. Fehlt die Vorlage, rutscht der Beschluss um einen Monat und mit ihm der Rollout.", "en": "This is the tightest bottleneck: the committee meets only monthly. If the submission is missing, the resolution slips by a month, and the rollout with it."}}, {"t": {"de": "Die Frage, ob die Aufbewahrungsfrist 30 oder 50 Jahre beträgt, ist noch offen.", "en": "The question whether the retention period is 30 or 50 years is still open."}, "ok": false, "why": {"de": "Sie ist geklärt: Die Rechtsprüfung hat 50 Jahre bestätigt (Prüfungsordnung §12). Sie wieder aufzumachen, kostet Zeit, die der Plan nicht hat.", "en": "It is settled: the legal check has confirmed 50 years (examination regulations §12). Reopening it costs time the plan does not have."}}, {"t": {"de": "Ob das Gremium die Sitzung als Videokonferenz abhält.", "en": "Whether the committee holds the meeting as a video conference."}, "ok": false, "why": {"de": "Eine Formfrage, die den Beschluss nicht berührt. Sie hält den Start nicht auf.", "en": "A question of form that does not affect the resolution. It does not hold up the start."}}], [{"t": {"de": "„Das ist Sache der Projektleitung, damit haben Sie nichts zu tun.“", "en": "“That is the project lead’s business, it has nothing to do with you.”"}, "ok": false, "why": {"de": "Das Team plant dann blind. Eine Abhängigkeit, die man ihm verschweigt, taucht als Überraschung im Sprint auf.", "en": "The team then plans blind. A dependency withheld from it shows up as a surprise in the sprint."}}, {"t": {"de": "„Ohne Freigabe darf der Rollout nicht starten. Die nächste Sitzung ist der Termin, und die Vorlage muss davor stehen. Alles Weitere hängt daran.“", "en": "“Without the approval the rollout may not start. The next meeting is the date, and the submission has to be ready before it. Everything else depends on it.”"}, "ok": true, "why": {"de": "Die Abhängigkeit und der Termin werden offen benannt. Das Team kann Puffer einplanen und sieht, warum es wartet.", "en": "The dependency and the date are named openly. The team can plan a buffer and sees why it waits."}}, {"t": {"de": "„Das lösen wir irgendwie.“", "en": "“We will sort that out somehow.”"}, "ok": false, "why": {"de": "Eine Beruhigung ohne Inhalt. Weder Termin noch Verantwortliche sind genannt, und die Unsicherheit bleibt beim Team.", "en": "Reassurance without substance. Neither date nor responsible person is named, and the uncertainty stays with the team."}}]], "act3": {"de": "Nächster Schritt: Die Vorlage für das Gremium als Aufgabe mit Verantwortlicher ins Paket schreiben und den Termin der nächsten Sitzung bestätigen lassen.", "en": "Next step: write the submission for the committee into the package as a task with a responsible person and have the date of the next meeting confirmed."}, "refine": [{"de": "Was brauchen Sie von uns, damit Sie diese Story schätzen und testen können?", "en": "What do you need from us so that you can estimate and test this story?"}, {"de": "Welche Teile Ihrer Arbeit hängen an der Freigabe, und was passiert bei einem Monat Verzug?", "en": "Which parts of your work depend on the approval, and what happens with a month’s delay?"}, {"de": "Welchen Puffer planen Sie ein, falls die Sitzung nicht zustande kommt?", "en": "What buffer do you plan in case the meeting does not take place?"}], "stand": {"de": "Das Lenkungsgremium tagt monatlich. Der Entwurf der Aktenordnung liegt vor, die Aufbewahrungsfrist ist rechtlich geprüft (50 Jahre, Prüfungsordnung §12). Der Termin der nächsten Sitzung ist noch nicht bestätigt, die Vorlage für das Gremium ist noch nicht erstellt.", "en": "The steering committee meets monthly. The draft of the filing regulations exists, the retention period has been legally checked (50 years, examination regulations §12). The date of the next meeting has not been confirmed, the submission for the committee has not been prepared yet."}, "chk": [{"t": {"de": "Rolle und Nutzen sind benannt.", "en": "Role and benefit are named."}, "met": true, "why": {"de": "Ja: Lenkungsgremium, Nutzen ist der rechtssichere Start der E-Akte.", "en": "Yes: steering committee, the benefit is a legally sound start of the e-file."}}, {"t": {"de": "Die Aufbewahrungsfrist ist rechtlich geprüft.", "en": "The retention period has been legally checked."}, "met": true, "why": {"de": "Ja: 50 Jahre nach Prüfungsordnung §12.", "en": "Yes: 50 years under examination regulations §12."}}, {"t": {"de": "Der Termin der nächsten Sitzung ist bestätigt.", "en": "The date of the next meeting is confirmed."}, "met": false, "why": {"de": "Nein: Er ist noch nicht bestätigt.", "en": "No: it has not been confirmed yet."}}, {"t": {"de": "Die Vorlage für das Gremium ist erstellt.", "en": "The submission for the committee has been prepared."}, "met": false, "why": {"de": "Nein: Sie fehlt noch.", "en": "No: it is still missing."}}], "verd": {"de": "Zwei Punkte sind offen, beide mit Termindruck. Als Vorbedingung ist das Paket sofort ins Backlog zu nehmen, ein Sprintstart hängt an der Freigabe.", "en": "Two points are open, both under time pressure. As a precondition the package goes into the backlog right away, a sprint start depends on the approval."}, "tools": ["stoer", "fall"]}], "tools": {"usp": {"href": "./user-story-puzzle.html", "name": "User Story Puzzle", "why": {"de": "Story-Bausteine und die INVEST-Kriterien (unabhängig, verhandelbar, wertvoll, schätzbar, klein, testbar) an einem Beispiel-Backlog üben.", "en": "Practise story building blocks and the INVEST criteria (independent, negotiable, valuable, estimable, small, testable) on an example backlog."}}, "map": {"href": "./story-mapping-kundenperspektiven.html", "name": "Story Mapping Kundenperspektiven", "why": {"de": "Fertige Stories entlang einer Reise ordnen und in Releases schneiden.", "en": "Arrange finished stories along a journey and slice them into releases."}}, "fanfa": {"href": "./fa-nfa-rollen-spuren.html", "name": "FA/NFA Rollen-Spuren", "why": {"de": "Funktionale und nicht-funktionale Anforderungen aus Sicht der Rollen trennen, etwa den Zugriffsschutz.", "en": "Separate functional and non-functional requirements from the roles’ viewpoint, for example access protection."}}, "req2code": {"href": "./requirements-to-code-explorer.html", "name": "Requirements to Code Explorer", "why": {"de": "Eine einzelne Anforderung bis zu Gherkin-Akzeptanzkriterien und zur Übergabe an die Entwicklung verfolgen.", "en": "Follow a single requirement through to Gherkin acceptance criteria and the handover to development."}}, "stoer": {"href": "./stoerfall-labor.html", "name": "Störfall-Labor", "why": {"de": "Was passiert, wenn eine Annahme im Sprint kippt, und wie die Lehre zurückfließt.", "en": "What happens when an assumption collapses in the sprint, and how the lesson flows back."}}, "fall": {"href": "./hochschule-nordwest-steckbrief.html", "name": "Fallwelt Hochschule Nordwest", "why": {"de": "Alle Fallfakten (Aufbewahrungsfrist, Prozess, Personas) zum Nachschlagen.", "en": "All case facts (retention period, process, personas) for reference."}}}, "ui": {"pickT": {"de": "1 · Funken wählen", "en": "1 · Choose a spark"}, "pickH": {"de": "Vier Anforderungsfunken aus „Vom Impuls zur Anforderung“. Welchen machen wir sprintreif?", "en": "Four requirement sparks from “Vom Impuls zur Anforderung”. Which one do we make sprint-ready?"}, "sparkLb": {"de": "Funke", "en": "Spark"}, "s1": {"de": "User Story", "en": "User story"}, "s2": {"de": "Akzeptanzkriterien", "en": "Acceptance criteria"}, "s3": {"de": "Definition of Ready", "en": "Definition of Ready"}, "s4": {"de": "Übergabe", "en": "Handover"}, "s5": {"de": "Check", "en": "Check"}, "hit": {"de": "Treffer.", "en": "Hit."}, "miss": {"de": "Nicht ganz.", "en": "Not quite."}, "better": {"de": "Besser wäre gewesen:", "en": "Better would have been:"}, "chosen": {"de": "Sie haben gewählt:", "en": "You chose:"}, "next": {"de": "Weiter →", "en": "Next →"}, "toCheck": {"de": "Zum Übergabe-Check →", "en": "To the handover check →"}, "done": {"de": "Übergabe-Karte anzeigen →", "en": "Show handover card →"}, "other": {"de": "Anderen Funken wählen", "en": "Choose another spark"}, "act": {"de": "Nächster Schritt", "en": "Next step"}, "refineH": {"de": "Beispielfragen fürs Refinement", "en": "Example questions for refinement"}, "checkH": {"de": "Übergabe-Check", "en": "Handover check"}, "checkSub": {"de": "Ist das Paket bereit für den Sprint? Beurteilen Sie jede Aussage anhand des Stands (Übungsannahme).", "en": "Is the package ready for the sprint? Judge each statement against the status (exercise assumption)."}, "stand": {"de": "Stand des Pakets", "en": "Status of the package"}, "met": {"de": "Erfüllt", "en": "Met"}, "open": {"de": "Offen", "en": "Open"}, "right": {"de": "Richtig.", "en": "Right."}, "wrong": {"de": "Nicht ganz.", "en": "Not quite."}, "verdH": {"de": "Einschätzung", "en": "Assessment"}, "v0": {"de": "Bereit für den Sprint.", "en": "Ready for the sprint."}, "v1": {"de": "Bereit mit Vorbehalt.", "en": "Ready with a caveat."}, "v2": {"de": "Noch nicht sprintreif.", "en": "Not sprint-ready yet."}, "cardH": {"de": "Übergabe-Karte", "en": "Handover card"}, "cardSub": {"de": "Das nehmen Sie ins Refinement mit dem Team mit.", "en": "This is what you take into refinement with the team."}, "lSpark": {"de": "Funke", "en": "Spark"}, "lStory": {"de": "User Story", "en": "User story"}, "lAc": {"de": "Akzeptanzkriterien", "en": "Acceptance criteria"}, "lReady": {"de": "Stand der Definition of Ready", "en": "Status of the Definition of Ready"}, "lBlock": {"de": "Größter offener Punkt", "en": "Biggest open point"}, "lRef": {"de": "Fragen fürs Refinement", "en": "Questions for refinement"}, "lV": {"de": "Einschätzung", "en": "Assessment"}, "lN": {"de": "Weiter mit", "en": "Continue with"}, "mOk": {"de": "erfüllt", "en": "met"}, "mOpen": {"de": "offen", "en": "open"}, "score": {"de": "Treffer", "en": "Hits"}, "ofSt": {"de": "von 4 Stationen", "en": "of 4 stations"}, "ofCh": {"de": "von 4 Prüfpunkten", "en": "of 4 checks"}, "spark": {"de": "Aus dem Funken ist ein Paket geworden, das ein Team im Refinement aufnehmen kann.", "en": "The spark has become a package a team can take up in refinement."}, "dl": {"de": "Karte herunterladen (Markdown)", "en": "Download card (Markdown)"}, "fillT": {"de": "Der Funke von %s ist in die Prompts eingesetzt.", "en": "The spark from %s is inserted into the prompts."}}};
+  var lang = 'de', state = null;
+  function store(k, v){ try{ if(v===undefined){ return window.sessionStorage.getItem(k); } window.sessionStorage.setItem(k, v); }catch(e){ return null; } }
+  function T(o){ return (o && (o[lang] || o.de)) || ''; }
+  function U(k){ return T(D.ui[k]); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function scrollTo(el){ if(el && el.scrollIntoView){ try{ el.scrollIntoView({behavior:'smooth', block:'start'}); }catch(e){ el.scrollIntoView(); } } }
+  var sv = store('paket-lang'); if(sv==='en'||sv==='de'){ lang = sv; }
+
+  /* ---------- i18n für statische Texte ---------- */
+  var i18nEls = document.querySelectorAll('[data-i18n-en]');
+  var deCache = [];
+  i18nEls.forEach(function(el, n){ deCache[n] = el.innerHTML; });
+  function applyStatic(){
+    i18nEls.forEach(function(el, n){
+      el.innerHTML = (lang === 'en') ? el.getAttribute('data-i18n-en') : deCache[n];
+    });
+    document.documentElement.lang = lang;
+    document.getElementById('langBtn').textContent = (lang === 'en') ? 'DE' : 'EN';
+    document.title = (lang === 'en') ? 'From Requirements Package to Sprint – Implementation room' : 'Vom Anforderungspaket zum Sprint – Umsetzungsraum';
+  }
+
+  function find(id){ for(var n=0;n<D.pk.length;n++){ if(D.pk[n].id===id){ return D.pk[n]; } } }
+  function best(list){ for(var n=0;n<list.length;n++){ if(list[n].ok){ return list[n]; } } }
+
+  /* ---------- Karten ---------- */
+  function renderCards(){
+    var h = '';
+    D.pk.forEach(function(pk){
+      var sel = state && state.pk.id === pk.id ? ' sel' : '';
+      h += '<button type="button" class="imp' + sel + '" data-id="' + pk.id + '" aria-pressed="' + (sel ? 'true' : 'false') + '">' +
+        '<span class="who">' + esc(pk.who) + ' · ' + esc(T(pk.role)) + '</span>' +
+        '<span class="qt">' + esc(T(pk.spark)) + '</span></button>';
+    });
+    document.getElementById('cards').innerHTML = h;
+    document.querySelectorAll('.imp').forEach(function(b){
+      b.addEventListener('click', function(){ start(b.getAttribute('data-id')); });
+    });
+  }
+  function start(id){
+    state = { pk: find(id), step: 0, picks: [null,null,null,null], hits: 0, chk: [null,null,null,null], chkHits: 0, finished: false };
+    renderCards(); fillPrompts();
+    document.getElementById('flow').classList.add('show');
+    document.getElementById('outCard').innerHTML = '';
+    renderFlow();
+    scrollTo(document.getElementById('flow'));
+  }
+  function reset(){
+    state = null; renderCards(); fillPrompts();
+    document.getElementById('flow').classList.remove('show');
+    document.getElementById('outCard').innerHTML = '';
+    scrollTo(document.getElementById('pick'));
+  }
+  function openCount(pk){ var c = 0; pk.chk.forEach(function(x){ if(!x.met){ c++; } }); return c; }
+  function verdictKey(pk){ var o = openCount(pk); return o === 0 ? 0 : (o === 1 ? 1 : 2); }
+
+  /* ---------- Ablauf ---------- */
+  function track(){
+    var h = '<div class="track">';
+    for(var n=0;n<5;n++){
+      var done = n < state.step || (n === state.step && n < 4 && state.picks[n] !== null) || (n === 4 && state.step === 4 && allChecked());
+      var cls = done ? 'pill done' : (n === state.step ? 'pill on' : 'pill');
+      h += '<span class="' + cls + '">' + (n+1) + ' · ' + esc(U('s'+(n+1))) + '</span>';
+    }
+    return h + '</div>';
+  }
+  function allChecked(){ for(var n=0;n<4;n++){ if(state.chk[n] === null){ return false; } } return true; }
+  function header(){
+    var pk = state.pk;
+    return track() + '<div class="quote">' + esc(T(pk.spark)) + '<small>' + esc(U('sparkLb')) + ' · ' + esc(pk.who) + ' · ' + esc(T(pk.role)) + '</small></div>';
+  }
+  function renderFlow(){
+    if(!state){ return; }
+    if(state.step < 4){ renderStation(); } else { renderCheck(); }
+  }
+  function renderStation(){
+    var pk = state.pk, s = state.step, h = header();
+    h += '<p class="qline">' + esc(T(pk.ask[s])) + '</p>';
+    var opts = pk.st[s], pick = state.picks[s];
+    h += '<div class="opts">';
+    opts.forEach(function(o, k){
+      var cls = 'opt', mark = '';
+      if(pick !== null){
+        if(o.ok){ cls += ' ok'; mark = '<span class="mark">✓</span>'; }
+        else if(k === pick){ cls += ' bad'; mark = '<span class="mark">✗</span>'; }
+      }
+      h += '<button type="button" class="' + cls + '" data-k="' + k + '"' + (pick !== null ? ' disabled' : '') + '>' + mark + esc(T(o.t)) + '</button>';
+    });
+    h += '</div>';
+    if(pick !== null){
+      var ch = opts[pick], bst = best(opts), hit = ch.ok;
+      h += '<div class="fb' + (hit ? ' hit' : '') + '">';
+      h += '<p><span class="tag">' + esc(hit ? U('hit') : U('miss')) + '</span> ' + esc(T(ch.why)) + '</p>';
+      if(!hit){ h += '<p><b>' + esc(U('better')) + '</b> ' + esc(T(bst.t)) + '</p><p>' + esc(T(bst.why)) + '</p>'; }
+      if(s === 2){ h += '<div class="ansbox"><b>' + esc(U('act')) + ':</b> ' + esc(T(pk.act3)) + '</div>'; }
+      if(s === 3){
+        h += '<div class="ansbox"><b>' + esc(U('refineH')) + '</b><ul>';
+        pk.refine.forEach(function(q){ h += '<li>' + esc(T(q)) + '</li>'; });
+        h += '</ul></div>';
+      }
+      h += '</div>';
+      h += '<div class="acts"><button type="button" class="btn" id="nextBtn">' + esc(s < 3 ? U('next') : U('toCheck')) + '</button>' +
+        '<button type="button" class="btn ghost" id="otherBtn">' + esc(U('other')) + '</button></div>';
+    }
+    document.getElementById('stage').innerHTML = h;
+    document.querySelectorAll('.opt').forEach(function(b){
+      b.addEventListener('click', function(){
+        if(state.picks[state.step] !== null){ return; }
+        var k = parseInt(b.getAttribute('data-k'), 10);
+        state.picks[state.step] = k;
+        if(state.pk.st[state.step][k].ok){ state.hits++; }
+        renderStation();
+      });
+    });
+    var nb = document.getElementById('nextBtn');
+    if(nb){ nb.addEventListener('click', function(){ state.step++; renderFlow(); }); }
+    var ob = document.getElementById('otherBtn');
+    if(ob){ ob.addEventListener('click', reset); }
+  }
+  function renderCheck(){
+    var pk = state.pk, h = header();
+    h += '<h2 style="margin:0 0 4px;font-size:24px">' + esc(U('checkH')) + '</h2><p class="sub">' + esc(U('checkSub')) + '</p>';
+    h += '<div class="stand"><b>' + esc(U('stand')) + '</b><p>' + esc(T(pk.stand)) + '</p></div><div class="chk">';
+    pk.chk.forEach(function(c, i){
+      var a = state.chk[i], cls = 'chkrow';
+      if(a !== null){ cls += (a === c.met) ? ' ok' : ' bad'; }
+      h += '<div class="' + cls + '"><p class="stmt">' + esc(T(c.t)) + '</p><div class="btns">';
+      [[true, 'met'], [false, 'open']].forEach(function(pair){
+        var picked = a !== null && a === pair[0];
+        h += '<button type="button" class="tgl' + (picked ? ' picked' : '') + '" data-i="' + i + '" data-v="' + (pair[0] ? '1' : '0') + '"' + (a !== null ? ' disabled' : '') + '>' + esc(U(pair[1])) + '</button>';
+      });
+      h += '</div>';
+      if(a !== null){ h += '<p class="wy"><b>' + esc(a === c.met ? U('right') : U('wrong')) + '</b> ' + esc(T(c.why)) + '</p>'; }
+      h += '</div>';
+    });
+    h += '</div>';
+    if(allChecked()){
+      var vk = verdictKey(pk);
+      h += '<div class="verdict v' + vk + '"><p class="vh">' + esc(U('verdH')) + ': ' + esc(U('v' + vk)) + '</p><p>' + esc(T(pk.verd)) + '</p></div>';
+      h += '<div class="acts"><button type="button" class="btn" id="doneBtn">' + esc(U('done')) + '</button><button type="button" class="btn ghost" id="otherBtn">' + esc(U('other')) + '</button></div>';
+    } else {
+      h += '<div class="acts"><button type="button" class="btn ghost" id="otherBtn">' + esc(U('other')) + '</button></div>';
+    }
+    document.getElementById('stage').innerHTML = h;
+    document.querySelectorAll('.tgl').forEach(function(b){
+      b.addEventListener('click', function(){
+        var i = parseInt(b.getAttribute('data-i'), 10);
+        if(state.chk[i] !== null){ return; }
+        var v = b.getAttribute('data-v') === '1';
+        state.chk[i] = v;
+        if(v === state.pk.chk[i].met){ state.chkHits++; }
+        renderCheck();
+      });
+    });
+    var db = document.getElementById('doneBtn');
+    if(db){ db.addEventListener('click', function(){ state.finished = true; renderCard(); scrollTo(document.getElementById('outCard')); }); }
+    var ob = document.getElementById('otherBtn');
+    if(ob){ ob.addEventListener('click', reset); }
+  }
+
+  /* ---------- Karte ---------- */
+  function cardData(){
+    var pk = state.pk;
+    return { pk: pk, s: best(pk.st[0]), a: best(pk.st[1]), b: best(pk.st[2]), vk: verdictKey(pk), tools: pk.tools.map(function(k){ return D.tools[k]; }) };
+  }
+  function renderCard(){
+    if(!state || !state.finished){ return; }
+    var c = cardData(), pk = c.pk, h = '';
+    h += '<div class="card-out"><h2>' + esc(U('cardH')) + '</h2><p class="sub">' + esc(U('cardSub')) + '</p>';
+    h += '<div class="row"><div class="lb">' + esc(U('lSpark')) + ' · ' + esc(pk.who) + '</div><div class="vl">' + esc(T(pk.spark)) + '</div></div>';
+    h += '<div class="row"><div class="lb">' + esc(U('lStory')) + '</div><div class="vl"><b>' + esc(T(c.s.t)) + '</b></div></div>';
+    h += '<div class="row"><div class="lb">' + esc(U('lAc')) + '</div><div class="vl gk">' + esc(T(c.a.t)) + '</div></div>';
+    h += '<div class="row"><div class="lb">' + esc(U('lReady')) + '</div><div class="vl"><ul class="rl">';
+    pk.chk.forEach(function(x){ h += '<li><span class="mk ' + (x.met ? 'ok' : 'op') + '">' + esc(x.met ? U('mOk') : U('mOpen')) + '</span> ' + esc(T(x.t)) + '</li>'; });
+    h += '</ul></div></div>';
+    h += '<div class="row"><div class="lb">' + esc(U('lBlock')) + '</div><div class="vl">' + esc(T(c.b.t)) + '</div></div>';
+    h += '<div class="row"><div class="lb">' + esc(U('lRef')) + '</div><div class="vl"><ul class="rl">';
+    pk.refine.forEach(function(q){ h += '<li>' + esc(T(q)) + '</li>'; });
+    h += '</ul></div></div>';
+    h += '<div class="row"><div class="lb">' + esc(U('lV')) + '</div><div class="vl"><b>' + esc(U('v' + c.vk)) + '</b> ' + esc(T(pk.verd)) + '</div></div>';
+    h += '<div class="row"><div class="lb">' + esc(U('lN')) + '</div><div class="vl"><ul class="rl">';
+    c.tools.forEach(function(t){ h += '<li><a href="' + t.href + '">' + esc(t.name) + '</a> – ' + esc(T(t.why)) + '</li>'; });
+    h += '</ul></div></div>';
+    h += '<span class="score">' + esc(U('score')) + ': ' + state.hits + ' ' + esc(U('ofSt')) + ' · ' + state.chkHits + ' ' + esc(U('ofCh')) + '</span>';
+    h += '<p class="sub" style="margin-top:12px">' + esc(U('spark')) + '</p>';
+    h += '<div class="acts"><button type="button" class="btn" id="dlBtn">' + esc(U('dl')) + '</button><button type="button" class="btn ghost" id="otherBtn2">' + esc(U('other')) + '</button></div></div>';
+    document.getElementById('outCard').innerHTML = h;
+    document.getElementById('dlBtn').addEventListener('click', download);
+    document.getElementById('otherBtn2').addEventListener('click', reset);
+  }
+  function download(){
+    var c = cardData(), pk = c.pk, L = [];
+    L.push('# ' + U('cardH') + ' – ' + (lang==='en' ? 'From Requirements Package to Sprint' : 'Vom Anforderungspaket zum Sprint'));
+    L.push('');
+    L.push('**' + pk.who + ' (' + T(pk.role) + '):** ' + T(pk.spark));
+    L.push('');
+    L.push('- **' + U('lStory') + ':** ' + T(c.s.t));
+    L.push('- **' + U('lAc') + ':** ' + T(c.a.t));
+    L.push('- **' + U('lReady') + ':**');
+    pk.chk.forEach(function(x){ L.push('  - ' + (x.met ? U('mOk') : U('mOpen')) + ': ' + T(x.t)); });
+    L.push('- **' + U('lBlock') + ':** ' + T(c.b.t));
+    L.push('- **' + U('lRef') + ':**');
+    pk.refine.forEach(function(q){ L.push('  - ' + T(q)); });
+    L.push('- **' + U('lV') + ':** ' + U('v' + c.vk) + ' ' + T(pk.verd));
+    L.push('- **' + U('lN') + ':** ' + c.tools.map(function(t){ return t.name; }).join(', '));
+    L.push('- **' + U('score') + ':** ' + state.hits + ' ' + U('ofSt') + ', ' + state.chkHits + ' ' + U('ofCh'));
+    L.push('');
+    L.push('_' + U('spark') + '_');
+    L.push('');
+    L.push('Michaela Kühn · www.michaela-kuehn.com');
+    var blob = new Blob([L.join('\n')], { type: 'text/markdown;charset=utf-8' });
+    var url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = 'uebergabe-karte-' + pk.id + (lang==='en' ? '-en' : '') + '.md';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 500);
+  }
+
+  /* ---------- Prompt-Reiter + Kopieren ---------- */
+  var cp = document.getElementById('copyBtn'), curP = 0;
+  document.querySelectorAll('.ptab').forEach(function(tb){
+    tb.addEventListener('click', function(){
+      curP = parseInt(tb.getAttribute('data-p'), 10);
+      document.querySelectorAll('.ptab').forEach(function(x){ var on = x === tb; x.classList.toggle('on', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      document.querySelectorAll('.pbody').forEach(function(b){ b.hidden = (parseInt(b.getAttribute('data-p'), 10) !== curP); });
+    });
+  });
+  cp.addEventListener('click', function(){
+    var txt = document.querySelector('.pbody[data-p="' + curP + '"] .ptxt').textContent;
+    function ok(){ cp.textContent = (lang==='en') ? 'Copied' : 'Kopiert'; setTimeout(function(){ cp.textContent = (lang==='en') ? 'Copy prompt' : 'Prompt kopieren'; }, 1500); }
+    try{ navigator.clipboard.writeText(txt).then(ok, function(){}); }catch(e){
+      var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); ok(); }catch(e2){} document.body.removeChild(ta);
+    }
+  });
+  function fillPrompts(){
+    var note = document.getElementById('pfill');
+    document.querySelectorAll('.ptxt').forEach(function(el){
+      var raw = (lang === 'en') ? el.getAttribute('data-i18n-en') : el.getAttribute('data-de');
+      if(state){
+        var sp = T(state.pk.spark);
+        raw = raw.replace(/[„“]…[“”]/, function(){ return sp; });
+      }
+      el.textContent = raw;
+    });
+    if(state){ note.textContent = U('fillT').replace('%s', state.pk.who); note.hidden = false; } else { note.hidden = true; }
+  }
+
+  /* ---------- Sprache ---------- */
+  function refresh(){
+    applyStatic(); renderCards(); renderFlow(); renderCard(); fillPrompts();
+    cp.textContent = (lang==='en') ? 'Copy prompt' : 'Prompt kopieren';
+    document.getElementById('pickT').textContent = U('pickT');
+    document.getElementById('pickH').textContent = U('pickH');
+  }
+  document.getElementById('langBtn').addEventListener('click', function(){
+    lang = (lang === 'de') ? 'en' : 'de'; store('paket-lang', lang); refresh();
+  });
+
+  /* ---------- Beamer ---------- */
+  var BEAMER_LEVELS = [
+    { classes: [], label: '☀ Beamer' },
+    { classes: ['beamer'], label: '☀ Beamer XL' },
+    { classes: ['beamer','beamer-xl'], label: '☀ Beamer XXL' },
+    { classes: ['beamer','beamer-xl','beamer-xxl'], label: '☀ Normal' }
+  ];
+  var beamerLevel = 0, beamerBtn = document.getElementById('beamerBtn');
+  beamerBtn.addEventListener('click', function(){
+    beamerLevel = (beamerLevel + 1) % 4;
+    document.documentElement.classList.remove('beamer','beamer-xl','beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    beamerBtn.textContent = BEAMER_LEVELS[beamerLevel].label;
+  });
+  refresh();
+})();
+
+</script>
+</body>
+</html>
