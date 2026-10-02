@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Vision &amp; Zielbild-Werkstatt – Möglichkeitsraum</title>
+<style>
+html,body{color-scheme:light}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#fffdf8;--panel:#ffffff;--ink:#241d12;--muted:#5f5646;--line:#e9dfcb;
+  --accent:#b45309;--accent-soft:#fef3c7;--accent-ink:#ffffff;
+  --good:#166534;--good-soft:#e8f6ec;--warn:#92400e;--warn-soft:#fdeede;
+  --card:#faf5e9;
+  --mono:ui-monospace,"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  --sans:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body{background:radial-gradient(circle at top left,#fff4d6 0%,transparent 24%),radial-gradient(circle at top right,#fdf0e1 0%,transparent 22%),var(--bg)}
+button{font-family:var(--sans);touch-action:manipulation}
+a{color:var(--accent)}
+.signature{position:fixed;top:14px;right:28px;z-index:1000;text-align:right;line-height:1.3;font-size:14px;background:rgba(255,253,248,.94);padding:4px 10px;border-radius:8px;max-width:70vw}
+.signature strong{display:block;font-size:15px;color:var(--ink)}
+.signature a{font-size:14px;text-decoration:none;font-weight:600}
+.wrap{max-width:1180px;margin:0 auto;padding:76px 28px 40px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.back-link{font-size:15px;font-weight:700;color:var(--accent);text-decoration:none}
+.back-link:hover{text-decoration:underline}
+.ctrls{display:flex;gap:10px;flex-wrap:wrap}
+.beamer-btn,.lang-btn{background:transparent;border:1.5px solid var(--line);color:var(--muted);font-size:15px;padding:10px 20px;border-radius:999px;cursor:pointer;min-height:44px}
+.beamer-btn:hover,.lang-btn:hover{border-color:var(--accent)}
+html.beamer .beamer-btn,html.beamer-xl .beamer-btn,html.beamer-xxl .beamer-btn{background:var(--ink);color:#fff;border-color:var(--ink)}
+.hero{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;box-shadow:0 16px 34px rgba(36,29,18,.08);padding:36px 36px 30px;margin:0 0 26px}
+.eyebrow{display:block;font-size:14px;letter-spacing:.12em;font-weight:700;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
+h1{margin:0 0 10px;font-size:clamp(28px,4vw,42px);line-height:1.1;letter-spacing:-.01em}
+.lead{margin:0;font-size:18px;line-height:1.6}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 16px rgba(36,29,18,.03);padding:24px 26px;margin-bottom:22px}
+.panel h2{margin:0 0 6px;font-size:24px}
+.panel .sub{margin:0 0 16px;color:var(--muted);font-size:16px}
+.tgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.tcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.tcard{min-width:0;overflow-wrap:anywhere}
+.tcard h3{margin:0 0 4px;font-size:17px;color:var(--accent)}
+.tcard p{margin:0;font-size:15px;line-height:1.5}
+.schablone{margin-top:14px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.imp{overflow-wrap:anywhere;min-width:0;text-align:left;background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:18px 20px;cursor:pointer;min-height:48px;box-shadow:0 6px 16px rgba(36,29,18,.03);transition:border-color .15s,background .15s;color:var(--ink)}
+.imp:hover,.imp.sel{border-color:var(--accent);background:var(--accent-soft)}
+.imp .who{display:block;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:6px}
+.imp .qt{display:block;font-size:18px;line-height:1.5;font-weight:600}
+.imp .ctx{display:block;font-size:15px;color:var(--muted);margin-top:8px}
+#flow{display:none}
+#flow.show{display:block}
+.track{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.pill{border-radius:999px;border:1.5px solid var(--line);padding:6px 14px;font-size:14px;font-weight:700;color:var(--muted);background:#fff}
+.pill.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.pill.done{background:var(--good-soft);border-color:#b8dfc4;color:var(--good)}
+.quote{overflow-wrap:anywhere;min-width:0;border-left:5px solid var(--accent);background:var(--accent-soft);border-radius:4px;padding:16px 20px;font-size:19px;font-weight:600;line-height:1.55;margin:0 0 18px;color:#5a2d06}
+.quote small{display:block;font-size:14px;font-weight:700;margin-top:8px;color:var(--muted);letter-spacing:.04em}
+.qline{font-size:20px;font-weight:700;margin:0 0 12px}
+.opts{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.opt{overflow-wrap:anywhere;hyphens:auto;min-width:0;text-align:left;background:#fff;border:2px solid var(--line);border-radius:12px;padding:14px 18px;font-size:17px;line-height:1.5;color:var(--ink);cursor:pointer;min-height:48px}
+.opt:hover:not([disabled]){border-color:var(--accent);background:var(--accent-soft)}
+.opt[disabled]{cursor:default}
+.opt.ok{border-color:#4ea36a;background:var(--good-soft)}
+.opt.bad{border-color:#d28a4c;background:var(--warn-soft)}
+.opt .mark{font-weight:800;margin-right:6px}
+.fb{margin-top:16px;border:1px solid var(--line);border-left:6px solid var(--accent);background:var(--card);border-radius:4px;padding:16px 20px}
+.fb.hit{border-left-color:#4ea36a}
+.fb{min-width:0}
+.fb p{margin:0 0 8px;font-size:17px;line-height:1.55;overflow-wrap:anywhere;hyphens:auto}
+.fb p:last-child{margin-bottom:0}
+.fb .tag{font-weight:800}
+.fb .ansbox{margin-top:10px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:12px 14px;font-size:17px}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.btn{background:var(--accent);color:var(--accent-ink);border:2px solid var(--accent);border-radius:12px;padding:12px 22px;font-size:16px;font-weight:700;cursor:pointer;min-height:48px}
+.btn:hover{filter:brightness(.93)}
+.btn.ghost{background:#fff;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--accent)}
+.card-out{border:2px solid var(--ink);border-radius:16px;background:var(--card);padding:22px 26px;margin:22px 0;box-shadow:0 10px 24px rgba(36,29,18,.06)}
+.card-out h2{margin:0 0 2px;font-size:24px}
+.card-out .sub{margin:0 0 14px;color:var(--muted);font-size:16px}
+.row{display:grid;grid-template-columns:200px 1fr;gap:6px 16px;padding:10px 0;border-top:1px solid var(--line)}
+.row .lb{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);padding-top:2px}
+.row .vl{font-size:17px;min-width:0;overflow-wrap:anywhere}
+.row .vl b,.row .vl li{overflow-wrap:anywhere}
+.row ul{margin:0;padding-left:18px}
+.score{display:inline-block;margin-top:10px;border-radius:999px;background:var(--ink);color:#fff;font-weight:700;font-size:14px;padding:6px 16px}
+.ptabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.ptab{border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-size:15px;font-weight:700;padding:10px 18px;cursor:pointer;min-height:44px}
+.ptab:hover{border-color:var(--accent)}
+.ptab.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.pp{margin:0 0 10px;font-size:17px;color:var(--muted)}
+.pbody[hidden]{display:none}
+.pfill{margin:0 0 12px;font-size:15px;font-weight:600;color:var(--good)}
+.pfill[hidden]{display:none}
+.code{overflow-wrap:anywhere;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-family:var(--mono);font-size:15px;line-height:1.6;white-space:pre-wrap}
+.copy{margin-top:10px}
+.crosslink{margin-top:20px;font-size:14px;color:var(--muted)}
+.crosslink a{color:var(--accent);font-weight:700;text-decoration:none}
+.crosslink a:hover{text-decoration:underline}
+.crosslink ul{margin:8px 0 0;padding-left:20px}
+.crosslink li{margin-bottom:4px}
+footer{max-width:1180px;margin:40px auto 40px;padding:0 28px}
+.footer-sig{font-size:14px;color:var(--muted);margin:0 0 16px;line-height:1.6}
+.footer-sig a{text-decoration:none;font-weight:600}
+.footer-details{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:start}
+.footer-box{border:1px solid var(--line);border-radius:16px;background:var(--panel);overflow:hidden}
+.footer-box[open]{grid-column:1/-1}
+.footer-summary{cursor:pointer;padding:12px 16px;font-weight:700;font-size:15px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.footer-summary::-webkit-details-marker{display:none}
+.footer-summary:after{content:"+";color:var(--accent);font-size:18px}
+.footer-box[open] .footer-summary:after{content:"–"}
+.footer-content{padding:0 16px 16px}
+.footer-mono{font-family:var(--mono);font-size:14px;line-height:1.55}
+.footer-mono div{white-space:pre-wrap}
+.footer-sans{font-size:16px;line-height:1.6}
+.footer-table{width:100%;border-collapse:collapse;font-size:15px}
+.footer-table td,.footer-table th{text-align:left;padding:6px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.skript-step{margin-bottom:12px}
+.footer-glossary{margin:0}
+.footer-glossary dt{font-weight:700;color:var(--ink);font-size:15px;margin-top:12px}
+.footer-glossary dt:first-child{margin-top:0}
+.footer-glossary dd{margin:2px 0 0;color:var(--muted);font-size:14px;line-height:1.5}
+@media(max-width:900px){
+  .footer-details{grid-template-columns:1fr}
+  .tgrid{grid-template-columns:repeat(2,1fr)}
+  .cards{grid-template-columns:1fr}
+  .row{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .wrap{padding:64px 16px 32px}
+  .signature{top:6px;right:10px;padding:3px 8px;max-width:60vw}
+  .hero{padding:22px 18px}
+  .panel{padding:18px}
+  .tgrid{grid-template-columns:1fr}
+  footer{padding:0 16px}
+}
+html.beamer{--muted:#3D4A5C}
+html.beamer .wrap{max-width:1400px}
+html.beamer .lead,html.beamer .panel .sub,html.beamer .fb p,html.beamer .opt,html.beamer .row .vl,html.beamer .tcard p,html.beamer .quote,html.beamer .imp .qt,html.beamer .qline,html.beamer .pp,html.beamer .code{font-size:22px}
+html.beamer h1{font-size:46px}
+html.beamer .panel h2,html.beamer .card-out h2{font-size:44px}
+html.beamer .eyebrow,html.beamer .imp .who,html.beamer .imp .ctx,html.beamer .row .lb,html.beamer .pill,html.beamer .quote small,html.beamer .crosslink,html.beamer .score,html.beamer .tcard h3,html.beamer .ptab,html.beamer .pfill{font-size:15px}
+html.beamer footer{display:none}
+html.beamer-xl .lead,html.beamer-xl .panel .sub,html.beamer-xl .fb p,html.beamer-xl .opt,html.beamer-xl .row .vl,html.beamer-xl .tcard p,html.beamer-xl .quote,html.beamer-xl .imp .qt,html.beamer-xl .qline,html.beamer-xl .pp,html.beamer-xl .code{font-size:28px}
+html.beamer-xl h1{font-size:54px}
+html.beamer-xl .panel h2,html.beamer-xl .card-out h2{font-size:54px}
+html.beamer-xl .eyebrow,html.beamer-xl .imp .who,html.beamer-xl .imp .ctx,html.beamer-xl .row .lb,html.beamer-xl .pill,html.beamer-xl .quote small,html.beamer-xl .crosslink,html.beamer-xl .score,html.beamer-xl .tcard h3,html.beamer-xl .ptab,html.beamer-xl .pfill{font-size:18px}
+html.beamer-xl .tgrid{grid-template-columns:repeat(2,1fr)}
+@media(max-width:700px){html.beamer-xl .tgrid,html.beamer-xxl .tgrid{grid-template-columns:1fr}}
+html.beamer-xxl .lead,html.beamer-xxl .panel .sub,html.beamer-xxl .fb p,html.beamer-xxl .opt,html.beamer-xxl .row .vl,html.beamer-xxl .tcard p,html.beamer-xxl .quote,html.beamer-xxl .imp .qt,html.beamer-xxl .qline,html.beamer-xxl .pp,html.beamer-xxl .code{font-size:34px}
+html.beamer-xxl h1{font-size:60px}
+html.beamer-xxl .panel h2,html.beamer-xxl .card-out h2{font-size:64px}
+html.beamer-xxl .eyebrow,html.beamer-xxl .imp .who,html.beamer-xxl .imp .ctx,html.beamer-xxl .row .lb,html.beamer-xxl .pill,html.beamer-xxl .quote small,html.beamer-xxl .crosslink,html.beamer-xxl .score,html.beamer-xxl .tcard h3,html.beamer-xxl .ptab,html.beamer-xxl .pfill{font-size:21px}
+html.beamer-xxl .tgrid,html.beamer-xxl .cards{grid-template-columns:1fr}
+html.beamer .row,html.beamer-xl .row,html.beamer-xxl .row{grid-template-columns:1fr}
+@media print{.topbar,.signature,footer,.acts{display:none}}
+</style>
+</head>
+<body>
+<div class="signature"><strong>Michaela Kühn</strong><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></div>
+<div class="wrap">
+<div class="topbar"><a class="back-link" href="../index.html" data-i18n-en="← Back to home page">← Zurück zur Startseite</a><div class="ctrls"><button type="button" class="beamer-btn" id="beamerBtn">☀ Beamer</button><button type="button" class="lang-btn" id="langBtn">EN</button></div></div>
+
+<header class="hero">
+<span class="eyebrow" data-i18n-en="💡 Possibility room · vision and target picture">💡 Möglichkeitsraum · Vision und Zielbild</span>
+<h1 data-i18n-en="Vision &amp; Target Picture Workshop">Vision &amp; Zielbild-Werkstatt</h1>
+<p class="lead" data-i18n-en="Before a backlog or a project plan exists, an undertaking needs a picture of where it is heading. Here you build that target picture in five building blocks, starting from an order that does not have one yet. Two cases: NovaTrade Pulse (agile) and Hochschule Nordwest (hybrid).">Bevor ein Backlog oder ein Projektplan entsteht, braucht ein Vorhaben ein Bild davon, wohin es will. Hier bauen Sie dieses Zielbild in fünf Bausteinen, ausgehend von einem Auftrag, der noch keines hat. Zwei Fälle: NovaTrade Pulse (agil) und Hochschule Nordwest (hybrid).</p>
+</header>
+
+<section class="panel">
+<h2 data-i18n-en="Five building blocks">Fünf Bausteine</h2>
+<p class="sub" data-i18n-en="Together they form the target picture. Each block answers one question the order leaves open.">Zusammen ergeben sie das Zielbild. Jeder Baustein beantwortet eine Frage, die der Auftrag offen lässt.</p>
+<div class="tgrid">
+<div class="tcard"><h3><span data-i18n-en="1 · For whom">1 · Für wen</span></h3><p><span data-i18n-en="A group and the problem it has today. If you mean everyone, you have nobody in view.">Eine Gruppe und das Problem, das sie heute hat. Wer alle meint, hat niemanden im Blick.</span></p></div>
+<div class="tcard"><h3><span data-i18n-en="2 · Vision">2 · Vision</span></h3><p><span data-i18n-en="One sentence on the target state: for whom, what benefit. Not what it is built with.">Ein Satz zum Zielzustand: für wen, welcher Nutzen. Nicht, womit gebaut wird.</span></p></div>
+<div class="tcard"><h3><span data-i18n-en="3 · Success measure">3 · Erfolgsmaß</span></h3><p><span data-i18n-en="An impact with baseline, target and time. Delivery does not count.">Eine Wirkung mit Ausgangswert, Zielwert und Zeitpunkt. Lieferung zählt nicht.</span></p></div>
+<div class="tcard"><h3><span data-i18n-en="4 · Hypothesis">4 · Hypothese</span></h3><p><span data-i18n-en="An assumption with a test criterion: “We believe … We will know when …”.">Eine Annahme mit Prüfkriterium: „Wir glauben … Wir wissen es, wenn …“.</span></p></div>
+<div class="tcard"><h3><span data-i18n-en="5 · Guardrail">5 · Leitplanke</span></h3><p><span data-i18n-en="A must that holds even under time pressure and limits decisions.">Ein Muss, das auch unter Zeitdruck gilt und Entscheidungen begrenzt.</span></p></div>
+</div>
+<div class="code schablone" data-de="Für [Zielgruppe], die [Problem], ist [Vorhaben] ein [Kategorie], das [Nutzen]. Anders als [Alternative] …" data-i18n-en="For [target group] who [problem], [undertaking] is a [category] that [benefit]. Unlike [alternative] …">Für [Zielgruppe], die [Problem], ist [Vorhaben] ein [Kategorie], das [Nutzen]. Anders als [Alternative] …</div>
+</section>
+
+<section class="panel" id="pick">
+<h2 id="pickT">1 · Fall wählen</h2>
+<p class="sub" id="pickH">Zwei Aufträge, die noch kein Zielbild haben. Welchen nehmen wir uns vor?</p>
+<div class="cards" id="cards"></div>
+</section>
+
+<section class="panel" id="flow" aria-live="polite">
+<div id="stage"></div>
+</section>
+<div id="outCard"></div>
+
+<section class="panel">
+<h2 data-i18n-en="The same moment when prompting">Derselbe Moment beim Prompten</h2>
+<p class="sub" data-i18n-en="An order to an AI needs the same target picture. If you let it start right away, you get something. The same building blocks help, each with its own prompt. Choose a block, copy the prompt and put your own order in place of the dots.">Ein Auftrag an die KI braucht dasselbe Zielbild. Wer sie sofort loslegen lässt, bekommt irgendetwas. Dieselben Bausteine helfen, jeder mit einem eigenen Prompt. Wählen Sie einen Baustein, kopieren Sie den Prompt und setzen Sie Ihren eigenen Auftrag an die Stelle der Punkte.</p>
+<div class="ptabs" role="tablist"><button type="button" class="ptab on" role="tab" data-p="0" aria-selected="true"><span data-i18n-en="1 · For whom">1 · Für wen</span></button><button type="button" class="ptab" role="tab" data-p="1" aria-selected="false"><span data-i18n-en="2 · Vision">2 · Vision</span></button><button type="button" class="ptab" role="tab" data-p="2" aria-selected="false"><span data-i18n-en="3 · Success measure">3 · Erfolgsmaß</span></button><button type="button" class="ptab" role="tab" data-p="3" aria-selected="false"><span data-i18n-en="4 · Hypothesis">4 · Hypothese</span></button><button type="button" class="ptab" role="tab" data-p="4" aria-selected="false"><span data-i18n-en="Compact">Kompakt</span></button></div>
+<p class="pfill" id="pfill" hidden></p>
+<div class="pbody" data-p="0"><p class="pp"><span data-i18n-en="The AI clarifies target group and problem before proposing anything.">Die KI klärt Zielgruppe und Problem, bevor sie etwas vorschlägt.</span></p><div class="code ptxt" data-de="Hilf mir, Zielgruppe und Problem hinter diesem Auftrag zu klären. Stelle mir höchstens drei Rückfragen: Für wen genau? Welches Problem haben sie heute? Woran merken sie es? Schlage noch keine Lösung vor. Warte auf meine Antworten.
+
+Auftrag: „…“" data-i18n-en="Help me clarify the target group and problem behind this order. Ask me at most three follow-up questions: For whom exactly? What problem do they have today? How do they notice it? Do not propose a solution yet. Wait for my answers.
+
+Order: “…”">Hilf mir, Zielgruppe und Problem hinter diesem Auftrag zu klären. Stelle mir höchstens drei Rückfragen: Für wen genau? Welches Problem haben sie heute? Woran merken sie es? Schlage noch keine Lösung vor. Warte auf meine Antworten.
+
+Auftrag: „…“</div></div><div class="pbody" data-p="1" hidden><p class="pp"><span data-i18n-en="From order and answers a vision sentence emerges, following the template.">Aus Auftrag und Antworten wird ein Visionssatz nach der Schablone.</span></p><div class="code ptxt" data-de="Formuliere aus dem Auftrag und meinen Angaben einen Visionssatz nach der Schablone: Für [Zielgruppe], die [Problem], ist [Vorhaben] ein [Kategorie], das [Nutzen]. Anders als [Alternative] … Keine Featureliste, keine Superlative. Markiere jede Angabe, die ich dir nicht genannt habe, als „abzustimmen“.
+
+Auftrag: „…“
+Meine Angaben: …" data-i18n-en="Phrase a vision sentence from the order and my details using the template: For [target group] who [problem], [undertaking] is a [category] that [benefit]. Unlike [alternative] … No feature list, no superlatives. Mark every detail I did not give you as “to be agreed”.
+
+Order: “…”
+My details: …">Formuliere aus dem Auftrag und meinen Angaben einen Visionssatz nach der Schablone: Für [Zielgruppe], die [Problem], ist [Vorhaben] ein [Kategorie], das [Nutzen]. Anders als [Alternative] … Keine Featureliste, keine Superlative. Markiere jede Angabe, die ich dir nicht genannt habe, als „abzustimmen“.
+
+Auftrag: „…“
+Meine Angaben: …</div></div><div class="pbody" data-p="2" hidden><p class="pp"><span data-i18n-en="The AI proposes measures that capture impact rather than completion.">Die KI schlägt Maße vor, die Wirkung messen statt Fertigstellung.</span></p><div class="code ptxt" data-de="Schlage drei Erfolgsmaße für dieses Vorhaben vor, die Wirkung messen und nicht Fertigstellung („Feature fertig“ zählt nicht). Nenne zu jedem, woran man es misst, bis wann und wer es erhebt. Erfinde keine Zahlen: Lücken markierst du als „abzustimmen“.
+
+Auftrag: „…“
+Meine Angaben: …" data-i18n-en="Propose three success measures for this undertaking that capture impact, not completion (“feature finished” does not count). For each say how it is measured, by when and who collects it. Do not invent numbers: mark gaps as “to be agreed”.
+
+Order: “…”
+My details: …">Schlage drei Erfolgsmaße für dieses Vorhaben vor, die Wirkung messen und nicht Fertigstellung („Feature fertig“ zählt nicht). Nenne zu jedem, woran man es misst, bis wann und wer es erhebt. Erfinde keine Zahlen: Lücken markierst du als „abzustimmen“.
+
+Auftrag: „…“
+Meine Angaben: …</div></div><div class="pbody" data-p="3" hidden><p class="pp"><span data-i18n-en="The AI names risky assumptions and phrases one as a hypothesis.">Die KI benennt riskante Annahmen und formuliert eine als Hypothese.</span></p><div class="code ptxt" data-de="Nenne die drei riskantesten Annahmen hinter diesem Vorhaben. Formuliere die wichtigste als Hypothese: „Wir glauben, dass … Wir wissen es, wenn …“. Sage, wie wir sie mit geringem Aufwand prüfen können. Erfinde keine Fakten.
+
+Auftrag: „…“
+Meine Angaben: …" data-i18n-en="Name the three riskiest assumptions behind this undertaking. Phrase the most important one as a hypothesis: “We believe that … We will know when …”. Say how we can test it at low cost. Do not invent facts.
+
+Order: “…”
+My details: …">Nenne die drei riskantesten Annahmen hinter diesem Vorhaben. Formuliere die wichtigste als Hypothese: „Wir glauben, dass … Wir wissen es, wenn …“. Sage, wie wir sie mit geringem Aufwand prüfen können. Erfinde keine Fakten.
+
+Auftrag: „…“
+Meine Angaben: …</div></div><div class="pbody" data-p="4" hidden><p class="pp"><span data-i18n-en="All five building blocks in one prompt when time is short.">Alle fünf Bausteine in einem Prompt, wenn es schnell gehen muss.</span></p><div class="code ptxt" data-de="Hilf mir, aus diesem Auftrag ein Zielbild zu machen: Zielgruppe und Problem, Visionssatz, Erfolgsmaß, riskanteste Annahme als Hypothese und nicht verhandelbare Leitplanke. Stelle zuerst höchstens drei Rückfragen und warte auf meine Antworten.
+
+Auftrag: „…“" data-i18n-en="Help me turn this order into a target picture: target group and problem, vision sentence, success measure, riskiest assumption as a hypothesis and non-negotiable guardrail. First ask at most three follow-up questions and wait for my answers.
+
+Order: “…”">Hilf mir, aus diesem Auftrag ein Zielbild zu machen: Zielgruppe und Problem, Visionssatz, Erfolgsmaß, riskanteste Annahme als Hypothese und nicht verhandelbare Leitplanke. Stelle zuerst höchstens drei Rückfragen und warte auf meine Antworten.
+
+Auftrag: „…“</div></div>
+<button type="button" class="btn ghost copy" id="copyBtn">Prompt kopieren</button>
+</section>
+
+<div class="crosslink">
+<span data-i18n-en="Related Denkraum tools on this topic:">Verwandte Denkraum-Tools zu diesem Thema:</span>
+<ul>
+<li><a href="./vom-impuls-zur-anforderung.html" data-i18n-en="From impulse to requirement">Vom Impuls zur Anforderung</a> – <span data-i18n-en="the same possibility room for RE and BA: it classifies a single sentence and turns it into a verifiable requirement spark, while this tool builds the target picture of a whole undertaking.">derselbe Möglichkeitsraum für RE und BA: Er ordnet einen einzelnen Satz ein und macht daraus einen prüfbaren Anforderungsfunken, während dieses Tool das Zielbild eines ganzen Vorhabens baut.</span></li>
+<li><a href="./okr-kaskade.html">OKR-Kaskade</a> – <span data-i18n-en="the next step: from vision and strategy via initiatives down to goals, once the target picture stands.">der nächste Schritt: von Vision und Strategie über Initiativen bis zu den Zielen, sobald das Zielbild steht.</span></li>
+<li><a href="./ba-steckbrief-business-case.html" data-i18n-en="BA profile &amp; business case">BA-Steckbrief &amp; Business Case</a> – <span data-i18n-en="puts numbers behind the success measure: why the undertaking is worthwhile and how benefit is calculated.">hinterlegt das Erfolgsmaß mit Zahlen: warum sich das Vorhaben lohnt und wie der Nutzen gerechnet wird.</span></li>
+<li><a href="./novatrade-pulse-steckbrief.html" data-i18n-en="Case world NovaTrade Pulse">Fallwelt NovaTrade Pulse</a> / <a href="./hochschule-nordwest-steckbrief.html" data-i18n-en="Case world Hochschule Nordwest">Fallwelt Hochschule Nordwest</a> – <span data-i18n-en="reference pages with all case facts used here.">Referenzseiten mit allen Fallfakten, die hier verwendet werden.</span></li>
+</ul>
+</div>
+</div>
+
+<footer>
+<p class="footer-sig"><strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a> · PMBOK® Guide 8 · BABOK® Guide v3 · Scrum Guide 2020</p>
+<div class="footer-details">
+<details class="footer-box"><summary class="footer-summary">⚙️ <span data-i18n-en="System prompt">Systemprompt</span></summary><div class="footer-content footer-mono"><div data-i18n-en="ROLE: You build an interactive single-file HTML training tool for Michaela Kühn (www.michaela-kuehn.com) in the DenkRaum repo. It sits in the possibility room (“perceive the impulse”) and is the first project management tool there. It complements “From impulse to requirement” (RE/BA) with the project and product view.
+
+GOAL: Participants build a target picture from an order that has none in five building blocks: target group and problem, vision, success measure, hypothesis, guardrail. Audience: project managers, product owners, scrum masters and teams in agile, hybrid and OKR seminars, without prior AI knowledge.
+
+STRUCTURE
+1. Top bar (own row): back link ../index.html on the left; on the right a projector button (four levels: normal, Beamer, Beamer XL, Beamer XXL; cumulative classes beamer, beamer-xl, beamer-xxl on html; the label shows the next action; footer hidden from level 1) and a DE/EN button. Signature (bold name, website link) position:fixed at top right, also on mobile.
+2. Hero at full width without max-width: eyebrow, H1, lead. No flex neighbour in the same row.
+3. Panel “Five building blocks”: for whom, vision, success measure, hypothesis, guardrail, each with one explanatory sentence and the vision template.
+4. Choose a case: two cards from known case worlds, each with a vague order. Case A NovaTrade Pulse (agile, Herr Bachmeier), case B Hochschule Nordwest (hybrid, Kanzlerin Dr. Feldmann).
+5. Five stations, each with one multiple-choice question and immediate resolution (rationale for every option) and an example question for the client. Exactly one correct option per station, its position varies. Question text concrete per case and station, not generic.
+6. Result “target picture card”: order, target group, vision, success measure, hypothesis, guardrail, OKR draft (objective and key results from the values of the case), two to three follow-up tools, score. Download as Markdown in the selected language.
+7. Panel “The same moment when prompting”: five tabs, each with a copyable prompt (for whom, vision, success measure, hypothesis, compact). Placeholders “…” are filled with the chosen order and the case details.
+8. Crosslink block “Related Denkraum tools” before the footer; footer with the four mandatory boxes plus glossary.
+
+CONTENT: Use only facts of the case worlds (NovaTrade: fractional shares from €1, 18 to 35, +20% new customers, drop-out rate 8%, compliance gate; Hochschule Nordwest: 7 steps, 18 days, −60%, 50 years, accessibility audit). Wrong options explain why they are a feature list, superlative, vanity metric, solution or acceptance criterion rather than a target picture block.
+
+DESIGN: White, warm background, amber accent (#b45309), soft touch: cards 16px radius with a subtle shadow, buttons 12px, pills 999px, hero 28px. No dark mode (color-scheme: light). Body text at least 16px, secondary text at least 14px, click targets at least 48px high; projector: body 22/28/34px, panel headings 44/54/64px, secondary 15/18/21px, --muted from level 1 on #3D4A5C.
+
+TECH: One file, everything inline, no external requests (offline capable). State in memory only; language optionally in sessionStorage with try/catch. Bilingual German/English without reload: all visible texts including all footer boxes. Persona names stay identical.
+
+DO NOT: no new personas, no new case world; no quiz language like “Wrong!”, give a rationale instead; do not prescribe product names as solutions; do not invent numbers the case does not know; no legal advice; no standard version from memory, check the status before use; no time agenda in the tool.">ROLLE: Du baust ein interaktives Einzeldatei-HTML-Trainingstool für Michaela Kühn (www.michaela-kuehn.com) im DenkRaum-Repo. Es liegt im Möglichkeitsraum („Impuls wahrnehmen“) und ist das erste Projektmanagement-Tool dort. Es ergänzt „Vom Impuls zur Anforderung“ (RE/BA) um die Sicht von Projekt und Produkt.
+
+ZIEL: Teilnehmende bauen aus einem Auftrag ohne Zielbild in fünf Bausteinen ein Zielbild: Zielgruppe und Problem, Vision, Erfolgsmaß, Hypothese, Leitplanke. Zielgruppe: Projektleitungen, Product Owner, Scrum Master und Teams in agilen, hybriden und OKR-Seminaren, ohne KI-Vorwissen.
+
+STRUKTUR
+1. Topbar (eigene Zeile): Zurück-Link ../index.html links; rechts Beamer-Button (vierstufig: Normal, Beamer, Beamer XL, Beamer XXL; kumulative Klassen beamer, beamer-xl, beamer-xxl auf html; Label zeigt die nächste Aktion; Footer ab Stufe 1 ausgeblendet) und DE/EN-Button. Signatur (Name fett, Website-Link) position:fixed oben rechts, auch auf dem Handy.
+2. Hero in voller Breite ohne max-width: Eyebrow, H1, Lead. Kein Flex-Nachbar in derselben Zeile.
+3. Panel „Fünf Bausteine“: Für wen, Vision, Erfolgsmaß, Hypothese, Leitplanke mit je einem erklärenden Satz und der Vision-Schablone.
+4. Fall wählen: zwei Karten aus bekannten Fallwelten mit je einem vagen Auftrag. Fall A NovaTrade Pulse (agil, Herr Bachmeier), Fall B Hochschule Nordwest (hybrid, Kanzlerin Dr. Feldmann).
+5. Fünf Stationen, je eine Auswahlfrage mit sofortiger Auflösung (Begründung zu jeder Option) und einer Beispielfrage an die Auftraggeberin oder den Auftraggeber. Pro Station genau eine richtige Option, die Position wechselt. Fragetext pro Fall und Station konkret, nicht generisch.
+6. Ergebnis „Zielbild-Karte“: Auftrag, Zielgruppe, Vision, Erfolgsmaß, Hypothese, Leitplanke, OKR-Entwurf (Objective und Key Results aus den Werten des Falls), zwei bis drei Folge-Tools, Trefferzahl. Download als Markdown in der gewählten Sprache.
+7. Panel „Derselbe Moment beim Prompten“: fünf Reiter mit je einem kopierbaren Prompt (Für wen, Vision, Erfolgsmaß, Hypothese, Kompakt). Platzhalter „…“ werden mit dem gewählten Auftrag und den Fallangaben gefüllt.
+8. Crosslink-Block „Verwandte Denkraum-Tools“ vor dem Footer; Footer mit den vier Pflichtboxen plus Glossar.
+
+INHALT: Nur Fakten der Fallwelten verwenden (NovaTrade: Bruchteilsaktien ab 1 €, 18 bis 35, +20 % Neukunden, Abbruchquote 8 %, Compliance-Gate; Hochschule Nordwest: 7 Schritte, 18 Tage, −60 %, 50 Jahre, Barrierefreiheits-Audit). Falsche Optionen erklären, warum sie Featureliste, Superlativ, Eitelkeitszahl, Lösung oder Akzeptanzkriterium statt Zielbild-Baustein sind.
+
+DESIGN: Weißer, warmer Grund, Akzent Bernstein (#b45309), weicher Griff: Karten 16px Radius mit dezentem Schatten, Buttons 12px, Pills 999px, Hero 28px. Kein Dark Mode (color-scheme: light). Fließtext mindestens 16px, Sekundärtext mindestens 14px, Klickflächen mindestens 48px hoch; Beamer: Fließtext 22/28/34px, Panel-Überschriften 44/54/64px, Sekundärtext 15/18/21px, --muted ab Stufe 1 auf #3D4A5C.
+
+TECHNIK: Eine Datei, alles inline, keine externen Anfragen (offlinefähig). Zustand nur im Speicher; Sprache optional in sessionStorage mit try/catch. Zweisprachig Deutsch/Englisch ohne Neuladen: alle sichtbaren Texte inklusive aller Footer-Boxen. Namen der Personas bleiben gleich.
+
+NICHT TUN: keine neuen Personas, keine neue Fallwelt; keine Quizsprache wie „Falsch!“, sondern eine Begründung; keine Produktnamen als Lösung vorgeben; keine Zahlen erfinden, die der Fall nicht kennt; keine Rechtsberatung; keine Normversion aus dem Gedächtnis, Stand vor Einsatz prüfen; keine Zeitagenda im Tool.</div></div></details>
+<details class="footer-box"><summary class="footer-summary">📘 <span data-i18n-en="Handbook">Handbuch</span></summary><div class="footer-content footer-sans"><div data-i18n-en="&lt;p&gt;&lt;b&gt;Framework: RISEN&lt;/b&gt; (role, instructions, steps, end goal, narrowing). It fits because the tool has a fixed sequence: five building blocks with a clear end product, the target picture card.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;The five dimensions in the tool:&lt;/b&gt;&lt;br&gt;&lt;i&gt;Role&lt;/i&gt;: The trainer moderates, the tool asks the questions and resolves them.&lt;br&gt;&lt;i&gt;Task&lt;/i&gt;: Build a target picture from a vague order.&lt;br&gt;&lt;i&gt;Context&lt;/i&gt;: Two case worlds, NovaTrade Pulse (agile) and Hochschule Nordwest (hybrid), with fixed personas.&lt;br&gt;&lt;i&gt;Format&lt;/i&gt;: One multiple-choice question per block, immediate rationale, example question for the client, a card to take away.&lt;br&gt;&lt;i&gt;Narrowing&lt;/i&gt;: only facts of the cases, no product names, no invented numbers.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Key learning point:&lt;/b&gt; A target picture is not a plan. It answers for whom, where to and how success is recognised before backlog, milestones or OKR emerge. Wrong options are mostly feature lists, superlatives, vanity metrics or solutions.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Rebuild tip:&lt;/b&gt; For your own case five blocks with three options each are enough: one too broad, one solution or feature list, and the one that names group, impact and time. Every option gets a rationale. The example question for the client belongs in every block.&lt;/p&gt;"><p><b>Framework: RISEN</b> (Rolle, Instruktionen, Schritte, Endziel, Eingrenzung). Es passt, weil das Tool eine feste Schrittfolge hat: fünf Bausteine mit einem klaren Endprodukt, der Zielbild-Karte.</p>
+<p><b>Die fünf Dimensionen im Tool:</b><br><i>Rolle</i>: Die Trainerin moderiert, das Tool stellt die Fragen und löst auf.<br><i>Aufgabe</i>: Aus einem vagen Auftrag ein Zielbild bauen.<br><i>Kontext</i>: Zwei Fallwelten, NovaTrade Pulse (agil) und Hochschule Nordwest (hybrid), mit festen Personas.<br><i>Format</i>: Auswahlfrage je Baustein, sofortige Begründung, Beispielfrage an den Auftraggeber, Karte zum Mitnehmen.<br><i>Eingrenzung</i>: nur Fakten der Fälle, keine Produktnamen, keine erfundenen Zahlen.</p>
+<p><b>Zentraler Lernhinweis:</b> Ein Zielbild ist kein Plan. Es beantwortet, für wen, wohin und woran man den Erfolg erkennt, bevor Backlog, Meilensteine oder OKR entstehen. Falsche Optionen sind meist Featurelisten, Superlative, Eitelkeitszahlen oder Lösungen.</p>
+<p><b>Nachbau-Tipp:</b> Für einen eigenen Fall genügen fünf Bausteine mit je drei Optionen: eine zu breite, eine Lösung oder Featureliste, und die eine, die Gruppe, Wirkung und Zeitpunkt nennt. Jede Option bekommt eine Begründung. Die Beispielfrage an den Auftraggeber gehört in jeden Baustein.</p></div></div></details>
+<details class="footer-box"><summary class="footer-summary">🎤 <span data-i18n-en="Talk script">Vortrags-Skript</span></summary><div class="footer-content footer-sans"><div class="skript-step"><b><span data-i18n-en="Introduction">Einstieg</span></b><br><i><span data-i18n-en="(Top of the page, show hero and the five building blocks)">(Seite oben, Hero und die fünf Bausteine zeigen)</span></i><br><span data-i18n-en="“Before a backlog or a project plan exists, an undertaking needs a picture of where it is heading. Today we build this target picture in five building blocks, from an order that does not yet have one.”">„Bevor ein Backlog oder ein Projektplan entsteht, braucht ein Vorhaben ein Bild davon, wohin es will. Heute bauen wir dieses Zielbild in fünf Bausteinen, und zwar aus einem Auftrag, der noch keines hat.“</span><br><span data-i18n-en="Transition: “Two orders are in front of us. Which one do we take?”">Übergang: „Zwei Aufträge liegen vor uns. Welchen nehmen wir?“</span></div>
+<div class="skript-step"><b><span data-i18n-en="Choose a case">Fall wählen</span></b><br><i><span data-i18n-en="(Let someone click a card, read the order aloud)">(Karte anklicken lassen, Auftrag laut vorlesen)</span></i><br><span data-i18n-en="“Read the order once, calmly. What is clear, what is missing? Who says this, and what does the person expect?”">„Lesen Sie den Auftrag einmal in Ruhe. Was ist klar, was fehlt? Wer sagt das, und was erwartet die Person?“</span><br><span data-i18n-en="Transition: “First we clarify who all of this is for.”">Übergang: „Als Erstes klären wir, für wen das Ganze ist.“</span></div>
+<div class="skript-step"><b><span data-i18n-en="Block 1 · For whom">Baustein 1 · Für wen</span></b><br><i><span data-i18n-en="(Let the group vote, then click)">(Gruppe abstimmen lassen, dann klicken)</span></i><br><span data-i18n-en="“If you mean everyone, you have nobody in view. We are looking for a group and a problem it has today.”">„Wer alle meint, hat niemanden im Blick. Wir suchen eine Gruppe und ein Problem, das sie heute hat.“</span><br><span data-i18n-en="Transition: “Now we phrase the direction.”">Übergang: „Jetzt formulieren wir die Richtung.“</span></div>
+<div class="skript-step"><b><span data-i18n-en="Block 2 · Vision">Baustein 2 · Vision</span></b><br><i><span data-i18n-en="(Read out three sentences, group chooses)">(Drei Sätze vorlesen, Gruppe wählt)</span></i><br><span data-i18n-en="“A vision describes the target state, not the tool. Check: does it say what for and for whom? Or only what is built?”">„Eine Vision beschreibt den Zielzustand, nicht das Werkzeug. Prüfen Sie: Steht da, wofür und für wen? Oder nur, was gebaut wird?“</span><br><span data-i18n-en="Transition: “How do we see that it succeeded?”">Übergang: „Woran sehen wir, dass es gelungen ist?“</span></div>
+<div class="skript-step"><b><span data-i18n-en="Block 3 · Success measure">Baustein 3 · Erfolgsmaß</span></b><br><i><span data-i18n-en="(Show options, group chooses)">(Optionen zeigen, Gruppe wählt)</span></i><br><span data-i18n-en="“We measure impact, not delivery. A good metric has baseline, target and time.”">„Wir messen Wirkung, nicht Lieferung. Eine gute Kennzahl hat Ausgangswert, Zielwert und Zeitpunkt.“</span><br><span data-i18n-en="Transition: “And what are we assuming without knowing?”">Übergang: „Und was nehmen wir an, ohne es zu wissen?“</span></div>
+<div class="skript-step"><b><span data-i18n-en="Block 4 · Hypothesis">Baustein 4 · Hypothese</span></b><br><i><span data-i18n-en="(Write the hypothesis formula on the wall)">(Hypothese-Formel an die Wand schreiben)</span></i><br><span data-i18n-en="“We believe that … We will know when … An assumption without a test criterion remains a gut feeling.”">„Wir glauben, dass … Wir wissen es, wenn … Eine Annahme ohne Prüfkriterium bleibt ein Bauchgefühl.“</span><br><span data-i18n-en="Transition: “Finally: what must nobody negotiate?”">Übergang: „Zum Schluss: Was darf niemand verhandeln?“</span></div>
+<div class="skript-step"><b><span data-i18n-en="Block 5 · Guardrail">Baustein 5 · Leitplanke</span></b><br><i><span data-i18n-en="(Show options, then click “Show target picture card”)">(Optionen zeigen, danach „Zielbild-Karte anzeigen“ klicken)</span></i><br><span data-i18n-en="“A guardrail also holds under time pressure. An acceptance criterion or a matter of taste is not a guardrail.”">„Eine Leitplanke gilt auch unter Zeitdruck. Ein Akzeptanzkriterium oder eine Geschmacksfrage ist keine Leitplanke.“</span><br><span data-i18n-en="Transition: “The target picture stands. It sets the direction for OKR and backlog.”">Übergang: „Das Zielbild steht. Es gibt die Richtung für OKR und Backlog vor.“</span></div>
+<div class="skript-step"><b><span data-i18n-en="Bridge to AI">Brücke zur KI</span></b><br><i><span data-i18n-en="(Show the panel “The same moment when prompting”, click through the tabs)">(Panel „Derselbe Moment beim Prompten“ zeigen, Reiter durchklicken)</span></i><br><span data-i18n-en="“A task for the AI needs the same target picture. If you let it start right away, you get something. Prompt engineering is requirements engineering for AI systems.”">„Ein Auftrag an die KI braucht dasselbe Zielbild. Wer sofort loslegen lässt, bekommt irgendetwas. Prompt Engineering ist Requirements Engineering für KI-Systeme.“</span><br><span data-i18n-en="Transition: point to the OKR cascade or the business case.">Übergang: Verweis auf OKR-Kaskade oder Business Case.</span></div>
+<p><span data-i18n-en="Stage directions: Full version with one case about 20 minutes, with both cases in groups about 40 minutes. Case A suits agile seminars, case B hybrid project management; in the OKR seminar discuss the OKR draft at the end of the card. Do not start with the solution and do not click straight away: let people vote first, then reveal. Do not open with terms like “product vision board”, open with the order. The closing line about AI comes last.">Regie-Hinweise: Volle Fassung mit einem Fall etwa 20 Minuten, mit beiden Fällen in Gruppen etwa 40 Minuten. Fall A passt zu agilen Seminaren, Fall B zu hybridem Projektmanagement; im OKR-Seminar den OKR-Entwurf am Ende der Karte besprechen. Nicht mit der Lösung beginnen und nicht sofort klicken: erst abstimmen lassen, dann auflösen. Nicht mit Begriffen wie „Product Vision Board“ starten, sondern mit dem Auftrag. Der Schlusssatz zur KI kommt erst am Ende.</span></p></div></details>
+<details class="footer-box"><summary class="footer-summary">⚖️ <span data-i18n-en="Standards register">Normen-Register</span></summary><div class="footer-content footer-sans"><table class="footer-table"><thead><tr><th><span data-i18n-en="Framework / source">Framework / Quelle</span></th><th><span data-i18n-en="Version / status">Fassung / Status</span></th><th><span data-i18n-en="Use in the tool">Bezug im Tool</span></th></tr></thead><tbody><tr><td><span data-i18n-en="PMBOK® Guide (PMI)">PMBOK® Guide (PMI)</span></td><td><span data-i18n-en="8th edition, published 13 Nov 2025">8. Ausgabe, erschienen 13.11.2025</span></td><td><span data-i18n-en="Business case, benefits and project charter as the starting point of an undertaking (blocks 2 and 3)">Business Case, Nutzen und Projektauftrag als Ausgangspunkt eines Vorhabens (Bausteine 2 und 3)</span></td></tr><tr><td><span data-i18n-en="BABOK® Guide (IIBA)">BABOK® Guide (IIBA)</span></td><td><span data-i18n-en="v3; no v4 has been published (checked 1 Oct 2026)">v3; eine v4 ist nicht erschienen (geprüft 01.10.2026)</span></td><td><span data-i18n-en="Strategy Analysis: future state, business need, assumptions (blocks 1, 2 and 4)">Strategy Analysis: gewünschter Zielzustand, Geschäftsbedarf, Annahmen (Bausteine 1, 2 und 4)</span></td></tr><tr><td><span data-i18n-en="Scrum Guide (Schwaber, Sutherland)">Scrum Guide (Schwaber, Sutherland)</span></td><td><span data-i18n-en="2020 edition, still current (checked 2 Oct 2026)">Ausgabe 2020, weiterhin aktuell (geprüft 02.10.2026)</span></td><td><span data-i18n-en="Product Goal as the long-term direction of the team (block 2)">Product Goal als langfristige Richtung des Teams (Baustein 2)</span></td></tr><tr><td><span data-i18n-en="Moore: Crossing the Chasm">Moore: Crossing the Chasm</span></td><td><span data-i18n-en="Book, first edition 1991">Buch, Erstausgabe 1991</span></td><td><span data-i18n-en="Template “For …, who …, … is a …, that …” for the vision sentence (block 2)">Schablone „Für …, die …, ist … ein …, das …“ für den Visionssatz (Baustein 2)</span></td></tr><tr><td><span data-i18n-en="Doerr: Measure What Matters">Doerr: Measure What Matters</span></td><td><span data-i18n-en="Book, 2018">Buch, 2018</span></td><td><span data-i18n-en="Objective and key results in the OKR draft of the target picture card">Objective und Key Results im OKR-Entwurf der Zielbild-Karte</span></td></tr><tr><td><span data-i18n-en="Denkräume Navigator (DenkRaum)">Denkräume-Navigator (DenkRaum)</span></td><td><span data-i18n-en="internal">intern</span></td><td><span data-i18n-en="Possibility room “perceive the impulse” and the gate to the analysis room">Möglichkeitsraum „Impuls wahrnehmen“ und Schleuse zum Analyseraum</span></td></tr></tbody></table><p><span data-i18n-en="Status checked on 2 Oct 2026. Check again before use in new materials.">Stand geprüft am 02.10.2026. Vor dem Einsatz in neuen Materialien erneut prüfen.</span></p></div></details>
+<details class="footer-box"><summary class="footer-summary">📖 <span data-i18n-en="Glossary">Glossar</span></summary><div class="footer-content footer-sans"><dl class="footer-glossary"><dt><span data-i18n-en="Vision">Vision</span></dt><dd><span data-i18n-en="A sentence that sets the direction: for whom, what benefit. Describes the goal, not the solution.">Ein Satz, der die Richtung vorgibt: für wen, welcher Nutzen. Beschreibt das Ziel, nicht die Lösung.</span></dd><dt><span data-i18n-en="Target picture">Zielbild</span></dt><dd><span data-i18n-en="The whole of target group, vision, success measure, hypothesis and guardrail at the start of an undertaking.">Die Gesamtheit aus Zielgruppe, Vision, Erfolgsmaß, Hypothese und Leitplanke zu Beginn eines Vorhabens.</span></dd><dt><span data-i18n-en="Success measure">Erfolgsmaß</span></dt><dd><span data-i18n-en="A metric for impact with baseline, target and time. Measures impact, not delivery.">Eine Kennzahl für die Wirkung mit Ausgangswert, Zielwert und Zeitpunkt. Misst Wirkung, nicht Lieferung.</span></dd><dt><span data-i18n-en="Vanity metric">Eitelkeitszahl</span></dt><dd><span data-i18n-en="A number that looks good but says nothing about success, such as downloads.">Eine Zahl, die gut aussieht, aber nichts über den Erfolg sagt, etwa Downloads.</span></dd><dt><span data-i18n-en="Hypothesis">Hypothese</span></dt><dd><span data-i18n-en="An assumption with a test criterion: “We believe that … We will know when …”.">Eine Annahme mit Prüfkriterium: „Wir glauben, dass … Wir wissen es, wenn …“.</span></dd><dt><span data-i18n-en="Guardrail">Leitplanke</span></dt><dd><span data-i18n-en="A non-negotiable must that holds even under time pressure and limits decisions.">Ein nicht verhandelbares Muss, das auch bei Zeitdruck gilt und Entscheidungen begrenzt.</span></dd><dt><span data-i18n-en="Product Goal">Product Goal</span></dt><dd><span data-i18n-en="In the Scrum Guide the long-term goal of the product by which the team aligns. Here it corresponds to the target picture.">Im Scrum Guide das langfristige Ziel des Produkts, an dem sich das Team ausrichtet. Entspricht hier dem Zielbild.</span></dd><dt><span data-i18n-en="OKR">OKR</span></dt><dd><span data-i18n-en="Objectives and Key Results: a goal (objective) with measurable results (key results).">Objectives and Key Results: ein Ziel (Objective) mit messbaren Ergebnissen (Key Results).</span></dd><dt><span data-i18n-en="Beta">Beta</span></dt><dd><span data-i18n-en="Limited trial operation with real users before the product is released broadly.">Begrenzter Testbetrieb mit echten Nutzerinnen und Nutzern, bevor das Produkt breit freigegeben wird.</span></dd></dl></div></details>
+</div>
+</footer>
+<script>
+(function(){
+  var D = {"cases": [{"id": "novatrade", "who": "Herr Bachmeier", "role": {"de": "Vorstand", "en": "Board member"}, "label": {"de": "Fall A · NovaTrade Pulse · agil", "en": "Case A · NovaTrade Pulse · agile"}, "quote": {"de": "„Wir brauchen eine App, mit der man Bruchteilsaktien handeln kann. Das kann doch nicht so schwer sein.“", "en": "“We need an app that lets people trade fractional shares. That can’t be so hard.”"}, "ctx": {"de": "Bruchteilsaktien ab 1 € in der bestehenden Trading-App, Zielgruppe 18 bis 35 Jahre, 4 von 5 Wettbewerbern bieten es bereits, Investition ca. 120.000 € über 6 Sprints, Geeignetheitsprüfung vor jedem Erstkauf ist ein Muss.", "en": "Fractional shares from €1 in the existing trading app, target group aged 18 to 35, 4 of 5 competitors already offer it, investment about €120,000 over 6 sprints, a suitability check before every first purchase is a must."}, "st": [{"ask": {"de": "Der Auftrag nennt keine Zielgruppe. Für wen und wogegen entsteht die Funktion?", "en": "The order names no target group. For whom and against what problem is the feature created?"}, "probe": {"de": "Wer steigt heute nicht ein, und woran liegt es?", "en": "Who does not get started today, and why?"}, "opts": [{"t": {"de": "„Für alle Kundinnen und Kunden, die handeln wollen.“", "en": "“For all customers who want to trade.”"}, "ok": false, "why": {"de": "Zu breit. Wer alle meint, hat niemanden im Blick, und kein Sprint-Ziel lässt sich daran ausrichten.", "en": "Too broad. If you mean everyone, you have nobody in view, and no sprint goal can be aligned to it."}}, {"t": {"de": "„Für 18- bis 35-Jährige, denen eine ganze Aktie als Einstieg zu teuer ist.“", "en": "“For 18- to 35-year-olds for whom a whole share is too expensive as a starting point.”"}, "ok": true, "why": {"de": "Benennt Gruppe und Hürde. Im Fall war bisher nur der Kauf ganzer Aktien möglich; genau daran scheitert der Einstieg.", "en": "Names group and hurdle. In the case only whole shares could be bought so far; that is exactly where getting started fails."}}, {"t": {"de": "„Für Anlegerinnen und Anleger, die unsere App modern finden.“", "en": "“For investors who find our app modern.”"}, "ok": false, "why": {"de": "Beschreibt eine Stimmung, kein Problem. Es bleibt offen, was heute fehlt.", "en": "Describes a mood, not a problem. It stays open what is missing today."}}]}, {"ask": {"de": "Aus Zielgruppe und Problem soll ein Visionssatz werden. Welcher taugt als Richtung für das Team?", "en": "Target group and problem should become a vision sentence. Which one works as a direction for the team?"}, "probe": {"de": "Was soll für diese Gruppe nach der Einführung anders sein?", "en": "What should be different for this group after launch?"}, "opts": [{"t": {"de": "„Wir bauen eine moderne Funktion mit Echtzeitkursen, Portfolioanzeige und Push-Nachrichten.“", "en": "“We are building a modern feature with live prices, portfolio view and push notifications.”"}, "ok": false, "why": {"de": "Eine Featureliste. Sie sagt, was gebaut wird, aber nicht, warum und für wen.", "en": "A feature list. It says what is built, but not why and for whom."}}, {"t": {"de": "„Wir werden der beste Anbieter für Bruchteilsaktien.“", "en": "“We will become the best provider of fractional shares.”"}, "ok": false, "why": {"de": "Ein Superlativ ohne Maßstab. Niemand kann sagen, wann er erreicht ist.", "en": "A superlative without a yardstick. Nobody can say when it is reached."}}, {"t": {"de": "„Junge Anlegerinnen und Anleger steigen ab 1 € in der App ein, die sie schon kennen, geprüft und regelkonform.“", "en": "“Young investors get started from €1 in the app they already know, checked and compliant.”"}, "ok": true, "why": {"de": "Nennt Gruppe, Nutzen und Rahmen in einem Satz und lässt die Technik offen.", "en": "Names group, benefit and framework in one sentence and leaves the technology open."}}]}, {"ask": {"de": "Woran merken Sie nach der sechswöchigen Beta, dass es sich gelohnt hat?", "en": "How will you know after the six-week beta that it was worth it?"}, "probe": {"de": "Welche Zahl würde Sie in sechs Wochen überzeugen, und wer erhebt sie?", "en": "Which figure would convince you in six weeks, and who collects it?"}, "opts": [{"t": {"de": "„Die Funktion ist nach sechs Sprints fertig.“", "en": "“The feature is finished after six sprints.”"}, "ok": false, "why": {"de": "Misst Lieferung, nicht Wirkung. Fertig sagt nichts darüber, ob jemand einsteigt.", "en": "Measures delivery, not impact. Finished says nothing about whether anyone gets started."}}, {"t": {"de": "„Nach der Beta gewinnen wir 20 % mehr Neukunden zwischen 18 und 35.“", "en": "“After the beta we win 20% more new customers aged 18 to 35.”"}, "ok": true, "why": {"de": "Wirkung, Gruppe, Zeitpunkt. Der Wert entspricht dem Ziel aus dem Fall und ist eindeutig messbar.", "en": "Impact, group, time. The value matches the goal in the case and can be measured unambiguously."}}, {"t": {"de": "„Möglichst viele laden die App herunter.“", "en": "“As many people as possible download the app.”"}, "ok": false, "why": {"de": "Eine Eitelkeitszahl. Downloads sagen nichts darüber, ob jemand investiert.", "en": "A vanity metric. Downloads say nothing about whether anyone invests."}}]}, {"ask": {"de": "Welche Annahme sollte das Team als Erstes als Hypothese prüfen?", "en": "Which assumption should the team test first as a hypothesis?"}, "probe": {"de": "Welche Annahme müsste falsch sein, damit wir lieber aufhören?", "en": "Which assumption would have to be wrong for us to rather stop?"}, "opts": [{"t": {"de": "„Wir nehmen an, dass die Marktdaten-Lizenz schon irgendwie klappt.“", "en": "“We assume the market data licence will work out somehow.”"}, "ok": false, "why": {"de": "Das Risiko ist echt, die Lizenz lässt sich nicht in einem Sprint klären. Ohne Prüfkriterium ist es aber nur ein Bauchgefühl, keine Hypothese.", "en": "The risk is real, the licence cannot be settled in one sprint. Without a test criterion it is just a gut feeling, not a hypothesis."}}, {"t": {"de": "„Wir glauben, dass junge Anlegerinnen und Anleger die Geeignetheitsprüfung durchlaufen, statt abzubrechen. Wir wissen es, wenn die Abbruchquote in der Beta höchstens 8 % beträgt.“", "en": "“We believe young investors complete the suitability check instead of dropping out. We will know when the drop-out rate in the beta is at most 8%.”"}, "ok": true, "why": {"de": "Formel „Wir glauben … Wir wissen es, wenn …“: Annahme, Zahl und Zeitpunkt. Der Wert von 8 % entspricht dem Ziel im Fall; die Prüfung ist der Flaschenhals.", "en": "Formula “We believe … We will know when …”: assumption, figure and time. The 8% matches the goal in the case; the check is the bottleneck."}}, {"t": {"de": "„Wir glauben, dass alle Bruchteilsaktien lieben.“", "en": "“We believe everyone loves fractional shares.”"}, "ok": false, "why": {"de": "Zu weit und nicht prüfbar. Es fehlt, woran man das Gegenteil erkennen würde.", "en": "Too broad and not testable. It is missing how the opposite would be recognised."}}]}, {"ask": {"de": "Was gehört als nicht verhandelbare Leitplanke ins Zielbild?", "en": "What belongs in the target picture as a non-negotiable guardrail?"}, "probe": {"de": "Was darf in keinem Sprint verhandelt werden?", "en": "What must not be negotiated in any sprint?"}, "opts": [{"t": {"de": "„Die Order-Bestätigung dauert unter 100 Millisekunden.“", "en": "“Order confirmation takes under 100 milliseconds.”"}, "ok": false, "why": {"de": "Eine Qualitätsanforderung. Sie gehört später in die Anforderungen, nicht als Leitplanke ins Zielbild.", "en": "A quality requirement. It belongs in the requirements later, not into the target picture as a guardrail."}}, {"t": {"de": "„Das Design folgt dem aktuellen App-Stil.“", "en": "“The design follows the current app style.”"}, "ok": false, "why": {"de": "Eine Gestaltungsvorgabe. Sie ist änderbar und kein Muss, an dem das Vorhaben hängt.", "en": "A design guideline. It can be changed and is no must on which the undertaking depends."}}, {"t": {"de": "„Jede Order läuft erst nach bestandener Geeignetheitsprüfung durch das Compliance-Gate. Das ist nicht verhandelbar.“", "en": "“Every order only goes through the compliance gate after a passed suitability check. This is non-negotiable.”"}, "ok": true, "why": {"de": "Ein hartes Muss aus dem Fall (MiFID II, WpHG). Es grenzt ab, was das Team nicht verändern darf, und schützt das Vorhaben.", "en": "A hard must from the case (MiFID II, WpHG). It marks what the team must not change and protects the undertaking."}}]}], "okr": {"o": {"de": "Junge Anlegerinnen und Anleger starten mit Bruchteilsaktien bei uns.", "en": "Young investors start with fractional shares with us."}, "kr": [{"de": "+20 % Neukunden im Alter von 18 bis 35 nach der sechswöchigen Beta", "en": "+20% new customers aged 18 to 35 after the six-week beta"}, {"de": "Abbruchquote der Geeignetheitsprüfung höchstens 8 %", "en": "Drop-out rate of the suitability check at most 8%"}]}, "next": ["okr_kaskade", "bc", "fallnova"]}, {"id": "nordwest", "who": "Kanzlerin Dr. Feldmann", "role": {"de": "Hochschulleitung", "en": "University management"}, "label": {"de": "Fall B · Hochschule Nordwest · hybrid", "en": "Case B · Hochschule Nordwest · hybrid"}, "quote": {"de": "„Wir digitalisieren die Studierendenakte. Das Prüfungsamt soll spürbar entlastet werden, und der Rechnungshof darf nichts beanstanden.“", "en": "“We are digitalising the student file. The examinations office should be noticeably relieved, and the audit office must find nothing to object to.”"}, "ctx": {"de": "Widerspruchsverfahren heute in 7 manuellen Schritten mit durchschnittlich 18 Tagen Durchlaufzeit, Ziel −60 %, Abschlusszeugnisse 50 Jahre aufbewahren, Barrierefreiheits-Audit, Investition ca. 210.000 €.", "en": "Objection procedure today in 7 manual steps with an average lead time of 18 days, goal −60%, final certificates kept for 50 years, accessibility audit, investment about €210,000."}, "st": [{"ask": {"de": "„Die Hochschule“ ist keine Zielgruppe. Für wen entsteht die digitale Akte zuerst?", "en": "“The university” is not a target group. For whom is the digital file created first?"}, "probe": {"de": "Wer arbeitet heute am meisten mit der Papierakte, und wo hakt es?", "en": "Who works most with the paper file today, and where does it get stuck?"}, "opts": [{"t": {"de": "„Für die gesamte Hochschule.“", "en": "“For the whole university.”"}, "ok": false, "why": {"de": "Zu breit. Wer alle meint, kann weder Nutzen noch Reihenfolge begründen.", "en": "Too broad. If you mean everyone, you can justify neither benefit nor order."}}, {"t": {"de": "„Für Sachbearbeitende im Prüfungsamt, die Widersprüche heute in sieben manuellen Schritten bearbeiten.“", "en": "“For clerks in the examinations office who handle objections today in seven manual steps.”"}, "ok": true, "why": {"de": "Nennt Gruppe und Problem und passt zum Anwendungsfall im Fall (Widerspruchsverfahren).", "en": "Names group and problem and matches the use case of the case (objection procedure)."}}, {"t": {"de": "„Für Studierende, die eine moderne Hochschule erwarten.“", "en": "“For students who expect a modern university.”"}, "ok": false, "why": {"de": "Eine Erwartung, kein Problem. Es bleibt offen, was Studierenden heute konkret fehlt.", "en": "An expectation, not a problem. It stays open what students are concretely missing today."}}]}, {"ask": {"de": "Welcher Visionssatz gibt dem Projekt eine Richtung, ohne die Technik festzulegen?", "en": "Which vision sentence gives the project a direction without fixing the technology?"}, "probe": {"de": "Wie sieht ein guter Arbeitstag im Prüfungsamt nach dem Projekt aus?", "en": "What does a good working day in the examinations office look like after the project?"}, "opts": [{"t": {"de": "„Wir führen die E-Akte mit Scanstraße und Anbindung an das Campus-Management-System ein.“", "en": "“We introduce the e-file with a scanning line and a link to the campus management system.”"}, "ok": false, "why": {"de": "Das ist die Lösung, nicht die Vision. Sie sagt, womit gebaut wird, nicht wofür.", "en": "This is the solution, not the vision. It says what is built with, not what for."}}, {"t": {"de": "„Das Prüfungsamt bearbeitet Widersprüche digital, nachvollziehbar und barrierefrei; Abschlusszeugnisse bleiben 50 Jahre verfügbar.“", "en": "“The examinations office handles objections digitally, traceably and accessibly; final certificates remain available for 50 years.”"}, "ok": true, "why": {"de": "Beschreibt den Zielzustand mit den Rahmen des Falls und lässt das Werkzeug offen.", "en": "Describes the target state with the frame of the case and leaves the tool open."}}, {"t": {"de": "„Wir werden die digitalste Hochschule des Landes.“", "en": "“We will become the most digital university in the country.”"}, "ok": false, "why": {"de": "Ein Superlativ ohne Maßstab, der nichts zum Nutzen für das Prüfungsamt sagt.", "en": "A superlative without a yardstick that says nothing about the benefit for the examinations office."}}]}, {"ask": {"de": "Woran erkennt die Hochschulleitung, dass die Digitalisierung gelungen ist?", "en": "How will the university management know the digitalisation succeeded?"}, "probe": {"de": "Welche Zahl würden Sie dem Landesrechnungshof nennen?", "en": "Which figure would you give the state audit office?"}, "opts": [{"t": {"de": "„Das Prüfungsamt ist zufrieden.“", "en": "“The examinations office is satisfied.”"}, "ok": false, "why": {"de": "Ein Gefühl, keine Messung. Zufriedenheit lässt sich nicht abnehmen.", "en": "A feeling, not a measurement. Satisfaction cannot be signed off."}}, {"t": {"de": "„Alle Akten sind gescannt.“", "en": "“All files are scanned.”"}, "ok": false, "why": {"de": "Misst Aufwand, nicht Wirkung. Gescannte Akten sagen nichts über die Bearbeitungszeit.", "en": "Measures effort, not impact. Scanned files say nothing about processing time."}}, {"t": {"de": "„Die durchschnittliche Durchlaufzeit eines Widerspruchs sinkt von 18 Tagen um 60 %, bei bestandenem Barrierefreiheits-Audit und ohne Datenverlust.“", "en": "“The average lead time of an objection drops by 60% from 18 days, with a passed accessibility audit and no data loss.”"}, "ok": true, "why": {"de": "Ausgangswert, Zielwert und zwei Randbedingungen. Alle Werte stammen aus dem Fall.", "en": "Baseline, target and two conditions. All values come from the case."}}]}, {"ask": {"de": "Welche Annahme sollten Sie vor dem Rollout als Hypothese belegen?", "en": "Which assumption should you substantiate as a hypothesis before the rollout?"}, "probe": {"de": "Was nehmen wir an, ohne es je geprüft zu haben?", "en": "What are we assuming without ever having checked it?"}, "opts": [{"t": {"de": "„Wir glauben, dass die Sachbearbeitung mit der E-Akte weniger nacharbeiten muss als heute. Wir wissen es, wenn Herr Öztürk nach dem Pilot nicht mehr Nacharbeit meldet als vorher.“", "en": "“We believe clerks will have to rework less with the e-file than today. We will know when Herr Öztürk reports no more rework after the pilot than before.”"}, "ok": true, "why": {"de": "Annahme, Prüfkriterium und Person, die es belegt. Sie trifft Herr Öztürks Sorge, am Ende nicht entlastet zu sein.", "en": "Assumption, test criterion and the person who substantiates it. It meets Herr Öztürk’s worry of not being relieved in the end."}}, {"t": {"de": "„Wir nehmen an, dass Abschlusszeugnisse 30 Jahre aufbewahrt werden müssen.“", "en": "“We assume final certificates must be kept for 30 years.”"}, "ok": false, "why": {"de": "Eine ungeprüfte Annahme, die falsch war: Nach der Rechtsprüfung gilt im Fall eine Frist von 50 Jahren. Eine Annahme braucht eine Prüfung, sonst wird sie zur Falle.", "en": "An untested assumption that was wrong: after the legal check the case requires 50 years. An assumption needs a test, otherwise it becomes a trap."}}, {"t": {"de": "„Wir nehmen an, dass die Software schon passt.“", "en": "“We assume the software will fit.”"}, "ok": false, "why": {"de": "Zu vage und ohne Kriterium. Es fehlt, woran man erkennen würde, dass sie nicht passt.", "en": "Too vague and without a criterion. It is missing how you would recognise that it does not fit."}}]}, {"ask": {"de": "Was gehört als nicht verhandelbare Leitplanke ins Zielbild?", "en": "What belongs in the target picture as a non-negotiable guardrail?"}, "probe": {"de": "Was gilt auch dann, wenn das Projekt knapp wird?", "en": "What holds even when the project runs short?"}, "opts": [{"t": {"de": "„Der Scan läuft mit mindestens 98 % OCR-Konfidenz.“", "en": "“The scan runs at 98% OCR confidence at minimum.”"}, "ok": false, "why": {"de": "Ein Akzeptanzkriterium. Es gehört in die Anforderungen und nicht ins Zielbild.", "en": "An acceptance criterion. It belongs in the requirements, not in the target picture."}}, {"t": {"de": "„Die Suche in der Akte ist schlicht gehalten.“", "en": "“Search in the file is kept simple.”"}, "ok": false, "why": {"de": "Eine Geschmacksfrage ohne Folgen für das Gelingen des Vorhabens.", "en": "A matter of taste with no consequences for the success of the undertaking."}}, {"t": {"de": "„Die 50-jährige Aufbewahrung der Abschlusszeugnisse gilt ohne Ausnahme. Daher kein Cloud-natives Format mit Anbieterbindung über 50 Jahre.“", "en": "“The 50-year retention of final certificates applies without exception. Hence no cloud-native format with vendor lock-in over 50 years.”"}, "ok": true, "why": {"de": "Ein hartes Muss aus dem Fall mit Folge für Architektur und Format. Es schützt das Vorhaben vor Entscheidungen, die später nicht zu korrigieren sind.", "en": "A hard must from the case with consequences for architecture and format. It protects the undertaking from decisions that cannot be corrected later."}}]}], "okr": {"o": {"de": "Das Prüfungsamt bearbeitet Widersprüche schnell und nachvollziehbar.", "en": "The examinations office handles objections quickly and traceably."}, "kr": [{"de": "Durchlaufzeit je Widerspruch um 60 % senken (Ausgangswert Ø 18 Tage)", "en": "Reduce lead time per objection by 60% (baseline avg. 18 days)"}, {"de": "Barrierefreiheits-Audit bestanden", "en": "Accessibility audit passed"}, {"de": "0 Datenverlust-Vorfälle", "en": "0 data-loss incidents"}]}, "next": ["bc", "okr_kaskade", "fallnord"]}], "tools": {"okr_kaskade": {"href": "./okr-kaskade.html", "name": "OKR-Kaskade", "why": {"de": "Von der Vision über Strategie und Initiative bis zu den Zielen, auf die das Projekt einzahlt.", "en": "From vision via strategy and initiative to the goals the project contributes to."}}, "bc": {"href": "./ba-steckbrief-business-case.html", "name": "BA-Steckbrief & Business Case", "why": {"de": "Warum lohnt sich das Vorhaben, und woran messen wir es?", "en": "Why is the undertaking worthwhile, and how do we measure it?"}}, "fallnova": {"href": "./novatrade-pulse-steckbrief.html", "name": "Fallwelt NovaTrade Pulse", "why": {"de": "Alle Fakten des Falls nachschlagen: Gate, Ziele, Personas.", "en": "Look up all facts of the case: gate, goals, personas."}}, "fallnord": {"href": "./hochschule-nordwest-steckbrief.html", "name": "Fallwelt Hochschule Nordwest", "why": {"de": "Alle Fakten des Falls nachschlagen: Frist, Prozess, Personas.", "en": "Look up all facts of the case: retention period, process, personas."}}}, "ui": {"pickT": {"de": "1 · Fall wählen", "en": "1 · Choose a case"}, "pickH": {"de": "Zwei Aufträge, die noch kein Zielbild haben. Welchen nehmen wir uns vor?", "en": "Two orders that do not yet have a target picture. Which one do we take on?"}, "s1": {"de": "Für wen", "en": "For whom"}, "s2": {"de": "Vision", "en": "Vision"}, "s3": {"de": "Erfolgsmaß", "en": "Success measure"}, "s4": {"de": "Hypothese", "en": "Hypothesis"}, "s5": {"de": "Leitplanke", "en": "Guardrail"}, "hit": {"de": "Treffer.", "en": "Hit."}, "miss": {"de": "Nicht ganz.", "en": "Not quite."}, "better": {"de": "Besser wäre gewesen:", "en": "Better would have been:"}, "probeL": {"de": "Beispielfrage an %s:", "en": "Example question for %s:"}, "next": {"de": "Weiter →", "en": "Next →"}, "done": {"de": "Zielbild-Karte anzeigen →", "en": "Show target picture card →"}, "other": {"de": "Anderen Fall wählen", "en": "Choose another case"}, "cardH": {"de": "Zielbild-Karte", "en": "Target picture card"}, "cardSub": {"de": "Das nehmen Sie in die Planung mit.", "en": "This is what you take into planning."}, "lOrder": {"de": "Auftrag", "en": "Order"}, "lWho": {"de": "Für wen und wogegen", "en": "For whom and against what"}, "lVision": {"de": "Vision", "en": "Vision"}, "lSuccess": {"de": "Erfolgsmaß", "en": "Success measure"}, "lHyp": {"de": "Hypothese", "en": "Hypothesis"}, "lRail": {"de": "Leitplanke", "en": "Guardrail"}, "lOkr": {"de": "OKR-Entwurf", "en": "OKR draft"}, "lObj": {"de": "Objective", "en": "Objective"}, "lKr": {"de": "Key Results", "en": "Key results"}, "lN": {"de": "Weiter mit", "en": "Continue with"}, "score": {"de": "Treffer", "en": "Hits"}, "of": {"de": "von", "en": "of"}, "dl": {"de": "Zielbild-Karte herunterladen (.md)", "en": "Download target picture card (.md)"}, "spark": {"de": "Ein Zielbild ist kein Plan. Es gibt die Richtung vor, an der Backlog, Meilensteine und OKR ausgerichtet werden.", "en": "A target picture is not a plan. It sets the direction by which backlog, milestones and OKR are aligned."}, "fillT": {"de": "Eingesetzt ist der Auftrag von %s. Ersetzen Sie ihn durch Ihren eigenen.", "en": "The order from %s is filled in. Replace it with your own."}, "okrNote": {"de": "Der Entwurf übernimmt die Werte aus dem Fall und ist nur ein Vorschlag, den das Team vorher ausdrücklich abstimmt.", "en": "The draft takes the values from the case and is only a proposal that the team explicitly agrees on beforehand."}}, "stations": [{"de": "Für wen", "en": "For whom"}, {"de": "Vision", "en": "Vision"}, {"de": "Erfolgsmaß", "en": "Success measure"}, {"de": "Hypothese", "en": "Hypothesis"}, {"de": "Leitplanke", "en": "Guardrail"}], "labels": ["lWho", "lVision", "lSuccess", "lHyp", "lRail"]};
+  var lang = 'de', state = null;
+  function store(k, v){ try{ if(v===undefined){ return window.sessionStorage.getItem(k); } window.sessionStorage.setItem(k, v); }catch(e){ return null; } }
+  function T(o){ return (o && (o[lang] || o.de)) || ''; }
+  function U(k){ return T(D.ui[k]); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function scrollTo(el){ if(el && el.scrollIntoView){ try{ el.scrollIntoView({behavior:'smooth', block:'start'}); }catch(e){ el.scrollIntoView(); } } }
+  var sv = store('vzw-lang'); if(sv==='en'||sv==='de'){ lang = sv; }
+
+  var i18nEls = document.querySelectorAll('[data-i18n-en]');
+  var deCache = [];
+  i18nEls.forEach(function(el, n){ deCache[n] = el.innerHTML; });
+  function applyStatic(){
+    i18nEls.forEach(function(el, n){ el.innerHTML = (lang === 'en') ? el.getAttribute('data-i18n-en') : deCache[n]; });
+    document.documentElement.lang = lang;
+    document.getElementById('langBtn').textContent = (lang === 'en') ? 'DE' : 'EN';
+    document.title = (lang === 'en') ? 'Vision & Target Picture Workshop – Possibility room' : 'Vision & Zielbild-Werkstatt – Möglichkeitsraum';
+  }
+  function find(id){ for(var n=0;n<D.cases.length;n++){ if(D.cases[n].id===id){ return D.cases[n]; } } }
+  function renderCards(){
+    var h = '';
+    D.cases.forEach(function(c){
+      var sel = state && state.c.id === c.id ? ' sel' : '';
+      h += '<button type="button" class="imp' + sel + '" data-id="' + c.id + '" aria-pressed="' + (sel ? 'true' : 'false') + '">' +
+        '<span class="who">' + esc(T(c.label)) + '</span>' +
+        '<span class="qt">' + esc(T(c.quote)) + '</span>' +
+        '<span class="ctx">' + esc(c.who) + ' · ' + esc(T(c.role)) + '</span></button>';
+    });
+    document.getElementById('cards').innerHTML = h;
+    document.querySelectorAll('.imp').forEach(function(b){ b.addEventListener('click', function(){ start(b.getAttribute('data-id')); }); });
+  }
+  function start(id){
+    state = { c: find(id), step: 0, picks: [null,null,null,null,null], hits: 0, finished: false };
+    renderCards(); fillPrompts();
+    document.getElementById('flow').classList.add('show');
+    renderFlow(); document.getElementById('outCard').innerHTML = '';
+    scrollTo(document.getElementById('flow'));
+  }
+  function reset(){
+    state = null; renderCards(); fillPrompts();
+    document.getElementById('flow').classList.remove('show');
+    document.getElementById('outCard').innerHTML = '';
+    scrollTo(document.getElementById('pick'));
+  }
+  function renderFlow(){
+    if(!state){ return; }
+    var c = state.c, s = state.step, h = '', st = c.st[s];
+    h += '<div class="track">';
+    for(var n=0;n<5;n++){
+      var cls = (n < s || (n === s && state.picks[n] !== null)) ? 'pill done' : (n === s ? 'pill on' : 'pill');
+      h += '<span class="' + cls + '">' + (n+1) + ' · ' + esc(U('s'+(n+1))) + '</span>';
+    }
+    h += '</div>';
+    h += '<div class="quote">' + esc(T(c.quote)) + '<small>' + esc(c.who) + ' · ' + esc(T(c.role)) + '</small></div>';
+    h += '<p class="qline">' + esc(T(st.ask)) + '</p>';
+    var pick = state.picks[s];
+    h += '<div class="opts">';
+    st.opts.forEach(function(o, k){
+      var cls = 'opt', mark = '';
+      if(pick !== null){
+        if(o.ok){ cls += ' ok'; mark = '<span class="mark">✓</span>'; }
+        else if(k === pick){ cls += ' bad'; mark = '<span class="mark">✗</span>'; }
+      }
+      h += '<button type="button" class="' + cls + '" data-k="' + k + '"' + (pick !== null ? ' disabled' : '') + '>' + mark + esc(T(o.t)) + '</button>';
+    });
+    h += '</div>';
+    if(pick !== null){
+      var ch = st.opts[pick], best = null;
+      st.opts.forEach(function(o){ if(o.ok){ best = o; } });
+      var hit = ch.ok;
+      h += '<div class="fb' + (hit ? ' hit' : '') + '"><p><span class="tag">' + esc(hit ? U('hit') : U('miss')) + '</span> ' + esc(T(ch.why)) + '</p>';
+      if(!hit){ h += '<p>' + esc(U('better')) + ' <b>' + esc(T(best.t)) + '</b></p><p>' + esc(T(best.why)) + '</p>'; }
+      h += '<div class="ansbox"><b>' + esc(U('probeL').replace('%s', c.who)) + '</b><br>' + esc(T(st.probe)) + '</div></div>';
+      h += '<div class="acts"><button type="button" class="btn" id="nextBtn">' + esc(s < 4 ? U('next') : U('done')) + '</button>' +
+        '<button type="button" class="btn ghost" id="otherBtn">' + esc(U('other')) + '</button></div>';
+    }
+    document.getElementById('stage').innerHTML = h;
+    document.querySelectorAll('.opt').forEach(function(b){
+      b.addEventListener('click', function(){
+        if(state.picks[state.step] !== null){ return; }
+        var k = parseInt(b.getAttribute('data-k'), 10);
+        state.picks[state.step] = k;
+        if(state.c.st[state.step].opts[k].ok){ state.hits++; }
+        renderFlow();
+      });
+    });
+    var nb = document.getElementById('nextBtn');
+    if(nb){ nb.addEventListener('click', function(){
+      if(state.step < 4){ state.step++; renderFlow(); }
+      else { state.finished = true; renderCard(); scrollTo(document.getElementById('outCard')); }
+    }); }
+    var ob = document.getElementById('otherBtn');
+    if(ob){ ob.addEventListener('click', reset); }
+  }
+  function best(st){ for(var n=0;n<st.opts.length;n++){ if(st.opts[n].ok){ return st.opts[n]; } } }
+  function renderCard(){
+    var el = document.getElementById('outCard');
+    if(!state || !state.finished){ el.innerHTML = ''; return; }
+    var c = state.c, h = '';
+    h += '<div class="card-out"><h2>' + esc(U('cardH')) + '</h2><p class="sub">' + esc(U('cardSub')) + '</p>';
+    h += '<div class="row"><div class="lb">' + esc(U('lOrder')) + '</div><div class="vl">' + esc(T(c.quote)) + ' – ' + esc(c.who) + '</div></div>';
+    D.labels.forEach(function(lk, n){
+      h += '<div class="row"><div class="lb">' + esc(U(lk)) + '</div><div class="vl"><b>' + esc(T(best(c.st[n]).t)) + '</b></div></div>';
+    });
+    h += '<div class="row"><div class="lb">' + esc(U('lOkr')) + '</div><div class="vl"><b>' + esc(U('lObj')) + ':</b> ' + esc(T(c.okr.o)) + '<br><b>' + esc(U('lKr')) + ':</b><ul>';
+    c.okr.kr.forEach(function(k){ h += '<li>' + esc(T(k)) + '</li>'; });
+    h += '</ul><small>' + esc(U('okrNote')) + '</small></div></div>';
+    h += '<div class="row"><div class="lb">' + esc(U('lN')) + '</div><div class="vl"><ul>';
+    c.next.forEach(function(k){ var t = D.tools[k]; h += '<li><a href="' + t.href + '">' + esc(t.name) + '</a> – ' + esc(T(t.why)) + '</li>'; });
+    h += '</ul></div></div>';
+    h += '<span class="score">' + esc(U('score')) + ': ' + state.hits + ' ' + esc(U('of')) + ' 5</span>';
+    h += '<p class="sub" style="margin-top:12px">' + esc(U('spark')) + '</p>';
+    h += '<div class="acts"><button type="button" class="btn" id="dlBtn">' + esc(U('dl')) + '</button><button type="button" class="btn ghost" id="otherBtn2">' + esc(U('other')) + '</button></div></div>';
+    el.innerHTML = h;
+    document.getElementById('dlBtn').addEventListener('click', download);
+    document.getElementById('otherBtn2').addEventListener('click', reset);
+  }
+  function download(){
+    var c = state.c, L = [];
+    L.push('# ' + U('cardH') + ' – ' + (lang==='en' ? 'Vision & Target Picture Workshop' : 'Vision & Zielbild-Werkstatt'));
+    L.push('');
+    L.push('**' + c.who + ' (' + T(c.role) + '):** ' + T(c.quote));
+    L.push('');
+    D.labels.forEach(function(lk, n){ L.push('- **' + U(lk) + ':** ' + T(best(c.st[n]).t)); });
+    L.push('- **' + U('lObj') + ':** ' + T(c.okr.o));
+    c.okr.kr.forEach(function(k){ L.push('  - ' + T(k)); });
+    L.push('- **' + U('lN') + ':** ' + c.next.map(function(k){ return D.tools[k].name; }).join(', '));
+    L.push('- **' + U('score') + ':** ' + state.hits + ' ' + U('of') + ' 5');
+    L.push('');
+    L.push('_' + U('okrNote') + '_');
+    L.push('');
+    L.push('Michaela Kühn · www.michaela-kuehn.com');
+    var blob = new Blob([L.join('\n')], { type: 'text/markdown;charset=utf-8' });
+    var url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = 'zielbild-karte-' + c.id + (lang==='en' ? '-en' : '') + '.md';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 500);
+  }
+  /* Prompt-Reiter */
+  var cp = document.getElementById('copyBtn'), curP = 0;
+  document.querySelectorAll('.ptab').forEach(function(tb){
+    tb.addEventListener('click', function(){
+      curP = parseInt(tb.getAttribute('data-p'), 10);
+      document.querySelectorAll('.ptab').forEach(function(x){ var on = x === tb; x.classList.toggle('on', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      document.querySelectorAll('.pbody').forEach(function(b){ b.hidden = (parseInt(b.getAttribute('data-p'), 10) !== curP); });
+    });
+  });
+  cp.addEventListener('click', function(){
+    var txt = document.querySelector('.pbody[data-p="' + curP + '"] .ptxt').textContent;
+    function ok(){ cp.textContent = (lang==='en') ? 'Copied' : 'Kopiert'; setTimeout(function(){ cp.textContent = (lang==='en') ? 'Copy prompt' : 'Prompt kopieren'; }, 1500); }
+    try{ navigator.clipboard.writeText(txt).then(ok, function(){}); }catch(e){
+      var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); ok(); }catch(e2){} document.body.removeChild(ta);
+    }
+  });
+  function fillPrompts(){
+    var note = document.getElementById('pfill');
+    document.querySelectorAll('.ptxt').forEach(function(el){
+      var raw = (lang === 'en') ? el.getAttribute('data-i18n-en') : el.getAttribute('data-de');
+      if(state){
+        var q = T(state.c.quote), x = T(state.c.ctx);
+        raw = raw.replace(/[„“]…[“”]/, function(){ return q; }).replace(/(Meine Angaben: |My details: )…/, function(m, g){ return g + x; });
+      }
+      el.textContent = raw;
+    });
+    if(state){ note.textContent = U('fillT').replace('%s', state.c.who); note.hidden = false; } else { note.hidden = true; }
+  }
+  function refresh(){
+    applyStatic(); renderCards(); renderFlow(); renderCard(); fillPrompts();
+    cp.textContent = (lang==='en') ? 'Copy prompt' : 'Prompt kopieren';
+    document.getElementById('pickT').textContent = U('pickT');
+    document.getElementById('pickH').textContent = U('pickH');
+  }
+  document.getElementById('langBtn').addEventListener('click', function(){
+    lang = (lang === 'de') ? 'en' : 'de'; store('vzw-lang', lang); refresh();
+  });
+  var BEAMER_LEVELS = [
+    { classes: [], label: '☀ Beamer' },
+    { classes: ['beamer'], label: '☀ Beamer XL' },
+    { classes: ['beamer','beamer-xl'], label: '☀ Beamer XXL' },
+    { classes: ['beamer','beamer-xl','beamer-xxl'], label: '☀ Normal' }
+  ];
+  var beamerLevel = 0, beamerBtn = document.getElementById('beamerBtn');
+  beamerBtn.addEventListener('click', function(){
+    beamerLevel = (beamerLevel + 1) % 4;
+    document.documentElement.classList.remove('beamer','beamer-xl','beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    beamerBtn.textContent = BEAMER_LEVELS[beamerLevel].label;
+  });
+  refresh();
+})();
+</script>
+</body>
+</html>
