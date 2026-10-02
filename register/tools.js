@@ -964,15 +964,18 @@ window.DENKRAUM_REGISTER = {
       ],
       "siegel": {
         "status": "Auditiert & zertifiziert",
-        "letztesAudit": "2026-08-20",
-        "auditZeileImTool": "20.08.2026",
+        "letztesAudit": "2026-10-02",
+        "auditZeileImTool": "02.10.2026",
         "offen": null
       },
       "beamer": "4-stufig",
       "sprecherSkript": true,
-      "verwandt": [],
+      "verwandt": [
+        "tools/prompt-builder.html",
+        "tools/vom-prompt-zum-agenten.html"
+      ],
       "geprueft": false,
-      "notiz": ""
+      "notiz": "02.10.2026: K21-Signatur-Fallback entfernt, Design-System-Tokens (Radius/Schatten) nachgezogen, Eisberg-Illustration mit Stichwort-Pills in die linke Spalte eingebaut (PR folgt)."
     },
     {
       "id": "diagramm-kompass-re-ba",
