@@ -12,10 +12,13 @@
     --paper:#ffffff;
     --panel:#f4f6f9;
     --accent:#2f6fed;
-    --e1-bg:#fff7e6; --e1-line:#b45309; --e1-text:#7c3d05;
-    --e2-bg:#e6f6f4; --e2-line:#0f766e; --e2-text:#0b4f49;
-    --e3-bg:#eceafd; --e3-line:#4338ca; --e3-text:#312a8f;
+    --e1-bg:#fff7e6; --e1-line:#b45309; --e1-text:#7c3d05; --e1-light:#f0b063;
+    --e2-bg:#e6f6f4; --e2-line:#0f766e; --e2-text:#0b4f49; --e2-light:#5ab8ae;
+    --e3-bg:#eceafd; --e3-line:#4338ca; --e3-text:#312a8f; --e3-light:#6f67d6;
     --ok:#166534;
+    --sky-a:#eaf4fa; --sky-b:#cfe6f0; --sea-a:#4fa8ab; --sea-b:#1f6b86; --sea-c:#0b2f52;
+    --ice-edge:#0e3448; --ice-line:#0b2f52;
+    --card-shadow:0 6px 16px rgba(26,35,50,.03);
   }
   html,body{ color-scheme: light; background:var(--paper); margin:0; padding:0; overflow-y:auto; }
   *{ box-sizing:border-box; }
@@ -30,8 +33,9 @@
   }
   .signature strong{ display:block; font-size:14px; }
   .signature a{ color:var(--accent); text-decoration:none; font-size:14px; }
-  @media (max-width:900px){
-    .signature{ position:static; text-align:right; margin:10px 28px 0 auto; width:fit-content; }
+  @media (max-width:480px){
+    .signature{ padding:3px 6px; }
+    .signature strong, .signature a{ font-size:12px; }
   }
 
   .topbar{ padding:16px 32px 0 32px; }
@@ -44,7 +48,7 @@
   header.top h1{ margin:0 0 6px 0; font-size:28px; }
   header.top p.sub{ margin:0; color:var(--muted); font-size:16px; }
   #beamerBtn{
-    margin-top:14px; font-size:14px; padding:8px 14px; border-radius:20px;
+    margin-top:14px; font-size:14px; padding:8px 14px; border-radius:999px;
     border:1px solid var(--accent); background:var(--paper); color:var(--accent);
     cursor:pointer; min-height:44px;
   }
@@ -58,15 +62,16 @@
   }
   @media (max-width:900px){ .iceberg-col{ flex:none; border-right:none; border-bottom:1px solid var(--line); } }
 
-  .waterline{
-    display:flex; align-items:center; gap:10px; margin:6px 0 6px 0;
-    font-size:14px; color:var(--muted);
+  .iceberg-art{
+    background:var(--paper); border:1px solid var(--line); border-radius:16px;
+    box-shadow:var(--card-shadow); padding:8px; margin-bottom:16px;
   }
-  .waterline::before, .waterline::after{ content:""; flex:1; height:2px; background:repeating-linear-gradient(90deg,#8fb8e8 0 8px, transparent 8px 14px); }
+  .iceberg-art svg{ display:block; width:100%; height:auto; border-radius:10px; overflow:hidden; }
+  .iceberg-caption{ font-size:14px; color:var(--muted); margin:8px 2px 0; line-height:1.4; }
 
   .tier{
     display:block; width:100%; text-align:left; border:none; cursor:pointer;
-    border-radius:14px; padding:18px 18px; margin:10px 0; min-height:44px;
+    border-radius:12px; padding:18px 18px; margin:10px 0; min-height:44px;
     font:inherit; color:inherit; position:relative;
   }
   .tier:focus-visible{ outline:3px solid var(--accent); outline-offset:2px; }
@@ -76,6 +81,15 @@
     display:inline-block; font-size:14px; font-weight:700; padding:2px 9px;
     border-radius:999px; margin-bottom:8px;
   }
+  .tier-kw{ display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+  .tier-kw .kw{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:14px;
+    padding:2px 9px; border-radius:999px; background:rgba(255,255,255,.6);
+    border:1px solid currentColor;
+  }
+  .tier.e1 .tier-kw .kw{ color:var(--e1-text); }
+  .tier.e2 .tier-kw .kw{ color:var(--e2-text); }
+  .tier.e3 .tier-kw .kw{ color:var(--e3-text); }
 
   .tier.e1{ background:var(--e1-bg); border:2px solid var(--e1-line); }
   .tier.e1 .badge{ background:var(--e1-line); color:#fff; }
@@ -99,7 +113,7 @@
 
   .cols{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:20px; }
   @media (max-width:700px){ .cols{ grid-template-columns:1fr; } }
-  .card{ border:1px solid var(--line); border-radius:12px; padding:16px 18px; background:var(--paper); }
+  .card{ border:1px solid var(--line); border-radius:16px; padding:16px 18px; background:var(--paper); box-shadow:var(--card-shadow); }
   .card h4{ margin:0 0 10px 0; font-size:16px; }
   .card ul{ margin:0; padding-left:20px; font-size:16px; }
   .card li{ margin-bottom:7px; }
@@ -107,8 +121,8 @@
   .card.tiefe{ border-top:4px solid var(--accent); }
 
   .ireb-box{
-    background:#eef3ff; border:1px solid #c7d7fb; border-radius:12px;
-    padding:16px 18px; font-size:16px; margin-bottom:16px;
+    background:#eef3ff; border:1px solid #c7d7fb; border-radius:16px;
+    padding:16px 18px; font-size:16px; margin-bottom:16px; box-shadow:var(--card-shadow);
   }
   .ireb-box strong{ color:#1d4ed8; }
   .ireb-box .tag{
@@ -122,8 +136,9 @@
   .crosslink strong{ color:var(--ink); }
 
   .banner{
-    margin:0 32px 26px 32px; padding:16px 20px; border-radius:12px;
+    margin:0 32px 26px 32px; padding:16px 20px; border-radius:16px;
     background:#111827; color:#fff; font-size:18px; text-align:center;
+    box-shadow:0 6px 16px rgba(17,24,39,.12);
   }
   .banner b{ color:#93c5fd; }
 
@@ -145,7 +160,8 @@
   .footer-details{ display:flex; flex-wrap:wrap; gap:16px; }
   @media (max-width:900px){ .footer-details{ flex-direction:column; } }
   .footer-box{
-    flex:1 1 260px; border:1px solid var(--line); border-radius:10px; background:var(--panel);
+    flex:1 1 260px; border:1px solid var(--line); border-radius:16px; background:var(--panel);
+    box-shadow:var(--card-shadow);
   }
   .footer-summary{
     cursor:pointer; padding:12px 16px; font-size:14px; font-weight:700; list-style:none; min-height:44px; display:flex; align-items:center;
@@ -166,8 +182,8 @@
   html.beamer header.top h1{ font-size:36px; }
   html.beamer header.top p.sub{ font-size:22px; }
   html.beamer .tier h3{ font-size:22px; }
-  html.beamer .tier p, html.beamer .tier .badge{ font-size:16px; }
-  html.beamer .waterline, html.beamer .ireb-box .tag{ font-size:15px; }
+  html.beamer .tier p, html.beamer .tier .badge, html.beamer .tier-kw .kw{ font-size:16px; }
+  html.beamer .iceberg-caption, html.beamer .ireb-box .tag{ font-size:15px; }
   html.beamer .detail-head h2{ font-size:44px; }
   html.beamer .detail-lede, html.beamer .card ul, html.beamer .card h4, html.beamer .ireb-box{ font-size:22px; }
   html.beamer .banner{ font-size:22px; }
@@ -175,8 +191,8 @@
   html.beamer.beamer-xl header.top h1{ font-size:44px; }
   html.beamer.beamer-xl header.top p.sub{ font-size:28px; }
   html.beamer.beamer-xl .tier h3{ font-size:28px; }
-  html.beamer.beamer-xl .tier p, html.beamer.beamer-xl .tier .badge{ font-size:18px; }
-  html.beamer.beamer-xl .waterline, html.beamer.beamer-xl .ireb-box .tag{ font-size:18px; }
+  html.beamer.beamer-xl .tier p, html.beamer.beamer-xl .tier .badge, html.beamer.beamer-xl .tier-kw .kw{ font-size:18px; }
+  html.beamer.beamer-xl .iceberg-caption, html.beamer.beamer-xl .ireb-box .tag{ font-size:18px; }
   html.beamer.beamer-xl .detail-head h2{ font-size:54px; }
   html.beamer.beamer-xl .detail-lede, html.beamer.beamer-xl .card ul, html.beamer.beamer-xl .card h4, html.beamer.beamer-xl .ireb-box{ font-size:28px; }
   html.beamer.beamer-xl .banner{ font-size:28px; }
@@ -184,8 +200,8 @@
   html.beamer.beamer-xl.beamer-xxl header.top h1{ font-size:54px; }
   html.beamer.beamer-xl.beamer-xxl header.top p.sub{ font-size:34px; }
   html.beamer.beamer-xl.beamer-xxl .tier h3{ font-size:34px; }
-  html.beamer.beamer-xl.beamer-xxl .tier p, html.beamer.beamer-xl.beamer-xxl .tier .badge{ font-size:21px; }
-  html.beamer.beamer-xl.beamer-xxl .waterline, html.beamer.beamer-xl.beamer-xxl .ireb-box .tag{ font-size:21px; }
+  html.beamer.beamer-xl.beamer-xxl .tier p, html.beamer.beamer-xl.beamer-xxl .tier .badge, html.beamer.beamer-xl.beamer-xxl .tier-kw .kw{ font-size:21px; }
+  html.beamer.beamer-xl.beamer-xxl .iceberg-caption, html.beamer.beamer-xl.beamer-xxl .ireb-box .tag{ font-size:21px; }
   html.beamer.beamer-xl.beamer-xxl .detail-head h2{ font-size:64px; }
   html.beamer.beamer-xl.beamer-xxl .detail-lede, html.beamer.beamer-xl.beamer-xxl .card ul, html.beamer.beamer-xl.beamer-xxl .card h4, html.beamer.beamer-xl.beamer-xxl .ireb-box{ font-size:34px; }
   html.beamer.beamer-xl.beamer-xxl .banner{ font-size:34px; }
@@ -211,24 +227,94 @@
 <div class="stage">
   <div class="iceberg-col" role="tablist" aria-label="Drei Ebenen wählen">
 
+    <figure class="iceberg-art">
+      <svg viewBox="0 0 900 760" role="img" aria-label="Ein Eisberg: ein kleiner Teil über der Wasserlinie, ein schmales Band knapp darunter, ein großer Körper in der Tiefe.">
+        <defs>
+          <clipPath id="icebergClip">
+            <polygon points="400,140 450,195 428,222 480,230 575,340 520,400 600,500 520,620 400,720 290,615 210,495 290,400 230,335 325,230 355,210 365,170" />
+          </clipPath>
+          <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="var(--sky-a)" />
+            <stop offset="1" stop-color="var(--sky-b)" />
+          </linearGradient>
+          <linearGradient id="seaGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="var(--sea-a)" />
+            <stop offset="0.35" stop-color="var(--sea-b)" />
+            <stop offset="1" stop-color="var(--sea-c)" />
+          </linearGradient>
+          <linearGradient id="e1Grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="var(--e1-light)" />
+            <stop offset="1" stop-color="var(--e1-line)" />
+          </linearGradient>
+          <linearGradient id="e2Grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="var(--e2-light)" />
+            <stop offset="1" stop-color="var(--e2-line)" />
+          </linearGradient>
+          <linearGradient id="e3Grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="var(--e3-light)" />
+            <stop offset="1" stop-color="var(--e3-line)" />
+          </linearGradient>
+        </defs>
+
+        <rect x="0" y="0" width="900" height="222" fill="url(#skyGrad)" />
+        <rect x="0" y="222" width="900" height="538" fill="url(#seaGrad)" />
+        <path d="M0,280 Q225,268 450,280 T900,280" fill="none" stroke="var(--ice-line)" stroke-opacity="0.14" stroke-width="2" />
+        <path d="M0,500 Q225,486 450,500 T900,500" fill="none" stroke="var(--ice-line)" stroke-opacity="0.1" stroke-width="2" />
+
+        <g clip-path="url(#icebergClip)">
+          <rect x="0" y="0" width="900" height="222" fill="url(#e1Grad)" />
+          <rect x="0" y="222" width="900" height="98" fill="url(#e2Grad)" />
+          <rect x="0" y="320" width="900" height="440" fill="url(#e3Grad)" />
+          <polyline points="400,140 428,222 480,230" fill="none" stroke="#ffffff" stroke-opacity="0.38" stroke-width="2" />
+          <polyline points="365,170 355,210 325,230" fill="none" stroke="#000000" stroke-opacity="0.14" stroke-width="2" />
+          <polyline points="480,230 575,340 520,400" fill="none" stroke="#ffffff" stroke-opacity="0.2" stroke-width="2" />
+          <polyline points="325,230 230,335 290,400" fill="none" stroke="#000000" stroke-opacity="0.16" stroke-width="2" />
+          <polyline points="520,400 600,500 520,620" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="2" />
+          <polyline points="290,400 210,495 290,615" fill="none" stroke="#000000" stroke-opacity="0.14" stroke-width="2" />
+        </g>
+        <polygon points="400,140 450,195 428,222 480,230 575,340 520,400 600,500 520,620 400,720 290,615 210,495 290,400 230,335 325,230 355,210 365,170" fill="none" stroke="var(--ice-edge)" stroke-width="2.5" stroke-linejoin="round" />
+
+        <line x1="384" y1="178" x2="400" y2="160" stroke="#ffffff" stroke-opacity="0.65" stroke-width="3" stroke-linecap="round" />
+        <line x1="415" y1="188" x2="426" y2="174" stroke="#ffffff" stroke-opacity="0.45" stroke-width="2" stroke-linecap="round" />
+
+        <path d="M0,222 Q75,212 150,222 T300,222 T450,222 T600,222 T750,222 T900,222" fill="none" stroke="var(--ice-edge)" stroke-width="2" stroke-dasharray="7 6" />
+      </svg>
+      <figcaption class="iceberg-caption">Wie im echten Eisberg: der sichtbare Teil ist klein, der Tiefenkörper groß.</figcaption>
+    </figure>
+
     <button class="tier e1" id="tier-1" data-level="1" role="tab" aria-pressed="false">
       <span class="badge">Ebene 1</span>
       <h3>Die Oberfläche</h3>
       <p>Sichtbar für jede:n — keine Einrichtung nötig.</p>
+      <div class="tier-kw">
+        <span class="kw">Frage tippen</span>
+        <span class="kw">Beispiel geben</span>
+      </div>
     </button>
-
-    <div class="waterline">Wasserlinie</div>
 
     <button class="tier e2" id="tier-2" data-level="2" role="tab" aria-pressed="false">
       <span class="badge">Ebene 2</span>
       <h3>Knapp unter der Oberfläche</h3>
       <p>Hier entsteht der eigentliche Unterschied.</p>
+      <div class="tier-kw">
+        <span class="kw">Rolle</span>
+        <span class="kw">Kontext</span>
+        <span class="kw">Format &amp; Kriterien</span>
+      </div>
     </button>
 
     <button class="tier e3" id="tier-3" data-level="3" role="tab" aria-pressed="false">
       <span class="badge">Ebene 3</span>
       <h3>Der Tiefenkörper</h3>
       <p>Wo Ergebnisse wiederholbar werden.</p>
+      <div class="tier-kw">
+        <span class="kw">Modellwahl</span>
+        <span class="kw">Denkschritt</span>
+        <span class="kw">Plan freigeben</span>
+        <span class="kw">Feste Regeln</span>
+        <span class="kw">Automatisierung</span>
+        <span class="kw">Tools verbinden</span>
+      </div>
     </button>
 
   </div>
@@ -252,7 +338,7 @@
   <div class="footer-sig">
     <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
     · Bezug: IREB CPRE (Anforderungsqualität), BABOK v3 (Anforderungsermittlung)
-    · Zuletzt geprüft: 20.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll
+    · Zuletzt geprüft: 02.10.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll
   </div>
 
   <div class="footer-details">
@@ -290,13 +376,24 @@ INHALT PRO EBENE:
 DESIGN-VORGABEN:
 - Farbcodierung: Ebene 1 Amber, Ebene 2 Teal, Ebene 3 Indigo (dunkle
   Textfarbe auf hellem Badge-Hintergrund, WCAG AA).
+- Faceted Eisberg-Illustration (SVG, Sky-/See-Gradient, drei farbige Banden
+  über die Clip-Path-Technik, gestrichelte Wasserlinie, keine eingebetteten
+  Text-Labels in der Grafik selbst) als Kopf der linken Spalte, oberhalb der
+  drei Tier-Buttons — rein dekorativ, keine eigene Interaktion.
+- Pro Tier-Button eine Stichwort-Zeile (kleine Pill-Tags, Monospace,
+  ≥14px) mit den zentralen Begriffen der jeweiligen Ebene — Schnellüberblick
+  schon vor dem Anklicken.
 - Karten "Was sichtbar ist" vs. "Wo der Aufwand wirklich liegt" pro Ebene
   nebeneinander (2-Spalten-Grid, ab 700px).
 - IREB-Box pro Ebene mit eigenem Tag, blauer Rahmen, getrennt von den
   beiden Aufwand-Karten.
-- Eigene Topbar-Zeile mit Zurück-Link, Signatur oben rechts fix, vierteiliger
-  Footer, vierstufiger Beamer-Toggle wie in allen DenkRaum-Tools — inkl.
-  Größentabelle für Panel-Überschriften/Hauptinhalt/Sekundärtext je Stufe.
+- Eigene Topbar-Zeile mit Zurück-Link, Signatur oben rechts fix (kein
+  Static-Fallback unter 900px, K21), vierteiliger Footer, vierstufiger
+  Beamer-Toggle wie in allen DenkRaum-Tools — inkl. Größentabelle für
+  Panel-Überschriften/Hauptinhalt/Sekundärtext je Stufe.
+- Struktur-Tokens nach Design-System (Referenz steckbrief.html): Karten/
+  Panels 16px Radius + dezenter Schatten, Auswahl-Buttons 12px Radius,
+  Meta-Controls (Beamer-Button) voller Pill (999px).
 
 NICHT TUN:
 - Keine Level-3-Detailtechnik erfinden (keine konkreten Befehle/Syntax für
