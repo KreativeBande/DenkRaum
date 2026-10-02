@@ -47,11 +47,16 @@
   }
   header.top h1{ margin:0 0 6px 0; font-size:28px; }
   header.top p.sub{ margin:0; color:var(--muted); font-size:16px; }
-  #beamerBtn{
-    margin-top:14px; font-size:14px; padding:8px 14px; border-radius:999px;
+
+  .header-controls{ display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+  #beamerBtn, #langBtn, #vertiefungBtn{
+    font-size:14px; padding:8px 14px; border-radius:999px;
     border:1px solid var(--accent); background:var(--paper); color:var(--accent);
     cursor:pointer; min-height:44px;
   }
+  #vertiefungBtn.active{ background:var(--accent); color:#fff; }
+  #vertiefungBtn:disabled{ opacity:.5; cursor:default; }
+  html.beamer #vertiefungBtn{ display:none; }
 
   .stage{ display:flex; gap:0; align-items:stretch; }
   @media (max-width:900px){ .stage{ flex-direction:column; } }
@@ -99,15 +104,21 @@
   .tier.e3 .badge{ background:var(--e3-line); color:#fff; }
 
   .tier.active{ box-shadow:0 0 0 4px rgba(47,111,237,.35); }
-  .tier[aria-pressed="true"]::after{
-    content:"▶ ausgewählt"; position:absolute; top:16px; right:16px;
+  .tier-selected{
+    display:none; position:absolute; top:16px; right:16px;
     font-size:14px; font-weight:700; color:var(--accent);
   }
+  .tier[aria-pressed="true"] .tier-selected{ display:inline; }
 
   .detail-col{ flex:1; padding:26px 34px; min-width:0; }
+  .detail-panel{ display:none; }
+  .detail-panel.active{ display:block; }
 
   .detail-head{ display:flex; align-items:center; gap:12px; margin-bottom:6px; }
   .detail-head .dot{ width:16px; height:16px; border-radius:50%; flex:0 0 auto; }
+  #panel-1 .dot{ background:var(--e1-line); }
+  #panel-2 .dot{ background:var(--e2-line); }
+  #panel-3 .dot{ background:var(--e3-line); }
   .detail-head h2{ margin:0; font-size:24px; }
   .detail-lede{ color:var(--muted); font-size:16px; margin:0 0 20px 0; max-width:760px; }
 
@@ -129,6 +140,13 @@
     display:inline-block; font-size:14px; font-weight:700; color:#1d4ed8;
     background:#dbe6ff; padding:2px 9px; border-radius:999px; margin-bottom:8px;
   }
+
+  .vertiefung-block{ display:none; margin-top:16px; padding-top:16px; border-top:1px dashed var(--line); }
+  .vertiefung-block h4{ font-size:15px; margin:0 0 8px 0; color:var(--accent); font-weight:700; }
+  .vertiefung-block p{ font-size:16px; line-height:1.6; margin:0 0 12px 0; color:var(--ink); }
+  .vertiefung-block p:last-child{ margin-bottom:0; }
+  html.vertiefung .vertiefung-block{ display:block; }
+  html.beamer .vertiefung-block{ display:none !important; }
 
   .crosslink{
     font-size:14px; color:var(--muted); border-top:1px dashed var(--line); padding-top:12px; margin-top:6px;
@@ -182,7 +200,7 @@
   html.beamer header.top h1{ font-size:36px; }
   html.beamer header.top p.sub{ font-size:22px; }
   html.beamer .tier h3{ font-size:22px; }
-  html.beamer .tier p, html.beamer .tier .badge, html.beamer .tier-kw .kw{ font-size:16px; }
+  html.beamer .tier p, html.beamer .tier .badge, html.beamer .tier-kw .kw, html.beamer .tier-selected{ font-size:16px; }
   html.beamer .iceberg-caption, html.beamer .ireb-box .tag{ font-size:15px; }
   html.beamer .detail-head h2{ font-size:44px; }
   html.beamer .detail-lede, html.beamer .card ul, html.beamer .card h4, html.beamer .ireb-box{ font-size:22px; }
@@ -191,7 +209,7 @@
   html.beamer.beamer-xl header.top h1{ font-size:44px; }
   html.beamer.beamer-xl header.top p.sub{ font-size:28px; }
   html.beamer.beamer-xl .tier h3{ font-size:28px; }
-  html.beamer.beamer-xl .tier p, html.beamer.beamer-xl .tier .badge, html.beamer.beamer-xl .tier-kw .kw{ font-size:18px; }
+  html.beamer.beamer-xl .tier p, html.beamer.beamer-xl .tier .badge, html.beamer.beamer-xl .tier-kw .kw, html.beamer.beamer-xl .tier-selected{ font-size:18px; }
   html.beamer.beamer-xl .iceberg-caption, html.beamer.beamer-xl .ireb-box .tag{ font-size:18px; }
   html.beamer.beamer-xl .detail-head h2{ font-size:54px; }
   html.beamer.beamer-xl .detail-lede, html.beamer.beamer-xl .card ul, html.beamer.beamer-xl .card h4, html.beamer.beamer-xl .ireb-box{ font-size:28px; }
@@ -200,7 +218,7 @@
   html.beamer.beamer-xl.beamer-xxl header.top h1{ font-size:54px; }
   html.beamer.beamer-xl.beamer-xxl header.top p.sub{ font-size:34px; }
   html.beamer.beamer-xl.beamer-xxl .tier h3{ font-size:34px; }
-  html.beamer.beamer-xl.beamer-xxl .tier p, html.beamer.beamer-xl.beamer-xxl .tier .badge, html.beamer.beamer-xl.beamer-xxl .tier-kw .kw{ font-size:21px; }
+  html.beamer.beamer-xl.beamer-xxl .tier p, html.beamer.beamer-xl.beamer-xxl .tier .badge, html.beamer.beamer-xl.beamer-xxl .tier-kw .kw, html.beamer.beamer-xl.beamer-xxl .tier-selected{ font-size:21px; }
   html.beamer.beamer-xl.beamer-xxl .iceberg-caption, html.beamer.beamer-xl.beamer-xxl .ireb-box .tag{ font-size:21px; }
   html.beamer.beamer-xl.beamer-xxl .detail-head h2{ font-size:64px; }
   html.beamer.beamer-xl.beamer-xxl .detail-lede, html.beamer.beamer-xl.beamer-xxl .card ul, html.beamer.beamer-xl.beamer-xxl .card h4, html.beamer.beamer-xl.beamer-xxl .ireb-box{ font-size:34px; }
@@ -215,13 +233,17 @@
 </div>
 
 <div class="topbar">
-  <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+  <a class="back-link" href="../index.html" data-i18n data-en="&larr; Back to homepage">← Zurück zur Startseite</a>
 </div>
 
 <header class="top">
-  <h1>Der Eisberg des Promptens</h1>
-  <p class="sub">Drei Ebenen der KI-Steuerung — vom kurzen Zufallstreffer zum wiederholbaren Ergebnis. Ein Opener für „Prompt-Schule — KI für Einsteiger" (Modul 2/3: Wie kommuniziere ich mit KI? / Frameworks).</p>
-  <button id="beamerBtn" type="button">🖥️ Beamer-Modus</button>
+  <h1 data-i18n data-en="The Iceberg of Prompting">Der Eisberg des Promptens</h1>
+  <p class="sub" data-i18n data-en="Three levels of AI steering &ndash; from a quick lucky hit to a repeatable result. An opener for &ldquo;Prompt School &ndash; AI for Beginners&rdquo; (Module 2/3: How do I communicate with AI? / Frameworks).">Drei Ebenen der KI-Steuerung — vom kurzen Zufallstreffer zum wiederholbaren Ergebnis. Ein Opener für „Prompt-Schule — KI für Einsteiger" (Modul 2/3: Wie kommuniziere ich mit KI? / Frameworks).</p>
+  <div class="header-controls">
+    <button id="beamerBtn" type="button" data-i18n data-en="&#128421;&#65039; Beamer Mode">🖥️ Beamer-Modus</button>
+    <button id="langBtn" type="button">DE / EN</button>
+    <button id="vertiefungBtn" type="button">🔍 Vertiefung: Aus</button>
+  </div>
 </header>
 
 <div class="stage">
@@ -279,72 +301,211 @@
 
         <path d="M0,222 Q75,212 150,222 T300,222 T450,222 T600,222 T750,222 T900,222" fill="none" stroke="var(--ice-edge)" stroke-width="2" stroke-dasharray="7 6" />
       </svg>
-      <figcaption class="iceberg-caption">Wie im echten Eisberg: der sichtbare Teil ist klein, der Tiefenkörper groß.</figcaption>
+      <figcaption class="iceberg-caption" data-i18n data-en="Like a real iceberg: the visible part is small, the deep body is large.">Wie im echten Eisberg: der sichtbare Teil ist klein, der Tiefenkörper groß.</figcaption>
     </figure>
 
     <button class="tier e1" id="tier-1" data-level="1" role="tab" aria-pressed="false">
-      <span class="badge">Ebene 1</span>
-      <h3>Die Oberfläche</h3>
-      <p>Sichtbar für jede:n — keine Einrichtung nötig.</p>
+      <span class="tier-selected" data-i18n data-en="&#9654; selected">▶ ausgewählt</span>
+      <span class="badge" data-i18n data-en="Level 1">Ebene 1</span>
+      <h3 data-i18n data-en="The Surface">Die Oberfläche</h3>
+      <p data-i18n data-en="Visible to everyone &ndash; no setup required.">Sichtbar für jede:n — keine Einrichtung nötig.</p>
       <div class="tier-kw">
-        <span class="kw">Frage tippen</span>
-        <span class="kw">Beispiel geben</span>
+        <span class="kw" data-i18n data-en="Type a question">Frage tippen</span>
+        <span class="kw" data-i18n data-en="Give an example">Beispiel geben</span>
       </div>
     </button>
 
     <button class="tier e2" id="tier-2" data-level="2" role="tab" aria-pressed="false">
-      <span class="badge">Ebene 2</span>
-      <h3>Knapp unter der Oberfläche</h3>
-      <p>Hier entsteht der eigentliche Unterschied.</p>
+      <span class="tier-selected" data-i18n data-en="&#9654; selected">▶ ausgewählt</span>
+      <span class="badge" data-i18n data-en="Level 2">Ebene 2</span>
+      <h3 data-i18n data-en="Just Below the Surface">Knapp unter der Oberfläche</h3>
+      <p data-i18n data-en="This is where the real difference is made.">Hier entsteht der eigentliche Unterschied.</p>
       <div class="tier-kw">
-        <span class="kw">Rolle</span>
-        <span class="kw">Kontext</span>
-        <span class="kw">Format &amp; Kriterien</span>
+        <span class="kw" data-i18n data-en="Role">Rolle</span>
+        <span class="kw" data-i18n data-en="Context">Kontext</span>
+        <span class="kw" data-i18n data-en="Format &amp; Criteria">Format &amp; Kriterien</span>
       </div>
     </button>
 
     <button class="tier e3" id="tier-3" data-level="3" role="tab" aria-pressed="false">
-      <span class="badge">Ebene 3</span>
-      <h3>Der Tiefenkörper</h3>
-      <p>Wo Ergebnisse wiederholbar werden.</p>
+      <span class="tier-selected" data-i18n data-en="&#9654; selected">▶ ausgewählt</span>
+      <span class="badge" data-i18n data-en="Level 3">Ebene 3</span>
+      <h3 data-i18n data-en="The Deep Body">Der Tiefenkörper</h3>
+      <p data-i18n data-en="Where results become repeatable.">Wo Ergebnisse wiederholbar werden.</p>
       <div class="tier-kw">
-        <span class="kw">Modellwahl</span>
-        <span class="kw">Denkschritt</span>
-        <span class="kw">Plan freigeben</span>
-        <span class="kw">Feste Regeln</span>
-        <span class="kw">Automatisierung</span>
-        <span class="kw">Tools verbinden</span>
+        <span class="kw" data-i18n data-en="Model choice">Modellwahl</span>
+        <span class="kw" data-i18n data-en="Reasoning step">Denkschritt</span>
+        <span class="kw" data-i18n data-en="Approve a plan">Plan freigeben</span>
+        <span class="kw" data-i18n data-en="Standing rules">Feste Regeln</span>
+        <span class="kw" data-i18n data-en="Automation">Automatisierung</span>
+        <span class="kw" data-i18n data-en="Connect tools">Tools verbinden</span>
       </div>
     </button>
 
   </div>
 
-  <div class="detail-col" id="detailCol" role="tabpanel" aria-live="polite">
-    <!-- wird per JS befüllt -->
+  <div class="detail-col" role="tabpanel" aria-live="polite">
+
+    <section class="detail-panel active" id="panel-1" data-level="1">
+      <div class="detail-head"><span class="dot"></span><h2 data-i18n data-en="Level 1 &ndash; The Surface">Ebene 1 — Die Oberfläche</h2></div>
+      <p class="detail-lede" data-i18n data-en="What anyone can do right away, with no setup at all &ndash; and exactly why that limits the quality of the result.">Was jede:r sofort kann, ohne jede Einrichtung — und warum genau das die Ergebnisqualität begrenzt.</p>
+      <div class="cols">
+        <div class="card sichtbar">
+          <h4 data-i18n data-en="What&#8217;s visible">Was sichtbar ist</h4>
+          <ul>
+            <li data-i18n data-en="Typing a question directly and getting an answer right away">Direkt eine Frage tippen und sofort eine Antwort bekommen</li>
+            <li data-i18n data-en="Giving a single example: &ldquo;write it in this style&rdquo;">Ein einzelnes Beispiel geben: „schreib es in diesem Stil"</li>
+            <li data-i18n data-en="Asking for a list and picking the best option from it">Um eine Liste bitten und daraus die beste Option wählen</li>
+            <li data-i18n data-en="Short ad-hoc tasks: rephrasing, shortening, translating">Kurze Ad-hoc-Aufgaben: umformulieren, kürzen, übersetzen</li>
+          </ul>
+        </div>
+        <div class="card tiefe">
+          <h4 data-i18n data-en="Where the effort really lies">Wo der Aufwand wirklich liegt</h4>
+          <ul>
+            <li data-i18n data-en="No role, no context, no success criteria defined">Keine Rolle, kein Kontext, keine Erfolgskriterien definiert</li>
+            <li data-i18n data-en="Result quality depends on the luck of the wording">Ergebnisqualität hängt vom Zufall der Formulierung ab</li>
+            <li data-i18n data-en="Repeating it produces a new, inconsistent result every time">Bei Wiederholung entsteht jedes Mal ein neues, uneinheitliches Ergebnis</li>
+            <li data-i18n data-en="The cause of a bad result stays unclear &ndash; there&#8217;s nothing to adjust">Fehlerursache bleibt unklar — es gibt nichts, woran man justieren könnte</li>
+          </ul>
+        </div>
+      </div>
+      <div class="ireb-box">
+        <span class="tag" data-i18n data-en="IREB/BABOK reference">IREB/BABOK-Bezug</span><br>
+        <span data-i18n data-en="This corresponds to a &lt;strong&gt;vague, unelicited requirement&lt;/strong&gt; &ndash; &ldquo;just make something good&rdquo;. It&#8217;s missing exactly the traits IREB demands of a verified requirement: unambiguous, complete, verifiable. Without them, every result stays a lucky hit instead of a controllable deliverable.">Das entspricht einer <strong>unscharfen, nicht ermittelten Anforderung</strong> — „mach mal etwas Gutes". Es fehlen genau die Merkmale, die IREB an eine geprüfte Anforderung stellt: eindeutig, vollständig, nachprüfbar. Ohne sie bleibt jedes Ergebnis Zufallstreffer statt steuerbare Lieferung.</span>
+        <div class="vertiefung-block">
+          <h4 data-i18n data-en="In depth">Vertiefung</h4>
+          <p data-i18n data-en="The mechanism behind this: a language model completes text purely based on probabilities over the input so far. The shorter and more unspecific the prompt, the wider the space of plausible continuations &ndash; the model then picks the statistically most likely one, not necessarily the most fitting one. An example: &ldquo;write me a product description&rdquo; produces ten different tones, lengths and emphases across ten runs.">Der Mechanismus dahinter: Ein Sprachmodell vervollständigt Text rein auf Basis von Wahrscheinlichkeiten über die bisherige Eingabe. Je kürzer und unspezifischer der Prompt, desto breiter der Raum plausibler Fortsetzungen — die KI wählt dann die statistisch wahrscheinlichste, nicht zwangsläufig die fachlich passendste. Ein Beispiel: „Schreib mir eine Produktbeschreibung" liefert bei zehn Durchläufen zehn unterschiedliche Tonalitäten, Längen und Schwerpunkte.</p>
+          <p data-i18n data-en="Under IREB CPRE, a requirement passes four quality checks: unambiguous (only one interpretation possible), complete (no missing conditions), verifiable (decidable by inspection or test) and consistent. A level-1 prompt like &ldquo;write something good&rdquo; meets none of them &ndash; it&#8217;s closer to a raw stakeholder wish before the elicitation phase than to a documented requirement.">Nach IREB CPRE durchläuft eine Anforderung vier Qualitätsprüfungen: eindeutig (nur eine Interpretation möglich), vollständig (keine fehlenden Bedingungen), nachprüfbar (durch Inspektion oder Test entscheidbar) und widerspruchsfrei. Ein Ebene-1-Prompt wie „schreib was Gutes" erfüllt keine davon — er entspricht eher einem rohen Stakeholder-Wunsch vor der Ermittlungsphase als einer dokumentierten Anforderung.</p>
+        </div>
+      </div>
+      <p class="crosslink" data-i18n data-en="Further reading: Module 2 of the Prompt School shows why &ldquo;just asking&rdquo; is enough for one-off trifles &ndash; but not for recurring tasks.">Weiterführend: Modul 2 der Prompt-Schule zeigt, warum „einfach fragen" für einmalige Kleinigkeiten reicht — aber nicht für wiederkehrende Aufgaben.</p>
+    </section>
+
+    <section class="detail-panel" id="panel-2" data-level="2">
+      <div class="detail-head"><span class="dot"></span><h2 data-i18n data-en="Level 2 &ndash; Just Below the Surface">Ebene 2 — Knapp unter der Oberfläche</h2></div>
+      <p class="detail-lede" data-i18n data-en="This is where the real lever is: not more words, but the right building blocks.">Hier liegt der eigentliche Hebel: nicht mehr Worte, sondern die richtigen Bausteine.</p>
+      <div class="cols">
+        <div class="card sichtbar">
+          <h4 data-i18n data-en="What&#8217;s visible">Was sichtbar ist</h4>
+          <ul>
+            <li data-i18n data-en="Giving the AI a role: who it should be, how it should sound">Der KI eine Rolle geben: wer sie sein soll, wie sie klingen soll</li>
+            <li data-i18n data-en="Naming the exact task &ndash; a concrete brief instead of &ldquo;write something&rdquo;">Die exakte Aufgabe benennen — statt „schreib was" eine konkrete Vorgabe</li>
+            <li data-i18n data-en="Supplying the full context: who reads it, what counts, what doesn&#8217;t">Den vollen Kontext liefern: wer liest es, was zählt, was nicht</li>
+            <li data-i18n data-en="Specifying the format: bullet points, table or running text">Format vorgeben: Stichpunkte, Tabelle oder Fließtext</li>
+            <li data-i18n data-en="Providing a finished example as a reference: &ldquo;this is what the result should look like&rdquo;">Ein fertiges Beispiel als Referenz mitgeben: „so soll das Ergebnis aussehen"</li>
+            <li data-i18n data-en="Setting firm rules: &ldquo;never X, always Y, ask if unsure&rdquo;">Feste Regeln setzen: „nie X, immer Y, bei Unsicherheit nachfragen"</li>
+          </ul>
+        </div>
+        <div class="card tiefe">
+          <h4 data-i18n data-en="Where the effort really lies">Wo der Aufwand wirklich liegt</h4>
+          <ul>
+            <li data-i18n data-en="Fuzzy requests inevitably produce fuzzy answers">Fuzzy formulierte Bitten liefern zwangsläufig fuzzy Antworten</li>
+            <li data-i18n data-en="The difference between usable and excellent is made almost entirely here">Der Unterschied zwischen brauchbar und exzellent entsteht fast immer hier</li>
+            <li data-i18n data-en="The effort is one-off &ndash; the prompt can be reused for similar tasks">Aufwand ist einmalig — der Prompt lässt sich für ähnliche Aufgaben wiederverwenden</li>
+          </ul>
+        </div>
+      </div>
+      <div class="ireb-box">
+        <span class="tag" data-i18n data-en="IREB/BABOK reference">IREB/BABOK-Bezug</span><br>
+        <span data-i18n data-en="This is classic &lt;strong&gt;requirements elicitation&lt;/strong&gt;: stakeholder (who reads/uses it), target criterion (what counts), scope (what doesn&#8217;t). Role+context+task+format+criteria is exactly the five-building-block structure of our Prompt Builder tool &ndash; requirements engineering for your own prompt.">Das ist klassische <strong>Anforderungsermittlung</strong>: Stakeholder (wer liest/nutzt), Zielkriterium (was zählt), Abgrenzung (was nicht). Rolle+Kontext+Aufgabe+Format+Kriterien ist exakt der Fünf-Bausteine-Aufbau unseres Prompt-Builder-Tools — Requirements Engineering für den eigenen Prompt.</span>
+        <div class="vertiefung-block">
+          <h4 data-i18n data-en="In depth">Vertiefung</h4>
+          <p data-i18n data-en="The mechanism: every additional, concrete building block (role, context, format) narrows the space of plausible continuations the model weighs for the next word &ndash; the answer becomes more predictable, not longer. An example: &ldquo;write a product description for expert customers as a technical writer, max. 80 words, in the style of the attached reference&rdquo; produces a comparable result across ten runs.">Der Mechanismus: Jeder zusätzliche, konkrete Baustein (Rolle, Kontext, Format) schränkt den Raum plausibler Fortsetzungen ein, den das Modell beim nächsten Wort abwägt — die Antwort wird dadurch vorhersagbarer, nicht länger. Ein Beispiel: „Schreib als technische:r Redakteur:in eine Produktbeschreibung für Fachkunden, max. 80 Wörter, im Stil der mitgelieferten Referenz" liefert bei zehn Durchläufen zehnmal ein vergleichbares Ergebnis.</p>
+          <p data-i18n data-en="BABOK calls this step Elicitation &amp; Collaboration: identify stakeholders, gather context, clarify the target criterion. A prompt with role, context, task, format and criteria is structurally nothing other than a concise functional requirement under IEEE 29148 &ndash; with a defined actor, a condition (context), a required capability (task) and an acceptance criterion (format/criteria).">BABOK nennt diesen Schritt Elicitation &amp; Collaboration: Stakeholder identifizieren, Kontext erheben, Zielkriterium klären. Ein Prompt mit Rolle, Kontext, Aufgabe, Format und Kriterien ist strukturell nichts anderes als eine knappe funktionale Anforderung nach IEEE 29148 — mit einem definierten Akteur, einer Bedingung (Kontext), einer geforderten Leistung (Aufgabe) und einem Abnahmekriterium (Format/Kriterien).</p>
+        </div>
+      </div>
+      <p class="crosslink" data-i18n data-en="Direct link: the &ldquo;Prompt Builder&rdquo; tool (role &rarr; context &rarr; task &rarr; format &rarr; criteria) continues this level as a standalone wizard.">Direkter Bezug: Tool „Prompt-Builder" (Rolle → Kontext → Aufgabe → Format → Kriterien) führt diese Ebene als eigenständigen Wizard fort.</p>
+    </section>
+
+    <section class="detail-panel" id="panel-3" data-level="3">
+      <div class="detail-head"><span class="dot"></span><h2 data-i18n data-en="Level 3 &ndash; The Deep Body">Ebene 3 — Der Tiefenkörper</h2></div>
+      <p class="detail-lede" data-i18n data-en="For advanced users: where a good single prompt turns into a repeatable, governed process.">Für Fortgeschrittene: wo aus gutem Einzelprompt ein wiederholbarer, geführter Prozess wird.</p>
+      <div class="cols">
+        <div class="card sichtbar">
+          <h4 data-i18n data-en="What&#8217;s visible">Was sichtbar ist</h4>
+          <ul>
+            <li data-i18n data-en="Choosing the right model for the task &ndash; fast/cheap or slow/thorough">Das passende Modell für die Aufgabe wählen — schnell/günstig oder langsam/gründlich</li>
+            <li data-i18n data-en="Letting the AI &ldquo;think&rdquo; before answering, instead of answering immediately">Die KI vor der Antwort erst „nachdenken" lassen, statt sofort zu antworten</li>
+            <li data-i18n data-en="Approving a plan first for complex tasks, before it gets carried out">Bei komplexen Aufgaben zuerst einen Plan freigeben, bevor er ausgeführt wird</li>
+            <li data-i18n data-en="Storing standing rules once, instead of explaining them every time">Feste Spielregeln einmal dauerhaft hinterlegen, statt sie jedes Mal neu zu erklären</li>
+            <li data-i18n data-en="Describing recurring workflows once and then letting them run automatically">Wiederkehrende Abläufe einmal beschreiben und danach automatisch ausführen lassen</li>
+            <li data-i18n data-en="Pinning project context permanently, instead of re-explaining it every session">Projekt-Kontext dauerhaft anheften, statt bei jeder Sitzung neu zu erklären</li>
+            <li data-i18n data-en="Connecting external tools and data sources directly, instead of copying results by hand">Externe Werkzeuge und Datenquellen direkt anschließen, statt Ergebnisse manuell zu kopieren</li>
+          </ul>
+        </div>
+        <div class="card tiefe">
+          <h4 data-i18n data-en="Where the effort really lies">Wo der Aufwand wirklich liegt</h4>
+          <ul>
+            <li data-i18n data-en="The effort sits in the setup, not in the individual request anymore">Aufwand liegt in der Einrichtung, nicht mehr in der einzelnen Anfrage</li>
+            <li data-i18n data-en="Results become consistent across many repetitions instead of just good once">Ergebnisse werden über viele Wiederholungen konsistent statt einmalig gut</li>
+            <li data-i18n data-en="A governance question becomes relevant: who may approve what, what runs automatically?">Governance-Frage wird relevant: wer darf was freigeben, was läuft automatisch?</li>
+          </ul>
+        </div>
+      </div>
+      <div class="ireb-box">
+        <span class="tag" data-i18n data-en="IREB/BABOK reference">IREB/BABOK-Bezug</span><br>
+        <span data-i18n data-en="This is the shift from &lt;strong&gt;individual requirement to system architecture&lt;/strong&gt; &ndash; reusable, governed processes instead of one-off solutions. Parallel to BABOK&#8217;s process and governance view of requirements.">Das ist der Übergang von der <strong>Einzelanforderung zur Systemarchitektur</strong> — wiederverwendbare, governte Prozesse statt Einzelfall-Lösungen. Parallel zu BABOK's Prozess- und Governance-Sicht auf Anforderungen.</span>
+        <div class="vertiefung-block">
+          <h4 data-i18n data-en="In depth">Vertiefung</h4>
+          <p data-i18n data-en="The mechanism: instead of re-formulating role, context and rules with every request, they&#8217;re stored once as a standing frame &ndash; comparable to a configuration that applies to every following request until it&#8217;s changed. An example: a team stores once &ldquo;always answer in German, name the source when unsure, ask back when context is missing&rdquo; &ndash; from then on that applies to every new request in this frame, without retyping it.">Der Mechanismus: Statt bei jeder Anfrage neu Rolle, Kontext und Regeln zu formulieren, werden sie einmalig als dauerhafter Rahmen hinterlegt — vergleichbar mit einer Konfiguration, die für alle folgenden Anfragen gilt, bis sie geändert wird. Ein Beispiel: Ein Team hinterlegt einmal „antworte immer auf Deutsch, nenne bei Unsicherheit die Quelle, frage bei fehlendem Kontext nach" — ab dann gilt das für jede neue Anfrage in diesem Rahmen, ohne es erneut zu tippen.</p>
+          <p data-i18n data-en="In BABOK terms, the focus shifts from Solution Requirements (what should one solution deliver?) to Transition Requirements and governance: who may store which rule permanently, who checks whether an automatically running step still matches the original criteria? That&#8217;s exactly the question IREB describes in its fifth process step, &ldquo;Manage&rdquo; (versioning, change management) for requirements &ndash; here applied to recurring AI workflows instead of a single document.">In der BABOK-Terminologie verschiebt sich der Fokus von Solution Requirements (was soll eine einzelne Lösung leisten?) zu Transition Requirements und Governance: Wer darf welche Regel dauerhaft hinterlegen, wer prüft, ob ein automatisch laufender Schritt noch den ursprünglichen Kriterien entspricht? Das ist genau die Fragestellung, die IREB im fünften Prozessschritt „Verwalten" (Versionierung, Change Management) für Anforderungen beschreibt — hier angewendet auf wiederkehrende KI-Abläufe statt auf ein einzelnes Dokument.</p>
+        </div>
+      </div>
+      <p class="crosslink" data-i18n data-en="Deeper dive: the &ldquo;From Prompt to Agent &ndash; The Four Escalation Levels&rdquo; tool (prompt &rarr; context &rarr; loop &rarr; graph engineering).">Vertiefung: Tool „Vom Prompt zum Agenten — Die vier Eskalationsstufen der KI-Steuerung" (Prompt → Context → Loop → Graph Engineering).</p>
+    </section>
+
   </div>
 </div>
 
-<div class="banner" id="banner">Die meisten bleiben auf <b>Ebene 1</b> stehen. Der Unterschied entsteht auf <b>Ebene 2</b> — <b>Ebene 3</b> macht ihn wiederholbar.</div>
+<div class="banner" id="banner" data-i18n data-en="Most people stop at &lt;b&gt;Level 1&lt;/b&gt;. The difference is made at &lt;b&gt;Level 2&lt;/b&gt; &ndash; &lt;b&gt;Level 3&lt;/b&gt; makes it repeatable.">Die meisten bleiben auf <b>Ebene 1</b> stehen. Der Unterschied entsteht auf <b>Ebene 2</b> — <b>Ebene 3</b> macht ihn wiederholbar.</div>
 
 <div class="related">
-  <strong>Verwandte Denkraum-Tools zu diesem Thema:</strong>
+  <strong data-i18n data-en="Related Denkraum tools on this topic:">Verwandte Denkraum-Tools zu diesem Thema:</strong>
   <ul>
-    <li><a href="./prompt-builder.html">Prompt-Builder</a> — führt genau den Ebene-2-Baustein (Rolle → Kontext → Aufgabe → Format → Kriterien) als eigenständigen Wizard mit wachsender Prompt-Blaupause fort.</li>
-    <li><a href="./vom-prompt-zum-agenten.html">Vom Prompt zum Agenten — Die vier Eskalationsstufen</a> — vertieft Ebene 3 mit konkreten Eskalationsstufen (Prompt, Context, Loop, Graph Engineering) für Fortgeschrittene.</li>
+    <li data-i18n data-en="&lt;a href=&quot;./prompt-builder.html&quot;&gt;Prompt Builder&lt;/a&gt; &ndash; continues exactly the level-2 building block (role &rarr; context &rarr; task &rarr; format &rarr; criteria) as a standalone wizard with a growing prompt blueprint."><a href="./prompt-builder.html">Prompt-Builder</a> — führt genau den Ebene-2-Baustein (Rolle → Kontext → Aufgabe → Format → Kriterien) als eigenständigen Wizard mit wachsender Prompt-Blaupause fort.</li>
+    <li data-i18n data-en="&lt;a href=&quot;./vom-prompt-zum-agenten.html&quot;&gt;From Prompt to Agent &ndash; The Four Escalation Levels&lt;/a&gt; &ndash; deepens level 3 with concrete escalation levels (prompt, context, loop, graph engineering) for advanced users."><a href="./vom-prompt-zum-agenten.html">Vom Prompt zum Agenten — Die vier Eskalationsstufen</a> — vertieft Ebene 3 mit konkreten Eskalationsstufen (Prompt, Context, Loop, Graph Engineering) für Fortgeschrittene.</li>
   </ul>
 </div>
 
 <footer>
   <div class="footer-sig">
     <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a>
-    · Bezug: IREB CPRE (Anforderungsqualität), BABOK v3 (Anforderungsermittlung)
-    · Zuletzt geprüft: 02.10.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll
+    · <span data-i18n data-en="Reference: IREB CPRE (requirement quality), BABOK v3 (requirements elicitation) &middot; Last reviewed: 02.10.2026 &middot; Status: &#9989; Certified &middot; Details in the audit log">Bezug: IREB CPRE (Anforderungsqualität), BABOK v3 (Anforderungsermittlung)
+    · Zuletzt geprüft: 02.10.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</span>
   </div>
 
   <div class="footer-details">
     <details class="footer-box">
-      <summary class="footer-summary">🧩 Systemprompt</summary>
-      <div class="footer-content footer-mono">Master-Bau-Prompt für dieses Tool (Eisberg-Opener, 3-Ebenen-Modell)
+      <summary class="footer-summary" data-i18n data-en="&#129513; System Prompt">🧩 Systemprompt</summary>
+      <div class="footer-content footer-mono" data-i18n data-en="Master build prompt for this tool (iceberg opener, 3-level model)
+
+ROLE: You are building a Denkraum-compliant opener module for beginners in prompt engineering, using the &ldquo;iceberg&rdquo; metaphor to show that visible prompting effort (level 1) and actual result quality (level 2/3) diverge.
+
+STRUCTURE:
+- Split screen: left column is a vertical level selector (3 tier buttons, iceberg illustration as a header), right column is the detail panel for the selected level &ndash; built as three static panels in the HTML, only visibility is toggled via a class (no runtime innerHTML construction, K20-compliant).
+- No slide change: selection only changes the right panel, the left column stays permanently visible (K6).
+
+CONTENT PER LEVEL:
+- Level 1 (surface): what&#8217;s visible without any setup (typing a question, an example as a style cue, generating a list). No IREB reference to quality traits -&gt; the requirement stays vague.
+- Level 2 (below the waterline): role, exact task, context (who reads it / what counts / what doesn&#8217;t), format, reference example, firm rules. Direct reference to IREB quality traits for requirements (unambiguous, complete, verifiable) AND to our own Prompt Builder tool (role-&gt;context-&gt;task-&gt;format-&gt;criteria) as a crosslink.
+- Level 3 (deep body): reusable, governed processes instead of one-off prompts (model choice, reasoning step before answering, plan approval before execution, standing rules, automating recurring workflows, pinning project context, connecting external tools). Explicitly marked &ldquo;for advanced users&rdquo;, crosslink to the &ldquo;From Prompt to Agent &ndash; The Four Escalation Levels&rdquo; tool.
+
+DESIGN SPECS:
+- Color coding: level 1 amber, level 2 teal, level 3 indigo (dark text color on a light badge background, WCAG AA).
+- Faceted iceberg illustration (SVG, sky/sea gradient, three colored bands via the clip-path technique, dashed waterline, no embedded text labels in the graphic itself) as the head of the left column, above the three tier buttons &ndash; purely decorative, no interaction of its own.
+- One keyword row per tier button (small pill tags, monospace, &gt;=14px) with the central terms of that level &ndash; a quick overview before clicking.
+- Cards &ldquo;What&#8217;s visible&rdquo; vs. &ldquo;Where the effort really lies&rdquo; per level side by side (2-column grid, from 700px).
+- IREB box per level with its own tag, blue border, separate from the two effort cards.
+- Own topbar row with a back link, signature fixed top-right (no static fallback below 900px, K21), four-box footer, four-stage beamer toggle like every DenkRaum tool &ndash; including a size table for panel headings/main content/secondary text per stage.
+- Structural tokens per the design system (reference steckbrief.html): cards/panels 16px radius + subtle shadow, selection buttons 12px radius, meta controls (beamer button) full pill (999px).
+- Language toggle (K20): global &ldquo;langBtn&rdquo; button in the header, DE/EN switching without reload via data-i18n/data-en attribute pairs on every visible text node (incl. all four footer boxes). German text is the default state in the HTML; JS caches it on first switch and afterward only swaps the text/innerHTML of already-present elements &ndash; no runtime generation.
+- Depth toggle (K22): global &ldquo;vertiefungBtn&rdquo; button in the header, state as a &ldquo;vertiefung&rdquo; class on &lt;html&gt;. One .vertiefung-block per level (2 paragraphs: mechanism+example, RE-standard framing) that adds to the core paragraphs (lede, IREB reference), not replacing them. Default: short version (toggle off). Beamer mode forces the short version regardless of user state, and hides the depth button while active. Although the tool is classified as an &ldquo;opener&rdquo; (K22 would be mandatory for compendium/learning-journey tools, optional for openers), added on request.
+
+DO NOT:
+- Invent level-3 implementation detail (no concrete commands/syntax for skills/plan mode/MCP) &ndash; name concepts only, beginner audience.
+- Force personas (Ela/Knut/Sarah/Petra/Bachmeier) &ndash; this tool is a conceptual explainer module without a scenario, like the MCP/RAG explainer tools already in the collection.
+- Copy content from the original infographic (&ldquo;AI For Leaders.com&rdquo;) verbatim &ndash; only the core idea (iceberg, 3 levels), fully rewritten and grounded in IREB/BABOK.
+- The depth blocks stay within the same do-not boundaries as the short version &ndash; no concrete agent/skill/MCP syntax, not even in the extended version.">Master-Bau-Prompt für dieses Tool (Eisberg-Opener, 3-Ebenen-Modell)
 
 ROLLE: Du baust einen Denkraum-konformen Opener-Baustein für Einsteiger:innen
 im Prompt-Engineering, der die Metapher "Eisberg" nutzt, um zu zeigen, dass
@@ -352,8 +513,10 @@ sichtbarer Prompting-Aufwand (Ebene 1) und tatsächliche Ergebnisqualität
 (Ebene 2/3) auseinanderfallen.
 
 STRUKTUR:
-- Split-Screen: links vertikale Ebenen-Auswahl (3 Tier-Buttons + Wasserlinie
-  zwischen Ebene 1 und 2), rechts Detail-Panel für die gewählte Ebene.
+- Split-Screen: links vertikale Ebenen-Auswahl (3 Tier-Buttons, Eisberg-
+  Illustration als Kopf), rechts Detail-Panel für die gewählte Ebene — als
+  drei statische Panels im HTML, nur Sichtbarkeit wird per Klasse
+  umgeschaltet (kein innerHTML-Aufbau zur Laufzeit, K20-konform).
 - Kein Slide-Wechsel: Auswahl ändert nur das rechte Panel, linke Spalte bleibt
   fix sichtbar (K6).
 
@@ -394,6 +557,20 @@ DESIGN-VORGABEN:
 - Struktur-Tokens nach Design-System (Referenz steckbrief.html): Karten/
   Panels 16px Radius + dezenter Schatten, Auswahl-Buttons 12px Radius,
   Meta-Controls (Beamer-Button) voller Pill (999px).
+- Sprach-Toggle (K20): globaler Button "langBtn" im Header, DE/EN-Umschaltung
+  ohne Reload über data-i18n/data-en-Attributpaare auf jedem sichtbaren
+  Textknoten (inkl. aller vier Footer-Boxen). Deutscher Text ist der
+  Grundzustand im HTML, JS cached ihn beim ersten Umschalten und tauscht
+  danach nur noch Text/innerHTML bereits vorhandener Elemente — keine
+  Laufzeit-Generierung.
+- Vertiefungs-Toggle (K22): globaler Button "vertiefungBtn" im Header,
+  Zustand als Klasse "vertiefung" auf <html>. Pro Ebene ein .vertiefung-
+  block (2 Absätze: Mechanismus+Beispiel, RE-Standard-Einordnung), der die
+  Kernabsätze (Lede, IREB-Bezug) ergänzt, nicht ersetzt. Default:
+  Kurzfassung (Toggle aus). Beamer-Modus erzwingt Kurzfassung unabhängig
+  vom Nutzer-Zustand, Vertiefungs-Button wird dabei ausgeblendet. Obwohl
+  das Tool als "Opener" eingestuft ist (K22 wäre für Kompendium-/
+  Lernreise-Tools Pflicht, für Opener optional), auf Wunsch ergänzt.
 
 NICHT TUN:
 - Keine Level-3-Detailtechnik erfinden (keine konkreten Befehle/Syntax für
@@ -403,47 +580,50 @@ NICHT TUN:
   Explainer-Tools im Bestand.
 - Keine Inhalte aus der Ursprungs-Infografik ("AI For Leaders.com")
   wortwörtlich übernehmen — nur die Grundidee (Eisberg, 3 Ebenen), komplett
-  neu formuliert und mit IREB/BABOK verankert.</div>
+  neu formuliert und mit IREB/BABOK verankert.
+- Vertiefungs-Blöcke bleiben innerhalb derselben Nicht-tun-Grenzen wie die
+  Kurzfassung — keine konkrete Agenten-/Skill-/MCP-Syntax, auch nicht in
+  der ausführlichen Version.</div>
     </details>
 
     <details class="footer-box">
-      <summary class="footer-summary">📘 Handbuch</summary>
+      <summary class="footer-summary" data-i18n data-en="&#128214; Handbook">📘 Handbuch</summary>
       <div class="footer-content footer-sans">
-        <p><strong>Framework:</strong> CO-STAR-nah (Context/Objective/Style/Tone/Audience/Response), didaktisch reduziert auf die drei Ebenen des Eisbergs.</p>
+        <p data-i18n data-en="&lt;strong&gt;Framework:&lt;/strong&gt; close to CO-STAR (Context/Objective/Style/Tone/Audience/Response), didactically reduced to the iceberg&#8217;s three levels."><strong>Framework:</strong> CO-STAR-nah (Context/Objective/Style/Tone/Audience/Response), didaktisch reduziert auf die drei Ebenen des Eisbergs.</p>
         <table class="footer-table">
-          <tr><th>Dimension</th><th>Design-Entscheidung</th></tr>
-          <tr><td>Rolle</td><td>Bewusst kein Charakter/Persona — Zielgruppe sind Einsteiger:innen, die zunächst das Prinzip verstehen sollen, nicht ein Szenario.</td></tr>
-          <tr><td>Aufgabe</td><td>Drei anklickbare Ebenen statt linearem Scroll — Teilnehmende können live zwischen „was man sieht" und „was wirklich zählt" springen.</td></tr>
-          <tr><td>Kontext</td><td>Jede Ebene direkt an ein IREB-Qualitätsmerkmal für Anforderungen gekoppelt — macht den Sprung von Prompt-Qualität zu RE-Qualität explizit, statt ihn nur zu behaupten.</td></tr>
-          <tr><td>Format</td><td>Zwei-Spalten-Karten (Sichtbar/Aufwand) statt Fließtext — schneller Kontrast, beamer-tauglich aus 3m Entfernung.</td></tr>
-          <tr><td>Eingrenzung</td><td>Ebene 3 bewusst knapp gehalten (kein Technik-Tutorial) — Vertiefung liegt im separaten Eskalationsstufen-Tool, keine Duplikation.</td></tr>
+          <tr><th data-i18n data-en="Dimension">Dimension</th><th data-i18n data-en="Design decision">Design-Entscheidung</th></tr>
+          <tr><td data-i18n data-en="Role">Rolle</td><td data-i18n data-en="Deliberately no character/persona &ndash; the audience is beginners who should first grasp the principle, not a scenario.">Bewusst kein Charakter/Persona — Zielgruppe sind Einsteiger:innen, die zunächst das Prinzip verstehen sollen, nicht ein Szenario.</td></tr>
+          <tr><td data-i18n data-en="Task">Aufgabe</td><td data-i18n data-en="Three clickable levels instead of a linear scroll &ndash; participants can jump live between &ldquo;what you see&rdquo; and &ldquo;what actually counts&rdquo;.">Drei anklickbare Ebenen statt linearem Scroll — Teilnehmende können live zwischen „was man sieht" und „was wirklich zählt" springen.</td></tr>
+          <tr><td data-i18n data-en="Context">Kontext</td><td data-i18n data-en="Each level is directly tied to an IREB quality trait for requirements &ndash; making the jump from prompt quality to RE quality explicit instead of just asserting it.">Jede Ebene direkt an ein IREB-Qualitätsmerkmal für Anforderungen gekoppelt — macht den Sprung von Prompt-Qualität zu RE-Qualität explizit, statt ihn nur zu behaupten.</td></tr>
+          <tr><td data-i18n data-en="Format">Format</td><td data-i18n data-en="Two-column cards (visible/effort) instead of running text &ndash; fast contrast, legible on a projector from 3 m away.">Zwei-Spalten-Karten (Sichtbar/Aufwand) statt Fließtext — schneller Kontrast, beamer-tauglich aus 3m Entfernung.</td></tr>
+          <tr><td data-i18n data-en="Scope">Eingrenzung</td><td data-i18n data-en="Level 3 is deliberately kept brief (no technical tutorial) &ndash; deeper coverage lives in the separate escalation-levels tool, no duplication.">Ebene 3 bewusst knapp gehalten (kein Technik-Tutorial) — Vertiefung liegt im separaten Eskalationsstufen-Tool, keine Duplikation.</td></tr>
         </table>
-        <p><strong>Der eine Lernhinweis, der hier zählt:</strong> Der Eisberg zeigt nicht „mehr Aufwand = besser", sondern dass unsichtbarer Aufwand (Kontext, Rolle, Kriterien) den Unterschied zwischen Zufallstreffer und steuerbarem Ergebnis macht — exakt das Prinzip, das IREB an Anforderungen stellt.</p>
-        <p><strong>Nachbau-Tipp:</strong> Bei eigenen Ebenen-Modellen immer eine harte Grenze ziehen, ab wann eine Ebene „für Fortgeschrittene" wird — sonst überfordert Ebene 3 die Einsteiger-Zielgruppe und untergräbt Ebene 1/2.</p>
+        <p data-i18n data-en="&lt;strong&gt;The one learning point that matters here:&lt;/strong&gt; the iceberg doesn&#8217;t show &ldquo;more effort = better&rdquo;, but that invisible effort (context, role, criteria) makes the difference between a lucky hit and a controllable result &ndash; exactly the principle IREB applies to requirements."><strong>Der eine Lernhinweis, der hier zählt:</strong> Der Eisberg zeigt nicht „mehr Aufwand = besser", sondern dass unsichtbarer Aufwand (Kontext, Rolle, Kriterien) den Unterschied zwischen Zufallstreffer und steuerbarem Ergebnis macht — exakt das Prinzip, das IREB an Anforderungen stellt.</p>
+        <p data-i18n data-en="&lt;strong&gt;Rebuild tip:&lt;/strong&gt; when building your own level models, always draw a hard line for when a level becomes &ldquo;for advanced users&rdquo; &ndash; otherwise level 3 overwhelms the beginner audience and undercuts levels 1/2."><strong>Nachbau-Tipp:</strong> Bei eigenen Ebenen-Modellen immer eine harte Grenze ziehen, ab wann eine Ebene „für Fortgeschrittene" wird — sonst überfordert Ebene 3 die Einsteiger-Zielgruppe und untergräbt Ebene 1/2.</p>
       </div>
     </details>
 
     <details class="footer-box">
-      <summary class="footer-summary">🎤 Vortrags-Skript</summary>
+      <summary class="footer-summary" data-i18n data-en="&#127908; Speaker Script">🎤 Vortrags-Skript</summary>
       <div class="footer-content footer-sans">
-        <p><em>(Tool öffnen, noch keine Ebene angeklickt)</em> „Die meisten von Ihnen prompten schon — Sie tippen eine Frage, bekommen eine Antwort. Das ist die Oberfläche eines Eisbergs. Aber der Teil, der über Erfolg oder Zufallstreffer entscheidet, liegt darunter."</p>
-        <p><em>(Ebene 1 anklicken)</em> „Auf Ebene 1 passiert das, was jede:r sofort tut: eine Frage tippen, vielleicht ein Beispiel zum Nachahmen geben. Kein Setup — aber auch keine Qualitätsgarantie. In unserer RE-Sprache: eine unscharfe, nicht ermittelte Anforderung."</p>
-        <p><em>(Ebene 2 anklicken)</em> „Jetzt gehen wir unter die Wasserlinie. Hier stecken Rolle, exakte Aufgabe, Kontext, Format und feste Regeln — genau die Dimensionen, die IREB von einer guten Anforderung verlangt: eindeutig, vollständig, nachprüfbar. Das ist auch die Logik unseres Prompt-Builders."</p>
-        <p><em>(Ebene 3 anklicken)</em> „Ganz unten liegt der Tiefenkörper — wo aus Einzelprompts wiederholbare, governte Prozesse werden. Das ist Stoff für Fortgeschrittene, dazu haben wir ein eigenes Tool: Vom Prompt zum Agenten."</p>
-        <p><em>(auf Banner zeigen)</em> „Die meisten bleiben auf Ebene 1. Der Unterschied entsteht auf Ebene 2 — und Ebene 3 macht ihn wiederholbar."</p>
-        <p><strong>Regie-Hinweise:</strong> Nicht mit Fachbegriffen wie „CO-STAR" oder „IREB-Qualitätsmerkmal" einsteigen — erst die Eisberg-Analogie wirken lassen, Fachbegriffe erst bei Ebene 2 nachliefern. Beamer-Modus vor dem Auftritt einmal durchklicken (Footer verschwindet ab Stufe 1 — das ist gewollt).</p>
+        <p data-i18n data-en="&lt;em&gt;(Open the tool, no level clicked yet)&lt;/em&gt; &ldquo;Most of you already prompt &ndash; you type a question, you get an answer. That&#8217;s the surface of an iceberg. But the part that decides between success and a lucky hit lies underneath.&rdquo;"><em>(Tool öffnen, noch keine Ebene angeklickt)</em> „Die meisten von Ihnen prompten schon — Sie tippen eine Frage, bekommen eine Antwort. Das ist die Oberfläche eines Eisbergs. Aber der Teil, der über Erfolg oder Zufallstreffer entscheidet, liegt darunter."</p>
+        <p data-i18n data-en="&lt;em&gt;(Click level 1)&lt;/em&gt; &ldquo;Level 1 is what everyone does right away: typing a question, maybe giving an example to imitate. No setup &ndash; but no quality guarantee either. In our RE language: a vague, unelicited requirement.&rdquo;"><em>(Ebene 1 anklicken)</em> „Auf Ebene 1 passiert das, was jede:r sofort tut: eine Frage tippen, vielleicht ein Beispiel zum Nachahmen geben. Kein Setup — aber auch keine Qualitätsgarantie. In unserer RE-Sprache: eine unscharfe, nicht ermittelte Anforderung."</p>
+        <p data-i18n data-en="&lt;em&gt;(Click level 2)&lt;/em&gt; &ldquo;Now we go below the waterline. This is where role, exact task, context, format and firm rules live &ndash; exactly the dimensions IREB demands of a good requirement: unambiguous, complete, verifiable. That&#8217;s also the logic behind our Prompt Builder.&rdquo;"><em>(Ebene 2 anklicken)</em> „Jetzt gehen wir unter die Wasserlinie. Hier stecken Rolle, exakte Aufgabe, Kontext, Format und feste Regeln — genau die Dimensionen, die IREB von einer guten Anforderung verlangt: eindeutig, vollständig, nachprüfbar. Das ist auch die Logik unseres Prompt-Builders."</p>
+        <p data-i18n data-en="&lt;em&gt;(Click level 3)&lt;/em&gt; &ldquo;At the very bottom lies the deep body &ndash; where single prompts turn into repeatable, governed processes. That&#8217;s advanced material, and we have a dedicated tool for it: From Prompt to Agent.&rdquo;"><em>(Ebene 3 anklicken)</em> „Ganz unten liegt der Tiefenkörper — wo aus Einzelprompts wiederholbare, governte Prozesse werden. Das ist Stoff für Fortgeschrittene, dazu haben wir ein eigenes Tool: Vom Prompt zum Agenten."</p>
+        <p data-i18n data-en="&lt;em&gt;(Point at the banner)&lt;/em&gt; &ldquo;Most people stay on level 1. The difference is made on level 2 &ndash; and level 3 makes it repeatable.&rdquo;"><em>(auf Banner zeigen)</em> „Die meisten bleiben auf Ebene 1. Der Unterschied entsteht auf Ebene 2 — und Ebene 3 macht ihn wiederholbar."</p>
+        <p data-i18n data-en="&lt;strong&gt;Direction notes:&lt;/strong&gt; don&#8217;t open with technical terms like &ldquo;CO-STAR&rdquo; or &ldquo;IREB quality trait&rdquo; &ndash; let the iceberg analogy land first, bring in the terminology from level 2 onward. Click through Beamer Mode once before the talk (the footer disappears from stage 1 onward &ndash; that&#8217;s intentional)."><strong>Regie-Hinweise:</strong> Nicht mit Fachbegriffen wie „CO-STAR" oder „IREB-Qualitätsmerkmal" einsteigen — erst die Eisberg-Analogie wirken lassen, Fachbegriffe erst bei Ebene 2 nachliefern. Beamer-Modus vor dem Auftritt einmal durchklicken (Footer verschwindet ab Stufe 1 — das ist gewollt).</p>
       </div>
     </details>
 
     <details class="footer-box">
-      <summary class="footer-summary">📚 Normen-Register</summary>
+      <summary class="footer-summary" data-i18n data-en="&#128218; Standards Register">📚 Normen-Register</summary>
       <div class="footer-content footer-sans">
         <table class="footer-table">
-          <tr><th>Framework/Quelle</th><th>Fassung/Status</th><th>Bezug im Tool</th></tr>
-          <tr><td>IREB CPRE</td><td>aktueller Lehrplan-Stand, in Kraft</td><td>Qualitätsmerkmale für Anforderungen (eindeutig/vollständig/nachprüfbar) als Brücke zu Ebene 2</td></tr>
-          <tr><td>BABOK v3 (IIBA)</td><td>in Kraft</td><td>Anforderungsermittlung/Elicitation als Parallele zu Ebene 2 (Kontext/Stakeholder/Zielkriterium)</td></tr>
+          <tr><th data-i18n data-en="Framework/Source">Framework/Quelle</th><th data-i18n data-en="Version/Status">Fassung/Status</th><th data-i18n data-en="Reference in the tool">Bezug im Tool</th></tr>
+          <tr><td>IREB CPRE</td><td data-i18n data-en="current syllabus version, in force">aktueller Lehrplan-Stand, in Kraft</td><td data-i18n data-en="Quality traits for requirements (unambiguous/complete/verifiable) as a bridge to level 2">Qualitätsmerkmale für Anforderungen (eindeutig/vollständig/nachprüfbar) als Brücke zu Ebene 2</td></tr>
+          <tr><td>BABOK v3 (IIBA)</td><td data-i18n data-en="in force">in Kraft</td><td data-i18n data-en="Requirements elicitation as a parallel to level 2 (context/stakeholder/target criterion)">Anforderungsermittlung/Elicitation als Parallele zu Ebene 2 (Kontext/Stakeholder/Zielkriterium)</td></tr>
         </table>
-        <p>Hinweis: Vor Einsatz in neuen Materialien Stand der Frameworks prüfen (K17).</p>
+        <p data-i18n data-en="Note: check the frameworks&#8217; current status before using them in new materials (K17).">Hinweis: Vor Einsatz in neuen Materialien Stand der Frameworks prüfen (K17).</p>
       </div>
     </details>
   </div>
@@ -453,102 +633,93 @@ NICHT TUN:
 (function(){
   "use strict";
 
-  var LEVELS = {
-    1: {
-      color: "#b45309", label: "Ebene 1 — Die Oberfläche",
-      lede: "Was jede:r sofort kann, ohne jede Einrichtung — und warum genau das die Ergebnisqualität begrenzt.",
-      sichtbar: [
-        "Direkt eine Frage tippen und sofort eine Antwort bekommen",
-        "Ein einzelnes Beispiel geben: „schreib es in diesem Stil\"",
-        "Um eine Liste bitten und daraus die beste Option wählen",
-        "Kurze Ad-hoc-Aufgaben: umformulieren, kürzen, übersetzen"
-      ],
-      tiefe: [
-        "Keine Rolle, kein Kontext, keine Erfolgskriterien definiert",
-        "Ergebnisqualität hängt vom Zufall der Formulierung ab",
-        "Bei Wiederholung entsteht jedes Mal ein neues, uneinheitliches Ergebnis",
-        "Fehlerursache bleibt unklar — es gibt nichts, woran man justieren könnte"
-      ],
-      ireb: "Das entspricht einer <strong>unscharfen, nicht ermittelten Anforderung</strong> — „mach mal etwas Gutes\". Es fehlen genau die Merkmale, die IREB an eine geprüfte Anforderung stellt: eindeutig, vollständig, nachprüfbar. Ohne sie bleibt jedes Ergebnis Zufallstreffer statt steuerbare Lieferung.",
-      crosslink: "Weiterführend: Modul 2 der Prompt-Schule zeigt, warum „einfach fragen\" für einmalige Kleinigkeiten reicht — aber nicht für wiederkehrende Aufgaben."
-    },
-    2: {
-      color: "#0f766e", label: "Ebene 2 — Knapp unter der Oberfläche",
-      lede: "Hier liegt der eigentliche Hebel: nicht mehr Worte, sondern die richtigen Bausteine.",
-      sichtbar: [
-        "Der KI eine Rolle geben: wer sie sein soll, wie sie klingen soll",
-        "Die exakte Aufgabe benennen — statt „schreib was\" eine konkrete Vorgabe",
-        "Den vollen Kontext liefern: wer liest es, was zählt, was nicht",
-        "Format vorgeben: Stichpunkte, Tabelle oder Fließtext",
-        "Ein fertiges Beispiel als Referenz mitgeben: „so soll das Ergebnis aussehen\"",
-        "Feste Regeln setzen: „nie X, immer Y, bei Unsicherheit nachfragen\""
-      ],
-      tiefe: [
-        "Fuzzy formulierte Bitten liefern zwangsläufig fuzzy Antworten",
-        "Der Unterschied zwischen brauchbar und exzellent entsteht fast immer hier",
-        "Aufwand ist einmalig — der Prompt lässt sich für ähnliche Aufgaben wiederverwenden"
-      ],
-      ireb: "Das ist klassische <strong>Anforderungsermittlung</strong>: Stakeholder (wer liest/nutzt), Zielkriterium (was zählt), Abgrenzung (was nicht). Rolle+Kontext+Aufgabe+Format+Kriterien ist exakt der Fünf-Bausteine-Aufbau unseres Prompt-Builder-Tools — Requirements Engineering für den eigenen Prompt.",
-      crosslink: "Direkter Bezug: Tool „Prompt-Builder\" (Rolle → Kontext → Aufgabe → Format → Kriterien) führt diese Ebene als eigenständigen Wizard fort."
-    },
-    3: {
-      color: "#4338ca", label: "Ebene 3 — Der Tiefenkörper",
-      lede: "Für Fortgeschrittene: wo aus gutem Einzelprompt ein wiederholbarer, geführter Prozess wird.",
-      sichtbar: [
-        "Das passende Modell für die Aufgabe wählen — schnell/günstig oder langsam/gründlich",
-        "Die KI vor der Antwort erst „nachdenken\" lassen, statt sofort zu antworten",
-        "Bei komplexen Aufgaben zuerst einen Plan freigeben, bevor er ausgeführt wird",
-        "Feste Spielregeln einmal dauerhaft hinterlegen, statt sie jedes Mal neu zu erklären",
-        "Wiederkehrende Abläufe einmal beschreiben und danach automatisch ausführen lassen",
-        "Projekt-Kontext dauerhaft anheften, statt bei jeder Sitzung neu zu erklären",
-        "Externe Werkzeuge und Datenquellen direkt anschließen, statt Ergebnisse manuell zu kopieren"
-      ],
-      tiefe: [
-        "Aufwand liegt in der Einrichtung, nicht mehr in der einzelnen Anfrage",
-        "Ergebnisse werden über viele Wiederholungen konsistent statt einmalig gut",
-        "Governance-Frage wird relevant: wer darf was freigeben, was läuft automatisch?"
-      ],
-      ireb: "Das ist der Übergang von der <strong>Einzelanforderung zur Systemarchitektur</strong> — wiederverwendbare, governte Prozesse statt Einzelfall-Lösungen. Parallel zu BABOK's Prozess- und Governance-Sicht auf Anforderungen.",
-      crosslink: "Vertiefung: Tool „Vom Prompt zum Agenten — Die vier Eskalationsstufen der KI-Steuerung\" (Prompt → Context → Loop → Graph Engineering)."
-    }
-  };
+  function safeGet(key){ try{ return sessionStorage.getItem(key); }catch(e){ return null; } }
+  function safeSet(key, val){ try{ sessionStorage.setItem(key, val); }catch(e){} }
 
-  var current = null;
-  var detailCol = document.getElementById("detailCol");
+  // Sprach-Toggle (K20): Deutsch ist Grundzustand im HTML, JS cached es beim
+  // ersten Umschalten und tauscht danach nur Text/innerHTML bereits
+  // vorhandener [data-i18n]-Elemente -- keine Laufzeit-Generierung.
+  var lang = "de";
+  var storedLang = safeGet("eisberg_lang");
+  if(storedLang === "en"){ lang = "en"; }
+
+  function applyLang(){
+    document.querySelectorAll("[data-i18n]").forEach(function(el){
+      var en = el.getAttribute("data-en");
+      if(en === null) return;
+      if(!el.hasAttribute("data-de-cache")){
+        el.setAttribute("data-de-cache", el.innerHTML);
+      }
+      el.innerHTML = (lang === "en") ? en : el.getAttribute("data-de-cache");
+    });
+    document.documentElement.setAttribute("lang", lang);
+    if(window.__syncVertiefung){ window.__syncVertiefung(); }
+  }
+
+  document.getElementById("langBtn").addEventListener("pointerup", function(){
+    lang = (lang === "de") ? "en" : "de";
+    safeSet("eisberg_lang", lang);
+    applyLang();
+  });
+
+  // Ebenen-Auswahl: drei statische Panels, nur Sichtbarkeit wird getauscht
   var tiers = [
     document.getElementById("tier-1"),
     document.getElementById("tier-2"),
     document.getElementById("tier-3")
   ];
+  var panels = [
+    document.getElementById("panel-1"),
+    document.getElementById("panel-2"),
+    document.getElementById("panel-3")
+  ];
 
-  function render(level){
-    current = level;
-    var d = LEVELS[level];
-    var html = "";
-    html += '<div class="detail-head"><span class="dot" style="background:' + d.color + '"></span><h2>' + d.label + '</h2></div>';
-    html += '<p class="detail-lede">' + d.lede + '</p>';
-    html += '<div class="cols">';
-    html += '<div class="card sichtbar"><h4>Was sichtbar ist</h4><ul>' + d.sichtbar.map(function(s){ return '<li>' + s + '</li>'; }).join('') + '</ul></div>';
-    html += '<div class="card tiefe"><h4>Wo der Aufwand wirklich liegt</h4><ul>' + d.tiefe.map(function(s){ return '<li>' + s + '</li>'; }).join('') + '</ul></div>';
-    html += '</div>';
-    html += '<div class="ireb-box"><span class="tag">IREB/BABOK-Bezug</span><br>' + d.ireb + '</div>';
-    html += '<p class="crosslink">' + d.crosslink + '</p>';
-    detailCol.innerHTML = html;
-
+  function showLevel(level){
     tiers.forEach(function(btn){
       var isActive = parseInt(btn.getAttribute("data-level"), 10) === level;
       btn.classList.toggle("active", isActive);
       btn.setAttribute("aria-pressed", isActive ? "true" : "false");
     });
+    panels.forEach(function(panel){
+      panel.classList.toggle("active", parseInt(panel.getAttribute("data-level"), 10) === level);
+    });
   }
 
   tiers.forEach(function(btn){
     btn.addEventListener("pointerup", function(){
-      render(parseInt(btn.getAttribute("data-level"), 10));
+      showLevel(parseInt(btn.getAttribute("data-level"), 10));
     });
   });
 
-  render(1);
+  showLevel(1);
+
+  // Vertiefungs-Toggle (K22): globaler Button, Zustand als Klasse "vertiefung"
+  // auf <html>. Beamer-Modus erzwingt Kurzfassung unabhängig vom Nutzer-
+  // Zustand; beim Verlassen des Beamer-Modus wird der vorherige Zustand
+  // wiederhergestellt.
+  var vertiefungOn = false;
+  if(safeGet("eisberg_vertiefung") === "1"){ vertiefungOn = true; }
+  var vertiefungBtn = document.getElementById("vertiefungBtn");
+
+  function syncVertiefung(){
+    var beamerActive = document.documentElement.classList.contains("beamer");
+    var show = vertiefungOn && !beamerActive;
+    document.documentElement.classList.toggle("vertiefung", show);
+    var labelDe = show ? "🔍 Vertiefung: An" : "🔍 Vertiefung: Aus";
+    var labelEn = show ? "🔍 In depth: On" : "🔍 In depth: Off";
+    vertiefungBtn.textContent = (lang === "en") ? labelEn : labelDe;
+    vertiefungBtn.classList.toggle("active", show);
+    vertiefungBtn.disabled = beamerActive;
+  }
+  window.__syncVertiefung = syncVertiefung;
+  syncVertiefung();
+
+  vertiefungBtn.addEventListener("pointerup", function(){
+    if(document.documentElement.classList.contains("beamer")) return;
+    vertiefungOn = !vertiefungOn;
+    safeSet("eisberg_vertiefung", vertiefungOn ? "1" : "0");
+    syncVertiefung();
+  });
 
   // Beamer-Modus-Toggle (K18): vierstufig, reine Größensteigerung
   var BEAMER_LEVELS = ["", "beamer", "beamer beamer-xl", "beamer beamer-xl beamer-xxl"];
@@ -557,7 +728,10 @@ NICHT TUN:
   beamerBtn.addEventListener("pointerup", function(){
     beamerIndex = (beamerIndex + 1) % BEAMER_LEVELS.length;
     document.documentElement.className = BEAMER_LEVELS[beamerIndex];
+    syncVertiefung();
   });
+
+  applyLang();
 
 })();
 </script>
