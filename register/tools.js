@@ -4281,6 +4281,69 @@ window.DENKRAUM_REGISTER = {
       "notiz": ""
     },
     {
+      "id": "vision-zielbild-werkstatt",
+      "datei": "tools/vision-zielbild-werkstatt.html",
+      "titel": "Vision & Zielbild-Werkstatt",
+      "kurztitel": "Vision & Zielbild-Werkstatt",
+      "kurz": "Bevor ein Backlog oder Projektplan entsteht, braucht ein Vorhaben ein Zielbild: Aus einem Auftrag ohne Ziel (NovaTrade Pulse, agil, oder Hochschule Nordwest, hybrid) entstehen in fünf Bausteinen Zielgruppe und Problem, Vision, Erfolgsmaß, riskanteste Annahme als Hypothese und Leitplanke. Mit Zielbild-Karte zum Herunterladen, OKR-Entwurf und Prompt-Reitern.",
+      "rubrik": "Agiles Arbeiten & Projektmanagement",
+      "bereich": "Projektmanagement",
+      "aufStartseite": true,
+      "zweck": [
+        "Übung",
+        "Opener"
+      ],
+      "denkraum": "moeglichkeit",
+      "faeden": [
+        "pm"
+      ],
+      "dauer": "20 min (mit beiden Fällen 40 min)",
+      "haufeSeminare": [
+        "34000",
+        "3525",
+        "2929",
+        "34002"
+      ],
+      "einsatzkontext": [
+        "Seminar",
+        "Workshop"
+      ],
+      "fallwelten": [
+        "NovaTrade Pulse",
+        "Hochschule Nordwest"
+      ],
+      "themen": [
+        "Vision",
+        "Zielbild",
+        "Erfolgsmaß",
+        "Hypothese",
+        "Leitplanke",
+        "OKR",
+        "Möglichkeitsraum"
+      ],
+      "standards": [
+        "PMBOK",
+        "BABOK",
+        "Scrum Guide"
+      ],
+      "siegel": {
+        "status": null,
+        "letztesAudit": null,
+        "auditZeileImTool": null,
+        "offen": "Formales Siegel-Audit steht aus; Selbstprüfung beim Bau (02.10.2026): Muss-Kriterien erfüllt (Playwright 1300/390 px, vier Beamer-Stufen, DE/EN inkl. Footer, Signatur fixiert); Z9 Teilnehmenden-Version fehlt (Kann)."
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/okr-kaskade.html",
+        "tools/vom-impuls-zur-anforderung.html",
+        "tools/ba-steckbrief-business-case.html",
+        "tools/agile-project-maturity-navigator.html"
+      ],
+      "geprueft": false,
+      "notiz": "Gebaut als zweites Möglichkeitsraum-Tool, schließt die Lücke für die PM-Seminare 34000, 3525, 2929 und 34002."
+    },
+    {
       "id": "vom-impuls-zur-anforderung",
       "datei": "tools/vom-impuls-zur-anforderung.html",
       "titel": "Vom Impuls zur Anforderung",

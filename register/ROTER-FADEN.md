@@ -1,12 +1,12 @@
 # Roter Faden · Zuordnung der Tools zu den Denkräumen
 
-Vorschlag vom 01.10.2026 auf Basis der Navigator-Fassung, am 02.10.2026 um Störfall-Labor und „Vom Impuls zur Anforderung“ nachgeführt (84 Tools). **Bitte prüfen:** Ein Wort wie „Fragenautomat → Lösung“ reicht als Korrektur. Erst nach Ihrem Okay kommen Farbstreifen und Karte.
+Vorschlag vom 01.10.2026 auf Basis der Navigator-Fassung, am 02.10.2026 um Störfall-Labor, „Vom Impuls zur Anforderung“ und „Vision & Zielbild-Werkstatt“ nachgeführt (85 Tools). **Bitte prüfen:** Ein Wort wie „Fragenautomat → Lösung“ reicht als Korrektur. Erst nach Ihrem Okay kommen Farbstreifen und Karte.
 
 Die fünf Räume plus zwei Sonderfälle: **🔄 Rundreise** für Tools, die selbst durch alle Räume führen (sie *sind* der rote Faden), und **🏕️ Basislager** für Nachschlagewerke, Fallwelten und Prüfungsvorbereitung, die man von überall aus nutzt.
 
 ## Was die Zuordnung zeigt
 
-**Der Anfang ist besetzt, aber noch dünn.** Im Möglichkeitsraum stehen 7 Tools. Seit „Vom Impuls zur Anforderung“ gibt es dort das erste Tool für Requirements Engineering und Business-Analyse (Impuls einordnen, nachfragen, ersten prüfbaren Satz formulieren); die anderen 6 sind KI-Tools. Für **Projektmanagement** fehlt weiterhin ein Tool für „Impuls wahrnehmen“ (Vision und Zielbild, Annahmen und Hypothesen). Das Ende ist seit dem Störfall-Labor nicht mehr leer: Es ist das erste RE/BA/PM-Tool im Störraum (vom Signal bis zum Änderungsantrag), die übrigen 5 sind KI-Tools.
+**Der Anfang ist besetzt, aber noch dünn.** Im Möglichkeitsraum stehen 8 Tools. Seit „Vom Impuls zur Anforderung“ gibt es dort das erste Tool für Requirements Engineering und Business-Analyse (Impuls einordnen, nachfragen, ersten prüfbaren Satz formulieren); die „Vision & Zielbild-Werkstatt“ ist das erste für Projektmanagement (Zielgruppe, Vision, Erfolgsmaß, Hypothese, Leitplanke); die anderen 6 sind KI-Tools. Das Ende ist seit dem Störfall-Labor nicht mehr leer: Es ist das erste RE/BA/PM-Tool im Störraum (vom Signal bis zum Änderungsantrag), die übrigen 5 sind KI-Tools.
 
 Pro Haufe-Seminar sieht das so aus (Anzahl verlinkter Tools je Raum):
 
@@ -16,17 +16,18 @@ Pro Haufe-Seminar sieht das so aus (Anzahl verlinkter Tools je Raum):
 | 31693 Requirements Engineering: Projekte erfolgreich starten | 1 | 6 | 9 | **0** | 1 | 3 | 2 |
 | 3744 Der:Die Agile Business Analyst:in | 1 | 9 | 3 | **0** | 1 | 4 | 1 |
 | 41851 KI-Prompting im Requirements Engineering und in der Business Analyse | 2 | 3 | 6 | 3 | 1 | 2 | 1 |
-| 34000 Agile Projekte richtig aufsetzen und steuern | **0** | 4 | 3 | 1 | 1 | 3 | **0** |
-| 3525 Agiles Projektmanagement für Fortgeschrittene | **0** | 3 | 4 | 1 | 1 | **0** | 1 |
-| 2929 Hybrides Projektmanagement II | **0** | 2 | 3 | **0** | 1 | 3 | 2 |
-| 34002 Objectives and Key Results: Agiles Teammanagement | **0** | 3 | 1 | 1 | 1 | 3 | **0** |
+| 34000 Agile Projekte richtig aufsetzen und steuern | 1 | 4 | 3 | 1 | 1 | 3 | **0** |
+| 3525 Agiles Projektmanagement für Fortgeschrittene | 1 | 3 | 4 | 1 | 1 | **0** | 1 |
+| 2929 Hybrides Projektmanagement II | 1 | 2 | 3 | **0** | 1 | 3 | 2 |
+| 34002 Objectives and Key Results: Agiles Teammanagement | 1 | 3 | 1 | 1 | 1 | 3 | **0** |
 
-Jedes Seminar hat jetzt mindestens ein Tool im Störraum, in sieben Seminaren ist es das Störfall-Labor. Vier von acht Seminaren (34000, 3525, 2929 und 34002, alle Projektmanagement) haben weiterhin keinen Möglichkeitsraum. Das sind die naheliegenden nächsten Tools, statt weiterer im schon gut besetzten Lösungsraum (19 Tools).
+Jedes Seminar hat jetzt mindestens ein Tool im Störraum, in sieben Seminaren ist es das Störfall-Labor. Jedes der acht Seminare hat damit mindestens ein Tool im Möglichkeitsraum. Naheliegende nächste Lücken sind Tools im Möglichkeitsraum für weitere Fäden, statt weiterer im schon gut besetzten Lösungsraum (19 Tools).
 
-## 💡 Möglichkeitsraum · Impuls wahrnehmen (7)
+## 💡 Möglichkeitsraum · Impuls wahrnehmen (8)
 
 | Tool | Warum hier |
 |---|---|
+| Vision & Zielbild-Werkstatt | Das Zielbild vor dem Plan: für wen, wohin, woran man es merkt |
 | Vom Impuls zur Anforderung | Der erste Satz eines Vorhabens: einordnen, nachfragen, prüfbar formulieren |
 | Von der Chatbox zum Workflow · Opener | Einstieg: Was kann KI alles, jenseits der Chatbox? |
 | Claude-Feature-Navigator | Welche Bausteine gibt es überhaupt? |
