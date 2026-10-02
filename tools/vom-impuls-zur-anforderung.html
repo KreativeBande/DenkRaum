@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Vom Impuls zur Anforderung – Möglichkeitsraum</title>
+<style>
+html,body{color-scheme:light}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#fffdf8;--panel:#ffffff;--ink:#241d12;--muted:#5f5646;--line:#e9dfcb;
+  --accent:#b45309;--accent-soft:#fef3c7;--accent-ink:#ffffff;
+  --good:#166534;--good-soft:#e8f6ec;--warn:#92400e;--warn-soft:#fdeede;
+  --card:#faf5e9;
+  --mono:ui-monospace,"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  --sans:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body{background:radial-gradient(circle at top left,#fff4d6 0%,transparent 24%),radial-gradient(circle at top right,#fdf0e1 0%,transparent 22%),var(--bg)}
+button{font-family:var(--sans);touch-action:manipulation}
+a{color:var(--accent)}
+.signature{position:fixed;top:14px;right:28px;z-index:1000;text-align:right;line-height:1.3;font-size:14px;background:rgba(255,253,248,.94);padding:4px 10px;border-radius:8px;max-width:70vw}
+.signature strong{display:block;font-size:15px;color:var(--ink)}
+.signature a{font-size:14px;text-decoration:none;font-weight:600}
+.wrap{max-width:1180px;margin:0 auto;padding:76px 28px 40px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.back-link{font-size:15px;font-weight:700;color:var(--accent);text-decoration:none}
+.back-link:hover{text-decoration:underline}
+.ctrls{display:flex;gap:10px;flex-wrap:wrap}
+.beamer-btn,.lang-btn{background:transparent;border:1.5px solid var(--line);color:var(--muted);font-size:15px;padding:10px 20px;border-radius:999px;cursor:pointer;min-height:44px}
+.beamer-btn:hover,.lang-btn:hover{border-color:var(--accent)}
+html.beamer .beamer-btn,html.beamer-xl .beamer-btn,html.beamer-xxl .beamer-btn{background:var(--ink);color:#fff;border-color:var(--ink)}
+.hero{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;box-shadow:0 16px 34px rgba(36,29,18,.08);padding:36px 36px 30px;margin:0 0 26px}
+.eyebrow{display:block;font-size:14px;letter-spacing:.12em;font-weight:700;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
+h1{margin:0 0 10px;font-size:clamp(28px,4vw,42px);line-height:1.1;letter-spacing:-.01em}
+h1 span{color:var(--accent)}
+.lead{margin:0;font-size:18px;line-height:1.6}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 16px rgba(36,29,18,.03);padding:24px 26px;margin-bottom:22px}
+.panel h2{margin:0 0 6px;font-size:24px}
+.panel .sub{margin:0 0 16px;color:var(--muted);font-size:16px}
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.tcard h3{margin:0 0 4px;font-size:17px;color:var(--accent)}
+.tcard p{margin:0;font-size:15px;line-height:1.5}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.imp{text-align:left;background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:18px 20px;cursor:pointer;min-height:48px;box-shadow:0 6px 16px rgba(36,29,18,.03);transition:border-color .15s,background .15s;color:var(--ink)}
+.imp:hover,.imp.sel{border-color:var(--accent);background:var(--accent-soft)}
+.imp .who{display:block;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:6px}
+.imp .qt{display:block;font-size:18px;line-height:1.5;font-weight:600}
+#flow{display:none}
+#flow.show{display:block}
+.track{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.pill{border-radius:999px;border:1.5px solid var(--line);padding:6px 14px;font-size:14px;font-weight:700;color:var(--muted);background:#fff}
+.pill.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.pill.done{background:var(--good-soft);border-color:#b8dfc4;color:var(--good)}
+.quote{border-left:5px solid var(--accent);background:var(--accent-soft);border-radius:4px;padding:16px 20px;font-size:19px;font-weight:600;line-height:1.55;margin:0 0 18px;color:#5a2d06}
+.quote small{display:block;font-size:14px;font-weight:700;margin-top:8px;color:var(--muted);letter-spacing:.04em}
+.qline{font-size:20px;font-weight:700;margin:0 0 12px}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;background:#fff;border:2px solid var(--line);border-radius:12px;padding:14px 18px;font-size:17px;line-height:1.5;color:var(--ink);cursor:pointer;min-height:48px}
+.opt:hover:not([disabled]){border-color:var(--accent);background:var(--accent-soft)}
+.opt[disabled]{cursor:default}
+.opt .nm{font-weight:700;display:block}
+.opt .ds{display:block;color:var(--muted);font-size:15px;margin-top:2px}
+.opt.ok{border-color:#4ea36a;background:var(--good-soft)}
+.opt.bad{border-color:#d28a4c;background:var(--warn-soft)}
+.opt .mark{font-weight:800;margin-right:6px}
+.fb{margin-top:16px;border:1px solid var(--line);border-left:6px solid var(--accent);background:var(--card);border-radius:4px;padding:16px 20px}
+.fb.hit{border-left-color:#4ea36a}
+.fb p{margin:0 0 8px;font-size:17px;line-height:1.55}
+.fb p:last-child{margin-bottom:0}
+.fb .tag{font-weight:800}
+.fb .ansbox{margin-top:10px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:12px 14px;font-size:17px}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.btn{background:var(--accent);color:var(--accent-ink);border:2px solid var(--accent);border-radius:12px;padding:12px 22px;font-size:16px;font-weight:700;cursor:pointer;min-height:48px}
+.btn:hover{filter:brightness(.93)}
+.btn.ghost{background:#fff;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--accent)}
+.card-out{border:2px solid var(--ink);border-radius:16px;background:var(--card);padding:22px 26px;margin:22px 0;box-shadow:0 10px 24px rgba(36,29,18,.06)}
+.card-out h2{margin:0 0 2px;font-size:24px}
+.card-out .sub{margin:0 0 14px;color:var(--muted);font-size:16px}
+.row{display:grid;grid-template-columns:200px 1fr;gap:6px 16px;padding:10px 0;border-top:1px solid var(--line)}
+.row .lb{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);padding-top:2px}
+.row .vl{font-size:17px}
+.row ul{margin:0;padding-left:18px}
+.score{display:inline-block;margin-top:10px;border-radius:999px;background:var(--ink);color:#fff;font-weight:700;font-size:14px;padding:6px 16px}
+.code{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-family:var(--mono);font-size:15px;line-height:1.6;white-space:pre-wrap}
+.copy{margin-top:10px}
+.crosslink{margin-top:20px;font-size:14px;color:var(--muted)}
+.crosslink a{color:var(--accent);font-weight:700;text-decoration:none}
+.crosslink a:hover{text-decoration:underline}
+.crosslink ul{margin:8px 0 0;padding-left:20px}
+.crosslink li{margin-bottom:4px}
+footer{max-width:1180px;margin:40px auto 40px;padding:0 28px}
+.footer-sig{font-size:14px;color:var(--muted);margin:0 0 16px;line-height:1.6}
+.footer-sig a{text-decoration:none;font-weight:600}
+.footer-details{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:start}
+.footer-box{border:1px solid var(--line);border-radius:16px;background:var(--panel);overflow:hidden}
+.footer-box[open]{grid-column:1/-1}
+.footer-summary{cursor:pointer;padding:12px 16px;font-weight:700;font-size:15px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.footer-summary::-webkit-details-marker{display:none}
+.footer-summary:after{content:"+";color:var(--accent);font-size:18px}
+.footer-box[open] .footer-summary:after{content:"–"}
+.footer-content{padding:0 16px 16px}
+.footer-mono{font-family:var(--mono);font-size:14px;line-height:1.55}
+.footer-mono div{white-space:pre-wrap}
+.footer-sans{font-size:16px;line-height:1.6}
+.footer-table{width:100%;border-collapse:collapse;font-size:15px}
+.footer-table td,.footer-table th{text-align:left;padding:6px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.skript-step{margin-bottom:12px}
+.footer-glossary{margin:0}
+.footer-glossary dt{font-weight:700;color:var(--ink);font-size:15px;margin-top:12px}
+.footer-glossary dt:first-child{margin-top:0}
+.footer-glossary dd{margin:2px 0 0;color:var(--muted);font-size:14px;line-height:1.5}
+@media(max-width:900px){
+  .footer-details{grid-template-columns:1fr}
+  .tgrid{grid-template-columns:repeat(2,1fr)}
+  .cards{grid-template-columns:1fr}
+  .row{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .wrap{padding:64px 16px 32px}
+  .signature{top:6px;right:10px;padding:3px 8px;max-width:60vw}
+  .hero{padding:22px 18px}
+  .panel{padding:18px}
+  .tgrid{grid-template-columns:1fr}
+  footer{padding:0 16px}
+}
+/* Beamer vierstufig, kumulativ */
+html.beamer{--muted:#3D4A5C}
+html.beamer .wrap{max-width:1400px}
+html.beamer .lead,html.beamer .panel .sub,html.beamer .fb p,html.beamer .opt,html.beamer .row .vl,html.beamer .tcard p,html.beamer .quote,html.beamer .imp .qt,html.beamer .qline{font-size:22px}
+html.beamer h1{font-size:46px}
+html.beamer .panel h2,html.beamer .card-out h2{font-size:44px}
+html.beamer .eyebrow,html.beamer .imp .who,html.beamer .opt .ds,html.beamer .row .lb,html.beamer .pill,html.beamer .quote small,html.beamer .crosslink,html.beamer .score,html.beamer .tcard h3{font-size:15px}
+html.beamer footer{display:none}
+html.beamer-xl .lead,html.beamer-xl .panel .sub,html.beamer-xl .fb p,html.beamer-xl .opt,html.beamer-xl .row .vl,html.beamer-xl .tcard p,html.beamer-xl .quote,html.beamer-xl .imp .qt,html.beamer-xl .qline{font-size:28px}
+html.beamer-xl h1{font-size:54px}
+html.beamer-xl .panel h2,html.beamer-xl .card-out h2{font-size:54px}
+html.beamer-xl .eyebrow,html.beamer-xl .imp .who,html.beamer-xl .opt .ds,html.beamer-xl .row .lb,html.beamer-xl .pill,html.beamer-xl .quote small,html.beamer-xl .crosslink,html.beamer-xl .score,html.beamer-xl .tcard h3{font-size:18px}
+html.beamer-xl .tgrid{grid-template-columns:repeat(2,1fr)}
+html.beamer-xxl .lead,html.beamer-xxl .panel .sub,html.beamer-xxl .fb p,html.beamer-xxl .opt,html.beamer-xxl .row .vl,html.beamer-xxl .tcard p,html.beamer-xxl .quote,html.beamer-xxl .imp .qt,html.beamer-xxl .qline{font-size:34px}
+html.beamer-xxl h1{font-size:60px}
+html.beamer-xxl .panel h2,html.beamer-xxl .card-out h2{font-size:64px}
+html.beamer-xxl .eyebrow,html.beamer-xxl .imp .who,html.beamer-xxl .opt .ds,html.beamer-xxl .row .lb,html.beamer-xxl .pill,html.beamer-xxl .quote small,html.beamer-xxl .crosslink,html.beamer-xxl .score,html.beamer-xxl .tcard h3{font-size:21px}
+html.beamer-xxl .tgrid{grid-template-columns:1fr}
+html.beamer-xxl .cards{grid-template-columns:1fr}
+html.beamer .row,html.beamer-xl .row,html.beamer-xxl .row{grid-template-columns:1fr}
+@media print{.topbar,.signature,footer,.acts{display:none}}
+</style>
+</head>
+<body>
+<div class="signature"><strong>Michaela Kühn</strong><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></div>
+<div class="wrap">
+<div class="topbar"><a class="back-link" href="../index.html" data-i18n-en="← Back to home page">← Zurück zur Startseite</a><div class="ctrls"><button type="button" class="beamer-btn" id="beamerBtn">☀ Beamer</button><button type="button" class="lang-btn" id="langBtn">EN</button></div></div>
+
+<header class="hero">
+<span class="eyebrow" data-i18n-en="💡 Possibility room · perceive the impulse">💡 Möglichkeitsraum · Impuls wahrnehmen</span>
+<h1 data-i18n-en="From impulse to requirement">Vom Impuls zur Anforderung</h1>
+<p class="lead" data-i18n-en="No project starts with a requirement. It starts with a sentence: an annoyance, an idea, an order. Here you practise turning that sentence into the first verifiable spark before the analysis room begins. The case is the digital student file at Hochschule Nordwest.">Kein Projekt beginnt mit einer Anforderung. Es beginnt mit einem Satz: einem Ärger, einer Idee, einem Auftrag. Hier üben Sie, aus diesem Satz den ersten prüfbaren Funken zu machen, bevor der Analyseraum beginnt. Der Fall ist die Digitale Studierendenakte der Hochschule Nordwest.</p>
+</header>
+
+<section class="panel">
+<h2 data-i18n-en="Four types of sentence">Vier Typen von Sätzen</h2>
+<p class="sub" data-i18n-en="Most impulses are one of these. The type decides which question helps.">Die meisten Impulse sind einer dieser Typen. Der Typ entscheidet, welche Frage weiterhilft.</p>
+<div class="tgrid">
+<div class="tcard"><h3><span data-i18n-en="Symptom">Symptom</span></h3><p><span data-i18n-en="Describes what hurts or annoys. The cause is open.">Beschreibt, was stört oder wehtut. Die Ursache ist offen.</span></p></div>
+<div class="tcard"><h3><span data-i18n-en="Proposed solution">Lösungsvorschlag</span></h3><p><span data-i18n-en="Already names what to build it with. The problem behind it is missing.">Nennt schon, womit es gebaut werden soll. Das Problem dahinter fehlt.</span></p></div>
+<div class="tcard"><h3><span data-i18n-en="Goal">Ziel</span></h3><p><span data-i18n-en="Describes a desired state. The yardstick for it still has to be clarified.">Beschreibt einen angestrebten Zustand. Der Maßstab dafür ist noch zu klären.</span></p></div>
+<div class="tcard"><h3><span data-i18n-en="Constraint">Randbedingung</span></h3><p><span data-i18n-en="Applies regardless of the project. You plan around it instead of negotiating it.">Gilt unabhängig vom Projekt. Man plant um sie herum, statt sie zu verhandeln.</span></p></div>
+</div>
+</section>
+
+<section class="panel" id="pick">
+<h2 id="pickT">1 · Impuls wählen</h2>
+<p class="sub" id="pickH">Vier Sätze aus dem Prüfungsamt. Welchen nehmen wir uns vor?</p>
+<div class="cards" id="cards"></div>
+</section>
+
+<section class="panel" id="flow" aria-live="polite">
+<div id="stage"></div>
+</section>
+<div id="outCard"></div>
+
+<section class="panel">
+<h2 data-i18n-en="The same moment when prompting">Derselbe Moment beim Prompten</h2>
+<p class="sub" data-i18n-en="A task like “Make me an analysis” is also an impulse, not a requirement. Anyone who sends it unchecked lets the AI guess. The same four steps help: recognise the type, ask back, phrase it solution-neutrally, name the assumption. Example prompt to take along:">Ein Auftrag wie „Mach mir eine Auswertung“ ist ebenfalls ein Impuls, keine Anforderung. Wer ihn unbesehen abschickt, lässt die KI raten. Dieselben vier Schritte helfen: Typ erkennen, rückfragen, lösungsneutral formulieren, Annahme benennen. Beispielprompt zum Mitnehmen:</p>
+<div class="code" id="promptTxt" data-i18n-en="Before you start: classify my task (symptom, proposed solution, goal or constraint) and ask me at most three follow-up questions. Only begin once I have answered.">Bevor du beginnst: Ordne meinen Auftrag ein (Symptom, Lösungsvorschlag, Ziel oder Randbedingung) und stelle mir höchstens drei Rückfragen. Beginne erst, wenn ich geantwortet habe.</div>
+<button type="button" class="btn ghost copy" id="copyBtn">Prompt kopieren</button>
+</section>
+
+<div class="crosslink">
+<span data-i18n-en="Related Denkraum tools on this topic:">Verwandte Denkraum-Tools zu diesem Thema:</span>
+<ul>
+<li><a href="./stoerfall-labor.html" data-i18n-en="Disruption Lab">Störfall-Labor</a> – <span data-i18n-en="the other end of the cycle: what happens when an assumption collapses later, and how the lesson flows back into the possibility room.">das andere Ende des Kreislaufs: was passiert, wenn eine Annahme später kippt, und wie die Lehre in den Möglichkeitsraum zurückfließt.</span></li>
+<li><a href="./ein-fall-35-blickwinkel.html" data-i18n-en="One case, 35 viewpoints">Ein Fall, 35 Blickwinkel</a> – <span data-i18n-en="takes the next step: a case that is already understood is read from many viewpoints, while this tool works on the raw sentence before it.">geht den nächsten Schritt: ein schon verstandener Fall wird aus vielen Sichten gelesen, während dieses Tool am rohen Satz davor arbeitet.</span></li>
+<li><a href="./stakeholder-memory.html">Stakeholder Memory</a> – <span data-i18n-en="deepens the question “who says this and who is affected?” with a game about stakeholders.">vertieft die Frage „Wer sagt das, und wer ist betroffen?“ mit einem Spiel rund um Stakeholder.</span></li>
+<li><a href="./hochschule-nordwest-steckbrief.html" data-i18n-en="Case world Hochschule Nordwest">Fallwelt Hochschule Nordwest</a> – <span data-i18n-en="the reference page with all case facts (retention period, process, personas) used here.">die Referenzseite mit allen Fallfakten (Aufbewahrungsfrist, Prozess, Personas), die hier verwendet werden.</span></li>
+</ul>
+</div>
+</div>
+
+<footer>
+<p class="footer-sig"><strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a> · IREB CPRE FL v3.3.0 · BABOK® Guide v3 · ISO/IEC/IEEE 29148:2018</p>
+<div class="footer-details">
+<details class="footer-box"><summary class="footer-summary">⚙️ <span data-i18n-en="System prompt">Systemprompt</span></summary><div class="footer-content footer-mono"><div data-i18n-en="ROLE: You build an interactive single-file HTML training tool for Michaela Kühn (www.michaela-kuehn.com) in the DenkRaum repo. It sits in the possibility room (“perceive the impulse”) and is the first RE/BA/PM tool there.
+
+GOAL: Participants practise turning a vague opening sentence (impulse) into a viable requirement spark before the analysis room begins. Audience: requirements engineers, business analysts and project managers without prior AI knowledge.
+
+STRUCTURE
+1. Top bar (own row): back link ../index.html on the left; on the right a projector button (four levels: normal, Beamer, Beamer XL, Beamer XXL; cumulative classes beamer, beamer-xl, beamer-xxl on html; the label shows the next action; footer hidden from level 1) and a DE/EN button. Signature (bold name, website link) position:fixed at top right, also on mobile.
+2. Hero at full width without max-width: eyebrow, H1, lead. No flex neighbour in the same row.
+3. Panel “Four types”: symptom, proposed solution, goal, constraint, each with one explanatory sentence.
+4. Choose an impulse: four cards from the Hochschule Nordwest case world (digital student file), each with a quote from a fixed persona (Herr Öztürk, Knut, Kanzlerin Dr. Feldmann, Ela). Every impulse has a different type.
+5. Four stations, each with one multiple-choice question and immediate resolution (rationale for every option): (1) Sort: the type of the sentence. (2) Ask back: best follow-up question, then the simulated answer. (3) Phrase: solution-neutral and verifiable. (4) Hand over: which assumption is checked first in the analysis room. Exactly one correct option per station; its position varies.
+6. Result “impulse card”: quote, type, best follow-up with answer, spark, assumption to check first, two follow-up tools from the analysis room, score. Download as Markdown in the selected language.
+7. Panel “The same moment when prompting”: transfer to AI with a copyable example prompt that first classifies and asks at most three follow-up questions.
+8. Crosslink block “Related Denkraum tools” before the footer; footer with the four mandatory boxes plus glossary.
+
+CONTENT: Use only facts from the case world (paper file, seven steps, 50-year retention, steering committee monthly, audit office). Mark numbers the case does not know as to be agreed. Every wrong option explains why it is too early, too vague or a hidden solution at this point.
+
+DESIGN: White, warm background, amber accent (#b45309), soft touch: cards 16px radius with a subtle shadow, buttons 12px, pills 999px, hero 28px. No dark mode (color-scheme: light). Body text at least 16px, secondary text at least 14px, click targets at least 48px high; projector size table: body 22/28/34px, panel headings 44/54/64px, secondary 15/18/21px, --muted from level 1 on #3D4A5C.
+
+TECH: One file, everything inline, no external requests (offline capable). State in memory only; language and projector level optionally in sessionStorage with try/catch. Bilingual German/English without reload: all visible texts including all footer boxes. Persona names stay identical in both languages.
+
+DO NOT: no new personas, no new case world; no quiz language like “Wrong!”, give a rationale instead; do not prescribe product names as solutions; no legal advice; no standard version from memory, check the status before use; no time agenda in the tool.">ROLLE: Du baust ein interaktives Einzeldatei-HTML-Trainingstool für Michaela Kühn (www.michaela-kuehn.com) im DenkRaum-Repo. Es liegt im Möglichkeitsraum („Impuls wahrnehmen“) und ist das erste RE/BA/PM-Tool dort.
+
+ZIEL: Teilnehmende üben, einen diffusen Auftaktsatz (Impuls) in einen tragfähigen Anforderungsfunken zu verwandeln, bevor der Analyseraum beginnt. Zielgruppe: Requirements Engineers, Business Analysts und Projektleitungen ohne KI-Vorwissen.
+
+STRUKTUR
+1. Topbar (eigene Zeile): Zurück-Link ../index.html links; rechts Beamer-Button (vierstufig: Normal, Beamer, Beamer XL, Beamer XXL; kumulative Klassen beamer, beamer-xl, beamer-xxl auf html; Label zeigt die nächste Aktion; Footer ab Stufe 1 ausgeblendet) und DE/EN-Button. Signatur (Name fett, Website-Link) position:fixed oben rechts, auch auf dem Handy.
+2. Hero in voller Breite ohne max-width: Eyebrow, H1, Lead. Kein Flex-Nachbar in derselben Zeile.
+3. Panel „Vier Typen“: Symptom, Lösungsvorschlag, Ziel, Randbedingung mit je einem erklärenden Satz.
+4. Impuls wählen: vier Karten aus der Fallwelt Hochschule Nordwest (Digitale Studierendenakte), je ein Zitat einer festen Persona (Herr Öztürk, Knut, Kanzlerin Dr. Feldmann, Ela). Jeder Impuls hat einen anderen Typ.
+5. Vier Stationen, je eine Auswahlfrage mit sofortiger Auflösung (Begründung zu jeder Option): (1) Einordnen: Typ des Satzes. (2) Nachfragen: beste Rückfrage, danach die simulierte Antwort. (3) Formulieren: lösungsneutral und prüfbar. (4) Übergeben: welche Annahme im Analyseraum zuerst geprüft wird. Pro Station genau eine richtige Option, die Position der richtigen Option wechselt.
+6. Ergebnis „Impuls-Karte“: Zitat, Typ, beste Rückfrage mit Antwort, Funke, zuerst zu prüfende Annahme, zwei Folge-Tools aus dem Analyseraum, Trefferzahl. Download als Markdown in der gewählten Sprache.
+7. Panel „Derselbe Moment beim Prompten“: Übertrag auf KI mit einem kopierbaren Beispielprompt, der erst einordnen und höchstens drei Rückfragen stellen lässt.
+8. Crosslink-Block „Verwandte Denkraum-Tools“ vor dem Footer; Footer mit den vier Pflichtboxen plus Glossar.
+
+INHALT: Nur Fakten der Fallwelt verwenden (Papierakte, sieben Schritte, 50 Jahre Aufbewahrung, Lenkungsgremium monatlich, Rechnungshof). Zahlen, die der Fall nicht kennt, als abzustimmend kennzeichnen. Jede falsche Option erklärt, warum sie an dieser Stelle zu früh, zu unscharf oder eine versteckte Lösung ist.
+
+DESIGN: Weißer, warmer Grund, Akzent Bernstein (#b45309), weicher Griff: Karten 16px Radius mit dezentem Schatten, Buttons 12px, Pills 999px, Hero 28px. Kein Dark Mode (color-scheme: light). Fließtext mindestens 16px, Sekundärtext mindestens 14px, Klickflächen mindestens 48px hoch; Größentabelle für Beamer: Fließtext 22/28/34px, Panel-Überschriften 44/54/64px, Sekundärtext 15/18/21px, --muted ab Stufe 1 auf #3D4A5C.
+
+TECHNIK: Eine Datei, alles inline, keine externen Anfragen (offlinefähig). Zustand nur im Speicher; Sprache und Beamer-Stufe optional in sessionStorage mit try/catch. Zweisprachig Deutsch/Englisch ohne Neuladen: alle sichtbaren Texte inklusive aller Footer-Boxen. Namen der Personas bleiben in beiden Sprachen gleich.
+
+NICHT TUN: keine neuen Personas, keine neue Fallwelt; keine Quizsprache wie „Falsch!“, sondern eine Begründung; keine Produktnamen als Lösung vorgeben; keine Rechtsberatung; keine Normversion aus dem Gedächtnis, Stand vor Einsatz prüfen; keine Zeitagenda im Tool.</div></div></details>
+<details class="footer-box"><summary class="footer-summary">📘 <span data-i18n-en="Handbook">Handbuch</span></summary><div class="footer-content footer-sans"><div data-i18n-en="&lt;p&gt;&lt;b&gt;Framework: RISEN&lt;/b&gt; (role, instructions, steps, end goal, narrowing). It fits because the tool has a fixed sequence: four stations with a clear end product, the impulse card.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;The five dimensions in the tool:&lt;/b&gt;&lt;br&gt;&lt;i&gt;Role&lt;/i&gt;: The trainer moderates, the tool asks the question, not the solution.&lt;br&gt;&lt;i&gt;Task&lt;/i&gt;: Turn a vague sentence into a verifiable spark.&lt;br&gt;&lt;i&gt;Context&lt;/i&gt;: Hochschule Nordwest case world, four fixed personas, paper file on the way to the e-file.&lt;br&gt;&lt;i&gt;Format&lt;/i&gt;: One multiple-choice question per station, immediate rationale, a card to take away.&lt;br&gt;&lt;i&gt;Narrowing&lt;/i&gt;: only facts of the case, no product names, no legal advice.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Key learning point:&lt;/b&gt; An impulse is not a requirement. It only becomes one when you recognise the type, ask back, phrase it solution-neutrally and name the assumption that carries it. The same four steps apply when you give a task to an AI.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Rebuild tip:&lt;/b&gt; For your own impulse four building blocks are enough: a quote with a sender, a clear type, a follow-up question with an invented but case-consistent answer, and an assumption that carries the rest. Always justify wrong options as “too early”, “too vague” or “hidden solution”. That keeps the tool an exercise rather than a quiz.&lt;/p&gt;"><p><b>Framework: RISEN</b> (Rolle, Instruktionen, Schritte, Endziel, Eingrenzung). Es passt, weil das Tool eine feste Schrittfolge hat: vier Stationen mit einem klaren Endprodukt, der Impuls-Karte.</p>
+<p><b>Die fünf Dimensionen im Tool:</b><br><i>Rolle</i>: Die Trainerin ist Moderatorin, das Tool stellt die Frage, nicht die Lösung.<br><i>Aufgabe</i>: Einen unscharfen Satz in einen prüfbaren Funken verwandeln.<br><i>Kontext</i>: Fallwelt Hochschule Nordwest, vier feste Personas, Papierakte auf dem Weg zur E-Akte.<br><i>Format</i>: Auswahlfrage je Station, sofortige Begründung, Karte zum Mitnehmen.<br><i>Eingrenzung</i>: nur Fakten des Falls, keine Produktnamen, keine Rechtsberatung.</p>
+<p><b>Zentraler Lernhinweis:</b> Ein Impuls ist keine Anforderung. Aus ihm wird erst eine, wenn man den Typ erkennt, rückfragt, lösungsneutral formuliert und die tragende Annahme benennt. Dieselben vier Schritte gelten, wenn man einer KI einen Auftrag gibt.</p>
+<p><b>Nachbau-Tipp:</b> Für einen eigenen Impuls genügen vier Bausteine: ein Zitat mit Absender, ein klarer Typ, eine Rückfrage mit erfundener, aber fallkonsistenter Antwort und eine Annahme, die den Rest trägt. Falsche Optionen immer als „zu früh“, „zu unscharf“ oder „versteckte Lösung“ begründen. So bleibt das Tool eine Übung und wird kein Quiz.</p></div></div></details>
+<details class="footer-box"><summary class="footer-summary">🎤 <span data-i18n-en="Talk script">Vortrags-Skript</span></summary><div class="footer-content footer-sans"><div class="skript-step"><b><span data-i18n-en="Introduction">Einstieg</span></b><br><i><span data-i18n-en="(Top of the page, show hero and the panel “Four types”)">(Seite oben, Hero und Panel „Vier Typen“ zeigen)</span></i><br><span data-i18n-en="“No project starts with a requirement. It starts with a sentence: an annoyance, an idea, an order. Today we practise what happens in the first five minutes after that.”">„Kein Projekt beginnt mit einer Anforderung. Es beginnt mit einem Satz: einem Ärger, einer Idee, einem Auftrag. Wir üben heute, was in den ersten fünf Minuten danach passiert.“</span><br><span data-i18n-en="Transition: “Four sentences are on the table. Who wants to pick one?”">Übergang: „Vier Sätze liegen auf dem Tisch. Wer hat Lust, einen zu wählen?“</span></div>
+<div class="skript-step"><b><span data-i18n-en="Choose an impulse">Impuls wählen</span></b><br><i><span data-i18n-en="(Let someone click a card, read the quote aloud)">(Eine Karte anklicken lassen, Zitat laut vorlesen)</span></i><br><span data-i18n-en="“Read the sentence once, calmly. Do not solve anything yet. Who says this, and what stands out about the wording?”">„Lesen Sie den Satz einmal in Ruhe. Noch nichts lösen. Wer sagt das, und was ist an der Formulierung auffällig?“</span><br><span data-i18n-en="Transition: “First, we classify the sentence.”">Übergang: „Als Erstes ordnen wir den Satz ein.“</span></div>
+<div class="skript-step"><b><span data-i18n-en="Station 1 · Sort it">Station 1 · Einordnen</span></b><br><i><span data-i18n-en="(Let the group vote, then click)">(Gruppe abstimmen lassen, dann klicken)</span></i><br><span data-i18n-en="“Is this a symptom, a proposed solution, a goal or a constraint? Note: you do not answer a solution with yes or no, but with the question about the problem.”">„Ist das ein Symptom, ein Lösungsvorschlag, ein Ziel oder eine Randbedingung? Beachten Sie: Auf eine Lösung antwortet man nicht mit Ja oder Nein, sondern mit der Frage nach dem Problem.“</span><br><span data-i18n-en="Transition: “Now we ask back.”">Übergang: „Jetzt fragen wir nach.“</span></div>
+<div class="skript-step"><b><span data-i18n-en="Station 2 · Ask back">Station 2 · Nachfragen</span></b><br><i><span data-i18n-en="(Read out three follow-up questions, group chooses, then show the answer)">(Drei Rückfragen vorlesen, Gruppe wählt, danach die Antwort zeigen)</span></i><br><span data-i18n-en="“Good follow-up questions bring out the cause, the yardstick or the condition. Poor ones jump into the solution. Compare the answer we get with what the sentence said.”">„Gute Rückfragen holen die Ursache, den Maßstab oder die Bedingung hervor. Schlechte springen in die Lösung. Vergleichen Sie die Antwort, die wir bekommen, mit dem, was im Satz stand.“</span><br><span data-i18n-en="Transition: “Now we write the first sentence that can be checked.”">Übergang: „Jetzt schreiben wir den ersten Satz auf, den man prüfen kann.“</span></div>
+<div class="skript-step"><b><span data-i18n-en="Station 3 · Phrase it">Station 3 · Formulieren</span></b><br><i><span data-i18n-en="(Show three wordings, group chooses)">(Drei Formulierungen zeigen, Gruppe wählt)</span></i><br><span data-i18n-en="“A good spark is solution-neutral and verifiable. For each wording ask yourself: how would I test whether this sentence is met?”">„Ein guter Funke ist lösungsneutral und prüfbar. Fragen Sie sich bei jeder Formulierung: Wie würde ich testen, ob dieser Satz erfüllt ist?“</span><br><span data-i18n-en="Transition: “What do we need to know next?”">Übergang: „Was müssen wir als Nächstes wissen?“</span></div>
+<div class="skript-step"><b><span data-i18n-en="Station 4 · Hand over">Station 4 · Übergeben</span></b><br><i><span data-i18n-en="(Choose the assumption, then click “Show impulse card”)">(Annahme wählen, dann „Impuls-Karte anzeigen“ klicken)</span></i><br><span data-i18n-en="“Every requirement rests on an assumption. If we could only check one: which one carries the rest? That is the one we take into the analysis room.”">„Jede Anforderung steht auf einer Annahme. Wenn wir nur eine prüfen dürften: welche trägt den Rest? Die nehmen wir mit in den Analyseraum.“</span><br><span data-i18n-en="Transition: “You do the same exercise every time you give a task to an AI.”">Übergang: „Dieselbe Übung machen Sie jedes Mal, wenn Sie einer KI einen Auftrag geben.“</span></div>
+<div class="skript-step"><b><span data-i18n-en="Bridge to AI">Brücke zur KI</span></b><br><i><span data-i18n-en="(Show the panel “The same moment when prompting”, read out the example prompt)">(Panel „Derselbe Moment beim Prompten“ zeigen, Beispielprompt vorlesen)</span></i><br><span data-i18n-en="“A task like ‘Make me an analysis’ is also an impulse. If you send it without a second look, you let the AI guess. Prompt engineering is requirements engineering for AI systems.”">„Ein Auftrag wie ‚Mach mir eine Auswertung‘ ist ebenfalls ein Impuls. Wer ihn unbesehen abschickt, lässt die KI raten. Prompt Engineering ist Requirements Engineering für KI-Systeme.“</span><br><span data-i18n-en="Transition: point to Stakeholder Memory or the Disruption Lab.">Übergang: Verweis auf Stakeholder Memory oder Störfall-Labor.</span></div>
+<p><span data-i18n-en="Stage directions: Full version with one impulse about 15 minutes, with all four impulses in small groups about 30 to 40 minutes. With small groups give each group a different impulse and compare the cards at the end. Do not start with the solution and do not click straight away: let people vote first, then reveal. Do not open with the term “requirements engineering”, open with the sentence. The closing line about AI comes last.">Regie-Hinweise: Volle Fassung mit einem Impuls etwa 15 Minuten, mit allen vier Impulsen in Kleingruppen etwa 30 bis 40 Minuten. Bei Kleingruppen jeder Gruppe einen anderen Impuls geben und am Ende die Karten vergleichen. Nicht mit der Lösung beginnen und nicht sofort klicken: erst abstimmen lassen, dann auflösen. Nicht mit dem Begriff „Requirements Engineering“ starten, sondern mit dem Satz. Der Schlusssatz zur KI kommt erst am Ende.</span></p></div></details>
+<details class="footer-box"><summary class="footer-summary">⚖️ <span data-i18n-en="Standards register">Normen-Register</span></summary><div class="footer-content footer-sans"><table class="footer-table"><thead><tr><th><span data-i18n-en="Framework / source">Framework / Quelle</span></th><th><span data-i18n-en="Version / status">Fassung / Status</span></th><th><span data-i18n-en="Use in the tool">Bezug im Tool</span></th></tr></thead><tbody><tr><td><span data-i18n-en="IREB CPRE Foundation Level">IREB CPRE Foundation Level</span></td><td><span data-i18n-en="Syllabus v3.3.0 (1 April 2026)">Lehrplan v3.3.0 (1. April 2026)</span></td><td><span data-i18n-en="Requirements elicitation: sources, stakeholders, separating proposed solutions from needs (stations 1 to 3)">Anforderungsermittlung: Quellen, Stakeholder, Lösungsvorschläge von Bedürfnissen trennen (Stationen 1 bis 3)</span></td></tr><tr><td><span data-i18n-en="BABOK® Guide (IIBA)">BABOK® Guide (IIBA)</span></td><td><span data-i18n-en="v3; no v4 has been published (checked 1 Oct 2026)">v3; eine v4 ist nicht erschienen (geprüft 01.10.2026)</span></td><td><span data-i18n-en="Elicitation and Collaboration, Strategy Analysis (problem before solution, assumptions, station 4)">Elicitation and Collaboration, Strategy Analysis (Problem vor Lösung, Annahmen, Station 4)</span></td></tr><tr><td><span data-i18n-en="ISO/IEC/IEEE 29148">ISO/IEC/IEEE 29148</span></td><td><span data-i18n-en="2018 edition (checked 2 Oct 2026)">Ausgabe 2018 (geprüft 02.10.2026)</span></td><td><span data-i18n-en="Characteristics of good requirements: verifiable, unambiguous, solution-neutral (station 3)">Merkmale guter Anforderungen: prüfbar, eindeutig, lösungsneutral (Station 3)</span></td></tr><tr><td><span data-i18n-en="Denkräume Navigator (DenkRaum)">Denkräume-Navigator (DenkRaum)</span></td><td><span data-i18n-en="internal">intern</span></td><td><span data-i18n-en="Possibility room “perceive the impulse” and the gate to the analysis room">Möglichkeitsraum „Impuls wahrnehmen“ und Schleuse zum Analyseraum</span></td></tr></tbody></table><p><span data-i18n-en="Status checked on 2 Oct 2026. Check again before use in new materials.">Stand geprüft am 02.10.2026. Vor dem Einsatz in neuen Materialien erneut prüfen.</span></p></div></details>
+<details class="footer-box"><summary class="footer-summary">📖 <span data-i18n-en="Glossary">Glossar</span></summary><div class="footer-content footer-sans"><dl class="footer-glossary"><dt><span data-i18n-en="Impulse">Impuls</span></dt><dd><span data-i18n-en="The first sentence at the start of an undertaking: an annoyance, an idea or an order. Not yet a requirement.">Der erste Satz am Anfang eines Vorhabens: ein Ärger, eine Idee oder ein Auftrag. Noch keine Anforderung.</span></dd><dt><span data-i18n-en="Symptom">Symptom</span></dt><dd><span data-i18n-en="Describes what hurts without naming the cause.">Beschreibt, was stört, ohne die Ursache zu nennen.</span></dd><dt><span data-i18n-en="Proposed solution">Lösungsvorschlag</span></dt><dd><span data-i18n-en="Already names the technology or the means. The problem behind it is not stated.">Nennt schon die Technik oder das Mittel. Das Problem dahinter ist nicht ausgesprochen.</span></dd><dt><span data-i18n-en="Goal">Ziel</span></dt><dd><span data-i18n-en="A desired state. Only becomes verifiable with a yardstick.">Ein angestrebter Zustand. Wird erst mit einem Maßstab prüfbar.</span></dd><dt><span data-i18n-en="Constraint">Randbedingung</span></dt><dd><span data-i18n-en="Applies regardless of the project, such as a deadline, a committee or a regulation.">Gilt unabhängig vom Projekt, etwa eine Frist, ein Gremium oder eine Vorschrift.</span></dd><dt><span data-i18n-en="Solution-neutral">Lösungsneutral</span></dt><dd><span data-i18n-en="Says what is to be achieved, not with what.">Sagt, was erreicht werden soll, nicht womit.</span></dd><dt><span data-i18n-en="Requirement spark">Anforderungsfunke</span></dt><dd><span data-i18n-en="The first verifiable sentence that arises from an impulse. Not yet a finished requirement.">Der erste prüfbare Satz, der aus einem Impuls entsteht. Noch keine fertige Anforderung.</span></dd><dt><span data-i18n-en="Assumption">Annahme</span></dt><dd><span data-i18n-en="Something taken as true but not yet evidenced. Carries the requirement.">Etwas, das für wahr gehalten wird, aber noch nicht belegt ist. Trägt die Anforderung.</span></dd></dl></div></details>
+</div>
+</footer>
+<script>
+(function(){
+  var D = {"types": [{"id": "symptom", "name": {"de": "Symptom", "en": "Symptom"}, "desc": {"de": "Beschreibt, was stört oder wehtut. Die Ursache ist offen.", "en": "Describes what hurts or annoys. The cause is open."}}, {"id": "loesung", "name": {"de": "Lösungsvorschlag", "en": "Proposed solution"}, "desc": {"de": "Nennt schon, womit es gebaut werden soll. Das Problem dahinter fehlt.", "en": "Already names what to build it with. The problem behind it is missing."}}, {"id": "ziel", "name": {"de": "Ziel", "en": "Goal"}, "desc": {"de": "Beschreibt einen angestrebten Zustand. Der Maßstab dafür ist noch zu klären.", "en": "Describes a desired state. The yardstick for it still has to be clarified."}}, {"id": "rand", "name": {"de": "Randbedingung", "en": "Constraint"}, "desc": {"de": "Gilt unabhängig vom Projekt. Man plant um sie herum, statt sie zu verhandeln.", "en": "Applies regardless of the project. You plan around it instead of negotiating it."}}], "impulse": [{"id": "oeztuerk", "who": "Herr Öztürk", "role": {"de": "Sachbearbeiter Prüfungsamt", "en": "Clerk, examinations office"}, "quote": {"de": "„Bis ich einen Widerspruchsvorgang in den Papierakten gefunden habe, ist der halbe Vormittag weg.“", "en": "“By the time I have found an objection case in the paper files, half the morning is gone.”"}, "type": "symptom", "typeWhy": {"de": "„Der halbe Vormittag ist weg“ beschreibt, was stört. Warum es so lange dauert und was stattdessen gebraucht wird, steht nicht da. Hier lohnt sich die Frage nach der Ursache.", "en": "“Half the morning is gone” describes what hurts. Why it takes so long and what is needed instead is not said. The question about the cause pays off here."}, "q": [{"t": {"de": "„Welche Suchsoftware sollen wir dafür einsetzen?“", "en": "“Which search software should we use for this?”"}, "ok": false, "why": {"de": "Das springt in die Lösung, bevor das Problem verstanden ist. Vielleicht liegt die Zeit gar nicht im Suchen selbst.", "en": "This jumps into the solution before the problem is understood. The time may not be lost in the search itself."}}, {"t": {"de": "„Wie läuft die Suche heute ab, Schritt für Schritt?“", "en": "“How does the search work today, step by step?”"}, "ok": true, "why": {"de": "Der Ist-Ablauf zeigt, wo die Zeit wirklich verloren geht. Das ist die Ursache hinter dem Symptom.", "en": "The current flow shows where the time is really lost. That is the cause behind the symptom."}}, {"t": {"de": "„Wie schnell müsste die Suche denn sein?“", "en": "“How fast would the search have to be?”"}, "ok": false, "why": {"de": "Die Frage ist nicht falsch, aber zu früh: Ohne Ursache wird die Zahl geraten und nicht begründet.", "en": "Not a wrong question, but too early: without the cause, the number is guessed rather than justified."}}], "answer": {"de": "Herr Öztürk: „Ich hole die Mappe, prüfe, ob alle Teile da sind, und frage Kolleginnen nach fehlenden Blättern. Von den sieben Schritten ist das Suchen und Nachfragen der, der am meisten Zeit frisst.“", "en": "Herr Öztürk: “I fetch the folder, check whether all parts are there and ask colleagues for missing sheets. Of the seven steps, searching and asking around is the one that eats the most time.”"}, "f": [{"t": {"de": "„Das System muss eine Volltextsuche mit Suchindex bieten.“", "en": "“The system must offer a full-text search with a search index.”"}, "ok": false, "why": {"de": "Das ist eine Lösung. Sie legt fest, wie gesucht wird, und verdeckt, was die Fachseite eigentlich braucht.", "en": "This is a solution. It fixes how to search and hides what the business side actually needs."}}, {"t": {"de": "„Sachbearbeitende finden Vorgänge schnell.“", "en": "“Clerks find cases quickly.”"}, "ok": false, "why": {"de": "„Schnell“ lässt sich nicht prüfen. Zwei Personen verstehen darunter Verschiedenes.", "en": "“Quickly” cannot be verified. Two people understand different things by it."}}, {"t": {"de": "„Sachbearbeitende finden einen Widerspruchsvorgang über Name oder Matrikelnummer in höchstens 30 Sekunden (Wert mit dem Prüfungsamt abzustimmen).“", "en": "“Clerks find an objection case by name or matriculation number in at most 30 seconds (value to be agreed with the examinations office).”"}, "ok": true, "why": {"de": "Lösungsneutral, mit Zugriffsweg und Maßstab. Der Zielwert ist als offen markiert, statt ihn zu raten.", "en": "Solution-neutral, with access path and yardstick. The target value is marked as open instead of being guessed."}}], "h": [{"t": {"de": "Ist das Finden wirklich der größte Zeitfresser unter den sieben Schritten?", "en": "Is finding really the biggest time sink among the seven steps?"}, "ok": true, "why": {"de": "Das ganze Problem hängt an dieser Annahme. Stimmt sie nicht, wird die falsche Stelle verbessert.", "en": "The whole problem rests on this assumption. If it is wrong, the wrong place gets improved."}}, {"t": {"de": "Welche Suchsoftware ist am günstigsten?", "en": "Which search software is cheapest?"}, "ok": false, "why": {"de": "Eine Lösungsfrage. Sie kommt erst, wenn die Ursache belegt ist.", "en": "A solution question. It only comes once the cause is evidenced."}}, {"t": {"de": "Wie soll die Oberfläche der Suche aussehen?", "en": "What should the search screen look like?"}, "ok": false, "why": {"de": "Zu früh: Gestaltung setzt voraus, dass klar ist, was gesucht und gefunden werden soll.", "en": "Too early: design presupposes that it is clear what is to be searched for and found."}}], "next": ["blick", "bc"]}, {"id": "knut", "who": "Knut", "role": {"de": "Entwicklung", "en": "Development"}, "quote": {"de": "„Das ist doch einfach: Wir legen die Akten in die Cloud, dann ist die Sache erledigt.“", "en": "“That’s easy: we put the files in the cloud and the matter is settled.”"}, "type": "loesung", "typeWhy": {"de": "„In die Cloud“ ist eine Lösung. Welches Problem sie lösen soll und für wen, steht nicht da. Auf die Lösung reagiert man nicht mit Ja oder Nein, sondern mit der Frage nach dem Problem.", "en": "“Into the cloud” is a solution. Which problem it should solve, and for whom, is not said. You do not answer a solution with yes or no, but with the question about the problem."}, "q": [{"t": {"de": "„Welche Cloud-Anbieter kommen in Frage?“", "en": "“Which cloud providers are candidates?”"}, "ok": false, "why": {"de": "Das nimmt die Lösung als gesetzt hin und vergleicht nur noch Anbieter. Das Problem bleibt unbenannt.", "en": "This takes the solution as given and only compares providers. The problem stays unnamed."}}, {"t": {"de": "„Was würde das kosten?“", "en": "“What would that cost?”"}, "ok": false, "why": {"de": "Eine Kostenfrage ohne Nutzen. Man weiß noch nicht, wofür bezahlt würde.", "en": "A cost question without a benefit. You do not yet know what would be paid for."}}, {"t": {"de": "„Welches Problem soll damit gelöst werden, und für wen?“", "en": "“Which problem should it solve, and for whom?”"}, "ok": true, "why": {"de": "Die Frage holt das Bedürfnis hinter der Lösung hervor, ohne den Vorschlag abzuwerten.", "en": "The question draws out the need behind the solution without devaluing the proposal."}}], "answer": {"de": "Knut: „Na ja, damit niemand mehr Mappen herumtragen muss und man von jedem Arbeitsplatz an die Akte kommt.“", "en": "Knut: “Well, so that nobody has to carry folders around and anyone can reach the file from any desk.”"}, "f": [{"t": {"de": "„Das System wird in der Cloud betrieben.“", "en": "“The system is operated in the cloud.”"}, "ok": false, "why": {"de": "Das ist wieder die Lösung, nur als Muss-Satz. Das Bedürfnis dahinter ist verschwunden.", "en": "This is the solution again, just as a must sentence. The need behind it has disappeared."}}, {"t": {"de": "„Berechtigte können eine Akte von jedem Arbeitsplatz aus einsehen, ohne eine Papiermappe zu bewegen.“", "en": "“Authorised staff can view a file from any workstation without moving a paper folder.”"}, "ok": true, "why": {"de": "Das Bedürfnis steht da, die Technik bleibt offen. Der Satz lässt sich im Test prüfen.", "en": "The need is stated, the technology stays open. The sentence can be checked in a test."}}, {"t": {"de": "„Der Aktenzugriff soll modern und komfortabel sein.“", "en": "“File access should be modern and convenient.”"}, "ok": false, "why": {"de": "Modern und komfortabel sind Geschmacksfragen. Niemand kann sagen, wann der Satz erfüllt ist.", "en": "Modern and convenient are matters of taste. Nobody can say when the sentence is met."}}], "h": [{"t": {"de": "Welcher Cloud-Anbieter hat die besten Preise?", "en": "Which cloud provider has the best prices?"}, "ok": false, "why": {"de": "Eine Anbieterfrage, bevor die Machbarkeit der Lösung überhaupt geklärt ist.", "en": "A provider question before the feasibility of the solution is even clarified."}}, {"t": {"de": "Verträgt sich die Aufbewahrungsfrist von 50 Jahren mit einer Cloud-Lösung?", "en": "Is the 50-year retention period compatible with a cloud solution?"}, "ok": true, "why": {"de": "Im Fall gilt die Frist von 50 Jahren, und ein Cloud-natives Format birgt das Risiko einer Anbieterbindung über diese Zeit. Das kann den Vorschlag kippen.", "en": "In this case the 50-year period applies, and a cloud-native format carries vendor lock-in risk over that time. This can overturn the proposal."}}, {"t": {"de": "Wie schnell lässt sich eine Cloud einrichten?", "en": "How quickly can a cloud be set up?"}, "ok": false, "why": {"de": "Der Aufwand ist zweitrangig, solange nicht feststeht, ob die Lösung überhaupt trägt.", "en": "Effort is secondary as long as it is not clear whether the solution holds at all."}}], "next": ["fall", "blick"]}, {"id": "feldmann", "who": "Kanzlerin Dr. Feldmann", "role": {"de": "Hochschulleitung", "en": "University management"}, "quote": {"de": "„Bis zur nächsten Prüfung des Landesrechnungshofs will ich belegen können, dass jeder Widerspruch lückenlos nachvollziehbar bearbeitet wurde.“", "en": "“By the next audit by the state audit office I want to be able to prove that every objection was processed in a fully traceable way.”"}, "type": "ziel", "typeWhy": {"de": "Hier steht ein Zustand („lückenlos nachvollziehbar“) mit einem Anlass („nächste Prüfung“). Das ist ein Ziel. Es fehlt noch der Maßstab: Woran erkennt man „lückenlos“?", "en": "This states a condition (“fully traceable”) with an occasion (“next audit”). That is a goal. The yardstick is still missing: how do you recognise “fully”?"}, "q": [{"t": {"de": "„Reicht dafür nicht ein gemeinsamer Ordner auf dem Laufwerk?“", "en": "“Wouldn’t a shared folder on the network drive be enough?”"}, "ok": false, "why": {"de": "Das ist eine versteckte Lösung als Suggestivfrage. Sie schließt Alternativen aus, bevor der Maßstab bekannt ist.", "en": "This is a hidden solution posed as a leading question. It rules out alternatives before the yardstick is known."}}, {"t": {"de": "„Woran würde der Rechnungshof erkennen, dass ein Vorgang lückenlos nachvollziehbar ist?“", "en": "“How would the audit office recognise that a case is fully traceable?”"}, "ok": true, "why": {"de": "Die Frage macht aus dem Ziel ein Kriterium: Was muss der Prüfer sehen können?", "en": "The question turns the goal into a criterion: what must the auditor be able to see?"}}, {"t": {"de": "„Welche Prüfungsordnung gilt dafür?“", "en": "“Which examination regulation applies?”"}, "ok": false, "why": {"de": "Wichtig für später, aber hier nicht die erste Frage. Zuerst muss klar sein, was nachweisbar sein soll.", "en": "Important for later, but not the first question here. First it must be clear what has to be provable."}}], "answer": {"de": "Kanzlerin Dr. Feldmann: „An der Protokollierung: wer hat wann welche Prüfungsentscheidung geändert, und dass man das nachträglich nicht verändern kann.“", "en": "Kanzlerin Dr. Feldmann: “From the log: who changed which examination decision and when, and that this cannot be altered afterwards.”"}, "f": [{"t": {"de": "„Das System ist revisionssicher.“", "en": "“The system is audit-proof.”"}, "ok": false, "why": {"de": "Ein Schlagwort. Jede Person versteht etwas anderes darunter, und ein Test ist nicht ableitbar.", "en": "A buzzword. Everyone understands something different by it, and no test can be derived."}}, {"t": {"de": "„Das System protokolliert jede Änderung an einer Prüfungsentscheidung mit Person, Zeitpunkt und Inhalt, und die Einträge sind nachträglich nicht veränderbar.“", "en": "“The system logs every change to an examination decision with person, time and content, and the entries cannot be altered afterwards.”"}, "ok": true, "why": {"de": "Prüfbar, lösungsneutral und direkt aus der Antwort abgeleitet. Ein Prüfer kann das nachvollziehen.", "en": "Verifiable, solution-neutral and derived directly from the answer. An auditor can follow it."}}, {"t": {"de": "„Die Protokollierung läuft über eine Blockchain.“", "en": "“Logging runs on a blockchain.”"}, "ok": false, "why": {"de": "Wieder eine Lösung. Ob sie nötig ist, weiß man erst, wenn die Anforderung steht.", "en": "A solution again. Whether it is needed is only known once the requirement stands."}}], "h": [{"t": {"de": "Welche Datenbank bildet die Protokolle am besten ab?", "en": "Which database represents the logs best?"}, "ok": false, "why": {"de": "Eine technische Entscheidung. Sie setzt voraus, dass der Maßstab geklärt ist.", "en": "A technical decision. It presupposes that the yardstick is clarified."}}, {"t": {"de": "Haben wir mit dem Rechnungshof geklärt, was er als Nachweis akzeptiert?", "en": "Have we clarified with the audit office what it accepts as evidence?"}, "ok": true, "why": {"de": "Die Annahme „So sieht ein Nachweis aus“ ist bisher nur unsere. Gibt der Prüfer etwas anderes vor, trägt die ganze Anforderung nicht.", "en": "The assumption “this is what proof looks like” is so far only ours. If the auditor requires something else, the whole requirement fails."}}, {"t": {"de": "Wann ist der Rollout?", "en": "When is the rollout?"}, "ok": false, "why": {"de": "Der Termin ist wichtig, aber er sagt nichts darüber, ob die Anforderung stimmt.", "en": "The date matters, but it says nothing about whether the requirement is right."}}], "next": ["stake", "fall"]}, {"id": "ela", "who": "Ela", "role": {"de": "Projektleitung", "en": "Project management"}, "quote": {"de": "„Das Lenkungsgremium tagt nur monatlich, und die Aktenordnung muss vorher freigegeben sein. Das können wir nicht überspringen.“", "en": "“The steering committee only meets monthly, and the file regulations must be approved beforehand. We cannot skip that.”"}, "type": "rand", "typeWhy": {"de": "Der Monatsrhythmus des Gremiums und die Freigabepflicht gelten unabhängig vom Projekt. Das ist eine Randbedingung: Man plant darum herum, statt sie zu verhandeln.", "en": "The committee’s monthly rhythm and the duty to approve apply regardless of the project. That is a constraint: you plan around it instead of negotiating it."}, "q": [{"t": {"de": "„Können wir die Freigabe nicht parallel zum Bau laufen lassen?“", "en": "“Can’t we run the approval in parallel with the build?”"}, "ok": false, "why": {"de": "Das rüttelt an der Randbedingung, statt sie zu verstehen. Vielleicht geht es, aber erst nach der Klärung, was die Freigabe verlangt.", "en": "This shakes the constraint instead of understanding it. It may be possible, but only after clarifying what the approval requires."}}, {"t": {"de": "„Wer sitzt eigentlich im Gremium?“", "en": "“Who actually sits on the committee?”"}, "ok": false, "why": {"de": "Nützlich für die Stakeholder-Analyse, aber nicht die erste Frage. Zuerst: Was muss wann vorliegen?", "en": "Useful for the stakeholder analysis, but not the first question. First: what must be there, and when?"}}, {"t": {"de": "„Wann ist der nächste Termin, und was muss bis dahin vorliegen?“", "en": "“When is the next meeting, and what must be there by then?”"}, "ok": true, "why": {"de": "Die Frage macht die Randbedingung planbar: Termin und Inhalt der Vorlage sind die Eckdaten.", "en": "The question makes the constraint plannable: date and content of the submission are the key data."}}], "answer": {"de": "Ela: „Vorliegen muss der Entwurf der Aktenordnung samt rechtlich geprüfter Aufbewahrungsfrist. Fehlt das, rutscht alles um einen Monat.“", "en": "Ela: “The draft file regulations must be there, including the legally checked retention period. If that is missing, everything slips by a month.”"}, "f": [{"t": {"de": "„Wir beschleunigen die Freigabe durch das Gremium.“", "en": "“We speed up approval by the committee.”"}, "ok": false, "why": {"de": "Das ist ein Wunsch gegen die Randbedingung. Das Projekt hat darauf keinen Einfluss.", "en": "That is a wish against the constraint. The project has no influence on it."}}, {"t": {"de": "„Das Gremium muss häufiger tagen.“", "en": "“The committee must meet more often.”"}, "ok": false, "why": {"de": "Eine Forderung an Dritte, nicht an das Projekt. Sie lässt sich weder prüfen noch umsetzen.", "en": "A demand on third parties, not on the project. It can neither be verified nor implemented."}}, {"t": {"de": "„Vor dem Rollout liegt die vom Lenkungsgremium freigegebene Aktenordnung vor.“", "en": "“Before rollout, the file regulations approved by the steering committee are available.”"}, "ok": true, "why": {"de": "Die Randbedingung wird zur prüfbaren Bedingung: Entweder liegt die Freigabe vor oder nicht.", "en": "The constraint becomes a verifiable condition: either the approval is there or it is not."}}], "h": [{"t": {"de": "Wie überzeugen wir das Gremium von unserem Vorhaben?", "en": "How do we convince the committee of our project?"}, "ok": false, "why": {"de": "Überzeugen ist ein anderes Thema. Hier geht es um die Frage, was die Randbedingung für den Plan bedeutet.", "en": "Convincing is a different topic. The question here is what the constraint means for the plan."}}, {"t": {"de": "Welche Teile des Plans hängen an der Freigabe, und was passiert bei einem Monat Verzug?", "en": "Which parts of the plan depend on the approval, and what happens with a month’s delay?"}, "ok": true, "why": {"de": "Die Annahme „Die Freigabe klappt beim nächsten Termin“ trägt den Plan. Wer sie nicht prüft, überrascht sich selbst.", "en": "The assumption “the approval works at the next meeting” carries the plan. If you do not check it, you surprise yourself."}}, {"t": {"de": "Welches Werkzeug nutzen wir für das Gremiumsprotokoll?", "en": "Which tool do we use for the committee minutes?"}, "ok": false, "why": {"de": "Ein Werkzeugdetail ohne Einfluss darauf, ob die Randbedingung eingehalten werden kann.", "en": "A tooling detail without influence on whether the constraint can be met."}}], "next": ["stoer", "stake"]}], "tools": {"stake": {"href": "./stakeholder-memory.html", "name": "Stakeholder Memory", "why": {"de": "Wer ist betroffen, und was ist ihm oder ihr wichtig?", "en": "Who is affected, and what matters to them?"}}, "blick": {"href": "./ein-fall-35-blickwinkel.html", "name": "Ein Fall, 35 Blickwinkel", "why": {"de": "Denselben Fall aus vielen Sichten lesen, bevor man sich festlegt.", "en": "Read the same case from many viewpoints before committing."}}, "bc": {"href": "./ba-steckbrief-business-case.html", "name": "BA-Steckbrief & Business Case", "why": {"de": "Warum lohnt sich das Vorhaben, und woran messen wir es?", "en": "Why is the effort worthwhile, and how do we measure it?"}}, "fall": {"href": "./hochschule-nordwest-steckbrief.html", "name": "Fallwelt Hochschule Nordwest", "why": {"de": "Die Fakten zum Fall nachschlagen: Frist, Prozess, Rahmen.", "en": "Look up the facts of the case: retention period, process, framework."}}, "stoer": {"href": "./stoerfall-labor.html", "name": "Störfall-Labor", "why": {"de": "Was passiert, wenn eine Annahme später kippt?", "en": "What happens when an assumption collapses later?"}}}, "ui": {"pickT": {"de": "1 · Impuls wählen", "en": "1 · Choose an impulse"}, "pickH": {"de": "Vier Sätze aus dem Prüfungsamt. Welchen nehmen wir uns vor?", "en": "Four sentences from the examinations office. Which one do we take on?"}, "s1": {"de": "Einordnen", "en": "Sort it"}, "s2": {"de": "Nachfragen", "en": "Ask back"}, "s3": {"de": "Formulieren", "en": "Phrase it"}, "s4": {"de": "Übergeben", "en": "Hand over"}, "q1": {"de": "Was für ein Satz ist das?", "en": "What kind of sentence is this?"}, "q2": {"de": "Welche Rückfrage bringt Sie weiter?", "en": "Which follow-up question gets you further?"}, "q3": {"de": "Welche Formulierung taugt als erster Anforderungsfunke?", "en": "Which wording works as the first requirement spark?"}, "q4": {"de": "Welche Annahme prüfen wir im Analyseraum zuerst?", "en": "Which assumption do we check first in the analysis room?"}, "hit": {"de": "Treffer.", "en": "Hit."}, "miss": {"de": "Nicht ganz.", "en": "Not quite."}, "better": {"de": "Besser wäre gewesen:", "en": "Better would have been:"}, "ans": {"de": "Die Antwort auf die beste Rückfrage:", "en": "The answer to the best follow-up question:"}, "chosen": {"de": "Sie haben gewählt:", "en": "You chose:"}, "right": {"de": "Richtig ist:", "en": "Correct is:"}, "next": {"de": "Weiter →", "en": "Next →"}, "done": {"de": "Impuls-Karte anzeigen →", "en": "Show impulse card →"}, "other": {"de": "Anderen Impuls wählen", "en": "Choose another impulse"}, "stepOf": {"de": "Station", "en": "Station"}, "cardH": {"de": "Impuls-Karte", "en": "Impulse card"}, "cardSub": {"de": "Das nehmen Sie in den Analyseraum mit.", "en": "This is what you take into the analysis room."}, "lType": {"de": "Typ", "en": "Type"}, "lQ": {"de": "Beste Rückfrage", "en": "Best follow-up question"}, "lA": {"de": "Antwort", "en": "Answer"}, "lF": {"de": "Anforderungsfunke", "en": "Requirement spark"}, "lH": {"de": "Zuerst zu prüfende Annahme", "en": "Assumption to check first"}, "lN": {"de": "Nächster Raum: Analyseraum", "en": "Next room: analysis room"}, "score": {"de": "Treffer", "en": "Hits"}, "of": {"de": "von", "en": "of"}, "dl": {"de": "Impuls-Karte herunterladen (.md)", "en": "Download impulse card (.md)"}, "spark": {"de": "Ein Funke ist noch keine fertige Anforderung. Er ist das, was in den Analyseraum mitgenommen wird.", "en": "A spark is not yet a finished requirement. It is what gets carried into the analysis room."}}};
+  var lang = 'de', state = null;
+  function store(k, v){ try{ if(v===undefined){ return window.sessionStorage.getItem(k); } window.sessionStorage.setItem(k, v); }catch(e){ return null; } }
+  function T(o){ return (o && (o[lang] || o.de)) || ''; }
+  function U(k){ return T(D.ui[k]); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  var sv = store('ivz-lang'); if(sv==='en'||sv==='de'){ lang = sv; }
+
+  /* ---------- i18n für statische Texte ---------- */
+  var i18nEls = document.querySelectorAll('[data-i18n-en]');
+  var deCache = [];
+  i18nEls.forEach(function(el, n){ deCache[n] = el.innerHTML; });
+  function applyStatic(){
+    i18nEls.forEach(function(el, n){
+      el.innerHTML = (lang === 'en') ? el.getAttribute('data-i18n-en') : deCache[n];
+    });
+    document.documentElement.lang = lang;
+    document.getElementById('langBtn').textContent = (lang === 'en') ? 'DE' : 'EN';
+    document.title = (lang === 'en') ? 'From Impulse to Requirement – Possibility room' : 'Vom Impuls zur Anforderung – Möglichkeitsraum';
+  }
+  /* ---------- Karten ---------- */
+  function renderCards(){
+    var h = '';
+    D.impulse.forEach(function(im){
+      var sel = state && state.imp.id === im.id ? ' sel' : '';
+      h += '<button type="button" class="imp' + sel + '" data-id="' + im.id + '" aria-pressed="' + (sel ? 'true' : 'false') + '">' +
+        '<span class="who">' + esc(im.who) + ' · ' + esc(T(im.role)) + '</span>' +
+        '<span class="qt">' + esc(T(im.quote)) + '</span></button>';
+    });
+    document.getElementById('cards').innerHTML = h;
+    document.querySelectorAll('.imp').forEach(function(b){
+      b.addEventListener('click', function(){ start(b.getAttribute('data-id')); });
+    });
+  }
+  function find(id){ for(var n=0;n<D.impulse.length;n++){ if(D.impulse[n].id===id){ return D.impulse[n]; } } }
+  function start(id){
+    state = { imp: find(id), step: 0, picks: [null,null,null,null], hits: 0 };
+    renderCards();
+    document.getElementById('flow').classList.add('show');
+    renderFlow();
+    var f = document.getElementById('flow');
+    if(f.scrollIntoView){ try{ f.scrollIntoView({behavior:'smooth', block:'start'}); }catch(e){ f.scrollIntoView(); } }
+  }
+  function stepOpts(){
+    var im = state.imp, s = state.step;
+    if(s === 0){
+      return D.types.map(function(t){
+        return { t: { de: t.name.de, en: t.name.en }, d: t.desc, ok: t.id === im.type, id: t.id };
+      });
+    }
+    var src = [im.q, im.f, im.h][s-1];
+    return src.map(function(o){ return { t: o.t, d: null, ok: o.ok, why: o.why }; });
+  }
+  function renderFlow(){
+    if(!state){ return; }
+    var im = state.imp, s = state.step, h = '';
+    h += '<div class="track">';
+    for(var n=0;n<4;n++){
+      var cls = n < s || (n===s && state.picks[n]!==null) ? 'pill done' : (n === s ? 'pill on' : 'pill');
+      if(n===s && state.picks[n]!==null){ cls = 'pill done'; }
+      h += '<span class="' + cls + '">' + (n+1) + ' · ' + esc(U('s'+(n+1))) + '</span>';
+    }
+    h += '</div>';
+    h += '<div class="quote">' + esc(T(im.quote)) + '<small>' + esc(im.who) + ' · ' + esc(T(im.role)) + '</small></div>';
+    h += '<p class="qline">' + esc(U('q'+(s+1))) + '</p>';
+    var opts = stepOpts(), pick = state.picks[s];
+    h += '<div class="opts">';
+    opts.forEach(function(o, k){
+      var cls = 'opt', mark = '';
+      if(pick !== null){
+        if(o.ok){ cls += ' ok'; mark = '<span class="mark">✓</span>'; }
+        else if(k === pick){ cls += ' bad'; mark = '<span class="mark">✗</span>'; }
+      }
+      h += '<button type="button" class="' + cls + '" data-k="' + k + '"' + (pick !== null ? ' disabled' : '') + '>' + mark +
+        (o.d ? '<span class="nm">' + esc(T(o.t)) + '</span><span class="ds">' + esc(T(o.d)) + '</span>' : esc(T(o.t))) + '</button>';
+    });
+    h += '</div>';
+    if(pick !== null){
+      var ch = opts[pick], best = null, bi = 0;
+      opts.forEach(function(o, k){ if(o.ok){ best = o; bi = k; } });
+      var hit = ch.ok;
+      h += '<div class="fb' + (hit ? ' hit' : '') + '">';
+      h += '<p><span class="tag">' + esc(hit ? U('hit') : U('miss')) + '</span> ';
+      if(s === 0){
+        h += esc(T(im.typeWhy)) + '</p>';
+        if(!hit){ h += '<p>' + esc(U('chosen')) + ' <b>' + esc(T(ch.t)) + '</b> – ' + esc(T(ch.d)) + '</p><p>' + esc(U('right')) + ' <b>' + esc(T(best.t)) + '</b> – ' + esc(T(best.d)) + '</p>'; }
+      } else {
+        h += esc(T(ch.why)) + '</p>';
+        if(!hit){ h += '<p>' + esc(U('better')) + ' <b>' + esc(T(best.t)) + '</b></p><p>' + esc(T(best.why)) + '</p>'; }
+        if(s === 1){ h += '<div class="ansbox"><b>' + esc(U('ans')) + '</b><br>' + esc(T(im.answer)) + '</div>'; }
+      }
+      h += '</div>';
+      h += '<div class="acts"><button type="button" class="btn" id="nextBtn">' + esc(s < 3 ? U('next') : U('done')) + '</button>' +
+        '<button type="button" class="btn ghost" id="otherBtn">' + esc(U('other')) + '</button></div>';
+    }
+    document.getElementById('stage').innerHTML = h;
+    document.querySelectorAll('.opt').forEach(function(b){
+      b.addEventListener('click', function(){
+        if(state.picks[state.step] !== null){ return; }
+        var k = parseInt(b.getAttribute('data-k'), 10);
+        state.picks[state.step] = k;
+        var o = stepOpts()[k];
+        if(o.ok){ state.hits++; }
+        renderFlow();
+      });
+    });
+    var nb = document.getElementById('nextBtn');
+    if(nb){ nb.addEventListener('click', function(){
+      if(state.step < 3){ state.step++; renderFlow(); }
+      else { state.finished = true; renderFlow(); renderCard(); var c = document.getElementById('outCard'); if(c.scrollIntoView){ try{ c.scrollIntoView({behavior:'smooth', block:'start'}); }catch(e){ c.scrollIntoView(); } } }
+    }); }
+    var ob = document.getElementById('otherBtn');
+    if(ob){ ob.addEventListener('click', function(){
+      state = null; renderCards();
+      document.getElementById('flow').classList.remove('show');
+      document.getElementById('outCard').innerHTML = '';
+      var p = document.getElementById('pick'); if(p.scrollIntoView){ try{ p.scrollIntoView({behavior:'smooth', block:'start'}); }catch(e){ p.scrollIntoView(); } }
+    }); }
+    if(!(state.finished)){ document.getElementById('outCard').innerHTML = ''; }
+  }
+  function best(list){ for(var n=0;n<list.length;n++){ if(list[n].ok){ return list[n]; } } }
+  function cardData(){
+    var im = state.imp, ty;
+    D.types.forEach(function(t){ if(t.id === im.type){ ty = t; } });
+    return {
+      im: im, ty: ty, q: best(im.q), f: best(im.f), h: best(im.h),
+      tools: im.next.map(function(k){ return D.tools[k]; })
+    };
+  }
+  function renderCard(){
+    if(!state || !state.finished){ return; }
+    var c = cardData(), h = '';
+    h += '<div class="card-out"><h2>' + esc(U('cardH')) + '</h2><p class="sub">' + esc(U('cardSub')) + '</p>';
+    h += '<div class="row"><div class="lb">' + esc(c.im.who) + '</div><div class="vl">' + esc(T(c.im.quote)) + '</div></div>';
+    h += '<div class="row"><div class="lb">' + esc(U('lType')) + '</div><div class="vl"><b>' + esc(T(c.ty.name)) + '</b> – ' + esc(T(c.ty.desc)) + '</div></div>';
+    h += '<div class="row"><div class="lb">' + esc(U('lQ')) + '</div><div class="vl">' + esc(T(c.q.t)) + '</div></div>';
+    h += '<div class="row"><div class="lb">' + esc(U('lA')) + '</div><div class="vl">' + esc(T(c.im.answer)) + '</div></div>';
+    h += '<div class="row"><div class="lb">' + esc(U('lF')) + '</div><div class="vl"><b>' + esc(T(c.f.t)) + '</b></div></div>';
+    h += '<div class="row"><div class="lb">' + esc(U('lH')) + '</div><div class="vl">' + esc(T(c.h.t)) + '</div></div>';
+    h += '<div class="row"><div class="lb">' + esc(U('lN')) + '</div><div class="vl"><ul>';
+    c.tools.forEach(function(t){ h += '<li><a href="' + t.href + '">' + esc(t.name) + '</a> – ' + esc(T(t.why)) + '</li>'; });
+    h += '</ul></div></div>';
+    h += '<span class="score">' + esc(U('score')) + ': ' + state.hits + ' ' + esc(U('of')) + ' 4</span>';
+    h += '<p class="sub" style="margin-top:12px">' + esc(U('spark')) + '</p>';
+    h += '<div class="acts"><button type="button" class="btn" id="dlBtn">' + esc(U('dl')) + '</button><button type="button" class="btn ghost" id="otherBtn2">' + esc(U('other')) + '</button></div></div>';
+    document.getElementById('outCard').innerHTML = h;
+    document.getElementById('dlBtn').addEventListener('click', download);
+    document.getElementById('otherBtn2').addEventListener('click', function(){
+      state = null; renderCards();
+      document.getElementById('flow').classList.remove('show');
+      document.getElementById('outCard').innerHTML = '';
+      var p = document.getElementById('pick'); if(p.scrollIntoView){ try{ p.scrollIntoView({behavior:'smooth', block:'start'}); }catch(e){ p.scrollIntoView(); } }
+    });
+  }
+  function download(){
+    var c = cardData(), L = [];
+    L.push('# ' + U('cardH') + ' – ' + (lang==='en' ? 'From Impulse to Requirement' : 'Vom Impuls zur Anforderung'));
+    L.push('');
+    L.push('**' + c.im.who + ' (' + T(c.im.role) + '):** ' + T(c.im.quote));
+    L.push('');
+    L.push('- **' + U('lType') + ':** ' + T(c.ty.name) + ' – ' + T(c.ty.desc));
+    L.push('- **' + U('lQ') + ':** ' + T(c.q.t));
+    L.push('- **' + U('lA') + ':** ' + T(c.im.answer));
+    L.push('- **' + U('lF') + ':** ' + T(c.f.t));
+    L.push('- **' + U('lH') + ':** ' + T(c.h.t));
+    L.push('- **' + U('lN') + ':** ' + c.tools.map(function(t){ return t.name; }).join(', '));
+    L.push('- **' + U('score') + ':** ' + state.hits + ' ' + U('of') + ' 4');
+    L.push('');
+    L.push('_' + U('spark') + '_');
+    L.push('');
+    L.push('Michaela Kühn · www.michaela-kuehn.com');
+    var blob = new Blob([L.join('\n')], { type: 'text/markdown;charset=utf-8' });
+    var url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = 'impuls-karte-' + c.im.id + (lang==='en' ? '-en' : '') + '.md';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 500);
+  }
+  /* ---------- Kopieren ---------- */
+  var cp = document.getElementById('copyBtn');
+  cp.addEventListener('click', function(){
+    var txt = document.getElementById('promptTxt').textContent;
+    function ok(){ cp.textContent = (lang==='en') ? 'Copied' : 'Kopiert'; setTimeout(function(){ cp.textContent = (lang==='en') ? 'Copy prompt' : 'Prompt kopieren'; }, 1500); }
+    try{ navigator.clipboard.writeText(txt).then(ok, function(){}); }catch(e){
+      var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); ok(); }catch(e2){} document.body.removeChild(ta);
+    }
+  });
+  /* ---------- Sprache ---------- */
+  function refresh(){
+    applyStatic(); renderCards(); renderFlow(); renderCard();
+    cp.textContent = (lang==='en') ? 'Copy prompt' : 'Prompt kopieren';
+    document.getElementById('pickT').textContent = U('pickT');
+    document.getElementById('pickH').textContent = U('pickH');
+  }
+  document.getElementById('langBtn').addEventListener('click', function(){
+    lang = (lang === 'de') ? 'en' : 'de'; store('ivz-lang', lang); refresh();
+  });
+  /* ---------- Beamer ---------- */
+  var BEAMER_LEVELS = [
+    { classes: [], label: '☀ Beamer' },
+    { classes: ['beamer'], label: '☀ Beamer XL' },
+    { classes: ['beamer','beamer-xl'], label: '☀ Beamer XXL' },
+    { classes: ['beamer','beamer-xl','beamer-xxl'], label: '☀ Normal' }
+  ];
+  var beamerLevel = 0, beamerBtn = document.getElementById('beamerBtn');
+  beamerBtn.addEventListener('click', function(){
+    beamerLevel = (beamerLevel + 1) % 4;
+    document.documentElement.classList.remove('beamer','beamer-xl','beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    beamerBtn.textContent = BEAMER_LEVELS[beamerLevel].label;
+  });
+  refresh();
+})();
+</script>
+</body>
+</html>

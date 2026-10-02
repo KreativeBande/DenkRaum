@@ -3617,7 +3617,8 @@ window.DENKRAUM_REGISTER = {
         "tools/denkraeume-navigator.html",
         "tools/requirements-to-code-explorer.html",
         "tools/priorisierungslabor.html",
-        "tools/stakeholder-management-kompendium-fachbuch.html"
+        "tools/stakeholder-management-kompendium-fachbuch.html",
+        "tools/vom-impuls-zur-anforderung.html"
       ],
       "geprueft": false,
       "notiz": "Gebaut nach konzepte/stoerfall-labor.md, schließt die Störraum-Lücke im Fahrplan auf RE, BA und Agil/PM."
@@ -4278,6 +4279,66 @@ window.DENKRAUM_REGISTER = {
       ],
       "geprueft": false,
       "notiz": ""
+    },
+    {
+      "id": "vom-impuls-zur-anforderung",
+      "datei": "tools/vom-impuls-zur-anforderung.html",
+      "titel": "Vom Impuls zur Anforderung",
+      "kurztitel": "Vom Impuls zur Anforderung",
+      "kurz": "Am Anfang steht ein Satz, keine Anforderung: vier Impulse aus dem Prüfungsamt der Hochschule Nordwest in vier Stationen einordnen (Symptom, Lösungsvorschlag, Ziel, Randbedingung), mit der passenden Rückfrage klären und zu einem ersten prüfbaren Anforderungsfunken formulieren. Mit Impuls-Karte zum Herunterladen und Übertrag aufs Prompten.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Anforderungen erheben & schärfen",
+      "aufStartseite": true,
+      "zweck": [
+        "Übung",
+        "Opener"
+      ],
+      "denkraum": "moeglichkeit",
+      "faeden": [
+        "re",
+        "ba"
+      ],
+      "dauer": "15 min (mit allen vier Impulsen 30–40 min)",
+      "haufeSeminare": [
+        "9368",
+        "31693",
+        "3744",
+        "41851"
+      ],
+      "einsatzkontext": [
+        "Seminar",
+        "Workshop"
+      ],
+      "fallwelten": [
+        "Hochschule Nordwest"
+      ],
+      "themen": [
+        "Anforderungsermittlung",
+        "Impuls",
+        "Rückfragen",
+        "Lösungsneutralität",
+        "Möglichkeitsraum"
+      ],
+      "standards": [
+        "IREB",
+        "BABOK"
+      ],
+      "siegel": {
+        "status": null,
+        "letztesAudit": null,
+        "auditZeileImTool": null,
+        "offen": "Formales Siegel-Audit steht aus; Selbstprüfung beim Bau (02.10.2026): Muss-Kriterien erfüllt (Playwright 1300/390 px, vier Beamer-Stufen, DE/EN, Signatur fixiert); Z9 Teilnehmenden-Version fehlt (Kann)."
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/stoerfall-labor.html",
+        "tools/ein-fall-35-blickwinkel.html",
+        "tools/stakeholder-memory.html",
+        "tools/hochschule-nordwest-steckbrief.html"
+      ],
+      "geprueft": false,
+      "notiz": "Erstes RE/BA-Tool im Möglichkeitsraum (schließt die Lücke im Fahrplan auf den Fäden RE und BA). Fallwelt Hochschule Nordwest mit festen Personas Herr Öztürk, Knut, Kanzlerin Dr. Feldmann, Ela."
     }
   ]
 };
