@@ -4402,6 +4402,68 @@ window.DENKRAUM_REGISTER = {
       ],
       "geprueft": false,
       "notiz": "Erstes RE/BA-Tool im Möglichkeitsraum (schließt die Lücke im Fahrplan auf den Fäden RE und BA). Fallwelt Hochschule Nordwest mit festen Personas Herr Öztürk, Knut, Kanzlerin Dr. Feldmann, Ela."
+    },
+    {
+      "id": "vom-anforderungspaket-zum-sprint",
+      "datei": "tools/vom-anforderungspaket-zum-sprint.html",
+      "titel": "Vom Anforderungspaket zum Sprint",
+      "kurztitel": "Vom Anforderungspaket zum Sprint",
+      "kurz": "Aus einem geklärten Anforderungsfunken wird ein Paket, das ein Team aufnehmen kann: vier Pakete aus der Studienakte der Hochschule Nordwest in vier Stationen zu User Story, Akzeptanzkriterien, Definition of Ready und Übergabe führen, mit Übergabe-Check und Karte zum Herunterladen sowie Übertrag aufs Prompten.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Anforderungen erheben & schärfen",
+      "aufStartseite": true,
+      "zweck": [
+        "Übung"
+      ],
+      "denkraum": "umsetzung",
+      "faeden": [
+        "re",
+        "ba"
+      ],
+      "dauer": "15 min (mit allen vier Paketen 30–40 min)",
+      "haufeSeminare": [
+        "3744",
+        "9368",
+        "31693",
+        "41851"
+      ],
+      "einsatzkontext": [
+        "Seminar",
+        "Workshop"
+      ],
+      "fallwelten": [
+        "Hochschule Nordwest"
+      ],
+      "themen": [
+        "User Story",
+        "Akzeptanzkriterien",
+        "Definition of Ready",
+        "Refinement",
+        "Übergabe ans Team",
+        "Umsetzungsraum"
+      ],
+      "standards": [
+        "IREB",
+        "BABOK",
+        "Scrum Guide"
+      ],
+      "siegel": {
+        "status": null,
+        "letztesAudit": null,
+        "auditZeileImTool": null,
+        "offen": "Formales Siegel-Audit steht aus; Selbstprüfung beim Bau (02.10.2026): Muss-Kriterien erfüllt (Playwright 1300/390 px, vier Beamer-Stufen, DE/EN, Signatur fixiert); Z9 Teilnehmenden-Version fehlt (Kann). Definition of Ready ist Teamvereinbarung, nicht Teil des Scrum Guide 2020."
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/vom-impuls-zur-anforderung.html",
+        "tools/vision-zielbild-werkstatt.html",
+        "tools/user-story-puzzle.html",
+        "tools/story-mapping-kundenperspektiven.html",
+        "tools/hochschule-nordwest-steckbrief.html"
+      ],
+      "geprueft": false,
+      "notiz": "Setzt die Kette Zielbild → Funke → Übergabe fort und ist das erste Tool im Umsetzungsraum für RE/BA. Der Analyse- und Lösungsraum wird in der Kette übersprungen (Hinweis im Tool)."
     }
   ]
 };

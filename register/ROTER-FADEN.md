@@ -1,21 +1,21 @@
 # Roter Faden · Zuordnung der Tools zu den Denkräumen
 
-Vorschlag vom 01.10.2026 auf Basis der Navigator-Fassung, am 02.10.2026 um Störfall-Labor, „Vom Impuls zur Anforderung“ und „Vision & Zielbild-Werkstatt“ nachgeführt (85 Tools). **Bitte prüfen:** Ein Wort wie „Fragenautomat → Lösung“ reicht als Korrektur. Erst nach Ihrem Okay kommen Farbstreifen und Karte.
+Vorschlag vom 01.10.2026 auf Basis der Navigator-Fassung, am 02.10.2026 um Störfall-Labor, „Vom Impuls zur Anforderung“, „Vision & Zielbild-Werkstatt“ und „Vom Anforderungspaket zum Sprint“ nachgeführt (86 Tools). **Bitte prüfen:** Ein Wort wie „Fragenautomat → Lösung“ reicht als Korrektur. Erst nach Ihrem Okay kommen Farbstreifen und Karte.
 
 Die fünf Räume plus zwei Sonderfälle: **🔄 Rundreise** für Tools, die selbst durch alle Räume führen (sie *sind* der rote Faden), und **🏕️ Basislager** für Nachschlagewerke, Fallwelten und Prüfungsvorbereitung, die man von überall aus nutzt.
 
 ## Was die Zuordnung zeigt
 
-**Der Anfang ist besetzt, aber noch dünn.** Im Möglichkeitsraum stehen 8 Tools. Seit „Vom Impuls zur Anforderung“ gibt es dort das erste Tool für Requirements Engineering und Business-Analyse (Impuls einordnen, nachfragen, ersten prüfbaren Satz formulieren); die „Vision & Zielbild-Werkstatt“ ist das erste für Projektmanagement (Zielgruppe, Vision, Erfolgsmaß, Hypothese, Leitplanke); die anderen 6 sind KI-Tools. Das Ende ist seit dem Störfall-Labor nicht mehr leer: Es ist das erste RE/BA/PM-Tool im Störraum (vom Signal bis zum Änderungsantrag), die übrigen 5 sind KI-Tools.
+**Der Anfang ist besetzt, aber noch dünn.** Im Möglichkeitsraum stehen 8 Tools. Seit „Vom Impuls zur Anforderung“ gibt es dort das erste Tool für Requirements Engineering und Business-Analyse (Impuls einordnen, nachfragen, ersten prüfbaren Satz formulieren); die „Vision & Zielbild-Werkstatt“ ist das erste für Projektmanagement (Zielgruppe, Vision, Erfolgsmaß, Hypothese, Leitplanke); die anderen 6 sind KI-Tools. Im Umsetzungsraum steht seit „Vom Anforderungspaket zum Sprint“ das erste Tool für RE und BA (Story, Akzeptanzkriterien, Definition of Ready, Übergabe); die Kette Zielbild → Funke → Paket überspringt dabei bewusst Analyse- und Lösungsraum. Das Ende ist seit dem Störfall-Labor nicht mehr leer: Es ist das erste RE/BA/PM-Tool im Störraum (vom Signal bis zum Änderungsantrag), die übrigen 5 sind KI-Tools.
 
 Pro Haufe-Seminar sieht das so aus (Anzahl verlinkter Tools je Raum):
 
 | Seminar | 💡 | 🔍 | 🎯 | ⚙️ | 🚨 | 🔄 | 🏕️ |
 |---|---|---|---|---|---|---|---|
-| 9368 Requirements Engineering: Moderne Anforderungsanalyse für die IT | 2 | 8 | 11 | **0** | 1 | 2 | 3 |
-| 31693 Requirements Engineering: Projekte erfolgreich starten | 1 | 6 | 9 | **0** | 1 | 3 | 2 |
-| 3744 Der:Die Agile Business Analyst:in | 1 | 9 | 3 | **0** | 1 | 4 | 1 |
-| 41851 KI-Prompting im Requirements Engineering und in der Business Analyse | 2 | 3 | 6 | 3 | 1 | 2 | 1 |
+| 9368 Requirements Engineering: Moderne Anforderungsanalyse für die IT | 2 | 8 | 11 | 1 | 1 | 2 | 3 |
+| 31693 Requirements Engineering: Projekte erfolgreich starten | 1 | 6 | 9 | 1 | 1 | 3 | 2 |
+| 3744 Der:Die Agile Business Analyst:in | 1 | 9 | 3 | 1 | 1 | 4 | 1 |
+| 41851 KI-Prompting im Requirements Engineering und in der Business Analyse | 2 | 3 | 6 | 4 | 1 | 2 | 1 |
 | 34000 Agile Projekte richtig aufsetzen und steuern | 1 | 4 | 3 | 1 | 1 | 3 | **0** |
 | 3525 Agiles Projektmanagement für Fortgeschrittene | 1 | 3 | 4 | 1 | 1 | **0** | 1 |
 | 2929 Hybrides Projektmanagement II | 1 | 2 | 3 | **0** | 1 | 3 | 2 |
@@ -81,7 +81,7 @@ Jedes Seminar hat jetzt mindestens ein Tool im Störraum, in sieben Seminaren is
 | Digitale Studierendenakte — Qualität systematisch denken | Qualität an einem Fall definieren |
 | User Story Puzzle | User Stories formulieren |
 
-## ⚙️ Umsetzungsraum · Wie realisieren (9)
+## ⚙️ Umsetzungsraum · Wie realisieren (10)
 
 | Tool | Warum hier |
 |---|---|
@@ -90,6 +90,7 @@ Jedes Seminar hat jetzt mindestens ein Tool im Störraum, in sieben Seminaren is
 | NotebookLM-Masterprompt-Bibliothek | Fertige Prompts einsetzen |
 | OKR-Team-Board: Aufgaben, die aufs Ziel einzahlen | Ziele im Team umsetzen und verfolgen |
 | TalentMatch AI vor dem Sufficiency-Gate | Wann darf automatisiert werden? |
+| Vom Anforderungspaket zum Sprint | Den geklärten Anforderungsfunken zum Paket fürs Team machen: Story, Kriterien, Ready, Übergabe |
 | Vom Prompt zum Agenten | Vom Prompt zur Automatisierung |
 | Vom Rateversuch zur belegten Antwort · RAG im Denkraum-Modell | RAG umsetzen (Einstieg) |
 | Vom Tool-Chaos zum MCP-Handshake | Werkzeuge anbinden (MCP) |
