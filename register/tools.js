@@ -4,7 +4,7 @@
  * Als Skript-Datei (nicht .json), damit sie auch offline per file:// lädt.
  */
 window.DENKRAUM_REGISTER = {
-  "stand": "2026-10-01",
+  "stand": "2026-10-02",
   "denkraeume": [
     {
       "id": "moeglichkeit",
@@ -278,7 +278,8 @@ window.DENKRAUM_REGISTER = {
       "beamer": "3-stufig (alt)",
       "sprecherSkript": false,
       "verwandt": [
-        "tools/eu-ai-act-framework.html"
+        "tools/eu-ai-act-framework.html",
+        "tools/guardrails-governance-assurance.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -924,7 +925,8 @@ window.DENKRAUM_REGISTER = {
       "verwandt": [
         "tools/anforderungsreise.html",
         "tools/fragenautomat.html",
-        "tools/klarheits-sprint/index.html"
+        "tools/klarheits-sprint/index.html",
+        "tools/denkraeume-navigator.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -1025,7 +1027,8 @@ window.DENKRAUM_REGISTER = {
         "tools/iso-25010-kompendium.html",
         "tools/ki-architektur-glossar-reba.html",
         "tools/priorisierungslabor.html",
-        "tools/vantera-talentmatch-steckbrief.html"
+        "tools/vantera-talentmatch-steckbrief.html",
+        "tools/excel-lab-re-ba.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -1218,7 +1221,8 @@ window.DENKRAUM_REGISTER = {
       "beamer": "3-stufig (alt)",
       "sprecherSkript": false,
       "verwandt": [
-        "tools/ai-governance-framework.html"
+        "tools/ai-governance-framework.html",
+        "tools/guardrails-governance-assurance.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -1323,7 +1327,8 @@ window.DENKRAUM_REGISTER = {
       "verwandt": [
         "tools/anforderungsboard-iso.html",
         "tools/iso-25010-kompendium.html",
-        "tools/re-waschmaschine.html"
+        "tools/re-waschmaschine.html",
+        "tools/re-szenensammlung.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -1462,7 +1467,11 @@ window.DENKRAUM_REGISTER = {
       },
       "beamer": "4-stufig",
       "sprecherSkript": true,
-      "verwandt": [],
+      "verwandt": [
+        "tools/ai-governance-framework.html",
+        "tools/eu-ai-act-framework.html",
+        "tools/prompt-injection-demo.html"
+      ],
       "geprueft": false,
       "notiz": ""
     },
@@ -1709,7 +1718,9 @@ window.DENKRAUM_REGISTER = {
         "tools/klarheits-sprint/index.html",
         "tools/re-waschmaschine.html",
         "tools/requirements-to-code-explorer.html",
-        "tools/user-story-puzzle.html"
+        "tools/user-story-puzzle.html",
+        "tools/iso-25010-banklabor.html",
+        "tools/studierendenakte-qualitaet.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -1888,7 +1899,9 @@ window.DENKRAUM_REGISTER = {
       "beamer": "4-stufig",
       "sprecherSkript": true,
       "verwandt": [
-        "tools/claude-feature-navigator.html"
+        "tools/claude-feature-navigator.html",
+        "tools/llm-markt-kompass.html",
+        "tools/ki-werkbank.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -1930,7 +1943,8 @@ window.DENKRAUM_REGISTER = {
       "sprecherSkript": false,
       "verwandt": [
         "tools/ki-black-box-simulator.html",
-        "tools/ki-einsatzmuster-explorer.html"
+        "tools/ki-einsatzmuster-explorer.html",
+        "tools/wie-ki-durch-projekte-denkt.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -2018,7 +2032,8 @@ window.DENKRAUM_REGISTER = {
       "verwandt": [
         "tools/profile-engineering-lab.html",
         "tools/prompt-builder.html",
-        "tools/prompt-engineering-academy.html"
+        "tools/prompt-engineering-academy.html",
+        "tools/wie-ki-durch-projekte-denkt.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -2071,7 +2086,10 @@ window.DENKRAUM_REGISTER = {
       },
       "beamer": "4-stufig",
       "sprecherSkript": true,
-      "verwandt": [],
+      "verwandt": [
+        "tools/ki-modelllandschaft-vergleich.html",
+        "tools/llm-markt-kompass.html"
+      ],
       "geprueft": false,
       "notiz": ""
     },
@@ -2113,7 +2131,9 @@ window.DENKRAUM_REGISTER = {
       "verwandt": [
         "tools/iso-25010-kompendium.html",
         "tools/pflichtenheft-generator.html",
-        "tools/re-waschmaschine.html"
+        "tools/re-waschmaschine.html",
+        "tools/fragenautomat.html",
+        "tools/user-story-puzzle.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -2153,7 +2173,10 @@ window.DENKRAUM_REGISTER = {
       },
       "beamer": "4-stufig",
       "sprecherSkript": true,
-      "verwandt": [],
+      "verwandt": [
+        "tools/ki-modelllandschaft-vergleich.html",
+        "tools/ki-werkbank.html"
+      ],
       "geprueft": false,
       "notiz": ""
     },
@@ -2294,7 +2317,8 @@ window.DENKRAUM_REGISTER = {
       "sprecherSkript": false,
       "verwandt": [
         "tools/okr-kaskade.html",
-        "tools/okr-team-board.html"
+        "tools/okr-team-board.html",
+        "tools/okr-lab-strategie-wirkung.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -2341,7 +2365,8 @@ window.DENKRAUM_REGISTER = {
       "verwandt": [
         "tools/okr-denkraum-check.html",
         "tools/okr-team-board.html",
-        "tools/priorisierungslabor.html"
+        "tools/priorisierungslabor.html",
+        "tools/okr-lab-strategie-wirkung.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -2439,7 +2464,8 @@ window.DENKRAUM_REGISTER = {
       "sprecherSkript": false,
       "verwandt": [
         "tools/okr-denkraum-check.html",
-        "tools/okr-kaskade.html"
+        "tools/okr-kaskade.html",
+        "tools/okr-lab-strategie-wirkung.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -2491,7 +2517,8 @@ window.DENKRAUM_REGISTER = {
       "sprecherSkript": true,
       "verwandt": [
         "tools/anforderungsboard-iso.html",
-        "tools/klarheits-sprint/index.html"
+        "tools/klarheits-sprint/index.html",
+        "tools/ebike-anforderungssimulator.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -2597,7 +2624,8 @@ window.DENKRAUM_REGISTER = {
       "verwandt": [
         "tools/ba-rollenwandel-explorer.html",
         "tools/okr-kaskade.html",
-        "tools/user-story-puzzle.html"
+        "tools/user-story-puzzle.html",
+        "tools/stoerfall-labor.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -2691,7 +2719,9 @@ window.DENKRAUM_REGISTER = {
       },
       "beamer": "3-stufig (alt)",
       "sprecherSkript": false,
-      "verwandt": [],
+      "verwandt": [
+        "tools/prompt-builder.html"
+      ],
       "geprueft": false,
       "notiz": "Teilnehmenden-Version des Prompt-Builders, bewusst nicht auf der Startseite."
     },
@@ -2738,7 +2768,10 @@ window.DENKRAUM_REGISTER = {
       "verwandt": [
         "tools/ki-steuern-mit-kompetenz.html",
         "tools/profile-engineering-lab.html",
-        "tools/prompt-engineering-academy.html"
+        "tools/prompt-engineering-academy.html",
+        "tools/der-eisberg-des-promptens.html",
+        "tools/notebooklm-masterprompt-bibliothek.html",
+        "tools/prompt-builder-auslieferung.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -2790,7 +2823,8 @@ window.DENKRAUM_REGISTER = {
       "verwandt": [
         "tools/profile-engineering-lab.html",
         "tools/prompt-builder.html",
-        "tools/zettelkasten-prompt-engineering-re.html"
+        "tools/zettelkasten-prompt-engineering-re.html",
+        "tools/steckbrief.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -2838,7 +2872,8 @@ window.DENKRAUM_REGISTER = {
       "sprecherSkript": false,
       "verwandt": [
         "tools/escape-room-ki-prompting.html",
-        "tools/prompt-builder.html"
+        "tools/prompt-builder.html",
+        "tools/guardrails-governance-assurance.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -3142,7 +3177,11 @@ window.DENKRAUM_REGISTER = {
       },
       "beamer": "4-stufig",
       "sprecherSkript": true,
-      "verwandt": [],
+      "verwandt": [
+        "tools/fa-nfa-rollen-spuren.html",
+        "tools/requirements-to-code-explorer.html",
+        "tools/stakeholder-memory.html"
+      ],
       "geprueft": false,
       "notiz": ""
     },
@@ -3242,7 +3281,8 @@ window.DENKRAUM_REGISTER = {
       "verwandt": [
         "tools/iso-25010-kompendium.html",
         "tools/re-waschmaschine.html",
-        "tools/user-story-puzzle.html"
+        "tools/user-story-puzzle.html",
+        "tools/re-szenensammlung.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -3475,7 +3515,8 @@ window.DENKRAUM_REGISTER = {
       "sprecherSkript": false,
       "verwandt": [
         "tools/ba-rollenwandel-explorer.html",
-        "tools/priorisierungslabor.html"
+        "tools/priorisierungslabor.html",
+        "tools/re-szenensammlung.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -3682,7 +3723,8 @@ window.DENKRAUM_REGISTER = {
         "tools/ba-lifecycle-lernreise.html",
         "tools/fallstudie-qualitaetssystem.html",
         "tools/iso-25010-kompendium.html",
-        "tools/sarahs-weg-zum-qualitaetskuchen.html"
+        "tools/sarahs-weg-zum-qualitaetskuchen.html",
+        "tools/iso-25010-banklabor.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -3844,7 +3886,8 @@ window.DENKRAUM_REGISTER = {
         "tools/babok-kompendium.html",
         "tools/iso-25010-kompendium.html",
         "tools/requirements-to-code-explorer.html",
-        "tools/story-mapping-kundenperspektiven.html"
+        "tools/story-mapping-kundenperspektiven.html",
+        "tools/klarheits-sprint/index.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -3952,7 +3995,8 @@ window.DENKRAUM_REGISTER = {
         "tools/cpmai-prozess-board.html",
         "tools/ki-risiko-klassifikationsraum.html",
         "tools/vantera-talentmatch-steckbrief.html",
-        "tools/vom-rateversuch-zur-belegten-antwort.html"
+        "tools/vom-rateversuch-zur-belegten-antwort.html",
+        "tools/der-eisberg-des-promptens.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -4085,7 +4129,8 @@ window.DENKRAUM_REGISTER = {
       "sprecherSkript": false,
       "verwandt": [
         "tools/ki-steuern-mit-kompetenz.html",
-        "tools/profile-engineering-lab.html"
+        "tools/profile-engineering-lab.html",
+        "tools/ki-prompt-blackbox-simulator.html"
       ],
       "geprueft": false,
       "notiz": ""

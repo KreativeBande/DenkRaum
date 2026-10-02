@@ -1,27 +1,27 @@
 # Roter Faden · Zuordnung der Tools zu den Denkräumen
 
-Vorschlag vom 01.10.2026 auf Basis der Navigator-Fassung. **Bitte prüfen:** Ein Wort wie „Fragenautomat → Lösung“ reicht als Korrektur. Erst nach Ihrem Okay kommen Farbstreifen und Karte.
+Vorschlag vom 01.10.2026 auf Basis der Navigator-Fassung, am 02.10.2026 um das Störfall-Labor nachgeführt (83 Tools). **Bitte prüfen:** Ein Wort wie „Fragenautomat → Lösung“ reicht als Korrektur. Erst nach Ihrem Okay kommen Farbstreifen und Karte.
 
 Die fünf Räume plus zwei Sonderfälle: **🔄 Rundreise** für Tools, die selbst durch alle Räume führen (sie *sind* der rote Faden), und **🏕️ Basislager** für Nachschlagewerke, Fallwelten und Prüfungsvorbereitung, die man von überall aus nutzt.
 
 ## Was die Zuordnung zeigt
 
-**Der Faden reißt am Anfang und am Ende.** Alle 6 Tools im Möglichkeitsraum und alle 5 im Störraum sind KI-Tools. Für Requirements Engineering, Business-Analyse und Projektmanagement gibt es **kein einziges Tool** für „Impuls wahrnehmen“ (Ideenfindung, Kreativtechniken, Vision) und keines für „Was verändert sich“ (Change Requests, Änderungsmanagement, Retrospektive, Risiko im Projekt).
+**Der Faden reißt am Anfang.** Alle 6 Tools im Möglichkeitsraum sind KI-Tools. Für Requirements Engineering, Business-Analyse und Projektmanagement gibt es dort **kein einziges Tool** für „Impuls wahrnehmen“ (Ideenfindung, Kreativtechniken, Vision). Das Ende ist seit dem Störfall-Labor nicht mehr leer: Es ist das erste RE/BA/PM-Tool im Störraum (vom Signal bis zum Änderungsantrag), die übrigen 5 sind KI-Tools.
 
 Pro Haufe-Seminar sieht das so aus (Anzahl verlinkter Tools je Raum):
 
 | Seminar | 💡 | 🔍 | 🎯 | ⚙️ | 🚨 | 🔄 | 🏕️ |
 |---|---|---|---|---|---|---|---|
-| 3744 Der:Die Agile Business Analyst:in | **0** | 9 | 3 | **0** | **0** | 4 | 1 |
-| 34000 Agile Projekte richtig aufsetzen und steuern | **0** | 4 | 3 | 1 | **0** | 3 | **0** |
-| 3525 Agiles Projektmanagement für Fortgeschrittene | **0** | 3 | 4 | 1 | **0** | **0** | 1 |
-| 2929 Hybrides Projektmanagement II | **0** | 2 | 3 | **0** | **0** | 3 | 2 |
+| 9368 Requirements Engineering: Moderne Anforderungsanalyse für die IT | 1 | 8 | 11 | **0** | 1 | 2 | 3 |
+| 31693 Requirements Engineering: Projekte erfolgreich starten | **0** | 6 | 9 | **0** | 1 | 3 | 2 |
+| 3744 Der:Die Agile Business Analyst:in | **0** | 9 | 3 | **0** | 1 | 4 | 1 |
 | 41851 KI-Prompting im Requirements Engineering und in der Business Analyse | 1 | 3 | 6 | 3 | 1 | 2 | 1 |
-| 34002 Objectives and Key Results: Agiles Teammanagement | **0** | 3 | 1 | 1 | **0** | 3 | **0** |
-| 9368 Requirements Engineering: Moderne Anforderungsanalyse für die IT | 1 | 8 | 11 | **0** | **0** | 2 | 3 |
-| 31693 Requirements Engineering: Projekte erfolgreich starten | **0** | 6 | 9 | **0** | **0** | 3 | 2 |
+| 34000 Agile Projekte richtig aufsetzen und steuern | **0** | 4 | 3 | 1 | 1 | 3 | **0** |
+| 3525 Agiles Projektmanagement für Fortgeschrittene | **0** | 3 | 4 | 1 | 1 | **0** | 1 |
+| 2929 Hybrides Projektmanagement II | **0** | 2 | 3 | **0** | 1 | 3 | 2 |
+| 34002 Objectives and Key Results: Agiles Teammanagement | **0** | 3 | 1 | 1 | 1 | 3 | **0** |
 
-Sieben von acht Seminaren haben keinen Störraum, sechs keinen Möglichkeitsraum. Das sind die naheliegenden nächsten Tools, statt weiterer im schon gut besetzten Lösungsraum (19 Tools).
+Jedes Seminar hat jetzt mindestens ein Tool im Störraum, in sieben Seminaren ist es das Störfall-Labor. Sechs von acht Seminaren haben weiterhin keinen Möglichkeitsraum. Das sind die naheliegenden nächsten Tools, statt weiterer im schon gut besetzten Lösungsraum (19 Tools).
 
 ## 💡 Möglichkeitsraum · Impuls wahrnehmen (6)
 
@@ -93,7 +93,7 @@ Sieben von acht Seminaren haben keinen Störraum, sechs keinen Möglichkeitsraum
 | Vom Tool-Chaos zum MCP-Handshake | Werkzeuge anbinden (MCP) |
 | Wie kommt die Antwort in den Chat? – Die RAG-Reise | RAG in Produktion |
 
-## 🚨 Störraum · Was verändert sich (5)
+## 🚨 Störraum · Was verändert sich (6)
 
 | Tool | Warum hier |
 |---|---|
@@ -102,6 +102,7 @@ Sieben von acht Seminaren haben keinen Störraum, sechs keinen Möglichkeitsraum
 | Guardrails × Governance × Assurance | Leitplanken gegen Fehlverhalten |
 | KI-Risiko-Klassifikationsraum | Risiken sammeln und einordnen |
 | Prompt-Injection-Demo | Angriffe erkennen |
+| Störfall-Labor · Störung im Betriebsablauf | Wenn mitten im Projekt eine Annahme kippt: vom Signal bis zum Änderungsantrag |
 
 ## 🔄 Rundreise · Führt durch alle fünf Räume (10)
 
