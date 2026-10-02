@@ -975,7 +975,7 @@ window.DENKRAUM_REGISTER = {
         "tools/vom-prompt-zum-agenten.html"
       ],
       "geprueft": false,
-      "notiz": "02.10.2026: K21-Signatur-Fallback entfernt, Design-System-Tokens (Radius/Schatten) nachgezogen, Eisberg-Illustration mit Stichwort-Pills in die linke Spalte eingebaut (PR folgt)."
+      "notiz": "02.10.2026: K21-Signatur-Fallback entfernt, Design-System-Tokens (Radius/Schatten) nachgezogen, Eisberg-Illustration mit Stichwort-Pills in die linke Spalte eingebaut (PR #177, gemergt). Nachtrag selber Tag: K20 (Sprach-Toggle DE/EN, data-i18n/data-en auf allen sichtbaren Textknoten inkl. aller vier Footer-Boxen) und K22 (Vertiefungs-Toggle, .vertiefung-block je Ebene) ergänzt — rechtes Panel dafür von dynamischem innerHTML-Aufbau auf drei statische Panels umgebaut. K22 ist für Opener-Tools eigentlich optional, auf Wunsch trotzdem umgesetzt."
     },
     {
       "id": "diagramm-kompass-re-ba",
