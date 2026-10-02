@@ -85,6 +85,7 @@ h1 span{color:var(--accent)}
 .row .vl{font-size:17px}
 .row ul{margin:0;padding-left:18px}
 .score{display:inline-block;margin-top:10px;border-radius:999px;background:var(--ink);color:#fff;font-weight:700;font-size:14px;padding:6px 16px}
+.ptabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.ptab{border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-size:15px;font-weight:700;padding:10px 18px;cursor:pointer;min-height:44px}.ptab:hover{border-color:var(--accent)}.ptab.on{background:var(--ink);border-color:var(--ink);color:#fff}.pp{margin:0 0 10px;font-size:17px;color:var(--muted)}.pbody[hidden]{display:none}
 .code{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-family:var(--mono);font-size:15px;line-height:1.6;white-space:pre-wrap}
 .copy{margin-top:10px}
 .crosslink{margin-top:20px;font-size:14px;color:var(--muted)}
@@ -133,16 +134,19 @@ html.beamer .wrap{max-width:1400px}
 html.beamer .lead,html.beamer .panel .sub,html.beamer .fb p,html.beamer .opt,html.beamer .row .vl,html.beamer .tcard p,html.beamer .quote,html.beamer .imp .qt,html.beamer .qline{font-size:22px}
 html.beamer h1{font-size:46px}
 html.beamer .panel h2,html.beamer .card-out h2{font-size:44px}
+html.beamer .pp,html.beamer .code{font-size:22px}html.beamer .ptab{font-size:15px}
 html.beamer .eyebrow,html.beamer .imp .who,html.beamer .opt .ds,html.beamer .row .lb,html.beamer .pill,html.beamer .quote small,html.beamer .crosslink,html.beamer .score,html.beamer .tcard h3{font-size:15px}
 html.beamer footer{display:none}
 html.beamer-xl .lead,html.beamer-xl .panel .sub,html.beamer-xl .fb p,html.beamer-xl .opt,html.beamer-xl .row .vl,html.beamer-xl .tcard p,html.beamer-xl .quote,html.beamer-xl .imp .qt,html.beamer-xl .qline{font-size:28px}
 html.beamer-xl h1{font-size:54px}
 html.beamer-xl .panel h2,html.beamer-xl .card-out h2{font-size:54px}
+html.beamer-xl .pp,html.beamer-xl .code{font-size:28px}html.beamer-xl .ptab{font-size:18px}
 html.beamer-xl .eyebrow,html.beamer-xl .imp .who,html.beamer-xl .opt .ds,html.beamer-xl .row .lb,html.beamer-xl .pill,html.beamer-xl .quote small,html.beamer-xl .crosslink,html.beamer-xl .score,html.beamer-xl .tcard h3{font-size:18px}
 html.beamer-xl .tgrid{grid-template-columns:repeat(2,1fr)}
 html.beamer-xxl .lead,html.beamer-xxl .panel .sub,html.beamer-xxl .fb p,html.beamer-xxl .opt,html.beamer-xxl .row .vl,html.beamer-xxl .tcard p,html.beamer-xxl .quote,html.beamer-xxl .imp .qt,html.beamer-xxl .qline{font-size:34px}
 html.beamer-xxl h1{font-size:60px}
 html.beamer-xxl .panel h2,html.beamer-xxl .card-out h2{font-size:64px}
+html.beamer-xxl .pp,html.beamer-xxl .code{font-size:34px}html.beamer-xxl .ptab{font-size:21px}
 html.beamer-xxl .eyebrow,html.beamer-xxl .imp .who,html.beamer-xxl .opt .ds,html.beamer-xxl .row .lb,html.beamer-xxl .pill,html.beamer-xxl .quote small,html.beamer-xxl .crosslink,html.beamer-xxl .score,html.beamer-xxl .tcard h3{font-size:21px}
 html.beamer-xxl .tgrid{grid-template-columns:1fr}
 html.beamer-xxl .cards{grid-template-columns:1fr}
@@ -185,8 +189,27 @@ html.beamer .row,html.beamer-xl .row,html.beamer-xxl .row{grid-template-columns:
 
 <section class="panel">
 <h2 data-i18n-en="The same moment when prompting">Derselbe Moment beim Prompten</h2>
-<p class="sub" data-i18n-en="A task like “Make me an analysis” is also an impulse, not a requirement. Anyone who sends it unchecked lets the AI guess. The same four steps help: recognise the type, ask back, phrase it solution-neutrally, name the assumption. Example prompt to take along:">Ein Auftrag wie „Mach mir eine Auswertung“ ist ebenfalls ein Impuls, keine Anforderung. Wer ihn unbesehen abschickt, lässt die KI raten. Dieselben vier Schritte helfen: Typ erkennen, rückfragen, lösungsneutral formulieren, Annahme benennen. Beispielprompt zum Mitnehmen:</p>
-<div class="code" id="promptTxt" data-i18n-en="Before you start: classify my task (symptom, proposed solution, goal or constraint) and ask me at most three follow-up questions. Only begin once I have answered.">Bevor du beginnst: Ordne meinen Auftrag ein (Symptom, Lösungsvorschlag, Ziel oder Randbedingung) und stelle mir höchstens drei Rückfragen. Beginne erst, wenn ich geantwortet habe.</div>
+<p class="sub" data-i18n-en="A task like “Make me an analysis” is also an impulse, not a requirement. Anyone who sends it unchecked lets the AI guess. The same four steps help, each with its own prompt. Choose a step, copy the prompt and put your own sentence in place of the dots.">Ein Auftrag wie „Mach mir eine Auswertung“ ist ebenfalls ein Impuls, keine Anforderung. Wer ihn unbesehen abschickt, lässt die KI raten. Dieselben vier Schritte helfen, jeder mit einem eigenen Prompt. Wählen Sie einen Schritt, kopieren Sie den Prompt und setzen Sie Ihren eigenen Satz an die Stelle der Punkte.</p>
+<div class="ptabs" role="tablist"><button type="button" class="ptab on" role="tab" data-p="0" aria-selected="true"><span data-i18n-en="1 · Sort">1 · Einordnen</span></button><button type="button" class="ptab" role="tab" data-p="1" aria-selected="false"><span data-i18n-en="2 · Ask back">2 · Rückfragen</span></button><button type="button" class="ptab" role="tab" data-p="2" aria-selected="false"><span data-i18n-en="3 · Phrase">3 · Formulieren</span></button><button type="button" class="ptab" role="tab" data-p="3" aria-selected="false"><span data-i18n-en="4 · Assumption">4 · Annahme</span></button><button type="button" class="ptab" role="tab" data-p="4" aria-selected="false"><span data-i18n-en="Compact">Kompakt</span></button></div>
+<div class="pbody" data-p="0"><p class="pp"><span data-i18n-en="The AI should classify the sentence, not solve it.">Die KI soll den Satz einordnen, nicht lösen.</span></p><div class="code ptxt" data-i18n-en="Classify the following sentence: symptom, proposed solution, goal or constraint. Justify it in two sentences, say how you can tell, and say what is missing from the sentence. Do not solve anything yet.
+
+Sentence: “…”">Ordne den folgenden Satz ein: Symptom, Lösungsvorschlag, Ziel oder Randbedingung. Begründe in zwei Sätzen, woran du es erkennst, und sage, was im Satz fehlt. Löse noch nichts.
+
+Satz: „…“</div></div><div class="pbody" data-p="1" hidden><p class="pp"><span data-i18n-en="The AI asks back before delivering anything.">Die KI fragt nach, bevor sie etwas liefert.</span></p><div class="code ptxt" data-i18n-en="Ask me at most three follow-up questions about this sentence. Each should bring out the cause, the yardstick or the condition; none may anticipate a solution. For each question say in half a sentence what it clarifies. Wait for my answers.
+
+Sentence: “…”">Stelle mir höchstens drei Rückfragen zu diesem Satz. Jede soll die Ursache, den Maßstab oder die Bedingung hervorholen, keine darf eine Lösung vorwegnehmen. Sage zu jeder Rückfrage in einem Halbsatz, was sie klärt. Warte auf meine Antworten.
+
+Satz: „…“</div></div><div class="pbody" data-p="2" hidden><p class="pp"><span data-i18n-en="From sentence and answers, a verifiable spark emerges.">Aus Satz und Antworten wird ein prüfbarer Funke.</span></p><div class="code ptxt" data-i18n-en="Phrase a first requirement sentence from the sentence and my answers. It should be solution-neutral and verifiable. Mark every number I did not give you as “to be agreed”. Then say how the sentence would be tested.
+
+Sentence: “…”
+My answers: …">Formuliere aus dem Satz und meinen Antworten einen ersten Anforderungssatz. Er soll lösungsneutral und prüfbar sein. Markiere jede Zahl, die ich dir nicht genannt habe, als „abzustimmen“. Sage danach, wie man den Satz testen würde.
+
+Satz: „…“
+Meine Antworten: …</div></div><div class="pbody" data-p="3" hidden><p class="pp"><span data-i18n-en="The AI names what the sentence rests on.">Die KI benennt, worauf der Satz ruht.</span></p><div class="code ptxt" data-i18n-en="Name the assumptions this sentence rests on. Choose the one that carries the rest, and say whom I would have to ask and what I would have to check to substantiate it. Do not invent facts.
+
+Sentence: “…”">Nenne die Annahmen, auf denen dieser Satz ruht. Wähle die eine, die den Rest trägt, und sage, wen ich fragen und was ich prüfen müsste, um sie zu belegen. Erfinde keine Fakten.
+
+Satz: „…“</div></div><div class="pbody" data-p="4" hidden><p class="pp"><span data-i18n-en="All four steps in one prompt when time is short.">Alle vier Schritte in einem Prompt, wenn es schnell gehen muss.</span></p><div class="code ptxt" data-i18n-en="Before you start: classify my task (symptom, proposed solution, goal or constraint) and ask me at most three follow-up questions. Only begin once I have answered.">Bevor du beginnst: Ordne meinen Auftrag ein (Symptom, Lösungsvorschlag, Ziel oder Randbedingung) und stelle mir höchstens drei Rückfragen. Beginne erst, wenn ich geantwortet habe.</div></div>
 <button type="button" class="btn ghost copy" id="copyBtn">Prompt kopieren</button>
 </section>
 
@@ -215,7 +238,7 @@ STRUCTURE
 4. Choose an impulse: four cards from the Hochschule Nordwest case world (digital student file), each with a quote from a fixed persona (Herr Öztürk, Knut, Kanzlerin Dr. Feldmann, Ela). Every impulse has a different type.
 5. Four stations, each with one multiple-choice question and immediate resolution (rationale for every option): (1) Sort: the type of the sentence. (2) Ask back: best follow-up question, then the simulated answer. (3) Phrase: solution-neutral and verifiable. (4) Hand over: which assumption is checked first in the analysis room. Exactly one correct option per station; its position varies.
 6. Result “impulse card”: quote, type, best follow-up with answer, spark, assumption to check first, two follow-up tools from the analysis room, score. Download as Markdown in the selected language.
-7. Panel “The same moment when prompting”: transfer to AI with a copyable example prompt that first classifies and asks at most three follow-up questions.
+7. Panel “The same moment when prompting”: transfer to AI with five tabs: one copyable prompt per step (sort, ask back, phrase, assumption) plus a compact variant. Placeholder “…” for your own sentence; one copy button for the visible prompt.
 8. Crosslink block “Related Denkraum tools” before the footer; footer with the four mandatory boxes plus glossary.
 
 CONTENT: Use only facts from the case world (paper file, seven steps, 50-year retention, steering committee monthly, audit office). Mark numbers the case does not know as to be agreed. Every wrong option explains why it is too early, too vague or a hidden solution at this point.
@@ -235,7 +258,7 @@ STRUKTUR
 4. Impuls wählen: vier Karten aus der Fallwelt Hochschule Nordwest (Digitale Studierendenakte), je ein Zitat einer festen Persona (Herr Öztürk, Knut, Kanzlerin Dr. Feldmann, Ela). Jeder Impuls hat einen anderen Typ.
 5. Vier Stationen, je eine Auswahlfrage mit sofortiger Auflösung (Begründung zu jeder Option): (1) Einordnen: Typ des Satzes. (2) Nachfragen: beste Rückfrage, danach die simulierte Antwort. (3) Formulieren: lösungsneutral und prüfbar. (4) Übergeben: welche Annahme im Analyseraum zuerst geprüft wird. Pro Station genau eine richtige Option, die Position der richtigen Option wechselt.
 6. Ergebnis „Impuls-Karte“: Zitat, Typ, beste Rückfrage mit Antwort, Funke, zuerst zu prüfende Annahme, zwei Folge-Tools aus dem Analyseraum, Trefferzahl. Download als Markdown in der gewählten Sprache.
-7. Panel „Derselbe Moment beim Prompten“: Übertrag auf KI mit einem kopierbaren Beispielprompt, der erst einordnen und höchstens drei Rückfragen stellen lässt.
+7. Panel „Derselbe Moment beim Prompten“: Übertrag auf KI mit fünf Reitern: je ein kopierbarer Prompt pro Schritt (Einordnen, Rückfragen, Formulieren, Annahme) plus eine kompakte Variante. Platzhalter „…“ für den eigenen Satz; ein Kopieren-Knopf für den sichtbaren Prompt.
 8. Crosslink-Block „Verwandte Denkraum-Tools“ vor dem Footer; Footer mit den vier Pflichtboxen plus Glossar.
 
 INHALT: Nur Fakten der Fallwelt verwenden (Papierakte, sieben Schritte, 50 Jahre Aufbewahrung, Lenkungsgremium monatlich, Rechnungshof). Zahlen, die der Fall nicht kennt, als abzustimmend kennzeichnen. Jede falsche Option erklärt, warum sie an dieser Stelle zu früh, zu unscharf oder eine versteckte Lösung ist.
@@ -443,10 +466,17 @@ NICHT TUN: keine neuen Personas, keine neue Fallwelt; keine Quizsprache wie „F
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(function(){ URL.revokeObjectURL(url); }, 500);
   }
-  /* ---------- Kopieren ---------- */
-  var cp = document.getElementById('copyBtn');
+  /* ---------- Prompt-Reiter + Kopieren ---------- */
+  var cp = document.getElementById('copyBtn'), curP = 0;
+  document.querySelectorAll('.ptab').forEach(function(tb){
+    tb.addEventListener('click', function(){
+      curP = parseInt(tb.getAttribute('data-p'), 10);
+      document.querySelectorAll('.ptab').forEach(function(x){ var on = x === tb; x.classList.toggle('on', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      document.querySelectorAll('.pbody').forEach(function(b){ b.hidden = (parseInt(b.getAttribute('data-p'), 10) !== curP); });
+    });
+  });
   cp.addEventListener('click', function(){
-    var txt = document.getElementById('promptTxt').textContent;
+    var txt = document.querySelector('.pbody[data-p="' + curP + '"] .ptxt').textContent;
     function ok(){ cp.textContent = (lang==='en') ? 'Copied' : 'Kopiert'; setTimeout(function(){ cp.textContent = (lang==='en') ? 'Copy prompt' : 'Prompt kopieren'; }, 1500); }
     try{ navigator.clipboard.writeText(txt).then(ok, function(){}); }catch(e){
       var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select();
