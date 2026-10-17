@@ -2313,10 +2313,10 @@ window.DENKRAUM_REGISTER = {
         "BABOK"
       ],
       "siegel": {
-        "status": "Offene Punkte",
+        "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-10-17",
-        "auditZeileImTool": null,
-        "offen": "K17 (nicht alle Normen per Abruf geprüft, siehe Normen-Register); Siegel noch nicht vergeben"
+        "auditZeileImTool": "17.10.2026",
+        "offen": null
       },
       "beamer": "4-stufig",
       "sprecherSkript": true,
@@ -2329,7 +2329,7 @@ window.DENKRAUM_REGISTER = {
         "tools/ba-steckbrief-business-case.html"
       ],
       "geprueft": false,
-      "notiz": "Fall BA/RE-Case Lindenfeld Lunch und Durchlauf-Fahrplan liegen noch nicht im Repo; Crosslinks darauf folgen mit deren Aufnahme."
+      "notiz": "Fall BA/RE-Case Lindenfeld Lunch und Durchlauf-Fahrplan liegen noch nicht im Repo; Crosslinks darauf folgen mit deren Aufnahme. K11 dauerhaft offen (Kann), daher kein Auszeichnungs-Siegel."
     },
     {
       "id": "okr-denkraum-check",
