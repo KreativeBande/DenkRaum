@@ -2279,6 +2279,59 @@ window.DENKRAUM_REGISTER = {
       "notiz": ""
     },
     {
+      "id": "lindenfeld-lunch-steckbrief",
+      "datei": "tools/lindenfeld-lunch-steckbrief.html",
+      "titel": "Fallwelt-Steckbrief — Lindenfeld Systemtechnik GmbH / Lindenfeld Lunch",
+      "kurztitel": "Fallwelt Lindenfeld Lunch",
+      "kurz": "Referenzseite (kein Übungstool) für die vierte feste Denkraum-Fallwelt: Cafeteria-App Lindenfeld Lunch der Lindenfeld Systemtechnik GmbH (1.150 Mitarbeitende) — drei messbare Ziele, neun Stakeholder mit Rolle und Interesse, Optionen A/B/C mit Kapitalwert und Break-even, plus Business Case zur Zielsteuerung mit Stage Gate.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Business-Analyse",
+      "aufStartseite": true,
+      "zweck": [
+        "Fallwelt-Referenz"
+      ],
+      "denkraum": "basislager",
+      "faeden": [],
+      "dauer": null,
+      "haufeSeminare": [],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "Fallwelt",
+        "Business Case",
+        "OKR",
+        "Stakeholder"
+      ],
+      "standards": [
+        "ISO 25010:2023",
+        "IREB",
+        "BABOK"
+      ],
+      "siegel": {
+        "status": "Offene Punkte",
+        "letztesAudit": "2026-10-17",
+        "auditZeileImTool": null,
+        "offen": "K17 (nicht alle Normen per Abruf geprüft, siehe Normen-Register); Siegel noch nicht vergeben"
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/okr-kaskade.html",
+        "tools/iso-25010-kompendium.html",
+        "tools/user-story-puzzle.html",
+        "tools/priorisierungslabor.html",
+        "tools/stakeholder-management-kompendium-fachbuch.html",
+        "tools/ba-steckbrief-business-case.html"
+      ],
+      "geprueft": false,
+      "notiz": "Fall BA/RE-Case Lindenfeld Lunch und Durchlauf-Fahrplan liegen noch nicht im Repo; Crosslinks darauf folgen mit deren Aufnahme."
+    },
+    {
       "id": "okr-denkraum-check",
       "datei": "tools/okr-denkraum-check.html",
       "titel": "OKR-Board: Die Reise durch alle Räume",
