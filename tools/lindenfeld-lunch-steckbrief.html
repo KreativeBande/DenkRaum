@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Fallwelt-Steckbrief &amp; Business Case — Lindenfeld Systemtechnik GmbH / Lindenfeld Lunch</title>
+<style>
+  :root{
+    --accent: #1e6b52;
+    --accent2: #c98a2b;
+    --dark: #1a2138;
+    --lightbg: #f4f5fa;
+    --amberbg: #fbf3e6;
+    --border: #ccd0dd;
+    --grey: #5a5f6e;
+  }
+  html{ color-scheme: light; }
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    padding:0 0 40px 0;
+    background:#ffffff;
+    color:#1a1a1a;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    font-size:16px;
+    line-height:1.5;
+  }
+
+  /* ---------- Topbar: Zurück-Link + Meta-Controls (Pflicht) ---------- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+    padding:16px 24px 0 24px;
+  }
+  .back-link{
+    display:inline-block;
+    font-size:14px;
+    font-weight:700;
+    color:var(--grey);
+    text-decoration:none;
+  }
+  .back-link:hover{ color:var(--accent); }
+  .meta-controls{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+  /* ---------- Signatur oben rechts (Pflicht, K21: immer position:fixed) ---------- */
+  .sig{
+    position:fixed;
+    top:14px;
+    right:28px;
+    font-size:14px;
+    line-height:1.3;
+    color:var(--grey);
+    background:#ffffff;
+    padding:4px 10px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    z-index:500;
+  }
+  .sig strong{ display:block; color:var(--dark); font-size:15px; }
+  .sig a{ color:var(--accent); text-decoration:none; font-weight:600; }
+  @media (max-width:900px){
+    .sig{ padding:3px 8px; }
+    .topbar{ padding:16px 235px 0 24px; }
+  }
+
+  .btn-ghost{
+    min-height:44px; min-width:44px;
+    padding:9px 20px;
+    font-size:15px;
+    font-weight:700;
+    border-radius:999px;
+    border:1.5px solid var(--border);
+    background:#ffffff;
+    color:var(--grey);
+    cursor:pointer;
+  }
+  .btn-ghost:hover{ border-color:var(--accent); color:var(--accent); }
+
+  /* ---------- Beamer-Modus-Button (K18, vierstufig, kanonisches Muster) ---------- */
+  .beamer-btn{
+    background:transparent; border:1.5px solid var(--border);
+    color:var(--grey); font-size:15px; font-weight:700;
+    padding:9px 20px; min-height:44px;
+    border-radius:999px; cursor:pointer;
+  }
+  .beamer-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  html.beamer .beamer-btn,
+  html.beamer-xl .beamer-btn,
+  html.beamer-xxl .beamer-btn{ background:var(--dark); color:#fff; border-color:var(--dark); }
+
+  header.hero{
+    background:var(--dark);
+    color:#ffffff;
+    padding:22px 24px 22px 24px;
+    margin-top:12px;
+  }
+  header.hero h1{
+    margin:0 0 6px 0;
+    font-size:26px;
+    font-weight:800;
+  }
+  header.hero p{
+    margin:0;
+    font-size:15px;
+    color:#d2d5e6;
+  }
+
+  nav.tabs{
+    display:flex;
+    gap:8px;
+    padding:14px 24px 0 24px;
+    border-bottom:2px solid var(--border);
+    flex-wrap:wrap;
+  }
+  .tab-btn{
+    min-height:44px;
+    padding:10px 20px;
+    font-size:16px;
+    font-weight:700;
+    border:none;
+    background:none;
+    color:var(--grey);
+    cursor:pointer;
+    border-bottom:4px solid transparent;
+  }
+  .tab-btn.active{
+    color:var(--accent);
+    border-bottom:4px solid var(--accent);
+  }
+
+  main{ padding:24px; max-width:1200px; margin:0 auto; }
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; }
+
+  h2{
+    color:var(--accent);
+    font-size:20px;
+    margin:28px 0 10px 0;
+  }
+  h2:first-child{ margin-top:0; }
+  p{ font-size:16px; }
+  .subtitle{
+    color:var(--accent);
+    font-style:italic;
+    font-size:16px;
+    margin-bottom:8px;
+  }
+  .purpose-box{
+    background:var(--lightbg); border:1px solid var(--border); border-left:6px solid var(--accent);
+    border-radius:4px; padding:14px 18px; margin-bottom:20px; font-size:16px;
+  }
+
+  /* ---- Steckbrief-Faktenraster (read-only, kein Formular) ---- */
+  .identity-row{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:14px;
+    margin-bottom:18px;
+  }
+  .field-box{
+    background:var(--lightbg);
+    border:1px solid var(--border);
+    border-radius:16px;
+    box-shadow:0 6px 16px rgba(26,33,56,.03);
+    padding:14px 16px;
+  }
+  .field-box label{
+    display:block;
+    font-weight:700;
+    color:var(--accent);
+    font-size:14px;
+    margin-bottom:4px;
+  }
+  .field-box .value{
+    font-size:16px;
+    color:#26283a;
+  }
+  .grid-fields{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:14px;
+    margin-bottom:18px;
+  }
+  @media (max-width: 900px){
+    .identity-row{ grid-template-columns: 1fr; }
+    .grid-fields{ grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px){
+    .grid-fields{ grid-template-columns: 1fr; }
+  }
+
+  /* ---- Persona-Cast ---- */
+  .persona-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:14px; margin-bottom:20px; }
+  .persona-card{ background:#ffffff; border:1px solid var(--border); border-radius:16px; padding:14px 16px; }
+  .persona-card .p-name{ font-weight:800; color:var(--accent); font-size:16px; }
+  .persona-card .p-role{ font-size:14px; color:var(--grey); margin:2px 0 8px 0; }
+  .persona-card .p-quote{ font-size:15px; font-style:italic; color:#26283a; }
+
+  .closing-box{
+    background:var(--amberbg);
+    border:1px solid #e6cfa0;
+    border-left:6px solid var(--accent2);
+    border-radius:4px;
+    padding:14px 18px;
+  }
+  .closing-box .label{ display:block; color:var(--accent2); font-weight:700; font-size:15px; margin-bottom:6px; }
+  .closing-box .value{ font-size:17px; font-weight:700; color:#3a2c0d; }
+
+  /* ---- Business Case ---- */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:22px;
+    font-size:15px;
+  }
+  th, td{
+    border:1px solid var(--border);
+    padding:10px 12px;
+    text-align:left;
+    vertical-align:top;
+  }
+  th{
+    background:var(--dark);
+    color:#ffffff;
+    font-size:14px;
+  }
+  td.rowlabel{ background:var(--lightbg); font-weight:700; }
+  tr.total td{ background:var(--amberbg); font-weight:700; }
+  ul.impact-list{ font-size:16px; }
+  .quote-box{
+    border-left:6px solid var(--accent2);
+    background:var(--amberbg);
+    border-radius:4px;
+    padding:14px 18px;
+    font-size:18px;
+    font-weight:700;
+    font-style:italic;
+    color:var(--accent2);
+    margin:14px 0 8px 0;
+  }
+  .note{
+    font-style:italic;
+    color:var(--grey);
+    font-size:14px;
+  }
+
+  /* ---- Crosslink ---- */
+  .crosslink{ margin:0 24px 20px 24px; font-size:14px; color:var(--grey); max-width:1152px; }
+  .crosslink a{ color:var(--accent); font-weight:700; text-decoration:none; }
+  .crosslink a:hover{ text-decoration:underline; }
+  .crosslink ul{ margin:8px 0 0; padding-left:20px; columns: 2; column-gap:24px; }
+  .crosslink li{ margin-bottom:4px; break-inside: avoid; }
+  @media (max-width:700px){ .crosslink ul{ columns:1; } }
+
+  /* ---- Footer ---- */
+  footer{
+    margin-top:16px;
+    padding:20px 24px 30px 24px;
+    max-width:1200px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .footer-sig{
+    font-size:14px; color:var(--grey); margin-bottom:16px; line-height:1.6;
+  }
+  .footer-sig strong{ color:var(--dark); font-size:15px; }
+  .footer-glossary{ margin:0; }
+  .footer-glossary dt{ font-weight:700; color:var(--ink); font-size:15px; margin-top:12px; }
+  .footer-glossary dt:first-child{ margin-top:0; }
+  .footer-glossary dd{ margin:2px 0 0; color:var(--grey); font-size:14px; line-height:1.5; }
+  .footer-details{
+    display:grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap:14px;
+  }
+  @media (max-width: 900px){ .footer-details{ grid-template-columns: 1fr; } }
+  .footer-box{
+    background:var(--lightbg);
+    border:1px solid var(--border);
+    border-radius:16px;
+    overflow:hidden;
+  }
+  .footer-summary{
+    cursor:pointer; font-weight:700; font-size:16px; padding:12px 14px;
+    min-height:44px; display:flex; align-items:center; color:var(--dark);
+  }
+  .footer-content{ padding:0 14px 14px 14px; font-size:16px; color:#333; }
+  .footer-mono{ font-family: Consolas, "Courier New", monospace; white-space:pre-wrap; font-size:14px; line-height:1.5; }
+  .footer-sans{ font-size:16px; line-height:1.55; }
+  .footer-table{ width:100%; border-collapse:collapse; font-size:14px; }
+  .footer-table td, .footer-table th{
+    border-bottom:1px solid var(--border); padding:6px 6px; text-align:left; vertical-align:top;
+  }
+
+  /* ---------- Beamer-Modus (K18, vierstufig, kumulativ) ---------- */
+  html.beamer body,
+  html.beamer p, html.beamer li,
+  html.beamer .field-box .value, html.beamer .persona-card .p-quote,
+  html.beamer .closing-box .value,
+  html.beamer .quote-box,
+  html.beamer td{ font-size:22px; }
+  html.beamer h2{ font-size:44px; }
+  html.beamer .subtitle, html.beamer .field-box label, html.beamer .persona-card .p-role,
+  html.beamer .persona-card .p-name, html.beamer th,
+  html.beamer .tab-btn, html.beamer .closing-box .label{ font-size:15px; }
+  html.beamer .beamer-btn, html.beamer .btn-ghost{ font-size:16px; min-height:52px; }
+  html.beamer header.hero h1{ font-size:34px; }
+  html.beamer header.hero p{ font-size:18px; }
+
+  html.beamer-xl body,
+  html.beamer-xl p, html.beamer-xl li,
+  html.beamer-xl .field-box .value, html.beamer-xl .persona-card .p-quote,
+  html.beamer-xl .closing-box .value,
+  html.beamer-xl .quote-box,
+  html.beamer-xl td{ font-size:28px; }
+  html.beamer-xl h2{ font-size:54px; }
+  html.beamer-xl .subtitle, html.beamer-xl .field-box label, html.beamer-xl .persona-card .p-role,
+  html.beamer-xl .persona-card .p-name, html.beamer-xl th,
+  html.beamer-xl .tab-btn, html.beamer-xl .closing-box .label{ font-size:18px; }
+  html.beamer-xl .beamer-btn, html.beamer-xl .btn-ghost{ font-size:18px; min-height:56px; }
+  html.beamer-xl header.hero h1{ font-size:40px; }
+  html.beamer-xl header.hero p{ font-size:21px; }
+
+  html.beamer-xxl body,
+  html.beamer-xxl p, html.beamer-xxl li,
+  html.beamer-xxl .field-box .value, html.beamer-xxl .persona-card .p-quote,
+  html.beamer-xxl .closing-box .value,
+  html.beamer-xxl .quote-box,
+  html.beamer-xxl td{ font-size:34px; }
+  html.beamer-xxl h2{ font-size:64px; }
+  html.beamer-xxl .subtitle, html.beamer-xxl .field-box label, html.beamer-xxl .persona-card .p-role,
+  html.beamer-xxl .persona-card .p-name, html.beamer-xxl th,
+  html.beamer-xxl .tab-btn, html.beamer-xxl .closing-box .label{ font-size:21px; }
+  html.beamer-xxl .beamer-btn, html.beamer-xxl .btn-ghost{ font-size:20px; min-height:60px; }
+  html.beamer-xxl header.hero h1{ font-size:46px; }
+  html.beamer-xxl header.hero p{ font-size:24px; }
+
+  html.beamer{ --grey:#3D4A5C; }
+  html.beamer-xl{ --grey:#3D4A5C; }
+  html.beamer-xxl{ --grey:#3D4A5C; }
+
+  html.beamer footer, html.beamer-xl footer, html.beamer-xxl footer,
+  html.beamer .crosslink, html.beamer-xl .crosslink, html.beamer-xxl .crosslink{ display:none; }
+</style>
+</head>
+<body>
+
+<div class="sig"><strong data-i18n="sigName">Michaela Kühn</strong><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener">www.michaela-kuehn.com</a></div>
+
+<header class="topbar">
+  <a class="back-link" href="../index.html" data-i18n="backlink">← Zurück zur Startseite</a>
+  <div class="meta-controls">
+    <button id="langBtn" type="button" class="btn-ghost">EN</button>
+    <button id="beamerBtn" type="button" class="beamer-btn" title="Vergrößert die Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">☀ Beamer</button>
+  </div>
+</header>
+
+<header class="hero">
+  <h1 data-i18n="pageTitle">Fallwelt-Steckbrief &amp; Business Case — Lindenfeld Systemtechnik GmbH / Lindenfeld Lunch</h1>
+  <p data-i18n="pageSubtitle">Referenzseite für die Fallstudienwelt „Lindenfeld Lunch“ (fiktiv) · konsistente Fakten für Fall, Fahrplan und neue Denkraum-Tools</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="steckbrief" type="button" data-i18n="tabSteckbrief">Steckbrief</button>
+  <button class="tab-btn" data-tab="businesscase" type="button" data-i18n="tabBusinessCase">Business Case</button>
+</nav>
+
+<main>
+
+  <!-- ============ TAB 1: STECKBRIEF ============ -->
+  <section id="steckbrief" class="tab-panel active">
+    <h2 data-i18n="k76">Steckbrief — Lindenfeld Systemtechnik GmbH</h2>
+    <p class="subtitle" data-i18n="k77">Systemtechnik · 1.150 Mitarbeitende · führt die Cafeteria-App Lindenfeld Lunch ein</p>
+
+    <div class="purpose-box" data-i18n="k78">Diese Seite ist kein eigenständiges Trainingstool, sondern eine Referenz: Sie hält die Fakten der Fallwelt Lindenfeld Lunch fest, damit Fall, Durchlauf-Fahrplan und weitere Tools dazu konsistent bleiben. Alle Angaben sind fiktiv; rechtliche Aussagen sind Fallaussagen und nicht geprüft.</div>
+
+    <div class="identity-row">
+      <div class="field-box">
+        <label data-i18n="k1">Unternehmen</label>
+        <span class="value" data-i18n="k2">Lindenfeld Systemtechnik GmbH, Campus Würzburg (fiktiv)</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="k3">System / Produkt</label>
+        <span class="value" data-i18n="k4">Lindenfeld Lunch: Cafeteria-App zum Bestellen, Bezahlen, Abholen oder Liefern lassen</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="k5">Einstufung</label>
+        <span class="value" data-i18n="k6">Release 1 ohne KI-Komponente. Eine Einstufung nach EU AI Act wird nicht behauptet; ein KI-Gedankenexperiment für Release 2 steht im Durchlauf-Fahrplan.</span>
+      </div>
+    </div>
+
+    <div class="grid-fields">
+      <div class="field-box">
+        <label data-i18n="k7">Branche</label>
+        <span class="value" data-i18n="k8">Systemtechnik; die Cafeteria ist ein interner Betrieb für Mitarbeitende, kein verkauftes Produkt.</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="k9">Unternehmensgröße</label>
+        <span class="value" data-i18n="k10">1.150 Mitarbeitende</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="k11">Anwendungsfall</label>
+        <span class="value" data-i18n="k12">640 Mittagsgäste pro Tag an 220 Tagen im Jahr bestellen vorab, holen ab oder lassen sich liefern</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="k13">Prozess (Kurzfassung)</label>
+        <span class="value" data-i18n="k14">Menü und Zeitfenster wählen → Vorlaufzeit prüfen → Lieferkapazität prüfen → bezahlen → Küche → Abholung oder Lieferung. Stornierung kostenlos bis 30 Minuten vorher.</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="k15">Zeitlinie (Lehrbeispiel)</label>
+        <span class="value" data-i18n="k16">Release 1 Cafeteria, Release 2 Restaurants und Abonnements, Release 3 Vollausbau. Messfenster der Ziele: 6 und 12 Monate nach Release 1.</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="k17">Business-Ziel</label>
+        <span class="value" data-i18n="k18">GZ-1 Abfall von 33 % auf unter 20 % · GZ-2 Betriebskosten −15 % · GZ-3 Zeit je Mittagessen von 65 auf höchstens 50 Minuten</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="k19">Wiederkehrende Systemelemente</label>
+        <span class="value" data-i18n="k20">16 funktionale und 9 nichtfunktionale Anforderungen, 6 Geschäftsregeln (BR-1 bis BR-6), 8 Epics, 12 User Stories, 21 Testfälle, Hebel je Story, Änderungsanfrage CR-01</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="k21">Regulatorischer Rahmen</label>
+        <span class="value" data-i18n="k22">ISO/IEC 25010:2023 für Qualität. DSGVO, BetrVG § 87, WCAG 2.2, LMIV und PCI DSS kommen als Fallaussagen vor und sind nicht rechtlich geprüft.</span>
+      </div>
+      <div class="field-box">
+        <label data-i18n="k23">RE/BA-Werkzeuge im Fall</label>
+        <span class="value" data-i18n="k24">Backlog mit Hebel-Rechnung und Rückverfolgbarkeit von Ziel über Key Result, Story und Epic; OKR-Check-ins; Business Case nach Five Case Model mit Kapitalwert</span>
+      </div>
+    </div>
+
+    <h2 data-i18n="k79">Personen im Fall Lindenfeld</h2>
+    <p data-i18n="k80">Neun Stakeholder mit eigener Haltung. Die Karten nennen Rolle und Interesse, keine erfundenen Zitate.</p>
+    <div class="persona-grid">
+      <div class="persona-card">
+        <div class="p-name">Heike Brandl</div>
+        <div class="p-role" data-i18n="k25">Geschäftsführerin, Sponsorin</div>
+        <div class="p-quote" data-i18n="k26">Will Zeitersparnis und weniger Abfall; erwartet belastbare Zahlen vor Release 2 und entscheidet über das Stage Gate.</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Murat Kaplan</div>
+        <div class="p-role" data-i18n="k27">Leiter Cafeteria</div>
+        <div class="p-quote" data-i18n="k28">Will Planbarkeit und sorgt sich um Lieferkapazität und Personal. Stellt die Änderungsanfrage CR-01 zur Vorlaufzeit.</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Sabine Wörner</div>
+        <div class="p-role" data-i18n="k29">Betriebsratsvorsitzende</div>
+        <div class="p-quote" data-i18n="k30">Kritisch bei Überwachung und Arbeitsplatzfolgen; verweist auf Mitbestimmung nach § 87 BetrVG (Fallaussage).</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Jonas Reiter</div>
+        <div class="p-role" data-i18n="k31">Datenschutzbeauftragter</div>
+        <div class="p-quote" data-i18n="k32">Fordert Datenminimierung und eine dokumentierte Rechtsgrundlage.</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Gudrun Stahl</div>
+        <div class="p-role" data-i18n="k33">Leiterin Entgeltabrechnung</div>
+        <div class="p-quote" data-i18n="k34">Hat keine Kapazität für eine Lohnabzugs-Schnittstelle; das beeinflusst die Zahlungsarten.</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Nadine Koch</div>
+        <div class="p-role" data-i18n="k35">Konstrukteurin, Gast</div>
+        <div class="p-quote" data-i18n="k36">Bestellt oft für ihr Team mit 8 Personen und will Gruppenbestellungen (Regel BR-4: bis 12 Personen).</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Ömer Yıldız</div>
+        <div class="p-role" data-i18n="k37">Servicetechniker im Außendienst, Gast</div>
+        <div class="p-quote" data-i18n="k38">Nur 2 Tage pro Woche vor Ort; braucht Zugriff vom Smartphone.</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Tim Falkner</div>
+        <div class="p-role" data-i18n="k39">Entwicklungsleiter</div>
+        <div class="p-quote" data-i18n="k40">Braucht eindeutige, testbare Anforderungen; 36 Stunden Schreibtischzeit bei 44 gebuchten.</div>
+      </div>
+      <div class="persona-card">
+        <div class="p-name">Lena Ostermann</div>
+        <div class="p-role" data-i18n="k41">Testmanagerin</div>
+        <div class="p-quote" data-i18n="k42">Braucht testbare Anforderungen und Rückverfolgbarkeit; verantwortet die 21 Testfälle TF-01 bis TF-21.</div>
+      </div>
+    </div>
+
+    <div class="closing-box">
+      <span class="label" data-i18n="k81">Ein Satz, der den Fall auf den Punkt bringt</span>
+      <span class="value" data-i18n="k82">Ein Systemtechnik-Unternehmen mit 1.150 Mitarbeitenden will Mittagessen digital bestellbar machen und merkt beim Rechnen, dass der Nutzen zur Hälfte in weicher Zeitersparnis steckt, die erst gemessen werden muss.</span>
+    </div>
+  </section>
+
+  <!-- ============ TAB 2: BUSINESS CASE ============ -->
+  <section id="businesscase" class="tab-panel">
+    <h2 data-i18n="k83">Business Case: Was Zielsteuerung bei Lindenfeld Lunch wert ist</h2>
+    <p class="subtitle" data-i18n="k84">Von drei Zielen mit Zahlen zur Entscheidung für Option A mit Stage Gate</p>
+
+    <h2 data-i18n="k85">Ausgangssituation</h2>
+    <p data-i18n="k86">640 Gäste × 220 Tage × 4,50 € Wareneinsatz ergeben 633.600 € pro Jahr; 33 % davon landen im Abfall. Ein Mittagessen dauert im Schnitt 65 Minuten, davon etwa 20 für Wege, Warten und Bezahlen. Die Cafeteria kostet zusätzlich 540.000 € pro Jahr im Betrieb. Heike Brandl will wissen, was drei Optionen für die App bringen.</p>
+
+    <h2 data-i18n="k87">Szenarienvergleich</h2>
+    <table><thead><tr><th data-i18n="k43"> </th><th data-i18n="k44">Szenario A – ohne Zielsteuerung</th><th data-i18n="k45">Szenario B – zielgesteuert mit Hebel und Stage Gate</th></tr></thead><tbody><tr><td class="rowlabel" data-i18n="k46">Zielklärung</td><td data-i18n="k47">Funktionen nach Zuruf; „weniger Schlange, weniger Abfall“ bleibt ohne Zahl</td><td data-i18n="k48">GZ-1 bis GZ-3 mit Ausgangswert, Zielwert und Frist; jedes Ziel hat eine Verantwortliche</td></tr><tr><td class="rowlabel" data-i18n="k49">Priorisierung</td><td data-i18n="k50">Reihenfolge nach Lautstärke der Stakeholder</td><td data-i18n="k51">Hebel je Story aus den OKR-Check-ins macht die Reihenfolge diskutierbar; Pflichtstories wie US-03 bleiben bewusst drin</td></tr><tr><td class="rowlabel" data-i18n="k52">Nutzennachweis</td><td data-i18n="k53">Nach Release 1 ist unklar, ob Abfall und Zeit sich bewegt haben</td><td data-i18n="k54">Stage Gate nach 6 Monaten mit gemessenem Abfallanteil und gemessener Zeit je Mittagessen</td></tr><tr><td class="rowlabel" data-i18n="k55">Änderung</td><td data-i18n="k56">CR-01 (Vorlaufzeit 60 → 90 Minuten) wird nach Lautstärke entschieden</td><td data-i18n="k57">CR-01 wird gegen GZ-1 und GZ-3 abgewogen; Kompromiss 75 Minuten mit Begründung</td></tr><tr><td class="rowlabel" data-i18n="k58">Stakeholder-Effekt</td><td data-i18n="k59">Betriebsrat und Datenschutz melden sich erst nach dem Start</td><td data-i18n="k60">Betriebsrat, Datenschutz und Entgeltabrechnung sind vor der ersten Anforderungsrunde eingebunden</td></tr></tbody></table>
+
+    <h2 data-i18n="k88">Quantifizierter Impact (Planungsannahmen des Fallbeispiels)</h2>
+    <table><thead><tr><th data-i18n="k61">Kostenfaktor / Nutzen</th><th data-i18n="k62">Ohne Steuerung bzw. Ausgangslage</th><th data-i18n="k63">Mit Zielsteuerung bzw. Plan</th></tr></thead><tbody><tr><td class="rowlabel" data-i18n="k64">Abfall (GZ-1)</td><td data-i18n="k65">Wareneinsatz 633.600 € pro Jahr, davon 33 % Abfall = 209.088 € pro Jahr, ohne Steuerung unverändert</td><td data-i18n="k66">Plan 20 %: 82.368 € pro Jahr gespart; Stretch 15 %: 114.048 € pro Jahr</td></tr><tr><td class="rowlabel" data-i18n="k67">Option A (Investition 380.000 €)</td><td data-i18n="k68">Betrieb 60.000 € pro Jahr; Kapitalwert bei 0 % Zeitverwertung −134.732 €</td><td data-i18n="k69">Kapitalwert bei 10 % Zeitverwertung 273.449 €, bei 25 % 885.722 €; Break-even bei 3,3 %</td></tr><tr><td class="rowlabel" data-i18n="k70">Option B und C im Vergleich</td><td data-i18n="k71">B: 670.000 € Investition, Break-even 6,7 %; C: 910.000 €, Break-even 10,1 %</td><td data-i18n="k72">Empfehlung Option A mit Stage Gate nach 6 Monaten</td></tr><tr class="total"><td class="rowlabel" data-i18n="k73">Geschätzte Gesamtwirkung</td><td data-i18n="k74">—</td><td data-i18n="k75">Planeinsparung bei Abfall plus nicht gemessener Zeitnutzen; wirtschaftlich tragfähig ab 3,3 % Zeitverwertung bei Option A</td></tr></tbody></table>
+    <p class="note" data-i18n="k89">Hinweis: Die Zahlen sind Planungsannahmen des Trainingsfalls (Diskontsatz 6 %, fünf Jahre), keine Prognose und keine Anlageberatung. Der Anteil der Zeitverwertung ist nicht gemessen; deshalb das Stage Gate nach 6 Monaten.</p>
+
+    <h2 data-i18n="k90">Weicher Impact</h2>
+    <ul class="impact-list">
+      <li data-i18n="k91">Zeit: 65 auf höchstens 50 Minuten je Mittagessen ist für Mitarbeitende spürbar, aber nur mit Messung belegbar</li>
+      <li data-i18n="k92">Vertrauen: früh eingebundene Betriebsrats- und Datenschutzseite verringert das Risiko später Blockaden</li>
+      <li data-i18n="k93">Rückverfolgbarkeit: vom Unternehmensziel über Key Result, Story und Epic bis zum Testfall lässt sich jede Anforderung begründen</li>
+    </ul>
+
+    <h2 data-i18n="k94">Kernaussage</h2>
+    <div class="quote-box" data-i18n="k95">„Eine App ohne gemessene Ziele ist kein Fortschritt, sondern eine Annahme mit Zahlungsplan.“</div>
+  </section>
+
+</main>
+
+<div class="crosslink">
+  <span data-i18n="cl-intro">Tools, die zum Fall Lindenfeld Lunch passen:</span>
+  <ul>
+    <li><a href="./okr-kaskade.html" data-i18n="k97">OKR-Kaskade: Von der Vision zum ToDo</a> — <span data-i18n="k98">zeigt die Kaskade allgemein und ohne die Fallzahlen des Lindenfeld-Falls.</span></li>
+    <li><a href="./iso-25010-kompendium.html" data-i18n="k99">ISO/IEC 25010:2023 Kompendium</a> — <span data-i18n="k100">erklärt die Qualitätsmerkmale, hinter den neun nichtfunktionalen Anforderungen des Falls.</span></li>
+    <li><a href="./user-story-puzzle.html" data-i18n="k101">User Story Puzzle</a> — <span data-i18n="k102">übt das Formulieren einzelner Stories, während der Fall zwölf fertige Stories mit Hebel führt.</span></li>
+    <li><a href="./priorisierungslabor.html" data-i18n="k103">Priorisierungslabor</a> — <span data-i18n="k104">vergleicht Verfahren, der Fall rechnet ein konkretes (Hebel) mit seinen Grenzen.</span></li>
+    <li><a href="./stakeholder-management-kompendium-fachbuch.html" data-i18n="k105">Stakeholder Management Kompendium</a> — <span data-i18n="k106">liefert die Methoden, der Fall die neun Personen mit gegensätzlichen Interessen.</span></li>
+    <li><a href="./ba-steckbrief-business-case.html" data-i18n="k107">BA-Steckbrief und Business Case</a> — <span data-i18n="k108">strukturiert den Business Case allgemein; hier steht die konkrete Rechnung mit drei Optionen.</span></li>
+  </ul>
+</div>
+
+<footer>
+  <div class="footer-sig">
+    <strong data-i18n="sigName">Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" data-i18n="sigLink">www.michaela-kuehn.com</a><br>
+    <span data-i18n="normList">ISO/IEC 25010:2023 · IREB CPRE · BABOK® v3 · OKR · Five Case Model</span>
+  </div>
+  <div class="footer-details">
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="k157">Systemprompt</summary>
+      <div class="footer-content footer-mono" data-i18n="k156">Baue eine einzelne, offlinefähige HTML-Referenzseite (kein Trainingstool im klassischen Sinn, keine Übung, keine Stationen) für die Fallstudienwelt "Lindenfeld Systemtechnik GmbH / Lindenfeld Lunch", die als durchgängiges Beispiel für Requirements Engineering, Business Analyse und Projektsteuerung dient.
+
+AUSLOESER
+Nutzerin will ein Fallwelt-Profil wie bei Vantera/TalentMatch AI, damit Fall, Durchlauf-Fahrplan und künftige Tools dieselben Fakten verwenden. Reine Faktensammlung, kein Formular.
+
+STRUKTUR
+- Grundmuster wie tools/vantera-talentmatch-steckbrief.html: Topbar, dunkler Hero, zwei Tabs (Steckbrief / Business Case), Footer mit vier Boxen plus Glossar, Crosslink-Block vor dem Footer.
+- Tab Steckbrief: Faktenraster (Unternehmen, Produkt, Einstufung, Branche, Größe, Anwendungsfall, Prozess, Zeitlinie, Business-Ziel, Systemelemente, Regulatorik, Werkzeuge) als Lesefelder, Karten für neun Stakeholder mit Rolle und Interesse (keine erfundenen Zitate), Kernsatz.
+- Tab Business Case: Ausgangssituation, Szenarienvergleich (ohne Zielsteuerung / zielgesteuert), quantifizierter Impact, weicher Impact, Kernaussage.
+
+FAKTENBASIS (aus dem Fall BA/RE-Case Lindenfeld Lunch, per Skript berechnet)
+640 Gäste/Tag, 220 Tage, 4,50 EUR Wareneinsatz je Gast = 633.600 EUR/Jahr; Abfall 33 % = 209.088 EUR; Planeinsparung 82.368 EUR (auf 20 %), Stretch 114.048 EUR (auf 15 %); Betriebskosten 540.000 EUR/Jahr; 65 Minuten je Mittagessen; Diskontsatz 6 %; Optionen A/B/C Investition 380.000/670.000/910.000 EUR; Kapitalwerte, Break-even 3,3/6,7/10,1 %; Empfehlung Option A mit Stage Gate nach 6 Monaten.
+
+DESIGN-VORGABEN
+Weißer Grund, color-scheme light, eigene Akzentfarbe (Grün), Radius 16px Karten, 999px Meta-Controls, 4px Akzentboxen, Text mindestens 16px (sekundär 14px), vierstufiger Beamer-Modus, Signatur position:fixed (K21), DE/EN ohne Reload, deutscher Inhalt ohne JS lesbar.
+
+NICHT TUN
+Keine echten Firmennamen; keine erfundenen Zitate; keine Rechtsberatung; DSGVO, BetrVG, WCAG, LMIV und PCI DSS nur als Fallaussagen kennzeichnen; keine Einstufung nach EU AI Act behaupten; keine Zahlen von Hand tippen, die aus dem Fall berechnet werden.</div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="k159">Handbuch</summary>
+      <div class="footer-content footer-sans" data-i18n="k158">Diese Seite ist ein Nachschlagewerk, keine Übung: Bevor ein neues Tool zum Fall Lindenfeld Lunch entsteht, stehen hier die Fakten (Größe, Zahlen, Ziele, Personen, Optionen) an einer Stelle.
+
+Aufbau: Der Reiter Steckbrief liefert das Faktenraster und die neun Personen. Der Reiter Business Case zeigt, warum Zielsteuerung wirtschaftlich zählt, mit den Zahlen des Falls.
+
+Didaktische Konstruktion: Der Fall trägt das ganze Portfolio (Vision, Stakeholder, Anforderungen, Qualität, Stories, Prozess, OKR, Wirtschaft, Änderung, KI, Rolle). Der Durchlauf-Fahrplan ordnet den Phasen die DenkRaum-Werkzeuge zu.
+
+Nachbau-Tipp: Zahlen nie von Hand tippen, sondern aus einer Datenquelle berechnen und die Seite daraus erzeugen. Rechtsaussagen bleiben Fallaussagen, bis sie geprüft sind.</div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="k161">Vortrags-Skript</summary>
+      <div class="footer-content footer-sans" data-i18n="k160">(Klick: Seite öffnen, Reiter Steckbrief.)
+„Das ist die Fallwelt, an der wir in diesem Seminar alles durchspielen: Lindenfeld Systemtechnik in Würzburg, 1.150 Mitarbeitende, eine Cafeteria-App. Die Seite hält die Fakten fest, damit wir uns nicht widersprechen.“
+
+(Klick: Faktenraster langsam durchgehen, bei Business-Ziel verweilen.)
+„Drei Ziele, jedes mit Ausgangswert, Zielwert und Frist: Abfall von 33 auf unter 20 Prozent, Betriebskosten minus 15 Prozent, Zeit je Mittagessen von 65 auf höchstens 50 Minuten.“
+
+(Klick: Personenkarten zeigen.)
+„Neun Personen mit gegensätzlichen Interessen. Frage an die Gruppe: Wen sprechen Sie zuerst, und warum?“ Lösung: Betriebsrat und Datenschutz früh, weil sie Umfang und Zeitplan ändern können; Entgeltabrechnung früh, weil dort keine Kapazität für eine Schnittstelle ist.
+
+(Klick: Reiter Business Case.)
+„Warum lohnt sich das? Wareneinsatz 633.600 Euro im Jahr, ein Drittel davon Abfall. Option A rechnet sich ab 3,3 Prozent Zeitverwertung. Diesen Anteil kennen wir nicht, deshalb das Stage Gate nach sechs Monaten.“ Frage an die Gruppe: Welche Annahme trägt den Business Case am stärksten? Lösung: die Zeitverwertung; bei 0 Prozent ist Option A negativ, bei 10 Prozent deutlich positiv.
+
+Übergang: „Jetzt gehen wir in den Fall selbst.“
+
+Regie: Zahlen sind Planungsannahmen, das ausdrücklich sagen. Rechtliche Begriffe nur als Fallaussage nennen. Nicht mit dem Business Case beginnen; zuerst die Personen.</div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="k162">Normen-Register</summary>
+      <div class="footer-content">
+        <table class="footer-table">
+          <thead><tr><th data-i18n="k163">Framework/Quelle</th><th data-i18n="k164">Fassung/Status</th><th data-i18n="k165">Prüfstatus</th></tr></thead>
+          <tbody>
+            <tr><td>Google re:Work: Set goals with OKRs (<a href="https://rework.withgoogle.com/en/guides/set-goals-with-okrs" target="_blank" rel="noopener">Link</a>)</td><td data-i18n="k109">Leitfaden zu OKR: Key Results mit Zahl bewertbar, Skala 0,0 bis 1,0, „Sweet Spot“ 60 bis 70 %, drei bis fünf Objectives.</td><td data-i18n="k110">✔ geprüft 15.10.2026 (Seite abgerufen)</td></tr>
+            <tr><td>IREB CPRE Foundation Level Lehrplan (<a href="https://cpre.ireb.org/de/knowledge-and-resources/downloads" target="_blank" rel="noopener">Link</a>)</td><td data-i18n="k111">Version 3.3.0 vom 03.07.2026; ersetzt 3.2.0 (26.02.2024). Änderungen: u. a. Interaktionsmodell aus Lernziel EO 3.4.3 entfernt.</td><td data-i18n="k112">✔ geprüft 13.10.2026 (schwedische Fassung des Lehrplans)</td></tr>
+            <tr><td>BABOK Guide v3 (IIBA) (<a href="https://www.iiba.org/career-resources/a-business-analysis-professionals-foundation-for-success/babok/" target="_blank" rel="noopener">Link</a>)</td><td data-i18n="k113">Die IIBA-Seite nennt v3 als aktuelle Fassung; kein Nachfolger angekündigt.</td><td data-i18n="k114">✔ geprüft 16.10.2026 (Aufgabennamen gegen BABOK-v3-Mitgliedsexemplar; Business Analysis Standard 2022 benennt um in „Requirements and Designs Life Cycle Management“)</td></tr>
+            <tr><td>HM Treasury: Guidance on developing business cases (Five Case Model) (<a href="https://www.gov.uk/government/publications/guidance-on-developing-business-cases" target="_blank" rel="noopener">Link</a>)</td><td data-i18n="k115">Aktualisiert am 30.06.2026; Projekt- und Programm-Leitfaden zusammengeführt.</td><td data-i18n="k116">✔ geprüft 13.10.2026</td></tr>
+            <tr><td>PCI DSS v4.0.1 (<a href="https://blog.pcisecuritystandards.org/just-published-pci-dss-v4-0-1" target="_blank" rel="noopener">Link</a>)</td><td data-i18n="k117">Veröffentlicht 11.06.2024; v4.0 am 31.12.2024 abgelöst.</td><td data-i18n="k118">✔ geprüft 13.10.2026 (PCI-SSC-Blog)</td></tr>
+            <tr><td>ISO/IEC 25010:2023 (<a href="https://www.iso.org/standard/78176.html" target="_blank" rel="noopener">Link</a>)</td><td data-i18n="k119">Edition 2, November 2023; neun Produktqualitätsmerkmale (u. a. Interaction Capability, Flexibility, Safety).</td><td data-i18n="k120">⚠ nicht per Abruf geprüft; Quelle: Normen-Referenz v3.1 (Juli 2026); Link nicht geprüft</td></tr>
+            <tr><td>DSGVO (EU) 2016/679 (<a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj" target="_blank" rel="noopener">Link</a>)</td><td data-i18n="k121">Art. 5, 6, 25, 30, 35 verwendet.</td><td data-i18n="k122">⚠ Artikelstand nicht per Abruf geprüft</td></tr>
+            <tr><td>BetrVG § 87 Abs. 1 Nr. 6 (<a href="https://www.gesetze-im-internet.de/betrvg/__87.html" target="_blank" rel="noopener">Link</a>)</td><td data-i18n="k123">Mitbestimmung bei technischen Einrichtungen zur Überwachung von Verhalten oder Leistung.</td><td data-i18n="k124">⚠ Wortlaut nicht per Abruf geprüft</td></tr>
+            <tr><td>LMIV (EU) Nr. 1169/2011, Anhang II (<a href="https://eur-lex.europa.eu/eli/reg/2011/1169/oj" target="_blank" rel="noopener">Link</a>)</td><td data-i18n="k125">14 Stoffe/Erzeugnisse, die Allergien auslösen können; Anwendung auf App-Bestellungen mit Behörde klären.</td><td data-i18n="k126">⚠ nicht per Abruf geprüft</td></tr>
+            <tr><td>WCAG 2.2 (<a href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener">Link</a>)</td><td data-i18n="k127">W3C-Empfehlung; Stufe AA als Zielwert in NFR-06.</td><td data-i18n="k128">⚠ nicht per Abruf geprüft</td></tr>
+            </tbody>
+        </table>
+        <p data-i18n="k166">Quellen und Prüfstatus stammen aus dem Fall BA/RE-Case Lindenfeld Lunch (Stand 17.10.2026). Mit ⚠ markierte Angaben sind nicht per Abruf geprüft; vor Weiterverwendung gegen den aktuellen Stand prüfen. Rechtsaussagen sind Fallaussagen, keine Rechtsberatung.</p>
+      </div>
+    </details>
+    <details class="footer-box">
+      <summary class="footer-summary" data-i18n="k167">📖 Glossar</summary>
+      <div class="footer-content footer-sans">
+        <dl class="footer-glossary">
+          <dt>GZ</dt>
+          <dd data-i18n="k129">Geschäftsziel</dd>
+          <dt>OKR</dt>
+          <dd data-i18n="k130">Objectives and Key Results (Ziele und Schlüsselergebnisse)</dd>
+          <dt>KR</dt>
+          <dd data-i18n="k131">Key Result (Schlüsselergebnis)</dd>
+          <dt>CR</dt>
+          <dd data-i18n="k132">Change Request (Änderungsantrag)</dd>
+          <dt>FE</dt>
+          <dd data-i18n="k133">Feature (Merkmal) aus der Vision</dd>
+          <dt>FR</dt>
+          <dd data-i18n="k134">Functional Requirement (funktionale Anforderung)</dd>
+          <dt>NFR</dt>
+          <dd data-i18n="k135">Non-Functional Requirement (nicht-funktionale Anforderung)</dd>
+          <dt>BR</dt>
+          <dd data-i18n="k136">Business Rule (Geschäftsregel)</dd>
+          <dt>EM</dt>
+          <dd data-i18n="k137">Erfolgsmetrik</dd>
+          <dt>UC</dt>
+          <dd data-i18n="k138">Use Case (Anwendungsfall)</dd>
+          <dt>US</dt>
+          <dd data-i18n="k139">User Story</dd>
+          <dt>TF</dt>
+          <dd data-i18n="k140">Testfall</dd>
+          <dt>SRS</dt>
+          <dd data-i18n="k141">Software Requirements Specification</dd>
+          <dt>SSO</dt>
+          <dd data-i18n="k142">Single Sign-on (einmalige Anmeldung)</dd>
+          <dt>MoSCoW</dt>
+          <dd data-i18n="k143">Priorisierung: Must, Should, Could, Won’t</dd>
+          <dt>SMART</dt>
+          <dd data-i18n="k144">Kriterien für Ziele und Aufgaben: Specific, Measurable, Achievable, Relevant, Time-bound</dd>
+          <dt>INVEST</dt>
+          <dd data-i18n="k145">Qualitätskriterien für Stories: Independent, Negotiable, Valuable, Estimable, Small, Testable</dd>
+          <dt>NPV / Kapitalwert</dt>
+          <dd data-i18n="k146">Barwert aller Zahlungen einer Option bei gegebenem Diskontsatz</dd>
+          <dt>DSGVO</dt>
+          <dd data-i18n="k147">Datenschutz-Grundverordnung</dd>
+          <dt>BetrVG</dt>
+          <dd data-i18n="k148">Betriebsverfassungsgesetz</dd>
+          <dt>LMIV</dt>
+          <dd data-i18n="k149">Lebensmittelinformationsverordnung</dd>
+          <dt>WCAG</dt>
+          <dd data-i18n="k150">Web Content Accessibility Guidelines</dd>
+          <dt>PCI DSS</dt>
+          <dd data-i18n="k151">Payment Card Industry Data Security Standard</dd>
+          <dt>BA / RE</dt>
+          <dd data-i18n="k152">Business Analyse / Requirements Engineering</dd>
+          <dt>IREB</dt>
+          <dd data-i18n="k153">International Requirements Engineering Board</dd>
+          <dt>BABOK</dt>
+          <dd data-i18n="k154">Business Analysis Body of Knowledge</dd>
+          <dt>ISTQB</dt>
+          <dd data-i18n="k155">International Software Testing Qualifications Board</dd>
+          </dl>
+      </div>
+    </details>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var i18n = {
+    "k1": {en:"Company"},
+    "k2": {en:"Lindenfeld Systemtechnik GmbH, campus in Würzburg (fictional)"},
+    "k3": {en:"System / product"},
+    "k4": {en:"Lindenfeld Lunch: cafeteria app to order, pay, pick up or have delivered"},
+    "k5": {en:"Classification"},
+    "k6": {en:"Release 1 has no AI component. No classification under the EU AI Act is asserted; an AI thought experiment for Release 2 appears in the walkthrough plan."},
+    "k7": {en:"Industry"},
+    "k8": {en:"Systems engineering; the cafeteria is an internal service for employees, not a product for sale."},
+    "k9": {en:"Company size"},
+    "k10": {en:"1,150 employees"},
+    "k11": {en:"Use case"},
+    "k12": {en:"640 lunch guests per day on 220 days a year order in advance, pick up or have meals delivered"},
+    "k13": {en:"Process (short form)"},
+    "k14": {en:"Choose menu and slot → check lead time → check delivery capacity → pay → kitchen → pickup or delivery. Free cancellation up to 30 minutes before."},
+    "k15": {en:"Timeline (teaching example)"},
+    "k16": {en:"Release 1 cafeteria, Release 2 restaurants and subscriptions, Release 3 full scope. Goal measurement windows: 6 and 12 months after Release 1."},
+    "k17": {en:"Business goal"},
+    "k18": {en:"GZ-1 waste from 33 % to below 20 % · GZ-2 operating costs −15 % · GZ-3 time per lunch from 65 to at most 50 minutes"},
+    "k19": {en:"Recurring system elements"},
+    "k20": {en:"16 functional and 9 non-functional requirements, 6 business rules (BR-1 to BR-6), 8 epics, 12 user stories, 21 test cases, lever per story, change request CR-01"},
+    "k21": {en:"Regulatory frame"},
+    "k22": {en:"ISO/IEC 25010:2023 for quality. GDPR, BetrVG § 87, WCAG 2.2, LMIV and PCI DSS appear as case statements and are not legally verified."},
+    "k23": {en:"RE/BA tools in the case"},
+    "k24": {en:"Backlog with lever calculation and traceability from goal via key result, story and epic; OKR check-ins; business case per Five Case Model with net present value"},
+    "k25": {en:"Managing director, sponsor"},
+    "k26": {en:"Wants time savings and less waste; expects reliable figures before Release 2 and decides on the stage gate."},
+    "k27": {en:"Head of cafeteria"},
+    "k28": {en:"Wants plannability and worries about delivery capacity and staff. Raises change request CR-01 on lead time."},
+    "k29": {en:"Works council chair"},
+    "k30": {en:"Critical of monitoring and job impact; points to co-determination under § 87 BetrVG (case statement)."},
+    "k31": {en:"Data protection officer"},
+    "k32": {en:"Demands data minimisation and a documented legal basis."},
+    "k33": {en:"Head of payroll"},
+    "k34": {en:"Has no capacity for a payroll-deduction interface; this affects the payment methods."},
+    "k35": {en:"Design engineer, guest"},
+    "k36": {en:"Often orders for her team of 8 and wants group orders (rule BR-4: up to 12 people)."},
+    "k37": {en:"Field service technician, guest"},
+    "k38": {en:"On site only 2 days a week; needs access from a smartphone."},
+    "k39": {en:"Head of development"},
+    "k40": {en:"Needs unambiguous, testable requirements; 36 desk hours against 44 booked."},
+    "k41": {en:"Test manager"},
+    "k42": {en:"Needs testable requirements and traceability; responsible for the 21 test cases TF-01 to TF-21."},
+    "k43": {en:" "},
+    "k44": {en:"Scenario A – without goal steering"},
+    "k45": {en:"Scenario B – goal-steered with lever and stage gate"},
+    "k46": {en:"Goal clarification"},
+    "k47": {en:"Features on request; “shorter queues, less waste” stays without a number"},
+    "k48": {en:"GZ-1 to GZ-3 with baseline, target and deadline; every goal has an owner"},
+    "k49": {en:"Prioritisation"},
+    "k50": {en:"Order by how loud the stakeholders are"},
+    "k51": {en:"Lever per story from the OKR check-ins makes the order discussable; duty stories such as US-03 stay in on purpose"},
+    "k52": {en:"Benefit evidence"},
+    "k53": {en:"After Release 1 it is unclear whether waste and time have moved"},
+    "k54": {en:"Stage gate after 6 months with measured waste share and measured time per lunch"},
+    "k55": {en:"Change"},
+    "k56": {en:"CR-01 (lead time 60 → 90 minutes) is decided by who pushes hardest"},
+    "k57": {en:"CR-01 is weighed against GZ-1 and GZ-3; compromise of 75 minutes with a rationale"},
+    "k58": {en:"Stakeholder effect"},
+    "k59": {en:"Works council and data protection speak up only after launch"},
+    "k60": {en:"Works council, data protection and payroll are involved before the first requirements round"},
+    "k61": {en:"Cost factor / benefit"},
+    "k62": {en:"Without steering / baseline"},
+    "k63": {en:"With goal steering / plan"},
+    "k64": {en:"Waste (GZ-1)"},
+    "k65": {en:"Food cost EUR 633,600 per year, of which 33 % waste = EUR 209,088 per year, unchanged without steering"},
+    "k66": {en:"Plan 20 %: EUR 82,368 saved per year; stretch 15 %: EUR 114,048 per year"},
+    "k67": {en:"Option A (investment EUR 380,000)"},
+    "k68": {en:"Run EUR 60,000 per year; NPV at 0 % time utilisation EUR −134,732"},
+    "k69": {en:"NPV at 10 % time utilisation EUR 273,449, at 25 % EUR 885,722; break-even at 3.3 %"},
+    "k70": {en:"Options B and C compared"},
+    "k71": {en:"B: EUR 670,000 investment, break-even 6.7 %; C: EUR 910,000, break-even 10.1 %"},
+    "k72": {en:"Recommendation: Option A with a stage gate after 6 months"},
+    "k73": {en:"Estimated total effect"},
+    "k74": {en:"—"},
+    "k75": {en:"Planned waste saving plus unmeasured time benefit; economically viable from 3.3 % time utilisation for option A"},
+    "k76": {en:"Profile — Lindenfeld Systemtechnik GmbH"},
+    "k77": {en:"Systems engineering · 1,150 employees · introducing the cafeteria app Lindenfeld Lunch"},
+    "k78": {en:"This page is not a standalone training tool but a reference: it records the facts of the Lindenfeld Lunch case world so that the case, the walkthrough plan and further tools stay consistent. All details are fictional; legal statements are case statements and not verified."},
+    "k79": {en:"People in the Lindenfeld case"},
+    "k80": {en:"Nine stakeholders with their own stance. The cards give role and interest, no invented quotes."},
+    "k81": {en:"One sentence that sums up the case"},
+    "k82": {en:"A systems engineering company with 1,150 employees wants lunch to be orderable digitally and finds while calculating that half of the benefit is soft time savings that still have to be measured."},
+    "k83": {en:"Business case: what goal steering is worth at Lindenfeld Lunch"},
+    "k84": {en:"From three goals with figures to the decision for option A with a stage gate"},
+    "k85": {en:"Starting point"},
+    "k86": {en:"640 guests × 220 days × EUR 4.50 food cost gives EUR 633,600 per year; 33 % of it ends up as waste. A lunch takes 65 minutes on average, about 20 of them for walking, waiting and paying. The cafeteria costs a further EUR 540,000 per year to run. Heike Brandl wants to know what three options for the app deliver."},
+    "k87": {en:"Scenario comparison"},
+    "k88": {en:"Quantified impact (planning assumptions of the case example)"},
+    "k89": {en:"Note: the figures are planning assumptions of the training case (discount rate 6 %, five years), not a forecast and not financial advice. The share of time utilisation is not measured; hence the stage gate after 6 months."},
+    "k90": {en:"Soft impact"},
+    "k91": {en:"Time: 65 down to at most 50 minutes per lunch is noticeable to employees but only demonstrable with measurement"},
+    "k92": {en:"Trust: involving works council and data protection early reduces the risk of late blockades"},
+    "k93": {en:"Traceability: from company goal via key result, story and epic to the test case every requirement can be justified"},
+    "k94": {en:"Key statement"},
+    "k95": {en:"“An app without measured goals is not progress but an assumption with a payment schedule.”"},
+    "cl-intro": {en:"Tools that fit the Lindenfeld Lunch case:"},
+    "k97": {en:"OKR cascade: from vision to to-do"},
+    "k98": {en:"shows the cascade in general terms without the figures of the Lindenfeld case."},
+    "k99": {en:"ISO/IEC 25010:2023 compendium"},
+    "k100": {en:"explains the quality characteristics behind the case’s nine non-functional requirements."},
+    "k101": {en:"User story puzzle"},
+    "k102": {en:"practises writing single stories, while the case carries twelve finished stories with lever."},
+    "k103": {en:"Prioritisation lab"},
+    "k104": {en:"compares methods, the case calculates one concrete method (lever) with its limits."},
+    "k105": {en:"Stakeholder management compendium"},
+    "k106": {en:"provides the methods, the case provides nine people with conflicting interests."},
+    "k107": {en:"BA profile and business case"},
+    "k108": {en:"structures the business case in general; here the concrete calculation with three options is given."},
+    "k109": {en:"Guide to OKRs: key results gradable with a number, scale 0.0 to 1.0, “sweet spot” 60 to 70 %, three to five objectives."},
+    "k110": {en:"✔ checked 15 Oct 2026 (page retrieved)"},
+    "k111": {en:"Version 3.3.0 of 3 July 2026; replaces 3.2.0 (26 Feb 2024). Changes include removal of the interaction model from learning objective EO 3.4.3."},
+    "k112": {en:"✔ checked 13 Oct 2026 (Swedish edition of the syllabus)"},
+    "k113": {en:"The IIBA page names v3 as the current version; no successor announced."},
+    "k114": {en:"✔ checked 16 Oct 2026 (task names against BABOK v3 member copy; Business Analysis Standard 2022 renames to “Requirements and Designs Life Cycle Management”)"},
+    "k115": {en:"Updated on 30 June 2026; project and programme guidance merged."},
+    "k116": {en:"✔ checked 13 Oct 2026"},
+    "k117": {en:"Published 11 June 2024; v4.0 retired on 31 Dec 2024."},
+    "k118": {en:"✔ checked 13 Oct 2026 (PCI SSC blog)"},
+    "k119": {en:"Edition 2, November 2023; nine product quality characteristics (including interaction capability, flexibility, safety)."},
+    "k120": {en:"⚠ not checked by retrieval; source: standards reference v3.1 (July 2026); link not checked"},
+    "k121": {en:"Art. 5, 6, 25, 30, 35 used."},
+    "k122": {en:"⚠ article status not checked by retrieval"},
+    "k123": {en:"Co-determination for technical devices to monitor behaviour or performance."},
+    "k124": {en:"⚠ wording not checked by retrieval"},
+    "k125": {en:"14 substances/products causing allergies; clarify application to app orders with the authority."},
+    "k126": {en:"⚠ not checked by retrieval"},
+    "k127": {en:"W3C Recommendation; level AA as target in NFR-06."},
+    "k128": {en:"⚠ not checked by retrieval"},
+    "k129": {en:"Business goal"},
+    "k130": {en:"Objectives and key results"},
+    "k131": {en:"Key result"},
+    "k132": {en:"Change request"},
+    "k133": {en:"Feature from the Vision"},
+    "k134": {en:"Functional requirement"},
+    "k135": {en:"Non-functional requirement"},
+    "k136": {en:"Business rule"},
+    "k137": {en:"Success metric"},
+    "k138": {en:"Use case"},
+    "k139": {en:"User story"},
+    "k140": {en:"Test case"},
+    "k141": {en:"Software requirements specification"},
+    "k142": {en:"Single sign-on"},
+    "k143": {en:"Prioritisation: must, should, could, won’t"},
+    "k144": {en:"Criteria for goals and tasks: specific, measurable, achievable, relevant, time-bound"},
+    "k145": {en:"Quality criteria for stories: independent, negotiable, valuable, estimable, small, testable"},
+    "k146": {en:"Present value of all payments of an option at a given discount rate"},
+    "k147": {en:"General Data Protection Regulation (GDPR)"},
+    "k148": {en:"Works Constitution Act"},
+    "k149": {en:"Food Information Regulation"},
+    "k150": {en:"Web Content Accessibility Guidelines"},
+    "k151": {en:"Payment Card Industry Data Security Standard"},
+    "k152": {en:"Business analysis / requirements engineering"},
+    "k153": {en:"International Requirements Engineering Board"},
+    "k154": {en:"Business Analysis Body of Knowledge"},
+    "k155": {en:"International Software Testing Qualifications Board"},
+    "k156": {en:"Build a single, offline-capable HTML reference page (not a training tool in the classic sense, no exercise, no stations) for the case world \"Lindenfeld Systemtechnik GmbH / Lindenfeld Lunch\", which serves as a continuous example for requirements engineering, business analysis and project steering.\n\nTRIGGER\nThe user wants a case world profile like Vantera/TalentMatch AI so that the case, the walkthrough plan and future tools use the same facts. Pure fact collection, no form.\n\nSTRUCTURE\n- Basic pattern as in tools/vantera-talentmatch-steckbrief.html: top bar, dark hero, two tabs (profile / business case), footer with four boxes plus glossary, crosslink block before the footer.\n- Profile tab: fact grid (company, product, classification, industry, size, use case, process, timeline, business goal, system elements, regulation, tools) as read-only fields, cards for nine stakeholders with role and interest (no invented quotes), key sentence.\n- Business case tab: starting point, scenario comparison (without goal steering / goal-steered), quantified impact, soft impact, key statement.\n\nFACT BASE (from the case BA/RE-Case Lindenfeld Lunch, calculated by script)\n640 guests/day, 220 days, EUR 4.50 food cost per guest = EUR 633,600/year; waste 33 % = EUR 209,088; planned saving EUR 82,368 (to 20 %), stretch EUR 114,048 (to 15 %); operating costs EUR 540,000/year; 65 minutes per lunch; discount rate 6 %; options A/B/C investment EUR 380,000/670,000/910,000; NPVs, break-even 3.3/6.7/10.1 %; recommendation option A with a stage gate after 6 months.\n\nDESIGN\nWhite background, color-scheme light, own accent colour (green), radius 16px cards, 999px meta controls, 4px accent boxes, text at least 16px (secondary 14px), four-level beamer mode, signature position:fixed (K21), DE/EN without reload, German content readable without JS.\n\nDO NOT\nNo real company names; no invented quotes; no legal advice; mark GDPR, BetrVG, WCAG, LMIV and PCI DSS only as case statements; do not assert an EU AI Act classification; do not type by hand figures that are calculated from the case."},
+    "k157": {en:"System prompt"},
+    "k158": {en:"This page is a reference, not an exercise: before a new tool on the Lindenfeld Lunch case is built, the facts (size, figures, goals, people, options) are in one place.\n\nStructure: the Profile tab provides the fact grid and the nine people. The Business Case tab shows why goal steering matters economically, with the figures of the case.\n\nDidactic construction: the case carries the whole portfolio (vision, stakeholders, requirements, quality, stories, process, OKR, economics, change, AI, role). The walkthrough plan assigns the DenkRaum tools to the phases.\n\nRebuild tip: never type figures by hand but calculate them from a data source and generate the page from it. Legal statements remain case statements until they are verified."},
+    "k159": {en:"Manual"},
+    "k160": {en:"(Click: open page, Profile tab.)\n“This is the case world in which we play through everything in this seminar: Lindenfeld Systemtechnik in Würzburg, 1,150 employees, a cafeteria app. The page records the facts so that we do not contradict ourselves.”\n\n(Click: walk through the fact grid slowly, linger at business goal.)\n“Three goals, each with baseline, target and deadline: waste from 33 to below 20 percent, operating costs minus 15 percent, time per lunch from 65 to at most 50 minutes.”\n\n(Click: show the people cards.)\n“Nine people with conflicting interests. Question for the group: whom do you speak to first, and why?” Solution: works council and data protection early because they can change scope and schedule; payroll early because there is no capacity for an interface.\n\n(Click: Business Case tab.)\n“Why is it worth it? Food cost EUR 633,600 a year, a third of it waste. Option A pays off from 3.3 percent time utilisation. We do not know that share, hence the stage gate after six months.” Question for the group: which assumption carries the business case most? Solution: time utilisation; at 0 percent option A is negative, at 10 percent clearly positive.\n\nTransition: “Now we go into the case itself.”\n\nDirection: figures are planning assumptions, say so explicitly. Mention legal terms only as case statements. Do not start with the business case; start with the people."},
+    "k161": {en:"Speaker script"},
+    "k162": {en:"Standards register"},
+    "k163": {en:"Framework/source"},
+    "k164": {en:"Version/status"},
+    "k165": {en:"Check status"},
+    "k166": {en:"Sources and check status come from the case BA/RE-Case Lindenfeld Lunch (as of 17 Oct 2026). Items marked ⚠ were not checked by retrieval; check against the current status before reuse. Legal statements are case statements, not legal advice."},
+    "k167": {en:"📖 Glossary"},
+    "pageTitle": {en:"Case World Profile &amp; Business Case — Lindenfeld Systemtechnik GmbH / Lindenfeld Lunch"},
+    "pageSubtitle": {en:"Reference page for the “Lindenfeld Lunch” case world (fictional) · consistent facts for the case, the plan and new Denkraum tools"},
+    "backlink": {en:"← Back to homepage"},
+    "sigLink": {en:"www.michaela-kuehn.com"},
+    "normList": {en:"ISO/IEC 25010:2023 · IREB CPRE · BABOK® v3 · OKR · Five Case Model"},
+    "tabSteckbrief": {en:"Profile"},
+    "tabBusinessCase": {en:"Business Case"}
+  };
+
+  var currentLang = "de";
+  var deCache = {};
+
+  function collectGerman(){
+    var els = document.querySelectorAll("[data-i18n]");
+    els.forEach(function(el){
+      var key = el.getAttribute("data-i18n");
+      if (!(key in deCache)) deCache[key] = el.innerHTML;
+    });
+  }
+
+  function applyLang(lang){
+    var els = document.querySelectorAll("[data-i18n]");
+    els.forEach(function(el){
+      var key = el.getAttribute("data-i18n");
+      if (lang === "en" && i18n[key] && i18n[key].en !== undefined){
+        el.innerHTML = i18n[key].en;
+      } else if (deCache[key] !== undefined){
+        el.innerHTML = deCache[key];
+      }
+    });
+    document.documentElement.lang = lang;
+  }
+
+  var langBtn = document.getElementById("langBtn");
+  langBtn.addEventListener("click", function(){
+    collectGerman();
+    currentLang = (currentLang === "de") ? "en" : "de";
+    langBtn.textContent = (currentLang === "de") ? "EN" : "DE";
+    applyLang(currentLang);
+  });
+
+  var BEAMER_LEVELS = [
+    { classes: [],                                    label: "☀ Beamer" },
+    { classes: ["beamer"],                             label: "☀ Beamer XL" },
+    { classes: ["beamer", "beamer-xl"],                label: "☀ Beamer XXL" },
+    { classes: ["beamer", "beamer-xl", "beamer-xxl"],  label: "☀ Normal" }
+  ];
+  var beamerLevel = 0;
+  var beamerBtn = document.getElementById("beamerBtn");
+
+  beamerBtn.addEventListener("click", function(){
+    beamerLevel = (beamerLevel + 1) % BEAMER_LEVELS.length;
+    document.documentElement.classList.remove("beamer", "beamer-xl", "beamer-xxl");
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    beamerBtn.textContent = BEAMER_LEVELS[beamerLevel].label;
+  });
+
+  var tabBtns = document.querySelectorAll(".tab-btn");
+  tabBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      tabBtns.forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      var target = btn.getAttribute("data-tab");
+      document.querySelectorAll(".tab-panel").forEach(function(panel){
+        panel.classList.toggle("active", panel.id === target);
+      });
+    });
+  });
+
+  collectGerman();
+})();
+</script>
+
+</body>
+</html>
