@@ -382,7 +382,8 @@ def st_map(trainer):
     o.append(f'<h2><span class="num">4</span>{S("Mappe", "Folder")}</h2>')
     o.append(P('Alle Teile im Überblick. Die Teile öffnen sich direkt hier in der Seite; „← Gateplan“ bringt dich zurück.', 'All parts at a glance. The parts open right here in the page; “← Gate plan” takes you back.', 'sub'))
     rows = [[Raw(link('c', '', 'BA/RE-Case Lindenfeld Lunch', 'BA/RE case Lindenfeld Lunch', trainer)), ('Der ganze Fall in 12 Stationen', 'The whole case in 12 stations')],
-            [Raw(link('p', '', 'Projektauftrag und Pflichtenheft', 'Project charter and specification', trainer)), ('Zwei abgeleitete Dokumente für Release 1', 'Two derived documents for release 1')]]
+            [Raw(link('p', '', 'Projektauftrag und Pflichtenheft', 'Project charter and specification', trainer)), ('Zwei abgeleitete Dokumente für Release 1', 'Two derived documents for release 1')],
+            [Raw('<a href="Handout_Lindenfeld-Gateplan.pdf" download>' + S('Handout als PDF', 'Handout as PDF') + '<span aria-hidden="true">&nbsp;↓</span></a>'), ('Zehn Seiten zum Mitnehmen für Teilnehmende, ohne Musterantworten', 'Ten pages to take away for participants, without model answers')]]
     o.append(str(table([('Datei', 'File'), ('Wofür', 'Purpose')], rows, vis=5, cap=('Dateien', 'Files'), cls='nocap')))
     o.append(str(H(4, 'Stationen im Case', 'Stations in the case')))
     rows = [case_row(a, d, e, g, trainer) for a, d, e, g in CASE_ST]

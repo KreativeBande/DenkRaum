@@ -4596,7 +4596,7 @@ window.DENKRAUM_REGISTER = {
       "datei": "tools/lindenfeld-gateplan.html",
       "titel": "Lindenfeld Lunch: Gateplan",
       "kurztitel": "Gateplan Lindenfeld Lunch",
-      "kurz": "Startseite der Fallwelt Lindenfeld Lunch: sieben Gates (G0 bis G6) und sechs Linien (Artefakte, Kommunikation, Blickwinkel, Leitplanken, Änderung, Nutzen) verbinden den BA/RE-Case und das Tool Projektauftrag und Pflichtenheft in einer Datei. Mit Netzplan, Linienfilter, Übung, Musterantworten und Footer (Trainerversion).",
+      "kurz": "Startseite der Fallwelt Lindenfeld Lunch: sieben Gates (G0 bis G6) und sechs Linien (Artefakte, Kommunikation, Blickwinkel, Leitplanken, Änderung, Nutzen) verbinden den BA/RE-Case und das Tool Projektauftrag und Pflichtenheft in einer Datei. Mit Netzplan, Linienfilter, Übung, Musterantworten und Footer (Trainerversion) sowie PDF-Handout für Teilnehmende.",
       "rubrik": "Requirements & Business-Analyse",
       "bereich": "Business-Analyse",
       "aufStartseite": true,
@@ -4656,7 +4656,7 @@ window.DENKRAUM_REGISTER = {
         "tools/pflichtenheft-generator.html"
       ],
       "geprueft": false,
-      "notiz": "Case und Projektauftrag sind vollständig eingebettet (Blob-URL-iframes), Bauskripte in tools/gateplan-build/. Nach jeder Änderung an Case oder Projektauftrag neu bauen. DIN 69901-5, VDI 2519 und PMBOK nur über Sekundärquellen geprüft (21.10.2026). Teilnehmendenversion: lindenfeld-gateplan-teilnehmende.html."
+      "notiz": "Case und Projektauftrag sind vollständig eingebettet (Blob-URL-iframes), Bauskripte in tools/gateplan-build/. Nach jeder Änderung an Case oder Projektauftrag neu bauen. DIN 69901-5, VDI 2519 und PMBOK nur über Sekundärquellen geprüft (21.10.2026). Teilnehmendenversion: lindenfeld-gateplan-teilnehmende.html. PDF-Handout für Teilnehmende: tools/Handout_Lindenfeld-Gateplan.pdf (21.10.2026, aus tools/gateplan-build/handout.py)."
     },
     {
       "id": "lindenfeld-gateplan-teilnehmende",
