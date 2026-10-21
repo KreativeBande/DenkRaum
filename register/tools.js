@@ -4,7 +4,7 @@
  * Als Skript-Datei (nicht .json), damit sie auch offline per file:// lädt.
  */
 window.DENKRAUM_REGISTER = {
-  "stand": "2026-10-02",
+  "stand": "2026-10-21",
   "denkraeume": [
     {
       "id": "moeglichkeit",
@@ -528,7 +528,8 @@ window.DENKRAUM_REGISTER = {
         "tools/priorisierungslabor.html",
         "tools/re-ba/knowledge-zoom-navigator-re-ba.html",
         "tools/talentmatch-ml-paradigmen.html",
-        "tools/vantera-talentmatch-steckbrief.html"
+        "tools/vantera-talentmatch-steckbrief.html",
+        "tools/ba-auspraegungen.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -577,7 +578,8 @@ window.DENKRAUM_REGISTER = {
       "verwandt": [
         "tools/ba-lifecycle-lernreise.html",
         "tools/ba-rollenwandel-explorer.html",
-        "tools/babok-kompendium.html"
+        "tools/babok-kompendium.html",
+        "tools/ba-auspraegungen.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -629,7 +631,8 @@ window.DENKRAUM_REGISTER = {
         "tools/ba-rollenwandel-explorer.html",
         "tools/ba-steckbrief-business-case.html",
         "tools/ireb-kompendium.html",
-        "tools/user-story-puzzle.html"
+        "tools/user-story-puzzle.html",
+        "tools/ba-auspraegungen.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -1519,7 +1522,8 @@ window.DENKRAUM_REGISTER = {
       "verwandt": [
         "tools/ba-lifecycle-lernreise.html",
         "tools/se-lifecycle-lernreise.html",
-        "tools/stakeholder-management-kompendium-fachbuch.html"
+        "tools/stakeholder-management-kompendium-fachbuch.html",
+        "tools/ba-auspraegungen.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -3233,7 +3237,8 @@ window.DENKRAUM_REGISTER = {
       "verwandt": [
         "tools/fa-nfa-rollen-spuren.html",
         "tools/requirements-to-code-explorer.html",
-        "tools/stakeholder-memory.html"
+        "tools/stakeholder-memory.html",
+        "tools/ba-auspraegungen.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -4513,10 +4518,74 @@ window.DENKRAUM_REGISTER = {
         "tools/vision-zielbild-werkstatt.html",
         "tools/user-story-puzzle.html",
         "tools/story-mapping-kundenperspektiven.html",
-        "tools/hochschule-nordwest-steckbrief.html"
+        "tools/hochschule-nordwest-steckbrief.html",
+        "tools/ba-auspraegungen.html"
       ],
       "geprueft": false,
       "notiz": "Setzt die Kette Zielbild → Funke → Übergabe fort und ist das erste Tool im Umsetzungsraum für RE/BA. Der Analyse- und Lösungsraum wird in der Kette übersprungen (Hinweis im Tool)."
+    },
+    {
+      "id": "ba-auspraegungen",
+      "datei": "tools/ba-auspraegungen.html",
+      "titel": "BA-Ausprägungen — IT, Fachseite, PO-Sparring",
+      "kurztitel": "BA-Ausprägungen",
+      "kurz": "Business-Analyse ist eine Tätigkeit, kein Titel: drei Verortungen (BA in der IT, BA auf der Fachseite, BA als Sparringspartnerin des Product Owners) am Fall AN-008 der Hochschule Nordwest kennenlernen, vergleichen und von der Proxy-PO abgrenzen, mit Sieben-Szenen-Übung, Gruppenfragen und Prompt.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Business-Analyse",
+      "aufStartseite": true,
+      "zweck": [
+        "Übung",
+        "Nachschlagewerk"
+      ],
+      "denkraum": "basislager",
+      "faeden": [
+        "ba",
+        "pm"
+      ],
+      "dauer": "20 min (mit Gruppenfragen 30–40 min)",
+      "haufeSeminare": [
+        "3744",
+        "3525"
+      ],
+      "einsatzkontext": [
+        "Seminar",
+        "Workshop"
+      ],
+      "fallwelten": [
+        "Hochschule Nordwest"
+      ],
+      "themen": [
+        "BA-Rolle",
+        "Rollenklärung",
+        "Product Owner",
+        "Proxy-PO",
+        "Entscheidungsrechte",
+        "Perspektiven BABOK",
+        "Basislager"
+      ],
+      "standards": [
+        "BABOK",
+        "IREB",
+        "Scrum Guide"
+      ],
+      "siegel": {
+        "status": null,
+        "letztesAudit": null,
+        "auditZeileImTool": null,
+        "offen": "Formales Siegel-Audit steht aus; Selbstprüfung beim Einbau (21.10.2026): Playwright 1300/390 px, vier Beamer-Stufen, DE/EN, Vertiefung, Signatur fixiert. Quellenstand laut Normen-Register 21.10.2026; IIBA-Blog als Autorenmeinung gekennzeichnet."
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/ba-steckbrief-business-case.html",
+        "tools/ba-rollenwandel-explorer.html",
+        "tools/re-szenensammlung.html",
+        "tools/babok-kompendium.html",
+        "tools/hochschule-nordwest-steckbrief.html",
+        "tools/vom-anforderungspaket-zum-sprint.html"
+      ],
+      "geprueft": false,
+      "notiz": "Von Michaela fertig angeliefert (21.10.2026), beim Einbau nur Crosslinks ergänzt. Die Dreiteilung ist ausdrücklich ein didaktisches Modell, kein Rollentyp von BABOK oder IREB. PO ist im Fall nicht benannt und als Übungsannahme gekennzeichnet."
     }
   ]
 };
