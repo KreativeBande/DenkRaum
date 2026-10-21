@@ -1,6 +1,6 @@
 # Roter Faden · Zuordnung der Tools zu den Denkräumen
 
-Vorschlag vom 01.10.2026 auf Basis der Navigator-Fassung, am 02.10.2026 um Störfall-Labor, „Vom Impuls zur Anforderung“, „Vision & Zielbild-Werkstatt“ und „Vom Anforderungspaket zum Sprint“ nachgeführt (86 Tools). **Bitte prüfen:** Ein Wort wie „Fragenautomat → Lösung“ reicht als Korrektur. Erst nach Ihrem Okay kommen Farbstreifen und Karte.
+Vorschlag vom 01.10.2026 auf Basis der Navigator-Fassung, am 02.10.2026 um Störfall-Labor, „Vom Impuls zur Anforderung“, „Vision & Zielbild-Werkstatt“ und „Vom Anforderungspaket zum Sprint“ nachgeführt, am 21.10.2026 um „BA-Ausprägungen“ ergänzt. **Bitte prüfen:** Ein Wort wie „Fragenautomat → Lösung“ reicht als Korrektur. Erst nach Ihrem Okay kommen Farbstreifen und Karte.
 
 Die fünf Räume plus zwei Sonderfälle: **🔄 Rundreise** für Tools, die selbst durch alle Räume führen (sie *sind* der rote Faden), und **🏕️ Basislager** für Nachschlagewerke, Fallwelten und Prüfungsvorbereitung, die man von überall aus nutzt.
 
@@ -14,10 +14,10 @@ Pro Haufe-Seminar sieht das so aus (Anzahl verlinkter Tools je Raum):
 |---|---|---|---|---|---|---|---|
 | 9368 Requirements Engineering: Moderne Anforderungsanalyse für die IT | 2 | 8 | 11 | 1 | 1 | 2 | 3 |
 | 31693 Requirements Engineering: Projekte erfolgreich starten | 1 | 6 | 9 | 1 | 1 | 3 | 2 |
-| 3744 Der:Die Agile Business Analyst:in | 1 | 9 | 3 | 1 | 1 | 4 | 1 |
+| 3744 Der:Die Agile Business Analyst:in | 1 | 9 | 3 | 1 | 1 | 4 | 2 |
 | 41851 KI-Prompting im Requirements Engineering und in der Business Analyse | 2 | 3 | 6 | 4 | 1 | 2 | 1 |
 | 34000 Agile Projekte richtig aufsetzen und steuern | 1 | 4 | 3 | 1 | 1 | 3 | **0** |
-| 3525 Agiles Projektmanagement für Fortgeschrittene | 1 | 3 | 4 | 1 | 1 | **0** | 1 |
+| 3525 Agiles Projektmanagement für Fortgeschrittene | 1 | 3 | 4 | 1 | 1 | **0** | 2 |
 | 2929 Hybrides Projektmanagement II | 1 | 2 | 3 | **0** | 1 | 3 | 2 |
 | 34002 Objectives and Key Results: Agiles Teammanagement | 1 | 3 | 1 | 1 | 1 | 3 | **0** |
 
@@ -122,11 +122,12 @@ Jedes Seminar hat jetzt mindestens ein Tool im Störraum, in sieben Seminaren is
 | Requirements-to-Code Explorer | Wunsch → Code in neun Stufen |
 | 🧭 SE-Lifecycle-Lernreise | SWEBOK-Wissensbereiche als Weg |
 
-## 🏕️ Basislager · Nachschlagen, Fallwelten, Prüfungsvorbereitung (17)
+## 🏕️ Basislager · Nachschlagen, Fallwelten, Prüfungsvorbereitung (18)
 
 | Tool | Warum hier |
 |---|---|
 | AI4RE Quizzmaschine | Prüfungsvorbereitung |
+| BA-Ausprägungen — IT, Fachseite, PO-Sparring | Rollenklärung vorab: wo die BA-Tätigkeit sitzt, wer entscheidet |
 | BABOK® Kompendium | Nachschlagewerk |
 | CPMAI-Prozess-Board | Prüfungsvorbereitung, Übung |
 | Fallstudie: Von der Idee zum Qualitätssystem | Lernreise |
