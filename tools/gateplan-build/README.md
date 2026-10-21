@@ -13,6 +13,15 @@ python3 skript_md.py ../lindenfeld-gateplan.html ../Sprecher-Skript_Lindenfeld-G
 
 Wichtig: `repo.py` hat die Zurück-Links in Case und Pflichtenheft bereits eingebaut (idempotent). Neue Fassungen dieser beiden Dateien brauchen ebenfalls den Zurück-Link und die Verweis-Skripte (Rückkehr zum Gateplan, `html.emb`-Modus, Zoom), sonst funktionieren die Tiefenverweise nicht.
 
+Das PDF-Handout für Teilnehmende (`tools/Handout_Lindenfeld-Gateplan.pdf`) entsteht aus denselben Daten:
+
+```
+python3 handout.py ../Handout_Lindenfeld-Gateplan.pdf   # schreibt auch eine .html-Vorschau neben die PDF, diese löschen
+```
+
+Nach Änderungen an `hub_data.py` oder `footer_text.py` beides neu bauen. Das Handout ist für Anfänger gekürzt (vier Linien je Gate, Kürzelleiste, Denkfrage ohne Lösung), der volle Netzplan steht im Anhang.
+
+- `handout.py`: baut das PDF (Playwright, Chromium)
 - `hub_data.py`: Inhalte (Gates, Linien, Zellen, Gruppenfragen, Stationen des Case und des Tools)
 - `hub.py`: baut die Seite; `footer_text.py`: Systemprompt, Handbuch, Vortrags-Skript (Quelle für die Companion-Datei)
 - `lib.py`, `base.css`, `base.js`, `zoom.py`: gemeinsame Bausteine (Schalter, Tabellen, Quiz, Bild-Zoom)
