@@ -2330,10 +2330,13 @@ window.DENKRAUM_REGISTER = {
         "tools/user-story-puzzle.html",
         "tools/priorisierungslabor.html",
         "tools/stakeholder-management-kompendium-fachbuch.html",
-        "tools/ba-steckbrief-business-case.html"
+        "tools/ba-steckbrief-business-case.html",
+        "tools/lindenfeld-gateplan.html",
+        "tools/ba-re-case-lindenfeld-lunch.html",
+        "tools/lindenfeld-projektauftrag-pflichtenheft.html"
       ],
       "geprueft": false,
-      "notiz": "Fall BA/RE-Case Lindenfeld Lunch und Durchlauf-Fahrplan liegen noch nicht im Repo; Crosslinks darauf folgen mit deren Aufnahme. K11 dauerhaft offen (Kann), daher kein Auszeichnungs-Siegel."
+      "notiz": "Fall BA/RE-Case Lindenfeld Lunch, Projektauftrag und Pflichtenheft sowie der Gateplan liegen seit 21.10.2026 im Repo und sind unten verlinkt. K11 dauerhaft offen (Kann), daher kein Auszeichnungs-Siegel."
     },
     {
       "id": "okr-denkraum-check",
@@ -2575,7 +2578,8 @@ window.DENKRAUM_REGISTER = {
       "verwandt": [
         "tools/anforderungsboard-iso.html",
         "tools/klarheits-sprint/index.html",
-        "tools/ebike-anforderungssimulator.html"
+        "tools/ebike-anforderungssimulator.html",
+        "tools/lindenfeld-projektauftrag-pflichtenheft.html"
       ],
       "geprueft": false,
       "notiz": ""
@@ -4586,6 +4590,321 @@ window.DENKRAUM_REGISTER = {
       ],
       "geprueft": false,
       "notiz": "Von Michaela fertig angeliefert (21.10.2026), beim Einbau nur Crosslinks ergänzt. Die Dreiteilung ist ausdrücklich ein didaktisches Modell, kein Rollentyp von BABOK oder IREB. PO ist im Fall nicht benannt und als Übungsannahme gekennzeichnet."
+    },
+    {
+      "id": "lindenfeld-gateplan",
+      "datei": "tools/lindenfeld-gateplan.html",
+      "titel": "Lindenfeld Lunch: Gateplan",
+      "kurztitel": "Gateplan Lindenfeld Lunch",
+      "kurz": "Startseite der Fallwelt Lindenfeld Lunch: sieben Gates (G0 bis G6) und sechs Linien (Artefakte, Kommunikation, Blickwinkel, Leitplanken, Änderung, Nutzen) verbinden den BA/RE-Case und das Tool Projektauftrag und Pflichtenheft in einer Datei. Mit Netzplan, Linienfilter, Übung, Musterantworten und Footer (Trainerversion).",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Business-Analyse",
+      "aufStartseite": true,
+      "zweck": [
+        "Demonstrator",
+        "Lernreise"
+      ],
+      "denkraum": "rundreise",
+      "faeden": [
+        "re",
+        "ba",
+        "pm"
+      ],
+      "dauer": null,
+      "haufeSeminare": [
+        "31693",
+        "2929",
+        "3744"
+      ],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "Fallwelt",
+        "Gate",
+        "Stage Gate",
+        "Projektauftrag",
+        "Pflichtenheft",
+        "Meilensteinplan",
+        "Blickwinkel BA und PM"
+      ],
+      "standards": [
+        "IEEE 29148",
+        "ISO 25010:2023",
+        "Scrum Guide",
+        "PMBOK"
+      ],
+      "siegel": {
+        "status": "Auditiert & zertifiziert",
+        "letztesAudit": "2026-10-21",
+        "auditZeileImTool": null,
+        "offen": [
+          "K11 (Kann, dauerhaft offen)",
+          "K14 (Kann, Audit-Zeile fehlt)"
+        ]
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/ba-re-case-lindenfeld-lunch.html",
+        "tools/lindenfeld-projektauftrag-pflichtenheft.html",
+        "tools/lindenfeld-lunch-steckbrief.html",
+        "tools/pflichtenheft-generator.html"
+      ],
+      "geprueft": false,
+      "notiz": "Case und Projektauftrag sind vollständig eingebettet (Blob-URL-iframes), Bauskripte in tools/gateplan-build/. Nach jeder Änderung an Case oder Projektauftrag neu bauen. DIN 69901-5, VDI 2519 und PMBOK nur über Sekundärquellen geprüft (21.10.2026). Teilnehmendenversion: lindenfeld-gateplan-teilnehmende.html."
+    },
+    {
+      "id": "lindenfeld-gateplan-teilnehmende",
+      "datei": "tools/lindenfeld-gateplan-teilnehmende.html",
+      "titel": "Lindenfeld Lunch: Gateplan (Teilnehmende)",
+      "kurztitel": "Gateplan (Teilnehmende)",
+      "kurz": "Teilnehmendenversion des Gateplans: ohne Footer, ohne „Alle auflösen“ und ohne Musterantworten, zum Weitergeben an die Gruppe.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Business-Analyse",
+      "aufStartseite": true,
+      "zweck": [
+        "Demonstrator",
+        "Lernreise"
+      ],
+      "denkraum": "rundreise",
+      "faeden": [
+        "re",
+        "ba",
+        "pm"
+      ],
+      "dauer": null,
+      "haufeSeminare": [
+        "31693",
+        "2929",
+        "3744"
+      ],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "Fallwelt",
+        "Gate",
+        "Stage Gate"
+      ],
+      "standards": [
+        "IEEE 29148",
+        "ISO 25010:2023",
+        "Scrum Guide",
+        "PMBOK"
+      ],
+      "siegel": {
+        "status": "Auditiert & zertifiziert",
+        "letztesAudit": "2026-10-21",
+        "auditZeileImTool": null,
+        "offen": [
+          "K11 (Kann, dauerhaft offen)",
+          "K14 (Kann, Audit-Zeile fehlt)"
+        ]
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": false,
+      "verwandt": [
+        "tools/lindenfeld-gateplan.html"
+      ],
+      "geprueft": false,
+      "notiz": "Variante der Trainerversion, kein eigener Inhalt. Wird aus denselben Bauskripten erzeugt."
+    },
+    {
+      "id": "ba-re-case-lindenfeld-lunch",
+      "datei": "tools/ba-re-case-lindenfeld-lunch.html",
+      "titel": "BA/RE-Case Lindenfeld Lunch",
+      "kurztitel": "BA/RE-Case Lindenfeld Lunch",
+      "kurz": "Durchgehender Fall für Einsteigerinnen und Einsteiger in BA und RE: von der Vision über Business Case, Anforderungen, Epics, Use Cases und Stories bis zu Testfall, Rückverfolgung, Change Request und OKR, mit Kurzpfad „Nutzen steuern“.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Business-Analyse",
+      "aufStartseite": true,
+      "zweck": [
+        "Übung",
+        "Lernreise"
+      ],
+      "denkraum": "rundreise",
+      "faeden": [
+        "re",
+        "ba"
+      ],
+      "dauer": null,
+      "haufeSeminare": [
+        "31693",
+        "9368",
+        "3744"
+      ],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "Fallwelt",
+        "Business Case",
+        "Anforderungen",
+        "User Story",
+        "Testfall",
+        "Rückverfolgung",
+        "Change Request",
+        "OKR"
+      ],
+      "standards": [
+        "IREB",
+        "BABOK",
+        "ISO 25010:2023"
+      ],
+      "siegel": {
+        "status": "Offene Punkte",
+        "letztesAudit": "2026-10-21",
+        "auditZeileImTool": null,
+        "offen": [
+          "K11 (Kann, dauerhaft offen)",
+          "K14 (Audit-Zeile fehlt)",
+          "K19 (Systemprompt ist Co-Trainer-Prompt, kein Master-Bau-Prompt)"
+        ]
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/lindenfeld-lunch-steckbrief.html",
+        "tools/lindenfeld-gateplan.html",
+        "tools/lindenfeld-projektauftrag-pflichtenheft.html",
+        "tools/okr-kaskade.html"
+      ],
+      "geprueft": false,
+      "notiz": "Von Michaela angeliefert; für den Hub um Rücksprung, Einbettungsmodus und Bild-Zoom ergänzt (Skripte am Dateiende). Der Systemprompt in der Footer-Box ist ein Co-Trainer-Prompt und noch kein Master-Bau-Prompt (K19). Sprecher-Skript mit Zeitangaben je Station."
+    },
+    {
+      "id": "lindenfeld-projektauftrag-pflichtenheft",
+      "datei": "tools/lindenfeld-projektauftrag-pflichtenheft.html",
+      "titel": "Lindenfeld Lunch: Projektauftrag und Pflichtenheft",
+      "kurztitel": "Projektauftrag und Pflichtenheft",
+      "kurz": "Leitet aus dem fertigen Fall Lindenfeld Lunch Projektauftrag und Pflichtenheft für Release 1 ab: jede Zeile mit Herkunftsmarke (Fall, Abgeleitet, Annahme), Validierungsbericht, Einzelfrage-Übungen und BA-Facetten als Brille.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Business-Analyse",
+      "aufStartseite": true,
+      "zweck": [
+        "Übung",
+        "Demonstrator"
+      ],
+      "denkraum": "loesung",
+      "faeden": [
+        "re",
+        "ba",
+        "pm"
+      ],
+      "dauer": null,
+      "haufeSeminare": [
+        "31693",
+        "9368"
+      ],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "Fallwelt",
+        "Projektauftrag",
+        "Pflichtenheft",
+        "Lastenheft",
+        "Herkunftsmarken",
+        "Validierung"
+      ],
+      "standards": [
+        "IEEE 29148",
+        "ISO 25010:2023",
+        "PMBOK"
+      ],
+      "siegel": {
+        "status": "Auditiert & zertifiziert",
+        "letztesAudit": "2026-10-21",
+        "auditZeileImTool": null,
+        "offen": [
+          "K11 (Kann, dauerhaft offen)",
+          "K14 (Kann, Audit-Zeile fehlt)"
+        ]
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/pflichtenheft-generator.html",
+        "tools/lindenfeld-lunch-steckbrief.html",
+        "tools/ba-re-case-lindenfeld-lunch.html",
+        "tools/lindenfeld-gateplan.html"
+      ],
+      "geprueft": false,
+      "notiz": "Zahlen mit Python nachgerechnet (Validierungsbericht in Station 2). DIN 69901-5, VDI 2519 und PMBOK nur über Sekundärquellen geprüft (21.10.2026). Teilnehmendenversion: lindenfeld-projektauftrag-pflichtenheft-teilnehmende.html."
+    },
+    {
+      "id": "lindenfeld-projektauftrag-pflichtenheft-teilnehmende",
+      "datei": "tools/lindenfeld-projektauftrag-pflichtenheft-teilnehmende.html",
+      "titel": "Lindenfeld Lunch: Projektauftrag und Pflichtenheft (Teilnehmende)",
+      "kurztitel": "Projektauftrag (Teilnehmende)",
+      "kurz": "Teilnehmendenversion von Projektauftrag und Pflichtenheft: ohne Footer, ohne „Alle auflösen“ und ohne Musterantworten.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Business-Analyse",
+      "aufStartseite": true,
+      "zweck": [
+        "Übung",
+        "Demonstrator"
+      ],
+      "denkraum": "loesung",
+      "faeden": [
+        "re",
+        "ba",
+        "pm"
+      ],
+      "dauer": null,
+      "haufeSeminare": [
+        "31693",
+        "9368"
+      ],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "Fallwelt",
+        "Projektauftrag",
+        "Pflichtenheft"
+      ],
+      "standards": [
+        "IEEE 29148",
+        "PMBOK"
+      ],
+      "siegel": {
+        "status": "Auditiert & zertifiziert",
+        "letztesAudit": "2026-10-21",
+        "auditZeileImTool": null,
+        "offen": [
+          "K11 (Kann, dauerhaft offen)",
+          "K14 (Kann, Audit-Zeile fehlt)"
+        ]
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": false,
+      "verwandt": [
+        "tools/lindenfeld-projektauftrag-pflichtenheft.html"
+      ],
+      "geprueft": false,
+      "notiz": "Variante der Trainerversion, kein eigener Inhalt."
     }
   ]
 };
