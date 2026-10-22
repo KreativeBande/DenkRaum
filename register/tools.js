@@ -4,7 +4,7 @@
  * Als Skript-Datei (nicht .json), damit sie auch offline per file:// lädt.
  */
 window.DENKRAUM_REGISTER = {
-  "stand": "2026-10-21",
+  "stand": "2026-10-22",
   "denkraeume": [
     {
       "id": "moeglichkeit",
@@ -582,7 +582,7 @@ window.DENKRAUM_REGISTER = {
         "tools/ba-auspraegungen.html"
       ],
       "geprueft": false,
-      "notiz": ""
+      "notiz": "Sketchnote zum Business Case im Reiter Business Case (22.10.2026, eigener Bild-Zoom, Alt-Text DE/EN)."
     },
     {
       "id": "babok-kompendium",
@@ -1628,7 +1628,7 @@ window.DENKRAUM_REGISTER = {
         "tools/vantera-talentmatch-steckbrief.html"
       ],
       "geprueft": false,
-      "notiz": ""
+      "notiz": "Sketchnotes zu User Story, Use Case und Anforderungsdokumentation in LE 3 (22.10.2026, eigener Bild-Zoom, Alt-Text DE/EN)."
     },
     {
       "id": "iso-25010-banklabor",
@@ -3953,7 +3953,7 @@ window.DENKRAUM_REGISTER = {
         "tools/klarheits-sprint/index.html"
       ],
       "geprueft": false,
-      "notiz": ""
+      "notiz": "Sketchnote zur User Story vor dem Backlog-Explorer (22.10.2026, eigener Bild-Zoom)."
     },
     {
       "id": "vantera-talentmatch-steckbrief",
@@ -4757,7 +4757,9 @@ window.DENKRAUM_REGISTER = {
         "Testfall",
         "Rückverfolgung",
         "Change Request",
-        "OKR"
+        "OKR",
+        "Use Case",
+        "Persona"
       ],
       "standards": [
         "IREB",
@@ -4783,7 +4785,7 @@ window.DENKRAUM_REGISTER = {
         "tools/okr-kaskade.html"
       ],
       "geprueft": false,
-      "notiz": "Von Michaela angeliefert; für den Hub um Rücksprung, Einbettungsmodus und Bild-Zoom ergänzt (Skripte am Dateiende). Der Systemprompt in der Footer-Box ist ein Co-Trainer-Prompt und noch kein Master-Bau-Prompt (K19). Sprecher-Skript mit Zeitangaben je Station."
+      "notiz": "Von Michaela angeliefert; für den Hub um Rücksprung, Einbettungsmodus und Bild-Zoom ergänzt (Skripte am Dateiende). Der Systemprompt in der Footer-Box ist ein Co-Trainer-Prompt und noch kein Master-Bau-Prompt (K19). Sprecher-Skript mit Zeitangaben je Station. Sketchnotes zu Business Case, Anforderungsdokumentation, Persona, Use Case und User Story je am Stationsanfang (22.10.2026, Alt-Text DE/EN, Bild-Zoom)."
     },
     {
       "id": "lindenfeld-projektauftrag-pflichtenheft",
@@ -4847,7 +4849,7 @@ window.DENKRAUM_REGISTER = {
         "tools/lindenfeld-gateplan.html"
       ],
       "geprueft": false,
-      "notiz": "Zahlen mit Python nachgerechnet (Validierungsbericht in Station 2). DIN 69901-5, VDI 2519 und PMBOK nur über Sekundärquellen geprüft (21.10.2026). Teilnehmendenversion: lindenfeld-projektauftrag-pflichtenheft-teilnehmende.html."
+      "notiz": "Zahlen mit Python nachgerechnet (Validierungsbericht in Station 2). DIN 69901-5, VDI 2519 und PMBOK nur über Sekundärquellen geprüft (21.10.2026). Teilnehmendenversion: lindenfeld-projektauftrag-pflichtenheft-teilnehmende.html. Sketchnotes zu Lastenheft und Pflichtenheft am Anfang von Station 3 (22.10.2026, Alt-Text DE/EN, Bild-Zoom)."
     },
     {
       "id": "lindenfeld-projektauftrag-pflichtenheft-teilnehmende",
