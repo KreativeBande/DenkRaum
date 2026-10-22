@@ -582,7 +582,7 @@ window.DENKRAUM_REGISTER = {
         "tools/ba-auspraegungen.html"
       ],
       "geprueft": false,
-      "notiz": ""
+      "notiz": "Sketchnote zum Business Case im Reiter Business Case (22.10.2026, eigener Bild-Zoom, Alt-Text DE/EN)."
     },
     {
       "id": "babok-kompendium",
@@ -1628,7 +1628,7 @@ window.DENKRAUM_REGISTER = {
         "tools/vantera-talentmatch-steckbrief.html"
       ],
       "geprueft": false,
-      "notiz": ""
+      "notiz": "Sketchnotes zu User Story, Use Case und Anforderungsdokumentation in LE 3 (22.10.2026, eigener Bild-Zoom, Alt-Text DE/EN)."
     },
     {
       "id": "iso-25010-banklabor",
@@ -3953,7 +3953,7 @@ window.DENKRAUM_REGISTER = {
         "tools/klarheits-sprint/index.html"
       ],
       "geprueft": false,
-      "notiz": ""
+      "notiz": "Sketchnote zur User Story vor dem Backlog-Explorer (22.10.2026, eigener Bild-Zoom)."
     },
     {
       "id": "vantera-talentmatch-steckbrief",
