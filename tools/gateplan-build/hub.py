@@ -131,7 +131,7 @@ function openF(k,a){
  else if(a){FR[k].contentWindow.postMessage({gp:'goto',a:a},'*');}
  if(id)curS[k]=id;curMark(k);
 }
-window.addEventListener('message',function(e){var d=e.data;if(d&&d.gp==='zoomstate'){['c','p'].forEach(function(k){if(FR[k].contentWindow===e.source)FR[k].classList.toggle('zoomfull',!!d.on);});return;}if(!d||d.gp!=='cur')return;['c','p'].forEach(function(k){if(FR[k].contentWindow===e.source){curS[k]=d.id;curMark(k);}});});
+window.addEventListener('message',function(e){var d=e.data;if(d&&d.gp==='zoomstate'){['c','p'].forEach(function(k){if(FR[k].contentWindow===e.source)FR[k].classList.toggle('zoomfull',!!d.on);});return;}if(d&&d.gp==='open'&&(d.k==='c'||d.k==='p')){openF(d.k,d.a||'');return;}if(!d||d.gp!=='cur')return;['c','p'].forEach(function(k){if(FR[k].contentWindow===e.source){curS[k]=d.id;curMark(k);}});});
 document.addEventListener('pointerup',function(e){
  var t=e.target;if(!t.closest)return;
  var ft=t.closest('.ftab');if(ft){var f=ft.getAttribute('data-file');if(f==='hub')setFile('hub');else openF(f,'');return;}
