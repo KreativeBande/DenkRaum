@@ -2287,7 +2287,7 @@ window.DENKRAUM_REGISTER = {
       "datei": "tools/lindenfeld-lunch-steckbrief.html",
       "titel": "Fallwelt-Steckbrief — Lindenfeld Systemtechnik GmbH / Lindenfeld Lunch",
       "kurztitel": "Fallwelt Lindenfeld Lunch",
-      "kurz": "Referenzseite (kein Übungstool) für die vierte feste Denkraum-Fallwelt: Cafeteria-App Lindenfeld Lunch der Lindenfeld Systemtechnik GmbH (1.150 Mitarbeitende) — drei messbare Ziele, neun Stakeholder mit Rolle und Interesse, Optionen A/B/C mit Kapitalwert und Break-even, plus Business Case zur Zielsteuerung mit Stage Gate.",
+      "kurz": "Referenzseite (kein Übungstool) für die vierte feste Denkraum-Fallwelt: Cafeteria-App Lindenfeld Lunch der Lindenfeld Systemtechnik GmbH (1.150 Mitarbeitende) — vier messbare Ziele, neun Stakeholder mit Rolle und Interesse, Optionen A/B/C mit Kapitalwert und Break-even, plus Business Case zur Zielsteuerung mit Stage Gate.",
       "rubrik": "Requirements & Business-Analyse",
       "bereich": "Business-Analyse",
       "aufStartseite": true,
@@ -2318,8 +2318,8 @@ window.DENKRAUM_REGISTER = {
       ],
       "siegel": {
         "status": "Auditiert & zertifiziert",
-        "letztesAudit": "2026-10-17",
-        "auditZeileImTool": "17.10.2026",
+        "letztesAudit": "2026-10-22",
+        "auditZeileImTool": "22.10.2026",
         "offen": null
       },
       "beamer": "4-stufig",

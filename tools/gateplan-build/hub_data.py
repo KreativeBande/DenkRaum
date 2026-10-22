@@ -115,8 +115,8 @@ CELLS = {
  ('Umfangsänderungen nur mit Entscheidung am Gate', 'Scope changes only with a decision at the gate', 'R'),
 ],
 'N': [
- ('Harter und weicher Nutzen getrennt; Break-even bei 3,3 % Zeitverwertung', 'Hard and soft benefit separated; break-even at 3.3% time utilisation', 'F'),
- ('GZ-1 bis GZ-3 mit Ausgangswert, Zielwert und Frist', 'GZ-1 to GZ-3 with baseline, target and deadline', 'F'),
+ ('Harter und weicher Nutzen getrennt; Break-even bei 0,3 % Zeitverwertung (bei 900 Gästen, GZ-4; bei 640: 3,3 %)', 'Hard and soft benefit separated; break-even at 0.3% time utilisation (at 900 guests, GZ-4; at 640: 3.3%)', 'F'),
+ ('GZ-1 bis GZ-4 mit Ausgangswert, Zielwert und Frist', 'GZ-1 to GZ-4 with baseline, target and deadline', 'F'),
  ('Jede Anforderung führt über Epic und Story zu einem Ziel', 'Every requirement leads via epic and story to a goal', 'F'),
  ('Messweg für EM-1 und GZ in den Abnahmekriterien vorbereitet', 'Measurement path for EM-1 and GZ prepared in the acceptance criteria', 'A'),
  ('Ausgangswerte vor Go-Live festhalten: 33 % Abfall, 65 Minuten', 'Record baselines before go-live: 33% waste, 65 minutes', 'R'),
@@ -130,7 +130,7 @@ BRIEF = [
  [ # G0
   (('Entscheidung', 'Decision'), ('Option A (nur Release 1) starten, mit Stage Gate nach 6 Monaten', 'Start option A (release 1 only), with a stage gate after 6 months'), 'F', '1'),
   (('Wer entscheidet', 'Who decides'), ('Lenkungskreis; Sponsorin Heike Brandl', 'Steering group; sponsor Heike Brandl'), 'F', '0b, 1'),
-  (('Go-Kriterien', 'Go criteria'), ('Alle fünf Fälle bedacht, Nichtstun verglichen, Break-even von 3,3 % Zeitverwertung bekannt', 'All five cases considered, doing nothing compared, break-even of 3.3% time utilisation known'), 'F', '1'),
+  (('Go-Kriterien', 'Go criteria'), ('Alle fünf Fälle bedacht, Nichtstun verglichen, Break-even von 0,3 % Zeitverwertung (bei erreichtem GZ-4) bekannt', 'All five cases considered, doing nothing compared, break-even of 0.3% time utilisation (if GZ-4 is reached) known'), 'F', '1'),
   (('Warnsignal', 'Warning sign'), ('Zeitverwertung nicht glaubhaft: bei 0 % ist jeder Kapitalwert negativ', 'Time utilisation not credible: at 0% every net present value is negative'), 'F', '1'),
  ],
  [ # G1
@@ -185,7 +185,7 @@ LINKS = [
 # Gruppenfragen je Gate: (Frage DE, EN, [Antwort-Absätze (DE, EN)])
 GROUPQ = [
  (('Option B wirkt attraktiver, weil sie mehr Funktionen bringt. Warum startet der Fall trotzdem mit Option A?', 'Option B looks more attractive because it delivers more features. Why does the case start with option A anyway?'),
-  [('Option A hat die niedrigste Schwelle: Break-even bei 3,3 % Zeitverwertung gegenüber 6,7 % bei Option B. Release 2 hängt an gemessenen Ergebnissen, und die 290.000 EUR Zusatzinvestition werden erst nach dem Stage Gate entschieden.', 'Option A has the lowest threshold: break-even at 3.3% time utilisation versus 6.7% for option B. Release 2 depends on measured results, and the EUR 290,000 additional investment is decided only after the stage gate.'),
+  [('Option A hat die niedrigste Schwelle: Break-even bei 0,3 % Zeitverwertung gegenüber 3,1 % bei Option B (bei erreichtem GZ-4 mit 900 Gästen; verfehlt: 3,3 % gegenüber 6,7 %). Release 2 hängt an gemessenen Ergebnissen, und die 290.000 EUR Zusatzinvestition werden erst nach dem Stage Gate entschieden.', 'Option A has the lowest threshold: break-even at 0.3% time utilisation versus 3.1% for option B (if GZ-4 with 900 guests is reached; if missed: 3.3% versus 6.7%). Release 2 depends on measured results, and the EUR 290,000 additional investment is decided only after the stage gate.'),
    ('Beispielfrage an die Sponsorin: Welche Zeitverwertung halten Sie für realistisch, und wer misst sie?', 'Sample question to the sponsor: Which time utilisation do you consider realistic, and who measures it?')]),
  (('Warum steht der Zielkonflikt bei GZ-2 im Projektauftrag und nicht in einer Fußnote?', 'Why is the GZ-2 goal conflict in the project charter and not in a footnote?'),
   [('Weil die Sponsorin nur entscheiden kann, was sie sieht: Option A erreicht 8 % statt 15 %, das sind 37.800 EUR im Jahr weniger. GZ-2 wird als Hypothese geführt und am Stage Gate entschieden.', 'Because the sponsor can only decide what she sees: option A achieves 8% instead of 15%, which is EUR 37,800 per year less. GZ-2 is treated as a hypothesis and decided at the stage gate.'),

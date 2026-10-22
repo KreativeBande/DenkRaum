@@ -6,6 +6,20 @@ Datum: 17.10.2026
 Anlass: Erstaudit nach Merge von PR #185 (Seite stand bis dahin im Register auf „Offene Punkte“, K17 offen).
 Prüfmethode: statische Analyse (grep, Python-Skripte) plus dynamische Verifikation per Playwright/Chromium (headless) bei 1300, 1440, 900 und 375 px; Websuche bzw. Seitenabruf für jede genannte Norm.
 
+## Nachprüfung 22.10.2026 (Änderung: Geschäftsziel GZ-4)
+
+Anlass: Der Fall bekam das Ziel GZ-4 (Mittagsgäste von 640 auf 900 pro Tag binnen 12 Monaten); Business Case, Break-even und Lastwerte wurden neu gerechnet, der Steckbrief entsprechend angepasst (Fakten, Szenarienvergleich, Systemprompt, Vortrags-Skript samt Companion-Datei).
+
+- K8: Zahlen gegen eine unabhängige Neuberechnung geprüft (Gästepfad 770, dann 900; Abfall- und Zeitnutzen folgen dem Pfad; Betriebskosten fix). Option A: Kapitalwert −17.454 / 546.096 / 1.391.421 EUR, Break-even 0,3 %; B: 3,1 %; C: 5,1 %. Dieselbe Rechnung reproduziert bei 640 Gästen die bisherigen Werte exakt (−134.732 / 273.449 / 885.722, 3,3 %).
+- K1/K20/K21 per Playwright (1300 und 390 px): keine Seitenfehler, keine externen Requests, kein seitliches Scrollen, DE/EN umschaltbar, 0 deutsche Restwörter im englischen Modus.
+- K16: `Sprecher-Skript_Lindenfeld-Lunch-Steckbrief.md` an die geänderte Footer-Box angeglichen.
+- K14: Audit-Zeile und Register auf 22.10.2026 gesetzt.
+- Nicht erneut geprüft wurden K17 (Normen unverändert, Stand 17.10.2026) und die übrigen Muss-Kriterien ohne Bezug zur Änderung; sie gelten aus dem Audit vom 17.10.2026.
+
+Ergebnis unverändert: ✅ Zertifiziert.
+
+---
+
 ## Änderungen in diesem Audit-Zyklus
 
 - Normen-Register neu gefasst: Alle zehn Zeilen sind jetzt auf das beschränkt, was am 17.10.2026 per Abruf belegt wurde. Entfernt wurden Behauptungen, die sich nicht belegen ließen oder im Steckbrief gar nicht vorkommen (u. a. „14 Stoffe in Anhang II LMIV“, „DSGVO Art. 5, 6, 25, 30, 35 verwendet“).
