@@ -2336,7 +2336,7 @@ window.DENKRAUM_REGISTER = {
         "tools/lindenfeld-projektauftrag-pflichtenheft.html"
       ],
       "geprueft": false,
-      "notiz": "Fall BA/RE-Case Lindenfeld Lunch, Projektauftrag und Pflichtenheft sowie der Gateplan liegen seit 21.10.2026 im Repo und sind unten verlinkt. K11 dauerhaft offen (Kann), daher kein Auszeichnungs-Siegel."
+      "notiz": "Fall BA/RE-Case Lindenfeld Lunch, Projektauftrag und Pflichtenheft sowie der Gateplan liegen seit 21.10.2026 im Repo und sind unten verlinkt. K11 dauerhaft offen (Kann), daher kein Auszeichnungs-Siegel. Kürzel (GZ, FR, OP, R, ADR, M …) sind anklickbar und öffnen ein Kontextfenster (Titel, Art, Sprung zur Fundstelle); Wörterbuch und Modul in tools/gateplan-build/ (idx_extract.py, idx_build.py), nach Änderung an Tabellen neu bauen (23.10.2026)."
     },
     {
       "id": "okr-denkraum-check",
@@ -4656,7 +4656,7 @@ window.DENKRAUM_REGISTER = {
         "tools/pflichtenheft-generator.html"
       ],
       "geprueft": false,
-      "notiz": "Case und Projektauftrag sind vollständig eingebettet (Blob-URL-iframes), Bauskripte in tools/gateplan-build/. Nach jeder Änderung an Case oder Projektauftrag neu bauen. DIN 69901-5, VDI 2519 und PMBOK nur über Sekundärquellen geprüft (21.10.2026). Teilnehmendenversion: lindenfeld-gateplan-teilnehmende.html. PDF-Handout für Teilnehmende: tools/Handout_Lindenfeld-Gateplan.pdf (21.10.2026, aus tools/gateplan-build/handout.py)."
+      "notiz": "Case und Projektauftrag sind vollständig eingebettet (Blob-URL-iframes), Bauskripte in tools/gateplan-build/. Nach jeder Änderung an Case oder Projektauftrag neu bauen. DIN 69901-5, VDI 2519 und PMBOK nur über Sekundärquellen geprüft (21.10.2026). Teilnehmendenversion: lindenfeld-gateplan-teilnehmende.html. PDF-Handout für Teilnehmende: tools/Handout_Lindenfeld-Gateplan.pdf (21.10.2026, aus tools/gateplan-build/handout.py). Kürzel (GZ, FR, OP, R, ADR, M …) sind anklickbar und öffnen ein Kontextfenster (Titel, Art, Sprung zur Fundstelle); Wörterbuch und Modul in tools/gateplan-build/ (idx_extract.py, idx_build.py), nach Änderung an Tabellen neu bauen (23.10.2026)."
     },
     {
       "id": "lindenfeld-gateplan-teilnehmende",
@@ -4785,7 +4785,7 @@ window.DENKRAUM_REGISTER = {
         "tools/okr-kaskade.html"
       ],
       "geprueft": false,
-      "notiz": "Von Michaela angeliefert; für den Hub um Rücksprung, Einbettungsmodus und Bild-Zoom ergänzt (Skripte am Dateiende). Der Systemprompt in der Footer-Box ist ein Co-Trainer-Prompt und noch kein Master-Bau-Prompt (K19). Sprecher-Skript mit Zeitangaben je Station. Sketchnotes zu Business Case, Anforderungsdokumentation, Persona, Use Case und User Story je am Stationsanfang (22.10.2026, Alt-Text DE/EN, Bild-Zoom)."
+      "notiz": "Von Michaela angeliefert; für den Hub um Rücksprung, Einbettungsmodus und Bild-Zoom ergänzt (Skripte am Dateiende). Der Systemprompt in der Footer-Box ist ein Co-Trainer-Prompt und noch kein Master-Bau-Prompt (K19). Sprecher-Skript mit Zeitangaben je Station. Sketchnotes zu Business Case, Anforderungsdokumentation, Persona, Use Case und User Story je am Stationsanfang (22.10.2026, Alt-Text DE/EN, Bild-Zoom). Kürzel (GZ, FR, OP, R, ADR, M …) sind anklickbar und öffnen ein Kontextfenster (Titel, Art, Sprung zur Fundstelle); Wörterbuch und Modul in tools/gateplan-build/ (idx_extract.py, idx_build.py), nach Änderung an Tabellen neu bauen (23.10.2026)."
     },
     {
       "id": "lindenfeld-projektauftrag-pflichtenheft",
@@ -4849,7 +4849,7 @@ window.DENKRAUM_REGISTER = {
         "tools/lindenfeld-gateplan.html"
       ],
       "geprueft": false,
-      "notiz": "Zahlen mit Python nachgerechnet (Validierungsbericht in Station 2). DIN 69901-5, VDI 2519 und PMBOK nur über Sekundärquellen geprüft (21.10.2026). Teilnehmendenversion: lindenfeld-projektauftrag-pflichtenheft-teilnehmende.html. Sketchnotes zu Lastenheft und Pflichtenheft am Anfang von Station 3 (22.10.2026, Alt-Text DE/EN, Bild-Zoom)."
+      "notiz": "Zahlen mit Python nachgerechnet (Validierungsbericht in Station 2). DIN 69901-5, VDI 2519 und PMBOK nur über Sekundärquellen geprüft (21.10.2026). Teilnehmendenversion: lindenfeld-projektauftrag-pflichtenheft-teilnehmende.html. Sketchnotes zu Lastenheft und Pflichtenheft am Anfang von Station 3 (22.10.2026, Alt-Text DE/EN, Bild-Zoom). Kürzel (GZ, FR, OP, R, ADR, M …) sind anklickbar und öffnen ein Kontextfenster (Titel, Art, Sprung zur Fundstelle); Wörterbuch und Modul in tools/gateplan-build/ (idx_extract.py, idx_build.py), nach Änderung an Tabellen neu bauen (23.10.2026)."
     },
     {
       "id": "lindenfeld-projektauftrag-pflichtenheft-teilnehmende",
