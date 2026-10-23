@@ -9,6 +9,9 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 EMB_DIR = os.path.abspath(os.environ.get('GP_SRC', os.path.join(BASE, 'out')))  # Ordner mit Case und Pflichtenheft (im Repo: tools/)
 DST_DIR = os.path.abspath(os.environ.get('GP_OUT', os.path.join(BASE, 'out')))
 CSS = open(os.path.join(BASE, 'base.css'), encoding='utf8').read()
+import json as _json
+_IDX_CSS = open(os.path.join(BASE, 'idx.css'), encoding='utf8').read()
+_IDX_JS = open(os.path.join(BASE, 'idx.js'), encoding='utf8').read().replace('__DATA__', _json.dumps(_json.load(open(os.path.join(BASE, 'idx_data.json'), encoding='utf8')), ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/'))
 JS = open(os.path.join(BASE, 'base.js'), encoding='utf8').read()
 JS = JS.replace("'Lindenfeld Lunch: Project Charter and Functional Specification':'Lindenfeld Lunch: Projektauftrag und Pflichtenheft'",
                 "'Lindenfeld Lunch: Gate Plan':'Lindenfeld Lunch: Gateplan'")
@@ -131,6 +134,7 @@ function openF(k,a){
  else if(a){FR[k].contentWindow.postMessage({gp:'goto',a:a},'*');}
  if(id)curS[k]=id;curMark(k);
 }
+window.__gpOpen=openF;
 window.addEventListener('message',function(e){var d=e.data;if(d&&d.gp==='zoomstate'){['c','p'].forEach(function(k){if(FR[k].contentWindow===e.source)FR[k].classList.toggle('zoomfull',!!d.on);});return;}if(d&&d.gp==='open'&&(d.k==='c'||d.k==='p')){openF(d.k,d.a||'');return;}if(!d||d.gp!=='cur')return;['c','p'].forEach(function(k){if(FR[k].contentWindow===e.source){curS[k]=d.id;curMark(k);}});});
 document.addEventListener('pointerup',function(e){
  var t=e.target;if(!t.closest)return;
@@ -487,7 +491,7 @@ def page(trainer):
     tabs = [('Start', 'Start'), ('Gate für Gate', 'Gate by gate'), ('Netzplan', 'Network plan'), ('Übung', 'Exercise'), ('Mappe', 'Folder'), ('Glossar und Quellen', 'Glossary and sources')]
     chips = [('', 'Alle', 'All')] + [(l[3], l[4], l[5]) for l in LINES]
     h = ['<!DOCTYPE html>\n<html lang="de" data-depth="short">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<meta name="color-scheme" content="light">\n'
-         '<title>Lindenfeld Lunch · Gateplan</title>\n<script>document.documentElement.className+=\' js\';</script>\n<style>\n' + CSS + EXTRA_CSS + ZOOM_CSS + '</style>\n</head>\n<body>\n']
+         '<title>Lindenfeld Lunch · Gateplan</title>\n<script>document.documentElement.className+=\' js\';</script>\n<style>\n' + CSS + EXTRA_CSS + ZOOM_CSS + _IDX_CSS + '</style>\n</head>\n<body>\n']
     h.append('<div class="hdr"><span class="t">' + S('Lindenfeld Lunch · Gateplan', 'Lindenfeld Lunch · Gate plan') + '</span></div>\n')
     h.append('<a class="sig" href="https://www.michaela-kuehn.com">Michaela Kühn · www.michaela-kuehn.com</a>\n')
     ftabs = [('hub', 'Gateplan', 'Gate plan'), ('c', 'BA/RE-Case', 'BA/RE case'), ('p', 'Projektauftrag und Pflichtenheft', 'Project charter and specification')]
@@ -506,7 +510,7 @@ def page(trainer):
         h.append(footer() + '\n')
     emb = {'c': open(os.path.join(EMB_DIR, CASE_F), encoding='utf8').read(), 'p': open(os.path.join(EMB_DIR, PA_T if trainer else PA_P), encoding='utf8').read()}
     h.append('<script>window.__EMB=' + json.dumps(emb, ensure_ascii=False).replace('</', '<\\/').replace('\u2028', '\\u2028').replace('\u2029', '\\u2029') + ';</script>\n')
-    h.append('<script>' + JS + '</script>\n<script>' + EXTRA_JS + '</script>\n' + ZOOM_JS + '</body>\n</html>\n')
+    h.append('<script>' + JS + '</script>\n<script>' + EXTRA_JS + '</script>\n' + ZOOM_JS + '<script id="idx-js">' + _IDX_JS + '</script>\n</body>\n</html>\n')
     return ''.join(h)
 
 if __name__ == '__main__':
