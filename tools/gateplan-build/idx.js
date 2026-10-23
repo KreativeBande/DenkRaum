@@ -47,16 +47,16 @@ function open(id,a){cur=id;render(id);pop.hidden=false;}
 function stOf(s){return s.replace('st','');}
 function goP(id){
  var e=D.ids[id];if(!e||!e.p)return;
- if(HOST==='g'&&window.__gpOpen){window.__gpOpen('p',e.p.s+':'+id);return;}
+ if(HOST==='g'&&window.__gpOpen){window.__gpOpen('p',e.p.s+':'+id,id);return;}
  if(HOST==='p'){reveal(e.p.s,id);return;}
  var a=e.p.s+':'+id;
- if(framed)parent.postMessage({gp:'open',k:'p',a:a},'*');else location.href=PH+'#'+a;
+ if(framed)parent.postMessage({gp:'open',k:'p',a:a,l:id},'*');else{if(window.__idxBack)window.__idxBack.mark(id);location.href=PH+'#'+a;}
 }
 function goC(id){
  var e=D.ids[id];if(!e||!e.c)return;
  var a=e.c.s+(/\./.test(e.c.r)?'':':ref-'+e.c.r);
- if(HOST==='g'&&window.__gpOpen){window.__gpOpen('c',a);return;}
- if(framed)parent.postMessage({gp:'open',k:'c',a:a},'*');else location.href=CASE+'#'+a;
+ if(HOST==='g'&&window.__gpOpen){window.__gpOpen('c',a,id);return;}
+ if(framed)parent.postMessage({gp:'open',k:'c',a:a,l:id},'*');else{if(window.__idxBack)window.__idxBack.mark(id);location.href=CASE+'#'+a;}
 }
 function reveal(st,id){
  var t=document.querySelector('.tab[data-s="'+stOf(st)+'"]');

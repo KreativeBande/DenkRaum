@@ -134,12 +134,16 @@ function openF(k,a){
  else if(a){FR[k].contentWindow.postMessage({gp:'goto',a:a},'*');}
  if(id)curS[k]=id;curMark(k);
 }
-window.__gpOpen=openF;
-window.addEventListener('message',function(e){var d=e.data;if(d&&d.gp==='zoomstate'){['c','p'].forEach(function(k){if(FR[k].contentWindow===e.source)FR[k].classList.toggle('zoomfull',!!d.on);});return;}if(d&&d.gp==='open'&&(d.k==='c'||d.k==='p')){openF(d.k,d.a||'');return;}if(!d||d.gp!=='cur')return;['c','p'].forEach(function(k){if(FR[k].contentWindow===e.source){curS[k]=d.id;curMark(k);}});});
+var idxStack=[],idxBtn=document.createElement('button');idxBtn.id='idxback';idxBtn.type='button';idxBtn.hidden=true;document.body.appendChild(idxBtn);
+function idxShow(){var t=idxStack[idxStack.length-1];if(!t){idxBtn.hidden=true;return;}idxBtn.textContent='\u21A9 '+(document.documentElement.lang==='en'?'Back to ':'Zur\u00fcck zu ')+t.l;idxBtn.hidden=false;}
+function idxMark(l){if(!l)return;idxStack.push({f:lay.getAttribute('data-file'),y:window.pageYOffset,l:l});if(idxStack.length>5)idxStack.shift();}
+idxBtn.addEventListener('click',function(){var t=idxStack.pop();if(!t)return;setFile(t.f);window.scrollTo(0,t.y);idxShow();});
+window.__gpOpen=function(k,a,l){idxMark(l);openF(k,a);idxShow();};
+window.addEventListener('message',function(e){var d=e.data;if(d&&d.gp==='zoomstate'){['c','p'].forEach(function(k){if(FR[k].contentWindow===e.source)FR[k].classList.toggle('zoomfull',!!d.on);});return;}if(d&&d.gp==='open'&&(d.k==='c'||d.k==='p')){idxMark(d.l);openF(d.k,d.a||'');idxShow();return;}if(!d||d.gp!=='cur')return;['c','p'].forEach(function(k){if(FR[k].contentWindow===e.source){curS[k]=d.id;curMark(k);}});});
 document.addEventListener('pointerup',function(e){
  var t=e.target;if(!t.closest)return;
- var ft=t.closest('.ftab');if(ft){var f=ft.getAttribute('data-file');if(f==='hub')setFile('hub');else openF(f,'');return;}
- var sn=t.closest('.snv');if(sn){openF(sn.getAttribute('data-k'),sn.getAttribute('data-a'));return;}
+ var ft=t.closest('.ftab');if(ft){idxStack=[];idxShow();var f=ft.getAttribute('data-file');if(f==='hub')setFile('hub');else openF(f,'');return;}
+ var sn=t.closest('.snv');if(sn){idxStack=[];idxShow();openF(sn.getAttribute('data-k'),sn.getAttribute('data-a'));return;}
  var a=t.closest('a.go');if(a){openF(a.getAttribute('data-k'),a.getAttribute('data-a')||'');}
 });
 document.addEventListener('click',function(e){var t=e.target;if(t.closest&&t.closest('a.go'))e.preventDefault();});
@@ -491,7 +495,7 @@ def page(trainer):
     tabs = [('Start', 'Start'), ('Gate für Gate', 'Gate by gate'), ('Netzplan', 'Network plan'), ('Übung', 'Exercise'), ('Mappe', 'Folder'), ('Glossar und Quellen', 'Glossary and sources')]
     chips = [('', 'Alle', 'All')] + [(l[3], l[4], l[5]) for l in LINES]
     h = ['<!DOCTYPE html>\n<html lang="de" data-depth="short">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<meta name="color-scheme" content="light">\n'
-         '<title>Lindenfeld Lunch · Gateplan</title>\n<script>document.documentElement.className+=\' js\';</script>\n<style>\n' + CSS + EXTRA_CSS + ZOOM_CSS + _IDX_CSS + '</style>\n</head>\n<body>\n']
+         '<title>Lindenfeld Lunch · Gateplan</title>\n<script>document.documentElement.className+=\' js\';</script>\n<style>\n' + CSS + EXTRA_CSS + ZOOM_CSS + _IDX_CSS + '#idxback{position:fixed;left:16px;bottom:16px;z-index:125;min-height:44px;padding:8px 18px;border-radius:999px;border:2px solid var(--ink);background:var(--ink);color:#fff;font:600 16px/1.2 inherit;font-family:inherit;cursor:pointer;box-shadow:0 6px 18px rgba(31,42,58,.3)}#idxback[hidden]{display:none}html.beamer #idxback{font-size:22px}html.beamer-xl #idxback{font-size:28px}html.beamer-xxl #idxback{font-size:34px}' + '</style>\n</head>\n<body>\n']
     h.append('<div class="hdr"><span class="t">' + S('Lindenfeld Lunch · Gateplan', 'Lindenfeld Lunch · Gate plan') + '</span></div>\n')
     h.append('<a class="sig" href="https://www.michaela-kuehn.com">Michaela Kühn · www.michaela-kuehn.com</a>\n')
     ftabs = [('hub', 'Gateplan', 'Gate plan'), ('c', 'BA/RE-Case', 'BA/RE case'), ('p', 'Projektauftrag und Pflichtenheft', 'Project charter and specification')]
