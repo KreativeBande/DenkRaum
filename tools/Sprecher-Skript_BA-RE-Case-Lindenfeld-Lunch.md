@@ -2,7 +2,7 @@
 
 Synchron zur Footer-Box „Vortrags-Skript“ im Tool. Bei Abweichung gilt die Footer-Box.
 
-Vollständiger Durchlauf: etwa 445 Minuten (ohne Pausen). Kurzpfad „Nutzen steuern“ (Start und Stationen 0a, 1, 9, 10, 11, 12): etwa 180 Minuten. Optional: Exkurse je etwa 20 Minuten zusätzlich, nicht im Kurzpfad: Impact Mapping (Station 3b), Entscheidungstabelle (Station 2), Persona und Journey (Station 3a), BPMN (Station 4).
+Vollständiger Durchlauf: etwa 480 Minuten (ohne Pausen). Kurzpfad „Nutzen steuern“ (Start und Stationen 0a, 1, 9, 10, 11, 12): etwa 180 Minuten. Optional: Exkurse je etwa 20 Minuten zusätzlich, nicht im Kurzpfad: Impact Mapping (Station 3b), Entscheidungstabelle (Station 2), Persona und Journey (Station 3a).
 
 | Station | Minuten | Kernbotschaft | Frage an die Gruppe |
 |---|---|---|---|
@@ -14,6 +14,7 @@ Vollständiger Durchlauf: etwa 445 Minuten (ohne Pausen). Kurzpfad „Nutzen ste
 | 3a Epics | 20 | Vertikal schneiden, Story Map | Welches Epic liefert für sich schon Nutzen? |
 | 3b Priorisieren | 25 | Kano, Impact Map, Abstimmung | Was setzen Gäste voraus, und was würde sie begeistern? |
 | 4 Use Cases | 30 | Ziel des Akteurs, Erweiterungen | Was kann bei der Bestellung alles schiefgehen? |
+| 4a Geschäftsprozesse | 35 | Ist vor Soll, Zeit messen, Schritt zur Anforderung | Wo gehen heute die 65 Minuten hin? |
 | 5 Stories | 30 | Nutzen und Akzeptanzkriterien | Woran erkennt ihr, dass die Story fertig ist? |
 | 6 Tests | 30 | Äquivalenzklassen und Grenzwerte | Welche zwei Werte testet ihr bei einem Limit von 150,00 EUR? |
 | 7 Rückverfolgung | 20 | Lücken und Auswirkungen | Welche Anforderung hat noch keinen Testfall? |
