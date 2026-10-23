@@ -8,16 +8,22 @@ d = json.load(open(os.path.join(B, 'idx_data.json'), encoding='utf-8'))
 data = json.dumps(d, ensure_ascii=False, separators=(',', ':'))
 css = open(os.path.join(B, 'idx.css'), encoding='utf-8').read().strip()
 js = open(os.path.join(B, 'idx.js'), encoding='utf-8').read().replace('__DATA__', data.replace('</', '<\\/'))
+BACK = open(os.path.join(B, 'idxback.js'), encoding='utf-8').read()
+BLOCK_BACK = '<script id="idxback-js">' + BACK + '</script>\n'
 BLOCK_CSS = '<style id="idx-css">\n' + css + '\n</style>\n'
 BLOCK_JS = '<script id="idx-js">' + js + '</script>\n'
-files = ['lindenfeld-projektauftrag-pflichtenheft.html', 'lindenfeld-projektauftrag-pflichtenheft-teilnehmende.html', 'lindenfeld-lunch-steckbrief.html']
+files = ['ba-re-case-lindenfeld-lunch.html', 'lindenfeld-projektauftrag-pflichtenheft.html', 'lindenfeld-projektauftrag-pflichtenheft-teilnehmende.html', 'lindenfeld-lunch-steckbrief.html']
 for fn in files:
     p = os.path.join(T, fn); h = open(p, encoding='utf-8').read()
     h = re.sub(r'<style id="idx-css">.*?</style>\n', '', h, flags=re.S)
     h = re.sub(r'<script id="idx-js">.*?</script>\n', '', h, flags=re.S)
+    h = re.sub(r'<script id="idxback-js">.*?</script>\n', '', h, flags=re.S)
     assert h.count('</head>') == 1 and h.count('</body>') == 1, fn
+    if fn.startswith('ba-re-case'):
+        h = h.replace('</body>', BLOCK_BACK + '</body>', 1)
+        open(p, 'w', encoding='utf-8').write(h); print(fn, len(h)); continue
     h = h.replace('</head>', BLOCK_CSS + '</head>', 1)
-    h = h.replace('</body>', BLOCK_JS + '</body>', 1)
+    h = h.replace('</body>', BLOCK_BACK + BLOCK_JS + '</body>', 1)
     if 'pflichtenheft' in fn:
         a = "var hm=(location.hash||'').match(/^#st([0-7])$/);"
         b = "var hm=(location.hash||'').match(/^#st([0-7])(?::([\\w.-]+))?$/);"
