@@ -118,7 +118,7 @@ async def main():
             ok(side,f'{fn} Navigation links neben dem Inhalt')
             # Case: alle Sidebar-Einträge
             await pg.evaluate(ev('.ftab[data-file="c"]')); await pg.wait_for_timeout(500)
-            n=await pg.evaluate('document.querySelectorAll("#navC .snv").length'); ok(n==16,f'{fn} Case-Navigation {n} Einträge')
+            n=await pg.evaluate('document.querySelectorAll("#navC .snv").length'); ok(n==17,f'{fn} Case-Navigation {n} Einträge')
             bad=[]
             ids=await pg.evaluate('[...document.querySelectorAll("#navC .snv")].map(b=>b.dataset.a)')
             fr=[f for f in pg.frames if f!=pg.main_frame][0]

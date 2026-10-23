@@ -4759,7 +4759,9 @@ window.DENKRAUM_REGISTER = {
         "Change Request",
         "OKR",
         "Use Case",
-        "Persona"
+        "Persona",
+        "Geschäftsprozesse",
+        "BPMN"
       ],
       "standards": [
         "IREB",
@@ -4785,7 +4787,7 @@ window.DENKRAUM_REGISTER = {
         "tools/okr-kaskade.html"
       ],
       "geprueft": false,
-      "notiz": "Von Michaela angeliefert; für den Hub um Rücksprung, Einbettungsmodus und Bild-Zoom ergänzt (Skripte am Dateiende). Der Systemprompt in der Footer-Box ist ein Co-Trainer-Prompt und noch kein Master-Bau-Prompt (K19). Sprecher-Skript mit Zeitangaben je Station. Sketchnotes zu Business Case, Anforderungsdokumentation, Persona, Use Case und User Story je am Stationsanfang (22.10.2026, Alt-Text DE/EN, Bild-Zoom). Kürzel (GZ, FR, OP, R, ADR, M …) sind anklickbar und öffnen ein Kontextfenster (Titel, Art, Sprung zur Fundstelle); Wörterbuch und Modul in tools/gateplan-build/ (idx_extract.py, idx_build.py), nach Änderung an Tabellen neu bauen (23.10.2026)."
+      "notiz": "Von Michaela angeliefert; für den Hub um Rücksprung, Einbettungsmodus und Bild-Zoom ergänzt (Skripte am Dateiende). Der Systemprompt in der Footer-Box ist ein Co-Trainer-Prompt und noch kein Master-Bau-Prompt (K19). Sprecher-Skript mit Zeitangaben je Station. Sketchnotes zu Business Case, Anforderungsdokumentation, Persona, Use Case und User Story je am Stationsanfang (22.10.2026, Alt-Text DE/EN, Bild-Zoom). Kürzel (GZ, FR, OP, R, ADR, M …) sind anklickbar und öffnen ein Kontextfenster (Titel, Art, Sprung zur Fundstelle); Wörterbuch und Modul in tools/gateplan-build/ (idx_extract.py, idx_build.py), nach Änderung an Tabellen neu bauen (23.10.2026). Station 4a Geschäftsprozesse (23.10.2026): Ist-Prozess mit Minuten, Soll-Prozess in BPMN (Exkurs aus Station 4 hierher verschoben), Zeitrechnung zu GZ-3, Schritt zur Anforderung, zwei Abstimmungen, Übung, Checkliste; Zeitaufteilung ist Planungsannahme, nur 65 und 20 Minuten stammen aus dem Fall."
     },
     {
       "id": "lindenfeld-projektauftrag-pflichtenheft",

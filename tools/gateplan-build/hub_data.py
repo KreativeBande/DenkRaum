@@ -175,7 +175,7 @@ BRIEF = [
 LINKS = [
  [('c', 's0', '0a Fall', '0a Case'), ('c', 's0b', '0b Stakeholder', '0b Stakeholders'), ('c', 's1', '1 Business Case', '1 Business case')],
  [('p', 'st1', 'Projektauftrag', 'Project charter'), ('p', 'st2', 'Auftrag prüfen', 'Check the charter'), ('c', 's0b', '0b Stakeholder', '0b Stakeholders')],
- [('c', 's2', '2 Anforderungen', '2 Requirements'), ('c', 's3', '3a Epics', '3a Epics'), ('c', 's3b', '3b Priorisieren', '3b Prioritising'), ('c', 's4', '4 Use Cases', '4 Use cases'), ('c', 's5', '5 Stories', '5 Stories'), ('c', 's7', '7 Rückverfolgung', '7 Traceability'), ('p', 'st3', 'Lasten- und Pflichtenheft', 'Requirements vs. specification')],
+ [('c', 's2', '2 Anforderungen', '2 Requirements'), ('c', 's3', '3a Epics', '3a Epics'), ('c', 's3b', '3b Priorisieren', '3b Prioritising'), ('c', 's4', '4 Use Cases', '4 Use cases'), ('c', 's4a', '4a Geschäftsprozesse', '4a Business processes'), ('c', 's5', '5 Stories', '5 Stories'), ('c', 's7', '7 Rückverfolgung', '7 Traceability'), ('p', 'st3', 'Lasten- und Pflichtenheft', 'Requirements vs. specification')],
  [('p', 'st4', 'Pflichtenheft', 'Functional specification'), ('p', 'st5', 'Pflichtenheft prüfen', 'Check the specification'), ('c', 's2', '2 Anforderungen (NFR, Leitplanken)', '2 Requirements (NFR, guardrails)'), ('p', 'st6', 'BA-Facetten', 'BA facets')],
  [('c', 's6', '6 Tests', '6 Tests'), ('c', 's7', '7 Rückverfolgung', '7 Traceability'), ('c', 'sCR', '8 Change Request', '8 Change request'), ('p', 'st4', 'Pflichtenheft (Kapitel 8 Abnahme)', 'Specification (chapter 8 acceptance)')],
  [('c', 'sOKR', '9 OKR', '9 OKR'), ('c', 'sBoard', '10 Schreibtisch', '10 Desk'), ('c', 'sBacklog', '11 Backlog', '11 Backlog')],
@@ -217,6 +217,7 @@ CASE_ST = [
  ('s3', '3a Epics', '3a Epics', 'G2'),
  ('s3b', '3b Priorisieren', '3b Prioritising', 'G2'),
  ('s4', '4 Use Cases', '4 Use cases', 'G2'),
+ ('s4a', '4a Geschäftsprozesse', '4a Business processes', 'G2'),
  ('s5', '5 Stories', '5 Stories', 'G2'),
  ('s6', '6 Tests', '6 Tests', 'G4'),
  ('s7', '7 Rückverfolgung', '7 Traceability', 'G2, G4'),
