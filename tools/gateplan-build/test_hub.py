@@ -113,7 +113,7 @@ async def main():
             ev=lambda sel: f'document.querySelector(\'{sel}\').dispatchEvent(new Event("pointerup",{{bubbles:true}}))'
             w=await pg.evaluate('document.querySelector(".layout").getBoundingClientRect().width/innerWidth')
             ok(w>=0.94,f'{fn} Layout {w:.2f} der Breite')
-            ok(await pg.evaluate('document.querySelectorAll(".ftab").length')==3,f'{fn} 3 Datei-Reiter')
+            ok(await pg.evaluate('document.querySelectorAll(".ftab").length')==4,f'{fn} 4 Datei-Reiter')
             side=await pg.evaluate('(()=>{const a=document.querySelector(".side").getBoundingClientRect(),m=document.querySelector("main").getBoundingClientRect();return a.right<=m.left+1&&Math.abs(a.top-m.top)<80})()')
             ok(side,f'{fn} Navigation links neben dem Inhalt')
             # Case: alle Sidebar-Einträge
