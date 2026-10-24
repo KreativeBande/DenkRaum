@@ -237,3 +237,26 @@ PA_ST = [
  ('st6', 'BA-Facetten', 'BA facets', 'G3'),
  ('st7', 'Glossar und Quellen', 'Glossary and sources', '–'),
 ]
+
+# Comic-Tafeln (Reihenfolge wie tools/lindenfeld-comic.html)
+COMIC_ST = [
+    ('c-start', '1 Von der Vision zum Testfall', '1 From vision to test case'),
+    ('c-problem', '2 Erst das Problem verstehen', '2 Understand the problem first'),
+    ('c-ziele', '3 Von der Vision zum messbaren Ziel', '3 From vision to measurable goal'),
+    ('c-stuhl', '4 Der leere Stuhl im Workshop', '4 The empty chair in the workshop'),
+    ('c-fuenf', '5 Business Case: fünf Fragen vor dem GO', '5 Business case: five questions before the go'),
+    ('c-zeit', '6 Zeit gespart, Nutzen gewonnen?', '6 Time saved, benefit gained?'),
+    ('c-tor', '7 Das Tor zu Release 2', '7 The gate to release 2'),
+    ('c-schnell', '8 Was heißt hier schnell?', '8 What does “fast” mean here?'),
+    ('c-allergen', '9 Allergenangaben sind keine Dekoration', '9 Allergen information is not decoration'),
+    ('c-wege', '10 Eine Bestellung, zwei Wege', '10 One order, two paths'),
+    ('c-uc', '11 Use Case: Mahlzeit bestellen', '11 Use case: order a meal'),
+    ('c-story', '12 Die Story-Werkstatt', '12 The story workshop'),
+    ('c-storno', '13 Storniert, aber wo ist mein Geld?', '13 Cancelled, but where is my money?'),
+    ('c-test', '14 Grenzwerte gezielt testen', '14 Testing boundary values on purpose'),
+    ('c-platz', '15 Der letzte freie Lieferplatz', '15 The last free delivery slot'),
+    ('c-haken', '16 Grüne Haken, trotzdem unvollständig?', '16 Green ticks, still incomplete?'),
+    ('c-trace', '17 Rückverfolgbarkeit: den roten Faden halten', '17 Traceability: keeping the thread'),
+    ('c-cr', '18 Es ist doch nur eine Zahl!', '18 It is only a number!'),
+    ('c-nutzen', '19 Die App ist fertig. Der Nutzen auch?', '19 The app is finished. And the benefit?'),
+]

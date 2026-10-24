@@ -2339,6 +2339,66 @@ window.DENKRAUM_REGISTER = {
       "notiz": "Fall BA/RE-Case Lindenfeld Lunch, Projektauftrag und Pflichtenheft sowie der Gateplan liegen seit 21.10.2026 im Repo und sind unten verlinkt. K11 dauerhaft offen (Kann), daher kein Auszeichnungs-Siegel. Kürzel (GZ, FR, OP, R, ADR, M …) sind anklickbar und öffnen ein Kontextfenster (Titel, Art, Sprung zur Fundstelle); Wörterbuch und Modul in tools/gateplan-build/ (idx_extract.py, idx_build.py), nach Änderung an Tabellen neu bauen (23.10.2026)."
     },
     {
+      "id": "lindenfeld-comic",
+      "datei": "tools/lindenfeld-comic.html",
+      "titel": "Lindenfeld Lunch als Comic",
+      "kurztitel": "Comic Lindenfeld Lunch",
+      "kurz": "19 Comic-Tafeln entlang der Stationen des BA/RE-Case Lindenfeld Lunch: vom Problem über Ziele, Business Case, Anforderungen, Use Case, Stories und Tests bis zu Rückverfolgbarkeit, Änderung und Nutzen. Jede Tafel verlinkt zur Station im Case, der Case verlinkt zurück; auch als vierter Reiter im Gateplan.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Business-Analyse",
+      "aufStartseite": true,
+      "zweck": [
+        "Opener",
+        "Demonstrator"
+      ],
+      "denkraum": "rundreise",
+      "faeden": [
+        "re",
+        "ba"
+      ],
+      "dauer": null,
+      "haufeSeminare": [],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "Fallwelt",
+        "Comic",
+        "Sketchnote",
+        "Rückverfolgbarkeit",
+        "Business Case",
+        "Use Case",
+        "Grenzwerte"
+      ],
+      "standards": [
+        "IREB",
+        "BABOK",
+        "Use Case 3.0",
+        "ISTQB"
+      ],
+      "siegel": {
+        "status": "Offene Punkte",
+        "letztesAudit": null,
+        "auditZeileImTool": null,
+        "offen": [
+          "Audit steht aus (neu gebaut 24.10.2026)"
+        ]
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/ba-re-case-lindenfeld-lunch.html",
+        "tools/lindenfeld-gateplan.html",
+        "tools/lindenfeld-lunch-steckbrief.html"
+      ],
+      "geprueft": false,
+      "notiz": "Bilder sind von Michaela angeliefert (24.10.2026), als JPEG (1000 px, Qualität 62) eingebettet; in den Case sind sie nur verlinkt (iPad-Speicher). Abweichungen Bild/Fall stehen in den Bildunterschriften (GZ-4 fehlt in zwei Bildern, E3 bei FR-14, Kantinenleiter). Nicht verwendet: Drei Brillen und Anforderungs-Lupe (150 statt 210 Nutzende laut NFR-01). Comic-Tab im Gateplan: Seite ist eingebettet, Navigation per postMessage, Bauskripte in tools/gateplan-build/."
+    },
+    {
       "id": "okr-denkraum-check",
       "datei": "tools/okr-denkraum-check.html",
       "titel": "OKR-Board: Die Reise durch alle Räume",
@@ -4653,7 +4713,8 @@ window.DENKRAUM_REGISTER = {
         "tools/ba-re-case-lindenfeld-lunch.html",
         "tools/lindenfeld-projektauftrag-pflichtenheft.html",
         "tools/lindenfeld-lunch-steckbrief.html",
-        "tools/pflichtenheft-generator.html"
+        "tools/pflichtenheft-generator.html",
+        "tools/lindenfeld-comic.html"
       ],
       "geprueft": false,
       "notiz": "Case und Projektauftrag sind vollständig eingebettet (Blob-URL-iframes), Bauskripte in tools/gateplan-build/. Nach jeder Änderung an Case oder Projektauftrag neu bauen. DIN 69901-5, VDI 2519 und PMBOK nur über Sekundärquellen geprüft (21.10.2026). Teilnehmendenversion: lindenfeld-gateplan-teilnehmende.html. PDF-Handout für Teilnehmende: tools/Handout_Lindenfeld-Gateplan.pdf (21.10.2026, aus tools/gateplan-build/handout.py). Kürzel (GZ, FR, OP, R, ADR, M …) sind anklickbar und öffnen ein Kontextfenster (Titel, Art, Sprung zur Fundstelle); Wörterbuch und Modul in tools/gateplan-build/ (idx_extract.py, idx_build.py), nach Änderung an Tabellen neu bauen (23.10.2026)."
@@ -4784,7 +4845,8 @@ window.DENKRAUM_REGISTER = {
         "tools/lindenfeld-lunch-steckbrief.html",
         "tools/lindenfeld-gateplan.html",
         "tools/lindenfeld-projektauftrag-pflichtenheft.html",
-        "tools/okr-kaskade.html"
+        "tools/okr-kaskade.html",
+        "tools/lindenfeld-comic.html"
       ],
       "geprueft": false,
       "notiz": "Von Michaela angeliefert; für den Hub um Rücksprung, Einbettungsmodus und Bild-Zoom ergänzt (Skripte am Dateiende). Der Systemprompt in der Footer-Box ist ein Co-Trainer-Prompt und noch kein Master-Bau-Prompt (K19). Sprecher-Skript mit Zeitangaben je Station. Sketchnotes zu Business Case, Anforderungsdokumentation, Persona, Use Case und User Story je am Stationsanfang (22.10.2026, Alt-Text DE/EN, Bild-Zoom). Kürzel (GZ, FR, OP, R, ADR, M …) sind anklickbar und öffnen ein Kontextfenster (Titel, Art, Sprung zur Fundstelle); Wörterbuch und Modul in tools/gateplan-build/ (idx_extract.py, idx_build.py), nach Änderung an Tabellen neu bauen (23.10.2026). Station 4a Geschäftsprozesse (23.10.2026): Ist-Prozess mit Minuten, Soll-Prozess in BPMN (Exkurs aus Station 4 hierher verschoben), Zeitrechnung zu GZ-3, Schritt zur Anforderung, zwei Abstimmungen, Übung, Checkliste; Zeitaufteilung ist Planungsannahme, nur 65 und 20 Minuten stammen aus dem Fall."

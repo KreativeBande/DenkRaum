@@ -112,25 +112,25 @@ document.addEventListener('pointerup',function(e){
 document.addEventListener('keydown',function(e){
  if((e.key==='Enter'||e.key===' ')&&e.target&&e.target.classList&&e.target.classList.contains('gp')){e.preventDefault();e.target.dispatchEvent(new Event('pointerup',{bubbles:true}));}
 });
-var lay=$('.layout'),FR={c:$('#frC'),p:$('#frP')},LD={c:false,p:false},curS={c:'s-start',p:'st0'};
+var lay=$('.layout'),FR={c:$('#frC'),p:$('#frP'),m:$('#frM')},LD={c:false,p:false,m:false},curS={c:'s-start',p:'st0',m:'c-start'};
 function curMark(k){var nv=$('#nav'+k.toUpperCase());if(!nv)return;$$('.snv',nv).forEach(function(b){b.classList.toggle('on',b.getAttribute('data-a')===curS[k]);});}
 function sync(){
  var d={gp:'sync',lang:R.lang||'de',depth:R.getAttribute('data-depth')||'short',beamer:['beamer','beamer-xl','beamer-xxl'].filter(function(c){return R.classList.contains(c);}).length};
- ['c','p'].forEach(function(k){if(LD[k]&&FR[k].contentWindow)FR[k].contentWindow.postMessage(d,'*');});
+ ['c','p','m'].forEach(function(k){if(LD[k]&&FR[k].contentWindow)FR[k].contentWindow.postMessage(d,'*');});
 }
 var st=null;new MutationObserver(function(){clearTimeout(st);st=setTimeout(sync,80);}).observe(R,{attributes:true,attributeFilter:['lang','class','data-depth']});
-['c','p'].forEach(function(k){FR[k].addEventListener('load',function(){if(LD[k])setTimeout(sync,150);});});
+['c','p','m'].forEach(function(k){FR[k].addEventListener('load',function(){if(LD[k])setTimeout(sync,150);});});
 function setFile(f){
  lay.setAttribute('data-file',f);
  $$('.ftab').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-file')===f);});
- $('#navHub').hidden=(f!=='hub');$('#navC').hidden=(f!=='c');$('#navP').hidden=(f!=='p');
- $('main').hidden=(f!=='hub');FR.c.hidden=(f!=='c');FR.p.hidden=(f!=='p');
+ $('#navHub').hidden=(f!=='hub');$('#navC').hidden=(f!=='c');$('#navP').hidden=(f!=='p');$('#navM').hidden=(f!=='m');
+ $('main').hidden=(f!=='hub');FR.c.hidden=(f!=='c');FR.p.hidden=(f!=='p');FR.m.hidden=(f!=='m');
  window.scrollTo(0,0);
 }
 function openF(k,a){
  setFile(k);
  var id=(a||'').split(':')[0];
- if(!LD[k]){var u=URL.createObjectURL(new Blob([window.__EMB[k]],{type:'text/html'}));LD[k]=true;FR[k].src=u+(a?'#'+a:'');if(!a)id=(k==='c')?'s-start':'st0';}
+ if(!LD[k]){var u=URL.createObjectURL(new Blob([window.__EMB[k]],{type:'text/html'}));LD[k]=true;FR[k].src=u+(a?'#'+a:'');if(!a)id=(k==='c')?'s-start':(k==='m')?'c-start':'st0';}
  else if(a){FR[k].contentWindow.postMessage({gp:'goto',a:a},'*');}
  if(id)curS[k]=id;curMark(k);
 }
@@ -139,7 +139,7 @@ function idxShow(){var t=idxStack[idxStack.length-1];if(!t){idxBtn.hidden=true;r
 function idxMark(l){if(!l)return;idxStack.push({f:lay.getAttribute('data-file'),y:window.pageYOffset,l:l});if(idxStack.length>5)idxStack.shift();}
 idxBtn.addEventListener('click',function(){var t=idxStack.pop();if(!t)return;setFile(t.f);window.scrollTo(0,t.y);idxShow();});
 window.__gpOpen=function(k,a,l){idxMark(l);openF(k,a);idxShow();};
-window.addEventListener('message',function(e){var d=e.data;if(d&&d.gp==='zoomstate'){['c','p'].forEach(function(k){if(FR[k].contentWindow===e.source)FR[k].classList.toggle('zoomfull',!!d.on);});return;}if(d&&d.gp==='open'&&(d.k==='c'||d.k==='p')){idxMark(d.l);openF(d.k,d.a||'');idxShow();return;}if(!d||d.gp!=='cur')return;['c','p'].forEach(function(k){if(FR[k].contentWindow===e.source){curS[k]=d.id;curMark(k);}});});
+window.addEventListener('message',function(e){var d=e.data;if(d&&d.gp==='zoomstate'){['c','p','m'].forEach(function(k){if(FR[k].contentWindow===e.source)FR[k].classList.toggle('zoomfull',!!d.on);});return;}if(d&&d.gp==='open'&&(d.k==='c'||d.k==='p'||d.k==='m')){idxMark(d.l);openF(d.k,d.a||'');idxShow();return;}if(!d||d.gp!=='cur')return;['c','p','m'].forEach(function(k){if(FR[k].contentWindow===e.source){curS[k]=d.id;curMark(k);}});});
 document.addEventListener('pointerup',function(e){
  var t=e.target;if(!t.closest)return;
  var ft=t.closest('.ftab');if(ft){idxStack=[];idxShow();var f=ft.getAttribute('data-file');if(f==='hub')setFile('hub');else openF(f,'');return;}
@@ -498,21 +498,22 @@ def page(trainer):
          '<title>Lindenfeld Lunch · Gateplan</title>\n<script>document.documentElement.className+=\' js\';</script>\n<style>\n' + CSS + EXTRA_CSS + ZOOM_CSS + _IDX_CSS + '#idxback{position:fixed;left:16px;bottom:16px;z-index:125;min-height:44px;padding:8px 18px;border-radius:999px;border:2px solid var(--ink);background:var(--ink);color:#fff;font:600 16px/1.2 inherit;font-family:inherit;cursor:pointer;box-shadow:0 6px 18px rgba(31,42,58,.3)}#idxback[hidden]{display:none}html.beamer #idxback{font-size:22px}html.beamer-xl #idxback{font-size:28px}html.beamer-xxl #idxback{font-size:34px}' + '</style>\n</head>\n<body>\n']
     h.append('<div class="hdr"><span class="t">' + S('Lindenfeld Lunch · Gateplan', 'Lindenfeld Lunch · Gate plan') + '</span></div>\n')
     h.append('<a class="sig" href="https://www.michaela-kuehn.com">Michaela Kühn · www.michaela-kuehn.com</a>\n')
-    ftabs = [('hub', 'Gateplan', 'Gate plan'), ('c', 'BA/RE-Case', 'BA/RE case'), ('p', 'Projektauftrag und Pflichtenheft', 'Project charter and specification')]
+    ftabs = [('hub', 'Gateplan', 'Gate plan'), ('c', 'BA/RE-Case', 'BA/RE case'), ('p', 'Projektauftrag und Pflichtenheft', 'Project charter and specification'), ('m', 'Comic', 'Comic')]
     h.append('<div class="filebar"><div class="ftabs" role="tablist">' + ''.join(
         f'<button type="button" class="ftab{" on" if f[0] == "hub" else ""}" data-file="{f[0]}" role="tab">{S(f[1], f[2])}</button>' for f in ftabs) + '</div>'
         '<div class="ctl2"><button type="button" class="btn" id="langBtn">EN</button><button type="button" class="btn" id="depthBtn">Vertiefung: Kurz</button><button type="button" class="btn beamer-btn" id="beamerBtn">☀ Beamer</button>'
         + ('<button type="button" class="btn" id="revealAll">' + S('Alle auflösen', 'Reveal all answers') + '</button>' if trainer else '') + '</div></div>\n')
     nav_c = ''.join(f'<button type="button" class="snv" data-k="c" data-a="{a}">{S(d, e)}</button>' for a, d, e, g in CASE_ST)
+    nav_m = ''.join(f'<button type="button" class="snv" data-k="m" data-a="{a}">{S(d, e)}</button>' for a, d, e in COMIC_ST)
     nav_p = ''.join(f'<button type="button" class="snv" data-k="p" data-a="{a}">{S(d, e)}</button>' for a, d, e, g in PA_ST)
     h.append('<div class="layout" data-file="hub"><nav class="side" aria-label="Inhalte">'
              '<div class="tabs" id="navHub" role="tablist">' + ''.join(f'<button type="button" class="tab{" on" if i == 0 else ""}" data-s="{i}" role="tab">{S(a, b)}</button>' for i, (a, b) in enumerate(tabs)) + '</div>'
-             f'<div class="snvlist" id="navC" hidden>{nav_c}</div><div class="snvlist" id="navP" hidden>{nav_p}</div></nav>'
+             f'<div class="snvlist" id="navC" hidden>{nav_c}</div><div class="snvlist" id="navP" hidden>{nav_p}</div><div class="snvlist" id="navM" hidden>{nav_m}</div></nav>'
              '<div class="content">\n<main>\n' + st_start(trainer) + '\n' + st_gates(trainer) + '\n' + st_net(trainer) + '\n' + st_quizst() + '\n' + st_map(trainer) + '\n' + st_gloss() + '\n</main>\n'
-             '<iframe id="frC" class="fr" hidden title="BA/RE-Case"></iframe><iframe id="frP" class="fr" hidden title="Projektauftrag und Pflichtenheft"></iframe></div></div>\n')
+             '<iframe id="frC" class="fr" hidden title="BA/RE-Case"></iframe><iframe id="frP" class="fr" hidden title="Projektauftrag und Pflichtenheft"></iframe><iframe id="frM" class="fr" hidden title="Comic"></iframe></div></div>\n')
     if trainer:
         h.append(footer() + '\n')
-    emb = {'c': open(os.path.join(EMB_DIR, CASE_F), encoding='utf8').read(), 'p': open(os.path.join(EMB_DIR, PA_T if trainer else PA_P), encoding='utf8').read()}
+    emb = {'c': open(os.path.join(EMB_DIR, CASE_F), encoding='utf8').read(), 'p': open(os.path.join(EMB_DIR, PA_T if trainer else PA_P), encoding='utf8').read(), 'm': open(os.path.join(EMB_DIR, 'lindenfeld-comic.html'), encoding='utf8').read()}
     h.append('<script>window.__EMB=' + json.dumps(emb, ensure_ascii=False).replace('</', '<\\/').replace('\u2028', '\\u2028').replace('\u2029', '\\u2029') + ';</script>\n')
     h.append('<script>' + JS + '</script>\n<script>' + EXTRA_JS + '</script>\n' + ZOOM_JS + '<script id="idx-js">' + _IDX_JS + '</script>\n</body>\n</html>\n')
     return ''.join(h)
