@@ -2357,7 +2357,11 @@ window.DENKRAUM_REGISTER = {
         "ba"
       ],
       "dauer": null,
-      "haufeSeminare": [],
+      "haufeSeminare": [
+        "31693",
+        "2929",
+        "3744"
+      ],
       "einsatzkontext": [
         "Workshop",
         "Seminar"
@@ -2381,11 +2385,11 @@ window.DENKRAUM_REGISTER = {
         "ISTQB"
       ],
       "siegel": {
-        "status": "Offene Punkte",
-        "letztesAudit": null,
-        "auditZeileImTool": null,
+        "status": "Auditiert & zertifiziert",
+        "letztesAudit": "2026-10-24",
+        "auditZeileImTool": "24.10.2026",
         "offen": [
-          "Audit steht aus (neu gebaut 24.10.2026)"
+          "K11 (Kann, dauerhaft offen)"
         ]
       },
       "beamer": "4-stufig",
@@ -2396,7 +2400,7 @@ window.DENKRAUM_REGISTER = {
         "tools/lindenfeld-lunch-steckbrief.html"
       ],
       "geprueft": false,
-      "notiz": "Bilder sind von Michaela angeliefert (24.10.2026), als JPEG (1000 px, Qualität 62) eingebettet; in den Case sind sie nur verlinkt (iPad-Speicher). Abweichungen Bild/Fall stehen in den Bildunterschriften (GZ-4 fehlt in zwei Bildern, E3 bei FR-14, Kantinenleiter). Nicht verwendet: Drei Brillen und Anforderungs-Lupe (150 statt 210 Nutzende laut NFR-01). Comic-Tab im Gateplan: Seite ist eingebettet, Navigation per postMessage, Bauskripte in tools/gateplan-build/."
+      "notiz": "Audit-Protokoll: tools/Audit-Protokoll_Lindenfeld-Comic.md. Auf den Seminarseiten 31693, 2929 und 3744 verlinkt. Bilder sind von Michaela angeliefert (24.10.2026), als JPEG (1000 px, Qualität 62) eingebettet; in den Case sind sie nur verlinkt (iPad-Speicher). Abweichungen Bild/Fall stehen in den Bildunterschriften (GZ-4 fehlt in zwei Bildern, E3 bei FR-14, Kantinenleiter). Nicht verwendet: Drei Brillen und Anforderungs-Lupe (150 statt 210 Nutzende laut NFR-01). Comic-Tab im Gateplan: Seite ist eingebettet, Navigation per postMessage, Bauskripte in tools/gateplan-build/."
     },
     {
       "id": "okr-denkraum-check",
@@ -4717,7 +4721,7 @@ window.DENKRAUM_REGISTER = {
         "tools/lindenfeld-comic.html"
       ],
       "geprueft": false,
-      "notiz": "Case und Projektauftrag sind vollständig eingebettet (Blob-URL-iframes), Bauskripte in tools/gateplan-build/. Nach jeder Änderung an Case oder Projektauftrag neu bauen. DIN 69901-5, VDI 2519 und PMBOK nur über Sekundärquellen geprüft (21.10.2026). Teilnehmendenversion: lindenfeld-gateplan-teilnehmende.html. PDF-Handout für Teilnehmende: tools/Handout_Lindenfeld-Gateplan.pdf (21.10.2026, aus tools/gateplan-build/handout.py). Kürzel (GZ, FR, OP, R, ADR, M …) sind anklickbar und öffnen ein Kontextfenster (Titel, Art, Sprung zur Fundstelle); Wörterbuch und Modul in tools/gateplan-build/ (idx_extract.py, idx_build.py), nach Änderung an Tabellen neu bauen (23.10.2026)."
+      "notiz": "Case und Projektauftrag sind vollständig eingebettet (Blob-URL-iframes), Bauskripte in tools/gateplan-build/. Nach jeder Änderung an Case oder Projektauftrag neu bauen. DIN 69901-5, VDI 2519 und PMBOK nur über Sekundärquellen geprüft (21.10.2026). Teilnehmendenversion: lindenfeld-gateplan-teilnehmende.html. PDF-Handout für Teilnehmende: tools/Handout_Lindenfeld-Gateplan.pdf (21.10.2026, aus tools/gateplan-build/handout.py). Kürzel (GZ, FR, OP, R, ADR, M …) sind anklickbar und öffnen ein Kontextfenster (Titel, Art, Sprung zur Fundstelle); Wörterbuch und Modul in tools/gateplan-build/ (idx_extract.py, idx_build.py), nach Änderung an Tabellen neu bauen (23.10.2026). Vierter Reiter „Comic“ mit der eingebetteten Seite tools/lindenfeld-comic.html (24.10.2026); nach Änderung der Comic-Seite Gateplan neu bauen."
     },
     {
       "id": "lindenfeld-gateplan-teilnehmende",
