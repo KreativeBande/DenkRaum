@@ -11,7 +11,7 @@ GP_OUT=.. python3 repo.py lindenfeld-gateplan.html lindenfeld-gateplan-teilnehme
 python3 skript_md.py ../lindenfeld-gateplan.html ../Sprecher-Skript_Lindenfeld-Gateplan.md "Lindenfeld Lunch Gateplan"
 ```
 
-Der Tab „Comic“ bettet `tools/lindenfeld-comic.html` nicht ein, sondern lädt sie als Nachbardatei (iframe-URL). Grund: iPad-Safari reagierte bei 8–9 MB nicht mehr. Die Comic-Seite muss deshalb im selben Ordner liegen.
+Der Tab „Comic“ bettet `tools/lindenfeld-comic.html` ein (Bilder klein komprimiert, 1000 px, Qualität 62), damit das Gateplan auch als einzeln heruntergeladene Datei den Comic zeigt.
 
 Wichtig: `repo.py` hat die Zurück-Links in Case und Pflichtenheft bereits eingebaut (idempotent). Neue Fassungen dieser beiden Dateien brauchen ebenfalls den Zurück-Link und die Verweis-Skripte (Rückkehr zum Gateplan, `html.emb`-Modus, Zoom), sonst funktionieren die Tiefenverweise nicht.
 

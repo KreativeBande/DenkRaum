@@ -130,7 +130,7 @@ function setFile(f){
 function openF(k,a){
  setFile(k);
  var id=(a||'').split(':')[0];
- if(!LD[k]){var u=(k==='m')?'lindenfeld-comic.html':URL.createObjectURL(new Blob([window.__EMB[k]],{type:'text/html'}));LD[k]=true;FR[k].src=u+(a?'#'+a:'');if(!a)id=(k==='c')?'s-start':(k==='m')?'c-start':'st0';}
+ if(!LD[k]){var u=URL.createObjectURL(new Blob([window.__EMB[k]],{type:'text/html'}));LD[k]=true;FR[k].src=u+(a?'#'+a:'');if(!a)id=(k==='c')?'s-start':(k==='m')?'c-start':'st0';}
  else if(a){FR[k].contentWindow.postMessage({gp:'goto',a:a},'*');}
  if(id)curS[k]=id;curMark(k);
 }
@@ -513,7 +513,7 @@ def page(trainer):
              '<iframe id="frC" class="fr" hidden title="BA/RE-Case"></iframe><iframe id="frP" class="fr" hidden title="Projektauftrag und Pflichtenheft"></iframe><iframe id="frM" class="fr" hidden title="Comic"></iframe></div></div>\n')
     if trainer:
         h.append(footer() + '\n')
-    emb = {'c': open(os.path.join(EMB_DIR, CASE_F), encoding='utf8').read(), 'p': open(os.path.join(EMB_DIR, PA_T if trainer else PA_P), encoding='utf8').read()}
+    emb = {'c': open(os.path.join(EMB_DIR, CASE_F), encoding='utf8').read(), 'p': open(os.path.join(EMB_DIR, PA_T if trainer else PA_P), encoding='utf8').read(), 'm': open(os.path.join(EMB_DIR, 'lindenfeld-comic.html'), encoding='utf8').read()}
     h.append('<script>window.__EMB=' + json.dumps(emb, ensure_ascii=False).replace('</', '<\\/').replace('\u2028', '\\u2028').replace('\u2029', '\\u2029') + ';</script>\n')
     h.append('<script>' + JS + '</script>\n<script>' + EXTRA_JS + '</script>\n' + ZOOM_JS + '<script id="idx-js">' + _IDX_JS + '</script>\n</body>\n</html>\n')
     return ''.join(h)
