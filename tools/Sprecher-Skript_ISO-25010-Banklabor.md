@@ -12,7 +12,7 @@ Companion-Datei zur Vortrags-Skript-Box im Footer von `tools/iso-25010-banklabor
 
 Übergang: Jetzt schauen wir uns an, wie viele verschiedene Qualitätsfragen in dieser einen Aufgabe stecken.
 
-**(2) Orientierung** *(Klick auf Abschnitt „0", durch das 9er-Grid scrollen)*
+**(2) Orientierung** *(Klick auf Abschnitt „0", zuerst den Ring zeigen, dann durch das 9er-Grid scrollen)*
 
 „Neun Qualitätsbrillen, insgesamt vierzig Untermerkmale — das ist mehr, als die meisten bei einer simplen Überweisung vermuten würden." *(auf ein bis zwei Karten zeigen)* „Schon bei ‚Funktionale Eignung' stecken drei eigene Fragen drin: Sind alle Angaben da? Stimmt das Ergebnis? Ist der Weg dahin sinnvoll?"
 

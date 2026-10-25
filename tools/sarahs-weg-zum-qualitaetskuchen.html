@@ -221,6 +221,22 @@
   .crosslink ul{ margin:8px 0 0; padding-left:20px; }
   .crosslink li{ margin-bottom:4px; }
   html.beamer .crosslink{ display:none; }
+
+  /* ---- Qualitätsring (statische Grafik) ---- */
+  .iso-fig{margin:6px auto 18px;max-width:580px;text-align:center;}
+  .iso-svg{width:100%;height:auto;display:block;}
+  .iso-seg path{stroke:#fff;stroke-width:3;}
+  .iso-num{fill:#fff;font:700 28px Georgia,serif;}
+  .iso-lab{fill:#1f2937;font:600 15px system-ui,sans-serif;}
+  .iso-mk{fill:#fcd34d;stroke:#92400e;stroke-width:2;}
+  .iso-mkt{fill:#92400e;font:800 14px system-ui,sans-serif;}
+  .iso-core{fill:#fff;stroke:#d9e1ea;stroke-width:3;}
+  .iso-core-t{fill:#1f2937;font:700 17px system-ui,sans-serif;}
+  .iso-fig figcaption{font-size:15px;color:#4b5563;margin-top:6px;}
+  .iso-legend{display:inline-block;width:18px;height:18px;line-height:16px;border-radius:50%;background:#fcd34d;border:2px solid #92400e;color:#92400e;font-weight:800;font-size:12px;}
+  html.beamer .iso-fig{max-width:700px;} html.beamer .iso-fig figcaption{font-size:19px;}
+  html.beamer-xl .iso-fig{max-width:820px;} html.beamer-xl .iso-fig figcaption{font-size:23px;}
+  html.beamer-xxl .iso-fig{max-width:960px;} html.beamer-xxl .iso-fig figcaption{font-size:28px;}
 </style>
 </head>
 <body>
@@ -275,8 +291,7 @@
   <footer>
     <div class="footer-sig">
       <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a><br>
-      Bezug: IREB CPRE · BABOK v3 (IIBA) · IEEE 29148:2018 · ISO/IEC 25010:2023 (Ed. 2) · ISO/IEC 25019:2023 · SWEBOK® Guide V4.0a (IEEE CS)<br>
-      Zuletzt geprüft: 23.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll
+      Bezug: IREB CPRE · BABOK v3 (IIBA) · IEEE 29148:2018 · ISO/IEC 25010:2023 (Ed. 2) · ISO/IEC 25019:2023 · SWEBOK® Guide V4.0a (IEEE CS)
     </div>
     <div class="footer-grid">
       <details class="footer-box"><summary>Systemprompt</summary>
@@ -397,6 +412,7 @@ var Q9_STUDIENAKTE = [
     def:"Neu in ISO/IEC 25010:2023 — Vermeidung von Personen-, Sach- oder Umweltschäden durch das System.",
     nfr:"<b>NFR-Beispiel:</b> Ausfall des Self-Service-Portals darf die rechtsverbindliche Notenverbuchung im Prüfungsamt nicht gefährden; ein Systemfehler darf nicht zu falsch ausgestellten Abschlussnoten führen." }
 ];
+var ISO_RING = `<figure class="iso-fig"><svg class="iso-svg" viewBox="0 0 580 500" role="img" aria-label="Qualitätsring ISO/IEC 25010:2023 mit neun gleichrangigen Merkmalen: Funktionale Eignung, Leistungsfähigkeit und Effizienz, Kompatibilität, Interaktionsfähigkeit, Zuverlässigkeit, Sicherheit, Wartbarkeit, Flexibilität und Safety"><g class="iso-seg"><title>1. Funktionale Eignung</title><path d="M231.2,88.4 A172,172 0 0 1 348.8,88.4 L316.7,176.7 A78,78 0 0 0 263.3,176.7 Z" style="fill:#0f766e"/><text x="290.0" y="134.0" class="iso-num" text-anchor="middle">1</text><text x="290.0" y="58.0" class="iso-lab" text-anchor="middle"><tspan x="290.0" dy="0">Funktionale</tspan><tspan x="290.0" dy="16">Eignung</tspan></text></g><g class="iso-seg"><title>2. Leistungsfähigkeit &amp; Effizienz</title><path d="M348.8,88.4 A172,172 0 0 1 439.0,164.0 L357.5,211.0 A78,78 0 0 0 316.7,176.7 Z" style="fill:#1d4ed8"/><text x="370.3" y="163.2" class="iso-num" text-anchor="middle">2</text><text x="408.3" y="101.0" class="iso-lab" text-anchor="start"><tspan x="408.3" dy="0">Leistungsfähigkeit</tspan><tspan x="408.3" dy="16">&amp; Effizienz</tspan></text></g><g class="iso-seg"><title>3. Kompatibilität</title><path d="M439.0,164.0 A172,172 0 0 1 459.4,279.9 L366.8,263.5 A78,78 0 0 0 357.5,211.0 Z" style="fill:#7e22ce"/><text x="413.1" y="237.3" class="iso-num" text-anchor="middle">3</text><text x="471.2" y="222.0" class="iso-lab" text-anchor="start"><tspan x="471.2" dy="0">Kompatibilität</tspan></text></g><g class="iso-seg"><title>4. Interaktionsfähigkeit (neu benannt)</title><path d="M459.4,279.9 A172,172 0 0 1 400.6,381.8 L340.1,309.8 A78,78 0 0 0 366.8,263.5 Z" style="fill:#be123c"/><text x="398.3" y="321.5" class="iso-num" text-anchor="middle">4</text><circle cx="426.8" cy="329.0" r="9" class="iso-mk"/><text x="426.8" y="333.5" class="iso-mkt" text-anchor="middle">!</text><text x="449.3" y="339.0" class="iso-lab" text-anchor="start"><tspan x="449.3" dy="0">Interaktions-</tspan><tspan x="449.3" dy="16">fähigkeit</tspan></text></g><g class="iso-seg"><title>5. Zuverlässigkeit</title><path d="M400.6,381.8 A172,172 0 0 1 290.0,422.0 L290.0,328.0 A78,78 0 0 0 340.1,309.8 Z" style="fill:#b45309"/><text x="332.8" y="376.5" class="iso-num" text-anchor="middle">5</text><text x="352.9" y="434.9" class="iso-lab" text-anchor="start"><tspan x="352.9" dy="0">Zuverlässigkeit</tspan></text></g><g class="iso-seg"><title>6. Sicherheit (Security)</title><path d="M290.0,422.0 A172,172 0 0 1 179.4,381.8 L239.9,309.8 A78,78 0 0 0 290.0,328.0 Z" style="fill:#15803d"/><text x="247.2" y="376.5" class="iso-num" text-anchor="middle">6</text><text x="227.1" y="434.9" class="iso-lab" text-anchor="end"><tspan x="227.1" dy="0">Sicherheit</tspan></text></g><g class="iso-seg"><title>7. Wartbarkeit</title><path d="M179.4,381.8 A172,172 0 0 1 120.6,279.9 L213.2,263.5 A78,78 0 0 0 239.9,309.8 Z" style="fill:#0e7490"/><text x="181.7" y="321.5" class="iso-num" text-anchor="middle">7</text><text x="130.7" y="346.0" class="iso-lab" text-anchor="end"><tspan x="130.7" dy="0">Wartbarkeit</tspan></text></g><g class="iso-seg"><title>8. Flexibilität (neu benannt)</title><path d="M120.6,279.9 A172,172 0 0 1 141.0,164.0 L222.5,211.0 A78,78 0 0 0 213.2,263.5 Z" style="fill:#a21caf"/><text x="166.9" y="237.3" class="iso-num" text-anchor="middle">8</text><circle cx="134.4" cy="222.6" r="9" class="iso-mk"/><text x="134.4" y="227.1" class="iso-mkt" text-anchor="middle">!</text><text x="108.8" y="222.0" class="iso-lab" text-anchor="end"><tspan x="108.8" dy="0">Flexibilität</tspan></text></g><g class="iso-seg"><title>9. Safety (neu 2023)</title><path d="M141.0,164.0 A172,172 0 0 1 231.2,88.4 L263.3,176.7 A78,78 0 0 0 222.5,211.0 Z" style="fill:#475569"/><text x="209.7" y="163.2" class="iso-num" text-anchor="middle">9</text><circle cx="188.4" cy="129.0" r="9" class="iso-mk"/><text x="188.4" y="133.5" class="iso-mkt" text-anchor="middle">!</text><text x="171.7" y="107.0" class="iso-lab" text-anchor="end"><tspan x="171.7" dy="0">Safety</tspan></text></g><circle cx="290" cy="250" r="72" class="iso-core"/><text x="290" y="244" class="iso-core-t" text-anchor="middle">ISO/IEC</text><text x="290" y="266" class="iso-core-t" text-anchor="middle">25010</text></svg><figcaption>Neun gleichrangige Qualitätsmerkmale nach ISO/IEC 25010:2023. <span class="iso-legend">!</span> = Änderung gegenüber 2011 (umbenannt oder neu).</figcaption></figure>`;
 function Q9(){
   if(state.scenario === 'studienakte') return Q9_STUDIENAKTE;
   if(state.scenario === 'talentmatch') return Q9_TALENTMATCH;
@@ -1394,6 +1410,7 @@ function renderPanel(){
   html += '<div class="story">'+c.story+'</div>';
 
   if(c.isGrid9){
+    html += ISO_RING;
     html += '<div class="grid9" id="grid9"></div>';
     html += '<div class="qdetail" id="qdetail" style="display:none"></div>';
   }
@@ -1564,6 +1581,9 @@ document.getElementById('systemPromptBox').textContent =
 "  passend wählen können (Wirtschaft / Hochschule / Hochrisiko-KI / FinTech).\n"+
 "- Split-Screen-Layout: Sidebar (Kapitel-Navigation, 2 Tage, je 7–8 Kapitel)\n"+
 "  + Hauptpanel (Story, Persona-Badge, interaktive Aufgabe, Merksatz).\n"+
+"- Kapitel 'Die neun Zutaten des Qualitätskuchens': oberhalb der Merkmal-Karten ein statischer\n"+
+"  Qualitätsring (inline SVG, neun gleichrangige Segmente, Markierung '!' für Änderungen gegenüber 2011;\n"+
+"  keine Interaktion, die Karten darunter bleiben der klickbare Teil).\n"+
 "- Fortschrittsbalken oben, Kapitel-Häkchen in der Sidebar.\n"+
 "- Ein Kapitel = Story-Absatz(e) mit Personendialog + optionaler\n"+
 "  Kuchenbox (Merksatz/Konzept) + Aufgabe (Reflexion ODER Quiz ODER\n"+
@@ -1674,6 +1694,8 @@ document.getElementById('handbuchBox').innerHTML =
 "Construction, Testing, Operations, Maintenance, Configuration Management, Management, Security) inhaltlich "+
 "zu vertiefen — das bleibt bewusst Stoff für ein eigenständiges Format (z. B. eine SE-Lifecycle-Lernreise), "+
 "nicht für dieses 2-Tage-RM/Qualitäts-Seminar. Gilt in allen vier Szenarien identisch.</p>"+
+"<h4>Qualitätsring</h4>"+
+"<p>Im Kapitel \"Die neun Zutaten\" zeigt ein statischer Ring alle neun Hauptmerkmale als gleichrangige Segmente, bevor die Karten einzeln aufgeklappt werden. Das Ausrufezeichen markiert die drei Änderungen gegenüber 2011 (Interaktionsfähigkeit, Flexibilität, Safety). Der Ring ist bewusst nicht klickbar: Er schafft den Überblick, die Karten liefern Definition und NFR-Beispiel.</p>"+
 "<h4>Nachbau-Tipp</h4>"+
 "<p>Neues Thema oder neues Szenario? Curriculum-Bullets clustern, jedem "+
 "Cluster eine Szene mit passender Persona zuordnen (Petra fragt, Ela baut, "+
@@ -1706,7 +1728,7 @@ document.getElementById('skriptBox').innerHTML =
 "<li><i>(Übergang Tag 1 → Tag 2)</i> Kapitel 8 endet mit Petras Frage „Was heißt 'gut' eigentlich?” — "+
 "hier bewusst eine Pause machen, nicht sofort zu Tag 2 springen.</li>"+
 "<li><i>(Kapitel 10, Grid)</i> Teilnehmer:innen abwechselnd je 4–5 Karten klicken lassen, gemeinsam "+
-"laut die NFR-Beispiele vorlesen. Auf die drei „NEU 2023”-Karten explizit hinweisen.</li>"+
+"laut die NFR-Beispiele vorlesen. Auf die drei „NEU 2023”-Karten explizit hinweisen. Vorher den Qualitätsring zeigen: neun gleichrangige Segmente, das Ausrufezeichen markiert die Änderungen gegenüber 2011.</li>"+
 "<li><i>(Kapitel 14, SWEBOK-Einordnung)</i> Kurz halten — max. 5 Min. Ziel ist Einordnung, nicht neuer Stoff: "+
 "die Gruppe soll sehen, dass RM und Qualität zwei von elf SWEBOK-Bereichen sind, ohne die anderen neun im Detail "+
 "zu behandeln.</li>"+
