@@ -143,6 +143,20 @@
   @media (max-width:900px){.signature{top:6px;right:10px;padding:3px 8px;}body{padding-top:56px;}}
   /* K4: helles Farbschema erzwingen, kein Dark Mode */
   html{color-scheme:light;}
+
+  /* ---- Metro-Linie (Reiseverlauf) ---- */
+  .metro-wrap{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 16px rgba(33,31,54,.05);padding:10px 14px 8px;margin:0 0 16px}
+  .metro-scroll{overflow-x:auto}
+  .metro-scroll > div{min-width:560px}
+  .metro-svg{width:100%;height:auto;display:block}
+  .metro-svg text{font-family:inherit}
+  .m-st.click{cursor:pointer}
+  .m-st.click:hover circle,.m-st.click:focus circle{stroke-width:5}
+  .m-st{outline:none}
+  .m-lbl{font-size:14px;font-weight:600;fill:var(--ink)}
+  .m-lbl.future{fill:var(--muted);font-weight:500}
+  .m-tok{font-size:13px;font-weight:700;fill:#fff}
+  .metro-note{font-size:13px;color:var(--muted);margin:4px 0 0}
 </style>
 </head>
 <body>
@@ -160,6 +174,11 @@
       <button class="secondary" id="resetBtn">Zurücksetzen</button>
       <button class="secondary" id="beamerToggle" title="Vergrößert die gesamte Darstellung für Präsentationen — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
     </div>
+  </section>
+
+  <section class="metro-wrap" aria-label="Reiseverlauf">
+    <div class="metro-scroll"><div id="metroBox"></div></div>
+    <p class="metro-note">Die Linie färbt sich mit jedem Raum von Grau (unscharf) nach Teal (prüfbar). Bereits besuchte Stationen anklicken springt dorthin zurück.</p>
   </section>
 
   <div class="layout">
@@ -954,6 +973,35 @@ function progressRender(){
   }).join("");
 }
 
+/* ---------- Metro-Linie ---------- */
+const METRO_COL = ["#9ca3af","#7c93a8","#4f8f9c","#2a8a8f","#14807f","#0f766e"];
+function metroRender(){
+  const box = document.getElementById("metroBox");
+  if(!box) return;
+  const act = stepIndex(state.step), n = STEPS.length, x0 = 50, dx = 100, y = 58;
+  const lvl = i => precisionForStep(STEPS[i].id).level;
+  let s = `<svg class="metro-svg" viewBox="0 0 700 124" role="group" aria-label="Reiseverlauf durch ${n} Stationen">`;
+  for(let i = 0; i < n - 1; i++){
+    const reached = i + 1 <= act;
+    s += `<line x1="${x0 + i*dx}" y1="${y}" x2="${x0 + (i+1)*dx}" y2="${y}" stroke="${reached ? METRO_COL[lvl(i+1)] : "#d1d5db"}" stroke-width="${reached ? 8 : 5}" ${reached ? "" : 'stroke-dasharray="3 7" stroke-linecap="round"'}/>`;
+  }
+  STEPS.forEach((st, i) => {
+    const x = x0 + i*dx, done = i < act, cur = i === act, click = i <= act;
+    const col = METRO_COL[lvl(i)];
+    const attrs = click ? `class="m-st click" tabindex="0" role="button" onclick="goStep('${st.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goStep('${st.id}')}"` : `class="m-st"`;
+    s += `<g ${attrs}><title>${escapeHtml(st.label)}</title>`;
+    s += cur ? `<circle cx="${x}" cy="${y}" r="17" style="fill:var(--panel)" stroke="${col}" stroke-width="6"/><circle cx="${x}" cy="${y}" r="7" fill="${col}"/>`
+             : done ? `<circle cx="${x}" cy="${y}" r="12" fill="${col}" stroke="${col}" stroke-width="3"/>`
+                    : `<circle cx="${x}" cy="${y}" r="11" style="fill:var(--panel)" stroke="#9ca3af" stroke-width="3"/>`;
+    s += `<text x="${x}" y="${y + 40}" text-anchor="middle" class="m-lbl${click ? "" : " future"}">${escapeHtml(st.label)}</text></g>`;
+    if(cur){
+      s += `<g><rect x="${x - 52}" y="2" width="104" height="24" rx="12" fill="${col}"/><polygon points="${x-6},26 ${x+6},26 ${x},34" fill="${col}"/><text x="${x}" y="19" text-anchor="middle" class="m-tok">Anforderung</text></g>`;
+    }
+  });
+  s += `</svg>`;
+  box.innerHTML = s;
+}
+
 function precisionRender(){
   const p = precisionForStep(state.step);
   const segs = Array.from({length:5}, (_,i) => `<div class="gauge-seg ${i < p.level ? "filled" : ""}"></div>`).join("");
@@ -993,6 +1041,7 @@ function renderMain(){
 
 function render(){
   progressRender();
+  metroRender();
   precisionRender();
   logRender();
   renderMain();
