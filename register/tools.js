@@ -405,6 +405,7 @@ window.DENKRAUM_REGISTER = {
         "auditZeileImTool": null,
         "offen": "Noch nicht gegen K1-K19-Checkliste geprüft."
       },
+      "comic": "Es ist doch nur eine kleine Änderung",
       "beamer": "3-stufig (alt)",
       "sprecherSkript": false,
       "verwandt": [
@@ -2542,9 +2543,10 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-09-07",
-        "auditZeileImTool": "07.09.2026",
+        "auditZeileImTool": null,
         "offen": null
       },
+      "comic": "Alles erledigt. Ziel verfehlt?",
       "beamer": "4-stufig",
       "sprecherSkript": true,
       "verwandt": [
@@ -2590,6 +2592,7 @@ window.DENKRAUM_REGISTER = {
         "auditZeileImTool": null,
         "offen": "Noch nicht gegen K1-K19-Checkliste geprüft."
       },
+      "comic": "Alles erledigt. Ziel verfehlt?",
       "beamer": "3-stufig (alt)",
       "sprecherSkript": false,
       "verwandt": [
@@ -3747,6 +3750,7 @@ window.DENKRAUM_REGISTER = {
         "auditZeileImTool": null,
         "offen": "Formales Siegel-Audit steht aus; Selbstprüfung beim Bau (01.10.2026): Muss-Kriterien erfüllt, Vertiefungs-Toggle (K22) umgesetzt; Z9 Teilnehmenden-Version fehlt (Kann)."
       },
+      "comic": "Es ist doch nur eine kleine Änderung",
       "beamer": "4-stufig",
       "sprecherSkript": true,
       "verwandt": [
@@ -3800,9 +3804,10 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-08-03",
-        "auditZeileImTool": "03.08.2026",
+        "auditZeileImTool": null,
         "offen": null
       },
+      "comic": "Dieselbe Reise, vier verschiedene Karten",
       "beamer": "4-stufig",
       "sprecherSkript": true,
       "verwandt": [
