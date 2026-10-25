@@ -2,6 +2,14 @@
 
 Companion-Datei zur Footer-Box „Vortrags-Skript“ in `tools/stoerfall-labor.html`. Bei Abweichungen gilt die Footer-Box.
 
+## Comic-Einstieg
+
+*(Comic aufgeklappt zeigen, vier Bilder kurz vorlesen, zwei, drei Antworten sammeln, dann „Lösungsimpuls anzeigen“)*
+
+„Ein Roboter sagt: Wir ändern nur dieses eine Feld. Doch am Lieferdatum hängen Geschäftsregel, Schnittstelle und Testfall. Erst die Auswirkungsanalyse zeigt, wer betroffen ist, was mitgeändert werden muss und welcher Aufwand entsteht. Dann erst wird entschieden. Die Frage unter dem Bild: Welche Auswirkungen müssen wir kennen, bevor wir diese Änderung freigeben?“
+
+Übergang: „Genau so gehen wir gleich mit einem echten Störfall um.“
+
 ## Einstieg
 
 *(Seite oben, Grafik der fünf Räume zeigen)*

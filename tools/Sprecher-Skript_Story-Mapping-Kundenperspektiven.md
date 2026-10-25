@@ -8,6 +8,13 @@ Referenzrahmen: Jeff Patton (User Story Mapping), INVEST (Wake 2003), IREB CPRE 
 
 ---
 
+## Comic-Einstieg
+*(Comic aufgeklappt zeigen, vier Bilder kurz vorlesen, zwei, drei Antworten sammeln, dann „Lösungsimpuls anzeigen“)*
+
+„Ein Portal für alle, sagt der Roboter. Doch vier Kunden wollen Verschiedenes: Der Einkauf den Preis, die Technik das Ersatzteil, das Management den Überblick, der Neukunde Orientierung. Dieselbe Reise, vier verschiedene Karten. Die Frage unter dem Bild: Welche Perspektive verändert die Priorität auf unserer gemeinsamen Reise?“
+
+Übergang: „Genau das probieren wir jetzt am Vantera-Connect-Board aus.“
+
 ## Einstieg
 *(vor dem ersten Öffnen, Board noch auf „Nur MVP" mit erster Perspektive zeigen)*
 

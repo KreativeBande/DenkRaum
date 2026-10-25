@@ -9,6 +9,11 @@ IIBA BABOK v3, PMI PMBOK.
 
 ---
 
+## Comic-Einstieg
+*(Comic aufgeklappt zeigen, vier Bilder kurz vorlesen, zwei, drei Antworten sammeln, dann "Lösungsimpuls anzeigen")*
+
+„Alle Aufgaben sind erledigt, und trotzdem ist die Wartezeit gleich geblieben. Erst die Frage, wo sie wirklich entsteht, führt zum nächsten Plan: Wirkung prüfen, nicht Aufgaben zählen. Die Frage unter dem Bild: Welche Veränderung bei den Betroffenen zeigt, dass unsere Arbeit wirkt?"
+
 ## Einstieg
 *(Startbildschirm öffnen)*
 
