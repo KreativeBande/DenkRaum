@@ -71,6 +71,20 @@ a.stat-pill:hover{background:#b91c1c;color:#fff}
 .signature:hover{color:var(--accent)}
 .signature:hover span{color:var(--accent)}
 
+/* ============ Raum-Leiste (Zahlen live aus register/tools.js) ============ */
+.raumleiste{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 16px rgba(15,23,42,.04);padding:14px 18px 12px;margin-bottom:16px}
+.rl-title{font-size:16px;margin:0 0 8px}
+.rl-rows{display:flex;flex-direction:column;gap:6px}
+.rl-row{display:grid;grid-template-columns:170px 1fr 36px;align-items:center;gap:10px;width:100%;border:1.5px solid transparent;background:transparent;border-radius:12px;padding:4px 8px;font-family:inherit;font-size:14px;color:var(--ink);cursor:pointer;text-align:left}
+.rl-row:hover{background:var(--bg)}
+.rl-row.active{border-color:var(--ink);background:var(--bg)}
+.rl-row.dim{opacity:.45}
+.rl-name{font-weight:600}
+.rl-bar{height:20px;border-radius:6px;min-width:4px}
+.rl-n{font-weight:800;text-align:right}
+.rl-note{font-size:13px;color:var(--muted);margin:8px 0 0}
+@media (max-width:560px){.rl-row{grid-template-columns:120px 1fr 30px;font-size:13px}}
+
 /* ============ Such- & Themen-Tabs ============ */
 .finder{
   background:rgba(255,255,255,.96);
@@ -231,6 +245,12 @@ a.stat-pill:hover{background:#b91c1c;color:#fff}
       <span class="stat-pill" id="statNew"></span>
       <a class="stat-pill" href="./fahrplan.html">🗺️ Fahrplan: der rote Faden durch die Denkräume →</a>
     </div>
+  </section>
+
+  <section class="raumleiste" id="raumLeiste" aria-label="Tools je Denkraum" hidden>
+    <h2 class="rl-title">Wie viele Tools gibt es je Denkraum?</h2>
+    <div class="rl-rows" id="rlRows"></div>
+    <p class="rl-note" id="rlNote">Raum anklicken, um die Kacheln darunter zu filtern. Noch einmal klicken hebt den Filter auf.</p>
   </section>
 
   <div class="finder">
@@ -1022,8 +1042,12 @@ a.stat-pill:hover{background:#b91c1c;color:#fff}
     });
     kindFilter.hidden = false;
   }
+  var activeRoom = "all";
+  function isFilt(){ return activeKind !== "all" || activeRoom !== "all"; }
+  var roomSet = null; // wird von der Raum-Leiste gesetzt
   function kindOk(card){
-    return activeKind === "all" || (card.dataset.kinds || "").indexOf("|" + activeKind + "|") !== -1;
+    return (activeKind === "all" || (card.dataset.kinds || "").indexOf("|" + activeKind + "|") !== -1) &&
+           (activeRoom === "all" || card.dataset.room === activeRoom);
   }
 
   var activeTab = "all";
@@ -1066,7 +1090,7 @@ a.stat-pill:hover{background:#b91c1c;color:#fff}
         card.classList.toggle("hidden-by-filter", !show);
         if(show) visibleInSection++;
       });
-      var filtering = !!query || activeKind !== "all";
+      var filtering = !!query || isFilt();
       section.querySelectorAll(".subsection").forEach(function(sub){
         var anyCard = sub.querySelector(".tool-card:not(.hidden-by-filter)");
         sub.classList.toggle("hidden-by-filter", filtering && !anyCard);
@@ -1074,10 +1098,10 @@ a.stat-pill:hover{background:#b91c1c;color:#fff}
       if(!isSeminar) visibleTotal += visibleInSection;
       anyVisible += visibleInSection;
 
-      section.classList.toggle("hidden-by-filter", (!!query || activeKind !== "all") && visibleInSection === 0);
+      section.classList.toggle("hidden-by-filter", (!!query || isFilt()) && visibleInSection === 0);
 
       if(countEl){
-        countEl.textContent = (query || activeKind !== "all")
+        countEl.textContent = (query || isFilt())
           ? visibleInSection + " Treffer"
           : sectionCards.length + (section.dataset.cat === "seminare"
               ? (sectionCards.length === 1 ? " Seminar" : " Seminare")
@@ -1085,9 +1109,50 @@ a.stat-pill:hover{background:#b91c1c;color:#fff}
       }
     });
 
-    emptyState.classList.toggle("show", (query || activeKind !== "all") ? anyVisible === 0 : false);
-    resultCount.textContent = (query || activeKind !== "all") ? visibleTotal + " von " + allTotal + " Tools" : "";
+    emptyState.classList.toggle("show", (query || isFilt()) ? anyVisible === 0 : false);
+    resultCount.textContent = (query || isFilt()) ? visibleTotal + " von " + allTotal + " Tools" : "";
   }
+
+  // Raum-Leiste: Anzahl je Denkraum live aus dem Register, Klick filtert die Kacheln.
+  (function(){
+    if(!(register && register.tools && register.denkraeume)) return;
+    var COL = {moeglichkeit:"#1d4ed8",analyse:"#0f766e",loesung:"#7e22ce",umsetzung:"#b45309",stoer:"#be123c",rundreise:"#15803d",basislager:"#475569"};
+    var count = {}, seen = {};
+    cards.forEach(function(card){
+      var href = (card.getAttribute("href") || "").replace(/^\.\//, "");
+      if(href.indexOf("#") !== -1) return;
+      var t = byFile[href];
+      if(!t || !t.denkraum) return;
+      card.dataset.room = t.denkraum;
+      if(!seen[href]){ seen[href] = 1; count[t.denkraum] = (count[t.denkraum] || 0) + 1; }
+    });
+    var max = 0; register.denkraeume.forEach(function(d){ max = Math.max(max, count[d.id] || 0); });
+    if(!max) return;
+    var wrap = document.getElementById("rlRows"), rows = [];
+    register.denkraeume.forEach(function(d){
+      var n = count[d.id] || 0; if(!n) return;
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "rl-row"; b.dataset.room = d.id;
+      b.setAttribute("aria-pressed", "false");
+      b.innerHTML = '<span class="rl-name">' + d.icon + ' ' + d.name + '</span>' +
+        '<span><span class="rl-bar" style="display:block;width:' + Math.round(100 * n / max) + '%;background:' + (COL[d.id] || "#475569") + '"></span></span>' +
+        '<span class="rl-n">' + n + '</span>';
+      b.addEventListener("click", function(){ roomSet(activeRoom === d.id ? "all" : d.id); });
+      rows.push(b); wrap.appendChild(b);
+    });
+    roomSet = function(id){
+      activeRoom = id;
+      rows.forEach(function(r){
+        var on = r.dataset.room === id;
+        r.classList.toggle("active", on);
+        r.classList.toggle("dim", id !== "all" && !on);
+        r.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      applyFilters();
+    };
+    document.getElementById("rlNote").textContent += " Stand Register: " + register.stand + ".";
+    document.getElementById("raumLeiste").hidden = false;
+  })();
 
   chips.forEach(function(chip){
     chip.addEventListener("click", function(){
@@ -1118,6 +1183,7 @@ a.stat-pill:hover{background:#b91c1c;color:#fff}
   document.getElementById("resetFilters").addEventListener("click", function(){
     searchInput.value = "";
     if(kindChips.length){ kindChips[0].click(); }
+    if(roomSet){ roomSet("all"); }
     if(tabBeforeSearch !== null){
       setActiveTab(tabBeforeSearch);
       tabBeforeSearch = null;
