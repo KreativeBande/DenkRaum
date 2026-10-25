@@ -3905,9 +3905,10 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-08-21",
-        "auditZeileImTool": "21.08.2026",
+        "auditZeileImTool": null,
         "offen": null
       },
+      "comic": "Stopp vor dem Startknopf",
       "beamer": "4-stufig",
       "sprecherSkript": true,
       "verwandt": [
