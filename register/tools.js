@@ -1415,6 +1415,7 @@ window.DENKRAUM_REGISTER = {
         "auditZeileImTool": null,
         "offen": "Noch nicht gegen K1-K19-Checkliste geprüft."
       },
+      "comic": "Ein Lastenheft voller Nebel",
       "beamer": "3-stufig (alt)",
       "sprecherSkript": false,
       "verwandt": [
