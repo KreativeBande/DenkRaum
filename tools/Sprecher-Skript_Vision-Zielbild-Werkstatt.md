@@ -2,6 +2,14 @@
 
 Companion zur Footer-Box „Vortrags-Skript“ in `tools/vision-zielbild-werkstatt.html`. Bei Abweichung gilt die Footer-Box.
 
+## Comic-Einstieg
+
+*(Comic aufgeklappt zeigen, vier Bilder kurz vorlesen)*
+
+„Wir haben viel zu tun, aber wohin wollen wir? Erst ein Zielbild sagt, was für wen besser werden soll. Die Frage unter dem Bild: Woran würden die Betroffenen erkennen, dass wir unser Ziel erreicht haben?“ *(Zwei, drei Antworten sammeln, dann „Lösungsimpuls anzeigen“.)*
+
+Übergang: „Genau dieses Bild bauen wir jetzt in fünf Bausteinen.“
+
 ## Einstieg
 
 *(Seite oben, Hero und die fünf Bausteine zeigen)*

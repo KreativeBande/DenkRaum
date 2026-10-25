@@ -2,6 +2,12 @@
 
 Begleitdatei zur Vortrags-Skript-Box im Footer von `tools/der-eisberg-des-promptens.html`. Gleicher Inhalt, gleiche Schritt-Gliederung — bei Abweichung gilt die Footer-Box im Tool als Quelle.
 
+## Schritt 0 — Comic
+
+*(Comic aufgeklappt zeigen, vier Bilder kurz vorlesen)*
+
+„Wir sitzen im Boot und sehen nur die Spitze: einen Prompt. Darunter steckt die Klärungsarbeit. Die Frage unter dem Bild: Welche wichtige Klärung fehlt unter der Oberfläche?“ *(Zwei, drei Antworten sammeln, dann „Lösungsimpuls anzeigen“.)* „Genau diese Tiefe schauen wir uns jetzt Ebene für Ebene an.“
+
 ## Schritt 1 — Einstieg
 
 *(Tool öffnen, noch keine Ebene angeklickt)*
