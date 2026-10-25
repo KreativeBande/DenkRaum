@@ -2,6 +2,16 @@
 
 Begleitdokument zur Vortrags-Skript-Box im Footer von `tools/talentmatch-ai-sufficiency-gate.html`. Bei Diskrepanz gilt die Footer-Box im Tool als Quelle; diese Datei wird bei der nächsten inhaltlichen Änderung synchronisiert.
 
+## 0. Comic
+
+*(Comic aufgeklappt zeigen, vier Bilder kurz vorlesen)*
+
+„Jemand gibt dem Roboter den Auftrag, die besten Bewerbungen zu finden. Er könnte sofort starten, aber das Gate hält ihn auf: Ist der Auftrag ausreichend geklärt? Die Frage unter dem Bild: Welche Fragen müssen wir vor der Automatisierung beantworten?“
+
+*(Zwei, drei Antworten sammeln, dann „Lösungsimpuls anzeigen“.)*
+
+„Genau diese Fragen prüft das RSGA-Gate.“
+
 ## 1. Schritt „Der Auftrag“
 
 *(Schritt „Der Auftrag“ zeigen)*
