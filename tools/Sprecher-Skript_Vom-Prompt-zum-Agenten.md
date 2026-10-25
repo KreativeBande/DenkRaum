@@ -2,6 +2,13 @@
 
 Companion-Datei zur Vortrags-Skript-Box in `tools/vom-prompt-zum-agenten.html` (K16). Bei Diskrepanz gilt die Footer-Box im Tool als Quelle; diese Datei wird bei der nächsten inhaltlichen Änderung synchronisiert.
 
+## Comic
+*(vor Stufe 1, Comic aufgeklappt, vier Bilder kurz vorlesen)*
+
+„Der Roboter macht einen Vorschlag, bekommt ein Werkzeug, fragt nach, und am Ende klären wir Grenzen und Freigaben. Die Frage unter dem Bild: Was darf Knut selbst entscheiden, wann muss er nachfragen?“ *(Drei Antworten sammeln, dann „Lösungsimpuls anzeigen“.)*
+
+Übergang: „Genau das schauen wir uns jetzt Stufe für Stufe an.“
+
 ## Einstieg
 *(vor Stufe 1)*
 

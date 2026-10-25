@@ -876,9 +876,10 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-08-22",
-        "auditZeileImTool": "21.08.2026",
+        "auditZeileImTool": null,
         "offen": null
       },
+      "comic": "Die Abkürzung durch die Wand",
       "beamer": "4-stufig",
       "sprecherSkript": true,
       "verwandt": [
@@ -1322,9 +1323,10 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-07-13",
-        "auditZeileImTool": "03.08.2026",
+        "auditZeileImTool": null,
         "offen": null
       },
+      "comic": "Bestellen geht. Aber wie gut?",
       "beamer": "3-stufig (alt)",
       "sprecherSkript": false,
       "verwandt": [
@@ -2742,9 +2744,10 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": null,
-        "auditZeileImTool": "03.08.2026",
+        "auditZeileImTool": null,
         "offen": "K11 (Cross-Tool Hex-Konsistenz)"
       },
+      "comic": "Alles muss zuerst fertig sein!",
       "beamer": "3-stufig (alt)",
       "sprecherSkript": true,
       "verwandt": [
@@ -3348,9 +3351,10 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-07-13",
-        "auditZeileImTool": "03.08.2026",
+        "auditZeileImTool": null,
         "offen": null
       },
+      "comic": "Bitte einmal durchwaschen!",
       "beamer": "3-stufig (alt)",
       "sprecherSkript": false,
       "verwandt": [
@@ -4113,9 +4117,10 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-08-09",
-        "auditZeileImTool": "09.08.2026",
+        "auditZeileImTool": null,
         "offen": null
       },
+      "comic": "Knut bekommt einen Schlüsselbund",
       "beamer": "4-stufig",
       "sprecherSkript": true,
       "verwandt": [
@@ -4643,6 +4648,7 @@ window.DENKRAUM_REGISTER = {
         "auditZeileImTool": null,
         "offen": "Formales Siegel-Audit steht aus; Selbstprüfung beim Einbau (21.10.2026): Playwright 1300/390 px, vier Beamer-Stufen, DE/EN, Vertiefung, Signatur fixiert. Quellenstand laut Normen-Register 21.10.2026; IIBA-Blog als Autorenmeinung gekennzeichnet."
       },
+      "comic": "Drei Plätze, dieselbe Klärungsarbeit",
       "beamer": "4-stufig",
       "sprecherSkript": true,
       "verwandt": [

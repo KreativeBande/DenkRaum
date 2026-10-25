@@ -2,6 +2,14 @@
 
 Begleitdokument zur Vortrags-Skript-Box im Footer von `tools/denkraeume-navigator.html`. Bei Diskrepanz gilt die Footer-Box im Tool als Quelle; diese Datei wird bei der nächsten inhaltlichen Änderung synchronisiert.
 
+## 0. Comic-Einstieg
+
+*(Comic aufgeklappt zeigen, vor dem Pfad-Wähler; vier Bilder kurz vorlesen)*
+
+„Vier Bilder: Das Problem ist offen. Der Roboter will schon mal bauen und rennt gegen die Wand. Erst gemeinsam klären öffnet das Tor. Die Frage unter dem Bild: Was müssen wir klären, bevor wir weitergehen? Ruft's mir zu.“ *(Danach „Lösungsimpuls anzeigen“ klicken.)*
+
+*Übergang:* „Genau dafür gibt es die Räume und die Schleusen.“
+
 ## 1. Vor dem ersten Klick
 
 *(Pfad-Wähler zeigen)*
