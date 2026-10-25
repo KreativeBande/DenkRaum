@@ -4,7 +4,11 @@ Companion zur Footer-Box „Vortrags-Skript“ in `tools/ba-auspraegungen.html`.
 
 ## 1. Einstieg
 
-*(Seite öffnen, Hero zeigen.)*
+*(Seite öffnen, Hero zeigen, Comic aufgeklappt lassen.)*
+
+Bevor wir ins Modell gehen, ein Bild: Vier Szenen, immer dieselbe Frau, immer derselbe Roboter. Erst fragt sie, wer die Anforderung klärt, dann geht es um drei Plätze: IT, Fachseite, PO-Sparring. Und unter dem Bild steht die Frage: Welche Analyse brauchen wir – unabhängig von der Stellenbezeichnung? Drei Stimmen aus der Gruppe, dann zeige ich den Lösungsimpuls.
+
+*(Nach den Antworten „Lösungsimpuls anzeigen“ klicken.)*
 
 „Business-Analyse ist eine Tätigkeit, kein Titel. Heute schauen wir, wo diese Tätigkeit in Ihrer Organisation sitzt. Wichtig vorab: Die drei Verortungen sind ein didaktisches Modell, kein Rollentyp aus dem BABOK oder von IREB.“
 
