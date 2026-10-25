@@ -4,7 +4,7 @@
  * Als Skript-Datei (nicht .json), damit sie auch offline per file:// lädt.
  */
 window.DENKRAUM_REGISTER = {
-  "stand": "2026-10-22",
+  "stand": "2026-10-25",
   "denkraeume": [
     {
       "id": "moeglichkeit",
@@ -1563,7 +1563,7 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-09-13",
-        "auditZeileImTool": "13.09.2026",
+        "auditZeileImTool": null,
         "offen": null
       },
       "beamer": "4-stufig",
@@ -1711,7 +1711,7 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-08-12",
-        "auditZeileImTool": "12.08.2026",
+        "auditZeileImTool": null,
         "offen": null
       },
       "beamer": "4-stufig",
@@ -1854,7 +1854,7 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-08-11",
-        "auditZeileImTool": "11.08.2026",
+        "auditZeileImTool": null,
         "offen": null
       },
       "beamer": "4-stufig",
@@ -1897,7 +1897,7 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-09-12",
-        "auditZeileImTool": "12.09.2026",
+        "auditZeileImTool": null,
         "offen": null
       },
       "beamer": "4-stufig",
@@ -4293,7 +4293,7 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-08-21",
-        "auditZeileImTool": "21.08.2026",
+        "auditZeileImTool": null,
         "offen": null
       },
       "beamer": "4-stufig",
