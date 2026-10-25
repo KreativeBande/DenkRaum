@@ -231,6 +231,27 @@
   html.beamer-xxl .square-highlight, html.beamer-xxl .square-example .tag{ font-size:21px; }
   /* K21: Platz und Lesbarkeit der festen Signatur */
   @media (max-width:900px){html body{padding-top:55px;}}
+
+/* ---- Qualitätsring (Grafik) ---- */
+.iso-fig{margin:6px auto 22px;max-width:580px;text-align:center;}
+.iso-svg{width:100%;height:auto;display:block;}
+.iso-seg{cursor:pointer;outline:none;}
+.iso-seg path{stroke:#fff;stroke-width:3;transition:opacity .15s;}
+.iso-seg:hover path,.iso-seg:focus path{opacity:.82;}
+.iso-seg.sel path{stroke:#111827;stroke-width:4;}
+.iso-seg:focus path{stroke:var(--accent);stroke-width:4;}
+.iso-num{fill:#fff;font:700 28px Georgia,serif;pointer-events:none;}
+.iso-lab{fill:#1f2937;font:600 15px system-ui,sans-serif;pointer-events:none;}
+.iso-seg.sel .iso-lab{font-weight:800;fill:#000;}
+.iso-mk{fill:#fcd34d;stroke:#92400e;stroke-width:2;pointer-events:none;}
+.iso-mkt{fill:#92400e;font:800 14px system-ui,sans-serif;pointer-events:none;}
+.iso-core{fill:#fff;stroke:#d9e1ea;stroke-width:3;}
+.iso-core-t{fill:#1f2937;font:700 17px system-ui,sans-serif;}
+.iso-fig figcaption{font-size:15px;color:#4b5563;margin-top:6px;}
+.iso-legend{display:inline-block;width:18px;height:18px;line-height:16px;border-radius:50%;background:#fcd34d;border:2px solid #92400e;color:#92400e;font-weight:800;font-size:12px;}
+html.beamer .iso-fig{max-width:700px;} html.beamer .iso-fig figcaption{font-size:19px;}
+html.beamer-xl .iso-fig{max-width:820px;} html.beamer-xl .iso-fig figcaption{font-size:23px;}
+html.beamer-xxl .iso-fig{max-width:960px;} html.beamer-xxl .iso-fig figcaption{font-size:28px;}
 </style>
 </head>
 <body>
@@ -359,6 +380,16 @@
     <p id="faText">—</p>
   </div>
 
+
+  <figure class="iso-fig">
+    <svg class="iso-svg" viewBox="0 0 580 500" role="group" aria-label="Qualitätsring ISO/IEC 25010:2023 mit neun Merkmalen">
+      <g class="iso-seg" data-char="fs" role="button" tabindex="0"><title>1. Funktionale Angemessenheit</title><path d="M231.2,88.4 A172,172 0 0 1 348.8,88.4 L316.7,176.7 A78,78 0 0 0 263.3,176.7 Z" style="fill:#0f766e"/><text x="290.0" y="134.0" class="iso-num" text-anchor="middle">1</text><text x="290.0" y="58.0" class="iso-lab" text-anchor="middle"><tspan x="290.0" dy="0">Funktionale</tspan><tspan x="290.0" dy="16">Angemessenheit</tspan></text></g><g class="iso-seg" data-char="pe" role="button" tabindex="0"><title>2. Leistungseffizienz</title><path d="M348.8,88.4 A172,172 0 0 1 439.0,164.0 L357.5,211.0 A78,78 0 0 0 316.7,176.7 Z" style="fill:#1d4ed8"/><text x="370.3" y="163.2" class="iso-num" text-anchor="middle">2</text><text x="408.3" y="101.0" class="iso-lab" text-anchor="start"><tspan x="408.3" dy="0">Leistungs-</tspan><tspan x="408.3" dy="16">effizienz</tspan></text></g><g class="iso-seg" data-char="co" role="button" tabindex="0"><title>3. Kompatibilität</title><path d="M439.0,164.0 A172,172 0 0 1 459.4,279.9 L366.8,263.5 A78,78 0 0 0 357.5,211.0 Z" style="fill:#7e22ce"/><text x="413.1" y="237.3" class="iso-num" text-anchor="middle">3</text><text x="471.2" y="222.0" class="iso-lab" text-anchor="start"><tspan x="471.2" dy="0">Kompatibilität</tspan></text></g><g class="iso-seg" data-char="ic" role="button" tabindex="0"><title>4. Interaktionsfähigkeit (neu benannt)</title><path d="M459.4,279.9 A172,172 0 0 1 400.6,381.8 L340.1,309.8 A78,78 0 0 0 366.8,263.5 Z" style="fill:#be123c"/><text x="398.3" y="321.5" class="iso-num" text-anchor="middle">4</text><circle cx="426.8" cy="329.0" r="9" class="iso-mk"/><text x="426.8" y="333.5" class="iso-mkt" text-anchor="middle">!</text><text x="449.3" y="339.0" class="iso-lab" text-anchor="start"><tspan x="449.3" dy="0">Interaktions-</tspan><tspan x="449.3" dy="16">fähigkeit</tspan></text></g><g class="iso-seg" data-char="re" role="button" tabindex="0"><title>5. Zuverlässigkeit</title><path d="M400.6,381.8 A172,172 0 0 1 290.0,422.0 L290.0,328.0 A78,78 0 0 0 340.1,309.8 Z" style="fill:#b45309"/><text x="332.8" y="376.5" class="iso-num" text-anchor="middle">5</text><text x="352.9" y="434.9" class="iso-lab" text-anchor="start"><tspan x="352.9" dy="0">Zuverlässigkeit</tspan></text></g><g class="iso-seg" data-char="se" role="button" tabindex="0"><title>6. Sicherheit (Security)</title><path d="M290.0,422.0 A172,172 0 0 1 179.4,381.8 L239.9,309.8 A78,78 0 0 0 290.0,328.0 Z" style="fill:#15803d"/><text x="247.2" y="376.5" class="iso-num" text-anchor="middle">6</text><text x="227.1" y="434.9" class="iso-lab" text-anchor="end"><tspan x="227.1" dy="0">Sicherheit</tspan></text></g><g class="iso-seg" data-char="ma" role="button" tabindex="0"><title>7. Wartbarkeit</title><path d="M179.4,381.8 A172,172 0 0 1 120.6,279.9 L213.2,263.5 A78,78 0 0 0 239.9,309.8 Z" style="fill:#0e7490"/><text x="181.7" y="321.5" class="iso-num" text-anchor="middle">7</text><text x="130.7" y="346.0" class="iso-lab" text-anchor="end"><tspan x="130.7" dy="0">Wartbarkeit</tspan></text></g><g class="iso-seg" data-char="fl" role="button" tabindex="0"><title>8. Flexibilität (neu benannt)</title><path d="M120.6,279.9 A172,172 0 0 1 141.0,164.0 L222.5,211.0 A78,78 0 0 0 213.2,263.5 Z" style="fill:#a21caf"/><text x="166.9" y="237.3" class="iso-num" text-anchor="middle">8</text><circle cx="134.4" cy="222.6" r="9" class="iso-mk"/><text x="134.4" y="227.1" class="iso-mkt" text-anchor="middle">!</text><text x="108.8" y="222.0" class="iso-lab" text-anchor="end"><tspan x="108.8" dy="0">Flexibilität</tspan></text></g><g class="iso-seg" data-char="sa" role="button" tabindex="0"><title>9. Safety (neu 2023)</title><path d="M141.0,164.0 A172,172 0 0 1 231.2,88.4 L263.3,176.7 A78,78 0 0 0 222.5,211.0 Z" style="fill:#475569"/><text x="209.7" y="163.2" class="iso-num" text-anchor="middle">9</text><circle cx="188.4" cy="129.0" r="9" class="iso-mk"/><text x="188.4" y="133.5" class="iso-mkt" text-anchor="middle">!</text><text x="171.7" y="107.0" class="iso-lab" text-anchor="end"><tspan x="171.7" dy="0">Safety</tspan></text></g>
+      <circle cx="290" cy="250" r="72" class="iso-core"/>
+      <text x="290" y="244" class="iso-core-t" text-anchor="middle">ISO/IEC</text>
+      <text x="290" y="266" class="iso-core-t" text-anchor="middle">25010</text>
+    </svg>
+    <figcaption>Neun gleichrangige Qualitätsmerkmale. <span class="iso-legend">!</span> = Änderung gegenüber 2011 (umbenannt oder neu). Ein Klick auf ein Segment wählt das Merkmal im Demonstrator.</figcaption>
+  </figure>
   <div class="char-grid" id="charGrid"></div>
 
   <div class="detail-panel">
@@ -422,7 +453,7 @@
         <summary class="footer-summary">Systemprompt</summary>
         <div class="footer-content footer-mono">
           <p>Baue ein einzelnes HTML-Trainingstool „ISO/IEC 25010:2023 Kompendium", das zwei Funktionen in einem Werkzeug vereint: (1) ein vollständiges Nachschlagewerk zu allen neun Hauptmerkmalen des ISO/IEC-25010-Produktqualitätsmodells (Edition 2023, SQuaRE-Reihe) inklusive Untermerkmalen und Änderungen gegenüber der Fassung 2011, und (2) einen Live-Demonstrator, der zeigt, wie aus ein und derselben funktionalen Anforderung (FA) neun unterschiedliche nicht-funktionale Anforderungen (NFAs) — eine pro Qualitätsmerkmal — sowie dazu passende User Stories mit Gherkin-Akzeptanzkriterium abgeleitet werden.</p>
-          <p><strong>Struktur:</strong> Topbar (Zurück-Link, Signatur oben rechts fix, vierstufiger Beamer-Button) → Hero (Eyebrow, H1, Lead-Absatz) → drei „Grundlagen"-Karten (ISO 25010 im Überblick, FA vs. NFA, User Story &amp; Akzeptanzkriterium) → Sektion „Die SQuaRE-Reihe im Überblick" (eine Fundament-Box 2500n + vierteilige Fluss-Grafik 2501n→2502n→2503n→2504n mit Beispielnormen je Division und Rücksprung-Links in den Demonstrator) → FA-Auswahl (3 Chips mit domänenneutralen Kundenportal-Szenarien: Login, Rechnung als PDF, Support-Anfrage) → hervorgehobene Anzeige der gewählten FA → 9er-Grid der Qualitätsmerkmale (klickbare Karten mit Nummer, DE/EN-Name, Änderungs-Badge unverändert/umbenannt/neu) → Detail-Panel darunter (kein Sliding-Panel, immer sichtbarer fester Bereich, der bei Auswahl aktualisiert wird): Merkmalsname DE/EN, Definition, Untermerkmale-Liste mit Kurzerklärung, dann zweispaltig NFA-Box und User-Story-Box mit Akzeptanzkriterium für die aktuelle Kombination aus FA × Merkmal → Vergleichstabelle 2011→2023 → Crosslink-Liste zu verwandten Denkraum-Tools → Footer mit fünf Boxen (Systemprompt, Handbuch, Vortrags-Skript, Normen-Register, Glossar).</p>
+          <p><strong>Struktur:</strong> Topbar (Zurück-Link, Signatur oben rechts fix, vierstufiger Beamer-Button) → Hero (Eyebrow, H1, Lead-Absatz) → drei „Grundlagen"-Karten (ISO 25010 im Überblick, FA vs. NFA, User Story &amp; Akzeptanzkriterium) → Sektion „Die SQuaRE-Reihe im Überblick" (eine Fundament-Box 2500n + vierteilige Fluss-Grafik 2501n→2502n→2503n→2504n mit Beispielnormen je Division und Rücksprung-Links in den Demonstrator) → Qualitätsring (Grafik: Ring aus neun gleich großen Segmenten, Nummern 1–9, Merkmalsnamen außen, Mitte „ISO/IEC 25010", gelbes „!"-Symbol bei den drei Änderungen 2023: Interaktionsfähigkeit, Flexibilität, Safety; Klick/Enter auf ein Segment wählt das Merkmal im Demonstrator, das gewählte Segment wird hervorgehoben; Beamer-Größen mitskaliert) → FA-Auswahl (3 Chips mit domänenneutralen Kundenportal-Szenarien: Login, Rechnung als PDF, Support-Anfrage) → hervorgehobene Anzeige der gewählten FA → 9er-Grid der Qualitätsmerkmale (klickbare Karten mit Nummer, DE/EN-Name, Änderungs-Badge unverändert/umbenannt/neu) → Detail-Panel darunter (kein Sliding-Panel, immer sichtbarer fester Bereich, der bei Auswahl aktualisiert wird): Merkmalsname DE/EN, Definition, Untermerkmale-Liste mit Kurzerklärung, dann zweispaltig NFA-Box und User-Story-Box mit Akzeptanzkriterium für die aktuelle Kombination aus FA × Merkmal → Vergleichstabelle 2011→2023 → Crosslink-Liste zu verwandten Denkraum-Tools → Footer mit fünf Boxen (Systemprompt, Handbuch, Vortrags-Skript, Normen-Register, Glossar).</p>
           <p><strong>Inhalt pro Spur:</strong> Für jede der drei FA-Szenarien und jedes der neun Merkmale existiert eine eigene, konkrete NFA (mit Zahl/Schwellenwert/Norm-Bezug statt „angemessen" oder „ausreichend") plus eine dazu passende User Story im Format „Als … möchte ich … damit …" mit dreizeiligem Given/When/Then-Akzeptanzkriterium. Bei rein technischen NFAs ohne direkten Endnutzen (z. B. Maintainability, Flexibility) wird die Story als Enabler-Story aus Team-/Betriebssicht formuliert, nicht künstlich auf eine Endnutzerin umgebogen.</p>
           <p><strong>Inhalt SQuaRE-Sektion:</strong> Fünf Divisionen, recherchiert gegen die aktuell gültigen Einzelnormen (K17, per gezielter Websuche verifiziert, nicht aus dem Gedächtnis übernommen): 2500n (Qualitätsmanagement — 25000 Guide, 25001 Planning and Management, 25002 Quality models overview and usage), 2501n (Qualitätsmodell — 25010, 25012 Data Quality), 2502n (Qualitätsmessung — 25020, 25022, 25023), 2503n (Qualitätsanforderungen — 25030), 2504n (Qualitätsevaluation — 25040, 25041, 25045). 2500n steht als eigene „Fundament"-Box oberhalb der vier Fluss-Karten, weil es (anders als 2501n–2504n) keinen Schritt in der Kette bildet, sondern quer dazu liegt. Jede Fluss-Karte außer 2504n endet mit einem Rücksprung-Link, der zeigt, wo diese Division im Demonstrator oben konkret sichtbar wird. Jede der fünf Karten (Fundament-Box + 4 Fluss-Karten) enthält zusätzlich einen eigenen, gestrichelt umrandeten „Beispiel"-Block (Klasse <code>.square-example</code>), der die Division konkret am Login-Szenario aus dem Demonstrator festmacht — jede Division separat vertieft, nicht nur die Definition abstrakt stehen gelassen.</p>
           <p><strong>Inhalt Glossar:</strong> Zehn Begriffe, die tatsächlich im Demonstrator vorkommen, aber dort nicht erklärt werden, weil sie technisches Fachvokabular innerhalb der NFA-Texte sind (P95/P90, bcrypt-Kostenfaktor, TLS 1.2+, PDF/A-2b, REST-API, EICAR-Testsignatur, Idempotenz-Schlüssel, §14 UStG, Enabler-Story, Fail Safe) — kein allgemeines RE-Fachlexikon und kein Ersatz für die bereits ausführlich im Haupttext erklärten Kernbegriffe FA/NFA/User Story/SQuaRE-Divisionen.</p>
@@ -510,7 +541,7 @@
         </div>
       </details>
     </div>
-    <p class="footer-sig"><strong>Michaela Kühn</strong> · www.michaela-kuehn.com · ISO/IEC 25010:2023 · ISO/IEC-25000-Reihe (SQuaRE) · Gherkin/BDD · §14 UStG<br>Zuletzt geprüft: 12.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</p>
+    <p class="footer-sig"><strong>Michaela Kühn</strong> · www.michaela-kuehn.com · ISO/IEC 25010:2023 · ISO/IEC-25000-Reihe (SQuaRE) · Gherkin/BDD · §14 UStG</p>
   </footer>
 
 </div>
@@ -803,5 +834,20 @@
 })();
 </script>
 
+
+<script>
+/* Qualitätsring: Klick/Tastatur wählt Merkmal im Demonstrator; Auswahl wird zurückgespiegelt */
+(function(){
+  var segs=document.querySelectorAll(".iso-seg"), grid=document.getElementById("charGrid");
+  function pick(id){ var c=grid.querySelector('.char-card[data-id="'+id+'"]'); if(c){ c.click(); } }
+  function sync(){ var s=grid.querySelector(".char-card.selected"); for(var i=0;i<segs.length;i++){ segs[i].classList.toggle("sel", !!s && s.dataset.id===segs[i].getAttribute("data-char")); } }
+  for(var i=0;i<segs.length;i++){ (function(s){
+    s.addEventListener("pointerup",function(){ pick(s.getAttribute("data-char")); });
+    s.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); pick(s.getAttribute("data-char")); } });
+  })(segs[i]); }
+  new MutationObserver(sync).observe(grid,{subtree:true,attributes:true,attributeFilter:["class"]});
+  sync();
+})();
+</script>
 </body>
 </html>
