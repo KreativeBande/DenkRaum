@@ -1668,7 +1668,7 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-08-28",
-        "auditZeileImTool": "28.08.2026",
+        "auditZeileImTool": null,
         "offen": null
       },
       "beamer": "4-stufig",
@@ -2822,10 +2822,10 @@ window.DENKRAUM_REGISTER = {
       "datei": "tools/prompt-builder-auslieferung.html",
       "titel": "Prompt-Builder · Auslieferungsversion",
       "kurztitel": "Prompt-Builder (Teilnehmende)",
-      "kurz": "",
-      "rubrik": null,
-      "bereich": null,
-      "aufStartseite": false,
+      "kurz": "Schlanke Teilnehmenden-Version des Prompt-Builders: Prompts Schritt für Schritt aus Rolle, Aufgabe, Kontext, Format und Eingrenzung zusammenbauen.",
+      "rubrik": "KI Tools",
+      "bereich": "Prompt Engineering & Anwendung",
+      "aufStartseite": true,
       "zweck": [
         "Übung"
       ],
@@ -2858,7 +2858,7 @@ window.DENKRAUM_REGISTER = {
         "tools/prompt-builder.html"
       ],
       "geprueft": false,
-      "notiz": "Teilnehmenden-Version des Prompt-Builders, bewusst nicht auf der Startseite."
+      "notiz": "Teilnehmenden-Version des Prompt-Builders, eigene Kachel auf der Startseite."
     },
     {
       "id": "prompt-builder",
@@ -3469,7 +3469,7 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-08-23",
-        "auditZeileImTool": "23.08.2026",
+        "auditZeileImTool": null,
         "offen": null
       },
       "beamer": "4-stufig",

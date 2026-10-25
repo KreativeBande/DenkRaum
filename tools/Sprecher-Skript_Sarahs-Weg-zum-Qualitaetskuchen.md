@@ -54,8 +54,9 @@ nicht sofort zu Tag 2 springen.
 *(Teilnehmer:innen abwechselnd Karten klicken lassen)*
 
 Teilnehmer:innen abwechselnd je 4–5 Karten klicken lassen, gemeinsam laut die NFR-Beispiele
-vorlesen. Auf die drei „NEU 2023"-Karten explizit hinweisen (Safety, Interaktionsfähigkeit,
-Flexibilität).
+vorlesen. Vorher den Qualitätsring zeigen: neun gleichrangige Segmente, das Ausrufezeichen
+markiert die Änderungen gegenüber 2011. Auf die drei „NEU 2023"-Karten explizit hinweisen
+(Safety, Interaktionsfähigkeit, Flexibilität).
 
 ## Kapitel 14 — Der große Rahmen: SWEBOK
 *(kurz halten, max. 5 Min.)*
