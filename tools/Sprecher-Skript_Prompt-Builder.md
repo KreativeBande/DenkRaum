@@ -13,6 +13,10 @@ inhaltlichen Änderung synchronisiert.
 Die meisten von Ihnen kennen das Gefühl: Man tippt einen Prompt in ein KI-Tool, das Ergebnis
 ist enttäuschend — und man weiß nicht genau, woran es lag. Genau da setzt dieses Werkzeug an.
 
+*(Comic aufgeklappt zeigen, vier Bilder kurz vorlesen)*
+
+„Mach mal einen guten Bericht, sagt sie. Heraus kommt ein Riesenbericht, der für ihre Aufgabe nicht passt. Dann klären die beiden den Auftrag in fünf Bausteinen, und am Ende kann sie das Ergebnis prüfen. Die Frage unter dem Bild: Was muss die KI wissen, damit Sie das Ergebnis sinnvoll prüfen können?" *(Drei Antworten sammeln, dann „Lösungsimpuls anzeigen".)* Übergang: „Genau diese fünf Bausteine bauen wir jetzt live."
+
 *(Baustein 1 „Rolle definieren" ist bereits aktiv.)*
 
 Ein guter Systemprompt hat fünf Bausteine, keinen mehr und keinen weniger: Rolle, Kontext,

@@ -180,9 +180,10 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-08-31",
-        "auditZeileImTool": "31.08.2026",
+        "auditZeileImTool": null,
         "offen": null
       },
+      "comic": "Mehr Meetings machen uns noch nicht agil",
       "beamer": "4-stufig",
       "sprecherSkript": false,
       "verwandt": [
@@ -971,9 +972,10 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-10-02",
-        "auditZeileImTool": "02.10.2026",
+        "auditZeileImTool": null,
         "offen": null
       },
+      "comic": "Oben tippen, unten klären",
       "beamer": "4-stufig",
       "sprecherSkript": true,
       "verwandt": [
@@ -1816,6 +1818,7 @@ window.DENKRAUM_REGISTER = {
         "auditZeileImTool": null,
         "offen": "Noch nicht gegen K1-K19-Checkliste geprüft."
       },
+      "comic": "Die Maschine wird schon wissen, warum",
       "beamer": "3-stufig (alt)",
       "sprecherSkript": false,
       "verwandt": [
@@ -2889,9 +2892,10 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-08-11",
-        "auditZeileImTool": "11.08.2026",
+        "auditZeileImTool": null,
         "offen": "K11 (Cross-Tool Hex-Konsistenz)"
       },
+      "comic": "Mach mal einen guten Bericht",
       "beamer": "4-stufig",
       "sprecherSkript": true,
       "verwandt": [
@@ -2997,6 +3001,7 @@ window.DENKRAUM_REGISTER = {
         "auditZeileImTool": null,
         "offen": null
       },
+      "comic": "Der fremde Zettel im Dokument",
       "beamer": "3-stufig (alt)",
       "sprecherSkript": false,
       "verwandt": [
@@ -4168,6 +4173,7 @@ window.DENKRAUM_REGISTER = {
         "auditZeileImTool": null,
         "offen": null
       },
+      "comic": "Knut weiß es ganz bestimmt …",
       "beamer": "3-stufig (alt)",
       "sprecherSkript": false,
       "verwandt": [
@@ -4302,6 +4308,7 @@ window.DENKRAUM_REGISTER = {
         "auditZeileImTool": null,
         "offen": null
       },
+      "comic": "Knut weiß es ganz bestimmt …",
       "beamer": "4-stufig",
       "sprecherSkript": false,
       "verwandt": [
@@ -4348,6 +4355,7 @@ window.DENKRAUM_REGISTER = {
         "auditZeileImTool": null,
         "offen": null
       },
+      "comic": "Das Rezept war doch irgendwo!",
       "beamer": "3-stufig (alt)",
       "sprecherSkript": true,
       "verwandt": [
@@ -4464,6 +4472,7 @@ window.DENKRAUM_REGISTER = {
         "auditZeileImTool": null,
         "offen": "Formales Siegel-Audit steht aus; Selbstprüfung beim Bau (02.10.2026): Muss-Kriterien erfüllt (Playwright 1300/390 px, vier Beamer-Stufen, DE/EN inkl. Footer, Signatur fixiert); Z9 Teilnehmenden-Version fehlt (Kann)."
       },
+      "comic": "Voll beschäftigt. Wohin eigentlich?",
       "beamer": "4-stufig",
       "sprecherSkript": true,
       "verwandt": [
