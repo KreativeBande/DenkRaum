@@ -30,6 +30,7 @@ Erstbefüllung am 01.10.2026 automatisch aus `index.html`, `kurse/`, dem Notion-
 | `standards` | abgedeckte Normen/Frameworks (Werteliste wie Notion) |
 | `siegel` | `status`, `letztesAudit`, `auditZeileImTool` (Datum der K14-Zeile im Tool), `offen` (offene K-Kriterien) |
 | `beamer` | `4-stufig`, `3-stufig (alt)` oder `eigenes Muster` |
+| `comic` | Titel des Comic-Einstiegs im Tool (einklappbarer Vier-Bilder-Strip mit Gruppenfrage und Lösungsimpuls); fehlt = kein Comic |
 | `sprecherSkript` | ob eine Companion-Datei existiert (laut Notion) |
 | `verwandt` | Tools aus dem Crosslink-Block des Tools |
 | `geprueft` | `true`, sobald Michaela den Eintrag bestätigt hat |
