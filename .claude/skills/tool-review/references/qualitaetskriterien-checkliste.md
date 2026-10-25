@@ -72,7 +72,7 @@ Abgeleitet aus dem Master-Prompt „Zusammenarbeit bei RE-Trainingstools" (`mast
 **Prüfmethode:**
 1. Sichtprüfung/Grep: Umschalt-Mechanismus vorhanden (z. B. Sprach-Button + zweisprachige Textquellen im Code)?
 2. Manueller Test: Jeden sichtbaren Textbereich einzeln umschalten — Header, Buttons, Tabellen, alle vier Footer-Boxen. Keine gemischt-sprachigen Reste, kein Text bleibt beim Umschalten in der alten Sprache hängen.
-3. Persona-Namen (Ela, Knut, Sarah, Petra, Herr Bachmeier) bleiben in beiden Sprachen identisch — nur Fließtext/Rollenbezeichnungen werden übersetzt.
+3. Persona-Namen (Ela, Lars, Sarah, Petra, Herr Bachmeier) bleiben in beiden Sprachen identisch — nur Fließtext/Rollenbezeichnungen werden übersetzt.
 **Bestanden, wenn:** 100 % der sichtbaren Texte inkl. aller vier Footer-Boxen in beiden Sprachen vollständig und korrekt vorhanden, Umschaltung ohne Reload funktioniert, keine gemischtsprachigen Reste. *(Neu ab v1.8, September 2026 — verpflichtendes Muss-Kriterium für alle künftigen Tools.)*
 
 ### K21 — Signatur fest verankert
@@ -96,7 +96,7 @@ Abgeleitet aus dem Master-Prompt „Zusammenarbeit bei RE-Trainingstools" (`mast
 
 ### K9 — Szenariotreue
 **Aussage:** Alle Inhalte bleiben innerhalb des definierten Szenarios (Personas, Fachdomäne, Kontext) und widersprechen sich nicht.
-**Prüfmethode:** Für jede Persona-Aussage im Tool: Entspricht sie der etablierten Rolle (Ela = Projektleitung, Knut = Entwicklung, Sarah = Vertrieb, Petra = QM, Herr Bachmeier = Geschäftsführung)? Für jede Fachaussage: Konsistent mit dem Szenario-Rahmen (z. B. Marmorkuchen vs. Bürgeramt nicht vermischt)?
+**Prüfmethode:** Für jede Persona-Aussage im Tool: Entspricht sie der etablierten Rolle (Ela = Projektleitung, Lars = Entwicklung, Sarah = Vertrieb, Petra = QM, Herr Bachmeier = Geschäftsführung)? Für jede Fachaussage: Konsistent mit dem Szenario-Rahmen (z. B. Marmorkuchen vs. Bürgeramt nicht vermischt)?
 **Bestanden, wenn:** 0 Rollen- oder Szenario-Widersprüche gefunden.
 
 ### K10 — Problem-Requirement-Solution-Trennung

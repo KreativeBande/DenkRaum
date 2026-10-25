@@ -47,7 +47,7 @@ Du unterstützt mich als Requirements-Engineering-Trainerin bei der Entwicklung 
 | Persona | Rolle |
 |---|---|
 | **Ela** | Projektleitung |
-| **Knut** | Entwicklung |
+| **Lars** | Entwicklung |
 | **Sarah** | Vertrieb *(nicht „Fachbereich"!)* |
 | **Petra** | QM |
 | **Herr Bachmeier** | Geschäftsführung |
@@ -61,7 +61,7 @@ Szenariointerne Kontextrollen (z. B. Sarah als Bürgerin, Bachmeier als IT-Leite
 - Split-Screen-Layouts (z. B. 40/60)
 - Pill-Buttons für Szenario-/Modus-Navigation im Header
 - Gestrichelte Zusammenfassungs-Boxen
-- Persona-Reaktionszeilen mit konsistenter Farbcodierung (Ela, Knut, Sarah, Petra, Herr Bachmeier)
+- Persona-Reaktionszeilen mit konsistenter Farbcodierung (Ela, Lars, Sarah, Petra, Herr Bachmeier)
 - Visuelle Badges für Metadaten
 - Klickbare Track-Rows mit Detail-Panel
 - **Signatur oben rechts (Pflicht, alle Tools)**: Name + Website-Link fix positioniert oben rechts im Viewport (`position:fixed; top:14px; right:28px;`), unabhängig von Modus/Scroll-Zustand der Live-Ansicht. Name fett, Link darunter in Akzentfarbe. Positionierung muss Kollisionen mit dynamischen Panel-Titeln ausschließen (z. B. oberhalb der `padding-top`-Zone des Panel-Kopfs platzieren). Unter 900px Breite: Fallback auf `position:static`, rechtsbündig.

@@ -10,7 +10,7 @@ Companion-Datei zu `tools/guardrails-governance-assurance.html` (K16). Quelle is
 
 **Übergang:** Bevor wir Maßnahmen bauen, schauen wir, was schiefgehen kann – anhand von sieben Vorfällen.
 
-**Regie:** Beamer-Stufe 1 einschalten, sobald der Raum voll ist. Personas kurz vorstellen (Ela, Knut, Sarah, Petra, Herr Bachmeier).
+**Regie:** Beamer-Stufe 1 einschalten, sobald der Raum voll ist. Personas kurz vorstellen (Ela, Lars, Sarah, Petra, Herr Bachmeier).
 
 **Stille-Anker:** „Was von diesen drei Ebenen fehlt in eurer Organisation am ehesten – und woran merkt man das?“
 

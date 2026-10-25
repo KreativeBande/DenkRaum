@@ -17,7 +17,7 @@ Bildschirm zeigt Ebene 1 (Welt) mit den acht Kontinenten. Kurz auf den roten Mar
 
 1. Gemeinsam den Marker verfolgen: Kontinent → Land → Stadt → Haus.
 2. An jedem Haus die Leitfrage laut vorlesen und 30–60 Sekunden diskutieren lassen, bevor der Kerninhalt aufgedeckt wird.
-3. Bei passender Gelegenheit die Vertiefung mit Persona (Ela, Knut, Sarah, Petra, Herr Bachmeier) als Praxisanker nutzen — Teilnehmer erkennen die Rollen aus anderen Trainingsmodulen wieder.
+3. Bei passender Gelegenheit die Vertiefung mit Persona (Ela, Lars, Sarah, Petra, Herr Bachmeier) als Praxisanker nutzen — Teilnehmer erkennen die Rollen aus anderen Trainingsmodulen wieder.
 4. Nach dem ersten vollständigen Weg: **🎲 Neues Ziel setzen** klicken und eine zweite Runde in Kleingruppen selbstständig navigieren lassen.
 
 ## 3. Trainer-Modus (optional, 3–5 Min)

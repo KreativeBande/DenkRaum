@@ -30,7 +30,7 @@
     /* Personas (kanonisch, siehe Handbuch: Hex-Werte vorläufig -
        Cross-Tool-Abgleich K11 im Governance-Backlog noch offen) */
     --p-ela:#0f766e;      --p-ela-bg:#e6f5f3;
-    --p-knut:#9a5b12;     --p-knut-bg:#faf1e3;
+    --p-lars:#9a5b12;     --p-lars-bg:#faf1e3;
     --p-sarah:#a3195b;    --p-sarah-bg:#fbe9f1;
     --p-petra:#1d4ed8;    --p-petra-bg:#e9eefd;
     --p-bach:#52525b;     --p-bach-bg:#eeeef0;
@@ -482,12 +482,12 @@ function catMeta(k){ for(var i=0;i<CATS.length;i++){ if(CATS[i].key===k) return 
    Klassifizierungs-Szenarien (Phase 1 – Sammeln)
    ============================================================ */
 var SCENARIOS = [
-  {persona:'knut', text:'Knut integriert einen KI-Agenten, der bei Rückfragen automatisch E-Mails an Kunden verschicken darf – auch ohne dass jemand die Antwort vorher liest.', cat:'agent', code:'AR'},
+  {persona:'lars', text:'Lars integriert einen KI-Agenten, der bei Rückfragen automatisch E-Mails an Kunden verschicken darf – auch ohne dass jemand die Antwort vorher liest.', cat:'agent', code:'AR'},
   {persona:'sarah', text:'Sarah fragt den Chatbot nach dem Rabatt für einen bestimmten Kunden – die Antwort enthält Formulierungen, die wortwörtlich aus dem internen System-Prompt stammen.', cat:'daten', code:'GP'},
   {persona:'petra', text:'Petra bemerkt, dass ein Freigabe-Assistent seit dem letzten Update in 15 % der Fälle andere Ergebnisse liefert als noch vor vier Wochen – obwohl sich an den Eingaben nichts geändert hat.', cat:'modell', code:'MD'},
   {persona:'ela', text:'Ela stellt fest, dass niemand im Projekt dokumentieren kann, warum eine bestimmte Anforderung so und nicht anders im Pflichtenheft steht.', cat:'governance', code:'NV'},
   {persona:'bach', text:'Herr Bachmeier erfährt aus der Presse, dass ein Wettbewerber wegen fehlender Meldung eines KI-bedingten Datenabflusses ein Bußgeld zahlen musste – er lässt prüfen, ob das eigene Unternehmen vorbereitet ist.', cat:'security', code:'DX'},
-  {persona:'knut', text:'Knut lässt zwei Agenten miteinander kommunizieren, um eine Bestellung zu bearbeiten – die Nachrichten zwischen beiden sind nicht signiert oder authentifiziert.', cat:'agent', code:'DK'},
+  {persona:'lars', text:'Lars lässt zwei Agenten miteinander kommunizieren, um eine Bestellung zu bearbeiten – die Nachrichten zwischen beiden sind nicht signiert oder authentifiziert.', cat:'agent', code:'DK'},
   {persona:'petra', text:'Petra prüft eine KI-gestützte Vorauswahl von Bewerbungen und stellt fest, dass Bewerberinnen aus bestimmten Postleitzahlgebieten systematisch schlechter bewertet werden.', cat:'daten', code:'BV'},
   {persona:'sarah', text:'Sarah bekommt vom KI-Assistenten eine überzeugend klingende Produktzahl genannt, die es in dieser Form gar nicht gibt.', cat:'modell', code:'HA'},
   {persona:'ela', text:'Ela merkt, dass der KI-Agent im Freigabeprozess Aufgaben eskalieren kann, ohne dass jemals ein Mensch eingreifen muss – selbst bei Zahlungen über 50.000 €.', cat:'governance', code:'MA'},
@@ -496,7 +496,7 @@ var SCENARIOS = [
 
 var PERSONAS = {
   ela:{name:'Ela', role:'Projektleitung', color:'var(--p-ela)', bg:'var(--p-ela-bg)'},
-  knut:{name:'Knut', role:'Entwicklung', color:'var(--p-knut)', bg:'var(--p-knut-bg)'},
+  lars:{name:'Lars', role:'Entwicklung', color:'var(--p-lars)', bg:'var(--p-lars-bg)'},
   sarah:{name:'Sarah', role:'Vertrieb', color:'var(--p-sarah)', bg:'var(--p-sarah-bg)'},
   petra:{name:'Petra', role:'QM', color:'var(--p-petra)', bg:'var(--p-petra-bg)'},
   bach:{name:'Herr Bachmeier', role:'Geschäftsführung', color:'var(--p-bach)', bg:'var(--p-bach-bg)'}
@@ -505,8 +505,8 @@ var PERSONAS = {
 /* Persona-Reaktionen je Kategorie für Phase 3 */
 var CAT_REACTIONS = {
   daten:{persona:'petra', text:'„Wenn wir Daten nicht sauber dokumentieren, prüfe ich am Ende etwas, dessen Herkunft ich nicht erklären kann.“'},
-  modell:{persona:'knut', text:'„Ein Modell, das ich nicht regelmäßig gegen den Ausgangszustand teste, verändert sich unter mir weg – ohne dass ich es merke.“'},
-  agent:{persona:'knut', text:'„Sobald der Agent selbst Aktionen auslöst, reicht Code-Review allein nicht mehr – ich brauche Grenzen zur Laufzeit.“'},
+  modell:{persona:'lars', text:'„Ein Modell, das ich nicht regelmäßig gegen den Ausgangszustand teste, verändert sich unter mir weg – ohne dass ich es merke.“'},
+  agent:{persona:'lars', text:'„Sobald der Agent selbst Aktionen auslöst, reicht Code-Review allein nicht mehr – ich brauche Grenzen zur Laufzeit.“'},
   security:{persona:'bach', text:'„Für mich zählt am Ende, ob wir im Ernstfall nachweisen können, dass wir vorbereitet waren.“'},
   governance:{persona:'ela', text:'„Ohne klare Verantwortlichkeiten und Nachvollziehbarkeit kann ich das Projekt gegenüber niemandem vertreten.“'}
 };
@@ -825,7 +825,7 @@ document.getElementById('systemPromptBox').textContent =
 "STRUKTUR (3 Denkraum-Zonen, per Pill-Nav umschaltbar)\n" +
 "1. Sammeln: 10 konkrete Persona-Situationen einzeln anzeigen. Nutzer wählt aus 5 Kategorie-Buttons. Sofort-Feedback: richtig/falsch, korrektes Risikofeld inkl. Titel, Kurzbeschreibung, Norm+Status+Datum. Score mitzählen.\n" +
 "2. Strukturieren: alle Risikofelder als Kacheln, gruppiert nach 5 Kategorien (Farbcode je Kategorie). Klick öffnet Detailpanel mit Code, Titel, Beschreibung, Norm-Karte (Framework/Status/Datum), ggf. Badge '⚖ Norm schreibt Mittel vor'.\n" +
-"3. Spezifizieren: ein konkretes Projektszenario (Kundenservice-Agent mit System-Zugriff) vorgeben. Nutzer wählt bis zu 3 Risikokategorien als 'am schwersten wiegend'. Für jede gewählte Kategorie: 2-3 zugehörige Risikofelder + Norm anzeigen, plus eine Persona-Reaktion (Ela/Knut/Sarah/Petra/Bachmeier je nach Kategorie). Freitext-Notizfeld mit sessionStorage-Speicherung (try/catch).\n\n" +
+"3. Spezifizieren: ein konkretes Projektszenario (Kundenservice-Agent mit System-Zugriff) vorgeben. Nutzer wählt bis zu 3 Risikokategorien als 'am schwersten wiegend'. Für jede gewählte Kategorie: 2-3 zugehörige Risikofelder + Norm anzeigen, plus eine Persona-Reaktion (Ela/Lars/Sarah/Petra/Bachmeier je nach Kategorie). Freitext-Notizfeld mit sessionStorage-Speicherung (try/catch).\n\n" +
 "DESIGN-VORGABEN\n" +
 "- 30/70 Split-Screen: linke Spalte = Zonen-Erklärung + Legende + Fortschritt, rechte Spalte = Hauptinteraktion.\n" +
 "- 5 Risikokategorie-Farben, klar getrennt von den 5 Persona-Farben (keine Kollision).\n" +
@@ -835,7 +835,7 @@ document.getElementById('systemPromptBox').textContent =
 "- Zurück-Link zur Startseite und Signatur oben rechts fix positioniert, unter 900px static; Topbar rückt bei ≥901px per padding-top unter die fixe Signatur.\n" +
 "- Footer mit 4 Pflicht-Boxen (Systemprompt/Handbuch/Vortrags-Skript/Normen-Register), darunter .footer-meta mit Normen-Referenzliste + Audit-Status-Zeile.\n\n" +
 "PERSONA-BEZUG\n" +
-"Feste Persona-Cast (Ela/Knut/Sarah/Petra/Herr Bachmeier) trägt die 10 Sammeln-Szenarien und die 5 Spezifizieren-Reaktionen. Keine Abweichung von Rollen/Kanon.\n\n" +
+"Feste Persona-Cast (Ela/Lars/Sarah/Petra/Herr Bachmeier) trägt die 10 Sammeln-Szenarien und die 5 Spezifizieren-Reaktionen. Keine Abweichung von Rollen/Kanon.\n\n" +
 "NICHT-TUN-LISTE\n" +
 "- Keine externen Bibliotheken/CDNs, keine fetch()-Aufrufe.\n" +
 "- Keine generischen Platzhalterwerte bei Normverweisen – immer Framework+Status+Datum.\n" +
@@ -880,7 +880,7 @@ document.getElementById('normRegisterBox').innerHTML =
 document.getElementById('footerMeta').innerHTML =
 "Normen-Referenzliste: EU AI Act (VO (EU) 2024/1689) · OWASP LLM Top 10 (v2.0, 2025) · OWASP Agentic Top 10 (2026) · DSGVO · ISO/IEC 27001:2022 · ISO/IEC 42001:2023 · ISO/IEC 25010:2023 · NIS2 (2022/2555) / NIS2UmsuCG · IEEE 29148:2018<br>" +
 "Zuletzt geprüft: 19.08.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll<br>" +
-"<span style='font-size:14px;'>Hinweis (K11, offen): Persona-Hex-Werte in diesem Tool sind konsistent zur bestehenden Namenskonvention (Ela=Teal, Knut=Braun-Orange, Sarah=Magenta, Petra=Blau, Bachmeier=Grau) gewählt, aber noch nicht gegen die exakten Hex-Codes der übrigen Tools im Repository abgeglichen – siehe offenes Governance-Item K11.</span>";
+"<span style='font-size:14px;'>Hinweis (K11, offen): Persona-Hex-Werte in diesem Tool sind konsistent zur bestehenden Namenskonvention (Ela=Teal, Lars=Braun-Orange, Sarah=Magenta, Petra=Blau, Bachmeier=Grau) gewählt, aber noch nicht gegen die exakten Hex-Codes der übrigen Tools im Repository abgeglichen – siehe offenes Governance-Item K11.</span>";
 
 /* Initial render */
 render();
