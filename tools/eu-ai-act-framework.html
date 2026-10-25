@@ -144,6 +144,22 @@
   .signature span,.signature small{display:block;font-size:14px;}
   body{padding-top:64px;}
   @media (max-width:900px){.signature{top:6px;right:10px;padding:3px 8px;}body{padding-top:56px;}}
+
+/* ---- Risikotreppe (Grafik) ---- */
+.rs-wrap{max-width:760px;margin:6px auto 22px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 16px;}
+.rs-h{font-size:18px;margin:0 0 6px;}
+.rs-svg{width:100%;height:auto;display:block;max-width:620px;margin:0 auto;}
+.rs-t{cursor:pointer;outline:none;transition:opacity .15s;}
+.rs-t rect{stroke:transparent;stroke-width:4;}
+.rs-t:hover rect,.rs-t:focus rect{stroke:#111827;}
+.rs-t.dim{opacity:.35;}
+.rs-t.on rect{stroke:#111827;stroke-width:5;}
+.rs-a{fill:#fff;font:700 15px system-ui,sans-serif;pointer-events:none;}
+.rs-b{fill:#fff;font:12px system-ui,sans-serif;pointer-events:none;}
+.rs-mark{fill:#92400e;font:700 13px system-ui,sans-serif;}
+.rs-detail{margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--card);border-left:6px solid var(--line);font-size:15px;line-height:1.5;}
+.rs-detail strong{display:block;margin-bottom:2px;}
+.rs-note{font-size:14px;color:var(--muted);margin:8px 0 0;}
 </style>
 </head>
 <body>
@@ -189,6 +205,14 @@
     <div class="scenario-chips" id="scenarioChips"></div>
     <p class="scenario-desc empty" id="scenarioDesc">Kein Szenario gewählt — die Felder zeigen nur die Leitfragen. Szenario wählen, um pro Feld einzeln ein Beispiel einblenden zu können.</p>
   </div>
+
+
+  <section class="rs-wrap" aria-label="Risikostufen">
+    <h2 class="rs-h">Die vier Risikostufen im Überblick</h2>
+    <svg class="rs-svg" viewBox="0 0 560 232" role="group" aria-label="Risikotreppe des EU AI Act in vier Stufen"><g class="rs-t" data-tier="verboten" role="button" tabindex="0"><title>Verboten (Art. 5)</title><rect x="115.0" y="12" width="180" height="48" rx="10" fill="#9f1239"/><text x="205" y="33" text-anchor="middle" class="rs-a">Verboten</text><text x="205" y="51" text-anchor="middle" class="rs-b">Art. 5</text></g><g class="rs-t" data-tier="hoch" role="button" tabindex="0"><title>Hochrisiko (Art. 6 · Anhang III)</title><rect x="80.0" y="66" width="250" height="48" rx="10" fill="#b45309"/><text x="205" y="87" text-anchor="middle" class="rs-a">Hochrisiko</text><text x="205" y="105" text-anchor="middle" class="rs-b">Art. 6 · Anhang III</text></g><g class="rs-t" data-tier="transparenz" role="button" tabindex="0"><title>Transparenzpflichten (Art. 50)</title><rect x="40.0" y="120" width="330" height="48" rx="10" fill="#1d4ed8"/><text x="205" y="141" text-anchor="middle" class="rs-a">Transparenzpflichten</text><text x="205" y="159" text-anchor="middle" class="rs-b">Art. 50</text></g><g class="rs-t" data-tier="minimal" role="button" tabindex="0"><title>Minimales Risiko (keine eigenen Pflichten)</title><rect x="5.0" y="174" width="400" height="48" rx="10" fill="#15803d"/><text x="205" y="195" text-anchor="middle" class="rs-a">Minimales Risiko</text><text x="205" y="213" text-anchor="middle" class="rs-b">keine eigenen Pflichten</text></g><text id="rsMark" x="412" y="0" class="rs-mark" text-anchor="start" style="display:none"></text></svg>
+    <div class="rs-detail" id="rsDetail" aria-live="polite"></div>
+    <p class="rs-note">Stufe antippen für Details. Wählst du oben ein Szenario, leuchtet dessen Stufe auf. Allzweck-KI-Modelle (GPAI) laufen als eigene Schiene, siehe Baustein 6.</p>
+  </section>
 
   <div class="progress-bar">
     <span class="progress-label" id="progressLabel">0 / 12 Felder ausgefüllt</span>
@@ -482,6 +506,7 @@
       descEl.textContent = "Kein Szenario gewählt — die Felder zeigen nur die Leitfragen. Szenario wählen, um pro Feld einzeln ein Beispiel einblenden zu können.";
       descEl.classList.add("empty");
     }
+    if(typeof updateRiskStairs === "function"){ updateRiskStairs(); }
   }
 
   function insertExample(field, card, textarea){
@@ -567,5 +592,49 @@
   updateProgress();
 </script>
 
+
+<script>
+/* Risikotreppe: Stufen antippen; Szenario aus dem Canvas hebt seine Stufe hervor */
+var updateRiskStairs;
+(function(){
+  var TIERS = {
+    verboten:{n:"Verboten (Art. 5)", c:"#9f1239", t:"Praktiken wie Social Scoring, biometrische Echtzeit-Massenüberwachung oder Emotionserkennung am Arbeitsplatz. Nicht einsetzbar. Die Verbote gelten seit 2. Feb. 2025."},
+    hoch:{n:"Hochrisiko (Art. 6, Anhang III)", c:"#b45309", t:"Einsatzbereiche wie Beschäftigung, wesentliche Dienste oder Kreditwürdigkeit. Pflichten nach Art. 9–15, Konformitätsbewertung und CE. Die Pflichten für Anhang III wurden per Digital Omnibus auf den 2. Dez. 2027 verschoben (Veröffentlichung im Amtsblatt noch gegenprüfen)."},
+    transparenz:{n:"Transparenzpflichten (Art. 50)", c:"#1d4ed8", t:"Zum Beispiel Chatbots: Nutzer:innen müssen erfahren, dass sie mit einer KI interagieren."},
+    minimal:{n:"Minimales Risiko", c:"#15803d", t:"Keine eigenen Pflichten aus dem AI Act. Freiwillige Verhaltenskodizes sind möglich."}
+  };
+  var MAP = {"digitale-akte":"hoch","buergeramt-chatbot":"transparenz","bewerbung-screening":"hoch","kreditvergabe":"hoch"};
+  var ts = document.querySelectorAll(".rs-t"), det = document.getElementById("rsDetail"), mark = document.getElementById("rsMark");
+  var shown = "";
+  function show(id, extra){
+    shown = id; var T = TIERS[id];
+    det.style.borderLeftColor = T.c;
+    det.innerHTML = "<strong>" + T.n + "</strong>" + T.t + (extra ? "<br><em>" + extra + "</em>" : "");
+    for(var i=0;i<ts.length;i++){ ts[i].classList.toggle("on", ts[i].getAttribute("data-tier")===id); }
+  }
+  updateRiskStairs = function(){
+    var sc = (typeof SCENARIOS_BY_ID !== "undefined" && typeof activeScenarioId !== "undefined") ? SCENARIOS_BY_ID[activeScenarioId] : null;
+    var tier = sc ? MAP[sc.id] : "";
+    for(var i=0;i<ts.length;i++){ ts[i].classList.toggle("dim", !!tier && ts[i].getAttribute("data-tier")!==tier); }
+    if(tier){
+      var idx = ["verboten","hoch","transparenz","minimal"].indexOf(tier);
+      mark.style.display = ""; mark.setAttribute("y", 12+idx*54+30);
+      mark.textContent = "◄ " + sc.label.replace(/^\S+\s/,"");
+      show(tier, "Einordnung für das gewählte Szenario: " + sc.label.replace(/^\S+\s/,"") + ".");
+    } else {
+      mark.style.display = "none";
+      det.style.borderLeftColor = ""; det.innerHTML = "<strong>Je höher die Stufe, desto strenger die Pflichten.</strong>Die Einordnung folgt dem Einsatzbereich des Systems, nicht der Technik.";
+      for(var j=0;j<ts.length;j++){ ts[j].classList.remove("on"); }
+      shown = "";
+    }
+  };
+  for(var i=0;i<ts.length;i++){ (function(t){
+    function go(){ show(t.getAttribute("data-tier")); }
+    t.addEventListener("pointerup", go);
+    t.addEventListener("keydown", function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(); } });
+  })(ts[i]); }
+  updateRiskStairs();
+})();
+</script>
 </body>
 </html>
