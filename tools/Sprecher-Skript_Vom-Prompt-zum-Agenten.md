@@ -17,7 +17,7 @@ Bausteine zeigen, dann: „Ein Prompt ist ein Briefing, kein Wunsch." Sarah-Beis
 ## Stufe 2 — Context Engineering
 *(Klick auf Stufe 2)*
 
-Die 10 Bausteine kurz überfliegen, nicht alle einzeln erklären. Knut-Beispiel vorlesen.
+Die 10 Bausteine kurz überfliegen, nicht alle einzeln erklären. Lars-Beispiel vorlesen.
 
 Übergang: „Jetzt hat die KI das richtige Umfeld. Aber jemand muss trotzdem noch jedes Ergebnis prüfen."
 

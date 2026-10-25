@@ -6,11 +6,11 @@ Identisch zur Footer-Box „Vortrags-Skript" im Tool. Bei Diskrepanz gilt die Fo
 Quelle; diese Datei wird bei der nächsten inhaltlichen Änderung synchronisiert.
 
 1. *(Tool öffnen, Pill „Supervised" ist aktiv, Tab „Verstehen")* Wir bleiben bei TalentMatch AI —
-   ihr kennt Ela, Knut, Sarah, Petra und Herrn Bachmeier schon. Neu ist: Ein System wie dieses
+   ihr kennt Ela, Lars, Sarah, Petra und Herrn Bachmeier schon. Neu ist: Ein System wie dieses
    kombiniert in Wirklichkeit oft mehrere ML-Ansätze gleichzeitig. Wir gehen sie einzeln durch —
    und die Aufgabe wird von Baustein zu Baustein anspruchsvoller.
 
-2. *(Knuts Zitat vorlesen)* Knut hat gerade festgestellt: 78 % der letzten Einstellungen im
+2. *(Lars’ Zitat vorlesen)* Lars hat gerade festgestellt: 78 % der letzten Einstellungen im
    Vertrieb gingen an unter 35-Jährige — bei einem Bewerbungspool mit nur 52 % unter
    35-Jährigen. Das steckt jetzt im Trainingsset. *(auf ISO-Badge „Safety" tippen, Erklärung
    erscheint)* Deshalb ist das nicht nur ein Korrektheits-, sondern ein Sicherheitsthema.

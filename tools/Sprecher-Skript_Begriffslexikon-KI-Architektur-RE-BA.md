@@ -14,7 +14,7 @@ implementieren — aber Sie müssen verstehen, welche Anforderung sich dahinter 
 
 **2. Begriff 1: Embeddings** *(Klick auf Begriff 1 — falls noch nicht offen)*
 
-„Embeddings: Text wird in einen Bedeutungsvektor übersetzt. Knut würde sagen — hören wir rein:
+„Embeddings: Text wird in einen Bedeutungsvektor übersetzt. Lars würde sagen — hören wir rein:
 [Zitat vorlesen]. Das ist der Kern: Ohne Erklärbarkeit keine nachvollziehbare Ablehnung."
 
 **3. Weitere Begriffe je nach Zeitbudget** *(Klick durch 2–3 weitere Begriffe, z. B. Guardrails

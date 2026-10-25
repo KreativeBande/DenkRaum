@@ -27,7 +27,7 @@ Die **sechs Stationen** sind für alle drei Störfälle gleich. Sie folgen den f
 | # | Station | Leitfrage | Was die Teilnehmenden tun |
 |---|---|---|---|
 | 1 | **Signal** | Woran erkennt man eine echte Störung statt bloßem Rauschen? *(Evidenz)* | Drei Meldungen bewerten: echte Störung, Rauschen oder unklar. Nur eine ist die echte Störung. |
-| 2 | **Betroffene** | Wer merkt es zuerst, wer trägt die Folgen? *(Stakeholder)* | Die festen Personas (Ela, Knut, Sarah, Petra, Herr Bachmeier) reagieren mit je einem Zitat. Aufgabe: einordnen, wer informiert, wer gefragt und wer entscheiden muss. |
+| 2 | **Betroffene** | Wer merkt es zuerst, wer trägt die Folgen? *(Stakeholder)* | Die festen Personas (Ela, Lars, Sarah, Petra, Herr Bachmeier) reagieren mit je einem Zitat. Aufgabe: einordnen, wer informiert, wer gefragt und wer entscheiden muss. |
 | 3 | **Die falsche Annahme** | Welche Annahme aus einem früheren Raum war falsch? *(Constraint)* | Aus vier Annahmen die gekippte wählen und dem Raum zuordnen, in dem sie entstanden ist. Ein Mini-Fahrplan zeigt den Rücksprung. |
 | 4 | **Auswirkung, dreifach** | Was ändert sich am angestrebten Ergebnis? *(Outcome)* | Drei Linsen zum Umschalten: **RE**: welche Anforderungen betroffen sind (Traceability, Baseline). **BA**: ob der Business Case noch trägt (Lösungsbewertung). **PM**: Termin, Budget, Risiko. |
 | 5 | **Entscheiden** | Muss neu priorisiert werden, und was fällt raus? *(Priorität)* | Einen Change Request vervollständigen und eine Entscheidung treffen: annehmen, ablehnen oder zurückstellen. Jede Option hat begründete Folgen. |

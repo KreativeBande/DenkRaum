@@ -481,7 +481,7 @@ window.DENKRAUM_REGISTER = {
       "datei": "tools/ba-rollenwandel-explorer.html",
       "titel": "BA-Rollenwandel-Explorer",
       "kurztitel": "BA-Rollenwandel-Explorer",
-      "kurz": "Vom Anforderungssammler zum Value Architect: die neue Rolle des Business Analysts nach IREB & IIBA (2026) entlang eines 6-Stufen-Modells (WARUM → WARUM GENAU → WAS → WIE → STÖRUNGEN → WIRKUNG), erfahrbar am Fallbeispiel Talent Match AI / Vantera Systemtechnik GmbH mit Ela, Knut, Petra und Herrn Bachmeier — jede Stufe zusätzlich mit realen Artefakten aus dem internen RE/BA-Trainingsprojekt TMAI vertieft.",
+      "kurz": "Vom Anforderungssammler zum Value Architect: die neue Rolle des Business Analysts nach IREB & IIBA (2026) entlang eines 6-Stufen-Modells (WARUM → WARUM GENAU → WAS → WIE → STÖRUNGEN → WIRKUNG), erfahrbar am Fallbeispiel Talent Match AI / Vantera Systemtechnik GmbH mit Ela, Lars, Petra und Herrn Bachmeier — jede Stufe zusätzlich mit realen Artefakten aus dem internen RE/BA-Trainingsprojekt TMAI vertieft.",
       "rubrik": "Requirements & Business-Analyse",
       "bereich": "Business-Analyse",
       "aufStartseite": true,
@@ -2556,7 +2556,7 @@ window.DENKRAUM_REGISTER = {
       "datei": "tools/okr-team-board.html",
       "titel": "OKR-Team-Board: Aufgaben, die aufs Ziel einzahlen",
       "kurztitel": "OKR-Team-Board",
-      "kurz": "Ein Projekt-Objective, drei Key Results, ein Team (Ela, Knut, Sarah, Petra, Herr Bachmeier). Aufgaben als erledigt markieren aktualisiert live die Fortschrittsbalken von Key Result und Objective sowie eine Team-Performance-Übersicht pro Person.",
+      "kurz": "Ein Projekt-Objective, drei Key Results, ein Team (Ela, Lars, Sarah, Petra, Herr Bachmeier). Aufgaben als erledigt markieren aktualisiert live die Fortschrittsbalken von Key Result und Objective sowie eine Team-Performance-Übersicht pro Person.",
       "rubrik": "Agiles Arbeiten & Projektmanagement",
       "bereich": "OKR",
       "aufStartseite": true,
@@ -2703,7 +2703,7 @@ window.DENKRAUM_REGISTER = {
       "datei": "tools/priorisierungslabor.html",
       "titel": "🧭 Priorisierungslabor",
       "kurztitel": "Priorisierungslabor",
-      "kurz": "Artefakt-Kette und passende Priorisierungsmethoden spielbar gemacht: von Business Case bis Gherkin acht Ebenen durchspielen, dazu eigene Werkzeuge für MoSCoW, Wert-Aufwand, Kano, WSJF, RICE, Story-Point-Poker und Stakeholder-Konfliktfälle — mit Ela, Knut, Sarah, Petra & Herrn Bachmeier.",
+      "kurz": "Artefakt-Kette und passende Priorisierungsmethoden spielbar gemacht: von Business Case bis Gherkin acht Ebenen durchspielen, dazu eigene Werkzeuge für MoSCoW, Wert-Aufwand, Kano, WSJF, RICE, Story-Point-Poker und Stakeholder-Konfliktfälle — mit Ela, Lars, Sarah, Petra & Herrn Bachmeier.",
       "rubrik": "Requirements & Business-Analyse",
       "bereich": "Priorisierung",
       "aufStartseite": true,
@@ -3599,7 +3599,7 @@ window.DENKRAUM_REGISTER = {
       "datei": "tools/stakeholder-memory.html",
       "titel": "Stakeholder Memory",
       "kurztitel": "Stakeholder Memory",
-      "kurz": "Memory-Spiel zum Nebel-Typ Stakeholder: sechs Personas (Herr Bachmeier, Ela, Knut, Sarah, Petra, Meike) gegen ihre Zitate matchen — jedes Match öffnet eine Detailkarte mit echtem Bedürfnis, Macht-Interesse-Einordnung und Nebel-Typ. Grundlagen-Modus mit Quadrant-Hinweis, Profi-Modus ohne, plus Debrief-Recap am Ende.",
+      "kurz": "Memory-Spiel zum Nebel-Typ Stakeholder: sechs Personas (Herr Bachmeier, Ela, Lars, Sarah, Petra, Meike) gegen ihre Zitate matchen — jedes Match öffnet eine Detailkarte mit echtem Bedürfnis, Macht-Interesse-Einordnung und Nebel-Typ. Grundlagen-Modus mit Quadrant-Hinweis, Profi-Modus ohne, plus Debrief-Recap am Ende.",
       "rubrik": "Übungen",
       "bereich": "Spiele",
       "aufStartseite": true,
@@ -4311,7 +4311,7 @@ window.DENKRAUM_REGISTER = {
       "datei": "tools/zettelkasten-marmorkuchen-technik.html",
       "titel": "Zettelkasten · Marmorkuchen erklärt die Zettelkasten-Technik",
       "kurztitel": "Zettelkasten Marmorkuchen",
-      "kurz": "Erklärt die Zettelkasten-Technik selbst — atomare Notiz, Verknüpfung mit Verb, Notiztypen, Emergenz — anhand eines durchgehenden Marmorkuchen-Beispiels mit Sarah, Herrn Bachmeier, Ela, Knut und Petra. Im Graph beobachtbar: aus vielen Einzelverknüpfungen entsteht ein Netz, kein Baum.",
+      "kurz": "Erklärt die Zettelkasten-Technik selbst — atomare Notiz, Verknüpfung mit Verb, Notiztypen, Emergenz — anhand eines durchgehenden Marmorkuchen-Beispiels mit Sarah, Herrn Bachmeier, Ela, Lars und Petra. Im Graph beobachtbar: aus vielen Einzelverknüpfungen entsteht ein Netz, kein Baum.",
       "rubrik": "Didaktik Tools",
       "bereich": null,
       "aufStartseite": true,
@@ -4528,7 +4528,7 @@ window.DENKRAUM_REGISTER = {
         "tools/hochschule-nordwest-steckbrief.html"
       ],
       "geprueft": false,
-      "notiz": "Erstes RE/BA-Tool im Möglichkeitsraum (schließt die Lücke im Fahrplan auf den Fäden RE und BA). Fallwelt Hochschule Nordwest mit festen Personas Herr Öztürk, Knut, Kanzlerin Dr. Feldmann, Ela."
+      "notiz": "Erstes RE/BA-Tool im Möglichkeitsraum (schließt die Lücke im Fahrplan auf den Fäden RE und BA). Fallwelt Hochschule Nordwest mit festen Personas Herr Öztürk, Lars, Kanzlerin Dr. Feldmann, Ela."
     },
     {
       "id": "vom-anforderungspaket-zum-sprint",

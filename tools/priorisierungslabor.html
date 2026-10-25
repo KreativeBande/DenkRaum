@@ -193,7 +193,7 @@
 </header>
 <div class="title-block">
   <h1>🧭 Priorisierungslabor</h1>
-  <p>Artefakt-Kette &amp; passende Priorisierungsmethoden — spielbar, mit Ela, Knut, Sarah, Petra &amp; Herrn Bachmeier.</p>
+  <p>Artefakt-Kette &amp; passende Priorisierungsmethoden — spielbar, mit Ela, Lars, Sarah, Petra &amp; Herrn Bachmeier.</p>
 </div>
 <nav>
   <button class="navbtn active" data-target="journey">🎲 Durchgängige Fälle</button>
@@ -336,7 +336,7 @@ Schritte
 1. Durchgängige Fälle: entwirf 2-3 vollständige Fallgeschichten (z. B. Kundenportal, PM-Tool-Einführung, KI-Assistent), die jeweils alle acht Ebenen einer einzigen Anforderung durchspielen — pro Stufe eine Methodenfrage mit Multiple-Choice, Begründung und angewendetem Ergebnis.
 2. Referenzkarte: baue eine Artefakt-×-Methode-Eignungsmatrix (Kernmethode / bedingt geeignet / ungeeignet) als Nachschlagewerk, unabhängig von den Fallgeschichten.
 3. Sieben Einzelwerkzeuge: ergänze je ein eigenständiges, interaktives Modul für MoSCoW, Wert-Aufwand-Matrix (Drag&Drop), Kano, WSJF-Rechner, RICE-Rechner, Story-Point-Planning-Poker und Stakeholder-Konfliktfälle.
-4. Personas: verwende durchgängig feste Rollen (Ela/Projektleitung, Knut/Entwicklung, Sarah/Vertrieb, Petra/QM, Herr Bachmeier/Geschäftsführung) als Sprecher der Artefakte und Konfliktfälle.
+4. Personas: verwende durchgängig feste Rollen (Ela/Projektleitung, Lars/Entwicklung, Sarah/Vertrieb, Petra/QM, Herr Bachmeier/Geschäftsführung) als Sprecher der Artefakte und Konfliktfälle.
 5. Normbezüge: wo eine Anforderung tatsächlich auf einer Norm beruht (ISO/IEC 27001:2022 Anhang A, DSGVO), nenne den konkreten Artikel/Control — keine erfundenen Normwerte.
 
 Format
@@ -355,7 +355,7 @@ Hinweis: Dieser Systemprompt ist eine anhand des fertigen Tools rekonstruierte S
       <b>Framework:</b> RISEN (Role – Instructions – Steps – End goal – Narrowing)<br><br>
       <b>Rolle:</b> RE-Trainerin (IREB CPRE), die Priorisierungsmethoden für Workshop-Publikum erfahrbar macht.<br>
       <b>Aufgabe:</b> Acht Artefaktebenen (Business Case bis Gherkin) mit der jeweils passenden Priorisierungsmethode verknüpfen — spielerisch, mit sofortigem Feedback.<br>
-      <b>Kontext:</b> Fünf feste Personas (Ela/Knut/Sarah/Petra/Bachmeier), drei durchgängige Fälle als roter Faden, ergänzt um sieben Referenz-Werkzeuge (MoSCoW, Wert-Aufwand, Kano, WSJF, RICE, Story Points, Konfliktfälle).<br>
+      <b>Kontext:</b> Fünf feste Personas (Ela/Lars/Sarah/Petra/Bachmeier), drei durchgängige Fälle als roter Faden, ergänzt um sieben Referenz-Werkzeuge (MoSCoW, Wert-Aufwand, Kano, WSJF, RICE, Story Points, Konfliktfälle).<br>
       <b>Format:</b> Tab-Navigation statt Split-Screen, Klick-Feedback pro Schritt, Zusammenfassungstabelle am Ende jedes Falls.<br>
       <b>Eingrenzung:</b> Granularität der Methode muss zur Granularität des Artefakts passen — dieses Prinzip zieht sich durch alle Module.<br><br>
       <b>Zentraler Lernhinweis:</b> Story Points priorisieren nicht — sie schätzen Aufwand und sind Eingabegröße für WSJF/RICE/Wert-Aufwand. Dieser Unterschied wird in Trainings häufig verwechselt.<br>
@@ -428,7 +428,7 @@ const journeyCases=[
     options:['wa','rice','eis','sp'], correct:['wa','kano'],
     why:'Auf Use-Case-Ebene sind Wert-Aufwand und Kano die Kernmethoden. Hier liefert Wert-Aufwand die schnellste Einordnung (hoher Wert, mittlerer Aufwand → Quick Win/Big Bet).',
     applied:'<b>Angewendet:</b> Hoher Geschäftswert, mittlerer Aufwand → oberer Bereich der Matrix, klarer Kandidat für den ersten Release.'},
-   {level:'User Story', rolle:'Knut (Entwicklung) plant den Sprint-Scope.',
+   {level:'User Story', rolle:'Lars (Entwicklung) plant den Sprint-Scope.',
     artefakt:'„<b>Als Kunde möchte ich meine letzte Rechnung als PDF herunterladen, damit ich sie ablegen kann.</b>"',
     options:['moscow','wsjf','rice','kano'], correct:['moscow'],
     why:'Auf Story-Ebene ist MoSCoW das Standardwerkzeug für Sprint-/Release-Scope. WSJF/RICE sind hier Overkill.',
@@ -443,7 +443,7 @@ const journeyCases=[
     options:['kano','moscow','wsjf','eis'], correct:['kano'],
     why:'NFA passen exzellent auf Kano: Sicherheit = Basis-Merkmal (fehlt = Showstopper), Performance = Leistungs-Merkmal (schneller = zufriedener).',
     applied:'<b>Angewendet:</b> Starke Authentifizierung = <b>Basis</b> (nicht verhandelbar, Mittel laut ISO 27001 Anh. A.8.5 vorgegeben), Ladezeit &lt; 2 s = <b>Leistung</b> (Zielwert, optimierbar).'},
-   {level:'Task / To-Do', rolle:'Knut zerlegt die Story technisch.',
+   {level:'Task / To-Do', rolle:'Lars zerlegt die Story technisch.',
     artefakt:'Tasks: <b>PDF-Renderer evaluieren</b> · <b>Caching einbauen</b> · <b>Lasttest aufsetzen</b>.',
     options:['eis','moscow','wsjf','rice'], correct:['eis'],
     why:'Tasks haben keinen eigenen Geschäftswert — Wert-Methoden greifen nicht. Eisenhower (dringend/wichtig) plus Abhängigkeit ordnet operativ.',
@@ -473,7 +473,7 @@ const journeyCases=[
     options:['kano','wsjf','sp','eis'], correct:['kano','wa'],
     why:'Use-Case-Ebene → Kano oder Wert-Aufwand (beide Kernmethoden). Kano zeigt: ein verlässlicher Statusbericht ist ein starkes Leistungsmerkmal.',
     applied:'<b>Angewendet:</b> Statusbericht = <b>Leistungs-Merkmal</b> — je schneller &amp; aktueller, desto zufriedener das PMO.'},
-   {level:'User Story', rolle:'Knut plant den Sprint.',
+   {level:'User Story', rolle:'Lars plant den Sprint.',
     artefakt:'„<b>Als PMO möchte ich einen Statusbericht als PDF im Corporate Design exportieren.</b>"',
     options:['moscow','rice','wsjf','kano'], correct:['moscow'],
     why:'Story-Scope → MoSCoW.',
@@ -488,7 +488,7 @@ const journeyCases=[
     options:['kano','moscow','sp','wsjf'], correct:['kano'],
     why:'NFA → Kano: Zugriffsschutz = Basis, Antwortzeit = Leistung.',
     applied:'<b>Angewendet:</b> Rollenkonzept = <b>Basis</b> (ohne kein Go-Live, Mittel laut ISO 27001 Anh. A.5.15 vorgegeben), &lt; 3 s = <b>Leistung.</b>'},
-   {level:'Task / To-Do', rolle:'Knut zerlegt.',
+   {level:'Task / To-Do', rolle:'Lars zerlegt.',
     artefakt:'Tasks: <b>Report-Template bauen</b> · <b>SSO anbinden</b> · <b>Performance-Test</b>.',
     options:['eis','wa','rice','moscow'], correct:['eis'],
     why:'Tasks → Eisenhower + Abhängigkeit.',
@@ -518,7 +518,7 @@ const journeyCases=[
     options:['wa','rice','eis','sp'], correct:['wa','kano'],
     why:'Use-Case-Ebene → Wert-Aufwand oder Kano. Wert-Aufwand zeigt schnell: hoher Wert, aber durch KI-Unsicherheit hoher Aufwand.',
     applied:'<b>Angewendet:</b> Hoher Wert, hoher Aufwand → <b>Big Bet</b>: strategisch wichtig, aber bewusst als Risiko-Investition behandeln (Spike zuerst).'},
-   {level:'User Story', rolle:'Knut plant den Sprint.',
+   {level:'User Story', rolle:'Lars plant den Sprint.',
     artefakt:'„<b>Als Vertriebler möchte ich aus erfassten Eckdaten einen Angebotsentwurf generieren lassen.</b>"',
     options:['moscow','wsjf','rice','sp'], correct:['moscow'],
     why:'Story-Scope → MoSCoW.',
@@ -533,7 +533,7 @@ const journeyCases=[
     options:['kano','moscow','rice','eis'], correct:['kano'],
     why:'NFA → Kano. Bei KI besonders wichtig: Datenschutz ist ein hartes Basis-Merkmal, kein Komfort.',
     applied:'<b>Angewendet:</b> Art. 28 DSGVO/AVV = <b>Basis</b> (fehlt = Projekt gestoppt), Antwortzeit &lt; 5 s = <b>Leistung.</b>'},
-   {level:'Task / To-Do', rolle:'Knut zerlegt.',
+   {level:'Task / To-Do', rolle:'Lars zerlegt.',
     artefakt:'Tasks: <b>Prompt-Templates entwerfen</b> · <b>AVV mit Anbieter klären</b> · <b>Halluzinations-Tests</b>.',
     options:['eis','wa','moscow','rice'], correct:['eis'],
     why:'Tasks → Eisenhower.',
@@ -796,8 +796,8 @@ renderPoker();
 
 /* ============ CONFLICT ============ */
 const cases=[
-  {id:'c1',title:'Fall 1: Das Dashboard-Dilemma',voices:[{who:'Sarah (Vertrieb)',text:'„Ich brauche dringend die neuen Filterfunktionen – sonst verlieren wir Zeit bei jedem Kundengespräch."'},{who:'Herr Bachmeier (GF)',text:'„Mir ist wichtig, dass wir zum Quartalsende ein stabiles Reporting für den Vorstand haben."'},{who:'Knut (Entwicklung)',text:'„Die Filter sind technisch aufwändig, das Reporting-Modul ist fast fertig."'}],options:[{text:'Beide Anforderungen gleichzeitig umsetzen, um niemanden zu verärgern.',correct:false,fb:'Parallelisierung ohne Kapazitätsprüfung verzögert meist beides.'},{text:'Reporting als Must (nah am Ziel, strategisch sichtbar, Termin fix), Filter als Should in den nächsten Sprint.',correct:true,fb:'Richtig: Stakeholder-Power, fixer Termin und geringer Restaufwand sprechen fürs Reporting. Filter bleiben wertvoll, aber verschiebbar.'},{text:'Entscheidung an Knut delegieren, da er den Aufwand kennt.',correct:false,fb:'Aufwand ist nur eine Dimension — Wert und Dringlichkeit fehlen.'}]},
-  {id:'c2',title:'Fall 2: Der Compliance-Konflikt',voices:[{who:'Petra (QM)',text:'„Die Protokollierung aller Datenzugriffe ist laut Audit-Vorgabe bis Monatsende Pflicht."'},{who:'Ela (Projektleitung)',text:'„Das Team ist mit dem Onboarding-Flow ausgelastet – der bringt die meiste Sichtbarkeit."'},{who:'Knut (Entwicklung)',text:'„Beides parallel sprengt unsere Sprint-Kapazität."'}],options:[{text:'Onboarding-Flow priorisieren, da sichtbarer und mehr Anerkennung.',correct:false,fb:'Sichtbarkeit schlägt keine regulatorische Pflicht mit Frist.'},{text:'Protokollierung als Must (regulatorisch, fixe Frist), Onboarding-Flow reduzieren/strecken.',correct:true,fb:'Richtig: Audit-Pflichten mit Frist sind klassische Must-Kriterien.'},{text:'Beides auf den nächsten Sprint verschieben.',correct:false,fb:'Die Audit-Frist erlaubt kein pauschales Verschieben.'}]},
+  {id:'c1',title:'Fall 1: Das Dashboard-Dilemma',voices:[{who:'Sarah (Vertrieb)',text:'„Ich brauche dringend die neuen Filterfunktionen – sonst verlieren wir Zeit bei jedem Kundengespräch."'},{who:'Herr Bachmeier (GF)',text:'„Mir ist wichtig, dass wir zum Quartalsende ein stabiles Reporting für den Vorstand haben."'},{who:'Lars (Entwicklung)',text:'„Die Filter sind technisch aufwändig, das Reporting-Modul ist fast fertig."'}],options:[{text:'Beide Anforderungen gleichzeitig umsetzen, um niemanden zu verärgern.',correct:false,fb:'Parallelisierung ohne Kapazitätsprüfung verzögert meist beides.'},{text:'Reporting als Must (nah am Ziel, strategisch sichtbar, Termin fix), Filter als Should in den nächsten Sprint.',correct:true,fb:'Richtig: Stakeholder-Power, fixer Termin und geringer Restaufwand sprechen fürs Reporting. Filter bleiben wertvoll, aber verschiebbar.'},{text:'Entscheidung an Lars delegieren, da er den Aufwand kennt.',correct:false,fb:'Aufwand ist nur eine Dimension — Wert und Dringlichkeit fehlen.'}]},
+  {id:'c2',title:'Fall 2: Der Compliance-Konflikt',voices:[{who:'Petra (QM)',text:'„Die Protokollierung aller Datenzugriffe ist laut Audit-Vorgabe bis Monatsende Pflicht."'},{who:'Ela (Projektleitung)',text:'„Das Team ist mit dem Onboarding-Flow ausgelastet – der bringt die meiste Sichtbarkeit."'},{who:'Lars (Entwicklung)',text:'„Beides parallel sprengt unsere Sprint-Kapazität."'}],options:[{text:'Onboarding-Flow priorisieren, da sichtbarer und mehr Anerkennung.',correct:false,fb:'Sichtbarkeit schlägt keine regulatorische Pflicht mit Frist.'},{text:'Protokollierung als Must (regulatorisch, fixe Frist), Onboarding-Flow reduzieren/strecken.',correct:true,fb:'Richtig: Audit-Pflichten mit Frist sind klassische Must-Kriterien.'},{text:'Beides auf den nächsten Sprint verschieben.',correct:false,fb:'Die Audit-Frist erlaubt kein pauschales Verschieben.'}]},
   {id:'c3',title:'Fall 3: Die laute Minderheit',voices:[{who:'Power-User (Einzelperson)',text:'„Ich will unbedingt eine Tastenkombination für Funktion X – nutze ich täglich!"'},{who:'Sarah (Vertrieb)',text:'„Für die meisten Nutzer irrelevant, wir haben dringendere Themen."'},{who:'Herr Bachmeier',text:'„Keine Ressourcen für Nischenwünsche, solange Kernprozesse hängen."'}],options:[{text:'Als Could einstufen — kein Hebel für die breite Basis, kein Risiko bei Nichtumsetzung.',correct:true,fb:'Richtig: Einzelmeinung ohne breite Wertschöpfung = klassisches Could.'},{text:'Als Must umsetzen, weil der User sich sonst beschwert.',correct:false,fb:'Lautstärke ist kein Priorisierungskriterium.'},{text:'Ignorieren und nicht ins Backlog aufnehmen.',correct:false,fb:'Komplett verwerfen ist unsauber — bewusst zurückstellen und dokumentieren.'}]},
 ];
 let caseScore=0;

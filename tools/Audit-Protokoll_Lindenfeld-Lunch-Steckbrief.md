@@ -50,7 +50,7 @@ Ergebnis unverändert: ✅ Zertifiziert.
 | Kriterium | Ergebnis | Nachweis |
 |---|---|---|
 | K8 Keine generischen Werte | ✅ | Zahlenabgleich gegen die Berechnung des Falls (`data.py`): Wareneinsatz 633.600, Abfall 209.088, Planeinsparung 82.368, Stretch 114.048, Betriebskosten 540.000, Investition A/B/C, Betrieb A, Kapitalwerte A (−134.732 / 273.449 / 885.722), Break-even 3,3 / 6,7 / 10,1 % stimmen exakt. Betrieb und Kapitalwerte von B und C stehen nicht im Steckbrief (Absicht), daher kein Abgleich nötig. Weitere Zahlen (1.150 Mitarbeitende, 640 Gäste, 220 Tage, 65 Minuten, 21 Testfälle) stammen aus demselben Datenmodul. |
-| K9 Szenariotreue | ✅ | Neun Stakeholder entsprechen der Besetzung des Falls (Rolle und Interesse wie in Station 0); keine erfundenen Zitate. Die festen Personas Ela, Knut, Sarah, Petra und Herr Bachmeier gehören zur Fallwelt Vantera und kommen hier bewusst nicht vor. |
+| K9 Szenariotreue | ✅ | Neun Stakeholder entsprechen der Besetzung des Falls (Rolle und Interesse wie in Station 0); keine erfundenen Zitate. Die festen Personas Ela, Lars, Sarah, Petra und Herr Bachmeier gehören zur Fallwelt Vantera und kommen hier bewusst nicht vor. |
 | K10 Problem-Requirement-Solution | ✅ (n/a) | Der Steckbrief enthält keine als „Anforderung“ gekennzeichneten Einzelitems, nur Fakten und Ziele |
 | K17 Aktualität der Normen | ✅ | Siehe Tabelle unten; jede Nennung am 17.10.2026 per Abruf geprüft, Grenzen der Prüfung im Tool in der Spalte „Prüfstatus“ ausgewiesen |
 
