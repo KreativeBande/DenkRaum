@@ -5043,9 +5043,9 @@ window.DENKRAUM_REGISTER = {
         "PMBOK"
       ],
       "siegel": {
-        "status": null,
-        "letztesAudit": null,
-        "auditZeileImTool": null,
+        "status": "Auditiert & zertifiziert",
+        "letztesAudit": "2026-10-27",
+        "auditZeileImTool": "2026-10-27",
         "offen": null
       },
       "beamer": "4-stufig",
@@ -5057,7 +5057,7 @@ window.DENKRAUM_REGISTER = {
         "tools/stoerfall-labor.html"
       ],
       "geprueft": false,
-      "notiz": "Neu am 27.10.2026. Firmenneutral, keine Fallwelt. Moderationsleitfäden für 90 Minuten und halben Tag im Vortrags-Skript."
+      "notiz": "Neu am 27.10.2026. Firmenneutral, keine Fallwelt. Moderationsleitfäden für 90 Minuten und halben Tag im Vortrags-Skript. Erstaudit 27.10.2026 nach Checkliste v2.1 (K1–K22, Z1–Z9): ⭐ Zertifiziert mit Auszeichnung, siehe tools/Audit-Protokoll_Zeit-Konflikt-Kompendium.md."
     }
   ]
 };
