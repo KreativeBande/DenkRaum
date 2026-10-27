@@ -7,11 +7,15 @@ Sammlung eigenständiger HTML-Tools rund um Requirements Engineering und den kom
 - `index.html` — Landingpage mit Kachel-Links zu allen Tools, gruppiert in Rubriken (aktuell: "Requirements Engineering Tools", "KI Tools").
 - `tools/` — alle Tools. Einzeldatei-Tools liegen direkt darin (z.B. `tools/fragenautomat.html`); Mehrdatei-Apps bekommen einen eigenen Unterordner (z.B. `tools/klarheits-sprint/`).
 
-## Qualitätsstandard (K1–K21)
+## Qualitätsstandard (K1–K22, Z1–Z9)
 
-Der vollständige, verbindliche Prüfkatalog für alle Tools ist die Notion-Seite **„Qualitätskriterien-Checkliste (Siegel-Prüfung)"** (`391d6937-ee08-8183-9966-fd0e2e963de9`), abgeleitet aus dem **„Master-Prompt: Zusammenarbeit bei RE-Trainingstools"** (ebenfalls Notion). Beide sind kanonisch — dieses Dokument hier ist die Arbeitskopie mit den für den Alltag relevanten Bau-Mustern. **Bei Diskrepanz zwischen diesem Dokument und Notion gilt immer Notion.** Vor größeren Audits oder bei Unsicherheit die Notion-Seite frisch abrufen, statt sich allein auf dieses Dokument zu verlassen — die Checkliste entwickelt sich weiter (aktuell Version 1.9, K1–K21).
+Der vollständige, verbindliche Prüfkatalog für alle Tools ist die Notion-Seite **„Qualitätskriterien-Checkliste (Siegel-Prüfung)"** (`391d6937-ee08-8183-9966-fd0e2e963de9`), abgeleitet aus dem **„Master-Prompt: Zusammenarbeit bei RE-Trainingstools"** (ebenfalls Notion). Beide sind kanonisch — dieses Dokument hier ist die Arbeitskopie mit den für den Alltag relevanten Bau-Mustern. **Bei Diskrepanz zwischen diesem Dokument und Notion gilt immer Notion.** Vor größeren Audits oder bei Unsicherheit die Notion-Seite frisch abrufen, statt sich allein auf dieses Dokument zu verlassen — die Checkliste entwickelt sich weiter (aktuell Version 2.1, K1–K22 plus Z1–Z9 für Tools mit Übungen).
 
-Kurzfassung der Siegel-Logik: ❌ Nicht zertifiziert, wenn mindestens ein Muss-Kriterium (K1–K10, K15, K17, K18, K19, K20, K21) fehlschlägt · ✅ Zertifiziert, wenn alle Muss-Kriterien bestehen · ⭐ Zertifiziert mit Auszeichnung, wenn zusätzlich alle Kann-Kriterien (K11–K14, K16) bestehen.
+Kurzfassung der Siegel-Logik: ❌ Nicht zertifiziert, wenn mindestens ein Muss-Kriterium (K1–K10, K15, K17, K18, K19, K20, K21, K22; bei Tools mit Übungen zusätzlich Z1–Z4, Z8) fehlschlägt · ✅ Zertifiziert, wenn alle Muss-Kriterien bestehen · ⭐ Zertifiziert mit Auszeichnung, wenn zusätzlich alle Kann-Kriterien (K11–K14, K16; bei Tools mit Übungen zusätzlich Z5–Z7, Z9) bestehen.
+
+Neu seit v2.0/v2.1, beim Bauen gleich mitdenken:
+- **K22 Vertiefungs-Toggle** (Muss für Kompendien und Lernreisen mit Fließtext-Erklärungen): jeder Kernabsatz als statisches Paar `depth-short`/`depth-full`, Standard Kurz, Zustand in `sessionStorage` mit `try/catch`, Beamer ab Stufe 1 erzwingt Kurz. Bei Explorer-, Puzzle- und Simulator-Tools entfällt K22; im Handbuch begründen.
+- **Z1–Z9 für Übungen:** eine Frage pro Ansicht mit Zurück/Weiter und Zähler, kein Auto-Weiter (Z1); nach Auswahl sichtbar Feedback ✔/≈/✘, richtige Antwort, „Ebenfalls vertretbar“, Erklärung, geprüft per `getComputedStyle` (Z2); richtige Antwort nicht systematisch an Position 1 (Z3); einspaltig ohne seitliches Scrollen bei 1300 und 390 px (Z4); Uhrzeiten nur im Vortrags-Skript (Z5); Abkürzungen je Abschnitt und Sprache ausschreiben, Glossar am Ende (Z6); Inline-SVG mit eindeutigen Marker-IDs, Beschriftung ≥ 14 px (Z7); Sonderzeichen im Screenshot prüfen (Z8); Teilnehmendenansicht ohne Trainer-Elemente, Lösung nach Auswahl bleibt (Z9).
 
 ## Design-System: Struktur-Tokens (Radius, Schatten, Buttons)
 

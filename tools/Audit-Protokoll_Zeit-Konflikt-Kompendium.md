@@ -10,6 +10,20 @@ Prüfmethode: statische Analyse (grep, Python-Skripte) plus dynamische Prüfung 
 
 ---
 
+## Nachprüfung 27.10.2026 (Änderung: Rückfrage beim Zurücksetzen)
+
+Anlass: Beobachtung aus Abschnitt D (Safety) umgesetzt. „Zurücksetzen“ arbeitet jetzt zweistufig: Der erste Klick färbt den Button um und fragt „Wirklich zurücksetzen? Notizen gehen verloren“ (EN: „Really reset? Notes will be lost“). Erst ein zweiter Klick innerhalb von fünf Sekunden löscht. Bewusst kein `confirm()`, weil restriktive WebViews Dialoge blockieren können (gleiche Überlegung wie bei K2). Das Handbuch beschreibt das Verhalten.
+
+- Playwright: Erster Klick löscht nichts (26 befüllte Textfelder bleiben); Beschriftung wechselt in DE und EN; nach 5,3 s ohne zweiten Klick zurück auf „Zurücksetzen“, Inhalte unverändert; zwei Klicks leeren Notizen und Fall-Eingaben. 0 Konsolenfehler.
+- K20: Neue Texte in beiden Sprachen vorhanden.
+- K14: Audit-Zeile bleibt auf 27.10.2026, gleicher Tag.
+- Vortrags-Skript unverändert, daher keine Änderung an der Companion-Datei (K16).
+- Die übrigen Kriterien sind von der Änderung nicht betroffen und gelten aus dem Erstaudit desselben Tages.
+
+Abschnitt D, Safety: jetzt ✅ unauffällig. Ergebnis unverändert: ⭐ Zertifiziert mit Auszeichnung.
+
+---
+
 ## Änderungen in diesem Audit-Zyklus
 
 - **K17:** Der Earned-Value-Verweis zeigte auf den *Practice Standard for Earned Value Management* (2. Aufl. 2011). Aktueller PMI-Standard ist *The Standard for Earned Value Management*, ANSI/PMI 19-006-2019. Er aktualisiert und erweitert den Practice Standard. Methodenkarte 8 und die Quellenliste sind umgestellt, das Normen-Register hat einen Zusatz.
@@ -90,7 +104,7 @@ Grenze der Prüfung: Die Hosts gesetze-im-internet.de und pmi.org ließen sich a
 | Security | — | Verarbeitet keine personenbezogenen Daten; Notizen bleiben im sessionStorage des Browsers | ✅ n/a |
 | Maintainability | K7, K11 | Single-File; Texte zweisprachig über `data-en`, UI-Texte in einem Objekt je Sprache | ✅ unauffällig |
 | Flexibility | K1 | — | ✅ unauffällig |
-| Safety | — | „Zurücksetzen“ löscht Notizen und Fall-Eingaben ohne Rückfrage, Folgen auf die Sitzung begrenzt | ⚠️ Beobachtung (keine Siegelwirkung) |
+| Safety | — | Beim Erstaudit löschte „Zurücksetzen“ ohne Rückfrage; seit der Nachprüfung zweistufig mit Rückfrage | ✅ unauffällig (anfangs ⚠️ Beobachtung) |
 
 ## Siegel
 
