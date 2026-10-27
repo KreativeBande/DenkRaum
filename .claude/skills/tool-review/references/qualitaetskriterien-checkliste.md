@@ -82,6 +82,15 @@ Abgeleitet aus dem Master-Prompt „Zusammenarbeit bei RE-Trainingstools" (`mast
 2. Manueller Test: Browser bei ca. 1440px, 900px und 375px Breite öffnen, Seite scrollen und alle vier Beamer-Stufen durchklicken — Signatur bleibt in jedem Fall an fester Position oben rechts, bewegt sich nicht mit dem Inhalt und wird nicht überdeckt.
 **Bestanden, wenn:** `position:fixed` gilt uneingeschränkt über alle Breakpoints und Modi hinweg; kein `position:static`-Fallback vorhanden. *(Neu ab v1.9, September 2026 — verpflichtendes Muss-Kriterium für alle künftigen Tools; löst den bisherigen, in CLAUDE.md/Master-Prompt dokumentierten Fallback auf `position:static` unter 900px Breite ab, der ab sofort nicht mehr zulässig ist.)*
 
+### K22 — Vertiefungs-Toggle (Kurz/Ausführlich)
+**Aussage:** Das Tool bietet für alle inhaltlichen Kernabsätze (Fließtext-Erklärungen in Kompendien/Lernreisen) einen Umschalter zwischen einer kurzen Fassung (1–2 Sätze) und einer ausführlichen Fassung (Herkunft/Mechanismus/Beispiel/Kontext), ohne Neuladen. Beide Fassungen liegen vollständig statisch im HTML vor — keine reine Laufzeit-Generierung (analog zur K20-Anforderung an den Sprach-Toggle). Standard-Zustand beim Laden: **Kurzfassung** (Teilnehmende sehen zuerst die knappe Version); die Trainerin schaltet für eigene Vorbereitung/Vertiefung auf Ausführlich um.
+**Prüfmethode:**
+1. `grep -c "depth-full\|depth-short"` — beide Klassen müssen vorhanden sein und in gleicher Anzahl auftreten (jeder Kernabsatz hat genau ein Paar).
+2. Manueller Test: Umschalten prüfen — Kurzfassung ersetzt Ausführlich-Fassung vollständig, keine Vermischung, kein Rest der jeweils anderen Fassung sichtbar.
+3. Persistenz: Zustand bleibt innerhalb der Sitzung erhalten (`sessionStorage` mit `try/catch`, K2-konform).
+4. Beamer-Interaktion: Im Beamer-Modus (K18, Stufe 1 aufwärts) wird automatisch auf die Kurzfassung umgeschaltet, damit Präsentationsfolien knapp bleiben — unabhängig vom zuvor gewählten Zustand.
+**Bestanden, wenn:** Beide Fassungen für alle inhaltlichen Kernabsätze vorhanden, Standard-Zustand ist Kurzfassung, Umschaltung vollständig und ohne Reload, Zustand session-persistent, Beamer-Modus erzwingt Kurzfassung. *(Neu ab v2.0, September 2026 — verpflichtendes Muss-Kriterium für alle künftigen Kompendium-/Lernreise-Tools mit Fließtext-Erklärungen. Für reine Explorer-/Puzzle-/Simulator-Tools ohne längere Erklärabsätze entfällt das Kriterium — im Handbuch-Teil begründen, warum nicht einschlägig, analog zur IREB/BABOK/PMBOK-Bezugspflicht.)*
+
 ---
 
 ## B. Inhaltliche Muss-Kriterien
@@ -169,13 +178,65 @@ Abgeleitet aus dem Master-Prompt „Zusammenarbeit bei RE-Trainingstools" (`mast
 
 ---
 
+## E. Übungs-, Layout- und Grafikstandards (Z1–Z9)
+
+**Geltungsbereich:** Tools mit Übungen, Quizfragen oder Grafiken. Entstanden im Workshop-Tool „Guardrails × Governance × Assurance" (01.10.2026). Prüfung im Browser (Playwright/Chromium oder jsdom mit berechneten Styles), nicht nur per Grep. **Muss** bei Tools mit Übungen: Z1–Z4, Z8. **Kann** (für Auszeichnung): Z5–Z7, Z9.
+
+### Z1 — Einzelfrage-Stepper (Muss)
+**Aussage:** Pro Übung ist genau eine Frage sichtbar. Navigation nur über Zurück/Weiter plus Zähler („Frage 3 von 9"). Kein automatisches Weiterspringen nach der Antwort. Auch lange Übungen sind eine Übung (z. B. neun Fragen), nicht mehrere Einzelblöcke.
+**Bestanden, wenn:** Im Browser ist je Übung exakt eine Frage sichtbar, Zurück/Weiter und Zähler funktionieren, nach einer Antwort bleibt dieselbe Frage stehen.
+
+### Z2 — Lösung nach Auswahl (Muss)
+**Aussage:** Nach der Auswahl einer Option erscheinen sofort (a) Feedback ✔ / ≈ / ✘, (b) die richtige Antwort ausdrücklich benannt, (c) bei mehreren vertretbaren Antworten „Ebenfalls vertretbar", (d) die Erklärung.
+**Prüfmethode:** Sichtbarkeit per `getComputedStyle` (display/visibility) prüfen — ein Selektor wie `.fb span{display:none}` kann den Text unbemerkt verstecken; ein reiner Textinhalts-Test im DOM reicht nicht.
+**Bestanden, wenn:** Alle vier Elemente nach Auswahl sichtbar sind, in jeder Übung.
+
+### Z3 — Antwortposition (Muss)
+**Aussage:** Die richtige Antwort steht nicht systematisch an erster Stelle.
+**Prüfmethode:** Skript über alle Fragen: Position der Option mit `data-ok="1"` zählen. Reihenfolge fest und reproduzierbar (nicht zufällig pro Aufruf, damit das Sprecher-Skript passt). Keine Optionen, die auf ihre Position verweisen („Option A", „alle genannten").
+**Bestanden, wenn:** Position 1 dominiert nicht, Verteilung breit gestreut.
+
+### Z4 — Einspaltiges Layout in Vortragsreihenfolge (Muss)
+**Aussage:** Keine Zwei-Spalten-Layouts, in denen Fließtext nur in einer schmalen Spalte steht. Inhalte stehen untereinander in der Reihenfolge des Vortrags und lassen sich nach und nach zeigen. Seitenbreite voll nutzen (main ca. 1200 px).
+**Prüfmethode:** Bei 1300 px und 390 px: `scrollWidth <= clientWidth` (kein seitliches Scrollen), lange URLs mit `overflow-wrap:anywhere`.
+**Bestanden, wenn:** Einspaltig, kein seitliches Scrollen auf beiden Breiten.
+
+### Z5 — Keine Zeitagenda im Tool (Kann)
+**Aussage:** Uhrzeiten und Zeitpläne gehören ins Sprecher-Skript, nicht ins Tool.
+
+### Z6 — Abkürzungen und Links (Kann)
+**Aussage:** Jede Abkürzung wird bei Erstverwendung je Abschnitt und je Sprache ausgeschrieben, ein Glossar steht am Ende. Normen und Quellen sind verlinkt, wo sinnvoll.
+
+### Z7 — Grafiken (Kann)
+**Aussage:** Wo ein Bild die Erklärung trägt (Modelle, Ketten, Ebenen), steht eine Inline-SVG-Grafik direkt in der Erklärung. Offline (kein externes Bild), DE/EN-Labels per `data-i18n-en`, eindeutige Marker- und Gradient-IDs je Grafik (sonst fehlen Pfeilspitzen in versteckten Abschnitten), Beschriftung im Rendering ≥ 14 px.
+
+### Z8 — Glyph-Check (Muss)
+**Aussage:** Sonderzeichen werden im Screenshot geprüft. Wird ein Zeichen fehlerhaft dargestellt (z. B. ◐), wird es durch Text oder ein gängiges Zeichen ersetzt. Keine seltenen Symbole als alleinige Bedeutungsträger.
+
+### Z9 — Teilnehmenden-Version (Kann)
+**Aussage:** Bei Workshop-Tools zusätzlich eine Variante ohne Trainer-Elemente (Footer, „Alle auflösen", Antwortimpulse für Gruppenfragen). Die Lösung nach Auswahl bleibt erhalten. Beide Varianten werden getestet.
+
+*(Neu ab v2.1, Oktober 2026. Hinweis: K12 gilt auch für Z-Kriterien — das Testprotokoll muss die Z-Befunde enthalten.)*
+
+---
+
+## Offene Punkte (Backlog, kein Siegel-Einfluss)
+
+**Wichtig:** Dieser Abschnitt enthält Diskussionspunkte/Ideen, keine Kriterien. Nichts hier wirkt sich auf ❌/✅/⭐ aus, solange es nicht explizit zu einem K-Kriterium ausformuliert und in die Änderungshistorie aufgenommen wird.
+
+- **Erledigt (03.08.2026):** Normen-Register ist vierte Pflicht-Box im Footer-Standard. K13 bleibt unverändert gültig, da sie nur das Vorhandensein der Vortrags-Skript-Box prüft.
+- **Glossar als optionale fünfte Footer-Box:** Standort und Format entschieden (Referenz `tools/story-mapping-kundenperspektiven.html`, `<dl class="footer-glossary">`), Pflicht weiterhin offen; kein K-Kriterium.
+- **Meta-Anhänge A1, A2, … als optionale Footer-Boxen:** Format entschieden (Referenz `tools/fallstudie-qualitaetssystem.html`), nur wenn der Tool-Inhalt selbst das Meta-Thema behandelt; kein K-Kriterium.
+
+---
+
 ## Siegel-Logik
 
 | Ergebnis | Bedingung |
 |---|---|
-| ❌ Nicht zertifiziert | Mindestens ein Muss-Kriterium (K1–K10, K15, K17, K18, K19, K20, K21) nicht bestanden |
-| ✅ Zertifiziert | Alle Muss-Kriterien (K1–K10, K15, K17, K18, K19, K20, K21) bestanden |
-| ⭐ Zertifiziert mit Auszeichnung | Alle Muss-Kriterien + alle Kann-Kriterien (K11–K14, K16) bestanden |
+| ❌ Nicht zertifiziert | Mindestens ein Muss-Kriterium (K1–K10, K15, K17, K18, K19, K20, K21, K22; bei Tools mit Übungen zusätzlich Z1–Z4, Z8) nicht bestanden |
+| ✅ Zertifiziert | Alle Muss-Kriterien (K1–K10, K15, K17, K18, K19, K20, K21, K22; bei Tools mit Übungen zusätzlich Z1–Z4, Z8) bestanden |
+| ⭐ Zertifiziert mit Auszeichnung | Alle Muss-Kriterien + alle Kann-Kriterien (K11–K14, K16; bei Tools mit Übungen zusätzlich Z5–Z7, Z9) bestanden |
 
 Jede Prüfung wird protokolliert als: **Tool → Datum → Kriterium → Ergebnis → Nachweis (Fundstelle/Messwert)**. Kein Kriterium gilt als „bestanden", ohne dass der konkrete Nachweis (Zeile, Messwert, Screenshot) dokumentiert ist — sonst ist es selbst wieder generisches Bla.
 
@@ -183,7 +244,9 @@ Jede Prüfung wird protokolliert als: **Tool → Datum → Kriterium → Ergebni
 
 ---
 
-*Version 1.9 — September 2026 (Stand Notion, synchronisiert 04.09.2026). Änderungshistorie v1.9: K21 ergänzt (Signatur fest verankert, Abschnitt A, Muss-Kriterium) — die Signatur muss ab sofort auf jeder Bildschirmgröße per `position:fixed` verankert sein; der bisherige Fallback auf `position:static` unter 900px Breite ist nicht mehr zulässig. Siegel-Logik-Tabelle entsprechend aktualisiert (K21 in ❌/✅-Zeilen ergänzt). Auf Wunsch von Michaela.*
+*Version 2.1 — Oktober 2026 (Stand Notion, synchronisiert 27.10.2026). Änderungshistorie v2.1: Neuer Abschnitt E ergänzt (Übungs-, Layout- und Grafikstandards Z1–Z9): Z1–Z4 und Z8 Muss-Kriterien für Tools mit Übungen, Z5–Z7 und Z9 Kann-Kriterien. Siegel-Logik-Tabelle entsprechend aktualisiert. Entstanden im Workshop-Tool „Guardrails × Governance × Assurance". Auf Wunsch von Michaela.*
+*Änderungshistorie v2.0 (September 2026): K22 ergänzt (Vertiefungs-Toggle Kurz/Ausführlich, Abschnitt A, Muss-Kriterium für Kompendium-/Lernreise-Tools) — Standard-Zustand ist die Kurzfassung, Beamer-Modus erzwingt automatisch Kurzfassung. Siegel-Logik-Tabelle entsprechend aktualisiert. Nach Referenzimplementierung in `stakeholder-management-kompendium-fachbuch.html` und `iso-22989-kompendium.html`.*
+*Version 1.9 — September 2026. Änderungshistorie v1.9: K21 ergänzt (Signatur fest verankert, Abschnitt A, Muss-Kriterium) — die Signatur muss ab sofort auf jeder Bildschirmgröße per `position:fixed` verankert sein; der bisherige Fallback auf `position:static` unter 900px Breite ist nicht mehr zulässig. Siegel-Logik-Tabelle entsprechend aktualisiert (K21 in ❌/✅-Zeilen ergänzt). Auf Wunsch von Michaela.*
 *Änderungshistorie v1.8: K20 ergänzt (Sprach-Toggle Deutsch/Englisch, Abschnitt A, Muss-Kriterium) — jedes Tool muss ab sofort einen vollständigen DE/EN-Umschalter für alle sichtbaren Texte inkl. aller vier Footer-Boxen bieten, ohne Reload und ohne externen Übersetzungsdienst. Siegel-Logik-Tabelle entsprechend aktualisiert (K20 in ❌/✅-Zeilen ergänzt).*
 *Version 1.7 — Juli 2026. Änderungshistorie v1.7: K19 (Systemprompt-Box) von Kann- zu Muss-Kriterium hochgestuft und von Abschnitt C nach Abschnitt A verschoben — die Box muss jetzt immer den vollständigen, wiederverwendbaren Master-Bau-Prompt enthalten (Struktur/Inhalt/Design/Nicht-tun), nicht mehr nur einen minimalen Rahmensatz. Siegel-Logik-Tabelle entsprechend aktualisiert (K19 aus der ⭐-Zeile in die ✅-Zeile verschoben). Korrespondiert mit Master-Prompt v6.*
 *Änderungshistorie v1.6: K17 ergänzt (Aktualität referenzierter Normen/Frameworks, Abschnitt B, Muss-Kriterium); K18 ergänzt (Beamer-Modus-Toggle, vierstufig, Abschnitt A, Muss-Kriterium — löst eine Kollision auf, bei der eine lokale Master-Prompt-Version den Beamer-Toggle fälschlich „K15" nannte); K19 ergänzt (Systemprompt-Box vermittelt Nachbau-Prompt-Idee, Abschnitt C, Kann-Kriterium); Siegel-Logik-Tabelle korrigiert — K16 fehlte bisher in der ⭐-Zeile trotz Kann-Kriterium-Status, jetzt inkl. K16 und K19.*

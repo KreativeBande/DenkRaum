@@ -1328,6 +1328,7 @@ NICHT TUN: Keine Personennamen und keine Fallwelt in den Szenen. Keine Zahl ohne
 <p data-en="Beamer and depth: beamer has four stages and forces the short version. In the detailed depth each method shows its limits and background.">Beamer und Vertiefung: Beamer hat vier Stufen und erzwingt die Kurzfassung. In der Vertiefung stehen zu jeder Methode die Grenzen und Hintergründe.</p>
 <p data-en="Models and sources: the models of Schulz von Thun, Fisher and Ury, Glasl, Thomas-Kilmann, Karpman, Rosenberg and Moore are reproduced in own words. The linked sources are mostly overview and secondary sources; check the original literature before use. The Thomas-Kilmann instrument is licensed; the compendium contains only an own reflection grid.">Modelle und Quellen: Die Modelle von Schulz von Thun, Fisher und Ury, Glasl, Thomas-Kilmann, Karpman, Rosenberg und Moore sind in eigenen Worten wiedergegeben. Die verlinkten Quellen sind überwiegend Überblicks- und Sekundärquellen; vor dem Einsatz ist die Originalliteratur zu prüfen. Das Thomas-Kilmann-Instrument ist lizenzpflichtig; im Kompendium steht nur ein eigenes Reflexionsraster.</p>
 <p data-en="Example values: all figures (percentages, weeks, cost of delay, thresholds) are example values that the team sets itself. The scenes are fictional.">Beispielwerte: Alle Zahlen (Prozentsätze, Wochen, Wartekosten, Schwellen) sind Beispielwerte, die das Team selbst festlegt. Die Szenen sind fiktiv.</p>
+<p data-en="Reset: the first click only asks (“Really reset? Notes will be lost”), the second click within five seconds deletes notes, case entries and revealed solutions. Without a second click nothing happens.">Zurücksetzen: Der erste Klick fragt nur nach („Wirklich zurücksetzen? Notizen gehen verloren“), erst ein zweiter Klick innerhalb von fünf Sekunden löscht Notizen, Fall-Eingaben und aufgedeckte Lösungen. Ohne zweiten Klick passiert nichts.</p>
 <h4 data-en="Construction logic of the system prompt">Konstruktionslogik des Systemprompts</h4>
 <p data-en="Framework: the system prompt follows RISEN. Role: mentor for project management, business analysis and requirements engineering. Instructions: build the compendium as one offline HTML page. Steps: structure and the fixed building blocks of each method card. End goal: the team uses its time better and avoids unnecessary escalation. Narrowing: quality rules, design, persona reference and the do-not list.">Framework: Der Systemprompt folgt RISEN. Role: Mentor für Projektmanagement, Business Analyse und Requirements Engineering. Instructions: das Kompendium als eine Offline-HTML-Seite bauen. Steps: Struktur und die festen Bausteine jeder Methodenkarte. End goal: Das Team nutzt die Zeit besser und vermeidet unnötige Eskalationen. Narrowing: Qualitätsregeln, Design, Persona-Bezug und Nicht-tun-Liste.</p>
 <table class="footer-table"><thead><tr><th data-en="Dimension">Dimension</th><th data-en="In this prompt">In diesem Prompt</th></tr></thead><tbody>
@@ -1405,11 +1406,11 @@ NICHT TUN: Keine Personennamen und keine Fallwelt in den Szenen. Keine Zahl ohne
   el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();fn(e);}});
  }
  var T={
-  de:{beamer:['☀ Beamer','☀ Beamer XL','☀ Beamer XXL','☀ Normal'],lang:'English',depthS:'Vertiefung: Kurz',depthF:'Vertiefung: Ausführlich',reset:'Zurücksetzen',
+  de:{beamer:['☀ Beamer','☀ Beamer XL','☀ Beamer XXL','☀ Normal'],lang:'English',depthS:'Vertiefung: Kurz',depthF:'Vertiefung: Ausführlich',reset:'Zurücksetzen',resetAsk:'Wirklich zurücksetzen? Notizen gehen verloren',
       part:'Teilnehmendenansicht',partOn:'Moderationsansicht',reveal:'Lösung aufdecken',hide:'Lösung verbergen',all:'Alle auflösen',none:'Alle verbergen',prev:'Zurück',next:'Weiter',
       q:function(a,b){return 'Frage '+a+' von '+b;},noNotes:'Noch keine Notizen.',step:function(a,b){return 'Schritt '+a+' von '+b;},caseLbl:'Fall:',noCase:'Noch kein Fall gewählt.',noOwn:'Noch kein eigener Fall beschrieben.',chain:['Zeitdruck','Unklare Priorität','Konflikt','Eskalation'],ok:'Passt.',near:'Vertretbar, aber der Schwerpunkt liegt woanders.',no:'Eher nicht.',core:'Für diesen Fall liegt der Schwerpunkt bei „%“.',ownLink:'Euer Schwerpunkt: „%“. Begründet in einem Satz, woran ihr das erkennt.',mOk:'passt laut Navigator zu diesem Fall.',mNear:'liegt im selben Bereich wie eine empfohlene Methode, ist aber nicht die erste Wahl.',mNo:'passt eher zu einer anderen Situation.',rec:'Navigator empfiehlt:',ownMeth:'Prüft: Welches Glied der Kette und welcher Bereich passt zu eurer Wahl? Der Navigator zeigt Beispiele.',exLbl:'Beispielvereinbarung:',linkLbl:'Glied der Kette:',methLbl:'Methoden:',wasLbl:'Was:',werLbl:'Wer:',bisLbl:'Bis wann:',solo:function(a,b){return 'Methode '+a+' von '+b;},sit:function(a,b){return 'Situation '+a+' von '+b;},seen:function(a,b){return 'Angesehen: '+a+' von '+b;},
       score:function(a,b){return 'Auswertung: '+a+' von '+b+' Fragen richtig beantwortet.';}},
-  en:{beamer:['☀ Beamer','☀ Beamer XL','☀ Beamer XXL','☀ Normal'],lang:'Deutsch',depthS:'Depth: Short',depthF:'Depth: Detailed',reset:'Reset',
+  en:{beamer:['☀ Beamer','☀ Beamer XL','☀ Beamer XXL','☀ Normal'],lang:'Deutsch',depthS:'Depth: Short',depthF:'Depth: Detailed',reset:'Reset',resetAsk:'Really reset? Notes will be lost',
       part:'Participant view',partOn:'Facilitator view',reveal:'Reveal solution',hide:'Hide solution',all:'Reveal all',none:'Hide all',prev:'Back',next:'Next',
       q:function(a,b){return 'Question '+a+' of '+b;},noNotes:'No notes yet.',step:function(a,b){return 'Step '+a+' of '+b;},caseLbl:'Case:',noCase:'No case chosen yet.',noOwn:'No own case described yet.',chain:['Time pressure','Unclear priority','Conflict','Escalation'],ok:'Fits.',near:'Defensible, but the focus lies elsewhere.',no:'Rather not.',core:'For this case the focus lies at “%”.',ownLink:'Your focus: “%”. Explain in one sentence how you recognise it.',mOk:'fits this case according to the navigator.',mNear:'is in the same area as a recommended method but not the first choice.',mNo:'fits another situation better.',rec:'The navigator recommends:',ownMeth:'Check: which link of the chain and which area fits your choice? The navigator shows examples.',exLbl:'Example agreement:',linkLbl:'Link of the chain:',methLbl:'Methods:',wasLbl:'What:',werLbl:'Who:',bisLbl:'By when:',solo:function(a,b){return 'Method '+a+' of '+b;},sit:function(a,b){return 'Situation '+a+' of '+b;},seen:function(a,b){return 'Viewed: '+a+' of '+b;},
       score:function(a,b){return 'Result: '+a+' of '+b+' questions answered correctly.';}}
@@ -1437,7 +1438,7 @@ NICHT TUN: Keine Personennamen und keine Fallwelt in den Szenen. Keine Zahl ohne
   beamerBtn.textContent=L.beamer[beamerLevel];
   langBtn.textContent=L.lang;
   depthBtn.textContent=depthFull?L.depthF:L.depthS;
-  resetBtn.textContent=L.reset;partBtn.textContent=partOn?L.partOn:L.part;
+  resetBtn.textContent=resetArmed?L.resetAsk:L.reset;partBtn.textContent=partOn?L.partOn:L.part;
   reveals.forEach(function(b){var s=b.parentNode.querySelector('.sol');b.textContent=s.hidden?L.reveal:L.hide;});
   var anyHidden=sols.some(function(s){return s.hidden;});
   allBtn.textContent=anyHidden?L.all:L.none;
@@ -1696,7 +1697,11 @@ NICHT TUN: Keine Personennamen und keine Fallwelt in den Szenen. Keine Zahl ohne
  on(beamerBtn,function(){setBeamer((beamerLevel+1)%4);});
  on(langBtn,function(){setLang(lang==='de'?'en':'de');});
  on(depthBtn,function(){ if(beamerLevel>0)return; setDepth(!depthFull);});
+ var resetArmed=false,resetTimer=null;
+ function disarmReset(){resetArmed=false;clearTimeout(resetTimer);resetBtn.classList.remove('on');labels();}
  on(resetBtn,function(){
+  if(!resetArmed){resetArmed=true;resetBtn.classList.add('on');labels();resetTimer=setTimeout(disarmReset,5000);return;}
+  disarmReset();
   sols.forEach(function(s){s.hidden=true;});
   exitSolo();exitNav();seen={};notes={};ss('mku-zk-notes','{}');noteEls.forEach(function(t){t.value='';});notesOut.hidden=true;setPart(false);fReset();
   showSit(-1);
