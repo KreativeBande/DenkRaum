@@ -4,7 +4,7 @@
  * Als Skript-Datei (nicht .json), damit sie auch offline per file:// lädt.
  */
 window.DENKRAUM_REGISTER = {
-  "stand": "2026-10-25",
+  "stand": "2026-10-27",
   "denkraeume": [
     {
       "id": "moeglichkeit",
@@ -4997,6 +4997,67 @@ window.DENKRAUM_REGISTER = {
       ],
       "geprueft": false,
       "notiz": "Variante der Trainerversion, kein eigener Inhalt."
+    },
+    {
+      "id": "zeit-konflikt-kompendium",
+      "datei": "tools/zeit-konflikt-kompendium.html",
+      "titel": "Zeit- und Konfliktkompendium",
+      "kurztitel": "Zeit & Konflikt",
+      "kurz": "20 Methoden für Projektteams in vier Bereichen: Zeit planen und priorisieren, schätzen und steuern, Konflikte verstehen, im Gespräch klären und entscheiden — mit Methoden-Board, Situations-Navigator, Fallübung in vier Schritten, Entscheidungs-Training, Teilnehmendenansicht und Sprachumschalter Deutsch/Englisch.",
+      "rubrik": "Agiles Arbeiten & Projektmanagement",
+      "bereich": "Projektmanagement",
+      "aufStartseite": true,
+      "zweck": [
+        "Nachschlagewerk",
+        "Übung"
+      ],
+      "denkraum": "stoer",
+      "faeden": [
+        "pm"
+      ],
+      "dauer": "90 min",
+      "haufeSeminare": [
+        "3744",
+        "3525",
+        "2929",
+        "34002"
+      ],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [],
+      "themen": [
+        "Zeitmanagement",
+        "Priorisierung",
+        "Schätzung",
+        "Puffer",
+        "Konfliktmanagement",
+        "Eskalation",
+        "Kommunikation",
+        "Verhandlung",
+        "Mediation",
+        "Verantwortung"
+      ],
+      "standards": [
+        "PMBOK"
+      ],
+      "siegel": {
+        "status": null,
+        "letztesAudit": null,
+        "auditZeileImTool": null,
+        "offen": null
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/stakeholder-management-kompendium-fachbuch.html",
+        "tools/priorisierungslabor.html",
+        "tools/ipma-icb4-kompendium.html",
+        "tools/stoerfall-labor.html"
+      ],
+      "geprueft": false,
+      "notiz": "Neu am 27.10.2026. Firmenneutral, keine Fallwelt. Moderationsleitfäden für 90 Minuten und halben Tag im Vortrags-Skript."
     }
   ]
 };
