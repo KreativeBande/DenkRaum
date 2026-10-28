@@ -122,6 +122,13 @@ window.DENKRAUM_REGISTER = {
       "kurz_en": "PM basics"
     },
     {
+      "nr": "5453",
+      "kurz": "Kleinere Projekte",
+      "titel": "Handwerkszeug für kleinere Projekte",
+      "datei": "kurse/handwerkszeug-kleinere-projekte.html",
+      "kurz_en": "Smaller projects"
+    },
+    {
       "nr": "34000",
       "kurz": "Agile Projekte aufsetzen",
       "titel": "Agile Projekte richtig aufsetzen und steuern",
@@ -2685,7 +2692,8 @@ window.DENKRAUM_REGISTER = {
       ],
       "dauer": null,
       "haufeSeminare": [
-        "8932"
+        "8932",
+        "5453"
       ],
       "einsatzkontext": [
         "Seminar"
@@ -2717,6 +2725,62 @@ window.DENKRAUM_REGISTER = {
       "verwandt": [],
       "geprueft": false,
       "notiz": "Hochgeladen am 28.10.2026 und unverändert übernommen bis auf Zurück-Link zur Startseite und Signatur-Link (www.michaela-kuehn.com). Teilnehmenden-Version über ?tn=1. Noch keine Siegel-Prüfung; die Zeile im Tool-Footer ist ein Normen-Stand, keine Siegel-Zeile."
+    },
+    {
+      "id": "projekt-werkzeugkoffer",
+      "datei": "tools/projekt-werkzeugkoffer.html",
+      "titel": "🧰 Projekt-Werkzeugkoffer",
+      "kurztitel": "Werkzeugkoffer",
+      "kurz": "Handwerkszeug für kleinere Projekte in zwölf Bausteinen: Auftrags-Navigator, Projektauftrag, Kompakt-Planer, Risiko-Check, Steuerungs-Cockpit, Führen ohne Weisung und Abschluss-Werkstatt, dazu Checker, Fall-Simulator, KI-Prompt-Werkstatt und Transferplan. Projektdaten einmal eintragen, daraus entstehen die wichtigsten Dokumente. Mit Sprachumschalter Deutsch/Englisch.",
+      "rubrik": "Agiles Arbeiten & Projektmanagement",
+      "bereich": "Projektmanagement",
+      "aufStartseite": true,
+      "zweck": [
+        "Workshop-Canvas",
+        "Übung"
+      ],
+      "denkraum": "rundreise",
+      "faeden": [
+        "pm",
+        "re"
+      ],
+      "dauer": "Ganztag",
+      "haufeSeminare": [
+        "5453"
+      ],
+      "einsatzkontext": [
+        "Seminar"
+      ],
+      "fallwelten": [],
+      "themen": [
+        "Lebenszyklus",
+        "Projektmanagement",
+        "Projektauftrag",
+        "Kleine Projekte",
+        "Schätzung",
+        "Risikomanagement",
+        "Statusbericht",
+        "Stakeholder",
+        "Projektabschluss",
+        "Prompting"
+      ],
+      "standards": [
+        "PMBOK",
+        "ISO 21502",
+        "ISO 31000",
+        "EU AI Act"
+      ],
+      "siegel": {
+        "status": null,
+        "letztesAudit": null,
+        "auditZeileImTool": null,
+        "offen": "Noch nicht gegen K1–K22/Z1–Z9 geprüft. Footer hat Impressum und Normen-Register statt der vier Standard-Boxen (Systemprompt, Handbuch und Vortrags-Skript fehlen, K19)."
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": false,
+      "verwandt": [],
+      "geprueft": false,
+      "notiz": "Hochgeladen am 28.10.2026 (Trainer-Variante zum Haufe-Seminar Nr. 5453) und unverändert übernommen bis auf Zurück-Link zur Startseite und Signatur nach K21 (Name fett, kompakter auf Mobile). Beispielprojekt fiktiv (Raumbuchung), keine Denkraum-Fallwelt."
     },
     {
       "id": "pmp-eco-kombitool",
@@ -2794,7 +2858,8 @@ window.DENKRAUM_REGISTER = {
         "34002",
         "9368",
         "31693",
-        "8932"
+        "8932",
+        "5453"
       ],
       "einsatzkontext": [
         "Workshop",
@@ -3633,7 +3698,8 @@ window.DENKRAUM_REGISTER = {
         "34002",
         "9368",
         "31693",
-        "8932"
+        "8932",
+        "5453"
       ],
       "einsatzkontext": [
         "Workshop",
@@ -3786,7 +3852,8 @@ window.DENKRAUM_REGISTER = {
         "2929",
         "34002",
         "3744",
-        "8932"
+        "8932",
+        "5453"
       ],
       "einsatzkontext": [
         "Seminar",
@@ -4514,7 +4581,8 @@ window.DENKRAUM_REGISTER = {
         "3525",
         "2929",
         "34002",
-        "8932"
+        "8932",
+        "5453"
       ],
       "einsatzkontext": [
         "Seminar",
@@ -4767,7 +4835,8 @@ window.DENKRAUM_REGISTER = {
         "31693",
         "2929",
         "3744",
-        "8932"
+        "8932",
+        "5453"
       ],
       "einsatzkontext": [
         "Workshop",
@@ -4968,7 +5037,8 @@ window.DENKRAUM_REGISTER = {
       "haufeSeminare": [
         "31693",
         "9368",
-        "8932"
+        "8932",
+        "5453"
       ],
       "einsatzkontext": [
         "Workshop",
@@ -5090,7 +5160,8 @@ window.DENKRAUM_REGISTER = {
         "3525",
         "2929",
         "34002",
-        "8932"
+        "8932",
+        "5453"
       ],
       "einsatzkontext": [
         "Workshop",
