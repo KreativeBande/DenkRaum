@@ -4,7 +4,7 @@
  * Als Skript-Datei (nicht .json), damit sie auch offline per file:// lädt.
  */
 window.DENKRAUM_REGISTER = {
-  "stand": "2026-10-27",
+  "stand": "2026-10-28",
   "denkraeume": [
     {
       "id": "moeglichkeit",
@@ -113,6 +113,13 @@ window.DENKRAUM_REGISTER = {
       "titel": "KI-Prompting im Requirements Engineering und in der Business Analyse",
       "datei": "kurse/ki-prompting-re-ba.html",
       "kurz_en": "AI prompting in RE & BA"
+    },
+    {
+      "nr": "8932",
+      "kurz": "PM Basiswissen",
+      "titel": "Projektmanagement Basiswissen",
+      "datei": "kurse/projektmanagement-basiswissen.html",
+      "kurz_en": "PM basics"
     },
     {
       "nr": "34000",
@@ -1553,7 +1560,8 @@ window.DENKRAUM_REGISTER = {
       ],
       "dauer": null,
       "haufeSeminare": [
-        "2929"
+        "2929",
+        "8932"
       ],
       "einsatzkontext": [
         "Workshop",
@@ -2367,7 +2375,8 @@ window.DENKRAUM_REGISTER = {
       "haufeSeminare": [
         "31693",
         "2929",
-        "3744"
+        "3744",
+        "8932"
       ],
       "einsatzkontext": [
         "Workshop",
@@ -2658,6 +2667,58 @@ window.DENKRAUM_REGISTER = {
       "notiz": ""
     },
     {
+      "id": "pm-basics-lernreise",
+      "datei": "tools/pm-basics-lernreise.html",
+      "titel": "🧳 PM Basics: Lebenszyklus-Lernreise",
+      "kurztitel": "PM Basics",
+      "kurz": "Projektmanagement für Einsteigerinnen und Einsteiger in fünf Stationen (Grundlagen, Initiieren, Planen, Durchführen und Steuern, Abschließen), durchgängig am Fall Lindenfeld Lunch und jeweils mit der Anforderungs-Brille. Mit Werkzeugkasten-Board, Dokumentenfluss, Vertiefung „Reise 2: Änderungen“, Übung mit Einzelfrage-Stepper, Glossar und Sprachumschalter Deutsch/Englisch.",
+      "rubrik": "Agiles Arbeiten & Projektmanagement",
+      "bereich": "Projektmanagement",
+      "aufStartseite": true,
+      "zweck": [
+        "Lernreise"
+      ],
+      "denkraum": "rundreise",
+      "faeden": [
+        "pm",
+        "re"
+      ],
+      "dauer": null,
+      "haufeSeminare": [
+        "8932"
+      ],
+      "einsatzkontext": [
+        "Seminar"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "Lebenszyklus",
+        "Projektmanagement",
+        "Projektauftrag",
+        "Änderungsmanagement"
+      ],
+      "standards": [
+        "PMBOK",
+        "ISO 21502",
+        "ISO 25010:2023",
+        "BABOK",
+        "IREB"
+      ],
+      "siegel": {
+        "status": null,
+        "letztesAudit": null,
+        "auditZeileImTool": "28.10.2026",
+        "offen": "Noch nicht gegen K1–K22/Z1–Z9 geprüft."
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": false,
+      "verwandt": [],
+      "geprueft": false,
+      "notiz": "Hochgeladen am 28.10.2026 und unverändert übernommen bis auf Zurück-Link zur Startseite und Signatur-Link (www.michaela-kuehn.com). Teilnehmenden-Version über ?tn=1. Noch keine Siegel-Prüfung; die Zeile im Tool-Footer ist ein Normen-Stand, keine Siegel-Zeile."
+    },
+    {
       "id": "pmp-eco-kombitool",
       "datei": "tools/pmp-eco-kombitool.html",
       "titel": "🎯 PMP ECO — Kombi-Tool",
@@ -2677,7 +2738,8 @@ window.DENKRAUM_REGISTER = {
       "dauer": null,
       "haufeSeminare": [
         "3525",
-        "2929"
+        "2929",
+        "8932"
       ],
       "einsatzkontext": [
         "Workshop",
@@ -2731,7 +2793,8 @@ window.DENKRAUM_REGISTER = {
         "2929",
         "34002",
         "9368",
-        "31693"
+        "31693",
+        "8932"
       ],
       "einsatzkontext": [
         "Workshop",
@@ -3569,7 +3632,8 @@ window.DENKRAUM_REGISTER = {
         "2929",
         "34002",
         "9368",
-        "31693"
+        "31693",
+        "8932"
       ],
       "einsatzkontext": [
         "Workshop",
@@ -3721,7 +3785,8 @@ window.DENKRAUM_REGISTER = {
         "3525",
         "2929",
         "34002",
-        "3744"
+        "3744",
+        "8932"
       ],
       "einsatzkontext": [
         "Seminar",
@@ -4448,7 +4513,8 @@ window.DENKRAUM_REGISTER = {
         "34000",
         "3525",
         "2929",
-        "34002"
+        "34002",
+        "8932"
       ],
       "einsatzkontext": [
         "Seminar",
@@ -4700,7 +4766,8 @@ window.DENKRAUM_REGISTER = {
       "haufeSeminare": [
         "31693",
         "2929",
-        "3744"
+        "3744",
+        "8932"
       ],
       "einsatzkontext": [
         "Workshop",
@@ -4827,7 +4894,8 @@ window.DENKRAUM_REGISTER = {
       "haufeSeminare": [
         "31693",
         "9368",
-        "3744"
+        "3744",
+        "8932"
       ],
       "einsatzkontext": [
         "Workshop",
@@ -4899,7 +4967,8 @@ window.DENKRAUM_REGISTER = {
       "dauer": null,
       "haufeSeminare": [
         "31693",
-        "9368"
+        "9368",
+        "8932"
       ],
       "einsatzkontext": [
         "Workshop",
@@ -5020,7 +5089,8 @@ window.DENKRAUM_REGISTER = {
         "3744",
         "3525",
         "2929",
-        "34002"
+        "34002",
+        "8932"
       ],
       "einsatzkontext": [
         "Workshop",
