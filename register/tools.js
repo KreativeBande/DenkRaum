@@ -5044,11 +5044,12 @@ window.DENKRAUM_REGISTER = {
       ],
       "siegel": {
         "status": "Auditiert & zertifiziert",
-        "letztesAudit": "2026-10-27",
-        "auditZeileImTool": "2026-10-27",
+        "letztesAudit": "2026-10-28",
+        "auditZeileImTool": "2026-10-28",
         "offen": null
       },
       "beamer": "4-stufig",
+      "comic": "18 dreiteilige Comics als Einstieg, je einer pro Methode (außer Konfliktarten und Dramadreieck), Galerie mit zwei Comics nebeneinander",
       "sprecherSkript": true,
       "verwandt": [
         "tools/stakeholder-management-kompendium-fachbuch.html",
@@ -5057,7 +5058,7 @@ window.DENKRAUM_REGISTER = {
         "tools/stoerfall-labor.html"
       ],
       "geprueft": false,
-      "notiz": "Neu am 27.10.2026. Firmenneutral, keine Fallwelt. Moderationsleitfäden für 90 Minuten und halben Tag im Vortrags-Skript. Erstaudit 27.10.2026 nach Checkliste v2.1 (K1–K22, Z1–Z9): ⭐ Zertifiziert mit Auszeichnung, siehe tools/Audit-Protokoll_Zeit-Konflikt-Kompendium.md."
+      "notiz": "Neu am 27.10.2026. Firmenneutral, keine Fallwelt. Moderationsleitfäden für 90 Minuten und halben Tag im Vortrags-Skript. Erstaudit 27.10.2026 nach Checkliste v2.1 (K1–K22, Z1–Z9): ⭐ Zertifiziert mit Auszeichnung, siehe tools/Audit-Protokoll_Zeit-Konflikt-Kompendium.md. Am 28.10.2026 18 Comics (Galerie, Comicknopf links in der Navigation und in jeder Methodenkarte) ergänzt, Nachprüfung im Audit-Protokoll."
     }
   ]
 };

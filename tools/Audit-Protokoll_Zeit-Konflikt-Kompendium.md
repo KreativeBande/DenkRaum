@@ -10,6 +10,31 @@ Prüfmethode: statische Analyse (grep, Python-Skripte) plus dynamische Prüfung 
 
 ---
 
+## Nachprüfung 28.10.2026 (Änderung: 18 Comics, Comicknopf, Galerie)
+
+Anlass: Das Tool bekommt zu 18 der 20 Methoden einen dreiteiligen Comic als Erzähleinstieg (Methoden 11 Konfliktarten und 13 Dramadreieck folgen, die Bilder wurden zur Überarbeitung zurückgestellt: Das Konfliktarten-Comic zeigte vier statt fünf Ursachen, das Dramadreieck-Comic hatte das Opfer oben statt unten, beides widersprach der Grafik in der Karte).
+
+Änderungen: Comicknopf als erster Eintrag der Navigation (links), neue Sektion „Comics“ mit Galerie (immer zwei Comics nebeneinander, unter 700 px untereinander, Klick vergrößert auf volle Breite), Comicknopf links unter dem Titel jeder Methodenkarte mit Bild in der Karte (auch in der Einzelansicht). Bilder als WebP eingebettet (1300 × 975 px, je rund 120 bis 190 KB), Dateigröße jetzt rund 4,7 MB. Aktiv-Markierung der Navigation korrigiert (wählt den Abschnitt mit dem größten Abstand über der Schwelle statt den letzten in Menüreihenfolge). Systemprompt und Handbuch beschreiben die Comics (K19, Handbuch).
+
+Prüfung (Playwright/Chromium, headless, 1300 und 390 px):
+- **K1:** Keine externen Requests, Bilder als `data:`-URI, 0 Konsolen- und Seitenfehler. Datei läuft weiterhin allein per `file://`.
+- **K2/K3:** Comicknöpfe und Bilder reagieren auf Maus, Touch, Enter und Leertaste (Entprellung 60 ms); Zielgröße der Knöpfe ≥ 44 px.
+- **K4/K20:** Überschrift, Hinweistext, Bildunterschriften, Nav-Knopf und Alt-Texte in Deutsch und Englisch; die Sprechblasen im Bild bleiben deutsch, der englische Hinweistext sagt das.
+- **K6/K18:** Galerie bei Beamer XXL ohne horizontales Scrollen, zwei Bilder nebeneinander.
+- **Z4:** 1300 und 390 px ohne seitliches Scrollen, auch mit geöffnetem Karten-Comic.
+- **Z9:** Teilnehmendenansicht zeigt die Galerie.
+- **Zurücksetzen:** schließt geöffnete Karten-Comics und vergrößerte Bilder (zweistufig, wie am 27.10.2026 beschlossen).
+- **Regression:** Alle sechs Prüfsuiten bestanden (67, 34, 30, 42, 49 und 41 Prüfungen). Die Suiten wurden an das zweistufige Zurücksetzen und die Signatur-Position (rechts 28 px) angepasst.
+- **K14:** Audit-Zeile im Tool auf 28.10.2026.
+- **K16:** Vortrags-Skript unverändert, keine Änderung an der Companion-Datei.
+- **K17/K8:** Keine neuen Normen oder Fassungen. Die Comics sind firmenneutral, ohne Fallwelt und ohne Personennamen.
+
+Inhaltliche Prüfung der Comics gegen die Methodenkarten: Begriffe und Reihenfolge verglichen. Abweichungen: Konfliktstile sagt im Comic „Durchsetzen“, die Karte „Wettbewerben“ (derselbe Stil, Achse heißt „Durchsetzung“); die Puffer-Ampel nennt im Comic „beobachten, Maßnahmen planen, handeln“, die Karte „weiterarbeiten, vorbereiten, entscheiden“ (sinngleich). Im Comic zu Aktivem Zuhören spricht im dritten Bild der ursprüngliche Sprecher seine Ich-Botschaft (passt zu Schritt 4 der Karte).
+
+Ergebnis unverändert: ⭐ Zertifiziert mit Auszeichnung. Die übrigen Kriterien sind von der Änderung nicht betroffen und gelten aus dem Erstaudit vom 27.10.2026.
+
+---
+
 ## Nachprüfung 27.10.2026 (Änderung: Rückfrage beim Zurücksetzen)
 
 Anlass: Beobachtung aus Abschnitt D (Safety) umgesetzt. „Zurücksetzen“ arbeitet jetzt zweistufig: Der erste Klick färbt den Button um und fragt „Wirklich zurücksetzen? Notizen gehen verloren“ (EN: „Really reset? Notes will be lost“). Erst ein zweiter Klick innerhalb von fünf Sekunden löscht. Bewusst kein `confirm()`, weil restriktive WebViews Dialoge blockieren können (gleiche Überlegung wie bei K2). Das Handbuch beschreibt das Verhalten.
