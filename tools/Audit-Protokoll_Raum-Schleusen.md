@@ -37,3 +37,7 @@ Die Prüfung der Signatur-Überdeckung im gescrollten Zustand meldet immer Treff
 ## Nachtrag 01.11.2026 (Musterlösungen)
 
 Elf Dokumente (Strategiepapier bis Kostenplan) haben Musterlösungen aus dem Fall Lindenfeld Lunch, je Feld mit Herkunft (Fall, Abgeleitet, Gedankenspiel). Geprüft: keine Konsolenfehler, alle 29 Dokumentkarten ohne leere Felder, „Musterlösung einfügen“ in der Vorlage, kein seitliches Scrollen bei 390 px (DE und EN). Siegel unverändert ✅.
+
+## Nachtrag 01.11.2026 (Entscheidungen)
+
+Horizontraum-Kernfrage „Wohin schauen wir?“, User Story als Übergabeartefakt, neue Karten Cynefin-Einordnung (Analyse), Abnahmeprotokoll (Umsetzung) und Projektabschlussbericht (Stör) mit Musterlösung und Herkunftsmarke. Geprüft: keine Konsolenfehler, 45 Karten ohne leere Felder, kein seitliches Scrollen bei 390 px (DE und EN). Siegel unverändert ✅.
