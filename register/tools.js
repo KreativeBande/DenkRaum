@@ -5003,9 +5003,13 @@ window.DENKRAUM_REGISTER = {
       ],
       "siegel": {
         "status": "Auditiert & zertifiziert",
-        "letztesAudit": null,
-        "auditZeileImTool": null,
-        "offen": null
+        "letztesAudit": "2026-11-01",
+        "auditZeileImTool": "2026-11-01",
+        "offen": [
+          "K11 (Kann: Radien 8/10 px statt 12/16 px)",
+          "K13 (Kann: Vortrags-Skript nur fünf Stichpunkte)",
+          "Z6 (Kann: CR nicht je Abschnitt ausgeschrieben)"
+        ]
       },
       "beamer": "4-stufig",
       "sprecherSkript": true,
@@ -5016,7 +5020,7 @@ window.DENKRAUM_REGISTER = {
         "tools/stoerfall-labor.html"
       ],
       "geprueft": false,
-      "notiz": "Von Michaela am 01.11.2026 angeliefert, Siegel-Stand laut Michaela: zertifiziert nach K1–K22 und Z1–Z9, ohne Auszeichnung (kein Audit-Protokoll im Repo, keine Audit-Zeile im Tool). Übernommen bis auf Zurück-Link, Signatur-Link www.michaela-kuehn.com, Footer-Signatur mit Normen statt „Entwurf zur Durchsicht“ und den Hinweis, dass der Dokument-Link jetzt zur Stelle springt. Normen laut Normen-Register im Tool (geprüft 31.10.2026: IREB CPRE FL 3.3.0, ISO/IEC/IEEE 29148:2018, BABOK v3, PMBOK 8. Ausgabe über Sekundärquelle; ISO/IEC 25010:2023 nicht neu geprüft). Dauer im Tool nicht angegeben. CR-01 stammt aus dem Fall, CR-02 bis CR-06 sind Annahmen; Beispielwerte in Schritt 10 (Tagessätze, Zeitpuffer, Stunden je Punkt) sind Annahmen. Links „Dokument im Fall öffnen“ springen über statische ids zu den Einträgen in Steckbrief, Projektauftrag/Pflichtenheft (Teilnehmende) und BA/RE-Case (tools/gateplan-build/anchor_build.py). Nutzt weder Netz noch Speicher; Schritt 11 schreibt und liest eine Markdown-Datei."
+      "notiz": "Von Michaela am 01.11.2026 angeliefert. Audit am 01.11.2026 nach Checkliste v2.1 (K1–K22, Z1–Z9): Erstprüfung ❌ (K5 Kürzel-Knöpfe 12,96 px, K18 Beamer-Größen zu klein, K22-Begründung fehlte, K17 ISO/IEC 25010 ungeprüft), nach Korrektur ✅ Zertifiziert, siehe tools/Audit-Protokoll_Change-Schleuse.md. K20: Inhalt der Schritte entsteht per JavaScript; Michaela hat am 01.11.2026 entschieden, dass der Hinweis ohne JS für dieses Simulator-Tool genügt. Dauer im Tool nicht angegeben. CR-01 stammt aus dem Fall, CR-02 bis CR-06 sind Annahmen; Beispielwerte in Schritt 10 (Tagessätze, Zeitpuffer, Stunden je Punkt) sind Annahmen. Links „Dokument im Fall öffnen“ springen über statische ids zu den Einträgen in Steckbrief, Projektauftrag/Pflichtenheft (Teilnehmende) und BA/RE-Case (tools/gateplan-build/anchor_build.py). Nutzt weder Netz noch Speicher; Schritt 11 schreibt und liest eine Markdown-Datei."
     },
     {
       "id": "lindenfeld-projektauftrag-pflichtenheft",
