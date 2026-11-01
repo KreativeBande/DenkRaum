@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><title>Konfiguration: so arbeite ich mit Claude</title>
+<style>
+:root{color-scheme:light;--ink:#1d2330;--dim:#4a5568;--muted:#5b6475;--bg:#fff;--card:#fff;--line:#d9d4c8;--acc:#1565C0;--c1:#E8720C;--c2:#2E8B57;--c3:#1565C0;--c4:#7B2D8B;--c5:#C2185B}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#fff;color:var(--ink)}
+.sig{position:fixed;top:14px;right:28px;z-index:50;background:#fff;border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-size:14px;color:var(--ink);text-decoration:none;max-width:calc(100vw - 56px)}
+.sig strong{font-weight:700}.sig span{display:block;color:var(--acc)}
+.topbar{display:flex;gap:12px;align-items:center;padding:14px 28px 0;min-height:60px;flex-wrap:wrap}
+.topbar a.back{color:var(--acc);text-decoration:none;font-size:15px;min-height:44px;display:inline-flex;align-items:center}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0}
+.bar button,.pill{font:inherit;font-size:15px;min-height:44px;padding:8px 20px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--dim);cursor:pointer}
+.bar button.on,html.beamer #beamerBtn,html.beamer-xl #beamerBtn,html.beamer-xxl #beamerBtn{background:var(--ink);color:#fff;border-color:var(--ink)}
+header.top{padding:4px 28px 12px;margin-top:40px}
+header.top h1{margin:0 0 6px;font-size:1.7rem;line-height:1.25}header.top p{margin:0;color:var(--dim)}
+.wrap{display:flex;gap:0;align-items:flex-start;border-top:1px solid var(--line)}
+nav.left{flex:0 0 240px;padding:14px 12px;position:sticky;top:0;align-self:flex-start;max-height:100vh;overflow:auto;border-right:1px solid var(--line)}
+nav.left .nt{font-size:14px;color:var(--muted);margin:10px 8px 4px;text-transform:uppercase;letter-spacing:.04em}
+nav.left button{display:block;width:100%;text-align:left;min-height:44px;font:inherit;font-size:15px;padding:8px 10px;margin:2px 0;background:none;border:0;border-left:6px solid var(--k,#999);border-radius:0 8px 8px 0;cursor:pointer;color:var(--ink)}
+nav.left button.on{background:color-mix(in srgb,var(--k,#999) 16%,#fff);font-weight:700}
+main{flex:1;min-width:0;padding:22px 28px 40px}
+h2{margin:0 0 4px;font-size:1.45rem}.sub{color:var(--dim);margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--k,#999);border-radius:12px;padding:12px 14px}
+.card h3{margin:0 0 4px;font-size:1.02rem}.card p{margin:2px 0;font-size:14px;color:var(--dim)}
+.box{background:#faf8f3;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:12px 0}
+.q{font-style:italic;color:var(--ink)}
+.shelf{display:grid;gap:0;margin:14px 0}
+.fach{display:flex;gap:12px;align-items:center;min-height:56px;padding:10px 14px;background:#fff;border:1px solid var(--line);border-bottom:10px solid #b58a5a;cursor:pointer;font:inherit;text-align:left;width:100%;color:var(--ink)}
+.fach b{border-left:6px solid var(--k);padding-left:10px}.fach span{color:var(--dim);font-size:14px}
+.btn{font:inherit;font-size:15px;min-height:44px;padding:8px 18px;border-radius:10px;border:1.5px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer}
+.btn.go{background:var(--ink);color:#fff}.btn[disabled]{opacity:.4;cursor:default}
+.back2{background:none;border:0;color:var(--acc);font:inherit;font-size:15px;min-height:44px;padding:0;cursor:pointer}
+.opt{display:block;width:100%;text-align:left;min-height:44px;font:inherit;padding:10px 14px;margin:6px 0;border:2px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);cursor:pointer}
+.opt.ok{border-color:#1b7a3d;background:#e8f5ec}.opt.alt{border-color:#9a6a00;background:#fff6dc}.opt.no{border-color:#b3261e;background:#fdecea}
+.fb{margin:10px 0;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:#faf8f3}
+.cnt{font-size:14px;color:var(--muted)}
+.swatch{display:inline-block;width:18px;height:18px;border-radius:4px;vertical-align:-3px;margin-right:4px}
+dl.gl dt{font-weight:700;margin-top:12px}dl.gl dd{margin:2px 0 0;color:var(--dim)}
+.trainer{border-left:6px solid #9C6BC6;background:#EFE3F8;color:#2a1738}
+body.part .trainer,body.part footer.footer{display:none}
+.footer{border-top:1px solid var(--line);padding:14px 28px 30px;color:var(--muted)}
+.footer-sig{color:var(--dim);font-size:.9em;margin:8px 0}
+.footer-details{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.footer-box{min-width:0;overflow-x:auto;background:#faf8f3;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.footer-summary,.footer-box>summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+.footer-mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;white-space:pre-wrap}
+.footer-sans{font-size:16px;color:var(--ink)}.footer-table{border-collapse:collapse;width:100%;font-size:15px}
+.footer-table td,.footer-table th{overflow-wrap:anywhere;border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+html.beamer body{font-size:22px}html.beamer-xl body{font-size:28px}html.beamer-xxl body{font-size:34px}
+html.beamer header.top h1{font-size:44px}html.beamer-xl header.top h1{font-size:54px}html.beamer-xxl header.top h1{font-size:64px}
+html.beamer .card p,html.beamer-xl .card p,html.beamer-xxl .card p{font-size:1em}
+html.beamer nav.left button,html.beamer-xl nav.left button,html.beamer-xxl nav.left button{font-size:1em}
+html.beamer .sig,html.beamer-xl .sig,html.beamer-xxl .sig{font-size:14px}
+html.beamer footer.footer,html.beamer-xl footer.footer,html.beamer-xxl footer.footer{display:none}
+html.beamer nav.left,html.beamer-xl nav.left,html.beamer-xxl nav.left{flex-basis:300px}
+@media(max-width:900px){.footer-details{grid-template-columns:1fr}}
+@media(max-width:700px){nav.left{flex-basis:132px}main{padding:16px}html.beamer-xl body{font-size:20px}html.beamer-xxl body{font-size:20px}}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #ffb300;outline-offset:2px}
+</style></head><body>
+<a class="sig" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener"><strong>Michaela Kühn</strong><span>www.michaela-kuehn.com</span></a>
+<div class="topbar"><a class="back" href="../index.html" data-en="← Back to start">← Zurück zur Startseite</a>
+<div class="bar"><button type="button" id="langBtn" data-act="lang">EN</button><button type="button" id="beamerBtn" data-act="beamer">☀ Beamer</button><button type="button" id="partBtn" data-act="part" data-en="Participants">Teilnehmende</button></div></div>
+<header class="top"><h1 data-en="Configuration: how I work with Claude">Konfiguration: so arbeite ich mit Claude</h1>
+<p data-en="Skills, guardrails, cases and ways of thinking that I file once and use again and again. An example of how you build your own knowledge cosmos.">Skills, Leitplanken, Fälle und Denkweisen, die ich einmal ablege und immer wieder nutze. Ein Beispiel dafür, wie Sie Ihren eigenen Wissenskosmos aufbauen.</p></header>
+<div class="wrap">
+<nav class="left" aria-label="Navigation" id="nav"></nav>
+<main id="main">
+<div class="card" id="fallback"><h2>Konfiguration</h2>
+<p>Dieses Tool braucht JavaScript. Ohne Skript gilt die Grundidee: Was Sie der KI wiederholt erklären, legen Sie einmal ab. Vier Fächer: Skills (Arbeitsweisen), Leitplanken (Regeln, die immer gelten), Fälle (wiederverwendbare Geschichten) und Denkweisen (Modelle und Metaphern).</p></div>
+</main></div>
+<footer class="footer">
+<p class="footer-sig" data-en="Own working method of Michaela Kühn, not a standard. Compiled with Claude.">Eigene Arbeitsweise von Michaela Kühn, keine Norm. Erstellt mit Claude.</p>
+<div class="footer-details">
+<details class="footer-box"><summary class="footer-summary" data-en="System prompt (full build prompt)">Systemprompt (voller Bau-Prompt)</summary><div class="footer-mono" data-en="Build a single, offline-capable HTML tool “Configuration” for Michaela Kühn (trainer in requirements engineering, business analysis and project management; brand PromptSchule).
+Purpose: show how Michaela works with Claude and how participants build their own shelf of reusable working knowledge. Four shelves: skills, guardrails, cases, ways of thinking. Each shelf has cards with a short description and one guiding question.
+Views: overview with an inline SVG shelf, one view per shelf, “How to build your configuration” (five steps, each with an example question), exercise “Which shelf?” (five situations, one question at a time, feedback after each answer, correct answer never always first), alphabetical glossary.
+Standards: navigation always on the left; white background, color-scheme light, no dark mode, no fetch, no CDN, pointerup events, body text 16 px, secondary 14 px, touch targets 44 px; signature fixed top right; four-stage cumulative Beamer toggle; DE/EN toggle for all visible text including the footer; participant mode hides trainer boxes and the footer; German base state readable without JavaScript; four footer boxes; no schedule in the tool; solutions for every question to the group. K22 does not apply: card tool without running text.
+Content source: Michaela’s own skills and guardrails; Denkräume OS (Notion). Do not invent standards; mark own models as such.">Baue ein einzelnes, offlinefähiges HTML-Tool „Konfiguration“ für Michaela Kühn (Trainerin für Requirements Engineering, Business Analyse und Projektmanagement; Marke PromptSchule).
+Zweck: zeigen, wie Michaela mit Claude arbeitet und wie Teilnehmende ihr eigenes Regal wiederverwendbaren Arbeitswissens aufbauen. Vier Fächer: Skills, Leitplanken, Fälle, Denkweisen. Jedes Fach hat Karten mit Kurzbeschreibung und einer Leitfrage.
+Ansichten: Übersicht mit Inline-SVG-Regal, je eine Ansicht pro Fach, „So baust du deine Konfiguration“ (fünf Schritte mit je einer Beispielfrage), Übung „Welches Fach?“ (fünf Situationen, eine Frage nach der anderen, Rückmeldung nach jeder Antwort, richtige Antwort nie systematisch zuerst), alphabetisches Glossar.
+Standards: Navigation immer links; weißer Hintergrund, color-scheme light, kein Dark Mode, kein fetch, kein CDN, pointerup-Ereignisse, Fließtext 16 px, Sekundärtext 14 px, Touch-Ziele 44 px; Signatur fest oben rechts; vierstufiger kumulativer Beamer-Schalter; DE/EN-Schalter für alle sichtbaren Texte inklusive Fuß; Teilnehmenden-Modus blendet Trainer-Boxen und Fuß aus; deutscher Grundzustand ohne JavaScript lesbar; vier Fußboxen; keine Zeitagenda im Tool; Lösungen zu jeder Frage an die Gruppe. K22 entfällt: Kartentool ohne Fließtext.
+Inhaltsquelle: Michaelas eigene Skills und Leitplanken; Denkräume OS (Notion). Keine Normen erfinden; eigene Modelle als solche kennzeichnen."></div></details>
+<details class="footer-box"><summary class="footer-summary" data-en="Manual">Handbuch</summary><div class="footer-sans">
+<p data-en="Purpose: the tool shows a working configuration as a shelf. What you explain to an AI for the third time belongs on the shelf.">Zweck: Das Tool zeigt eine Arbeitskonfiguration als Regal. Was Sie einer KI zum dritten Mal erklären, gehört ins Regal.</p>
+<p data-en="Use: open a shelf, read the cards, answer the guiding question for your own work. Then try the exercise and the five steps.">Bedienung: Ein Fach öffnen, die Karten lesen, die Leitfrage für die eigene Arbeit beantworten. Danach die Übung und die fünf Schritte ausprobieren.</p>
+<p data-en="Modes: Beamer cycles through four sizes. Participants hides trainer boxes and this footer. EN switches all visible text to English.">Modi: Beamer schaltet durch vier Größen. Teilnehmende blendet Trainer-Boxen und diesen Fuß aus. EN schaltet alle sichtbaren Texte auf Englisch.</p>
+<p data-en="Limits: the tool stores nothing. K22 (depth toggle) does not apply because the tool is made of cards, not running text.">Grenzen: Das Tool speichert nichts. K22 (Vertiefungs-Toggle) entfällt, weil das Tool aus Karten besteht, nicht aus Fließtext.</p></div></details>
+<details class="footer-box"><summary class="footer-summary" data-en="Speaker script">Vortrags-Skript</summary><div class="footer-sans"><ol>
+<li data-en="Overview: show the shelf and ask the group what they explain to an AI again and again. Collect three answers.">Übersicht: Das Regal zeigen und die Gruppe fragen, was sie einer KI immer wieder erklärt. Drei Antworten sammeln.</li>
+<li data-en="Shelves: open Guardrails first, it is the easiest to copy. Ask which rule the group would file first.">Fächer: Zuerst Leitplanken öffnen, sie lassen sich am leichtesten übernehmen. Fragen, welche Regel die Gruppe zuerst ablegen würde.</li>
+<li data-en="How to build: go through the five steps with one example from the group. Use the example questions as they are.">So baust du: Die fünf Schritte mit einem Beispiel aus der Gruppe durchgehen. Die Beispielfragen wörtlich verwenden.</li>
+<li data-en="Exercise: five situations. Let the group vote first, then answer.">Übung: Fünf Situationen. Die Gruppe zuerst abstimmen lassen, dann antworten.</li></ol>
+<p data-en="Direction: do not start with the skills. Start with what annoys people.">Regie: Nicht mit den Skills beginnen, sondern mit dem, was die Leute nervt.</p></div></details>
+<details class="footer-box"><summary class="footer-summary" data-en="Standards register">Normen-Register</summary><div class="footer-sans"><table class="footer-table"><tr><th data-en="Source">Framework/Quelle</th><th data-en="Status">Fassung/Status</th><th data-en="Use in the tool">Bezug im Tool</th></tr>
+<tr><td><a href="https://app.notion.com/p/33ed6937ee08812a9ad5cbd342f7c93e" target="_blank" rel="noopener">Denkräume OS (Notion)</a></td><td data-en="Own model">Eigenes Modell</td><td data-en="Room colours, thinking models">Raumfarben, Denkweisen</td></tr>
+<tr><td data-en="Skills and guardrails (own)">Skills und Leitplanken (eigene)</td><td data-en="Own working method">Eigene Arbeitsweise</td><td data-en="Shelf contents">Inhalte der Fächer</td></tr></table>
+<p data-en="Check the status before using in new material.">Stand vor Einsatz in neuen Materialien prüfen.</p></div></details>
+</div></footer>
+<script>
+var S={lang:'de',page:'start',part:false,bi:0,ex:0,exSel:{},from:''};
+var BL=['','beamer','beamer-xl','beamer-xxl'];
+function T(a){return Array.isArray(a)?(S.lang==='de'?a[0]:a[1]):a}
+function E(x){return String(x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var C={1:'#E8720C',2:'#2E8B57',3:'#1565C0',4:'#7B2D8B',5:'#C2185B'};
+var F=[
+{id:'skills',k:C[3],n:['Skills','Skills'],sub:['Arbeitsweisen, die Claude auf Zuruf übernimmt','Working methods Claude takes on when asked'],
+ q:['Welche Aufgabe wiederholt sich bei mir so oft, dass sie einen Skill verdient?','Which task repeats so often in my work that it deserves a skill?'],
+ items:[['denkraeume-os',['Fünf Räume, Kernfragen, Artefakte, Übergänge. Quelle der Wahrheit für alle Tools. Trigger: „Denkraum“, „Schleuse“, „Drohne“.','Five rooms, core questions, artefacts, transitions. Source of truth for all tools. Trigger: “Denkraum”, “lock”, “drone”.']],
+ ['denkraum-klarheitssprung',['Bewertet die Klarheit einer Anforderung. Wird auf die fünf Räume umgebaut.','Rates the clarity of a requirement. Is being rebuilt on the five rooms.']],
+ ['marmorkuchen-metapher',['Opener für Untrennbarkeit: funktional und nicht-funktional, agil und klassisch.','Opener for inseparability: functional and non-functional, agile and classic.']],
+ ['promptschule',['Inhalte und Didaktik für AI-Literacy.','Content and didactics for AI literacy.']],
+ ['html-tool-qualitaetscheck',['Prüft jedes Tool gegen K1–K22, Z1–Z9 und N1–N4.','Checks every tool against K1–K22, Z1–Z9 and N1–N4.']]]},
+{id:'leit',k:C[2],n:['Leitplanken','Guardrails'],sub:['Regeln, die für jedes Tool immer gelten','Rules that always apply to every tool'],
+ q:['Welche Regel möchten Sie nie wieder erklären müssen?','Which rule do you never want to explain again?'],
+ items:[[['Navigation links','Navigation on the left'],['Seitenleiste statt oberer Leiste. Je Kategorie darf eine Farbe stehen.','Sidebar instead of a top bar. Each category may have its own colour.']],
+ [['Räume haben feste Farben','Rooms have fixed colours'],['Horizont, Analyse, Lösung, Umsetzung, Stör: immer dieselbe Farbe und dasselbe Symbol.','Horizon, analysis, solution, implementation, disruption: always the same colour and symbol.'],1],
+ [['Sprünge landen sichtbar','Jumps land visibly'],['Überschrift und Erklärtext sofort lesbar, dazu ein Rücksprung zum Ausgangspunkt.','Heading and text readable at once, plus a way back to the starting point.']],
+ [['Nichts Visuelles löschen','Never delete visuals'],['Grafiken und Diagramme bleiben beim Überarbeiten erhalten.','Graphics and diagrams stay when a tool is revised.']],
+ [['Glossar alphabetisch','Glossary alphabetical'],['Ohne Ausnahme.','No exceptions.']],
+ [['Beispielfragen und Lösungen','Example questions and solutions'],['Bei Coaching-Themen Fragen mitliefern, bei Gruppenfragen und Demos Lösungen einbauen.','Provide questions for coaching topics; build in solutions for group questions and demos.']],
+ [['Quellen mit Link','Sources with link'],['Immer mit Link, nie nur Titel.','Always with a link, never just a title.']],
+ [['Erst Entwurf, dann Repo','Draft first, then repo'],['Lauffähige HTML-Datei zeigen, nach Freigabe einbauen.','Show a runnable HTML file, build it in after approval.']],
+ [['Dateien einzeln senden','Send files individually'],['Keine ZIP-Dateien, weil das iPad sie nicht öffnet.','No ZIP files, because the iPad cannot open them.']]]},
+{id:'faelle',k:C[1],n:['Fälle','Cases'],sub:['Wiederverwendbare Fallwelten','Reusable case worlds'],
+ q:['Welche Geschichte trägt mehrere Tools, ohne dass Sie sie neu erfinden müssen?','Which story carries several tools without you having to reinvent it?'],
+ items:[['TalentMatch AI / Vantera',['Fester Personenkreis für RE-, BA- und KI-Tools.','Fixed cast for RE, BA and AI tools.']],
+ ['Lindenfeld Lunch',['PM-Artefakte Schritt für Schritt mit der Brille von BA und RE.','PM artefacts step by step through the eyes of BA and RE.']],
+ ['Baltoris Bank AG / PaySprint',['Eigenständige Fallwelt für Banken-Tools.','Separate case world for banking tools.']],
+ ['CALVERA Services GmbH',['Fallwelt für OKR.','Case world for OKR.']]]},
+{id:'denk',k:C[4],n:['Denkweisen','Ways of thinking'],sub:['Modelle und Metaphern','Models and metaphors'],
+ q:['Welches Bild erklärt in 30 Sekunden, wofür Sie sonst eine Folie brauchen?','Which image explains in 30 seconds what you would otherwise need a slide for?'],
+ items:[['Denkräume OS',['Fünf Räume, jeder ein Schutzraum für das richtige Denken.','Five rooms, each a protected space for the right kind of thinking.']],
+ ['Marmorkuchen',['Funktional und nicht-funktional lassen sich nicht trennen.','Functional and non-functional cannot be separated.']],
+ ['Eisberg „Fokus“',['Flughöhe 10/5/3/1 plus „Wie genau“ unter Wasser.','Flight level 10/5/3/1 plus “how exactly” under water.']],
+ ['Schleuse, HALT, SCOPE',['Souveränität prüfbar machen.','Make sovereignty verifiable.']]]}
+];
+var RM=[['Horizontraum','Horizon room',1,'💡'],['Analyseraum','Analysis room',2,'🔍'],['Lösungsraum','Solution room',3,'🎯'],['Umsetzungsraum','Implementation room',4,'⚙️'],['Störraum','Disruption room',5,'🚨']];
+var STEPS=[
+[['1. Wiederholung finden','1. Find the repetition'],['Was erklären Sie der KI zum dritten Mal?','What do you explain to the AI for the third time?'],['Was habe ich diese Woche schon zweimal erklärt?','What have I already explained twice this week?']],
+[['2. Fach wählen','2. Choose a shelf'],['Ist es eine Arbeitsweise (Skill), eine Regel (Leitplanke), ein Beispiel (Fall) oder ein Bild (Denkweise)?','Is it a working method (skill), a rule (guardrail), an example (case) or an image (way of thinking)?'],['Gilt das immer oder nur für diese Aufgabe?','Does this always apply or only to this task?']],
+[['3. Einmal aufschreiben','3. Write it down once'],['Kurz, mit Trigger und Beispiel. Eine Regel pro Karte.','Short, with trigger and example. One rule per card.'],['Würde eine fremde Person das ohne Rückfrage verstehen?','Would a stranger understand this without asking back?']],
+[['4. Quelle festlegen','4. Fix the source'],['Ein Ort gilt als Wahrheit, alles andere verweist darauf.','One place is the truth, everything else points to it.'],['Wenn zwei Stellen sich widersprechen, welche gilt?','If two places contradict each other, which one applies?']],
+[['5. Pflegen','5. Maintain'],['Widersprüche sammeln, nicht still entscheiden.','Collect contradictions, do not decide silently.'],['Was ist seit dem letzten Mal veraltet?','What has become outdated since last time?']]];
+var EX=[
+[['Navigation steht immer links, nie oben.','Navigation is always on the left, never at the top.'],1,null,['Eine Regel, die für jedes Tool gilt: Leitplanke.','A rule that applies to every tool: guardrail.']],
+[['Lindenfeld Lunch begleitet mehrere Seminare als roter Faden.','Lindenfeld Lunch runs through several seminars as a common thread.'],2,null,['Eine wiederverwendbare Geschichte: Fall.','A reusable story: case.']],
+[['Claude soll bei „Denkraum“ automatisch die fünf Räume und ihre Kernfragen kennen.','Claude should know the five rooms and their core questions whenever “Denkraum” comes up.'],0,null,['Eine Arbeitsweise mit Trigger: Skill.','A working method with a trigger: skill.']],
+[['Der Marmorkuchen erklärt, warum funktional und nicht-funktional untrennbar sind.','The marble cake explains why functional and non-functional cannot be separated.'],3,null,['Ein Bild, das ein Modell erklärt: Denkweise.','An image that explains a model: way of thinking.']],
+[['Jedes Tool wird vor der Auslieferung gegen K1–K22 geprüft.','Every tool is checked against K1–K22 before delivery.'],0,1,['Der Prüfablauf ist ein Skill. Als Regel („immer prüfen“) wäre es auch eine Leitplanke, deshalb ebenfalls vertretbar.','The checking procedure is a skill. As a rule (“always check”) it would also be a guardrail, so also defensible.']]];
+var GL=[[['Denkweise','Way of thinking'],['Ein Modell oder Bild, das etwas erklärt.','A model or image that explains something.']],[['Fall','Case'],['Eine wiederverwendbare Geschichte, die mehrere Tools trägt.','A reusable story that carries several tools.']],[['Konfiguration','Configuration'],['Die Gesamtheit aus Skills, Leitplanken, Fällen und Denkweisen.','The whole of skills, guardrails, cases and ways of thinking.']],[['Leitplanke','Guardrail'],['Eine Regel, die für alle Tools immer gilt.','A rule that always applies to all tools.']],[['Skill','Skill'],['Eine Arbeitsweise, die Claude auf Zuruf übernimmt.','A working method Claude takes on when asked.']],[['Trigger','Trigger'],['Das Stichwort, das einen Skill auslöst.','The keyword that activates a skill.']]];
+function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e}
+function shelfSvg(){
+ var s='<svg viewBox="0 0 640 250" role="img" aria-label="'+E(T(['Regal mit vier Fächern: Skills, Leitplanken, Fälle, Denkweisen','Shelf with four compartments: skills, guardrails, cases, ways of thinking']))+'" style="width:100%;max-width:640px;height:auto">';
+ var xs=[[20,C[3],T(['Skills','Skills'])],[170,C[2],T(['Leitplanken','Guardrails'])],[320,C[1],T(['Fälle','Cases'])],[470,C[4],T(['Denkweisen','Ways of thinking'])]];
+ s+='<rect x="8" y="10" width="624" height="224" rx="6" fill="#fff" stroke="#b58a5a" stroke-width="6"/><rect x="8" y="122" width="624" height="8" fill="#b58a5a"/>';
+ xs.forEach(function(x,i){s+='<rect x="'+x[0]+'" y="'+(i%2?24:70)+'" width="140" height="'+(i%2?90:44)+'" rx="8" fill="'+x[1]+'" opacity=".9"/><text x="'+(x[0]+70)+'" y="'+(i%2?74:98)+'" text-anchor="middle" font-size="16" fill="#fff" font-weight="700">'+E(x[2])+'</text>';});
+ s+='<text x="320" y="186" text-anchor="middle" font-size="16" fill="#1d2330">'+E(T(['Einmal ablegen, immer wieder nutzen','File once, use again and again']))+'</text></svg>';return s}
+function go(p,from){S.page=p;S.from=from||'';render();window.scrollTo(0,0)}
+function render(){
+ var h=document.documentElement;h.lang=S.lang;document.body.className=S.part?'part':'';
+ var nav=document.getElementById('nav');nav.innerHTML='';
+ function nb(id,label,k){var b=el('button',S.page===id?'on':'',E(label));b.style.setProperty('--k',k);b.setAttribute('type','button');b.addEventListener('pointerup',function(){go(id)});nav.appendChild(b)}
+ nav.appendChild(el('div','nt',E(T(['Überblick','Overview']))));nb('start',T(['Übersicht','Overview']),'#999');
+ nav.appendChild(el('div','nt',E(T(['Fächer','Shelves']))));F.forEach(function(f){nb(f.id,T(f.n),f.k)});
+ nav.appendChild(el('div','nt',E(T(['Selbst tun','Do it yourself']))));nb('bau',T(['So baust du deine Konfiguration','Build your configuration']),C[5]);nb('ueb',T(['Übung: Welches Fach?','Exercise: which shelf?']),C[5]);
+ nav.appendChild(el('div','nt',E(T(['Nachschlagen','Reference']))));nb('gloss',T(['Glossar','Glossary']),'#999');
+ var m=document.getElementById('main');m.innerHTML='';
+ function back(){var b=el('button','back2',E(T(['← Übersicht','← Overview'])));b.setAttribute('type','button');b.addEventListener('pointerup',function(){go('start')});m.appendChild(b)}
+ if(S.page==='start'){
+  m.appendChild(el('h2','',E(T(['Das Regal','The shelf']))));
+  m.appendChild(el('p','sub',E(T(['Was Sie einer KI wiederholt erklären, legen Sie einmal ab. Vier Fächer.','What you repeatedly explain to an AI, you file once. Four shelves.']))));
+  m.appendChild(el('div','',shelfSvg()));
+  var sh=el('div','shelf');F.forEach(function(f){var b=el('button','fach','<b>'+E(T(f.n))+'</b><span>'+E(T(f.sub))+' · '+f.items.length+'</span>');b.style.setProperty('--k',f.k);b.setAttribute('type','button');b.addEventListener('pointerup',function(){go(f.id)});sh.appendChild(b)});m.appendChild(sh);
+ }else if(S.page==='bau'){
+  back();m.appendChild(el('h2','',E(T(['So baust du deine Konfiguration','Build your configuration']))));
+  STEPS.forEach(function(s){m.appendChild(el('div','box','<b>'+E(T(s[0]))+'</b><p>'+E(T(s[1]))+'</p><p class="q">'+E(T(['Frage: ','Question: ']))+E(T(s[2]))+'</p>'))});
+  m.appendChild(el('div','box trainer','<b>'+E(T(['Gruppenfrage und Lösung','Group question and solution']))+'</b><p>'+E(T(['Frage: Was haben Sie diese Woche zweimal erklärt? Je Person eine Wiederholung nennen.','Question: What did you explain twice this week? Each person names one repetition.']))+'</p><p>'+E(T(['Lösung: Alles, was sich wiederholt, gehört ins Regal. Typische Funde: Formatwünsche (Leitplanke), immer gleiche Abläufe (Skill), Beispielgeschichten (Fall).','Solution: Anything that repeats belongs on the shelf. Typical finds: format wishes (guardrail), identical procedures (skill), example stories (case).']))+'</p>'));
+ }else if(S.page==='ueb'){
+  back();var i=S.ex,q=EX[i],sel=S.exSel[i];
+  m.appendChild(el('h2','',E(T(['Übung: Welches Fach?','Exercise: which shelf?']))));
+  m.appendChild(el('p','cnt',E(T(['Frage ','Question ']))+(i+1)+' / '+EX.length));
+  m.appendChild(el('p','',E(T(q[0]))));
+  var order=[0,1,2,3];
+  order.forEach(function(fi){var b=el('button','opt',E(T(F[fi].n)));b.setAttribute('type','button');
+   if(sel!==undefined){b.disabled=true;if(fi===q[1])b.className='opt ok';else if(fi===q[2])b.className='opt alt';else if(fi===sel)b.className='opt no'}
+   b.addEventListener('pointerup',function(){if(S.exSel[i]===undefined){S.exSel[i]=fi;render()}});m.appendChild(b)});
+  if(sel!==undefined){var mark=sel===q[1]?'✔':(sel===q[2]?'≈':'✘');
+   m.appendChild(el('div','fb','<b>'+mark+' '+E(T(sel===q[1]?['Richtig.','Correct.']:(sel===q[2]?['Ebenfalls vertretbar.','Also defensible.']:['Nicht ganz.','Not quite.'])))+'</b><p>'+E(T(['Richtige Antwort: ','Correct answer: ']))+E(T(F[q[1]].n))+'</p>'+(q[2]!=null?'<p>'+E(T(['Ebenfalls vertretbar: ','Also defensible: ']))+E(T(F[q[2]].n))+'</p>':'')+'<p>'+E(T(q[3]))+'</p>'))}
+  var nv=el('div','');var pb=el('button','btn',E(T(['Zurück','Back'])));pb.setAttribute('type','button');pb.disabled=i===0;pb.addEventListener('pointerup',function(){if(S.ex>0){S.ex--;render()}});
+  var nb2=el('button','btn go',E(T(['Weiter','Next'])));nb2.setAttribute('type','button');nb2.style.marginLeft='8px';nb2.disabled=i===EX.length-1;nb2.addEventListener('pointerup',function(){if(S.ex<EX.length-1){S.ex++;render()}});
+  nv.appendChild(pb);nv.appendChild(nb2);m.appendChild(nv);
+ }else if(S.page==='gloss'){
+  back();m.appendChild(el('h2','',E(T(['Glossar','Glossary']))));
+  var g=GL.slice().sort(function(a,b){return T(a[0]).localeCompare(T(b[0]),S.lang)});
+  m.appendChild(el('dl','gl',g.map(function(x){return '<dt>'+E(T(x[0]))+'</dt><dd>'+E(T(x[1]))+'</dd>'}).join('')));
+ }else{
+  var f=F.filter(function(x){return x.id===S.page})[0];back();
+  m.appendChild(el('h2','',E(T(f.n))));m.appendChild(el('p','sub',E(T(f.sub))));
+  m.appendChild(el('div','box','<span class="q">'+E(T(['Frage: ','Question: ']))+E(T(f.q))+'</span>'));
+  var gr=el('div','grid');f.items.forEach(function(it){var name=Array.isArray(it[0])?T(it[0]):it[0];var extra='';
+   if(it[2]){extra='<p>'+RM.map(function(r){return '<span class="swatch" style="background:'+C[r[2]]+'"></span>'+r[3]+' '+E(T([r[0],r[1]]))}).join('<br>')+'</p>'}
+   var c=el('div','card','<h3>'+E(name)+'</h3><p>'+E(T(it[1]))+'</p>'+extra);c.style.setProperty('--k',f.k);gr.appendChild(c)});
+  m.appendChild(gr);
+ }
+ applyStatic();
+}
+function applyStatic(){
+ [].forEach.call(document.querySelectorAll('[data-en]'),function(n){
+  if(!n.hasAttribute('data-de'))n.setAttribute('data-de',n.tagName==='DIV'&&n.className==='footer-mono'?n.textContent:n.innerHTML);
+  var v=S.lang==='en'?n.getAttribute('data-en'):n.getAttribute('data-de');
+  if(n.className==='footer-mono')n.textContent=v;else n.innerHTML=E2(v);
+ });
+ document.getElementById('langBtn').textContent=S.lang==='de'?'EN':'DE';
+ document.getElementById('partBtn').classList.toggle('on',S.part);
+ var b=document.getElementById('beamerBtn');b.textContent=['☀ Beamer','☀ Beamer XL','☀ Beamer XXL','☀ Normal'][S.bi];
+ document.title=S.lang==='en'?'Configuration: how I work with Claude':'Konfiguration: so arbeite ich mit Claude';
+}
+function E2(v){return v}
+document.addEventListener('pointerup',function(e){
+ var b=e.target.closest('[data-act]');if(!b)return;var a=b.getAttribute('data-act'),h=document.documentElement;
+ if(a==='lang'){S.lang=S.lang==='de'?'en':'de';render()}
+ if(a==='part'){S.part=!S.part;render()}
+ if(a==='beamer'){S.bi=(S.bi+1)%4;BL.forEach(function(c){if(c)h.classList.remove(c)});if(BL[S.bi])h.classList.add(BL[S.bi]);applyStatic()}
+});
+document.getElementById('fallback').style.display='none';
+render();
+</script>
+<script src="../register/zurueck.js" defer></script>
+</body></html>
