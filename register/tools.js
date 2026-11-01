@@ -5066,7 +5066,7 @@ window.DENKRAUM_REGISTER = {
         "tools/raum-schleusen.html"
       ],
       "geprueft": false,
-      "notiz": "Am 01.11.2026 gemeinsam mit Michaela entwickelt, Entwurfs-PR. Leitplanken dürfen öffentlich sein (Michaela, 01.11.2026). Verlinkt über die linke Leiste von index.html, nicht über ein Regal-Kachel. K22 entfällt (Kartentool)."
+      "notiz": "Am 01.11.2026 gemeinsam mit Michaela entwickelt, Entwurfs-PR. Leitplanken dürfen öffentlich sein (Michaela, 01.11.2026). Verlinkt über die linke Leiste von index.html, nicht über ein Regal-Kachel. K22 entfällt (Kartentool). Inhalt v2 (01.11.2026): Einleitung, Gehört-hierher-Boxen und aufklappbare Karten mit Erklärung und Beispiel je Fach, Regal-Grafik und Fach-Kacheln, Stand des Denkräume-OS-Abgleichs (zwei neue Leitplanken, Eisberg kippt)."
     },
     {
       "id": "raum-schleusen",

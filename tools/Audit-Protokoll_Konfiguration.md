@@ -33,3 +33,7 @@ K11 Radien nach Design-System, K12, K13 nicht systematisch geprüft.
 ## Hinweis zur Methode
 
 Die Prüfung der Signatur-Überdeckung im gescrollten Zustand meldet immer Treffer, weil Inhalt unter jedem fixierten Element durchläuft. Das ist kein Befund.
+
+## Nachtrag 01.11.2026 (Inhalt v2)
+
+Einleitung und „Gehört hierher / nicht hierher“ je Fach, 25 aufklappbare Karten mit Erklärung und Beispiel oder Prüfung, Regal als Bücherregal-SVG (ein Buch je Karte), Fach-Kacheln, zwei neue Leitplanken (Notion hat Vorrang, Herkunft kennzeichnen), Denkweise „Eisberg kippt“, Skill-Beschreibungen auf Stand. Geprüft: keine Konsolenfehler, alle vier Fächer, Übung, Glossar und „So baust du“ in DE und EN bei 1280 und 390 px ohne seitliches Scrollen, Zuklappen/Aufklappen funktioniert. Hinweis: K22 entfällt weiter (Begründung im Handbuch: Inhalte stehen in zuklappbaren Karten); bei strengerer Auslegung wäre ein Kurz/Vollständig-Schalter nachzurüsten. Siegel unverändert ✅.
