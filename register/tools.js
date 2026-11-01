@@ -9,9 +9,9 @@ window.DENKRAUM_REGISTER = {
     {
       "id": "moeglichkeit",
       "icon": "💡",
-      "name": "Möglichkeitsraum",
+      "name": "Horizontraum",
       "leitfrage": "Impuls wahrnehmen",
-      "name_en": "Possibility room",
+      "name_en": "Horizon room",
       "leitfrage_en": "Perceive the impulse"
     },
     {
@@ -385,7 +385,7 @@ window.DENKRAUM_REGISTER = {
       "datei": "tools/anforderungsreise.html",
       "titel": "Anforderungs-Reise durch die Räume",
       "kurztitel": "Anforderungs-Reise",
-      "kurz": "Ein Demo-Tool, das eine einzelne Anforderung vom Möglichkeitsraum bis in den Testraum wandern lässt: Idee → Problem → Lösung mit FA/NFA und User Story → Meßkriterien/Parameter → Testfälle — am Ende steht ein exportierbares Reise-Log.",
+      "kurz": "Ein Demo-Tool, das eine einzelne Anforderung vom Horizontraum bis in den Testraum wandern lässt: Idee → Problem → Lösung mit FA/NFA und User Story → Meßkriterien/Parameter → Testfälle — am Ende steht ein exportierbares Reise-Log.",
       "rubrik": "Requirements & Business-Analyse",
       "bereich": "Anforderungen erheben & schärfen",
       "aufStartseite": true,
@@ -4531,7 +4531,7 @@ window.DENKRAUM_REGISTER = {
         "Hypothese",
         "Leitplanke",
         "OKR",
-        "Möglichkeitsraum"
+        "Horizontraum"
       ],
       "standards": [
         "PMBOK",
@@ -4554,7 +4554,7 @@ window.DENKRAUM_REGISTER = {
         "tools/agile-project-maturity-navigator.html"
       ],
       "geprueft": false,
-      "notiz": "Gebaut als zweites Möglichkeitsraum-Tool, schließt die Lücke für die PM-Seminare 34000, 3525, 2929 und 34002."
+      "notiz": "Gebaut als zweites Horizontraum-Tool, schließt die Lücke für die PM-Seminare 34000, 3525, 2929 und 34002."
     },
     {
       "id": "vom-impuls-zur-anforderung",
@@ -4593,7 +4593,7 @@ window.DENKRAUM_REGISTER = {
         "Impuls",
         "Rückfragen",
         "Lösungsneutralität",
-        "Möglichkeitsraum"
+        "Horizontraum"
       ],
       "standards": [
         "IREB",
@@ -4614,7 +4614,7 @@ window.DENKRAUM_REGISTER = {
         "tools/hochschule-nordwest-steckbrief.html"
       ],
       "geprueft": false,
-      "notiz": "Erstes RE/BA-Tool im Möglichkeitsraum (schließt die Lücke im Fahrplan auf den Fäden RE und BA). Fallwelt Hochschule Nordwest mit festen Personas Herr Öztürk, Lars, Kanzlerin Dr. Feldmann, Ela."
+      "notiz": "Erstes RE/BA-Tool im Horizontraum (schließt die Lücke im Fahrplan auf den Fäden RE und BA). Fallwelt Hochschule Nordwest mit festen Personas Herr Öztürk, Lars, Kanzlerin Dr. Feldmann, Ela."
     },
     {
       "id": "vom-anforderungspaket-zum-sprint",

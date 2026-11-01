@@ -31,7 +31,7 @@ Die **sechs Stationen** sind für alle drei Störfälle gleich. Sie folgen den f
 | 3 | **Die falsche Annahme** | Welche Annahme aus einem früheren Raum war falsch? *(Constraint)* | Aus vier Annahmen die gekippte wählen und dem Raum zuordnen, in dem sie entstanden ist. Ein Mini-Fahrplan zeigt den Rücksprung. |
 | 4 | **Auswirkung, dreifach** | Was ändert sich am angestrebten Ergebnis? *(Outcome)* | Drei Linsen zum Umschalten: **RE**: welche Anforderungen betroffen sind (Traceability, Baseline). **BA**: ob der Business Case noch trägt (Lösungsbewertung). **PM**: Termin, Budget, Risiko. |
 | 5 | **Entscheiden** | Muss neu priorisiert werden, und was fällt raus? *(Priorität)* | Einen Change Request vervollständigen und eine Entscheidung treffen: annehmen, ablehnen oder zurückstellen. Jede Option hat begründete Folgen. |
-| 6 | **Lernen** | Was nehmen wir in den nächsten Durchlauf mit? | Kurze Retrospektive: Welche Schleuse hätte die Störung früher gefangen? Der Zyklus schließt sich zurück zum 💡 Möglichkeitsraum. |
+| 6 | **Lernen** | Was nehmen wir in den nächsten Durchlauf mit? | Kurze Retrospektive: Welche Schleuse hätte die Störung früher gefangen? Der Zyklus schließt sich zurück zum 💡 Horizontraum. |
 
 **Ergebnis zum Mitnehmen:** ein ausgefülltes **Störfall-Protokoll** (Signal, Betroffene, Annahme, Auswirkung, Change Request, Entscheidung, Lesson Learned), druckbar und als Text kopierbar.
 

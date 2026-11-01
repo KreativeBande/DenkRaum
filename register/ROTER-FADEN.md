@@ -6,7 +6,7 @@ Die fünf Räume plus zwei Sonderfälle: **🔄 Rundreise** für Tools, die selb
 
 ## Was die Zuordnung zeigt
 
-**Der Anfang ist besetzt, aber noch dünn.** Im Möglichkeitsraum stehen 8 Tools. Seit „Vom Impuls zur Anforderung“ gibt es dort das erste Tool für Requirements Engineering und Business-Analyse (Impuls einordnen, nachfragen, ersten prüfbaren Satz formulieren); die „Vision & Zielbild-Werkstatt“ ist das erste für Projektmanagement (Zielgruppe, Vision, Erfolgsmaß, Hypothese, Leitplanke); die anderen 6 sind KI-Tools. Im Umsetzungsraum steht seit „Vom Anforderungspaket zum Sprint“ das erste Tool für RE und BA (Story, Akzeptanzkriterien, Definition of Ready, Übergabe); die Kette Zielbild → Funke → Paket überspringt dabei bewusst Analyse- und Lösungsraum. Das Ende ist seit dem Störfall-Labor nicht mehr leer: Es ist das erste RE/BA/PM-Tool im Störraum (vom Signal bis zum Änderungsantrag), die übrigen 5 sind KI-Tools.
+**Der Anfang ist besetzt, aber noch dünn.** Im Horizontraum stehen 8 Tools. Seit „Vom Impuls zur Anforderung“ gibt es dort das erste Tool für Requirements Engineering und Business-Analyse (Impuls einordnen, nachfragen, ersten prüfbaren Satz formulieren); die „Vision & Zielbild-Werkstatt“ ist das erste für Projektmanagement (Zielgruppe, Vision, Erfolgsmaß, Hypothese, Leitplanke); die anderen 6 sind KI-Tools. Im Umsetzungsraum steht seit „Vom Anforderungspaket zum Sprint“ das erste Tool für RE und BA (Story, Akzeptanzkriterien, Definition of Ready, Übergabe); die Kette Zielbild → Funke → Paket überspringt dabei bewusst Analyse- und Lösungsraum. Das Ende ist seit dem Störfall-Labor nicht mehr leer: Es ist das erste RE/BA/PM-Tool im Störraum (vom Signal bis zum Änderungsantrag), die übrigen 5 sind KI-Tools.
 
 Pro Haufe-Seminar sieht das so aus (Anzahl verlinkter Tools je Raum):
 
@@ -21,9 +21,9 @@ Pro Haufe-Seminar sieht das so aus (Anzahl verlinkter Tools je Raum):
 | 2929 Hybrides Projektmanagement II | 1 | 2 | 3 | **0** | 1 | 3 | 2 |
 | 34002 Objectives and Key Results: Agiles Teammanagement | 1 | 3 | 1 | 1 | 1 | 3 | **0** |
 
-Jedes Seminar hat jetzt mindestens ein Tool im Störraum, in sieben Seminaren ist es das Störfall-Labor. Jedes der acht Seminare hat damit mindestens ein Tool im Möglichkeitsraum. Naheliegende nächste Lücken sind Tools im Möglichkeitsraum für weitere Fäden, statt weiterer im schon gut besetzten Lösungsraum (19 Tools).
+Jedes Seminar hat jetzt mindestens ein Tool im Störraum, in sieben Seminaren ist es das Störfall-Labor. Jedes der acht Seminare hat damit mindestens ein Tool im Horizontraum. Naheliegende nächste Lücken sind Tools im Horizontraum für weitere Fäden, statt weiterer im schon gut besetzten Lösungsraum (19 Tools).
 
-## 💡 Möglichkeitsraum · Impuls wahrnehmen (8)
+## 💡 Horizontraum · Impuls wahrnehmen (8)
 
 | Tool | Warum hier |
 |---|---|
