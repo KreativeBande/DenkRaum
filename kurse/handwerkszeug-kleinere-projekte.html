@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seminar Handwerkszeug für kleinere Projekte · Denkraum</title>
+<style>
+:root{
+  --bg:#f6f8fc;
+  --panel:#ffffff;
+  --ink:#1f2937;
+  --ink-dim:#4b5563;
+  --muted:#6b7280;
+  --line:#d9e1ea;
+  --accent:#b91c1c;
+  --accent-soft:#fee2e2;
+  --amber:#92400e;
+  --amber-soft:#fef3c7;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at top left, #fff7f7 0%, transparent 22%),
+    radial-gradient(circle at top right, #eef4ff 0%, transparent 20%),
+    linear-gradient(180deg,#fbfcff 0%,#f4f6fa 100%);
+  min-height:100vh;
+}
+.wrap{max-width:1200px;margin:0 auto;padding:24px}
+
+/* ============ Topbar ============ */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  margin:0 0 18px;padding-right:230px;min-height:44px;
+}
+.back-link{color:var(--ink-dim);font-size:15px;font-weight:600;text-decoration:none}
+.back-link:hover{color:var(--accent)}
+.beamer-btn{
+  background:transparent;border:1.5px solid var(--line);
+  color:var(--ink-dim);font-size:15px;padding:10px 20px;font-family:inherit;font-weight:600;
+  border-radius:999px;cursor:pointer;
+}
+.beamer-btn:hover{border-color:var(--accent)}
+html.beamer .beamer-btn,
+html.beamer-xl .beamer-btn,
+html.beamer-xxl .beamer-btn{ background:var(--ink); color:#fff; border-color:var(--ink); }
+
+.signature{
+  position:fixed;top:14px;right:28px;z-index:500;
+  text-align:right;font-size:13px;color:var(--ink);
+  line-height:1.4;white-space:nowrap;
+  background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:12px;
+  padding:6px 13px;box-shadow:0 6px 16px rgba(15,23,42,.08)
+}
+.signature strong{display:block}
+.signature a{color:var(--accent);text-decoration:none;font-size:12px}
+.signature a:hover{text-decoration:underline}
+
+/* ============ Hero ============ */
+.hero{
+  background:rgba(255,255,255,.96);
+  border:1px solid var(--line);
+  border-radius:28px;
+  box-shadow:0 16px 34px rgba(15,23,42,.08);
+  padding:32px 32px 26px;
+  margin-bottom:28px;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;font-weight:700;font-size:13px;
+  background:var(--amber-soft);color:var(--amber);margin-bottom:14px;
+}
+.hero h1{margin:0 0 12px 0;font-size:clamp(28px,4vw,42px);line-height:1.1;color:var(--ink)}
+.hero .lead{margin:0 0 16px;color:var(--ink-dim);font-size:17px;line-height:1.6}
+.facts{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;padding:0;list-style:none}
+.facts li{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;
+  background:var(--bg);border:1px solid var(--line);font-size:13.5px;font-weight:700;color:var(--muted)
+}
+.facts strong{color:var(--ink)}
+.haufe-link{
+  display:inline-block;padding:11px 20px;border-radius:12px;background:var(--ink);color:#fff;
+  font-weight:700;font-size:15px;text-decoration:none
+}
+.haufe-link:hover{background:var(--accent)}
+
+/* ============ Module ============ */
+.module{margin-bottom:30px;scroll-margin-top:16px}
+.module-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+.module-no{
+  flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+  width:34px;height:34px;border-radius:999px;background:var(--accent-soft);color:var(--accent);
+  font-weight:800;font-size:15px
+}
+.module h2{margin:0;font-size:22px;line-height:1.25}
+.module-intro{margin:0 0 14px 48px;color:var(--muted);font-size:16px;line-height:1.55}
+
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.tool-card{
+  display:flex;flex-direction:column;
+  border:1px solid var(--line);
+  border-left:4px solid var(--amber);
+  border-radius:16px;
+  background:#fff;
+  padding:20px 22px;
+  box-shadow:0 6px 16px rgba(15,23,42,.03);
+  text-decoration:none;color:inherit;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.tool-card:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(15,23,42,.10)}
+.tool-card h3{margin:0 0 8px 0;font-size:18px;line-height:1.3;color:var(--ink)}
+.tool-card p{margin:0;color:var(--ink-dim);font-size:16px;line-height:1.55;flex:1}
+.tool-card .cta{margin-top:14px;font-size:14px;font-weight:700;color:var(--accent)}
+
+.note{
+  margin:8px 0 28px;padding:14px 18px;border-left:4px solid var(--amber);border-radius:4px;
+  background:var(--amber-soft);color:var(--amber);font-size:14px;line-height:1.55
+}
+.footer{
+  border-top:1px solid var(--line);padding-top:16px;margin-top:10px;color:var(--muted);font-size:14px;line-height:1.6
+}
+.footer a{color:var(--accent);text-decoration:none;font-weight:700}
+
+.hero h1, .hero .lead, .module h2, .tool-card h3, .tool-card p, .module-intro{overflow-wrap:break-word;hyphens:auto}
+.tool-grid > *, .module h2{min-width:0}
+
+/* ============ Beamer-Modus (vierstufig) ============ */
+html.beamer{ --ink-dim:#3D4A5C; }
+html.beamer .tool-card p, html.beamer .module-intro, html.beamer .hero .lead{ font-size:22px; }
+html.beamer .module h2{ font-size:44px; }
+html.beamer .tool-card h3{ font-size:26px; }
+html.beamer .tool-card .cta, html.beamer .facts li, html.beamer .eyebrow{ font-size:15px; }
+html.beamer .module-no{ width:48px;height:48px;font-size:20px; }
+html.beamer .module-intro{ margin-left:62px; color:var(--ink-dim); }
+html.beamer .tool-grid{ grid-template-columns:repeat(auto-fit,minmax(380px,1fr)); }
+html.beamer .footer, html.beamer .note{ display:none; }
+
+html.beamer-xl .tool-card p, html.beamer-xl .module-intro, html.beamer-xl .hero .lead{ font-size:28px; }
+html.beamer-xl .module h2{ font-size:54px; }
+html.beamer-xl .tool-card h3{ font-size:32px; }
+html.beamer-xl .tool-card .cta, html.beamer-xl .facts li, html.beamer-xl .eyebrow{ font-size:18px; }
+html.beamer-xl .tool-grid{ grid-template-columns:repeat(auto-fit,minmax(460px,1fr)); }
+
+html.beamer-xxl .tool-card p, html.beamer-xxl .module-intro, html.beamer-xxl .hero .lead{ font-size:34px; }
+html.beamer-xxl .module h2{ font-size:64px; }
+html.beamer-xxl .tool-card h3{ font-size:38px; }
+html.beamer-xxl .tool-card .cta, html.beamer-xxl .facts li, html.beamer-xxl .eyebrow{ font-size:21px; }
+html.beamer-xxl .tool-grid{ grid-template-columns:1fr; }
+
+@media(prefers-reduced-motion:reduce){
+  .tool-card{transition:none}
+  html{scroll-behavior:auto}
+}
+@media(max-width:640px){
+  .wrap{padding:16px}
+  .hero{padding:24px 20px 20px}
+  .topbar{padding-right:0;margin-top:52px}
+  .signature{top:8px;right:12px;padding:5px 10px;font-size:11px}
+  .signature a{font-size:10.5px}
+  .module-intro{margin-left:0}
+  html.beamer .module-intro{margin-left:0}
+  html.beamer .tool-grid, html.beamer-xl .tool-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="signature"><strong>Michaela Kühn</strong><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></div>
+
+<div class="wrap">
+  <div class="topbar">
+    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
+    <button type="button" class="beamer-btn" id="beamerBtn">☀ Beamer</button>
+  </div>
+
+  <section class="hero">
+    <span class="eyebrow">Seminar bei der Haufe Akademie · Nr. 5453</span>
+    <h1>Handwerkszeug für kleinere Projekte</h1>
+    <p class="lead">Ihre Werkzeugkiste zum Seminar: Hier finden Sie alle Denkraum-Tools, die wir im Seminar einsetzen oder die sich zum Vertiefen danach eignen. Im Mittelpunkt steht der Projekt-Werkzeugkoffer, der Sie mit schlanken Werkzeugen durch die sechs Seminarbausteine führt: Auftrag klären, planen, Risiken prüfen, steuern, ohne Weisungsbefugnis führen und abschließen. Die übrigen Tools vertiefen einzelne Bausteine. Alle Tools laufen direkt im Browser, ohne Anmeldung.</p>
+    <ul class="facts">
+      <li><strong id="toolCount">0</strong> Tools</li>
+      <li><strong>5</strong> Themenblöcke</li>
+    </ul>
+    <a class="haufe-link" href="https://www.haufe-akademie.de/5453" target="_blank" rel="noopener noreferrer">Zum Seminar bei der Haufe Akademie →</a>
+  </section>
+
+  <section class="module" id="m1">
+    <div class="module-head"><span class="module-no">1</span><h2>Ihr Werkzeugkoffer für das ganze Seminar</h2></div>
+    <p class="module-intro">Ein Tool für alle Bausteine: Projektdaten einmal eintragen und daraus Auftrag, Plan, Risikoliste, Statusbericht und Abschlussbericht füllen.</p>
+    <div class="tool-grid">
+      <a class="tool-card" href="../tools/projekt-werkzeugkoffer.html">
+        <h3>Projekt-Werkzeugkoffer</h3>
+        <p>Das Arbeitsinstrument zum Seminar: zwölf Bausteine vom Auftrags-Navigator bis zur Abschluss-Werkstatt, dazu Checker, Fall-Simulator, KI-Prompt-Werkstatt und 30-Tage-Transferplan. Sie arbeiten am Beispielprojekt oder an Ihrem eigenen und speichern den Stand als Datei.</p>
+        <span class="cta">Werkzeugkoffer öffnen →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="module" id="m2">
+    <div class="module-head"><span class="module-no">2</span><h2>Auftrag klären und festhalten</h2></div>
+    <p class="module-intro">Was will der Auftraggeber wirklich? Ziel, Umfang, Nicht-Ziele und Prioritäten, bevor geplant wird.</p>
+    <div class="tool-grid">
+      <a class="tool-card" href="../tools/vision-zielbild-werkstatt.html">
+        <h3>Vision &amp; Zielbild-Werkstatt</h3>
+        <p>Wenn der Auftrag nur „besser“ oder „optimieren“ sagt: In fünf Bausteinen entsteht ein Zielbild mit messbarem Erfolgsmaß.</p>
+        <span class="cta">Zielbild bauen →</span>
+      </a>
+      <a class="tool-card" href="../tools/priorisierungslabor.html">
+        <h3>Priorisierungslabor</h3>
+        <p>Wenn alles „Must“ ist, wurde nicht priorisiert: MoSCoW und weitere Methoden ausprobieren und vergleichen.</p>
+        <span class="cta">Labor betreten →</span>
+      </a>
+      <a class="tool-card" href="../tools/lindenfeld-projektauftrag-pflichtenheft.html">
+        <h3>Lindenfeld Lunch: Projektauftrag und Pflichtenheft</h3>
+        <p>Ein ausgefüllter Projektauftrag als Vergleich zu Ihrem eigenen Einseiter: Ziele, Umfang, Rahmen und Abgrenzung.</p>
+        <span class="cta">Auftrag ansehen →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="module" id="m3">
+    <div class="module-head"><span class="module-no">3</span><h2>Kompakt planen und Risiken prüfen</h2></div>
+    <p class="module-intro">Etappen und Meilensteine, realistische Schätzung und ein früher Blick auf das, was schiefgehen kann.</p>
+    <div class="tool-grid">
+      <a class="tool-card" href="../tools/lindenfeld-gateplan.html">
+        <h3>Lindenfeld Lunch: Gateplan</h3>
+        <p>Etappen, Meilensteine und Entscheidungspunkte am Beispiel: So sieht ein Plan aus, der auf eine Seite passt.</p>
+        <span class="cta">Gateplan öffnen →</span>
+      </a>
+      <a class="tool-card" href="../tools/zeit-konflikt-kompendium.html">
+        <h3>Zeit- und Konfliktkompendium</h3>
+        <p>Vertiefung zur Drei-Punkt-Schätzung aus dem Kompakt-Planer, dazu Puffer und Critical Chain, wenn Termine eng werden.</p>
+        <span class="cta">Methoden öffnen →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="module" id="m4">
+    <div class="module-head"><span class="module-no">4</span><h2>Steuern: Status, Abweichungen, Änderungen</h2></div>
+    <p class="module-intro">Den Überblick behalten, wenn es anders läuft als geplant, und Änderungen sauber entscheiden lassen.</p>
+    <div class="tool-grid">
+      <a class="tool-card" href="../tools/stoerfall-labor.html">
+        <h3>Störfall-Labor</h3>
+        <p>Etwas läuft nicht nach Plan: An konkreten Störfällen üben Sie, Auswirkungen zu bewerten und eine Entscheidung vorzubereiten, wie im Steuerungs-Cockpit.</p>
+        <span class="cta">Störfall bearbeiten →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="module" id="m5">
+    <div class="module-head"><span class="module-no">5</span><h2>Führen ohne Weisungsbefugnis und abschließen</h2></div>
+    <p class="module-intro">Beteiligte gewinnen, Konflikte klären, das Projekt ordentlich übergeben.</p>
+    <div class="tool-grid">
+      <a class="tool-card" href="../tools/stakeholder-management-kompendium-fachbuch.html">
+        <h3>Stakeholder Management Kompendium</h3>
+        <p>Vertiefung zum Stakeholder-Raster: Wer hat Einfluss, wer ist betroffen, und wie binde ich die Beteiligten ohne Weisungsbefugnis ein?</p>
+        <span class="cta">Kompendium öffnen →</span>
+      </a>
+      <a class="tool-card" href="../tools/zeit-konflikt-kompendium.html">
+        <h3>Zeit- und Konfliktkompendium</h3>
+        <p>Gesprächswerkzeuge für die Projektleitung ohne Linienmacht: Vier-Seiten-Modell, aktives Zuhören und Harvard-Konzept.</p>
+        <span class="cta">Methoden öffnen →</span>
+      </a>
+      <a class="tool-card" href="../tools/pm-basics-lernreise.html">
+        <h3>PM Basics: Lebenszyklus-Lernreise</h3>
+        <p>Zum Nachlesen nach dem Seminar: der ganze Lebenszyklus bis zum Abschluss in fünf Stationen, am Fall Lindenfeld Lunch.</p>
+        <span class="cta">Lernreise starten →</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="note">Die Themenblöcke folgen den Bausteinen des Projekt-Werkzeugkoffers. Die konkrete Reihenfolge im Seminar kann davon abweichen.</div>
+
+  <footer class="footer">
+    <strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a><br>
+    Begleitseite zum Seminar „Handwerkszeug für kleinere Projekte“ (Haufe Akademie, Nr. 5453). Alle Tools sind eigene Trainingswerkzeuge aus dem Denkraum.
+  </footer>
+</div>
+
+<script>
+document.getElementById('toolCount').textContent = new Set(Array.from(document.querySelectorAll('.tool-card'), a => a.getAttribute('href'))).size;
+
+const BEAMER_LEVELS = [
+  { classes: [],                                    label: '☀ Beamer' },
+  { classes: ['beamer'],                             label: '☀ Beamer XL' },
+  { classes: ['beamer', 'beamer-xl'],                label: '☀ Beamer XXL' },
+  { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: '☀ Normal' }
+];
+let beamerLevel = 0;
+function applyBeamer(){
+  document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+  BEAMER_LEVELS[beamerLevel].classes.forEach(c => document.documentElement.classList.add(c));
+  document.getElementById('beamerBtn').textContent = BEAMER_LEVELS[beamerLevel].label;
+}
+try { beamerLevel = Math.min(3, Math.max(0, parseInt(sessionStorage.getItem('kursBeamer') || '0', 10) || 0)); } catch(e) {}
+applyBeamer();
+document.getElementById('beamerBtn').addEventListener('click', function(){
+  beamerLevel = (beamerLevel + 1) % 4;
+  applyBeamer();
+  try { sessionStorage.setItem('kursBeamer', String(beamerLevel)); } catch(e) {}
+});
+</script>
+</body>
+</html>
