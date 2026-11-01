@@ -5087,7 +5087,7 @@ window.DENKRAUM_REGISTER = {
         "tools/denkraeume-navigator.html"
       ],
       "geprueft": false,
-      "notiz": "Am 01.11.2026 gemeinsam mit Michaela entwickelt, noch nicht nach K1–K22 auditiert. Fachlicher Stand: 90 Minuten gelten für CR-01 (BA/RE-Case, bedingt); der Steckbrief nennt noch 75 Minuten. Drohnen = Stakeholder mit Idee oder Regelbruch, Drohnenticket mit sieben Feldern. Einträge mit „Gedankenspiel“ oder „zu prüfen“ sind im Fall nicht belegt."
+      "notiz": "Am 01.11.2026 gemeinsam mit Michaela entwickelt, noch nicht nach K1–K22 auditiert. Fachlicher Stand: 90 Minuten gelten für CR-01 (BA/RE-Case, genehmigt mit Bedingung); Steckbrief, Projektauftrag und Gateplan wurden am 01.11.2026 angeglichen, der 75-Minuten-Kompromiss ist dort nur noch die Alternative. Drohnen = Stakeholder mit Idee oder Regelbruch, Drohnenticket mit sieben Feldern. Einträge mit „Gedankenspiel“ oder „zu prüfen“ sind im Fall nicht belegt."
     },
     {
       "id": "lindenfeld-projektauftrag-pflichtenheft",
