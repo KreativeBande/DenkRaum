@@ -5023,6 +5023,52 @@ window.DENKRAUM_REGISTER = {
       "notiz": "Von Michaela am 01.11.2026 angeliefert. Audit am 01.11.2026 nach Checkliste v2.1 (K1–K22, Z1–Z9): Erstprüfung ❌ (K5 Kürzel-Knöpfe 12,96 px, K18 Beamer-Größen zu klein, K22-Begründung fehlte, K17 ISO/IEC 25010 ungeprüft), nach Korrektur ✅ Zertifiziert, siehe tools/Audit-Protokoll_Change-Schleuse.md. K20: Inhalt der Schritte entsteht per JavaScript; Michaela hat am 01.11.2026 entschieden, dass der Hinweis ohne JS für dieses Simulator-Tool genügt. Dauer im Tool nicht angegeben. CR-01 stammt aus dem Fall, CR-02 bis CR-06 sind Annahmen; Beispielwerte in Schritt 10 (Tagessätze, Zeitpuffer, Stunden je Punkt) sind Annahmen. Links „Dokument im Fall öffnen“ springen über statische ids zu den Einträgen in Steckbrief, Projektauftrag/Pflichtenheft (Teilnehmende) und BA/RE-Case (tools/gateplan-build/anchor_build.py). Nutzt weder Netz noch Speicher; Schritt 11 schreibt und liest eine Markdown-Datei."
     },
     {
+      "id": "konfiguration",
+      "datei": "tools/konfiguration.html",
+      "titel": "Konfiguration: so arbeite ich mit Claude",
+      "kurztitel": "Konfiguration",
+      "kurz": "Das Regal mit vier Fächern (Skills, Leitplanken, Fälle, Denkweisen): wie Michaela mit Claude arbeitet und wie Teilnehmende ihren eigenen Wissenskosmos aufbauen. Mit Übung und Glossar.",
+      "rubrik": null,
+      "bereich": null,
+      "aufStartseite": false,
+      "zweck": [
+        "Demonstrator",
+        "Übung"
+      ],
+      "denkraum": "basislager",
+      "faeden": [],
+      "dauer": null,
+      "haufeSeminare": [],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [],
+      "themen": [
+        "Konfiguration",
+        "Skills",
+        "Leitplanken",
+        "Wissenskosmos",
+        "Denkräume OS"
+      ],
+      "standards": [],
+      "siegel": {
+        "status": "Offene Punkte",
+        "letztesAudit": null,
+        "auditZeileImTool": null,
+        "offen": [
+          "Audit nach Checkliste v2.1 (K1–K22, Z1–Z9) steht aus"
+        ]
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/raum-schleusen.html"
+      ],
+      "geprueft": false,
+      "notiz": "Am 01.11.2026 gemeinsam mit Michaela entwickelt, Entwurfs-PR. Leitplanken dürfen öffentlich sein (Michaela, 01.11.2026). Verlinkt über die linke Leiste von index.html, nicht über ein Regal-Kachel. K22 entfällt (Kartentool)."
+    },
+    {
       "id": "raum-schleusen",
       "datei": "tools/raum-schleusen.html",
       "titel": "Raum-Schleusen: Wann öffnet sich die Tür zwischen den Denkräumen?",
