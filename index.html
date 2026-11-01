@@ -28,6 +28,7 @@ a.card:hover{box-shadow:0 3px 12px rgba(0,0,0,.12);transform:translateY(-1px)}
 .lf .step{font-size:.75rem;font-weight:700;color:var(--lf);margin-bottom:2px}
 .lf a.card.prev{border-left-color:var(--docb);background:var(--doc)}
 .tag{display:inline-block;font-size:.7rem;border-radius:999px;padding:1px 8px;background:#fff;border:1px solid var(--docb);color:#6a3d91;margin-top:6px}
+.kp .shelf>h3{color:var(--sc);filter:brightness(.62)}.kp .shelf>p{color:var(--mut)}.kp .cnt{background:#eef3fb;color:var(--acc)}.kp a.card{border-left-color:var(--sc)}
 .xr{background:#1d2330;color:#fff;border-radius:16px;padding:20px 22px}
 .xr h2{color:#fff}.xr .sub{color:#b9c2d6}
 .shelf{margin-top:16px}.shelf>h3{font-size:1.05rem;margin:0 0 2px;color:var(--sc)}.shelf>p{margin:0 0 8px;font-size:.84rem;color:#b9c2d6}
@@ -51,7 +52,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 <div class="app">
 <nav aria-label="Navigation">
 <h1>Michaela Kühn</h1><p id="nvs"></p>
-<a href="#seminare" data-sec="seminare" id="n1"></a><a href="#lindenfeld" data-sec="lindenfeld" id="n2"></a><a href="#experiment" data-sec="experiment" id="n4"></a><a href="#bibliothek" data-sec="bibliothek" id="n3"></a>
+<a href="#seminare" data-sec="seminare" id="n1"></a><a href="#lindenfeld" data-sec="lindenfeld" id="n2"></a><a href="#kompendien" data-sec="kompendien" id="n6"></a><a href="#experiment" data-sec="experiment" id="n4"></a><a href="#bibliothek" data-sec="bibliothek" id="n3"></a>
 <a href="./archiv.html" id="n5" style="margin-top:14px;border-top:1px solid #46557a;border-radius:0;padding-top:14px"></a>
 <div class="ctl"><button id="bl" type="button"></button><button id="bb" type="button"></button></div>
 </nav>
@@ -59,6 +60,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 <div class="hero"><h1 id="h1"></h1><p id="h1p"></p></div>
 <section id="seminare"><h2 id="t1"></h2><p class="sub" id="s1"></p><div class="grid" id="g1"></div></section>
 <section id="lindenfeld" class="lf"><h2 id="t2"></h2><p class="sub" id="s2"></p><div class="grid" id="g2"></div></section>
+<section id="kompendien" class="kp"><h2 id="t6"></h2><p class="sub" id="s6"></p><div id="g6"></div></section>
 <section id="experiment"><div class="xr"><h2 id="t4"></h2><p class="sub" id="s4"></p><div id="g4"></div></div></section>
 <section id="bibliothek"><h2 id="t3"></h2><p class="sub" id="s3"></p>
 <div class="bar"><input id="q" type="search"><select id="fs"></select><select id="ff"></select></div>
@@ -89,9 +91,17 @@ var SH=[
  [['Governance, Risiko und Recht','Governance, risk and law'],['Regeln, Risikoklassen, Schutzmaßnahmen und Prüfung von KI-Vorhaben.','Rules, risk classes, safeguards and assurance of AI projects.'],['ai-governance-framework','eu-ai-act-framework','guardrails-governance-assurance','ki-risiko-klassifikationsraum','prompt-injection-demo','ai-engineering-studio','cpmai-prozess-board','talentmatch-ai-sufficiency-gate']]
 ];
 
+var SK=[
+ [['Requirements Engineering und Business-Analyse','Requirements engineering and business analysis'],['Die Fachwissen-Kompendien und Ausprägungen rund um RE und BA.','The knowledge compendia and variants around RE and BA.'],['ireb-kompendium','babok-kompendium','re-kompendium','ba-auspraegungen','re-ba-zettelkasten-reba','re-ba-knowledge-zoom-navigator-re-ba']],
+ [['Projektmanagement','Project management'],['Normen und Prüfungsstoff zum Nachschlagen, dazu Stakeholder, Zeit und Konflikte.','Standards and exam material for reference, plus stakeholders, time and conflict.'],['ipma-icb4-kompendium','pmp-eco-kombitool','stakeholder-management-kompendium-fachbuch','zeit-konflikt-kompendium']],
+ [['Modellieren und Darstellen','Modelling and visualising'],['Prozesse, Diagramme und Tabellen: welche Darstellung wofür taugt.','Processes, diagrams and tables: which representation fits what.'],['bpmn-anwenderkompendium','prozessmodellierung-diagramm-kompendium','ein-fall-35-blickwinkel','diagramm-kompass-re-ba','excel-lab-re-ba']],
+ [['Qualität und Normen','Quality and standards'],['Qualitätsmodelle und ihre Anwendung.','Quality models and their application.'],['iso-25010-kompendium','studierendenakte-qualitaet']],
+ [['Zettelkasten und Metaphern','Zettelkasten and metaphors'],['Vernetztes Wissen und Bilder, die es merkbar machen.','Networked knowledge and images that make it memorable.'],['zettelkasten-marmorkuchen-technik']]
+];
+var SKC=['#1565C0','#2E8B57','#7B2D8B','#C2185B','#E8720C'];
 var SC=['#ffd54f','#81d4fa','#a5d6a7','#f48fb1','#ce93d8','#ffab91'];
 var TX={
- de:{nvs:'Seminare · Fallwelt · Bibliothek',n1:'Meine Seminare',n2:'Lindenfeld Lunch',n3:'Bibliothek',n4:'Experimentierraum',n5:'Archiv: frühere Startseite',t4:'Experimentierraum: KI ausprobieren',s4:'Losgelöst von den Denkräumen. Hier liegen alle KI-Werkzeuge im Regal, nach Themen sortiert. Zum Ausprobieren, Staunen und Nachschlagen.',bl:'🌐 English',bb:'📽 Beamer: Stufe ',
+ de:{nvs:'Seminare · Fallwelt · Bibliothek',n1:'Meine Seminare',n2:'Lindenfeld Lunch',n3:'Bibliothek',n4:'Experimentierraum',n6:'Kompendien',t6:'Kompendien: nachschlagen und vertiefen',s6:'Die Fachbücher unter den Werkzeugen. Nach Themengebieten ins Regal gestellt, zum Nachschlagen, Lernen und Vorbereiten.',n5:'Archiv: frühere Startseite',t4:'Experimentierraum: KI ausprobieren',s4:'Losgelöst von den Denkräumen. Hier liegen alle KI-Werkzeuge im Regal, nach Themen sortiert. Zum Ausprobieren, Staunen und Nachschlagen.',bl:'🌐 English',bb:'📽 Beamer: Stufe ',
   h1:'Seminare, ein roter Faden und eine Bibliothek',h1p:'Hier beginnt alles bei den Seminaren. Der Lindenfeld Lunch begleitet sie als durchgehender Fall, und alle Werkzeuge liegen in der Bibliothek zum Nachschlagen.',
   t1:'Meine Seminare',s1:'Neun Seminare bei der Haufe Akademie. Jede Seite zeigt, welche Werkzeuge im Seminar vorkommen.',
   t2:'Lindenfeld Lunch: der rote Faden',s2:'Ein Fall, der durch die Seminare führt. In dieser Reihenfolge lässt er sich erzählen.',
@@ -99,7 +109,7 @@ var TX={
   q:'Suchen: Titel, Thema, Zweck …',fsA:'Alle Seminare',ffA:'Alle Fallwelten',all:'Alle',tools:' Werkzeuge',of:' von ',sem:'Seminar ',noRes:'Nichts gefunden. Filter lockern oder anders suchen.',
   prev:'Vorschau, noch nicht im Repo',step:'Schritt ',
   f1:'<b>Haufe Akademie</b><br>Nur genannt und verlinkt.',f2:'<b>Quelle</b><br>Register der DenkRaum-Werkzeuge',f3:'<b>Archiv</b><br>Die frühere Startseite liegt unter archiv.html',f4:'<b>Autorin</b><br>Michaela Kühn · PromptSchule'},
- en:{nvs:'Seminars · case world · library',n1:'My seminars',n2:'Lindenfeld Lunch',n3:'Library',n4:'Experiment room',n5:'Archive: former start page',t4:'Experiment room: try out AI',s4:'Detached from the thinking rooms. All AI tools sit on shelves here, sorted by topic. For trying out, wondering and reference.',bl:'🌐 Deutsch',bb:'📽 Beamer: level ',
+ en:{nvs:'Seminars · case world · library',n1:'My seminars',n2:'Lindenfeld Lunch',n3:'Library',n4:'Experiment room',n6:'Compendia',t6:'Compendia: look up and deepen',s6:'The reference books among the tools. Shelved by subject area, for looking up, learning and exam preparation.',n5:'Archive: former start page',t4:'Experiment room: try out AI',s4:'Detached from the thinking rooms. All AI tools sit on shelves here, sorted by topic. For trying out, wondering and reference.',bl:'🌐 Deutsch',bb:'📽 Beamer: level ',
   h1:'Seminars, a common thread and a library',h1p:'Everything starts with the seminars. Lindenfeld Lunch runs through them as one case, and all tools sit in the library for reference.',
   t1:'My seminars',s1:'Nine seminars at Haufe Akademie. Each page shows which tools are used in the seminar.',
   t2:'Lindenfeld Lunch: the common thread',s2:'One case that runs through the seminars. This is the order to tell it in.',
@@ -111,7 +121,7 @@ var TX={
 function cnt(nr){return D.tools.filter(function(t){return (t.haufeSeminare||[]).indexOf(nr)>-1}).length}
 function render(){
  var x=TX[L.lang];document.documentElement.lang=L.lang;
- ['nvs','n1','n2','n3','n4','n5','t4','s4','h1','t1','t2','t3','s1','s2','s3','f1','f2','f3','f4'].forEach(function(k){var e=document.getElementById(k);if(e){if(k[0]==='f')e.innerHTML=x[k];else if(k==='h1')e.textContent=x[k];else e.textContent=x[k]}});
+ ['nvs','n1','n2','n3','n4','n6','t6','s6','n5','t4','s4','h1','t1','t2','t3','s1','s2','s3','f1','f2','f3','f4'].forEach(function(k){var e=document.getElementById(k);if(e){if(k[0]==='f')e.innerHTML=x[k];else if(k==='h1')e.textContent=x[k];else e.textContent=x[k]}});
  document.getElementById('h1p').textContent=x.h1p;
  document.getElementById('bl').textContent=x.bl;document.getElementById('bb').textContent=x.bb+(L.b+1)+'/4';
  document.documentElement.style.setProperty('--fs',ST[L.b]);
@@ -122,6 +132,7 @@ function render(){
   return '<a class="card'+(c[4]?' prev':'')+'" href="'+E(c[1])+'"><div class="step">'+x.step+c[0]+'</div><h3>'+E(T(c[2]))+'</h3><p>'+E(T(c[3]))+'</p>'+(c[4]?'<span class="tag">'+x.prev+'</span>':'')+'</a>'}).join('');
  var byId={};D.tools.forEach(function(t){byId[t.id]=t});
  document.getElementById('g4').innerHTML=SH.map(function(h){return '<div class="shelf" style="--sc:'+SC[SH.indexOf(h)]+'"><h3>'+E(T(h[0]))+' <span class="cnt">'+h[2].length+'</span></h3><p>'+E(T(h[1]))+'</p><div class="grid">'+h[2].map(function(id){var t=byId[id];return t?'<a class="card" href="'+E(t.datei)+'"><h3>'+E(t.kurztitel||t.titel)+'</h3><p>'+E((t.kurz||'').slice(0,110)+((t.kurz||'').length>110?' …':''))+'</p></a>':''}).join('')+'</div></div>'}).join('');
+ document.getElementById('g6').innerHTML=SK.map(function(h,i){return '<div class="shelf" style="--sc:'+SKC[i]+'"><h3>'+E(T(h[0]))+' <span class="cnt">'+h[2].length+'</span></h3><p>'+E(T(h[1]))+'</p><div class="grid">'+h[2].map(function(id){var t=byId[id];return t?'<a class="card" href="'+E(t.datei)+'"><h3>'+E(t.kurztitel||t.titel)+'</h3><p>'+E((t.kurz||'').slice(0,110)+((t.kurz||'').length>110?' …':''))+'</p></a>':''}).join('')+'</div></div>'}).join('');
  var fs=document.getElementById('fs'),ff=document.getElementById('ff');
  fs.innerHTML='<option value="">'+x.fsA+'</option>'+D.seminare.map(function(s){return '<option value="'+E(s.nr)+'">'+E(s.nr+' · '+(L.lang==='en'?s.kurz_en:s.kurz))+'</option>'}).join('');fs.value=L.sem;
  var fws={};D.tools.forEach(function(t){(t.fallwelten||[]).forEach(function(f){fws[f]=1})});
@@ -152,7 +163,7 @@ document.addEventListener('click',function(e){
 document.getElementById('q').addEventListener('input',function(e){L.q=e.target.value;list()});
 document.getElementById('fs').addEventListener('change',function(e){L.sem=e.target.value;list()});
 document.getElementById('ff').addEventListener('change',function(e){L.fw=e.target.value;list()});
-var secs=['seminare','lindenfeld','experiment','bibliothek'];
+var secs=['seminare','lindenfeld','kompendien','experiment','bibliothek'];
 function spy(){var y=window.scrollY+80,cur=secs[0];secs.forEach(function(s){if(document.getElementById(s).offsetTop<=y)cur=s});
  document.querySelectorAll('nav a[data-sec]').forEach(function(a){a.classList.toggle('on',a.getAttribute('data-sec')===cur)})}
 window.addEventListener('scroll',spy);
