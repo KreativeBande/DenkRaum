@@ -230,3 +230,6 @@ Klein, gedeckte Farbe (`--muted`), kein eigener Rahmen. **Verfalls-Disziplin**: 
 ## Vorsicht: Anführungszeichen
 
 In diesem Repo trat wiederholt Korruption von geraden Anführungszeichen (`"`) zu typografischen Anführungszeichen (`"`/`"`) in `href`-Attributen auf, wenn Textänderungen über den normalen Editier-Weg liefen. Bei Änderungen an `href="..."`-Attributen das Ergebnis auf gerade ASCII-Anführungszeichen prüfen (z.B. `grep` nach `href=[""]` oder ein Python-Check auf `chr(34)`), bevor committet wird — typografische Anführungszeichen brechen den Link (Browser parst ihn dann als unquoted attribute value inklusive der Anführungszeichen-Glyphen).
+
+### Sprungmarken „Zurück zu Start / Zurück zum Seminar"
+Jedes neue Tool und jede neue Seminarseite bindet `register/zurueck.js` ein (siehe `register/README.md`, Abschnitt „Sprungmarken"). Das Skript sitzt oben in der linken Leiste, nicht in einer Kopfzeile.

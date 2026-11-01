@@ -43,3 +43,11 @@ Erstbefüllung am 01.10.2026 automatisch aus `index.html`, `kurse/`, dem Notion-
 3. **Seminarseite geändert:** `haufeSeminare` der betroffenen Tools nachziehen.
 4. **Audit:** `siegel` im Register aktualisieren; Notion wird danach aus dem Register befüllt.
 5. Bei Widerspruch zwischen Register und Notion gilt das Register (Ausnahme: der Prüfkatalog K1–K21 selbst bleibt in Notion kanonisch).
+
+## Sprungmarken (`register/zurueck.js`)
+
+Jedes Tool und jede Seminarseite bindet vor `</body>` `<script src="../register/zurueck.js" defer></script>` ein (eine Ebene tiefer `../../`). Das Skript zeigt „Zurück zu Start“ und „Zurück zum Seminar“ oben in der linken Leiste (ohne Leiste: kleines Kästchen unten links).
+
+- Seminarseiten hängen an Tool-Links `?s=<Seminarnummer>` an; das Tool merkt sich die Nummer pro Sitzung.
+- Ohne Nummer: genau ein Seminar in `haufeSeminare` → direkter Link, mehrere → Auswahl, keines → nur „Zurück zu Start“.
+- Neues Tool oder neue Seminarseite: die Zeile mitnehmen.
