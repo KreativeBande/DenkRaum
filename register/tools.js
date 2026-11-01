@@ -5023,6 +5023,73 @@ window.DENKRAUM_REGISTER = {
       "notiz": "Von Michaela am 01.11.2026 angeliefert. Audit am 01.11.2026 nach Checkliste v2.1 (K1–K22, Z1–Z9): Erstprüfung ❌ (K5 Kürzel-Knöpfe 12,96 px, K18 Beamer-Größen zu klein, K22-Begründung fehlte, K17 ISO/IEC 25010 ungeprüft), nach Korrektur ✅ Zertifiziert, siehe tools/Audit-Protokoll_Change-Schleuse.md. K20: Inhalt der Schritte entsteht per JavaScript; Michaela hat am 01.11.2026 entschieden, dass der Hinweis ohne JS für dieses Simulator-Tool genügt. Dauer im Tool nicht angegeben. CR-01 stammt aus dem Fall, CR-02 bis CR-06 sind Annahmen; Beispielwerte in Schritt 10 (Tagessätze, Zeitpuffer, Stunden je Punkt) sind Annahmen. Links „Dokument im Fall öffnen“ springen über statische ids zu den Einträgen in Steckbrief, Projektauftrag/Pflichtenheft (Teilnehmende) und BA/RE-Case (tools/gateplan-build/anchor_build.py). Nutzt weder Netz noch Speicher; Schritt 11 schreibt und liest eine Markdown-Datei."
     },
     {
+      "id": "raum-schleusen",
+      "datei": "tools/raum-schleusen.html",
+      "titel": "Raum-Schleusen: Wann öffnet sich die Tür zwischen den Denkräumen?",
+      "kurztitel": "Raum-Schleusen",
+      "kurz": "Sechs Schleusen zwischen den Denkräumen (Horizontraum, Analyse-, Lösungs-, Umsetzungs-, Störraum) prüfen mit Pflicht- und Wichtig-Fragen, ob ein Team weitergehen darf. Mit Übergaben (Projektauftrag, Arbeitspaket, User Story), Drohnenticket für Change Requests, Werkzeug- und Dokumentenboard mit Musterlösungen aus dem Fall Lindenfeld Lunch und Sprüngen in den Fall.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Priorisierung & Änderungen",
+      "aufStartseite": true,
+      "zweck": [
+        "Demonstrator",
+        "Übung"
+      ],
+      "denkraum": "rundreise",
+      "faeden": [
+        "re",
+        "ba",
+        "pm"
+      ],
+      "dauer": null,
+      "haufeSeminare": [
+        "9368",
+        "31693",
+        "3744",
+        "8932",
+        "2929"
+      ],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "Denkräume OS",
+        "Schleusen",
+        "Change Request",
+        "Drohnenticket",
+        "Definition of Done",
+        "Projektauftrag",
+        "User Story",
+        "Arbeitspaket"
+      ],
+      "standards": [
+        "IREB",
+        "BABOK"
+      ],
+      "siegel": {
+        "status": "Offene Punkte",
+        "letztesAudit": null,
+        "auditZeileImTool": null,
+        "offen": [
+          "Audit nach Checkliste v2.1 (K1–K22, Z1–Z9) steht aus"
+        ]
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": false,
+      "verwandt": [
+        "tools/change-schleuse.html",
+        "tools/ba-re-case-lindenfeld-lunch.html",
+        "tools/lindenfeld-projektauftrag-pflichtenheft.html",
+        "tools/denkraeume-navigator.html"
+      ],
+      "geprueft": false,
+      "notiz": "Am 01.11.2026 gemeinsam mit Michaela entwickelt, noch nicht nach K1–K22 auditiert. Fachlicher Stand: 90 Minuten gelten für CR-01 (BA/RE-Case, bedingt); der Steckbrief nennt noch 75 Minuten. Drohnen = Stakeholder mit Idee oder Regelbruch, Drohnenticket mit sieben Feldern. Einträge mit „Gedankenspiel“ oder „zu prüfen“ sind im Fall nicht belegt."
+    },
+    {
       "id": "lindenfeld-projektauftrag-pflichtenheft",
       "datei": "tools/lindenfeld-projektauftrag-pflichtenheft.html",
       "titel": "Lindenfeld Lunch: Projektauftrag und Pflichtenheft",
