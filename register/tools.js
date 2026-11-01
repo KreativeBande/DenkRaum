@@ -5072,10 +5072,11 @@ window.DENKRAUM_REGISTER = {
       ],
       "siegel": {
         "status": "Offene Punkte",
-        "letztesAudit": null,
+        "letztesAudit": "2026-11-01",
         "auditZeileImTool": null,
         "offen": [
-          "Audit nach Checkliste v2.1 (K1–K22, Z1–Z9) steht aus"
+          "Teilaudit 01.11.2026 bestanden: K1–K5, K7, K15, K17–K21, Z1–Z5, Z8, Z9, vier Fußboxen, Sprecher-Skript (Normenstand ISO 29148, BABOK v3, IREB-Lehrplan 3.3 am 01.11.2026 geprüft)",
+          "Noch zu prüfen: K6, K8–K10 (Datenwerte und Szenariotreue gegen den Fall), Z6 (Abkürzungen je Abschnitt), Z7 (Grafiken)"
         ]
       },
       "beamer": "4-stufig",
