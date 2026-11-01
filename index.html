@@ -1,1238 +1,160 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Michaelas Denkraum</title>
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><title>Michaelas Denkraum · Seminare, Lindenfeld Lunch & Bibliothek</title>
 <style>
-:root{
-  --bg:#f6f8fc;
-  --panel:#ffffff;
-  --ink:#1f2937;
-  --muted:#6b7280;
-  --line:#d9e1ea;
-  --accent:#b91c1c;
-  --accent-soft:#fee2e2;
-  --blue:#1d4ed8;
-  --blue-soft:#dbeafe;
-  --violet:#4f46e5;
-  --violet-soft:#e8e6fb;
-  --coral:#be185d;
-  --coral-soft:#fdf2f8;
-  --green:#15803d;
-  --green-soft:#e9f7ee;
-  --amber:#92400e;
-  --amber-soft:#fef3c7;
-  --teal:#0f766e;
-  --teal-soft:#ccfbf1;
-  --shadow:0 16px 34px rgba(15,23,42,.08);
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-html,body{margin:0;padding:0}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  color:var(--ink);
-  background:
-    radial-gradient(circle at top left, #fff7f7 0%, transparent 22%),
-    radial-gradient(circle at top right, #eef4ff 0%, transparent 20%),
-    linear-gradient(180deg,#fbfcff 0%,#f4f6fa 100%);
-  min-height:100vh;
-}
-.wrap{max-width:1200px;margin:0 auto;padding:24px}
-
-.hero{
-  background:rgba(255,255,255,.96);
-  border:1px solid var(--line);
-  border-radius:28px;
-  box-shadow:var(--shadow);
-  backdrop-filter:blur(4px);
-  padding:32px 32px 26px;
-  margin-bottom:20px;
-}
-.hero h1{margin:0 0 10px 0;font-size:clamp(28px,4vw,42px);line-height:1.05;
-  background:linear-gradient(100deg,var(--ink) 55%,var(--accent) 120%);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.hero p{margin:0;color:var(--muted);font-size:17px;line-height:1.55}
-.hero-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
-.stat-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-size:12.5px;font-weight:700;color:var(--muted)}
-.stat-pill strong{color:var(--ink);font-size:13.5px}
-a.stat-pill{text-decoration:none;color:var(--re, #b91c1c);background:#fee2e2;border-color:transparent}
-a.stat-pill:hover{background:#b91c1c;color:#fff}
-.signature{
-  position:fixed;top:14px;right:28px;z-index:500;
-  text-align:right;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;
-  line-height:1.4;white-space:nowrap;
-  background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:12px;
-  padding:6px 13px;box-shadow:0 6px 16px rgba(15,23,42,.08)
-}
-.signature span{display:block;font-weight:500;color:var(--muted);font-size:12px}
-.signature:hover{color:var(--accent)}
-.signature:hover span{color:var(--accent)}
-
-/* ============ Raum-Leiste (Zahlen live aus register/tools.js) ============ */
-.raumleiste{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 16px rgba(15,23,42,.04);padding:14px 18px 12px;margin-bottom:16px}
-.rl-title{font-size:16px;margin:0 0 8px}
-.rl-rows{display:flex;flex-direction:column;gap:6px}
-.rl-row{display:grid;grid-template-columns:170px 1fr 36px;align-items:center;gap:10px;width:100%;border:1.5px solid transparent;background:transparent;border-radius:12px;padding:4px 8px;font-family:inherit;font-size:14px;color:var(--ink);cursor:pointer;text-align:left}
-.rl-row:hover{background:var(--bg)}
-.rl-row.active{border-color:var(--ink);background:var(--bg)}
-.rl-row.dim{opacity:.45}
-.rl-name{font-weight:600}
-.rl-bar{height:20px;border-radius:6px;min-width:4px}
-.rl-n{font-weight:800;text-align:right}
-.rl-note{font-size:13px;color:var(--muted);margin:8px 0 0}
-@media (max-width:560px){.rl-row{grid-template-columns:120px 1fr 30px;font-size:13px}}
-
-/* ============ Such- & Themen-Tabs ============ */
-.finder{
-  background:rgba(255,255,255,.96);
-  border:1px solid var(--line);
-  border-radius:20px;
-  box-shadow:0 10px 24px rgba(15,23,42,.05);
-  padding:16px 20px;
-  margin-bottom:24px;
-  display:flex;flex-wrap:wrap;align-items:center;gap:12px;
-}
-.search-box{position:relative;flex:1 1 260px;min-width:220px}
-.search-box svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--muted);pointer-events:none}
-#searchInput{
-  width:100%;padding:11px 14px 11px 38px;border-radius:12px;border:1.5px solid var(--line);
-  font-size:15px;color:var(--ink);background:var(--bg);outline:none;
-  transition:border-color .15s ease, background .15s ease;
-}
-#searchInput:focus{border-color:var(--accent);background:#fff}
-#searchInput::placeholder{color:var(--muted)}
-.kbd-hint{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted);
-  border:1px solid var(--line);border-radius:5px;padding:2px 6px;background:#fff;pointer-events:none}
-.filter-chips{display:flex;gap:8px;flex-wrap:wrap}
-.filter-chip{
-  border:1.5px solid var(--line);background:var(--bg);color:var(--muted);
-  padding:8px 16px;border-radius:999px;font-size:13.5px;font-weight:700;font-family:inherit;cursor:pointer;
-  text-decoration:none;display:inline-flex;align-items:center;
-  transition:all .15s ease; white-space:nowrap;
-}
-.filter-chip:hover{border-color:var(--accent);color:var(--ink)}
-.filter-chip.active{background:var(--ink);border-color:var(--ink);color:#fff}
-.result-count{font-size:13px;color:var(--muted);font-weight:600;margin-left:auto;white-space:nowrap}
-
-.empty-state{
-  display:none;text-align:center;padding:48px 24px;color:var(--muted);
-  background:rgba(255,255,255,.9);border:1px dashed var(--line);border-radius:20px;margin-bottom:20px;
-}
-.empty-state.show{display:block}
-.empty-state .big{font-size:32px;margin-bottom:8px}
-.empty-state button{
-  margin-top:14px;border:1.5px solid var(--line);background:#fff;color:var(--ink);
-  padding:9px 18px;border-radius:10px;font-weight:700;font-size:13.5px;cursor:pointer;
-}
-.empty-state button:hover{border-color:var(--accent);color:var(--accent)}
-
-.section{margin-bottom:20px;scroll-margin-top:16px}
-.section.hidden-by-filter{display:none}
-.subsection.hidden-by-filter{display:none}
-.section-head{
-  display:flex;align-items:center;gap:12px;padding:8px 0;margin-bottom:16px;
-}
-.section-count{font-size:13px;color:var(--muted);font-weight:600}
-
-.kicker{
-  display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;font-weight:700;font-size:13px;
-  background:var(--amber-soft);color:var(--amber)
-}
-.kicker.blue{background:var(--blue-soft);color:var(--blue)}
-.kicker.violet{background:var(--violet-soft);color:var(--violet)}
-.kicker.coral{background:var(--coral-soft);color:var(--coral)}
-.kicker.green{background:var(--green-soft);color:var(--green)}
-.kicker.rose{background:var(--accent-soft);color:var(--accent)}
-.kicker.teal{background:var(--teal-soft);color:var(--teal)}
-
-.subhead{
-  margin:22px 0 10px;font-size:13px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);
-}
-.tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.tool-card{
-  position:relative;
-  display:flex;flex-direction:column;
-  border:1px solid var(--line);
-  border-left:4px solid #92400e;
-  border-radius:20px;
-  background:#fff;
-  padding:20px 22px;
-  box-shadow:0 6px 18px rgba(15,23,42,.03);
-  text-decoration:none;color:inherit;
-  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-}
-.tool-card.hidden-by-filter{display:none}
-.tool-card.ki{border-left-color:var(--blue)}
-.tool-card.okr{border-left-color:var(--violet)}
-.tool-card.compliance{border-left-color:var(--coral)}
-.tool-card.priority{border-left-color:var(--green)}
-.tool-card.about{border-left-color:var(--accent)}
-.tool-card.didaktik{border-left-color:var(--teal)}
-.tool-card.spiele{border-left-color:var(--green)}
-.tool-card.pm{border-left-color:#1E2761}
-.tool-card.seminar{border-left-color:var(--amber)}
-.tool-card.gateplan,.tool-card.lindenfeld{background:#EFE8F7;border-left-color:#8E6BBF}
-.tool-card.gateplan:hover,.tool-card.lindenfeld:hover{background:#E6DBF3}
-.tool-card:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(15,23,42,.10)}
-.tool-card h3{margin:0 0 8px 0;font-size:18px;line-height:1.3;color:var(--ink);padding-right:52px}
-.tool-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.55;flex:1}
-.tool-card .cta{margin-top:14px;font-size:14px;font-weight:700;color:var(--accent)}
-.tool-card.ki .cta{color:var(--blue)}
-.tool-card.okr .cta{color:var(--violet)}
-.tool-card.compliance .cta{color:var(--coral)}
-.tool-card.priority .cta{color:var(--green)}
-.tool-card.didaktik .cta{color:var(--teal)}
-.tool-card.spiele .cta{color:var(--green)}
-.tool-card.pm .cta{color:#1E2761}
-/* ============ Art-Etiketten (aus register/tools.js) ============ */
-.kind-row{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
-.kind-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;
-  background:var(--bg);color:var(--muted);border:1px solid var(--line)}
-.kind-pill[data-kind="Opener"]{background:var(--accent-soft);color:var(--accent);border-color:transparent}
-.kind-pill[data-kind="Übung"]{background:var(--green-soft);color:var(--green);border-color:transparent}
-.kind-pill[data-kind="Spiel"]{background:var(--green-soft);color:var(--green);border-color:transparent}
-.kind-pill[data-kind="Demonstrator"]{background:var(--blue-soft);color:var(--blue);border-color:transparent}
-.kind-pill[data-kind="Workshop-Canvas"]{background:var(--violet-soft);color:var(--violet);border-color:transparent}
-.kind-pill[data-kind="Lernreise"]{background:var(--teal-soft);color:var(--teal);border-color:transparent}
-.kind-pill[data-kind="Nachschlagewerk"]{background:var(--amber-soft);color:var(--amber);border-color:transparent}
-.kind-pill[data-kind="Prüfungsvorbereitung"]{background:var(--coral-soft);color:var(--coral);border-color:transparent}
-.kind-filter{display:flex;flex-wrap:wrap;align-items:center;gap:8px;flex-basis:100%}
-.kind-filter-label{font-size:13px;font-weight:800;color:var(--muted);margin-right:4px}
-.kind-chip{
-  border:1.5px solid var(--line);background:#fff;color:var(--muted);
-  padding:6px 13px;border-radius:999px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;
-  transition:all .15s ease;white-space:nowrap;
-}
-.kind-chip:hover{border-color:var(--accent);color:var(--ink)}
-.kind-chip.active{background:var(--ink);border-color:var(--ink);color:#fff}
-
-.new-badge{
-  position:absolute;top:16px;right:16px;background:var(--accent);color:#fff;
-  font-size:10.5px;font-weight:800;letter-spacing:.04em;padding:3px 8px;border-radius:999px;
-}
-
-@media(prefers-reduced-motion:reduce){
-  .tool-card,#searchInput,.filter-chip,.kind-chip{transition:none}
-  html{scroll-behavior:auto}
-}
-
-@media(max-width:640px){
-  .wrap{padding:16px}
-  .hero{padding:24px 20px 20px}
-  .signature{top:8px;right:12px;padding:5px 10px;font-size:11px}
-  .finder{flex-direction:column;align-items:stretch}
-  .search-box{flex:0 0 auto;min-width:0}
-  .kind-filter{flex-basis:auto}
-  .result-count{margin-left:0}
-  .kbd-hint{display:none}
-}
-</style>
-</head>
-<body>
-
-<a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
-
-<div class="wrap">
-  <section class="hero">
-    <h1>Michaelas Denkraum</h1>
-    <p>Interaktive Werkzeuge rund um Requirements Engineering und den kompetenten Umgang mit KI. Jede App führt spielerisch durch strukturierte Fragen, macht Denkprozesse sichtbar und übersetzt vage Fragestellungen Schritt für Schritt in belastbare Ergebnisse.</p>
-    <div class="hero-stats">
-      <span class="stat-pill"><strong id="statTotal">0</strong> Tools</span>
-      <span class="stat-pill"><strong>7</strong> Rubriken</span>
-      <span class="stat-pill" id="statNew"></span>
-      <a class="stat-pill" href="./fahrplan.html">🗺️ Fahrplan: der rote Faden durch die Denkräume →</a>
-    </div>
-  </section>
-
-  <section class="raumleiste" id="raumLeiste" aria-label="Tools je Denkraum" hidden>
-    <h2 class="rl-title">Wie viele Tools gibt es je Denkraum?</h2>
-    <div class="rl-rows" id="rlRows"></div>
-    <p class="rl-note" id="rlNote">Raum anklicken, um die Kacheln darunter zu filtern. Noch einmal klicken hebt den Filter auf.</p>
-  </section>
-
-  <div class="finder">
-    <div class="search-box">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      <input type="text" id="searchInput" placeholder="Tool suchen … (z. B. „ISO“, „Priorisierung“, „Beamer“)" autocomplete="off">
-      <span class="kbd-hint" id="kbdHint">/</span>
-    </div>
-    <nav class="filter-chips" id="filterChips" role="tablist" aria-label="Rubriken">
-      <button type="button" class="filter-chip active" data-filter="all" role="tab" aria-selected="true">Alle</button>
-      <button type="button" class="filter-chip" data-filter="about" role="tab" aria-selected="false">Über mich</button>
-      <button type="button" class="filter-chip" data-filter="seminare" role="tab" aria-selected="false">Meine Seminare</button>
-      <button type="button" class="filter-chip" data-filter="re-ba" role="tab" aria-selected="false">Requirements &amp; Business-Analyse</button>
-      <button type="button" class="filter-chip" data-filter="agile-pm" role="tab" aria-selected="false">Agiles Arbeiten &amp; PM</button>
-      <button type="button" class="filter-chip" data-filter="ki" role="tab" aria-selected="false">KI</button>
-      <button type="button" class="filter-chip" data-filter="didaktik" role="tab" aria-selected="false">Didaktik</button>
-      <button type="button" class="filter-chip" data-filter="uebungen" role="tab" aria-selected="false">Übungen</button>
-    </nav>
-    <span class="result-count" id="resultCount"></span>
-    <div class="kind-filter" id="kindFilter" role="group" aria-label="Art des Tools" hidden>
-      <span class="kind-filter-label">Art:</span>
-    </div>
-  </div>
-
-  <div class="empty-state" id="emptyState">
-    <div class="big">🔍</div>
-    <div>Keine Tools gefunden.</div>
-    <button id="resetFilters">Filter zurücksetzen</button>
-  </div>
-
-  <section class="section" data-cat="about" id="section-about">
-    <div class="section-head">
-      <span class="kicker rose">Über mich</span>
-      <span class="section-count"></span>
-    </div>
-    <div class="tool-grid">
-      <a class="tool-card about" href="./tools/steckbrief.html">
-        <h3>Steckbrief · Michaela Kühn</h3>
-        <p>Kompetenzprofil und Positionierung: Requirements Engineering, Business-Analyse und KI-gestützte Anforderungsarbeit in zwölf Bausteinen — von der Anforderungsdeklination bis zur Entscheidungsarchitektur.</p>
-        <span class="cta">Steckbrief lesen →</span>
-      </a>
-      <a class="tool-card about" href="./tools/steckbrief.html#demonstrator">
-        <h3>Framework-Finder: Welches Prompt-Framework passt?</h3>
-        <p>Aufgabe auswählen, passendes Prompt-Framework (RISEN, REQUIRE, STAKE, CO-STAR, CRISPE, RTF, BAB, CLEAR) samt Begründung und Prompt-Skelett sehen — die eigene Framework-Auswahl-Methodik interaktiv vorgeführt.</p>
-        <span class="cta">Framework finden →</span>
-      </a>
-    </div>
-  </section>
-
-  <section class="section" data-cat="seminare" id="section-seminare">
-    <div class="section-head">
-      <span class="kicker">Meine Seminare bei der Haufe Akademie</span>
-      <span class="section-count"></span>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">Requirements Engineering &amp; Business-Analyse</h3>
-    <div class="tool-grid">
-      <a class="tool-card seminar" href="./kurse/requirements-engineering-it.html">
-        <h3>Requirements Engineering: Moderne Anforderungsanalyse für die IT</h3>
-        <p>Seminar Nr. 9368, drei Tage: 25 Tools in sieben Themenblöcken, von Stakeholdern über Ermittlung und Formulierung bis zu Modellierung und Priorisierung.</p>
-        <span class="cta">Zur Seminarseite →</span>
-      </a>
-      <a class="tool-card seminar" href="./kurse/requirements-engineering-projekte-starten.html">
-        <h3>Requirements Engineering: Projekte erfolgreich starten</h3>
-        <p>Seminar Nr. 31693: die Tools entlang der fünf Seminarmodule, von den Basics der Anforderungsanalyse bis zum aktiven Anforderungsmanagement.</p>
-        <span class="cta">Zur Seminarseite →</span>
-      </a>
-      <a class="tool-card seminar" href="./kurse/agile-business-analyst.html">
-        <h3>Der:Die Agile Business Analyst:in</h3>
-        <p>Seminar Nr. 3744, zwei Tage: Rolle der Business-Analyse, Moderation und visuelle Dokumentation, Stakeholder und Konflikte, Business Case und agile Methoden.</p>
-        <span class="cta">Zur Seminarseite →</span>
-      </a>
-    </div>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">KI im Requirements Engineering</h3>
-    <div class="tool-grid">
-      <a class="tool-card seminar" href="./kurse/ki-prompting-re-ba.html">
-        <h3>KI-Prompting im Requirements Engineering und in der Business Analyse</h3>
-        <p>Seminar Nr. 41851, zwei Tage: von der Funktionsweise generativer KI über Prompts und Megaprompts bis zur KI-gestützten Prüfung von Anforderungen.</p>
-        <span class="cta">Zur Seminarseite →</span>
-      </a>
-    </div>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">Agiles Arbeiten &amp; Projektmanagement</h3>
-    <div class="tool-grid">
-      <a class="tool-card seminar" href="./kurse/projektmanagement-basiswissen.html">
-        <h3>Projektmanagement Basiswissen</h3>
-        <p>Seminar Nr. 8932: die Tools entlang des Projektlebenszyklus, von den Grundlagen über Start und Planung bis zur Steuerung, durchgängig am Fall Lindenfeld Lunch.</p>
-        <span class="cta">Zur Seminarseite →</span>
-      </a>
-      <a class="tool-card seminar" href="./kurse/agile-projekte-aufsetzen.html">
-        <h3>Agile Projekte richtig aufsetzen und steuern</h3>
-        <p>Seminar Nr. 34000, zwei Tage: Standort und Warum klären, Ziele und Definitionen festlegen, Spielregeln vereinbaren, Erfolge sichtbar machen.</p>
-        <span class="cta">Zur Seminarseite →</span>
-      </a>
-      <a class="tool-card seminar" href="./kurse/agiles-pm-fortgeschrittene.html">
-        <h3>Agiles Projektmanagement für Fortgeschrittene</h3>
-        <p>Seminar Nr. 3525, zwei Tage: agiles Mindset und Stolperfallen, Werkzeuge für den Alltag, Rollen und Anforderungen, Stakeholder einbinden.</p>
-        <span class="cta">Zur Seminarseite →</span>
-      </a>
-      <a class="tool-card seminar" href="./kurse/hybrides-projektmanagement-2.html">
-        <h3>Hybrides Projektmanagement II</h3>
-        <p>Seminar Nr. 2929: klassisch und agil verbinden, Konfliktfelder im Methodenmix erkennen und entscheiden, wann welche Kombination passt.</p>
-        <span class="cta">Zur Seminarseite →</span>
-      </a>
-      <a class="tool-card seminar" href="./kurse/okr-agiles-teammanagement.html">
-        <h3>Objectives and Key Results: Agiles Teammanagement</h3>
-        <p>Seminar Nr. 34002: OKR von der Vision bis zum Team-Board durchspielen, Prioritäten setzen und den agilen Wandel begleiten.</p>
-        <span class="cta">Zur Seminarseite →</span>
-      </a>
-    </div>
-    </div>
-
-  </section>
-
-  <section class="section" data-cat="re-ba" id="section-re-ba">
-    <div class="section-head">
-      <span class="kicker">Requirements &amp; Business-Analyse</span>
-      <span class="section-count"></span>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">Anforderungen erheben &amp; schärfen</h3>
-    <div class="tool-grid">
-      <a class="tool-card priority" href="./tools/vom-anforderungspaket-zum-sprint.html">
-        <h3>📦 Vom Anforderungspaket zum Sprint</h3>
-        <p>Aus einem geklärten Anforderungsfunken wird ein Paket, das ein Team aufnehmen kann: In vier Stationen entstehen User Story, Akzeptanzkriterien, Definition of Ready und Übergabe (Studienakte der Hochschule Nordwest). Mit Übergabe-Check, Übergabe-Karte zum Herunterladen und Übertrag aufs Prompten.</p>
-        <span class="cta">Paket schnüren →</span>
-      </a>
-      <a class="tool-card priority" href="./tools/vom-impuls-zur-anforderung.html">
-        <h3>💡 Vom Impuls zur Anforderung</h3>
-        <p>Am Anfang steht ein Satz, keine Anforderung: Ein Ärger, eine Idee oder ein Auftrag aus dem Prüfungsamt der Hochschule Nordwest wird in vier Stationen eingeordnet (Symptom, Lösungsvorschlag, Ziel, Randbedingung), mit der passenden Rückfrage geklärt und zu einem ersten prüfbaren Anforderungsfunken formuliert. Mit Impuls-Karte zum Herunterladen und Übertrag aufs Prompten.</p>
-        <span class="cta">Impuls bearbeiten →</span>
-      </a>
-      <a class="tool-card" href="./tools/denkraum_v3_adaptive_engine.html">
-        <h3>Adaptive Denkraum Engine</h3>
-        <p>Eine interaktive Denkraum-App mit adaptiver Engine, die aus einer Problemstellung automatisch das passende Level, Denkmuster und die relevanten Räume ableitet. Am Ende steht ein klares Canvas mit Übersetzung, Werkzeugen, Normen und Handlungsempfehlungen.</p>
-        <span class="cta">Losdenken →</span>
-      </a>
-      <a class="tool-card" href="./tools/denkraeume-navigator.html">
-        <h3>Denkräume-Navigator</h3>
-        <p>Workshop-Moderationswerkzeug für Full-Day-Trainings: führt bewusst durch alle fünf Denkräume, mit fünf SCOPE-Dimensionen pro Raum und vier HALT-Fragen an jeder der vier Schleusen dazwischen. Entscheidungen wandern als Governance-Spur ins Souveränitäts-Ticket — per vorbefülltem Fallbeispiel oder live mit der Gruppe.</p>
-        <span class="cta">Navigator öffnen →</span>
-      </a>
-      <a class="tool-card" href="./tools/klarheits-sprint/index.html">
-        <h3>Klarheits-Sprint</h3>
-        <p>Vom Rohsatz zur zertifizierten Anforderung — ein Live-Trainingstool für die Bühne, das einen vagen Anforderungssatz in vier Stationen zu einer IREB-/ISO-konformen Anforderung schärft.</p>
-        <span class="cta">Sprint starten →</span>
-      </a>
-      <a class="tool-card" href="./tools/pflichtenheft-generator.html">
-        <h3>Pflichtenheft-Generator</h3>
-        <p>Leitet aus einer echten Ausschreibung (Vergabeunterlage) in 15 transparenten, regelbasierten Schritten ein vorläufiges Pflichtenheft ab — jede Extraktionsregel wird vor der Anwendung gezeigt und bestätigt, jedes Ergebnis bleibt mit Zitat und Fundstelle belegt.</p>
-        <span class="cta">Für Workshops öffnen →</span>
-      </a>
-      <a class="tool-card" href="./tools/fragenautomat.html">
-        <h3>Fragenautomat</h3>
-        <p>Extrahiert schrittweise, regelbasiert Klärungsfragen aus einem Lastenheft — nach den vier Nebel-Typen des Denkraum-Modells, kombiniert mit der klassischen Lastenheft-Gliederung. Eigenes Lastenheft hochladen oder Beispieltext nutzen.</p>
-        <span class="cta">Fragen extrahieren →</span>
-      </a>
-      <a class="tool-card" href="./tools/anforderungsreise.html">
-        <h3>Anforderungs-Reise durch die Räume</h3>
-        <p>Ein Demo-Tool, das eine einzelne Anforderung vom Horizontraum bis in den Testraum wandern lässt: Idee → Problem → Lösung mit FA/NFA und User Story → Meßkriterien/Parameter → Testfälle — am Ende steht ein exportierbares Reise-Log.</p>
-        <span class="cta">Raum-Modell erklären →</span>
-      </a>
-      <a class="tool-card" href="./tools/ebike-anforderungssimulator.html">
-        <h3>Anforderungssimulator: E-Bike-Beschaffung</h3>
-        <p>Fünf Fachbereiche einer Kommune bringen Anforderungen zu einer E-Bike-Flotten-Beschaffung ein — jede Auswahl (inkl. nicht abwählbarer Norm-Mittel ⚖) wirkt live auf einen Schwellenwert-Rechner, der zeigt, wann das Vergabeverfahren von national (UVgO) zu EU-weit (GWB/VgV) kippt. Mit automatisch abgeleitetem Leistungsverzeichnis und editierbarer Wertungsmatrix.</p>
-        <span class="cta">Simulation starten →</span>
-      </a>
-    </div>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">FA/NFA, User Stories &amp; Traceability</h3>
-    <div class="tool-grid">
-      <a class="tool-card" href="./tools/fa-nfa-rollen-spuren.html">
-        <h3>FA → NFA / Rollen: Die Spuren einer Anforderung</h3>
-        <p>Eine funktionale Anforderung, zwei Betrachtungsmodi: Normen-Spuren zerlegt sie in nicht-funktionale Anforderungen über sechs Rechts- und Qualitätsspuren, Rollen-Spuren zeigt, wie Team-, Organisations- und Entscheidungsrollen dieselbe Anforderung unterschiedlich lesen. Zwei Szenarien von Marmorkuchen bis Bürgeramt-KI-Chatbot.</p>
-        <span class="cta">Spuren verfolgen →</span>
-      </a>
-      <a class="tool-card" href="./tools/re-szenensammlung.html">
-        <h3>RE-Szenensammlung — Eine Anforderung, drei Rollen</h3>
-        <p>Sechs firmenneutrale Alltagsszenen (Statusübersicht, Rechnungsfreigabe, Suchfeld, Rückfragen, Formular, Onboarding), jede als Stopp-für-Stopp-Reise vom ersten unscharfen Satz bis zur passenden Lösung — Szene 1 komplett bis zu Code/Test, die übrigen mit eigenem Schwerpunkt (Zielkonflikt, Elicitation-Technik, vergessener Stakeholder, Anforderungsqualität, Spezifikationsformat).</p>
-        <span class="cta">Szenen erkunden →</span>
-      </a>
-      <a class="tool-card" href="./tools/requirements-to-code-explorer.html">
-        <h3>Requirements-to-Code Explorer</h3>
-        <p>Eine einzelne Anforderung wandert in 9 Stufen vom unscharfen Wunsch über Stakeholder-Kontext, ISO 25010 und ISO 27001 bis zur messbaren Gesamtanforderung, Gherkin-Akzeptanzkriterien und der Entwicklerübergabe. Die letzte Stufe zeigt HTML, JavaScript und Python im Terminal-Look mit farbcodierten Codezeilen und Traceability-Tabelle bis zum Test.</p>
-        <span class="cta">Reise starten →</span>
-      </a>
-      <a class="tool-card" href="./tools/user-story-puzzle.html">
-        <h3>User Story Puzzle</h3>
-        <p>Erkunde zuerst ein anklickbares Beispiel-Backlog mit drei fertigen User Stories, dann baue selbst aus einzelnen Bausteinen korrekte User Stories zusammen — fünf Level von der Grundformel über INVEST-konforme Formulierung und Gherkin-Akzeptanzkriterien bis zu Business Value und MoSCoW-Priorität, mit fachlich begründeten Distraktoren nach IREB, INVEST und BABOK v3.</p>
-        <span class="cta">Puzzle starten →</span>
-      </a>
-      <a class="tool-card" href="./tools/story-mapping-kundenperspektiven.html">
-        <h3>🗺️ Story Mapping — Kundenperspektiven</h3>
-        <p>Vier Kundenperspektiven (Einkäufer, Servicetechniker, Geschäftsführung, Neukunde) über dieselbe Backbone-Kundenreise eines B2B-Kundenportals — mit Release-Slicing (MVP/Release 2/Backlog), Drag-and-Drop-Priorisierung und Vergleichsmodus, der zeigt, wie dieselbe Aktivität für unterschiedliche Rollen gegensätzliche Priorität hat.</p>
-        <span class="cta">Map öffnen →</span>
-      </a>
-    </div>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">Wissen &amp; Nachschlagen</h3>
-    <div class="tool-grid">
-      <a class="tool-card" href="./tools/re-ba/knowledge-zoom-navigator-re-ba.html">
-        <h3>Knowledge Zoom Navigator · RE &amp; BA</h3>
-        <p>Wissenslandkarte mit fünf Zoom-Ebenen (Welt → Kontinent → Land → Stadt → Haus): 32 Wissenszettel zu Requirements Engineering und Business Analyse, ein roter Marker führt als Wegfindungs-Übung zu einem zufälligen Ziel-Zettel. Mit Trainer-Modus und Wissensnetz-Übersicht.</p>
-        <span class="cta">Navigator öffnen →</span>
-      </a>
-      <a class="tool-card" href="./tools/re-ba/zettelkasten-reba.html">
-        <h3>Zettelkasten · RE &amp; BA</h3>
-        <p>Fortsetzung des Knowledge Zoom Navigators als vernetzter Zettelkasten: Dateien-Browser nach Wissensbereich, interaktiver Beziehungsgraph und Kartenansicht mit Tag-Filtern. Eigene Zettel und Verknüpfungen lassen sich anlegen, exportieren und importieren.</p>
-        <span class="cta">Zettelkasten öffnen →</span>
-      </a>
-      <a class="tool-card" href="./tools/ki-architektur-glossar-reba.html">
-        <h3>Begriffslexikon: KI-Architektur für RE/BA</h3>
-        <p>10 LLM-Grundkonzepte (Embeddings, RAG, Guardrails, Evals u.a.) als Klick-Lexikon in Anforderungs- und Business-Analyse-Sprache übersetzt — am Fallbeispiel TalentMatch AI, mit Persona-Zitat und Normbezug pro Begriff.</p>
-        <span class="cta">Lexikon öffnen →</span>
-      </a>
-      <a class="tool-card" href="./tools/diagramm-kompass-re-ba.html">
-        <h3>Diagramm-Kompass für RE/BA</h3>
-        <p>12 Diagrammtypen (Bar Plot bis Bubble Chart), zugeordnet zu konkreten RE/BA-Fragen aus dem Projektalltag — mit Framework-Bezug zu IREB, BABOK® und PMBOK® sowie Beispielen aus der TalentMatch-AI-Fallstudie, filterbar nach fünf Phasen von Erhebung bis Tracking.</p>
-        <span class="cta">Kompass öffnen →</span>
-      </a>
-      <a class="tool-card" href="./tools/talentmatch-ml-paradigmen.html">
-        <h3>TalentMatch AI — Vier ML-Paradigmen im RE/BA-Blick</h3>
-        <p>Supervised, Unsupervised, Semi-Supervised und Reinforcement Learning nicht als ML-Erklärung, sondern als vier RE/BA-Analyseaufgaben an einem Fall (Vantera Systemtechnik GmbH): je Baustein Verstehen → Arbeiten → Transfer mit ISO-25010-Badges, Requirements-Kette und Prompt-Beispiel, plus Synthese-Vergleich aller vier Paradigmen.</p>
-        <span class="cta">Paradigmen erkunden →</span>
-      </a>
-      <a class="tool-card" href="./tools/excel-lab-re-ba.html">
-        <h3>Excel Lab für Requirements Engineering &amp; Business Analyse</h3>
-        <p>24 kuratierte Excel-Funktionen (Lookup, Logik, Text, Statistik, Datum, Priorisierung/Dynamic Arrays) mit Live-Beispiel am Fallbeispiel Vantera Connect — jede Funktion mit Syntax, RE/BA-Anwendungsfall und Bezug zu IREB, BABOK oder PMBOK. Selbstlern-Modus zum Filtern/Suchen, Workshop-Modus als linearer Stepper.</p>
-        <span class="cta">Excel Lab öffnen →</span>
-      </a>
-      <a class="tool-card" href="./tools/ireb-kompendium.html">
-        <h3>IREB CPRE Foundation Level Kompendium</h3>
-        <p>Nachschlagewerk zu den Kernaussagen des aktuellen IREB CPRE Foundation Level Lehrplans (v3.3.0): alle sieben Lerneinheiten mit Original-Kapiteltiteln, Kognitionsstufen und Dauer, Stempel-Pass mit Mini-Quiz je Einheit, verankert im Fallbeispiel TalentMatch AI (Hochrisiko-KI-Recruiting nach EU AI Act) — plus Anhang mit EARS-Satzschablonen, User-Story- und Use-Case-Vorlagen und einer BABOK-Brücken-Box in LE6.</p>
-        <span class="cta">Kompendium öffnen →</span>
-      </a>
-      <a class="tool-card" href="./tools/re-kompendium.html">
-        <h3>RE-Kompendium — IREB, BABOK v3 &amp; ISO/IEC/IEEE 29148 im Vergleich</h3>
-        <p>Zehn Kapitel Split-Screen-Nachschlagewerk, das die drei Standards nebeneinander statt nacheinander erklärt — von Grundlagen und Anforderungsarten über Elicitation, Analyse, Spezifikation und Qualitätskriterien bis zum Normen-Mapping (wo sich IREB/BABOK/29148 NICHT decken) und einer Dokumentenketten-Vorlage mit Klick-Karussell. Fallbeispiel TalentMatch AI, Kurz-/Vollversion je Kapitel.</p>
-        <span class="cta">Kompendium öffnen →</span>
-      </a>
-      <a class="tool-card" href="./tools/bpmn-anwenderkompendium.html">
-        <h3>BPMN 2.0 in der Praxis</h3>
-        <p>Anwender-Leitfaden zu BPMN 2.0.2 (ISO/IEC 19510): 7 Stationen zu Diagrammwahl, Scope/Detailtiefe, Modellierungsregeln, Pool/Swimlane, weiteren Artefakten, der Verortung von BPMN im Methodenkontext (PMP/PMBOK, BABOK, IREB, IPMA, LEAN, PM², PRINCE2, Scrum) und — neu — einem bebilderten Diagrammverzeichnis mit 14 Prozessdarstellungsformen als Inline-SVG-Skizze samt Typische-Tools-Angabe, inklusive EPK/EPC. Mit optionalem Vertiefungs-Toggle (kurz/voll) pro Station und verankert im Fallbeispiel TalentMatch AI.</p>
-        <span class="cta">Kompendium öffnen →</span>
-      </a>
-      <a class="tool-card" href="./tools/prozessmodellierung-diagramm-kompendium.html">
-        <h3>Prozessmodellierungs- und Diagramm-Kompendium</h3>
-        <p>35 Profile zu Prozessmodellierungs- und Diagrammarten mit integrierten Beispieldiagrammen — von Unternehmensprozessmodell über BPMN, EPK, SIPOC, Wertstromanalyse und Makigami bis zu Managementansätzen (PRINCE2, PM², IPMA ICB4, Lean, Agile) und vier Varianten von Story Mapping als Prozess. Auswahlhilfe nach Frage statt nach Diagrammtyp, je Profil 14 Kriterien (Zweck, Zielgruppe, Owner, Qualität, Risiken u.a.), universeller Qualitäts-Check und Kompaktglossar.</p>
-        <span class="cta">Kompendium öffnen →</span>
-      </a>
-      <a class="tool-card" href="./tools/ein-fall-35-blickwinkel.html">
-        <h3>Ein Fall, 35 Blickwinkel</h3>
-        <p>Begleit-Tool zum Prozessmodellierungs-Kompendium: ein einziges, einfaches Fallbeispiel (Einführung eines digitalen Reklamationsportals) läuft durch alle 35 Diagrammarten hindurch — als Live-SVG statt fester Bildgrafik, damit auch die Diagrammbeschriftungen vollständig zweisprachig sind. Jede Ansicht benennt explizit, was sie in den Vordergrund stellt und was sie ausblendet — zeigt, dass nicht die Notation entscheidet, was „wahr" ist, sondern die Frage, die gerade beantwortet werden soll.</p>
-        <span class="cta">Tool öffnen →</span>
-      </a>
-      <a class="tool-card" href="./tools/stakeholder-management-kompendium-fachbuch.html">
-        <h3>Stakeholder Management Kompendium</h3>
-        <p>Interaktives Fachbuch in 16 Kapiteln von Grundlagen über Identifikation, Analyse-Matrizen (Mendelow, Salience Model) und Interessen bis Governance, Ethik und Konfliktarbeit — mit Lesen/Trainieren-Modus, Volltextsuche, Merkliste, Lernfortschritt und vollständigem Sprachumschalter Deutsch/Englisch. Durchgängiges Fallbeispiel Hochschule Nordwest.</p>
-        <span class="cta">Kompendium öffnen →</span>
-      </a>
-    </div>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">Fallstudie</h3>
-    <div class="tool-grid">
-      <a class="tool-card" href="./tools/fallstudie-qualitaetssystem.html">
-        <h3>Fallstudie: Von der Idee zum Qualitätssystem</h3>
-        <p>Sieben reale Stationen zeigen, wie aus einzelnen Trainingswerkzeugen ein belastbares Qualitätssystem (K1–K19) entstanden ist — inklusive eines echten Fehlers und der Frage, die daraus ein neues Kriterium machte. Mit Petra-Coaching-Fragen, Standard-Bezügen (IREB, BABOK, ISO 25010) und abschließender Transfer-Übung aufs eigene Projekt.</p>
-        <span class="cta">Fallstudie starten →</span>
-      </a>
-      <a class="tool-card" href="./tools/sarahs-weg-zum-qualitaetskuchen.html">
-        <h3>🎂 Sarahs Weg zum Qualitätskuchen</h3>
-        <p>Zweitägiges Erzähltool: Sarah durchläuft ein reales RE-Projekt von der vagen Anfrage bis zum vollständigen Anforderungsdatensatz (Tag 1) und übersetzt „gut" in die neun Merkmale der ISO/IEC 25010:2023 samt Qualität-in-Nutzung nach ISO/IEC 25019:2023 (Tag 2). Vier austauschbare Szenarien (Bäckerei, Studienakte, TalentMatch AI, NovaTrade Pulse) mit Quiz, Reflexionsaufgaben und interaktivem 9-Merkmale-Grid.</p>
-        <span class="cta">Weg starten →</span>
-      </a>
-    </div>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">ISO &amp; Compliance</h3>
-    <div class="tool-grid">
-      <a class="tool-card compliance" href="./tools/iso-25010-kompendium.html">
-        <h3>ISO/IEC 25010:2023 Kompendium</h3>
-        <p>Nachschlagewerk zu allen neun Qualitätsmerkmalen der aktuellen Edition (SQuaRE) — und zugleich Demonstrator: FA wählen, durch die neun Merkmale klicken und live sehen, wie daraus konkrete NFAs und User Stories mit Akzeptanzkriterium entstehen. Mit Vergleichstabelle 2011 → 2023.</p>
-        <span class="cta">Kompendium öffnen →</span>
-      </a>
-      <a class="tool-card compliance" href="./tools/studierendenakte-qualitaet.html">
-        <h3>Digitale Studierendenakte — Qualität systematisch denken</h3>
-        <p>Zehn-Kapitel-Nachschlagewerk entlang eines einzigen durchgängigen Falls (Hochschule NOVA, fehlzugeordneter Anerkennungsbescheid): alle neun ISO/IEC-25010:2023-Merkmale, ISO 25019/25012, elf Projektrollen mit Konfliktmatrix und zwei vollständig klickbar rückverfolgbare Artefaktketten von Hochschulziel bis Abnahmeentscheidung — plus Exkurs zu klassischem, agilem und use-case-basiertem Anforderungsweg.</p>
-        <span class="cta">Nachschlagewerk öffnen →</span>
-      </a>
-      <a class="tool-card compliance" href="./tools/iso-25010-banklabor.html">
-        <h3>ISO-25010-Banklabor</h3>
-        <p>Ein einziger Fall — die SEPA-Überweisung einer Privatkundin — durch alle neun ISO/IEC-25010:2023-Merkmale und deren 40 Untermerkmale geführt: je Untermerkmal eine konkrete Anforderung, ein prüfbarer Baselinewert, ein Gherkin-Akzeptanzkriterium und ein ausführbarer Testfall zum Durchklicken.</p>
-        <span class="cta">Banklabor öffnen →</span>
-      </a>
-      <a class="tool-card compliance" href="./tools/anforderungsboard-iso.html">
-        <h3>Anforderungs-Board · ISO 25010 &amp; ISO 27001</h3>
-        <p>Klassifiziert 17 Anforderungskarten aus einem Kundenportal-Fall live nach FA, NFR (ISO/IEC 25010:2023), ISMS-Maßnahme (ISO/IEC 27001:2022 Anhang A) oder Normvorgabe — inklusive einer bewussten Falle (Norm vs. risikobasierte Maßnahme) und Live-Dashboard.</p>
-        <span class="cta">Board öffnen →</span>
-      </a>
-      <a class="tool-card compliance" href="./tools/re-waschmaschine.html">
-        <h3>RE-Waschmaschine</h3>
-        <p>Wäscht eine funktionale Anforderung durch: leitet nicht-funktionale Anforderungen nach ISO/IEC 25010:2023 und Sicherheitsmaßnahmen nach ISO/IEC 27001:2022 Anhang A ab, deckt blinde Flecken auf und zeigt vereinfacht, wie eine KI den Satz tokenisiert.</p>
-        <span class="cta">Waschgang starten →</span>
-      </a>
-    </div>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">Priorisierung &amp; Änderungen</h3>
-    <div class="tool-grid">
-      <a class="tool-card priority" href="./tools/stoerfall-labor.html">
-        <h3>🚨 Störfall-Labor · Störung im Betriebsablauf</h3>
-        <p>Mitten im Projekt kippt eine Annahme: drei Störfälle aus bekannten Fallwelten (Hochschule Nordwest, NovaTrade, Vantera) in sechs Stationen bearbeiten, vom Signal über Betroffene, falsche Annahme und dreifache Auswirkung (RE, BA, PM) bis zum Änderungsantrag und zur Lehre für die Schleusen. Mit Best-Practice-Regeln und Protokoll zum Herunterladen.</p>
-        <span class="cta">Störfall bearbeiten →</span>
-      </a>
-      <a class="tool-card priority" href="./tools/change-schleuse.html">
-        <span class="new-badge">NEU</span>
-        <h3>🚪 Change-Schleuse · Lindenfeld Lunch</h3>
-        <p>Eine Änderung trifft auf die abgestimmte Basislinie: erst prüfen, was Fakt, Annahme oder Meinung ist, dann durch die Schleuse (SCOPE, HALT, frühere Entscheidung), Auswirkung berechnen, Change Request mit Souveränitäts-Ticket ablegen und die nächste Version vorbereiten. Mit Board, Aufwand, Dauer und Kosten, Historie als Markdown-Datei und Sprachumschalter Deutsch/Englisch.</p>
-        <span class="cta">Änderung durchschleusen →</span>
-      </a>
-      <a class="tool-card priority" href="./tools/priorisierungslabor.html">
-        <h3>🧭 Priorisierungslabor</h3>
-        <p>Artefakt-Kette und passende Priorisierungsmethoden spielbar gemacht: von Business Case bis Gherkin acht Ebenen durchspielen, dazu eigene Werkzeuge für MoSCoW, Wert-Aufwand, Kano, WSJF, RICE, Story-Point-Poker und Stakeholder-Konfliktfälle — mit Ela, Lars, Sarah, Petra &amp; Herrn Bachmeier.</p>
-        <span class="cta">Labor öffnen →</span>
-      </a>
-    </div>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">Business-Analyse</h3>
-    <div class="tool-grid">
-      <a class="tool-card" href="./tools/ba-rollenwandel-explorer.html">
-        <h3>BA-Rollenwandel-Explorer</h3>
-        <p>Vom Anforderungssammler zum Value Architect: die neue Rolle des Business Analysts nach IREB &amp; IIBA (2026) entlang eines 6-Stufen-Modells (WARUM → WARUM GENAU → WAS → WIE → STÖRUNGEN → WIRKUNG), erfahrbar am Fallbeispiel Talent Match AI / Vantera Systemtechnik GmbH mit Ela, Lars, Petra und Herrn Bachmeier — jede Stufe zusätzlich mit realen Artefakten aus dem internen RE/BA-Trainingsprojekt TMAI vertieft.</p>
-        <span class="cta">Rollenwandel erkunden →</span>
-      </a>
-      <a class="tool-card" href="./tools/ba-lifecycle-lernreise.html">
-        <h3>🧭 BA-Lifecycle-Lernreise</h3>
-        <p>Die sechs Wissensbereiche des BABOK® Guide v3 als Stationenweg — dieselbe Struktur, drei völlig unterschiedliche Fälle (Hochrisiko-KI-Recruiting, Verwaltungsdigitalisierung, agiler Börsenhandel). Je Station fünf Artefakte (eines je BABOK-Teilaufgabe), Klassisch-vs.-Agil-Vergleich, Dokumenten-Glossar und Traceability-Faden über alle sechs Stationen.</p>
-        <span class="cta">Reise starten →</span>
-      </a>
-      <a class="tool-card" href="./tools/babok-kompendium.html">
-        <h3>BABOK® Kompendium</h3>
-        <p>Nachschlagewerk zu den Kernaussagen des BABOK® Guide v3 (IIBA): sechs Wissensbereiche mit allen 30 Tasks (optional mit Input/Techniken/Output je Task), das BACCM-Kernkonzeptmodell, die vierstufige Anforderungsklassifikation inkl. Marmorkuchen-Prinzip, elf Stakeholder-Rollen, sechs Kompetenzkategorien, fünf Perspektiven und das 50-Techniken-Register — mit vollständigem Sprachumschalter Deutsch/Englisch.</p>
-        <span class="cta">Kompendium öffnen →</span>
-      </a>
-      <a class="tool-card" href="./tools/ba-steckbrief-business-case.html">
-        <h3>BA-Steckbrief &amp; Business Case</h3>
-        <p>Zwei Reiter: ein ausfüllbarer Selbstreflexions-Steckbrief zu unterschiedlichen BA-Rollentypen (IT/Systemanalyse, Agile, Fachbereich, Regulatory/Risk) mit Musterlösung, plus ein quantifizierter Vorher/Nachher-Business-Case zum Wertbeitrag des BA — am Fallbeispiel Velaris Clearing AG (fiktives Clearinghaus, EMIR/REMIT-Kontext).</p>
-        <span class="cta">Steckbrief öffnen →</span>
-      </a>
-      <a class="tool-card" href="./tools/ba-auspraegungen.html">
-        <h3>BA-Ausprägungen — IT, Fachseite, PO-Sparring</h3>
-        <p>Business-Analyse ist eine Tätigkeit, kein Titel: drei Verortungen (BA in der IT, BA auf der Fachseite, BA als Sparringspartnerin des Product Owners) am Fall AN-008 der Hochschule Nordwest kennenlernen, im Vergleich mit Belegzeile je Dimension gegenüberstellen und von der Proxy-PO abgrenzen. Mit Sieben-Szenen-Übung, Gruppenfragen und einem Prompt zum Zuordnen eigener Situationen, belegt aus BABOK® v3, IREB RE@Agile und IREB Requirements Management.</p>
-        <span class="cta">Verortungen erkunden →</span>
-      </a>
-      <a class="tool-card" href="./tools/vantera-talentmatch-steckbrief.html">
-        <h3>Fallwelt-Steckbrief — Vantera Systemtechnik GmbH / TalentMatch AI</h3>
-        <p>Referenzseite (kein Übungstool) für die meistgenutzte Denkraum-Fallwelt: feste Fakten zu Unternehmen, Personas und Prozess (Maschinenbau, 340 Mitarbeitende, Hochrisiko-KI nach EU AI Act Anhang III Nr. 4) für konsistente neue Tools, plus Business Case zum Wert früher RE-Einbindung — mit realem EU-AI-Act-Bußgeldrahmen statt Trainingszahlen.</p>
-        <span class="cta">Steckbrief öffnen →</span>
-      </a>
-      <a class="tool-card" href="./tools/hochschule-nordwest-steckbrief.html">
-        <h3>Fallwelt-Steckbrief — Hochschule Nordwest / Digitale Studierendenakte</h3>
-        <p>Referenzseite (kein Übungstool) für die zweite feste Denkraum-Fallwelt: Prüfungsamt-Digitalisierung ohne KI als Kontrastfall zu Vantera/TalentMatch AI — 50-Jahres-Aufbewahrungsfrist, VwVfG/BITV/WCAG-Rahmen, Personas Kanzlerin Dr. Feldmann und Herr Öztürk, plus Business Case zur rechtzeitig korrigierten Aufbewahrungsfrist-Anforderung.</p>
-        <span class="cta">Steckbrief öffnen →</span>
-      </a>
-      <a class="tool-card" href="./tools/novatrade-pulse-steckbrief.html">
-        <h3>Fallwelt-Steckbrief — NovaTrade Systems GmbH / NovaTrade Pulse</h3>
-        <p>Referenzseite (kein Übungstool) für die dritte feste Denkraum-Fallwelt: reguliertes FinTech mit agiler Entwicklung unter MiFID-II-/WpHG-Compliance-Gate — Bruchteilsaktien-Handel, Personas mit unveränderten NovaTrade-Rollen, plus Business Case zur REQ-033-Dokumentation (2 Tage statt 3 Wochen Wiedererschließung bei späterer Erweiterung).</p>
-        <span class="cta">Steckbrief öffnen →</span>
-      </a>
-      <a class="tool-card lindenfeld" href="./tools/lindenfeld-lunch-steckbrief.html">
-        <h3>Fallwelt-Steckbrief — Lindenfeld Systemtechnik GmbH / Lindenfeld Lunch</h3>
-        <p>Referenzseite (kein Übungstool) für die vierte feste Denkraum-Fallwelt: Cafeteria-App Lindenfeld Lunch der Lindenfeld Systemtechnik GmbH (1.150 Mitarbeitende) — vier messbare Ziele, neun Stakeholder mit Rolle und Interesse, Optionen A/B/C mit Kapitalwert und Break-even, plus Business Case zur Zielsteuerung mit Stage Gate.</p>
-        <span class="cta">Steckbrief öffnen →</span>
-      </a>
-      <a class="tool-card gateplan" href="./tools/lindenfeld-gateplan.html">
-        <h3>Lindenfeld Lunch: Gateplan</h3>
-        <p>Startseite für die Fallwelt Lindenfeld Lunch: sieben Gates (G0 bis G6) und sechs Linien (Artefakte, Kommunikation, Blickwinkel, Leitplanken, Änderung, Nutzen) verbinden Case und Projektauftrag in einer Datei. Mit Netzplan, Linienfilter, Übung, Musterantworten und Footer für die Trainerin, dazu ein PDF-Handout für Teilnehmende.</p>
-        <span class="cta">Gateplan öffnen →</span>
-      </a>
-      <a class="tool-card gateplan" href="./tools/lindenfeld-gateplan-teilnehmende.html">
-        <h3>Lindenfeld Lunch: Gateplan (Teilnehmende)</h3>
-        <p>Dieselbe Startseite ohne Footer, ohne „Alle auflösen“ und ohne Musterantworten, zum Weitergeben an die Gruppe. Case und Projektauftrag sind eingebettet, die Datei läuft offline.</p>
-        <span class="cta">Gateplan öffnen →</span>
-      </a>
-      <a class="tool-card lindenfeld" href="./tools/ba-re-case-lindenfeld-lunch.html">
-        <h3>BA/RE-Case Lindenfeld Lunch</h3>
-        <p>Der durchgehende Fall für Einsteigerinnen und Einsteiger: von der Vision über Business Case, Anforderungen, Epics, Use Cases und Stories bis zu Testfall, Rückverfolgung, Change Request und OKR. Stationen 0a bis 12, dazu der Kurzpfad „Nutzen steuern“.</p>
-        <span class="cta">Fall durchspielen →</span>
-      </a>
-      <a class="tool-card lindenfeld" href="./tools/lindenfeld-projektauftrag-pflichtenheft.html">
-        <h3>Lindenfeld Lunch: Projektauftrag und Pflichtenheft</h3>
-        <p>Aus dem fertigen Fall werden Projektauftrag und Pflichtenheft für Release 1 abgeleitet. Jede Zeile trägt eine Herkunftsmarke (Fall, Abgeleitet, Annahme); dazu Validierungsbericht, Übungen und BA-Facetten.</p>
-        <span class="cta">Dokumente ableiten →</span>
-      </a>
-      <a class="tool-card lindenfeld" href="./tools/lindenfeld-projektauftrag-pflichtenheft-teilnehmende.html">
-        <h3>Lindenfeld Lunch: Projektauftrag und Pflichtenheft (Teilnehmende)</h3>
-        <p>Dieselben Dokumente ohne Footer, ohne „Alle auflösen“ und ohne Musterantworten, zum Weitergeben an die Gruppe.</p>
-        <span class="cta">Dokumente ableiten →</span>
-      </a>
-      <a class="tool-card lindenfeld" href="./tools/lindenfeld-comic.html">
-        <h3>Lindenfeld Lunch als Comic</h3>
-        <p>19 Comic-Tafeln entlang der Stationen des Falls: vom Problem über Ziele, Business Case, Anforderungen, Use Case, Stories und Tests bis zu Rückverfolgbarkeit, Änderung und Nutzen. Jede Tafel verlinkt zur Station im Case und zurück; auch als Reiter im Gateplan.</p>
-        <span class="cta">Comic ansehen →</span>
-      </a>
-    </div>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">Software Engineering</h3>
-    <div class="tool-grid">
-      <a class="tool-card" href="./tools/se-lifecycle-lernreise.html">
-        <h3>🧭 SE-Lifecycle-Lernreise</h3>
-        <p>Elf Wissensbereiche des SWEBOK® Guide V4.0a als Stationenweg — dieselbe Struktur wie die BA-Lifecycle-Lernreise, aber für Software Engineering statt Business-Analyse, inklusive drei neuer Kapitel (Architecture, Operations, Security). Drei Fälle (Hochrisiko-KI-Recruiting, agiles FinTech, klassische Verwaltungsdigitalisierung), je Station fünf Artefakte, Klassisch-vs.-Agil-Vergleich, ISO/IEC-25010:2023-Mapping und Traceability-Faden über alle elf Stationen.</p>
-        <span class="cta">Reise starten →</span>
-      </a>
-    </div>
-    </div>
-  </section>
-
-  <section class="section" data-cat="agile-pm" id="section-agile-pm">
-    <div class="section-head">
-      <span class="kicker violet">Agiles Arbeiten &amp; Projektmanagement</span>
-      <span class="section-count"></span>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">OKR</h3>
-    <div class="tool-grid">
-      <a class="tool-card okr" href="./tools/okr-kaskade.html">
-        <h3>OKR-Kaskade: Von der Vision zum ToDo</h3>
-        <p>Spielt den kompletten Anforderungspfad einmal durch: Vision → Mission (Rooftop Shot &amp; Moonshot) → Strategie → Initiative → OKRs auf drei Ebenen (Unternehmen, Team, Individuum) → User Story → ToDos. Drei fertige Beispiel-Durchläufe zum Umschalten.</p>
-        <span class="cta">Kaskade durchspielen →</span>
-      </a>
-      <a class="tool-card okr" href="./tools/okr-denkraum-check.html">
-        <h3>OKR-Board: Die Reise durch alle Räume</h3>
-        <p>Führt die komplette Kette von der Vision bis zum letzten ToDo als Board mit Tickets durch die 5 Denkräume — wie ein Product Backlog. Jedes Ticket zeigt Owner, Herkunft und Ziel, sodass die Nachverfolgung von ganz oben bis zum eigenen Schreibtisch sichtbar wird.</p>
-        <span class="cta">Board öffnen →</span>
-      </a>
-      <a class="tool-card okr" href="./tools/okr-team-board.html">
-        <h3>OKR-Team-Board: Aufgaben, die aufs Ziel einzahlen</h3>
-        <p>Ein Projekt-Objective, drei Key Results, ein Team (Ela, Lars, Sarah, Petra, Herr Bachmeier). Aufgaben als erledigt markieren aktualisiert live die Fortschrittsbalken von Key Result und Objective sowie eine Team-Performance-Übersicht pro Person.</p>
-        <span class="cta">Board bearbeiten →</span>
-      </a>
-    </div>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">Projektmanagement</h3>
-    <div class="tool-grid">
-      <a class="tool-card pm priority" href="./tools/vision-zielbild-werkstatt.html">
-        <h3>🧭 Vision &amp; Zielbild-Werkstatt</h3>
-        <p>Bevor ein Backlog oder Projektplan entsteht, braucht ein Vorhaben ein Zielbild: Aus einem Auftrag ohne Ziel (NovaTrade Pulse, agil, oder Hochschule Nordwest, hybrid) entstehen in fünf Bausteinen Zielgruppe und Problem, Vision, Erfolgsmaß, riskanteste Annahme als Hypothese und Leitplanke. Mit Zielbild-Karte zum Herunterladen und OKR-Entwurf.</p>
-        <span class="cta">Zielbild bauen →</span>
-      </a>
-      <a class="tool-card pm" href="./tools/pmp-eco-kombitool.html">
-        <h3>🎯 PMP ECO — Kombi-Tool</h3>
-        <p>26 ECO-Tasks aus drei Perspektiven zugleich: Domänen-Referenz (People/Process/Business Environment), Lifecycle entlang der fünf Prozessgruppen und eine Roadmap-Matrix Domäne × Phase mit Klick-Detailpanel. Ein Datensatz, gemeinsame Such-/Filterleiste, PMI-ECO-2026-Gewichtung (33/41/26 %).</p>
-        <span class="cta">Kombi-Tool öffnen →</span>
-      </a>
-      <a class="tool-card pm" href="./tools/ipma-icb4-kompendium.html">
-        <h3>ICB4-Kompendium — Die Kernaussagen des Projektmanagements nach IPMA</h3>
-        <p>Nachschlagewerk zu allen 29 Kompetenzelementen der IPMA Individual Competence Baseline 4.0 in den drei gleichrangigen Bereichen Perspective, People und Practice — mit Stempelpass, Mini-Quiz je Station, Vertiefungs-Toggle und vollständigem Sprachumschalter Deutsch/Englisch, verankert im Fallbeispiel TalentMatch AI.</p>
-        <span class="cta">Kompendium öffnen →</span>
-      </a>
-      <a class="tool-card pm" href="./tools/pm-basics-lernreise.html">
-        <h3>🧳 PM Basics: Lebenszyklus-Lernreise</h3>
-        <p>Projektmanagement für Einsteigerinnen und Einsteiger in fünf Stationen: Grundlagen, Initiieren, Planen, Durchführen und Steuern, Abschließen, durchgängig am Fall Lindenfeld Lunch und jeweils mit der Anforderungs-Brille. Mit Werkzeugkasten-Board, Dokumentenfluss, Vertiefung zu Änderungen, Übung, Glossar und Sprachumschalter Deutsch/Englisch.</p>
-        <span class="cta">Lernreise starten →</span>
-      </a>
-      <a class="tool-card pm" href="./tools/zeit-konflikt-kompendium.html">
-        <h3>⏱️ Zeit- und Konfliktkompendium</h3>
-        <p>20 Methoden für Projektteams in vier Bereichen: Zeit planen und priorisieren (Eisenhower, MoSCoW, CD3, Time Blocking), schätzen und steuern (Dreipunktschätzung, Critical Chain, Earned Value, Pre-Mortem), Konflikte verstehen (Glasl, Thomas-Kilmann, Dramadreieck) und im Gespräch lösen (Vier-Seiten-Modell, Harvard-Konzept, GFK, Mediation, RACI). Mit 18 Comics als Einstieg, Board, Situations-Navigator, Fallübung, Entscheidungs-Training und Sprachumschalter Deutsch/Englisch.</p>
-        <span class="cta">Kompendium öffnen →</span>
-      </a>
-    </div>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">Agilität</h3>
-    <div class="tool-grid">
-      <a class="tool-card pm" href="./tools/agile-project-maturity-navigator.html">
-        <h3>Agile Project Maturity Navigator</h3>
-        <p>Growth Wheel × Reifegrad: Ein interaktives 4-Sektoren-Rad (Menschen, Kultur, Prozess, Organisation + „Kenne dich selbst") zeigt, wo ein Projekt wirken muss; sechs Reifegradspuren mit je fünf Stufen zeigen, wie souverän es dort bereits handelt. Zusätzlich: 12 Praxisprobleme mit direkter Diagnose zur passenden Spur.</p>
-        <span class="cta">Navigator öffnen →</span>
-      </a>
-    </div>
-    </div>
-  </section>
-
-  <section class="section" data-cat="ki" id="section-ki">
-    <div class="section-head">
-      <span class="kicker blue">KI Tools</span>
-      <span class="section-count"></span>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">Grundlagen &amp; Funktionsweise</h3>
-    <div class="tool-grid">
-      <a class="tool-card ki" href="./tools/vom-rateversuch-zur-belegten-antwort.html">
-        <h3>Vom Rateversuch zur belegten Antwort · RAG im Denkraum-Modell</h3>
-        <p>Drei Zonen, drei Tabs: von der stillen Wissenslücke eines Sprachmodells über den Retriever als Bibliothekar (Chunking, Embedding, Similarity Search) bis zum fünfstufigen RAG-Zyklus, der aus einer Vermutung eine quellenbelegte Antwort macht.</p>
-        <span class="cta">RAG-Zyklus durchklicken →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/wie-kommt-die-antwort-in-den-chat.html">
-        <h3>Wie kommt die Antwort in den Chat? – Die RAG-Reise</h3>
-        <p>Acht anklickbare Stationen einer RAG-Production-Architektur im "Sendung mit der Maus"-Stil — von Indexing- und Query-Pipeline über Retrieval-/Answer-Quality bis zu Observability und Safety & Operations. Jede Station einmal als Alltagsbild, einmal fachlich korrekt, plus RE/BA-Anschluss.</p>
-        <span class="cta">Stationen durchklicken →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/ki-black-box-simulator.html">
-        <h3>KI Black-Box-Simulator</h3>
-        <p>Macht eine fiktive KI (Spam-Filter, Kredit-Score, Bewerbungs-Filter) nur über Ein- und Ausgabe erfahrbar. Erst nach eigenen Testreihen und einer Hypothese wird die Black Box geöffnet und mit der tatsächlichen — teils verzerrten — Entscheidungslogik verglichen.</p>
-        <span class="cta">Black Box testen →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/ki-prompt-blackbox-simulator.html">
-        <h3>Prompt-Black-Box-Simulator</h3>
-        <p>Zeigt live, wie ein Prompt Tokenisierung, Kontextgewichtung und Wahrscheinlichkeiten durchläuft. Macht anhand von Qualitätshebeln (Rolle, Kontext, Constraints, Output-Format, Prüfauftrag) sichtbar, wie RE-Denken die Antwortqualität einer KI steuerbar macht.</p>
-        <span class="cta">Prompt zerlegen →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/vom-tool-chaos-zum-mcp-handshake.html">
-        <h3>Vom Tool-Chaos zum MCP-Handshake</h3>
-        <p>Drei Zonen als Tabs: vom N×M-Werkzeug-Wirrwarr ohne gemeinsamen Standard über das strukturierende MCP-Server-Schema (Host, Client, Server, Resources/Tools/Prompts) bis zum Schritt-für-Schritt nachvollziehbaren Handshake (Initialize → Bestätigung → Discovery → Aufruf).</p>
-        <span class="cta">Reise starten →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/chatbox-workflow-opener.html">
-        <h3>Von der Chatbox zum Workflow · Opener</h3>
-        <p>Workshop-Einstieg: Basic Use (Prompt → Antwort → Schließen) im Kontrast zum Full Workflow mit sechs Stationen (Denken, Erinnern, Verbinden, Recherchieren, Bauen, Ausführen) — jede Station anklickbar mit Funktionsbeschreibung und RE/BA-Bezug.</p>
-        <span class="cta">Opener öffnen →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/ki-einsatzmuster-explorer.html">
-        <h3>KI-Einsatzmuster-Explorer</h3>
-        <p>10 interne Anthropic-Teams im Vergleich – vom Data-Infrastructure-Team bis Legal – übersetzt in Denkraum-Zonen (Sammeln/Strukturieren/Spezifizieren), Autonomiegrad (1–5) und konkreten RE/BA/PM-Transfer nach IREB, BABOK und PMBOK. Split-Screen mit Zonen-Filter, jeder Fall mit Kernmuster, Transfer-Satz und Trainings-Tipp.</p>
-        <span class="cta">Muster erkunden →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/claude-feature-navigator.html">
-        <h3>Claude-Feature-Navigator</h3>
-        <p>Sechs Bausteine des Claude-Ökosystems (Chat, Projects, Artifacts, Skills, Claude Code, Cowork) als Split-Screen-Navigator mit Analogie, typischem Einsatz, Anfänger-Fehler und RE/BA-Bezug, plus Szenario-Finder. Dazu ein zweites Modul: Begriffslexikon mit 40 Fachbegriffen rund um Claude, agentische KI und MCP, nach Kategorie und Volltext filterbar.</p>
-        <span class="cta">Navigator öffnen →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/ki-modelllandschaft-vergleich.html">
-        <h3>KI-Modelllandschaft im Vergleich: Claude vs. ChatGPT</h3>
-        <p>Nachschlagewerk für Workshops: Claude- und ChatGPT-Modellfamilie Seite an Seite — verifizierte Kennzahlen (Kontextfenster, Preise, Wissensstand), Strukturvergleich Rolle für Rolle und eine Entscheidungshilfe für vier typische Aufgaben. Mit vollständigem Sprachumschalter Deutsch/Englisch.</p>
-        <span class="cta">Vergleich öffnen →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/llm-markt-kompass.html">
-        <h3>LLM-Markt-Kompass</h3>
-        <p>Sieben Anbieter (Claude, GPT, Gemini, Grok, Llama, Mistral, DeepSeek/Qwen/Phi) im Überblick — Stärken/Schwächen als SWOT-Karten, Direktvergleich zweier Modelle mit synchronisierten Kriterienzeilen, Vergleichstabelle und ein Einsatzleitfaden für RE, BA und PM. Mit vollständigem Sprachumschalter Deutsch/Englisch.</p>
-        <span class="cta">Kompass öffnen →</span>
-      </a>
-    </div>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">KI-Systeme bauen &amp; steuern</h3>
-    <div class="tool-grid">
-      <a class="tool-card ki" href="./tools/cpmai-prozess-board.html">
-        <h3>CPMAI-Prozess-Board</h3>
-        <p>PMI-CPMAI™-Prüfungsvorbereitung: 21 Aufgaben-Karten rund um einen XYZ-Company-Chatbot per Drag-and-Drop den sechs CPMAI-Phasen zuordnen — von Business Understanding bis Model Operationalization, plus einer Querschnitts-Zone „Governance &amp; Ethik", die in jeder Phase gilt.</p>
-        <span class="cta">Board sortieren →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/ai4re-quizzmaschine.html">
-        <h3>AI4RE Quizzmaschine</h3>
-        <p>Lernsimulator zur IREB AI4RE Micro-Credential Prüfungsvorbereitung: Cockpit mit Fortschritt pro Wissensgebiet, Lernmodus mit Sofort-Erklärung, zeitlimitierter Prüfungsmodus, Szenario-Trainer, Terminologie-Karten und eine persönliche Fehlerliste — über AI Basics, LLMs, Prompting, Risiken und RE Use Cases hinweg.</p>
-        <span class="cta">Quiz starten →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/ai-engineering-studio.html">
-        <h3>AI Engineering Studio</h3>
-        <p>Sieben Module vom Unterschied zwischen GPT, Agent und Multi-Agent-System bis zur Live-Simulation eines Requirements Agent: Agentenrollen bauen, Workflows verketten, Werkzeuge zuschalten, Freigabepunkte setzen, Governance-Leitplanken klären — durchgehend am Fall der digitalen Studierendenakte.</p>
-        <span class="cta">Studio öffnen →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/vom-prompt-zum-agenten.html">
-        <h3>Vom Prompt zum Agenten</h3>
-        <p>Die vier Eskalationsstufen der KI-Steuerung — Prompt, Context, Loop und Graph Engineering — jede Stufe löst eine Grenze der vorherigen, mit RE/BA-Transfer (IREB, BABOK, INVEST), Vantera-Connect-Beispielen und Persona-Reaktionen. Stufe 5 ordnet LLM, RAG, Generative AI und Agentic AI zueinander ein.</p>
-        <span class="cta">Eskalationsleiter öffnen →</span>
-      </a>
-    </div>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">Prompt Engineering &amp; Anwendung</h3>
-    <div class="tool-grid">
-      <a class="tool-card ki" href="./tools/ki-werkbank.html">
-        <h3>KI-Werkbank · Token, Prompt, Datenschutz</h3>
-        <p>ChatGPT, Claude, Copilot und Gemini im Praxisvergleich, elf Stationen: Token-Labor, Kontextfenster-Simulator, Prompt-Umbau in vier Verpackungen, Upload-Nadeltest, Ergebnisprüfung, Datenschutz-Ampel mit Anonymisierer, Art. 4 KI-VO, Vergleichsbogen und Checkliste. Jede Aussage mit Beleg-Abzeichen, am Fall TalentMatch AI, Deutsch/Englisch.</p>
-        <span class="cta">Werkbank öffnen →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/der-eisberg-des-promptens.html">
-        <h3>Der Eisberg des Promptens</h3>
-        <p>Drei Ebenen der KI-Steuerung als anklickbarer Split-Screen: von der sichtbaren Oberfläche (Frage tippen, Beispiel geben) über die Ebene, auf der IREB-Qualitätsmerkmale den eigentlichen Unterschied machen, bis zum Tiefenkörper aus wiederholbaren, governten Prozessen. Opener für Modul 2/3 der Prompt-Schule.</p>
-        <span class="cta">Eisberg erkunden →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/ki-steuern-mit-kompetenz.html">
-        <h3>Mit Kompetenz KI steuern, nicht hoffen</h3>
-        <p>Live-Demonstrator für den Vortrag bei GPM Karlsruhe (AI4RE): führt einen schwachen und einen guten Prompt Schritt für Schritt durch Tokenisierung, Wahrscheinlichkeiten und Antwortgenerierung, erklärt die Websuche eines LLM und verankert jeden Schritt in ISO/IEC 25010:2023, ISO 27001, DSGVO und dem EU AI Act.</p>
-        <span class="cta">Demonstrator öffnen →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/wie-ki-durch-projekte-denkt.html">
-        <h3>Wie KI durch Projekte denkt</h3>
-        <p>Ein Projekt, elf Schritte: von der jungfräulichen KI-Instanz über Kontextualisierung, das STAKE-Framework, Attention und Temperatur bis zur fertigen Antwort. Zeigt an vier Projektwelten (ERP, KI-Pilot, Agile Transformation, Blank-Fall), dass Prompt Engineering derselben Denkstruktur folgt wie Requirements Engineering.</p>
-        <span class="cta">Denkweg starten →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/profile-engineering-lab.html">
-        <h3>Profile Engineering Lab</h3>
-        <p>Fünf Personen, dieselbe Aufgabe (LinkedIn-Beitrag), fünf völlig unterschiedliche Ergebnisse: Live-Demonstration, wie Promptqualität mit Profiltiefe wächst — vom bloßen Namen bis zum vollständig profilierten Zielbild. Profil-Baukasten links, wachsender Prompt rechts, plus Finalseite mit vollständigem Masterprompt in zwölf Kapiteln und Wirkungs-Tabelle.</p>
-        <span class="cta">Lab öffnen →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/prompt-engineering-academy.html">
-        <h3>Prompt Engineering Academy · 12 Missionen</h3>
-        <p>Ein vollständiger 2-Tages-Kurs als interaktives Training: 12 Missionen von der Funktionsweise generativer KI über Rolle, Kontext, Qualitätsziele und Leitplanken bis zur Engineering-Challenge, dazu ein Anhang mit Strukturbefehlen, Megaprompt-Bibliothek, Praxis-Mustern aus Anthropics eigener Prompt-Bibliothek, Checkliste, Glossar und Fahrplan. Drei austauschbare Unternehmensszenarien, erfüllt die Nachweispflicht zur KI-Kompetenz nach Art. 4 KI-VO.</p>
-        <span class="cta">Academy starten →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/zettelkasten-prompt-engineering-re.html">
-        <h3>Zettelkasten: Prompt Engineering ist Requirements Engineering für KI-Systeme</h3>
-        <p>Vernetzter Zettelkasten mit kuratierter Konzept-Karte: links Requirements Engineering, rechts Prompt Engineering, in der Mitte die gemeinsamen Prinzipien als Brücke — plus die Risiken (Missverständnisse, Halluzinationen), die beide Seiten gefährden. Mit Tag-Filtern, Volltextsuche und eigenen Zetteln.</p>
-        <span class="cta">Zettelkasten öffnen →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/prompt-builder.html">
-        <h3>Prompt-Builder</h3>
-        <p>Fünf-Bausteine-Wizard nach dem Prompt-Governance-Canvas: Rolle → Kontext → Aufgabe → Format → Kriterien. Jeder Baustein mit Leitfrage und Beispielen, rechts wächst live die Prompt-Blaupause zum Kopieren. Inklusive kompakter, wasserzeichenversehener Auslieferungsversion für Teilnehmer:innen.</p>
-        <span class="cta">Builder öffnen →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/prompt-builder-auslieferung.html">
-        <h3>Prompt-Builder (Teilnehmende)</h3>
-        <p>Kompakte, wasserzeichenversehene Fassung des Prompt-Builders zum Weitergeben an die Gruppe: dieselben fünf Bausteine mit Live-Blaupause, ohne Vortrags-Footer, gedacht zum Ausdrucken oder Mitarbeiten im Training.</p>
-        <span class="cta">Builder öffnen →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/promptschule-trainingsleitfaden.html">
-        <h3>PromptSchule · Trainingsleitfaden</h3>
-        <p>Sechs-Tab-Einsteigerkurs für KI-Prompting: KI-Grundlagen mit Bibliothekar-Analogie, sechs Frameworks (RTF, CO-STAR, RISEN, TRACE, PACT, APE) zum Durchklicken, 10 progressive Übungen mit Lösungsvorschlag, die 5 Goldregeln des Prompting und eine 15-teilige, kopierfertige Prompt-Bibliothek für den Arbeitsalltag.</p>
-        <span class="cta">Prompt-Schule starten →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/notebooklm-masterprompt-bibliothek.html">
-        <h3>NotebookLM-Masterprompt-Bibliothek</h3>
-        <p>Rund 60 einsatzbereite Masterprompts für NotebookLM – kuratiert aus mehreren Quellen (Studium, Recherche, Content-Repurposing, Personas u.a.), durchsuchbar und mit Framework-Badge (RTF/CO-STAR/RISEN/TRACE/PACT/APE). Eigene Kategorie für IREB-Gap-Analyse, INVEST-Check und weitere RE/BA/PM-Adaptionen.</p>
-        <span class="cta">Bibliothek durchsuchen →</span>
-      </a>
-    </div>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">Governance, Recht &amp; Sicherheit</h3>
-    <div class="tool-grid">
-      <a class="tool-card ki" href="./tools/guardrails-governance-assurance.html">
-        <h3>Guardrails × Governance × Assurance</h3>
-        <p>Ganztages-Workshop am Fall TalentMatch AI: vom Bedrohungsmodell (OWASP LLM Top 10 und Agentic Top 10, Ausgabe 2026) über sieben Guardrail-Kategorien (hart oder weich) und die Guardrails der Anbieter im Vergleich bis zu Governance (Inventar, Risikoklassen nach KI-VO, RACI, Kill Switch, Model Card) und Assurance (Tests, Fairness, Vorfallarbeit). Die Traceability-Werkstatt verbindet alles zur Kette Risiko → Anforderung → Kontrolle → Nachweis. Sieben Übungen, Deutsch/Englisch.</p>
-        <span class="cta">Workshop öffnen →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/ai-governance-framework.html">
-        <h3>AI Governance Framework</h3>
-        <p>Workshop-Canvas mit zwölf Bausteinen, um für ein Unternehmen einen eigenen Governance-Rahmen für KI-Systeme zu skizzieren — von Geltungsbereich und Rollen über die Risikoklassifikation nach EU AI Act bis zu Human Oversight, Monitoring und Schulung. Optional vier bekannte Szenarien wählbar, die Feld für Feld ein Beispiel einblenden. Jedes Feld mit Leitfrage, Eingaben bleiben im Browser gespeichert.</p>
-        <span class="cta">Framework ausfüllen →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/eu-ai-act-framework.html">
-        <h3>EU AI Act Framework</h3>
-        <p>Workshop-Canvas mit zwölf Bausteinen, um ein konkretes KI-System durch die rechtlichen Pflichten des EU AI Act zu führen — Rolle in der Wertschöpfungskette, Verbotene-Praktiken-Check, Risikoklassifikation, Hochrisiko-Pflichten (Art. 9–15), Konformitätsbewertung/CE-Kennzeichnung, GPAI-Pflichten, Zeitplan und Sanktionsrisiko. Vier bekannte Szenarien mit Beispielantworten einzeln einblendbar.</p>
-        <span class="cta">Framework ausfüllen →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/prompt-injection-demo.html">
-        <h3>Prompt-Injection-Demo</h3>
-        <p>Zeigt an drei Szenarien (E-Mail-Assistent, Support-Bot, Bewerbungs-Screening), wie sich Anweisungen in Dokumenten verstecken lassen, die eine KI ungefiltert übernimmt — erst selbst die versteckte Anweisung aufspüren, dann ungeschützte und geschützte KI-Antwort vergleichen, dazu ein Baukasten für eigene Versuche. Rein regelbasierte Simulation, kein echter KI-Aufruf.</p>
-        <span class="cta">Demo starten →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/ki-risiko-klassifikationsraum.html">
-        <h3>KI-Risiko-Klassifikationsraum</h3>
-        <p>28 kuratierte KI-Risikofelder in fünf Kategorien (Daten, Modell, Agent, Sicherheit/Betrieb, Governance), jedes mit Normbezug inkl. Status und Datum. Sammeln (zehn Persona-Szenarien einzeln zuordnen), Strukturieren (filterbare Referenz-Übersicht mit Detailpanel) und Spezifizieren (Risiken auf ein Kundenservice-Agent-Szenario anwenden, mit Persona-Reaktionen).</p>
-        <span class="cta">Klassifikationsraum öffnen →</span>
-      </a>
-      <a class="tool-card ki" href="./tools/talentmatch-ai-sufficiency-gate.html">
-        <h3>TalentMatch AI vor dem Sufficiency-Gate</h3>
-        <p>Die Vantera-Fallstudie trifft RSGA (Requirements-Sufficiency-Gated Automation, IEEE RE 2026): vierstufige Szenario-Simulation mit bewusstem Aha-Moment, was ein Recruiting-Prompt ohne Vollständigkeits-Gate an Diskriminierungs-, Datenschutz- und Bußgeldrisiko auslösen würde — und wie der nachgebesserte, gegatete Prompt aussieht.</p>
-        <span class="cta">Simulation starten →</span>
-      </a>
-    </div>
-    </div>
-  </section>
-
-  <section class="section" data-cat="didaktik" id="section-didaktik">
-    <div class="section-head">
-      <span class="kicker teal">Didaktik Tools</span>
-      <span class="section-count"></span>
-    </div>
-    <div class="tool-grid">
-      <a class="tool-card didaktik" href="./tools/zettelkasten-marmorkuchen-technik.html">
-        <h3>Zettelkasten · Marmorkuchen erklärt die Zettelkasten-Technik</h3>
-        <p>Erklärt die Zettelkasten-Technik selbst — atomare Notiz, Verknüpfung mit Verb, Notiztypen, Emergenz — anhand eines durchgehenden Marmorkuchen-Beispiels mit Sarah, Herrn Bachmeier, Ela, Lars und Petra. Im Graph beobachtbar: aus vielen Einzelverknüpfungen entsteht ein Netz, kein Baum.</p>
-        <span class="cta">Zettelkasten öffnen →</span>
-      </a>
-    </div>
-  </section>
-
-  <section class="section" data-cat="uebungen" id="section-uebungen">
-    <div class="section-head">
-      <span class="kicker green">Übungen</span>
-      <span class="section-count"></span>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">Simulationen &amp; Labore</h3>
-    <div class="tool-grid">
-      <a class="tool-card okr" href="./tools/okr-lab-strategie-wirkung.html">
-        <h3>🧪 OKR LAB – Von Strategie zu Wirkung</h3>
-        <p>Drei Live-Facilitation-Pfade durch OKR: der 15-Stationen-Hauptcase CALVERA (Vision → Mission → Strategie → Initiative → drei OKR-Ebenen → User Story → ToDo), ein Stand-alone-Team-OKR-Pfad und ein OKR-trifft-Agile-Transferpfad. One-Screen-pro-Station-Design mit Team-Modus, Vertiefungspanel, Ereignis-Zwischenfällen und vollständigem Sprachumschalter Deutsch/Englisch.</p>
-        <span class="cta">LAB starten →</span>
-      </a>
-    </div>
-    </div>
-
-    <div class="subsection">
-    <h3 class="subhead">Spiele</h3>
-    <div class="tool-grid">
-      <a class="tool-card spiele" href="./tools/escape-room-ki-prompting.html">
-        <h3>Escape Room: KI-Prompting</h3>
-        <p>Sieben Türen, ein Systemprompt: von der Rolle über Kontext, Aufgabe, Format und Kriterien bis zur Risikoklassifikation nach dem Prompt-Governance-Canvas — spielerisch zur freigabereifen Systemprompt-Vorlage für die Hochschule Nordlicht. Mit Punkte-HUD, Hinweis-System, vierstufigem Beamer-Modus und vollständigem Sprachumschalter Deutsch/Englisch.</p>
-        <span class="cta">Escape Room starten →</span>
-      </a>
-      <a class="tool-card spiele" href="./tools/stakeholder-memory.html">
-        <h3>Stakeholder Memory</h3>
-        <p>Memory-Spiel zum Nebel-Typ Stakeholder: sechs Personas (Herr Bachmeier, Ela, Lars, Sarah, Petra, Meike) gegen ihre Zitate matchen — jedes Match öffnet eine Detailkarte mit echtem Bedürfnis, Macht-Interesse-Einordnung und Nebel-Typ. Grundlagen-Modus mit Quadrant-Hinweis, Profi-Modus ohne, plus Debrief-Recap am Ende.</p>
-        <span class="cta">Memory spielen →</span>
-      </a>
-    </div>
-    </div>
-  </section>
-</div>
-
+:root{color-scheme:light;--ink:#1d2330;--mut:#5b6475;--bg:#f6f4ef;--card:#fff;--line:#e3ded2;--acc:#1565C0;--lf:#C2185B;--doc:#EFE3F8;--docb:#9C6BC6;--fs:100%}
+*{box-sizing:border-box}html{font-size:var(--fs)}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+.app{display:flex;min-height:100vh}
+nav{width:230px;flex:none;background:#1d2330;color:#fff;padding:18px 14px;position:sticky;top:0;height:100vh;overflow:auto}
+nav h1{font-size:1rem;margin:0 0 4px}nav p{font-size:.78rem;color:#aab3c5;margin:0 0 16px}
+nav a{display:block;color:#e8ecf5;text-decoration:none;padding:9px 10px;border-radius:8px;font-size:.92rem;margin-bottom:4px}
+nav a:hover,nav a.on{background:#2f3a52}
+.ctl{margin-top:18px;display:flex;flex-direction:column;gap:8px}
+.ctl button{background:#2f3a52;color:#fff;border:1px solid #46557a;border-radius:8px;padding:8px;font-size:.85rem;cursor:pointer;text-align:left}
+.ctl button:hover{background:#3a4868}
+main{flex:1;min-width:0;padding:26px clamp(16px,4vw,48px) 40px;max-width:1250px}
+section{margin-bottom:46px;scroll-margin-top:12px}
+h2{font-size:1.5rem;margin:0 0 4px}.sub{color:var(--mut);margin:0 0 16px;max-width:70ch}
+.hero{background:linear-gradient(135deg,#fff,#fbeaf1);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin-bottom:30px}
+.hero h1{margin:0 0 6px;font-size:1.7rem}.hero p{margin:0;color:var(--mut);max-width:70ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+a.card,div.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;text-decoration:none;color:inherit;border-left:5px solid var(--acc)}
+a.card:hover{box-shadow:0 3px 12px rgba(0,0,0,.12);transform:translateY(-1px)}
+.card h3{margin:0 0 4px;font-size:1rem}.card p{margin:0;font-size:.86rem;color:var(--mut)}
+.nr{font-size:.75rem;color:var(--mut);display:flex;justify-content:space-between;gap:6px;margin-bottom:4px}
+.cnt{font-size:.78rem;background:#eef3fb;color:var(--acc);border-radius:999px;padding:1px 8px;white-space:nowrap}
+.lf a.card{border-left-color:var(--lf)}
+.lf .step{font-size:.75rem;font-weight:700;color:var(--lf);margin-bottom:2px}
+.lf a.card.prev{border-left-color:var(--docb);background:var(--doc)}
+.tag{display:inline-block;font-size:.7rem;border-radius:999px;padding:1px 8px;background:#fff;border:1px solid var(--docb);color:#6a3d91;margin-top:6px}
+.xr{background:#1d2330;color:#fff;border-radius:16px;padding:20px 22px}
+.xr h2{color:#fff}.xr .sub{color:#b9c2d6}
+.shelf{margin-top:16px}.shelf>h3{font-size:1.05rem;margin:0 0 2px;color:var(--sc)}.shelf>p{margin:0 0 8px;font-size:.84rem;color:#b9c2d6}
+.xr a.card{border-left-color:var(--sc);color:var(--ink)}.xr a.card h3{color:var(--ink);font-size:1rem}
+.xr .cnt{background:#2f3a52;color:#ffd54f}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center}
+.bar input,.bar select{font:inherit;font-size:.9rem;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+.bar input{flex:1;min-width:200px}
+.rooms{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.rooms button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;cursor:pointer;font:inherit;font-size:.85rem;color:var(--ink)}
+.rooms button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.res{color:var(--mut);font-size:.85rem;margin:0 0 10px}
+.mini{font-size:.72rem;color:var(--mut);margin-top:6px}
+.empty{padding:20px;background:#fff;border:1px dashed var(--line);border-radius:12px;color:var(--mut)}
+footer{border-top:1px solid var(--line);padding-top:14px;color:var(--mut);font-size:.82rem}
+.fb{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.fb div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px}
+@media(max-width:760px){.app{flex-direction:column}nav{width:auto;height:auto;position:static;display:flex;flex-wrap:wrap;gap:4px;align-items:center}nav h1,nav p{width:100%;margin:0}nav a{margin:0;padding:7px 10px}.ctl{margin:0;flex-direction:row}}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #ffb300;outline-offset:2px}
+</style></head><body>
+<div class="app">
+<nav aria-label="Navigation">
+<h1>Michaela Kühn</h1><p id="nvs"></p>
+<a href="#seminare" data-sec="seminare" id="n1"></a><a href="#lindenfeld" data-sec="lindenfeld" id="n2"></a><a href="#experiment" data-sec="experiment" id="n4"></a><a href="#bibliothek" data-sec="bibliothek" id="n3"></a>
+<a href="./archiv.html" id="n5" style="margin-top:14px;border-top:1px solid #46557a;border-radius:0;padding-top:14px"></a>
+<div class="ctl"><button id="bl" type="button"></button><button id="bb" type="button"></button></div>
+</nav>
+<main>
+<div class="hero"><h1 id="h1"></h1><p id="h1p"></p></div>
+<section id="seminare"><h2 id="t1"></h2><p class="sub" id="s1"></p><div class="grid" id="g1"></div></section>
+<section id="lindenfeld" class="lf"><h2 id="t2"></h2><p class="sub" id="s2"></p><div class="grid" id="g2"></div></section>
+<section id="experiment"><div class="xr"><h2 id="t4"></h2><p class="sub" id="s4"></p><div id="g4"></div></div></section>
+<section id="bibliothek"><h2 id="t3"></h2><p class="sub" id="s3"></p>
+<div class="bar"><input id="q" type="search"><select id="fs"></select><select id="ff"></select></div>
+<div class="rooms" id="rm"></div><p class="res" id="rs"></p><div class="grid" id="g3"></div></section>
+<footer><div class="fb"><div id="f1"></div><div id="f2"></div><div id="f3"></div><div id="f4"></div></div></footer>
+</main></div>
 <script src="./register/tools.js?v=2026-11-01-2"></script>
 <script>
-(function(){
-  var cards = Array.prototype.slice.call(document.querySelectorAll(".tool-card"));
-  var sections = Array.prototype.slice.call(document.querySelectorAll(".section"));
-  var searchInput = document.getElementById("searchInput");
-  var chips = Array.prototype.slice.call(document.querySelectorAll(".filter-chip"));
-  var resultCount = document.getElementById("resultCount");
-  var emptyState = document.getElementById("emptyState");
-  var statTotal = document.getElementById("statTotal");
+var D=window.DENKRAUM_REGISTER;
+if(!D){document.body.innerHTML="<p style='padding:20px'>Das Tool-Register (register/tools.js) konnte nicht geladen werden.</p>";throw new Error("Register fehlt")}
+var L={lang:'de',b:0,room:'',q:'',sem:'',fw:''};
+var ST=['100%','115%','130%','150%'];
+function T(a){return L.lang==='en'?a[1]:a[0]}
+function E(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var LF=[
+ ['1','tools/lindenfeld-lunch-steckbrief.html',['Fallwelt-Steckbrief','Case-world profile'],['Wer ist Lindenfeld, was ist das Mittagessen-Projekt? Einstieg und Ausgangslage für jedes Seminar.','Who is Lindenfeld and what is the lunch project? Entry point and starting position for any seminar.']],
+ ['2','tools/ba-re-case-lindenfeld-lunch.html',['BA/RE-Case','BA/RE case'],['Der durchgängige Fall: Stakeholder, Ziele, Anforderungen, Entscheidungen und CR-01. Die führende Quelle für alle anderen Seiten.','The end-to-end case: stakeholders, goals, requirements, decisions and CR-01. The leading source for all other pages.']],
+ ['3','tools/lindenfeld-projektauftrag-pflichtenheft.html',['Projektauftrag & Pflichtenheft','Project charter & specification'],['Vom Auftrag zur Spezifikation: der Übergang aus der Analyse in die Lösung. Auch als Teilnehmenden-Version.','From charter to specification: the hand-over from analysis to solution. Participant version available.']],
+ ['4','tools/lindenfeld-gateplan.html',['Gateplan','Gate plan'],['Die Entscheidungstore des Projekts, an denen geprüft wird, ob es weitergeht. Teilnehmenden-Version vorhanden.','The decision gates at which the project is checked before moving on. Participant version available.']],
+ ['5','tools/lindenfeld-comic.html',['Comic','Comic'],['Der Fall in vier Bildern: ein lockerer Einstieg mit Gruppenfrage.','The case in four panels: a light entry with a group question.']]
+];
+var SH=[
+ [['Guides','Guides'],['Zum Nachschlagen und Selbststudium: Leitfäden, Lexika, Vergleiche und Bibliotheken.','For reference and self-study: guides, glossaries, comparisons and libraries.'],['promptschule-trainingsleitfaden','ki-architektur-glossar-reba','zettelkasten-prompt-engineering-re','notebooklm-masterprompt-bibliothek','ki-modelllandschaft-vergleich','llm-markt-kompass','claude-feature-navigator']],
+ [['Prompting lernen','Learn prompting'],['Vom ersten Prompt zur Methode: Grundlagen, Übungen und Spiele.','From first prompt to method: basics, exercises and games.'],['der-eisberg-des-promptens','prompt-engineering-academy','profile-engineering-lab','escape-room-ki-prompting','ai4re-quizzmaschine','chatbox-workflow-opener']],
+ [['Prompts bauen','Build prompts'],['Werkzeuge, mit denen Prompts entstehen und im Alltag laufen.','Tools for building prompts and running them day to day.'],['prompt-builder','prompt-builder-auslieferung','ki-werkbank','ki-steuern-mit-kompetenz']],
+ [['Hinter die Kulissen','Behind the scenes'],['Wie KI intern arbeitet, warum Antworten so ausfallen und wie Teams sie einsetzen.','How AI works internally, why answers turn out as they do and how teams use it.'],['ki-black-box-simulator','ki-prompt-blackbox-simulator','talentmatch-ml-paradigmen','wie-ki-durch-projekte-denkt','ki-einsatzmuster-explorer']],
+ [['Wissen anbinden und Agenten','Connecting knowledge and agents'],['RAG, Agenten und MCP: KI mit Wissen und Werkzeugen verbinden.','RAG, agents and MCP: connecting AI to knowledge and tools.'],['vom-rateversuch-zur-belegten-antwort','wie-kommt-die-antwort-in-den-chat','vom-prompt-zum-agenten','vom-tool-chaos-zum-mcp-handshake']],
+ [['Governance, Risiko und Recht','Governance, risk and law'],['Regeln, Risikoklassen, Schutzmaßnahmen und Prüfung von KI-Vorhaben.','Rules, risk classes, safeguards and assurance of AI projects.'],['ai-governance-framework','eu-ai-act-framework','guardrails-governance-assurance','ki-risiko-klassifikationsraum','prompt-injection-demo','ai-engineering-studio','cpmai-prozess-board','talentmatch-ai-sufficiency-gate']]
+];
 
-  statTotal.textContent = cards.filter(function(c){ return !c.classList.contains("seminar"); }).length;
-  var newCount = document.querySelectorAll(".new-badge").length;
-  if(newCount > 0){
-    document.getElementById("statNew").textContent = "🆕 " + newCount + " heute neu";
-  }
-
-  function cardText(card){
-    if(!card.dataset.text){
-      card.dataset.text = card.textContent.toLowerCase();
-    }
-    return card.dataset.text;
-  }
-
-  // Art-Etiketten und Art-Filter aus dem Tool-Register (register/tools.js).
-  // Fehlt das Register (z. B. Datei nicht mitkopiert), bleibt die Seite wie bisher.
-  var KIND_ORDER = ["Opener","Übung","Spiel","Demonstrator","Workshop-Canvas","Lernreise","Nachschlagewerk","Prüfungsvorbereitung","Fallwelt-Referenz"];
-  var activeKind = "all";
-  var kindChips = [];
-  var register = window.DENKRAUM_REGISTER;
-  if(register && register.tools){
-    var byFile = {};
-    register.tools.forEach(function(t){ byFile[t.datei] = t; });
-    var used = {};
-    cards.forEach(function(card){
-      var href = (card.getAttribute("href") || "").replace(/^\.\//, "");
-      if(href.indexOf("#") !== -1) return;
-      var t = byFile[href];
-      if(!t || !t.zweck || !t.zweck.length) return;
-      card.dataset.kinds = "|" + t.zweck.join("|") + "|";
-      var row = document.createElement("div");
-      row.className = "kind-row";
-      t.zweck.forEach(function(k){
-        used[k] = (used[k] || 0) + 1;
-        var pill = document.createElement("span");
-        pill.className = "kind-pill";
-        pill.dataset.kind = k;
-        pill.textContent = k;
-        row.appendChild(pill);
-      });
-      var h3 = card.querySelector("h3");
-      if(h3) h3.insertAdjacentElement("afterend", row);
-    });
-    var kindFilter = document.getElementById("kindFilter");
-    ["all"].concat(KIND_ORDER.filter(function(k){ return used[k]; })).forEach(function(k){
-      var b = document.createElement("button");
-      b.type = "button";
-      b.className = "kind-chip" + (k === "all" ? " active" : "");
-      b.dataset.kind = k;
-      b.textContent = k === "all" ? "Alle" : k + " (" + used[k] + ")";
-      b.setAttribute("aria-pressed", k === "all" ? "true" : "false");
-      b.addEventListener("click", function(){
-        activeKind = k;
-        kindChips.forEach(function(c){
-          var on = c.dataset.kind === k;
-          c.classList.toggle("active", on);
-          c.setAttribute("aria-pressed", on ? "true" : "false");
-        });
-        applyFilters();
-      });
-      kindChips.push(b);
-      kindFilter.appendChild(b);
-    });
-    kindFilter.hidden = false;
-  }
-  var activeRoom = "all";
-  function isFilt(){ return activeKind !== "all" || activeRoom !== "all"; }
-  var roomSet = null; // wird von der Raum-Leiste gesetzt
-  function kindOk(card){
-    return (activeKind === "all" || (card.dataset.kinds || "").indexOf("|" + activeKind + "|") !== -1) &&
-           (activeRoom === "all" || card.dataset.room === activeRoom);
-  }
-
-  var activeTab = "all";
-  var tabBeforeSearch = null;
-
-  function setActiveTab(filter){
-    activeTab = filter;
-    chips.forEach(function(c){
-      var isActive = c.dataset.filter === filter;
-      c.classList.toggle("active", isActive);
-      c.setAttribute("aria-selected", isActive ? "true" : "false");
-    });
-  }
-
-  // Tabs bestimmen, welche Rubrik sichtbar ist ("Alle" zeigt alle); die
-  // Suche filtert zusätzlich innerhalb der jeweils sichtbaren Rubrik(en).
-  function applyFilters(){
-    var query = searchInput.value.trim().toLowerCase();
-    var visibleTotal = 0;
-    var anyVisible = 0;
-    var allTotal = 0;
-
-    sections.forEach(function(section){
-      var tabVisible = activeTab === "all" || section.dataset.cat === activeTab;
-      var countEl = section.querySelector(".section-count");
-
-      if(!tabVisible){
-        section.classList.add("hidden-by-filter");
-        if(countEl) countEl.textContent = "";
-        return;
-      }
-
-      var sectionCards = section.querySelectorAll(".tool-card");
-      var isSeminar = section.dataset.cat === "seminare";
-      if(!isSeminar) allTotal += sectionCards.length;
-
-      var visibleInSection = 0;
-      sectionCards.forEach(function(card){
-        var show = (!query || cardText(card).indexOf(query) !== -1) && kindOk(card);
-        card.classList.toggle("hidden-by-filter", !show);
-        if(show) visibleInSection++;
-      });
-      var filtering = !!query || isFilt();
-      section.querySelectorAll(".subsection").forEach(function(sub){
-        var anyCard = sub.querySelector(".tool-card:not(.hidden-by-filter)");
-        sub.classList.toggle("hidden-by-filter", filtering && !anyCard);
-      });
-      if(!isSeminar) visibleTotal += visibleInSection;
-      anyVisible += visibleInSection;
-
-      section.classList.toggle("hidden-by-filter", (!!query || isFilt()) && visibleInSection === 0);
-
-      if(countEl){
-        countEl.textContent = (query || isFilt())
-          ? visibleInSection + " Treffer"
-          : sectionCards.length + (section.dataset.cat === "seminare"
-              ? (sectionCards.length === 1 ? " Seminar" : " Seminare")
-              : (sectionCards.length === 1 ? " Tool" : " Tools"));
-      }
-    });
-
-    emptyState.classList.toggle("show", (query || isFilt()) ? anyVisible === 0 : false);
-    resultCount.textContent = (query || isFilt()) ? visibleTotal + " von " + allTotal + " Tools" : "";
-  }
-
-  // Raum-Leiste: Anzahl je Denkraum live aus dem Register, Klick filtert die Kacheln.
-  (function(){
-    if(!(register && register.tools && register.denkraeume)) return;
-    var COL = {moeglichkeit:"#1d4ed8",analyse:"#0f766e",loesung:"#7e22ce",umsetzung:"#b45309",stoer:"#be123c",rundreise:"#15803d",basislager:"#475569"};
-    var count = {}, seen = {};
-    cards.forEach(function(card){
-      var href = (card.getAttribute("href") || "").replace(/^\.\//, "");
-      if(href.indexOf("#") !== -1) return;
-      var t = byFile[href];
-      if(!t || !t.denkraum) return;
-      card.dataset.room = t.denkraum;
-      if(!seen[href]){ seen[href] = 1; count[t.denkraum] = (count[t.denkraum] || 0) + 1; }
-    });
-    var max = 0; register.denkraeume.forEach(function(d){ max = Math.max(max, count[d.id] || 0); });
-    if(!max) return;
-    var wrap = document.getElementById("rlRows"), rows = [];
-    register.denkraeume.forEach(function(d){
-      var n = count[d.id] || 0; if(!n) return;
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "rl-row"; b.dataset.room = d.id;
-      b.setAttribute("aria-pressed", "false");
-      b.innerHTML = '<span class="rl-name">' + d.icon + ' ' + d.name + '</span>' +
-        '<span><span class="rl-bar" style="display:block;width:' + Math.round(100 * n / max) + '%;background:' + (COL[d.id] || "#475569") + '"></span></span>' +
-        '<span class="rl-n">' + n + '</span>';
-      b.addEventListener("click", function(){ roomSet(activeRoom === d.id ? "all" : d.id); });
-      rows.push(b); wrap.appendChild(b);
-    });
-    roomSet = function(id){
-      activeRoom = id;
-      rows.forEach(function(r){
-        var on = r.dataset.room === id;
-        r.classList.toggle("active", on);
-        r.classList.toggle("dim", id !== "all" && !on);
-        r.setAttribute("aria-pressed", on ? "true" : "false");
-      });
-      applyFilters();
-    };
-    document.getElementById("rlNote").textContent += " Stand Register: " + register.stand + ".";
-    document.getElementById("raumLeiste").hidden = false;
-  })();
-
-  chips.forEach(function(chip){
-    chip.addEventListener("click", function(){
-      tabBeforeSearch = null;
-      if(searchInput.value){ searchInput.value = ""; }
-      setActiveTab(chip.dataset.filter);
-      applyFilters();
-    });
-  });
-
-  // Beim Tippen springt die Suche auf den Tab "Alle", damit sie wie gewohnt
-  // über alle Tools sucht; nach dem Leeren des Suchfelds geht's zurück zum
-  // zuvor gewählten Tab.
-  searchInput.addEventListener("input", function(){
-    var query = searchInput.value.trim();
-    if(query){
-      if(tabBeforeSearch === null && activeTab !== "all"){
-        tabBeforeSearch = activeTab;
-      }
-      if(activeTab !== "all"){ setActiveTab("all"); }
-    } else if(tabBeforeSearch !== null){
-      setActiveTab(tabBeforeSearch);
-      tabBeforeSearch = null;
-    }
-    applyFilters();
-  });
-
-  document.getElementById("resetFilters").addEventListener("click", function(){
-    searchInput.value = "";
-    if(kindChips.length){ kindChips[0].click(); }
-    if(roomSet){ roomSet("all"); }
-    if(tabBeforeSearch !== null){
-      setActiveTab(tabBeforeSearch);
-      tabBeforeSearch = null;
-    }
-    applyFilters();
-    searchInput.focus();
-  });
-
-  document.addEventListener("keydown", function(e){
-    if(e.key === "/" && document.activeElement !== searchInput){
-      e.preventDefault();
-      searchInput.focus();
-    }
-  });
-  searchInput.addEventListener("focus", function(){
-    document.getElementById("kbdHint").style.display = "none";
-  });
-  searchInput.addEventListener("blur", function(){
-    if(!searchInput.value){ document.getElementById("kbdHint").style.display = ""; }
-  });
-
-  applyFilters();
-})();
-</script>
-
-</body>
-</html>
+var SC=['#ffd54f','#81d4fa','#a5d6a7','#f48fb1','#ce93d8','#ffab91'];
+var TX={
+ de:{nvs:'Seminare · Fallwelt · Bibliothek',n1:'Meine Seminare',n2:'Lindenfeld Lunch',n3:'Bibliothek',n4:'Experimentierraum',n5:'Archiv: frühere Startseite',t4:'Experimentierraum: KI ausprobieren',s4:'Losgelöst von den Denkräumen. Hier liegen alle KI-Werkzeuge im Regal, nach Themen sortiert. Zum Ausprobieren, Staunen und Nachschlagen.',bl:'🌐 English',bb:'📽 Beamer: Stufe ',
+  h1:'Seminare, ein roter Faden und eine Bibliothek',h1p:'Hier beginnt alles bei den Seminaren. Der Lindenfeld Lunch begleitet sie als durchgehender Fall, und alle Werkzeuge liegen in der Bibliothek zum Nachschlagen.',
+  t1:'Meine Seminare',s1:'Neun Seminare bei der Haufe Akademie. Jede Seite zeigt, welche Werkzeuge im Seminar vorkommen.',
+  t2:'Lindenfeld Lunch: der rote Faden',s2:'Ein Fall, der durch die Seminare führt. In dieser Reihenfolge lässt er sich erzählen.',
+  t3:'Bibliothek',s3:'Alle Werkzeuge an einem Ort. Filtern nach Denkraum, Seminar oder Fallwelt, oder einfach suchen.',
+  q:'Suchen: Titel, Thema, Zweck …',fsA:'Alle Seminare',ffA:'Alle Fallwelten',all:'Alle',tools:' Werkzeuge',of:' von ',sem:'Seminar ',noRes:'Nichts gefunden. Filter lockern oder anders suchen.',
+  prev:'Vorschau, noch nicht im Repo',step:'Schritt ',
+  f1:'<b>Haufe Akademie</b><br>Nur genannt und verlinkt.',f2:'<b>Quelle</b><br>Register der DenkRaum-Werkzeuge',f3:'<b>Archiv</b><br>Die frühere Startseite liegt unter archiv.html',f4:'<b>Autorin</b><br>Michaela Kühn · PromptSchule'},
+ en:{nvs:'Seminars · case world · library',n1:'My seminars',n2:'Lindenfeld Lunch',n3:'Library',n4:'Experiment room',n5:'Archive: former start page',t4:'Experiment room: try out AI',s4:'Detached from the thinking rooms. All AI tools sit on shelves here, sorted by topic. For trying out, wondering and reference.',bl:'🌐 Deutsch',bb:'📽 Beamer: level ',
+  h1:'Seminars, a common thread and a library',h1p:'Everything starts with the seminars. Lindenfeld Lunch runs through them as one case, and all tools sit in the library for reference.',
+  t1:'My seminars',s1:'Nine seminars at Haufe Akademie. Each page shows which tools are used in the seminar.',
+  t2:'Lindenfeld Lunch: the common thread',s2:'One case that runs through the seminars. This is the order to tell it in.',
+  t3:'Library',s3:'All tools in one place. Filter by thinking room, seminar or case world, or just search.',
+  q:'Search: title, topic, purpose …',fsA:'All seminars',ffA:'All case worlds',all:'All',tools:' tools',of:' of ',sem:'Seminar ',noRes:'Nothing found. Loosen the filters or search differently.',
+  prev:'Preview, not in the repo yet',step:'Step ',
+  f1:'<b>Haufe Akademie</b><br>Named and linked only.',f2:'<b>Source</b><br>DenkRaum tool register',f3:'<b>Archive</b><br>The former start page lives at archiv.html',f4:'<b>Author</b><br>Michaela Kühn · PromptSchule'}
+};
+function cnt(nr){return D.tools.filter(function(t){return (t.haufeSeminare||[]).indexOf(nr)>-1}).length}
+function render(){
+ var x=TX[L.lang];document.documentElement.lang=L.lang;
+ ['nvs','n1','n2','n3','n4','n5','t4','s4','h1','t1','t2','t3','s1','s2','s3','f1','f2','f3','f4'].forEach(function(k){var e=document.getElementById(k);if(e){if(k[0]==='f')e.innerHTML=x[k];else if(k==='h1')e.textContent=x[k];else e.textContent=x[k]}});
+ document.getElementById('h1p').textContent=x.h1p;
+ document.getElementById('bl').textContent=x.bl;document.getElementById('bb').textContent=x.bb+(L.b+1)+'/4';
+ document.documentElement.style.setProperty('--fs',ST[L.b]);
+ document.getElementById('q').placeholder=x.q;
+ document.getElementById('g1').innerHTML=D.seminare.map(function(s){var n=cnt(s.nr);
+  return '<a class="card" href="'+E(s.datei)+'"><div class="nr"><span>'+x.sem+E(s.nr)+'</span><span class="cnt">'+n+x.tools+'</span></div><h3>'+E(L.lang==='en'?s.kurz_en:s.kurz)+'</h3><p>'+E(s.titel)+'</p></a>'}).join('');
+ document.getElementById('g2').innerHTML=LF.map(function(c){
+  return '<a class="card'+(c[4]?' prev':'')+'" href="'+E(c[1])+'"><div class="step">'+x.step+c[0]+'</div><h3>'+E(T(c[2]))+'</h3><p>'+E(T(c[3]))+'</p>'+(c[4]?'<span class="tag">'+x.prev+'</span>':'')+'</a>'}).join('');
+ var byId={};D.tools.forEach(function(t){byId[t.id]=t});
+ document.getElementById('g4').innerHTML=SH.map(function(h){return '<div class="shelf" style="--sc:'+SC[SH.indexOf(h)]+'"><h3>'+E(T(h[0]))+' <span class="cnt">'+h[2].length+'</span></h3><p>'+E(T(h[1]))+'</p><div class="grid">'+h[2].map(function(id){var t=byId[id];return t?'<a class="card" href="'+E(t.datei)+'"><h3>'+E(t.kurztitel||t.titel)+'</h3><p>'+E((t.kurz||'').slice(0,110)+((t.kurz||'').length>110?' …':''))+'</p></a>':''}).join('')+'</div></div>'}).join('');
+ var fs=document.getElementById('fs'),ff=document.getElementById('ff');
+ fs.innerHTML='<option value="">'+x.fsA+'</option>'+D.seminare.map(function(s){return '<option value="'+E(s.nr)+'">'+E(s.nr+' · '+(L.lang==='en'?s.kurz_en:s.kurz))+'</option>'}).join('');fs.value=L.sem;
+ var fws={};D.tools.forEach(function(t){(t.fallwelten||[]).forEach(function(f){fws[f]=1})});
+ ff.innerHTML='<option value="">'+x.ffA+'</option>'+Object.keys(fws).sort().map(function(f){return '<option>'+E(f)+'</option>'}).join('');ff.value=L.fw;
+ var rm='<button type="button" data-r="" class="'+(L.room===''?'on':'')+'">'+x.all+'</button>'+D.denkraeume.map(function(d){return '<button type="button" data-r="'+d.id+'" class="'+(L.room===d.id?'on':'')+'">'+d.icon+' '+E(L.lang==='en'?d.name_en:d.name)+'</button>'}).join('');
+ document.getElementById('rm').innerHTML=rm;
+ list();
+}
+function list(){
+ var x=TX[L.lang],q=L.q.toLowerCase();
+ var r=D.tools.filter(function(t){
+  if(L.room&&t.denkraum!==L.room)return false;
+  if(L.sem&&(t.haufeSeminare||[]).indexOf(L.sem)<0)return false;
+  if(L.fw&&(t.fallwelten||[]).indexOf(L.fw)<0)return false;
+  if(q){var h=[t.titel,t.kurztitel,t.kurz,(t.zweck||[]).join(' '),(t.themen||[]).join(' '),(t.fallwelten||[]).join(' ')].join(' ').toLowerCase();if(h.indexOf(q)<0)return false}
+  return true});
+ document.getElementById('rs').textContent=r.length+x.of+D.tools.length+x.tools;
+ var dn={};D.denkraeume.forEach(function(d){dn[d.id]=d});
+ document.getElementById('g3').innerHTML=r.length?r.map(function(t){var d=dn[t.denkraum]||{icon:'',name:''};
+  return '<a class="card" href="'+E(t.datei)+'"><div class="nr"><span>'+d.icon+' '+E(L.lang==='en'?d.name_en:d.name)+'</span></div><h3>'+E(t.kurztitel||t.titel)+'</h3><p>'+E((t.kurz||'').slice(0,130)+((t.kurz||'').length>130?' …':''))+'</p>'+((t.zweck||[]).length?'<div class="mini">'+E(t.zweck.join(' · '))+'</div>':'')+'</a>'}).join(''):'<div class="empty">'+x.noRes+'</div>';
+}
+document.addEventListener('click',function(e){
+ var b=e.target.closest('button');if(!b)return;
+ if(b.id==='bl'){L.lang=L.lang==='de'?'en':'de';render()}
+ else if(b.id==='bb'){L.b=(L.b+1)%4;render()}
+ else if(b.hasAttribute('data-r')){L.room=b.getAttribute('data-r');render()}
+});
+document.getElementById('q').addEventListener('input',function(e){L.q=e.target.value;list()});
+document.getElementById('fs').addEventListener('change',function(e){L.sem=e.target.value;list()});
+document.getElementById('ff').addEventListener('change',function(e){L.fw=e.target.value;list()});
+var secs=['seminare','lindenfeld','experiment','bibliothek'];
+function spy(){var y=window.scrollY+80,cur=secs[0];secs.forEach(function(s){if(document.getElementById(s).offsetTop<=y)cur=s});
+ document.querySelectorAll('nav a[data-sec]').forEach(function(a){a.classList.toggle('on',a.getAttribute('data-sec')===cur)})}
+window.addEventListener('scroll',spy);
+render();spy();
+</script></body></html>

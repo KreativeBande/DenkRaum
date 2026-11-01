@@ -37,6 +37,7 @@
      +'.dr-sprung a,.dr-sprung summary{color:#1d3a8a;text-decoration:none;padding:6px 8px;border-radius:6px;display:block;cursor:pointer}'
      +'.dr-sprung a:hover,.dr-sprung summary:hover{background:#dfe7f7}.dr-sprung small{display:block;font-weight:400;color:#5b6475;font-size:12px}'
      +'.dr-sprung details a{padding-left:20px;font-weight:500}.dr-sprung.dr-fix{position:fixed;left:8px;bottom:8px;z-index:9999;max-width:210px;box-shadow:0 4px 14px rgba(0,0,0,.18)}'
+     +'.back-link[href$="index.html"]{display:none!important}'
      +'html.beamer .dr-sprung{font-size:17px}@media print{.dr-sprung{display:none}}'
      +'.dr-sprung a:focus-visible,.dr-sprung summary:focus-visible{outline:3px solid #ffb300}';
     document.head.appendChild(st);

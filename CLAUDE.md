@@ -4,7 +4,8 @@ Sammlung eigenständiger HTML-Tools rund um Requirements Engineering und den kom
 
 ## Struktur
 
-- `index.html` — Landingpage mit Kachel-Links zu allen Tools, gruppiert in Rubriken (aktuell: "Requirements Engineering Tools", "KI Tools").
+- `index.html` — neue Startseite (Seminare, Lindenfeld Lunch, Experimentierraum KI, Bibliothek); liest `register/tools.js`, neue Tools erscheinen dort automatisch über das Register.
+- `archiv.html` — die frühere Startseite mit Kachel-Links zu allen Tools, gruppiert in Rubriken. Kacheln und „NEU“-Badges (siehe unten) werden weiterhin hier gepflegt.
 - `tools/` — alle Tools. Einzeldatei-Tools liegen direkt darin (z.B. `tools/fragenautomat.html`); Mehrdatei-Apps bekommen einen eigenen Unterordner (z.B. `tools/klarheits-sprint/`).
 
 ## Qualitätsstandard (K1–K22, Z1–Z9)
@@ -141,7 +142,7 @@ Ebenfalls Anti-Pattern, auch ohne `max-width`: H1/Lead-Absatz stehen als Flex-It
 
 Ausnahme nur bei einer bewussten, im Tool erkennbaren Layout-Entscheidung mit echtem funktionalem Inhalt daneben (z. B. ein interaktives Score-Dial-Widget in einem zweispaltigen Hero) — nicht bei Navigation/Meta-Controls (Zurück-Link, Signatur, Beamer-Button), die immer in die Topbar gehören. Vor Auslieferung auf einem breiten Viewport (≥1280px) gegenprüfen: Wirkt neben Überschrift oder Einleitung auffällig viel ungenutzter Weißraum, ist das ein Fehler, kein Stil.
 
-### "NEU"-Badge auf index.html
+### "NEU"-Badge auf archiv.html
 
 Das `new-badge`-Element markiert ausschließlich Tools, die am selben Tag gebaut oder gemergt wurden — keine wochen- oder projektbezogene Interpretation. Bei jedem neuen Tool-Merge: zuerst bestehende `NEU`-Badges auf Kacheln entfernen, die nicht mehr vom aktuellen Tag stammen, dann den Badge für das neue Tool setzen. Badges bleiben nie über den Bau-Tag hinaus stehen.
 
