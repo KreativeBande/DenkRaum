@@ -5138,7 +5138,7 @@ window.DENKRAUM_REGISTER = {
       "notiz": "Am 01.11.2026 gemeinsam mit Michaela entwickelt, noch nicht nach K1–K22 auditiert. Fachlicher Stand: 90 Minuten gelten für CR-01 (BA/RE-Case, genehmigt mit Bedingung); Steckbrief, Projektauftrag und Gateplan wurden am 01.11.2026 angeglichen, der 75-Minuten-Kompromiss ist dort nur noch die Alternative. Drohnen = Stakeholder mit Idee oder Regelbruch, Drohnenticket mit sieben Feldern. Einträge mit „Gedankenspiel“ oder „zu prüfen“ sind im Fall nicht belegt. Am 01.11.2026 um elf Dokumente aus dem Eisberg (Strategiepapier, Vision Statement, Roadmap, Machbarkeitsstudie, Projektauftrag, Lastenheft, Pflichtenheft, Product Backlog, Projektstrukturplan, Terminplan, Kostenplan) und die Flughöhe je Raum ergänzt; Artefakt des Umsetzungsraums heißt jetzt Lauffähiger Liefergegenstand. Die neuen Dokumente haben noch keine Musterlösung aus dem Fall."
     },
     {
-      "id": "lindenfeld-projektauftrag-pflichtenheft",
+      "id": "lindenfeld-projektauftrag-pflichtenheft Die elf Dokumente haben seit 01.11.2026 Musterlösungen aus dem Fall Lindenfeld Lunch, mit Herkunftsmarke (Fall, Abgeleitet, Gedankenspiel).",
       "datei": "tools/lindenfeld-projektauftrag-pflichtenheft.html",
       "titel": "Lindenfeld Lunch: Projektauftrag und Pflichtenheft",
       "kurztitel": "Projektauftrag und Pflichtenheft",

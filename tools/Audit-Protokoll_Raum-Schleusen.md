@@ -33,3 +33,7 @@ K11 Radien nach Design-System, K12, K13 nicht systematisch geprüft.
 ## Hinweis zur Methode
 
 Die Prüfung der Signatur-Überdeckung im gescrollten Zustand meldet immer Treffer, weil Inhalt unter jedem fixierten Element durchläuft. Das ist kein Befund.
+
+## Nachtrag 01.11.2026 (Musterlösungen)
+
+Elf Dokumente (Strategiepapier bis Kostenplan) haben Musterlösungen aus dem Fall Lindenfeld Lunch, je Feld mit Herkunft (Fall, Abgeleitet, Gedankenspiel). Geprüft: keine Konsolenfehler, alle 29 Dokumentkarten ohne leere Felder, „Musterlösung einfügen“ in der Vorlage, kein seitliches Scrollen bei 390 px (DE und EN). Siegel unverändert ✅.
