@@ -4,7 +4,7 @@
  * Als Skript-Datei (nicht .json), damit sie auch offline per file:// lädt.
  */
 window.DENKRAUM_REGISTER = {
-  "stand": "2026-10-28",
+  "stand": "2026-11-01",
   "denkraeume": [
     {
       "id": "moeglichkeit",
@@ -4944,6 +4944,79 @@ window.DENKRAUM_REGISTER = {
       ],
       "geprueft": false,
       "notiz": "Von Michaela angeliefert; für den Hub um Rücksprung, Einbettungsmodus und Bild-Zoom ergänzt (Skripte am Dateiende). Der Systemprompt in der Footer-Box ist ein Co-Trainer-Prompt und noch kein Master-Bau-Prompt (K19). Sprecher-Skript mit Zeitangaben je Station. Sketchnotes zu Business Case, Anforderungsdokumentation, Persona, Use Case und User Story je am Stationsanfang (22.10.2026, Alt-Text DE/EN, Bild-Zoom). Kürzel (GZ, FR, OP, R, ADR, M …) sind anklickbar und öffnen ein Kontextfenster (Titel, Art, Sprung zur Fundstelle); Wörterbuch und Modul in tools/gateplan-build/ (idx_extract.py, idx_build.py), nach Änderung an Tabellen neu bauen (23.10.2026). Station 4a Geschäftsprozesse (23.10.2026): Ist-Prozess mit Minuten, Soll-Prozess in BPMN (Exkurs aus Station 4 hierher verschoben), Zeitrechnung zu GZ-3, Schritt zur Anforderung, zwei Abstimmungen, Übung, Checkliste; Zeitaufteilung ist Planungsannahme, nur 65 und 20 Minuten stammen aus dem Fall."
+    },
+    {
+      "id": "change-schleuse",
+      "datei": "tools/change-schleuse.html",
+      "titel": "Change-Schleuse: vom Änderungswunsch zur Entscheidung, die trägt",
+      "kurztitel": "Change-Schleuse",
+      "kurz": "Simulation am Fall Lindenfeld Lunch: Eine Änderung trifft auf die abgestimmte Basislinie. In zwölf Schritten von Bewertungs-Check (Fakt, Annahme, Meinung) über Schleuse (SCOPE, HALT, frühere Entscheidung) und berechnete Auswirkung bis zu Change Request mit Souveränitäts-Ticket, nächster Dokumentversion, Board, Aufwand, Dauer und Kosten sowie Historie als Markdown-Datei.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Priorisierung & Änderungen",
+      "aufStartseite": true,
+      "zweck": [
+        "Übung",
+        "Demonstrator"
+      ],
+      "denkraum": "stoer",
+      "faeden": [
+        "re",
+        "ba",
+        "pm"
+      ],
+      "dauer": null,
+      "haufeSeminare": [
+        "9368",
+        "31693",
+        "3744",
+        "8932",
+        "2929"
+      ],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "Change Request",
+        "Änderungsmanagement",
+        "Basislinie",
+        "Rückverfolgbarkeit",
+        "Auswirkungsanalyse",
+        "Fakt, Annahme, Meinung",
+        "SCOPE",
+        "HALT",
+        "Souveränitäts-Ticket",
+        "Versionierung",
+        "Kanban-Board",
+        "Aufwandsschätzung",
+        "Gantt-Diagramm"
+      ],
+      "standards": [
+        "IREB",
+        "IEEE 29148",
+        "BABOK",
+        "PMBOK",
+        "ISO 25010:2023"
+      ],
+      "siegel": {
+        "status": "Auditiert & zertifiziert",
+        "letztesAudit": null,
+        "auditZeileImTool": null,
+        "offen": null
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/ba-re-case-lindenfeld-lunch.html",
+        "tools/lindenfeld-projektauftrag-pflichtenheft.html",
+        "tools/lindenfeld-lunch-steckbrief.html",
+        "tools/stoerfall-labor.html"
+      ],
+      "geprueft": false,
+      "notiz": "Von Michaela am 01.11.2026 angeliefert, Siegel-Stand laut Michaela: zertifiziert nach K1–K22 und Z1–Z9, ohne Auszeichnung (kein Audit-Protokoll im Repo, keine Audit-Zeile im Tool). Übernommen bis auf Zurück-Link, Signatur-Link www.michaela-kuehn.com, Footer-Signatur mit Normen statt „Entwurf zur Durchsicht“ und den Hinweis, dass der Dokument-Link jetzt zur Stelle springt. Normen laut Normen-Register im Tool (geprüft 31.10.2026: IREB CPRE FL 3.3.0, ISO/IEC/IEEE 29148:2018, BABOK v3, PMBOK 8. Ausgabe über Sekundärquelle; ISO/IEC 25010:2023 nicht neu geprüft). Dauer im Tool nicht angegeben. CR-01 stammt aus dem Fall, CR-02 bis CR-06 sind Annahmen; Beispielwerte in Schritt 10 (Tagessätze, Zeitpuffer, Stunden je Punkt) sind Annahmen. Links „Dokument im Fall öffnen“ springen über statische ids zu den Einträgen in Steckbrief, Projektauftrag/Pflichtenheft (Teilnehmende) und BA/RE-Case (tools/gateplan-build/anchor_build.py). Nutzt weder Netz noch Speicher; Schritt 11 schreibt und liest eine Markdown-Datei."
     },
     {
       "id": "lindenfeld-projektauftrag-pflichtenheft",
