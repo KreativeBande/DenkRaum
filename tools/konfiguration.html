@@ -22,14 +22,42 @@ nav.left button.on{background:color-mix(in srgb,var(--k,#999) 16%,#fff);font-wei
 main{flex:1;min-width:0;padding:22px 28px 40px}
 h2{margin:0 0 4px;font-size:1.45rem}.sub{color:var(--dim);margin:0 0 14px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:12px}
-.card{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--k,#999);border-radius:12px;padding:12px 14px}
+.card{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--k,#999);border-radius:16px;padding:12px 16px;box-shadow:0 6px 16px rgba(29,35,48,.04)}
+details.card>summary{list-style:none;cursor:pointer;min-height:44px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;padding:6px 0}
+details.card>summary::-webkit-details-marker{display:none}
+details.card>summary::before{content:"▸";color:var(--k);font-size:1rem;display:inline-block;transition:transform .15s;margin-right:2px}
+details.card[open]>summary::before{transform:rotate(90deg)}
+details.card>summary b{font-size:1.05rem}
+details.card>summary .ss{color:var(--dim);font-size:14px;flex:1 1 220px}
+.card .lg{margin:6px 0 8px;font-size:1em;color:var(--ink);line-height:1.6}
+.ex{margin-top:8px;padding:8px 12px;border-radius:12px;background:color-mix(in srgb,var(--k) 9%,#fff);font-size:14px;color:var(--ink)}
+.ex b{color:var(--ink)}
+.fhead{display:flex;gap:14px;align-items:center;padding:14px 18px;border-radius:16px;background:color-mix(in srgb,var(--k) 10%,#fff);border:1px solid color-mix(in srgb,var(--k) 35%,#fff);margin:6px 0 14px}
+.fhead .ic{font-size:2.2rem;line-height:1}.fhead h2{margin:0}.fhead .sub{margin:2px 0 0}
+.intro{font-size:1em;line-height:1.65;max-width:70ch;margin:0 0 12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 14px}
+.two div{border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:14px;background:#faf8f3}
+.two b{display:block;margin-bottom:2px;font-size:15px}
+.pager{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.pager .btn{border-radius:12px;min-height:44px}
+.grid.items{display:block;columns:2 340px;column-gap:12px}
+.grid.items>details.card{break-inside:avoid;margin:0 0 12px}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:16px 0}
+.tile{display:flex;flex-direction:column;justify-content:flex-start;text-align:left;width:100%;font:inherit;color:var(--ink);background:#fff;border:1px solid var(--line);border-top:8px solid var(--k);border-radius:16px;padding:14px 16px 16px;cursor:pointer;box-shadow:0 6px 16px rgba(29,35,48,.04);min-height:44px}
+.tile .tt{display:flex;align-items:center;gap:10px;font-size:1.15rem;font-weight:700}
+.tile .tt .ic{font-size:1.5rem}.tile .ts{display:block;color:var(--dim);font-size:14px;margin:4px 0 8px}
+.tile .tc{display:flex;flex-wrap:wrap;gap:6px}
+.tile .chip{font-size:14px;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--k) 12%,#fff);border:1px solid color-mix(in srgb,var(--k) 40%,#fff);color:var(--ink)}
+.tile .tn{display:block;margin-top:8px;font-size:14px;color:var(--muted)}
+.lead{font-size:1em;line-height:1.65;max-width:70ch;margin:0 0 6px}
+@media(max-width:700px){.tiles,.two{grid-template-columns:1fr}}
 .card h3{margin:0 0 4px;font-size:1.02rem}.card p{margin:2px 0;font-size:14px;color:var(--dim)}
 .box{background:#faf8f3;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:12px 0}
 .q{font-style:italic;color:var(--ink)}
 .shelf{display:grid;gap:0;margin:14px 0}
 .fach{display:flex;gap:12px;align-items:center;min-height:56px;padding:10px 14px;background:#fff;border:1px solid var(--line);border-bottom:10px solid #b58a5a;cursor:pointer;font:inherit;text-align:left;width:100%;color:var(--ink)}
 .fach b{border-left:6px solid var(--k);padding-left:10px}.fach span{color:var(--dim);font-size:14px}
-.btn{font:inherit;font-size:15px;min-height:44px;padding:8px 18px;border-radius:10px;border:1.5px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer}
+.btn{font:inherit;font-size:15px;min-height:44px;padding:8px 18px;border-radius:12px;border:1.5px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer}
 .btn.go{background:var(--ink);color:#fff}.btn[disabled]{opacity:.4;cursor:default}
 .back2{background:none;border:0;color:var(--acc);font:inherit;font-size:15px;min-height:44px;padding:0;cursor:pointer}
 .opt{display:block;width:100%;text-align:left;min-height:44px;font:inherit;padding:10px 14px;margin:6px 0;border:2px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);cursor:pointer}
@@ -74,19 +102,19 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #ff
 <p class="footer-sig" data-en="Own working method of Michaela Kühn, not a standard. Compiled with Claude. Last checked: 01.11.2026 · Status: ✅ Certified · see audit log">Eigene Arbeitsweise von Michaela Kühn, keine Norm. Erstellt mit Claude. Zuletzt geprüft: 01.11.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</p>
 <div class="footer-details">
 <details class="footer-box"><summary class="footer-summary" data-en="System prompt (full build prompt)">Systemprompt (voller Bau-Prompt)</summary><div class="footer-mono" data-en="Build a single, offline-capable HTML tool “Configuration” for Michaela Kühn (trainer in requirements engineering, business analysis and project management; brand PromptSchule).
-Purpose: show how Michaela works with Claude and how participants build their own shelf of reusable working knowledge. Four shelves: skills, guardrails, cases, ways of thinking. Each shelf has cards with a short description and one guiding question.
-Views: overview with an inline SVG shelf, one view per shelf, “How to build your configuration” (five steps, each with an example question), exercise “Which shelf?” (five situations, one question at a time, feedback after each answer, correct answer never always first), alphabetical glossary.
+Purpose: show how Michaela works with Claude and how participants build their own shelf of reusable working knowledge. Four shelves: skills, guardrails, cases, ways of thinking. Each shelf has an introduction (what belongs here, what does not), one guiding question and expandable cards with a short description, an explanation and an example or check.
+Views: overview with an inline SVG shelf (one book per card) and four shelf tiles, one view per shelf, “How to build your configuration” (five steps, each with an example question), exercise “Which shelf?” (five situations, one question at a time, feedback after each answer, correct answer never always first), alphabetical glossary.
 Standards: navigation always on the left; white background, color-scheme light, no dark mode, no fetch, no CDN, pointerup events, body text 16 px, secondary 14 px, touch targets 44 px; signature fixed top right; four-stage cumulative Beamer toggle; DE/EN toggle for all visible text including the footer; participant mode hides trainer boxes and the footer; German base state readable without JavaScript; four footer boxes; no schedule in the tool; solutions for every question to the group. K22 does not apply: card tool without running text.
 Content source: Michaela’s own skills and guardrails; Denkräume OS (Notion). Do not invent standards; mark own models as such.">Baue ein einzelnes, offlinefähiges HTML-Tool „Konfiguration“ für Michaela Kühn (Trainerin für Requirements Engineering, Business Analyse und Projektmanagement; Marke PromptSchule).
-Zweck: zeigen, wie Michaela mit Claude arbeitet und wie Teilnehmende ihr eigenes Regal wiederverwendbaren Arbeitswissens aufbauen. Vier Fächer: Skills, Leitplanken, Fälle, Denkweisen. Jedes Fach hat Karten mit Kurzbeschreibung und einer Leitfrage.
-Ansichten: Übersicht mit Inline-SVG-Regal, je eine Ansicht pro Fach, „So baust du deine Konfiguration“ (fünf Schritte mit je einer Beispielfrage), Übung „Welches Fach?“ (fünf Situationen, eine Frage nach der anderen, Rückmeldung nach jeder Antwort, richtige Antwort nie systematisch zuerst), alphabetisches Glossar.
+Zweck: zeigen, wie Michaela mit Claude arbeitet und wie Teilnehmende ihr eigenes Regal wiederverwendbaren Arbeitswissens aufbauen. Vier Fächer: Skills, Leitplanken, Fälle, Denkweisen. Jedes Fach hat eine Einleitung (was hierher gehört, was nicht), eine Leitfrage und aufklappbare Karten mit Kurzbeschreibung, Erklärung und Beispiel oder Prüfung.
+Ansichten: Übersicht mit Inline-SVG-Regal (ein Buch je Karte) und vier Fach-Kacheln, je eine Ansicht pro Fach, „So baust du deine Konfiguration“ (fünf Schritte mit je einer Beispielfrage), Übung „Welches Fach?“ (fünf Situationen, eine Frage nach der anderen, Rückmeldung nach jeder Antwort, richtige Antwort nie systematisch zuerst), alphabetisches Glossar.
 Standards: Navigation immer links; weißer Hintergrund, color-scheme light, kein Dark Mode, kein fetch, kein CDN, pointerup-Ereignisse, Fließtext 16 px, Sekundärtext 14 px, Touch-Ziele 44 px; Signatur fest oben rechts; vierstufiger kumulativer Beamer-Schalter; DE/EN-Schalter für alle sichtbaren Texte inklusive Fuß; Teilnehmenden-Modus blendet Trainer-Boxen und Fuß aus; deutscher Grundzustand ohne JavaScript lesbar; vier Fußboxen; keine Zeitagenda im Tool; Lösungen zu jeder Frage an die Gruppe. K22 entfällt: Kartentool ohne Fließtext.
 Inhaltsquelle: Michaelas eigene Skills und Leitplanken; Denkräume OS (Notion). Keine Normen erfinden; eigene Modelle als solche kennzeichnen."></div></details>
 <details class="footer-box"><summary class="footer-summary" data-en="Manual">Handbuch</summary><div class="footer-sans">
 <p data-en="Purpose: the tool shows a working configuration as a shelf. What you explain to an AI for the third time belongs on the shelf.">Zweck: Das Tool zeigt eine Arbeitskonfiguration als Regal. Was Sie einer KI zum dritten Mal erklären, gehört ins Regal.</p>
-<p data-en="Use: open a shelf, read the cards, answer the guiding question for your own work. Then try the exercise and the five steps.">Bedienung: Ein Fach öffnen, die Karten lesen, die Leitfrage für die eigene Arbeit beantworten. Danach die Übung und die fünf Schritte ausprobieren.</p>
+<p data-en="Use: open a shelf, read the introduction, open the cards (all open at first, collapse them if you like) and answer the guiding question for your own work. Then try the exercise and the five steps.">Bedienung: Ein Fach öffnen, die Einleitung lesen, die Karten aufklappen (anfangs sind alle offen, auf Wunsch zuklappen) und die Leitfrage für die eigene Arbeit beantworten. Danach die Übung und die fünf Schritte ausprobieren.</p>
 <p data-en="Modes: Beamer cycles through four sizes. Participants hides trainer boxes and this footer. EN switches all visible text to English.">Modi: Beamer schaltet durch vier Größen. Teilnehmende blendet Trainer-Boxen und diesen Fuß aus. EN schaltet alle sichtbaren Texte auf Englisch.</p>
-<p data-en="Limits: the tool stores nothing. K22 (depth toggle) does not apply because the tool is made of cards, not running text.">Grenzen: Das Tool speichert nichts. K22 (Vertiefungs-Toggle) entfällt, weil das Tool aus Karten besteht, nicht aus Fließtext.</p></div></details>
+<p data-en="Limits: the tool stores nothing. K22 (depth toggle) does not apply because the content sits in expandable cards that can be collapsed.">Grenzen: Das Tool speichert nichts. K22 (Vertiefungs-Toggle) entfällt, weil die Inhalte in aufklappbaren Karten stehen, die sich zuklappen lassen.</p></div></details>
 <details class="footer-box"><summary class="footer-summary" data-en="Speaker script">Vortrags-Skript</summary><div class="footer-sans"><ol>
 <li data-en="Overview: show the shelf and ask the group what they explain to an AI again and again. Collect three answers.">Übersicht: Das Regal zeigen und die Gruppe fragen, was sie einer KI immer wieder erklärt. Drei Antworten sammeln.</li>
 <li data-en="Shelves: open Guardrails first, it is the easiest to copy. Ask which rule the group would file first.">Fächer: Zuerst Leitplanken öffnen, sie lassen sich am leichtesten übernehmen. Fragen, welche Regel die Gruppe zuerst ablegen würde.</li>
@@ -99,42 +127,111 @@ Inhaltsquelle: Michaelas eigene Skills und Leitplanken; Denkräume OS (Notion). 
 <p data-en="Check the status before using in new material.">Stand vor Einsatz in neuen Materialien prüfen.</p></div></details>
 </div></footer>
 <script>
-var S={lang:'de',page:'start',part:false,bi:0,ex:0,exSel:{},from:''};
+var S={lang:'de',page:'start',part:false,bi:0,ex:0,exSel:{},from:'',closed:{}};
 var BL=['','beamer','beamer-xl','beamer-xxl'];
 function T(a){return Array.isArray(a)?(S.lang==='de'?a[0]:a[1]):a}
 function E(x){return String(x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 var C={1:'#B8570A',2:'#1F7043',3:'#1565C0',4:'#7B2D8B',5:'#C2185B'};
 var F=[
-{id:'skills',k:C[3],n:['Skills','Skills'],sub:['Arbeitsweisen, die Claude auf Zuruf übernimmt','Working methods Claude takes on when asked'],
- q:['Welche Aufgabe wiederholt sich bei mir so oft, dass sie einen Skill verdient?','Which task repeats so often in my work that it deserves a skill?'],
- items:[['denkraeume-os',['Fünf Räume, Kernfragen, Artefakte, Übergänge. Quelle der Wahrheit für alle Tools. Trigger: „Denkraum“, „Schleuse“, „Drohne“.','Five rooms, core questions, artefacts, transitions. Source of truth for all tools. Trigger: “Denkraum”, “lock”, “drone”.']],
- ['denkraum-klarheitssprung',['Bewertet die Klarheit einer Anforderung. Wird auf die fünf Räume umgebaut.','Rates the clarity of a requirement. Is being rebuilt on the five rooms.']],
- ['marmorkuchen-metapher',['Opener für Untrennbarkeit: funktional und nicht-funktional, agil und klassisch.','Opener for inseparability: functional and non-functional, agile and classic.']],
- ['promptschule',['Inhalte und Didaktik für AI-Literacy.','Content and didactics for AI literacy.']],
- ['html-tool-qualitaetscheck',['Prüft jedes Tool gegen K1–K22, Z1–Z9 und N1–N4.','Checks every tool against K1–K22, Z1–Z9 and N1–N4.']]]},
-{id:'leit',k:C[2],n:['Leitplanken','Guardrails'],sub:['Regeln, die für jedes Tool immer gelten','Rules that always apply to every tool'],
- q:['Welche Regel möchten Sie nie wieder erklären müssen?','Which rule do you never want to explain again?'],
- items:[[['Navigation links','Navigation on the left'],['Seitenleiste statt oberer Leiste. Je Kategorie darf eine Farbe stehen.','Sidebar instead of a top bar. Each category may have its own colour.']],
- [['Räume haben feste Farben','Rooms have fixed colours'],['Horizont, Analyse, Lösung, Umsetzung, Stör: immer dieselbe Farbe und dasselbe Symbol.','Horizon, analysis, solution, implementation, disruption: always the same colour and symbol.'],1],
- [['Sprünge landen sichtbar','Jumps land visibly'],['Überschrift und Erklärtext sofort lesbar, dazu ein Rücksprung zum Ausgangspunkt.','Heading and text readable at once, plus a way back to the starting point.']],
- [['Nichts Visuelles löschen','Never delete visuals'],['Grafiken und Diagramme bleiben beim Überarbeiten erhalten.','Graphics and diagrams stay when a tool is revised.']],
- [['Glossar alphabetisch','Glossary alphabetical'],['Ohne Ausnahme.','No exceptions.']],
- [['Beispielfragen und Lösungen','Example questions and solutions'],['Bei Coaching-Themen Fragen mitliefern, bei Gruppenfragen und Demos Lösungen einbauen.','Provide questions for coaching topics; build in solutions for group questions and demos.']],
- [['Quellen mit Link','Sources with link'],['Immer mit Link, nie nur Titel.','Always with a link, never just a title.']],
- [['Erst Entwurf, dann Repo','Draft first, then repo'],['Lauffähige HTML-Datei zeigen, nach Freigabe einbauen.','Show a runnable HTML file, build it in after approval.']],
- [['Dateien einzeln senden','Send files individually'],['Keine ZIP-Dateien, weil das iPad sie nicht öffnet.','No ZIP files, because the iPad cannot open them.']]]},
-{id:'faelle',k:C[1],n:['Fälle','Cases'],sub:['Wiederverwendbare Fallwelten','Reusable case worlds'],
- q:['Welche Geschichte trägt mehrere Tools, ohne dass Sie sie neu erfinden müssen?','Which story carries several tools without you having to reinvent it?'],
- items:[['TalentMatch AI / Vantera',['Fester Personenkreis für RE-, BA- und KI-Tools.','Fixed cast for RE, BA and AI tools.']],
- ['Lindenfeld Lunch',['PM-Artefakte Schritt für Schritt mit der Brille von BA und RE.','PM artefacts step by step through the eyes of BA and RE.']],
- ['Baltoris Bank AG / PaySprint',['Eigenständige Fallwelt für Banken-Tools.','Separate case world for banking tools.']],
- ['CALVERA Services GmbH',['Fallwelt für OKR.','Case world for OKR.']]]},
-{id:'denk',k:C[4],n:['Denkweisen','Ways of thinking'],sub:['Modelle und Metaphern','Models and metaphors'],
- q:['Welches Bild erklärt in 30 Sekunden, wofür Sie sonst eine Folie brauchen?','Which image explains in 30 seconds what you would otherwise need a slide for?'],
- items:[['Denkräume OS',['Fünf Räume, jeder ein Schutzraum für das richtige Denken.','Five rooms, each a protected space for the right kind of thinking.']],
- ['Marmorkuchen',['Funktional und nicht-funktional lassen sich nicht trennen.','Functional and non-functional cannot be separated.']],
- ['Eisberg „Fokus“',['Flughöhe 10/5/3/1 plus „Wie genau“ unter Wasser.','Flight level 10/5/3/1 plus “how exactly” under water.']],
- ['Schleuse, HALT, SCOPE',['Souveränität prüfbar machen.','Make sovereignty verifiable.']]]}
+{id:'skills',k:C[3],ic:'🧰',n:['Skills','Skills'],sub:['Arbeitsweisen, die Claude auf Zuruf übernimmt','Working methods Claude takes on when asked'],
+ intro:['Ein Skill ist eine Arbeitsweise, die ich einmal beschreibe und die Claude danach auf ein Stichwort hin übernimmt. Er legt fest, wann er greift (Trigger), wie vorgegangen wird und welches Ergebnis herauskommt. So muss ich einen Ablauf nicht bei jeder Aufgabe neu erklären.','A skill is a working method that I describe once and that Claude then takes on when it hears a keyword. It defines when it applies (trigger), how to proceed and what the result looks like. That way I do not have to explain a procedure again for every task.'],
+ yes:['Ein Ablauf, der sich wiederholt und ein Stichwort hat.','A procedure that repeats and has a keyword.'],no:['Regeln, die für alles gelten (Leitplanke), und Geschichten oder Bilder (Fall, Denkweise).','Rules that apply to everything (guardrail), and stories or images (case, way of thinking).'],
+ q:['Welche Aufgabe wiederholt sich bei mir so oft, dass sie einen Skill verdient?','Which task repeats so often in my work that it deserves a skill?'],xl:['Trigger','Trigger'],
+ items:[
+ {n:['denkraeume-os','denkraeume-os'],s:['Fünf Räume, Kernfragen, Artefakte, Übergänge.','Five rooms, core questions, artefacts, transitions.'],
+  l:['Der Skill kennt die fünf Denkräume mit Kernfrage, Modus und Artefakt, die Schleusen dazwischen und einen Abschnitt „Entschieden“ mit allem, was geklärt ist. Bei Widerspruch gilt Notion. Er ist die Quelle der Wahrheit für alle Tools, damit Raumnamen und Fragen überall gleich lauten.','The skill knows the five rooms with core question, mode and artefact, the locks between them and a section “Decided” with everything that is settled. If there is a contradiction, Notion applies. It is the source of truth for all tools, so room names and questions read the same everywhere.'],
+  x:['„Denkraum“, „Schleuse“, „Drohne“, „In welchem Raum sind wir?“','“Thinking room”, “lock”, “drone”, “Which room are we in?”']},
+ {n:['denkraum-klarheitssprung','denkraum-klarheitssprung'],s:['Bewertet die Klarheit einer Anforderung entlang der fünf Räume.','Rates the clarity of a requirement along the five rooms.'],
+  l:['Der Skill nimmt eine Anforderung und bewertet sie in fünf Dimensionen, je eine pro Raum: Intent-Kern, Werttreiber, Lösungsbausteine, Umsetzungspfad und Störstellen. Der Score zeigt, in welchem Raum die Lücke liegt, und unterscheidet eine echte Lücke von „noch nicht dran“.','The skill takes a requirement and rates it in five dimensions, one per room: intent core, value drivers, solution building blocks, implementation path and disruption points. The score shows in which room the gap lies and tells a real gap from “not due yet”.'],
+  x:['„Klarheits-Score“, „Nebel“, „Anforderung präzisieren“','“Clarity score”, “fog”, “sharpen a requirement”']},
+ {n:['marmorkuchen-metapher','marmorkuchen-metapher'],s:['Opener für Untrennbarkeit.','Opener for inseparability.'],
+  l:['Der Skill setzt die Marmorkuchen-Metapher gezielt und gleichbleibend ein. Wie heller und dunkler Teig sind funktionale und nicht-funktionale Anforderungen nach dem Backen untrennbar. Dasselbe gilt für agile und klassische Elemente und für Prompts (Inhalt und Form).','The skill uses the marble-cake metaphor deliberately and consistently. Like light and dark batter, functional and non-functional requirements cannot be separated after baking. The same holds for agile and classic elements and for prompts (content and form).'],
+  x:['„Marmorkuchen“, „Opener“, „agil und klassisch verbinden“','“Marble cake”, “opener”, “combine agile and classic”']},
+ {n:['promptschule','promptschule'],s:['Inhalte und Didaktik für AI-Literacy.','Content and didactics for AI literacy.'],
+  l:['Der Skill hilft, Inhalte für die PromptSchule zu bauen: Module, Lerneinheiten, Teilnehmerübungen und Prompt-Frameworks für AI-Literacy in Unternehmen. Die Zuordnung zu den Denkräumen holt er sich aus dem Skill denkraeume-os.','The skill helps build content for the PromptSchule: modules, lessons, participant exercises and prompt frameworks for AI literacy in companies. It takes the assignment to the rooms from the skill denkraeume-os.'],
+  x:['„PromptSchule“, „Modul erstellen“, „Teilnehmerübung“','“PromptSchule”, “create a module”, “participant exercise”']},
+ {n:['html-tool-qualitaetscheck','html-tool-qualitaetscheck'],s:['Prüft jedes Tool gegen K1–K22, Z1–Z9 und N1–N4.','Checks every tool against K1–K22, Z1–Z9 and N1–N4.'],
+  l:['Der Skill prüft ein Tool gegen die Kriterien K1–K22 und Z1–Z9 und gegen die Repo-Standards N1–N4 (Navigation links, Farbe, Sprungmarken, Horizontraum). Das Ergebnis ist ein Audit-Protokoll mit Befunden und Siegel.','The skill checks a tool against the criteria K1–K22 and Z1–Z9 and the repo standards N1–N4 (navigation on the left, colour, jump marks, horizon room). The result is an audit log with findings and a seal.'],
+  x:['Beim Bauen, Überarbeiten und Prüfen jedes Tools','When building, revising and checking every tool']}
+ ]},
+{id:'leit',k:C[2],ic:'📏',n:['Leitplanken','Guardrails'],sub:['Regeln, die für jedes Tool immer gelten','Rules that always apply to every tool'],
+ intro:['Eine Leitplanke ist eine Regel, die für jedes Tool gilt, egal zu welchem Thema. Ich erkläre sie nicht bei jeder Aufgabe neu, sie steht einmal im Regal. Wenn Claude arbeitet, hält es sich daran, und wenn ich prüfe, ist sie ein fester Punkt der Prüfliste.','A guardrail is a rule that applies to every tool, whatever the topic. I do not explain it again for every task, it sits on the shelf once. When Claude works, it keeps to it, and when I check, it is a fixed point on the checklist.'],
+ yes:['Eine Regel, die immer gilt und sich prüfen lässt.','A rule that always applies and can be checked.'],no:['Regeln nur für eine einzelne Aufgabe und Abläufe mit Trigger (Skill).','Rules for a single task only and procedures with a trigger (skill).'],
+ q:['Welche Regel möchten Sie nie wieder erklären müssen?','Which rule do you never want to explain again?'],xl:['Woran man es prüft','How to check it'],
+ items:[
+ {n:['Navigation links','Navigation on the left'],s:['Seitenleiste statt oberer Leiste.','Sidebar instead of a top bar.'],
+  l:['Die Navigation steht immer links in einer Seitenleiste, nie oben. So sehen alle Tools gleich aus und man findet sich sofort zurecht. Je Kategorie darf eine eigene Farbe stehen.','The navigation is always on the left in a sidebar, never at the top. That way all tools look alike and you find your way at once. Each category may have its own colour.'],
+  x:['Steht die Leiste links, auch bei 390 px Breite?','Is the bar on the left, even at 390 px width?']},
+ {n:['Räume haben feste Farben','Rooms have fixed colours'],s:['Eine Farbe und ein Symbol je Raum, in allen Tools.','One colour and one symbol per room, in all tools.'],sw:1,
+  l:['Jeder Raum hat eine feste Farbe und ein festes Symbol, in jedem Tool. Wer die Farbe sieht, weiß, in welchem Raum er ist. Bei weißer Schrift braucht es die dunkleren Varianten von Orange und Grün, sonst reicht der Kontrast nicht (4,5:1).','Every room has a fixed colour and a fixed symbol, in every tool. Whoever sees the colour knows which room they are in. For white text the darker variants of orange and green are needed, otherwise the contrast is not enough (4.5:1).'],
+  x:['Stimmen Farbe und Symbol mit dieser Liste überein?','Do colour and symbol match this list?']},
+ {n:['Sprünge landen sichtbar','Jumps land visibly'],s:['Überschrift und Erklärtext sofort lesbar.','Heading and text readable at once.'],
+  l:['Springt man von einer Karte zu einer Methode oder einem Werkzeug, sollen Überschrift und Erklärtext sofort im Bild sein, ohne nachzuscrollen. Von dort führt ein Rücksprung zum Ausgangspunkt, zum Beispiel zum Board.','When you jump from a card to a method or a tool, heading and text should be in view at once, without scrolling. From there a way back leads to the starting point, for example to the board.'],
+  x:['Nach dem Klick: Überschrift und erster Absatz im Bild? Gibt es einen Weg zurück?','After the click: heading and first paragraph in view? Is there a way back?']},
+ {n:['Nichts Visuelles löschen','Never delete visuals'],s:['Grafiken und Diagramme bleiben erhalten.','Graphics and diagrams stay.'],
+  l:['Beim Überarbeiten eines Tools bleiben Grafiken, SVGs und Diagramme erhalten. Eine Überarbeitung darf ergänzen und verbessern, aber kein Bild entfernen.','When a tool is revised, graphics, SVGs and diagrams stay. A revision may add and improve, but never remove a picture.'],
+  x:['Vorher die vorhandenen Visualisierungen zählen, nachher vergleichen.','Count the existing visualisations before, compare afterwards.']},
+ {n:['Glossar alphabetisch','Glossary alphabetical'],s:['Ohne Ausnahme.','No exceptions.'],
+  l:['Jedes Glossar ist alphabetisch sortiert, ohne Ausnahme. Das gilt auch, wenn später Begriffe dazukommen: einsortieren, nicht hinten anhängen.','Every glossary is sorted alphabetically, without exception. This also holds when terms are added later: sort them in, do not append them at the end.'],
+  x:['Steht der neueste Begriff an der richtigen Stelle?','Is the newest term in the right place?']},
+ {n:['Beispielfragen und Lösungen','Example questions and solutions'],s:['Fragen mitliefern, Lösungen einbauen.','Provide questions, build in solutions.'],
+  l:['Bei Coaching- und Trainingsthemen gehören Beispielfragen dazu, die man in der Situation wirklich stellen kann. Bei Fragen an die Gruppe und bei gezeigten Demos steht die Lösung im Tool, damit niemand sie suchen muss.','Coaching and training topics come with example questions that you can really ask in the situation. For questions to the group and for demos shown live, the solution is in the tool, so nobody has to look for it.'],
+  x:['Zu jeder Gruppenfrage: Gibt es eine Lösung im Tool?','For every group question: is there a solution in the tool?']},
+ {n:['Quellen mit Link','Sources with link'],s:['Immer mit Link, nie nur Titel.','Always with a link, never just a title.'],
+  l:['Quellen stehen immer mit Link, nie nur mit Titel. So lässt sich jede Aussage nachprüfen, auch Monate später.','Sources always come with a link, never only a title. That way every statement can be checked, even months later.'],
+  x:['Führt jede Quellenangabe per Klick zur Quelle?','Does every source lead to the source with one click?']},
+ {n:['Notion hat Vorrang','Notion comes first'],s:['Bei Widerspruch gilt Notion.','If they contradict, Notion applies.'],
+  l:['Wenn ein Skill und Notion sich widersprechen, gilt Notion. Vor dem Einbau in ein Tool wird die Notion-Seite kurz geprüft. Widersprüche werden gesammelt, nicht still entschieden.','If a skill and Notion contradict each other, Notion applies. Before building something into a tool, the Notion page is checked briefly. Contradictions are collected, not decided silently.'],
+  x:['Ist die Notion-Seite zu diesem Raum oder Begriff angesehen worden?','Has the Notion page for this room or term been looked at?']},
+ {n:['Herkunft kennzeichnen','Mark the origin'],s:['Jedes Beispiel trägt eine Herkunftsmarke.','Every example carries an origin label.'],
+  l:['Beispiele und Musterlösungen tragen eine Marke, woher sie kommen: Fall (aus dem Fallmaterial), Abgeleitet (aus dem Fallmaterial geschlossen), Gedankenspiel (frei gedacht) oder Denkräume OS (aus dem Modell). Normen werden nicht erfunden, eigene Modelle als solche gekennzeichnet.','Examples and model solutions carry a label showing where they come from: case (from the case material), derived (concluded from the case material), thought experiment (freely imagined) or Denkräume OS (from the model). Standards are not invented, own models are marked as such.'],
+  x:['Beginnt jede Musterlösung mit Fall:, Abgeleitet:, Gedankenspiel: oder Denkräume OS:?','Does every model solution start with Case:, Derived:, Thought experiment: or Denkräume OS:?']},
+ {n:['Erst Entwurf, dann Repo','Draft first, then repo'],s:['Lauffähige HTML-Datei zeigen, nach Freigabe einbauen.','Show a runnable HTML file, build it in after approval.'],
+  l:['Ein neues Ergebnis kommt zuerst als lauffähige HTML-Datei zu mir. Erst nach meinem OK wird es ins Repo eingebaut, mit Register, Kachel und Pull Request. So sehe ich, was entsteht, bevor es Teil des Bestands wird.','A new result first reaches me as a runnable HTML file. Only after my OK is it built into the repo, with register entry, tile and pull request. That way I see what is created before it becomes part of the collection.'],
+  x:['Reihenfolge: Entwurf zeigen, OK abwarten, einbauen.','Order: show the draft, wait for the OK, build it in.']},
+ {n:['Dateien einzeln senden','Send files individually'],s:['Keine ZIP-Dateien.','No ZIP files.'],
+  l:['Ich bekomme Dateien einzeln, nie als ZIP, weil das iPad sie nicht öffnet. Das gilt für jede Auslieferung, auch bei mehreren Tools.','I receive files one by one, never as a ZIP, because the iPad cannot open them. This applies to every delivery, also with several tools.'],
+  x:['Drei Tools bedeuten drei einzelne Dateien.','Three tools mean three single files.']}
+ ]},
+{id:'faelle',k:C[1],ic:'📚',n:['Fälle','Cases'],sub:['Wiederverwendbare Fallwelten','Reusable case worlds'],
+ intro:['Ein Fall ist eine wiederverwendbare Geschichte mit festem Personenkreis, die mehrere Tools trägt. So muss ich Beispiele nicht jedes Mal neu erfinden, und Teilnehmende erkennen die Figuren und die Lage wieder. Jede Fallwelt steht für sich und wird nicht mit einer anderen vermischt.','A case is a reusable story with a fixed cast that carries several tools. That way I do not have to invent examples every time, and participants recognise the characters and the situation. Each case world stands alone and is not mixed with another.'],
+ yes:['Eine Geschichte, die mehrere Tools oder Seminare trägt.','A story that carries several tools or seminars.'],no:['Ein einzelnes Beispiel für nur ein Tool.','A single example for one tool only.'],
+ q:['Welche Geschichte trägt mehrere Tools, ohne dass Sie sie neu erfinden müssen?','Which story carries several tools without you having to reinvent it?'],xl:['Trägt','Carries'],
+ items:[
+ {n:['TalentMatch AI / Vantera','TalentMatch AI / Vantera'],s:['Fester Personenkreis für RE-, BA- und KI-Tools.','Fixed cast for RE, BA and AI tools.'],
+  l:['Die Fallwelt rund um die Vantera Systemtechnik GmbH und die KI-Lösung TalentMatch AI. Die Personen sind fest, damit dieselben Figuren in vielen Tools wiederkehren.','The case world around Vantera Systemtechnik GmbH and the AI solution TalentMatch AI. The cast is fixed so that the same characters return in many tools.'],
+  x:['Requirements-Engineering-, Business-Analyse- und KI-Tools, zum Beispiel Guardrails, Governance und Assurance','Requirements engineering, business analysis and AI tools, for example guardrails, governance and assurance']},
+ {n:['Lindenfeld Lunch','Lindenfeld Lunch'],s:['PM-Artefakte mit der Brille von BA und RE.','PM artefacts through the eyes of BA and RE.'],
+  l:['Eine Kursreihe, die PM-Artefakte Schritt für Schritt mit der Brille von Business Analyse und Requirements Engineering durchspielt. Sie liefert die Musterlösungen im Tool Raum-Schleusen, je Feld mit Herkunftsmarke (Fall, Abgeleitet, Gedankenspiel).','A course series that plays through PM artefacts step by step through the eyes of business analysis and requirements engineering. It provides the model solutions in the tool Raum-Schleusen, each field with an origin label (case, derived, thought experiment).'],
+  x:['Raum-Schleusen und mehrere Seminare als roter Faden','Raum-Schleusen and several seminars as a common thread']},
+ {n:['Baltoris Bank AG / PaySprint','Baltoris Bank AG / PaySprint'],s:['Eigenständige Fallwelt für Banken-Tools.','Separate case world for banking tools.'],
+  l:['Eine eigene Fallwelt rund um die Baltoris Bank AG und PaySprint (SEPA Instant Payments). Sie steht bewusst neben TalentMatch AI und wird nicht mit ihr vermischt.','A case world of its own around Baltoris Bank AG and PaySprint (SEPA Instant Payments). It stands deliberately beside TalentMatch AI and is not mixed with it.'],
+  x:['Tools für Banken','Tools for banks']},
+ {n:['CALVERA Services GmbH','CALVERA Services GmbH'],s:['Fallwelt für OKR.','Case world for OKR.'],
+  l:['Die Fallwelt für OKR, früher unter dem Namen NORDSTERN. Sie trägt das Tool OKR LAB „Von Strategie zu Wirkung“ mit drei Lernpfaden.','The case world for OKR, formerly named NORDSTERN. It carries the tool OKR LAB “From strategy to impact” with three learning paths.'],
+  x:['OKR LAB','OKR LAB']}
+ ]},
+{id:'denk',k:C[4],ic:'💭',n:['Denkweisen','Ways of thinking'],sub:['Modelle und Metaphern','Models and metaphors'],
+ intro:['Eine Denkweise ist ein Modell oder ein Bild, das in 30 Sekunden erklärt, wofür man sonst eine Folie braucht. Sie gibt Teilnehmenden etwas, woran sie sich erinnern, und gibt Claude eine gemeinsame Sprache mit mir. Eigene Modelle sind als solche gekennzeichnet.','A way of thinking is a model or an image that explains in 30 seconds what you would otherwise need a slide for. It gives participants something to remember and gives Claude a shared language with me. Own models are marked as such.'],
+ yes:['Ein Bild oder Modell, das sich in einem Satz erklären lässt.','An image or model that can be explained in one sentence.'],no:['Anweisungen (Skill) oder Regeln (Leitplanke).','Instructions (skill) or rules (guardrail).'],
+ q:['Welches Bild erklärt in 30 Sekunden, wofür Sie sonst eine Folie brauchen?','Which image explains in 30 seconds what you would otherwise need a slide for?'],xl:['Frage dazu','Question for it'],
+ items:[
+ {n:['Denkräume OS','Denkräume OS'],s:['Fünf Räume, jeder ein Schutzraum für das richtige Denken.','Five rooms, each a protected space for the right kind of thinking.'],
+  l:['Fünf Räume, jeder ein Schutzraum für das richtige Denken: Horizont (Wohin schauen wir?), Analyse (Warum passiert das?), Lösung (Was soll entstehen?), Umsetzung (Wie wird es gebaut?) und Stör (Was verändert sich?). Zwischen den Räumen stehen Schleusen.','Five rooms, each a protected space for the right kind of thinking: horizon (Where are we looking?), analysis (Why does this happen?), solution (What should come into being?), implementation (How is it built?) and disruption (What is changing?). Locks stand between the rooms.'],
+  x:['In welchem Raum sind wir gerade?','Which room are we in right now?']},
+ {n:['Marmorkuchen','Marble cake'],s:['Funktional und nicht-funktional lassen sich nicht trennen.','Functional and non-functional cannot be separated.'],
+  l:['Heller und dunkler Teig lassen sich nach dem Backen nicht mehr trennen. So sind auch funktionale und nicht-funktionale Anforderungen untrennbar, ebenso agile und klassische Elemente. Das Bild eignet sich als Opener.','Light and dark batter cannot be separated after baking. In the same way functional and non-functional requirements are inseparable, as are agile and classic elements. The image works well as an opener.'],
+  x:['Kann man einen Marmorkuchen backen, ohne zu wissen, wie viel Mehl man braucht?','Can you bake a marble cake without knowing how much flour you need?']},
+ {n:['Eisberg „Fokus“','Iceberg “Focus”'],s:['Flughöhe 10/5/3/1 plus „Wie genau“ unter Wasser.','Flight level 10/5/3/1 plus “how exactly” under water.'],
+  l:['Der Eisberg zeigt, auf welcher Flughöhe man gerade spricht: Warum 10 (Horizont, Auftraggeber, Boards), Warum genau 5 (Analyse), Was 3 (Lösung) und Wie 1 (Umsetzung), dazu „Wie genau“ unter Wasser. Wer auf der falschen Höhe diskutiert, redet aneinander vorbei.','The iceberg shows at which flight level you are speaking: why 10 (horizon, client, boards), why exactly 5 (analysis), what 3 (solution) and how 1 (implementation), plus “how exactly” under water. Whoever discusses at the wrong level talks past the others.'],
+  x:['Auf welcher Flughöhe sind wir, und auf welcher sitzt mein Gegenüber?','At which flight level are we, and at which does the other person sit?']},
+ {n:['Eisberg kippt','The iceberg tips'],s:['Das Bild des Störraums.','The image of the disruption room.'],
+  l:['Das Bild des Störraums: Wenn sich Bestehendes ändert, kommt hoch, was unter Wasser lag, also Abhängigkeiten, Annahmen und Altlasten. Die vier Ebenen des Eisbergs bleiben, nur kommt der Eisberg selbst in Bewegung. Zu sehen im Tool Raum-Schleusen im Störraum.','The image of the disruption room: when something existing changes, what lay under water comes up, that is dependencies, assumptions and legacy. The four iceberg levels stay, only the iceberg itself starts to move. Shown in the tool Raum-Schleusen in the disruption room.'],
+  x:['Was liegt bei dieser Änderung unter der Wasserlinie, das heute noch keiner sieht?','What lies below the waterline in this change that nobody sees yet?']},
+ {n:['Schleuse, HALT, SCOPE','Lock, HALT, SCOPE'],s:['Souveränität prüfbar machen.','Make sovereignty verifiable.'],
+  l:['An jedem Raumübergang steht eine Schleuse. HALT stellt dort vier Fragen: Hinterfragen (Abhängigkeit), Ausweg (Exit-Preis), Loslassen (Kontrollverlust) und Transparenz (Dokumentation). SCOPE ist das Modell dahinter mit fünf Dimensionen: Steuerungsfähigkeit, Controllability, Ownership, Portabilität und Enforceability.','A lock stands at every room transition. HALT asks four questions there: question (dependency), exit (exit price), let go (loss of control) and transparency (documentation). SCOPE is the model behind it with five dimensions: steerability, controllability, ownership, portability and enforceability.'],
+  x:['Was lassen wir durch diese Schleuse, und was bewusst nicht?','What do we let through this lock, and what deliberately not?']}
+ ]}
 ];
 var RM=[['Horizontraum','Horizon room',1,'💡'],['Analyseraum','Analysis room',2,'🔍'],['Lösungsraum','Solution room',3,'🎯'],['Umsetzungsraum','Implementation room',4,'⚙️'],['Störraum','Disruption room',5,'🚨']];
 var STEPS=[
@@ -152,11 +249,15 @@ var EX=[
 var GL=[[['Denkweise','Way of thinking'],['Ein Modell oder Bild, das etwas erklärt.','A model or image that explains something.']],[['Fall','Case'],['Eine wiederverwendbare Geschichte, die mehrere Tools trägt.','A reusable story that carries several tools.']],[['Konfiguration','Configuration'],['Die Gesamtheit aus Skills, Leitplanken, Fällen und Denkweisen.','The whole of skills, guardrails, cases and ways of thinking.']],[['Leitplanke','Guardrail'],['Eine Regel, die für alle Tools immer gilt.','A rule that always applies to all tools.']],[['Skill','Skill'],['Eine Arbeitsweise, die Claude auf Zuruf übernimmt.','A working method Claude takes on when asked.']],[['Trigger','Trigger'],['Das Stichwort, das einen Skill auslöst.','The keyword that activates a skill.']]];
 function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e}
 function shelfSvg(){
- var s='<svg viewBox="0 0 640 250" role="img" aria-label="'+E(T(['Regal mit vier Fächern: Skills, Leitplanken, Fälle, Denkweisen','Shelf with four compartments: skills, guardrails, cases, ways of thinking']))+'" style="width:100%;max-width:640px;height:auto">';
- var xs=[[20,C[3],T(['Skills','Skills'])],[170,C[2],T(['Leitplanken','Guardrails'])],[320,C[1],T(['Fälle','Cases'])],[470,C[4],T(['Denkweisen','Ways of thinking'])]];
- s+='<rect x="8" y="10" width="624" height="224" rx="6" fill="#fff" stroke="#b58a5a" stroke-width="6"/><rect x="8" y="122" width="624" height="8" fill="#b58a5a"/>';
- xs.forEach(function(x,i){s+='<rect x="'+x[0]+'" y="'+(i%2?24:70)+'" width="140" height="'+(i%2?90:44)+'" rx="8" fill="'+x[1]+'" opacity=".9"/><text x="'+(x[0]+70)+'" y="'+(i%2?74:98)+'" text-anchor="middle" font-size="16" fill="#fff" font-weight="700">'+E(x[2])+'</text>';});
- s+='<text x="320" y="186" text-anchor="middle" font-size="16" fill="#1d2330">'+E(T(['Einmal ablegen, immer wieder nutzen','File once, use again and again']))+'</text></svg>';return s}
+ var W=[[20,'skills'],[170,'leit'],[320,'faelle'],[470,'denk']];
+ var s='<svg viewBox="0 0 640 270" role="img" aria-label="'+E(T(['Regal mit vier Fächern: Skills, Leitplanken, Fälle, Denkweisen. Jedes Buch ist eine Karte.','Shelf with four compartments: skills, guardrails, cases, ways of thinking. Each book is a card.']))+'" style="width:100%;max-width:640px;height:auto">';
+ s+='<rect x="8" y="10" width="624" height="214" rx="10" fill="#fbf7ef" stroke="#b58a5a" stroke-width="6"/>';
+ [157,317,477].forEach(function(x){s+='<rect x="'+x+'" y="10" width="6" height="214" fill="#b58a5a"/>'});
+ s+='<rect x="8" y="196" width="624" height="12" fill="#b58a5a"/>';
+ W.forEach(function(w){var f=F.filter(function(x){return x.id===w[1]})[0],n=f.items.length,bw=Math.min(22,Math.floor(132/n)-2),x0=w[0]+(140-n*(bw+2))/2;
+  for(var i=0;i<n;i++){var h=70+((i*37+n*11)%5)*16;s+='<rect x="'+(x0+i*(bw+2))+'" y="'+(196-h)+'" width="'+bw+'" height="'+h+'" rx="3" fill="'+f.k+'" opacity="'+(i%2?'.72':'.95')+'"/>'}
+  s+='<text x="'+(w[0]+70)+'" y="248" text-anchor="middle" font-size="16" font-weight="700" fill="#1d2330">'+E(T(f.n))+'</text><text x="'+(w[0]+70)+'" y="264" text-anchor="middle" font-size="14" fill="#4a5568">'+n+' '+E(T(['Karten','cards']))+'</text>'});
+ return s+'</svg>'}
 function go(p,from){S.page=p;S.from=from||'';render();window.scrollTo(0,0)}
 function render(){
  var h=document.documentElement;h.lang=S.lang;document.body.className=S.part?'part':'';
@@ -170,9 +271,12 @@ function render(){
  function back(){var b=el('button','back2',E(T(['← Übersicht','← Overview'])));b.setAttribute('type','button');b.addEventListener('pointerup',function(){go('start')});m.appendChild(b)}
  if(S.page==='start'){
   m.appendChild(el('h2','',E(T(['Das Regal','The shelf']))));
-  m.appendChild(el('p','sub',E(T(['Was Sie einer KI wiederholt erklären, legen Sie einmal ab. Vier Fächer.','What you repeatedly explain to an AI, you file once. Four shelves.']))));
+  m.appendChild(el('p','lead',E(T(['Was Sie einer KI wiederholt erklären, legen Sie einmal ab. Mein Regal hat vier Fächer. Jedes Buch im Regal ist eine Karte, die Sie im Fach aufklappen können: mit Erklärung, Beispiel und der Frage, wie Sie sie prüfen.','What you repeatedly explain to an AI, you file once. My shelf has four compartments. Each book on the shelf is a card that you can open in its compartment: with an explanation, an example and the question of how to check it.']))));
   m.appendChild(el('div','',shelfSvg()));
-  var sh=el('div','shelf');F.forEach(function(f){var b=el('button','fach','<b>'+E(T(f.n))+'</b><span>'+E(T(f.sub))+' · '+f.items.length+'</span>');b.style.setProperty('--k',f.k);b.setAttribute('type','button');b.addEventListener('pointerup',function(){go(f.id)});sh.appendChild(b)});m.appendChild(sh);
+  m.appendChild(el('p','lead',E(T(['Beginnen Sie mit dem Fach, das Sie am meisten nervt. Meist sind das die Leitplanken: Regeln, die man immer wieder sagt.','Start with the compartment that annoys you most. Usually that is the guardrails: rules you keep repeating.']))));
+  var sh=el('div','tiles');F.forEach(function(f){var chips=f.items.slice(0,3).map(function(it){return '<span class="chip">'+E(T(it.n))+'</span>'}).join('')+(f.items.length>3?'<span class="chip">+'+(f.items.length-3)+'</span>':'');
+   var b=el('button','tile','<span class="tt"><span class="ic" aria-hidden="true">'+f.ic+'</span>'+E(T(f.n))+'</span><span class="ts">'+E(T(f.sub))+'</span><span class="tc">'+chips+'</span><span class="tn">'+f.items.length+' '+E(T(['Karten','cards']))+'</span>');
+   b.style.setProperty('--k',f.k);b.setAttribute('type','button');b.addEventListener('pointerup',function(){go(f.id)});sh.appendChild(b)});m.appendChild(sh);
  }else if(S.page==='bau'){
   back();m.appendChild(el('h2','',E(T(['So baust du deine Konfiguration','Build your configuration']))));
   STEPS.forEach(function(s){m.appendChild(el('div','box','<b>'+E(T(s[0]))+'</b><p>'+E(T(s[1]))+'</p><p class="q">'+E(T(['Frage: ','Question: ']))+E(T(s[2]))+'</p>'))});
@@ -197,11 +301,18 @@ function render(){
   m.appendChild(el('dl','gl',g.map(function(x){return '<dt>'+E(T(x[0]))+'</dt><dd>'+E(T(x[1]))+'</dd>'}).join('')));
  }else{
   var f=F.filter(function(x){return x.id===S.page})[0];back();
-  m.appendChild(el('h2','',E(T(f.n))));m.appendChild(el('p','sub',E(T(f.sub))));
+  m.appendChild(el('div','fhead','<span class="ic" aria-hidden="true">'+f.ic+'</span><div><h2>'+E(T(f.n))+'</h2><p class="sub">'+E(T(f.sub))+'</p></div>'));
+  m.lastChild.style.setProperty('--k',f.k);
+  m.appendChild(el('p','intro',E(T(f.intro))));
+  m.appendChild(el('div','two','<div><b>'+E(T(['Gehört hierher','Belongs here']))+'</b>'+E(T(f.yes))+'</div><div><b>'+E(T(['Gehört nicht hierher','Does not belong here']))+'</b>'+E(T(f.no))+'</div>'));
   m.appendChild(el('div','box','<span class="q">'+E(T(['Frage: ','Question: ']))+E(T(f.q))+'</span>'));
-  var gr=el('div','grid');f.items.forEach(function(it){var name=Array.isArray(it[0])?T(it[0]):it[0];var extra='';
-   if(it[2]){extra='<p>'+RM.map(function(r){return '<span class="swatch" style="background:'+C[r[2]]+'"></span>'+r[3]+' '+E(T([r[0],r[1]]))}).join('<br>')+'</p>'}
-   var c=el('div','card','<h3>'+E(name)+'</h3><p>'+E(T(it[1]))+'</p>'+extra);c.style.setProperty('--k',f.k);gr.appendChild(c)});
+  var pg=el('div','pager');[['Alles aufklappen','Expand all',0],['Alles zuklappen','Collapse all',1]].forEach(function(x){var bt=el('button','btn',E(T([x[0],x[1]])));bt.setAttribute('type','button');bt.addEventListener('pointerup',function(){f.items.forEach(function(it,i){S.closed[f.id+i]=!!x[2]});render()});pg.appendChild(bt)});m.appendChild(pg);
+  var gr=el('div','grid items');f.items.forEach(function(it,i){var key=f.id+i,extra='';
+   if(it.sw){extra='<p class="lg">'+RM.map(function(r){return '<span class="swatch" style="background:'+C[r[2]]+'"></span>'+r[3]+' '+E(T([r[0],r[1]]))}).join('<br>')+'</p>'}
+   var c=el('details','card','<summary><b>'+E(T(it.n))+'</b><span class="ss">'+E(T(it.s))+'</span></summary><p class="lg">'+E(T(it.l))+'</p>'+extra+'<div class="ex"><b>'+E(T([f.xl[0]+': ',f.xl[1]+': ']))+'</b>'+E(T(it.x))+'</div>');
+   if(!S.closed[key])c.setAttribute('open','');
+   c.addEventListener('toggle',function(){S.closed[key]=!c.open});
+   c.style.setProperty('--k',f.k);gr.appendChild(c)});
   m.appendChild(gr);
  }
  applyStatic();
