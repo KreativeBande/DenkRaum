@@ -41,3 +41,7 @@ Elf Dokumente (Strategiepapier bis Kostenplan) haben Musterlösungen aus dem Fal
 ## Nachtrag 01.11.2026 (Entscheidungen)
 
 Horizontraum-Kernfrage „Wohin schauen wir?“, User Story als Übergabeartefakt, neue Karten Cynefin-Einordnung (Analyse), Abnahmeprotokoll (Umsetzung) und Projektabschlussbericht (Stör) mit Musterlösung und Herkunftsmarke. Geprüft: keine Konsolenfehler, 45 Karten ohne leere Felder, kein seitliches Scrollen bei 390 px (DE und EN). Siegel unverändert ✅.
+
+## Nachtrag 01.11.2026 (Störraum-Bild)
+
+Störraum-Bild „Der Eisberg kippt“ (vier SVG-Bilder, DE/EN, Beispielfragen, Lösung) in der Raumansicht des Störraums. Geprüft: keine Konsolenfehler, vier Bilder in DE und EN, kein seitliches Scrollen bei 390 px. Siegel unverändert ✅.
