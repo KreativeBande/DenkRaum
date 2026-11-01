@@ -234,3 +234,9 @@ In diesem Repo trat wiederholt Korruption von geraden Anführungszeichen (`"`) z
 
 ### Sprungmarken „Zurück zu Start / Zurück zum Seminar"
 Jedes neue Tool und jede neue Seminarseite bindet `register/zurueck.js` ein (siehe `register/README.md`, Abschnitt „Sprungmarken"). Das Skript sitzt oben in der linken Leiste, nicht in einer Kopfzeile.
+
+## Navigation: links, und sie darf farbig sein
+- **Die Navigation steht immer links** (Seitenleiste), nicht oben. Das gilt für Tools, Seminarseiten und die Startseite. Die Sprungmarken „Zurück zu Start / Zurück zum Seminar“ (`register/zurueck.js`) sitzen zuoberst in dieser Leiste.
+- **Die Leiste darf farbig sein, je Kategorie in einer eigenen Farbe.** Verbindliche Farben für die Denkräume (wie in `raum-schleusen`): Horizontraum Orange `#E8720C`, Analyseraum Grün `#2E8B57`, Lösungsraum Blau `#1565C0`, Umsetzungsraum Violett `#7B2D8B`, Störraum Pink `#C2185B`. Rundreise und Basislager bleiben neutral dunkel (`#1d2330`).
+- **Farbe heißt nicht nur Farbe:** Aktiver Eintrag zusätzlich über Form oder Fettung kennzeichnen, Text-Kontrast mindestens 4,5 : 1 (K-Kriterien Beamer und Lesbarkeit), im Beamer-Modus bleibt die Leiste lesbar.
+- **Dokumente in Flieder** (`#EFE3F8` / `#9C6BC6`) sind keine Kategorie-Farbe und bleiben für Dokumente reserviert.
