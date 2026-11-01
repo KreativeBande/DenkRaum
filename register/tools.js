@@ -5053,11 +5053,11 @@ window.DENKRAUM_REGISTER = {
       ],
       "standards": [],
       "siegel": {
-        "status": "Offene Punkte",
-        "letztesAudit": null,
-        "auditZeileImTool": null,
+        "status": "Auditiert & zertifiziert",
+        "letztesAudit": "2026-11-01",
+        "auditZeileImTool": "Zuletzt geprüft: 01.11.2026 · Status: ✅ Zertifiziert",
         "offen": [
-          "Audit nach Checkliste v2.1 (K1–K22, Z1–Z9) steht aus"
+          "Kann-Kriterien K11 (Design-System-Radien), K12, K13 nicht vollständig"
         ]
       },
       "beamer": "4-stufig",
@@ -5119,11 +5119,11 @@ window.DENKRAUM_REGISTER = {
         "BABOK"
       ],
       "siegel": {
-        "status": "Offene Punkte",
-        "letztesAudit": null,
-        "auditZeileImTool": null,
+        "status": "Auditiert & zertifiziert",
+        "letztesAudit": "2026-11-01",
+        "auditZeileImTool": "Zuletzt geprüft: 01.11.2026 · Status: ✅ Zertifiziert",
         "offen": [
-          "Audit nach Checkliste v2.1 (K1–K22, Z1–Z9) steht aus"
+          "Kann-Kriterien K11 (Design-System-Radien), K12, K13 nicht vollständig"
         ]
       },
       "beamer": "4-stufig",
