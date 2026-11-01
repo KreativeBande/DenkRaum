@@ -180,7 +180,7 @@
       <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
     </div>
     <h1>Anforderungs-Reise durch die Räume</h1>
-    <p>Eine einzelne Anforderung wandert vom Möglichkeitsraum bis in den Testraum. In jedem Raum wird sie präziser: aus der Idee wird ein Problem, aus dem Problem eine Lösung mit FA/NFA und User Story, aus der Lösung meßbare Kriterien, aus den Kriterien geprüfte Testfälle. Jeder Raum zeigt seine typischen Leitfragen.</p>
+    <p>Eine einzelne Anforderung wandert vom Horizontraum bis in den Testraum. In jedem Raum wird sie präziser: aus der Idee wird ein Problem, aus dem Problem eine Lösung mit FA/NFA und User Story, aus der Lösung meßbare Kriterien, aus den Kriterien geprüfte Testfälle. Jeder Raum zeigt seine typischen Leitfragen.</p>
     <div class="toolbar">
       <button class="accent" id="startBtn">Eigene Anforderung starten</button>
       <span id="exampleBtns" style="display:flex;gap:10px;flex-wrap:wrap;"></span>
@@ -570,7 +570,7 @@ function startView(){
     <div class="card">
       <span class="kicker">Idee</span>
       <div class="title-xl">Wie wandert eine Anforderung durch die Räume?</div>
-      <div class="helper">Du startest mit einer rohen Idee im Möglichkeitsraum. In jedem folgenden Raum stellst du dir andere Leitfragen und die Anforderung wird präziser: Problem → Lösung (FA/NFA, User Story) → Meßkriterien → Testfälle. Am Ende siehst du die ganze Reise als Reise-Log.</div>
+      <div class="helper">Du startest mit einer rohen Idee im Horizontraum. In jedem folgenden Raum stellst du dir andere Leitfragen und die Anforderung wird präziser: Problem → Lösung (FA/NFA, User Story) → Meßkriterien → Testfälle. Am Ende siehst du die ganze Reise als Reise-Log.</div>
     </div>
     <div class="card">
       <span class="kicker blue">Beispiele zum Demonstrieren</span>
@@ -590,7 +590,7 @@ function startView(){
       <div class="helper">Du kannst jederzeit ein eigenes Thema entwickeln, statt eines der Beispiele zu laden – die Räume und Leitfragen bleiben gleich, nur die Inhalte sind leer.</div>
       <h3>Die fünf Räume</h3>
       <ul class="list">
-        <li><strong>Möglichkeitsraum</strong> – die rohe Idee, ihr Ursprung und ihr Nutzen</li>
+        <li><strong>Horizontraum</strong> – die rohe Idee, ihr Ursprung und ihr Nutzen</li>
         <li><strong>Analyseraum</strong> – das eigentliche Problem, Rolle, Rahmenbedingungen, Priorität</li>
         <li><strong>Lösungsraum</strong> – Lösungsansatz, funktionale (FA) und nicht-funktionale (NFA) Anforderungen, User Story</li>
         <li><strong>Umsetzungsraum</strong> – Meßkriterien, Parameter/Grenzwerte, Akzeptanzkriterien</li>
@@ -609,7 +609,7 @@ function room1View(){
   return `
     ${questionsCard("room1", "insertIntoIdea")}
     <div class="card">
-      <span class="kicker">Möglichkeitsraum · Raum 1</span>
+      <span class="kicker">Horizontraum · Raum 1</span>
       <div class="question">Wie lautet die rohe Idee?</div>
       <div class="field">
         <label class="label" for="ideaText">Rohidee / Ausgangssatz</label>
@@ -639,7 +639,7 @@ function room2View(){
   const a = state.analysis;
   return `
     <div class="recap">
-      <h4>Idee bisher (Möglichkeitsraum)</h4>
+      <h4>Idee bisher (Horizontraum)</h4>
       ${state.idea.text
         ? `<p>${escapeHtml(state.idea.text)}</p><p class="mini"><strong>Herkunft:</strong> ${escapeHtml(state.idea.initiator || "–")} · <strong>Nutzen:</strong> ${escapeHtml(state.idea.benefit || "–")}</p>`
         : `<p class="mini">Noch keine Idee erfasst.</p>`}
@@ -892,7 +892,7 @@ function resultView(){
     </div>
 
     <div class="journey-section">
-      <h3><span class="kicker">1 · Möglichkeitsraum</span></h3>
+      <h3><span class="kicker">1 · Horizontraum</span></h3>
       <p>${escapeHtml(state.idea.text || "–")}</p>
       <p class="mini"><strong>Herkunft:</strong> ${escapeHtml(state.idea.initiator || "–")} · <strong>Erhoffter Nutzen:</strong> ${escapeHtml(state.idea.benefit || "–")}</p>
     </div>

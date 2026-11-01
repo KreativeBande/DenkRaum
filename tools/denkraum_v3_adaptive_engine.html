@@ -358,7 +358,7 @@ function normalize(t){return (t || "").toLowerCase();}
 function runEngine(){
   const txt = normalize(state.problem);
   let level = 1;
-  let dominant = "Möglichkeitsraum";
+  let dominant = "Horizontraum";
   let missing = "Analyseraum";
   let pattern = "unklar";
   let useCase = "Ziel klären";
@@ -373,21 +373,21 @@ function runEngine(){
   if(txt.includes("ständig") || txt.includes("change request") || txt.includes("frustriert") || txt.includes("konflikt") || txt.includes("eskaliert")){
     level = 3;
     dominant = "Störraum";
-    missing = "Möglichkeitsraum";
+    missing = "Horizontraum";
     pattern = "Symptom statt Ursache";
     useCase = "Systemproblem";
   }
   if(txt.includes("zu kompliziert") || txt.includes("zu süß") || txt.includes("oberflächlich") || txt.includes("zielgruppe")){
     level = 1;
     dominant = "Analyseraum";
-    missing = "Möglichkeitsraum";
+    missing = "Horizontraum";
     pattern = "Wahrnehmung muss übersetzt werden";
     useCase = "Wahrnehmungsproblem";
   }
   if(txt.includes("marmorkuchen") || txt.includes("mettbrötchen")){
     level = 1;
     dominant = "Analyseraum";
-    missing = "Möglichkeitsraum";
+    missing = "Horizontraum";
     pattern = "Metapher statt Klartext";
     useCase = "Marmorkuchen-Fall";
   }
@@ -533,7 +533,7 @@ function roomConfig(){
   if(e.level === 1){
     return [
       {
-        title:"Möglichkeitsraum",
+        title:"Horizontraum",
         kicker:"WARUM",
         question:"Worum geht es hier eigentlich wirklich?",
         options:["neue Zielgruppe","anderes Produkt bauen","mehr Funktionen","technisches Problem"],
@@ -580,7 +580,7 @@ function roomConfig(){
         title:"Lösungsraum",
         kicker:"WAS",
         question:"In welchem Raum startet die Aussage „Wir brauchen KI“?",
-        options:["Möglichkeitsraum","Analyseraum","Lösungsraum","Umsetzungsraum"],
+        options:["Horizontraum","Analyseraum","Lösungsraum","Umsetzungsraum"],
         correct:"Lösungsraum",
         good:"Genau. Es wird direkt eine Lösung vorgeschlagen.",
         bad:"Noch einmal hinsehen: „Wir brauchen KI“ ist bereits eine Lösungsbehauptung.",
@@ -640,11 +640,11 @@ function roomConfig(){
       key:"raum2"
     },
     {
-      title:"Möglichkeitsraum",
+      title:"Horizontraum",
       kicker:"FEHLENDER RAUM",
       question:"Welcher Raum wurde vermutlich vernachlässigt?",
-      options:["Möglichkeitsraum","Lösungsraum","Umsetzungsraum","Störraum"],
-      correct:"Möglichkeitsraum",
+      options:["Horizontraum","Lösungsraum","Umsetzungsraum","Störraum"],
+      correct:"Horizontraum",
       good:"Genau. Wenn das WARUM fehlt, explodiert das WAS.",
       bad:"Hier fehlt meist nicht die Umsetzung, sondern die Zielklarheit.",
       key:"raum3"
@@ -782,7 +782,7 @@ function canvasData(){
   return {
     translation,
     fields: [
-      {title:"Möglichkeit", text:meaningFor("Möglichkeitsraum"), tools:tools.m, norm:norms.m, doc:docs.m},
+      {title:"Möglichkeit", text:meaningFor("Horizontraum"), tools:tools.m, norm:norms.m, doc:docs.m},
       {title:"Analyse", text:meaningFor("Analyseraum"), tools:tools.a, norm:norms.a, doc:docs.a},
       {title:"Lösung", text:meaningFor("Lösungsraum"), tools:tools.l, norm:norms.l, doc:docs.l},
       {title:"Umsetzung", text:meaningFor("Umsetzungsraum"), tools:tools.u, norm:norms.u, doc:docs.u},
@@ -795,20 +795,20 @@ function canvasData(){
 function meaningFor(room){
   const e = state.engine || {};
   if(e.level === 1){
-    if(room === "Möglichkeitsraum") return "Das Problem deutet auf einen Zielgruppenwechsel oder eine andere Erwartung hin.";
+    if(room === "Horizontraum") return "Das Problem deutet auf einen Zielgruppenwechsel oder eine andere Erwartung hin.";
     if(room === "Analyseraum") return "Die Metapher muss in ein echtes Wahrnehmungs- und Passungsproblem übersetzt werden.";
     if(room === "Lösungsraum") return "Sinnvoll ist eher gezielte Anpassung als kompletter Umbau.";
     if(room === "Umsetzungsraum") return "Die Änderung sollte klein, testbar und gut kommuniziert umgesetzt werden.";
     if(room === "Störraum") return "Spannungen zwischen neuer Zielgruppe und Bestandskunden müssen sichtbar werden.";
   }
   if(e.level === 2){
-    if(room === "Möglichkeitsraum") return "Die Organisation sucht Wirkung, verwechselt aber Mittel und Ziel.";
+    if(room === "Horizontraum") return "Die Organisation sucht Wirkung, verwechselt aber Mittel und Ziel.";
     if(room === "Analyseraum") return "Es fehlt die Frage, welches Problem KI überhaupt lösen soll.";
     if(room === "Lösungsraum") return "Vor Technologie braucht es klare Use Cases und Scope.";
     if(room === "Umsetzungsraum") return "Ein Pilot ist sinnvoller als ein Komplettumbau.";
     if(room === "Störraum") return "Das Risiko liegt vor allem im falschen Use Case und in überhöhten Erwartungen.";
   }
-  if(room === "Möglichkeitsraum") return "Das Zielbild ist zu instabil oder nicht gemeinsam verstanden.";
+  if(room === "Horizontraum") return "Das Zielbild ist zu instabil oder nicht gemeinsam verstanden.";
   if(room === "Analyseraum") return "Viele Change Requests deuten auf Ursachen hin, nicht nur auf Änderungswünsche.";
   if(room === "Lösungsraum") return "Scope und Anforderungen werden laufend nachgezogen statt bewusst geführt.";
   if(room === "Umsetzungsraum") return "Das Team leidet unter Reibung, Nacharbeit und fehlender Stabilität.";

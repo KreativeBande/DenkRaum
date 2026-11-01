@@ -70,7 +70,7 @@ Companion-Datei zur Footer-Box „Vortrags-Skript“ in `tools/stoerfall-labor.h
 
 *(Schleusen-Frage wählen, Lesson learned eintragen, Protokoll herunterladen)*
 
-„Welche Frage hätte uns früher gewarnt? Diese Frage stellen wir beim nächsten Mal ausdrücklich. So schließt sich der Kreis zurück in den Möglichkeitsraum.“
+„Welche Frage hätte uns früher gewarnt? Diese Frage stellen wir beim nächsten Mal ausdrücklich. So schließt sich der Kreis zurück in den Horizontraum.“
 
 Übergang: Best-Practice-Regeln gemeinsam überfliegen.
 
