@@ -435,7 +435,7 @@ html.beamer-xxl #idxpop{font-size:34px;max-width:1100px}html.beamer-xxl #idxpop 
         <span class="value" data-i18n="k16">Release 1 Cafeteria, Release 2 Restaurants und Abonnements, Release 3 Vollausbau. Messfenster der Ziele: 6 und 12 Monate nach Release 1.</span>
       </div>
       <div class="field-box">
-        <label data-i18n="k17">Business-Ziel</label>
+        <span class="anc" id="GZ-1"></span><span class="anc" id="GZ-2"></span><span class="anc" id="GZ-3"></span><span class="anc" id="GZ-4"></span><label data-i18n="k17">Business-Ziel</label>
         <span class="value" data-i18n="k18">GZ-1 Abfall von 33 % auf unter 20 % · GZ-2 Betriebskosten −15 % · GZ-3 Zeit je Mittagessen von 65 auf höchstens 50 Minuten · GZ-4 Gäste von 640 auf 900 pro Tag</span>
       </div>
       <div class="field-box">
@@ -510,7 +510,7 @@ html.beamer-xxl #idxpop{font-size:34px;max-width:1100px}html.beamer-xxl #idxpop 
 
   <!-- ============ TAB 2: BUSINESS CASE ============ -->
   <section id="businesscase" class="tab-panel">
-    <h2 data-i18n="k83">Business Case: Was Zielsteuerung bei Lindenfeld Lunch wert ist</h2>
+    <h2 id="BC" data-i18n="k83">Business Case: Was Zielsteuerung bei Lindenfeld Lunch wert ist</h2>
     <p class="subtitle" data-i18n="k84">Von vier Zielen mit Zahlen zur Entscheidung für Option A mit Stage Gate</p>
 
     <h2 data-i18n="k85">Ausgangssituation</h2>
@@ -1070,5 +1070,37 @@ link();
 window.__idx={reveal:reveal,link:link};
 })();
 </script>
+<script id="anchor-js">(function(){
+if(window.__anchorJump)return;window.__anchorJump=1;
+var ID=/^(?:(?:GZ|FE|BR|FR|NFR|NT|IF|UC|US|TF|CR|EM|OP|ADR|R)-\d+|KR\d\.\d|M\d|E\d|O\d|BC)$/;
+var st=document.createElement('style');
+st.textContent='.anc-flash{animation:ancFlash 2.4s ease-out}@keyframes ancFlash{0%,30%{background:#FFE58A;box-shadow:0 0 0 4px #FFE58A}100%{background:transparent;box-shadow:none}}.anc{display:block;position:relative;top:-80px;height:0;overflow:hidden}';
+document.head.appendChild(st);
+function press(el){if(!el)return;el.dispatchEvent(new Event('pointerup',{bubbles:true}));}
+function go(){
+ var h='';try{h=decodeURIComponent((location.hash||'').slice(1));}catch(e){return;}
+ if(!ID.test(h))return;
+ var el=document.getElementById(h);if(!el)return;
+ /* BA/RE-Case: Schritt aktivieren */
+ var step=el.closest('.step');
+ if(step&&!step.classList.contains('on')&&window.__case&&window.__case.goStep){var all=[].slice.call(document.querySelectorAll('.step'));var i=all.indexOf(step);if(i>=0)window.__case.goStep(i,true);}
+ /* Projektauftrag/Pflichtenheft: Station aktivieren, eingeklappte Tabelle aufklappen */
+ var sta=el.closest('.station');
+ if(sta&&/^st\d$/.test(sta.id)){var tab=document.querySelector('.tab[data-s="'+sta.id.slice(2)+'"]');if(tab&&!tab.classList.contains('on')&&!tab.classList.contains('active'))press(tab);}
+ var tw=el.closest('.tw');if(tw&&!tw.classList.contains('open')){var nx=tw.nextElementSibling,mb=nx&&nx.querySelector?nx.querySelector('.morebtn'):null;if(mb)press(mb);}
+ /* Steckbrief: Reiter aktivieren */
+ var tp=el.closest('.tab-panel');if(tp&&!tp.classList.contains('active')){var tb=document.querySelector('.tab-btn[data-tab="'+tp.id+'"]');if(tb)tb.click();}
+ /* zugeklappte details öffnen */
+ for(var d=el.parentElement;d;d=d.parentElement){if(d.tagName==='DETAILS'&&!d.open)d.open=true;}
+ setTimeout(function(){
+  var t=el.classList.contains('anc')?el.parentElement:el;
+  var box=t.closest('tr,.uc,.story,.field-box')||t;
+  try{box.scrollIntoView({block:'center'});}catch(e){}
+  box.classList.remove('anc-flash');void box.offsetWidth;box.classList.add('anc-flash');
+ },60);
+}
+window.addEventListener('hashchange',go);
+if(document.readyState==='complete')setTimeout(go,250);else window.addEventListener('load',function(){setTimeout(go,250);});
+})();</script>
 </body>
 </html>

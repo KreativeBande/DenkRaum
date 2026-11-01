@@ -28,3 +28,13 @@ Nach Änderungen an `hub_data.py` oder `footer_text.py` beides neu bauen. Das Ha
 - `hub.py`: baut die Seite; `footer_text.py`: Systemprompt, Handbuch, Vortrags-Skript (Quelle für die Companion-Datei)
 - `lib.py`, `base.css`, `base.js`, `zoom.py`: gemeinsame Bausteine (Schalter, Tabellen, Quiz, Bild-Zoom)
 - `test_hub.py`, `test_zoom.py`: Playwright-Prüfungen (Chromium unter `/opt/pw-browsers/chromium`), `GP_OUT=..` setzen
+
+## Sprung-Anker für Einträge (`anchor_build.py`)
+
+Jeder Eintrag in BA/RE-Case, Projektauftrag/Pflichtenheft (beide Fassungen) und Steckbrief trägt eine statische id (`id="FR-06"`, `id="US-06"`, `id="GZ-1"`, `id="BC"` …), damit Links wie `ba-re-case-lindenfeld-lunch.html#US-06` direkt zur Stelle springen (genutzt von `tools/change-schleuse.html`). Das Skript `anchor.js` wird mit eingesetzt: Es aktiviert Station bzw. Reiter, klappt gekürzte Tabellen auf, scrollt hin und hebt die Stelle kurz hervor.
+
+```
+python3 anchor_build.py      # idempotent; danach den Gateplan neu bauen (siehe oben)
+```
+
+Nach Änderungen an Tabellen, Use-Case- oder Story-Karten in Case oder Pflichtenheft erneut ausführen. Der Test `tests/change-schleuse-anker.test.js` prüft, dass jedes Kürzel, das die Change-Schleuse verlinkt, im Zieldokument eine id hat.
