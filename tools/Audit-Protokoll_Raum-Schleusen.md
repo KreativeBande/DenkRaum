@@ -45,3 +45,7 @@ Horizontraum-Kernfrage „Wohin schauen wir?“, User Story als Übergabeartefak
 ## Nachtrag 01.11.2026 (Störraum-Bild)
 
 Störraum-Bild „Der Eisberg kippt“ (vier SVG-Bilder, DE/EN, Beispielfragen, Lösung) in der Raumansicht des Störraums. Geprüft: keine Konsolenfehler, vier Bilder in DE und EN, kein seitliches Scrollen bei 390 px. Siegel unverändert ✅.
+
+## Nachtrag 01.11.2026 (Fußboxen, Normenstand)
+
+Systemprompt, Handbuch und Vortrags-Skript nennen jetzt das Drohnenticket (DE und EN). Normen-Register: ISO/IEC/IEEE 29148 Ausgabe 2 (2018-11) gilt weiter, 2024 bestätigt, Ausgabe 3 ist Committee Draft; BABOK v3 laut IIBA-Seiten aktuell; IREB-Foundation-Lehrplan 3.3 laut IREB-Downloadseiten (jeweils am 01.11.2026 per Suche geprüft). Übernommen aus dem überholten PR #232. Siegel unverändert ✅.
