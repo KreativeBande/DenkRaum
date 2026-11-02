@@ -20,6 +20,7 @@ h2{font-size:1.5rem;margin:0 0 4px}.sub{color:var(--mut);margin:0 0 16px;max-wid
 .hero h1{margin:0 0 6px;font-size:1.7rem}.hero p{margin:0;color:var(--mut);max-width:70ch}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
 a.card,div.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;text-decoration:none;color:inherit;border-left:5px solid var(--acc)}
+a.card.cmc{padding:8px 8px 12px}a.card.cmc img{display:block;width:100%;height:auto;border-radius:8px;border:1px solid var(--line);margin-bottom:8px}a.card.cmc h3,a.card.cmc p{padding:0 6px}
 a.card:hover{box-shadow:0 3px 12px rgba(0,0,0,.12);transform:translateY(-1px)}
 .card h3{margin:0 0 4px;font-size:1rem}.card p{margin:0;font-size:.86rem;color:var(--mut)}
 .nr{font-size:.75rem;color:var(--mut);display:flex;justify-content:space-between;gap:6px;margin-bottom:4px}
@@ -130,7 +131,7 @@ function render(){
  document.getElementById('q').placeholder=x.q;
  document.getElementById('g1').innerHTML=D.seminare.map(function(s){var n=cnt(s.nr);
   return '<a class="card" href="'+E(s.datei)+'"><div class="nr"><span>'+x.sem+E(s.nr)+'</span><span class="cnt">'+n+x.tools+'</span></div><h3>'+E(L.lang==='en'?s.kurz_en:s.kurz)+'</h3><p>'+E(s.titel)+'</p></a>'}).join('');
- document.getElementById('g2').innerHTML=LF.map(function(c){
+ document.getElementById('g2').innerHTML='<a class="card cmc" href="tools/img/lindenfeld-erst-das-problem-verstehen.jpg" target="_blank" rel="noopener"><img src="tools/img/lindenfeld-erst-das-problem-verstehen-klein.jpg" width="700" height="525" loading="lazy" alt="'+E(T(['Comic: Lindenfeld Lunch, erst das Problem verstehen. 65 Minuten pro Mittagessen, 33 % des Warenwerts im Abfall, 640 Mittagsgäste pro Tag. Drei Schritte: Beobachten, Ursachen klären, Auftrag formulieren.','Comic: Lindenfeld Lunch, understand the problem first. 65 minutes per lunch, 33 % of goods value wasted, 640 lunch guests per day. Three steps: observe, clarify causes, formulate the assignment.']))+'">'+'<h3>'+E(T(['Der Fall auf einen Blick','The case at a glance']))+'</h3><p>'+E(T(['Comic: Erst das Problem verstehen. Zum Vergrößern anklicken.','Comic: understand the problem first. Click to enlarge.']))+'</p></a>'+LF.map(function(c){
   return '<a class="card'+(c[4]?' prev':'')+'" href="'+E(c[1])+'"><div class="step">'+x.step+c[0]+'</div><h3>'+E(T(c[2]))+'</h3><p>'+E(T(c[3]))+'</p>'+(c[4]?'<span class="tag">'+x.prev+'</span>':'')+'</a>'}).join('');
  var byId={};D.tools.forEach(function(t){byId[t.id]=t});
  document.getElementById('g4').innerHTML=SH.map(function(h){return '<div class="shelf" style="--sc:'+SC[SH.indexOf(h)]+'"><h3>'+E(T(h[0]))+' <span class="cnt">'+h[2].length+'</span></h3><p>'+E(T(h[1]))+'</p><div class="grid">'+h[2].map(function(id){var t=byId[id];return t?'<a class="card" href="'+E(t.datei)+'"><h3>'+E(t.kurztitel||t.titel)+'</h3><p>'+E((t.kurz||'').slice(0,110)+((t.kurz||'').length>110?' …':''))+'</p></a>':''}).join('')+'</div></div>'}).join('');
