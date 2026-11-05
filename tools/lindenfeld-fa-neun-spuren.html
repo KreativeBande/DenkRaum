@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Lindenfeld Lunch: Eine FA, neun Spuren · ISO/IEC 25010:2023 · Michaela Kühn</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#f6f8fc; --panel:#ffffff; --ink:#1f2937; --ink-dim:#6b7280; --line:#d9e1ea;
+    --accent:#b91c1c; --accent-soft:#fee2e2;
+    --blue:#1d4ed8; --blue-soft:#dbeafe;
+    --green:#15803d; --green-soft:#e9f7ee;
+    --amber:#92400e; --amber-soft:#fef3c7;
+    --teal:#0f766e; --teal-soft:#ccfbf1;
+    --card:#f7f8f9;
+    --mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --shadow:0 16px 34px rgba(15,23,42,.08);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);color-scheme:light;}
+  body{font-family:var(--sans);font-size:16px;line-height:1.55;
+    background:
+      radial-gradient(circle at top left, #fff7f7 0%, transparent 22%),
+      radial-gradient(circle at top right, #eef4ff 0%, transparent 20%),
+      linear-gradient(180deg,#fbfcff 0%,#f4f6fa 100%);
+  }
+  button{touch-action:manipulation;-webkit-user-select:none;user-select:none;font-family:var(--sans);}
+  .app{max-width:1180px;margin:0 auto;padding:20px 24px 56px;}
+
+  /* ---------- Topbar & Signatur ---------- */
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:6px;}
+  .back-link{display:inline-block;font-size:14px;font-weight:700;color:var(--ink-dim);text-decoration:none;}
+  .back-link:hover{color:var(--accent);}
+  .signature{
+    position:fixed;top:14px;right:28px;z-index:30;
+    background:rgba(255,255,255,.92);padding:5px 10px;border-radius:10px;
+    font-size:14px;font-weight:700;color:var(--ink);text-align:right;text-decoration:none;line-height:1.4;white-space:nowrap;
+  }
+  .signature span{display:block;font-weight:500;color:var(--ink-dim);font-size:14px;}
+  .signature:hover, .signature:hover span{color:var(--accent);}
+  .beamer-btn{
+    background:transparent;border:1.5px solid var(--line);color:var(--ink-dim);
+    font-size:14px;font-weight:700;padding:9px 18px;border-radius:999px;cursor:pointer;min-height:40px;
+  }
+  .beamer-btn:hover{border-color:var(--accent);color:var(--ink);}
+  html.beamer .beamer-btn, html.beamer-xl .beamer-btn, html.beamer-xxl .beamer-btn{
+    background:var(--ink);color:#fff;border-color:var(--ink);
+  }
+  @media(max-width:900px){
+    .signature{position:fixed;top:6px;right:10px;margin:0;padding:3px 8px;font-size:14px;line-height:1.25;text-align:right;float:none;width:auto;display:block;}
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;
+    box-shadow:var(--shadow);padding:32px 34px 28px;margin:16px 0 26px;
+  }
+  .eyebrow{display:block;font-size:14px;letter-spacing:.12em;font-weight:700;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+  .hero h1{margin:0 0 10px;font-size:clamp(26px,3.6vw,38px);line-height:1.1;
+    background:linear-gradient(100deg,var(--ink) 55%,var(--accent) 120%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero p.lead{margin:0;color:var(--ink-dim);font-size:17px;line-height:1.6;}
+
+  h2.section-title{font-size:22px;margin:34px 0 6px;}
+  p.section-sub{color:var(--ink-dim);margin:0 0 18px;font-size:15px;line-height:1.6;}
+
+  /* ---------- FA-Auswahl ---------- */
+  .fa-picker{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
+  .fa-chip{
+    background:#fff;border:2px solid var(--line);border-radius:12px;padding:11px 16px;
+    font-size:16px;font-weight:700;color:var(--ink);cursor:pointer;text-align:left;min-height:44px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .fa-chip:hover{border-color:var(--accent);}
+  .fa-chip.active{border-color:var(--accent);background:var(--accent-soft);}
+  .fa-display{
+    border-left:6px solid var(--accent);background:var(--card);border-radius:4px;
+    padding:16px 20px;margin-bottom:26px;
+  }
+  .fa-display .tag{display:block;font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+  .fa-display p{margin:0;font-size:16px;font-weight:600;line-height:1.5;}
+
+  /* ---------- 9-Merkmale-Grid ---------- */
+  .char-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:22px;}
+  .char-card{
+    position:relative;text-align:left;border:2px solid var(--line);border-radius:16px;background:#fff;
+    padding:14px 16px 14px 16px;cursor:pointer;min-height:96px;
+    transition:border-color .15s ease, box-shadow .15s ease, transform .1s ease;
+  }
+  .char-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+  .char-card.selected{border-color:var(--accent);box-shadow:0 8px 20px rgba(185,28,28,.14);}
+  .char-num{display:inline-block;font-family:var(--mono);font-size:14px;font-weight:700;color:#fff;background:var(--ink);
+    border-radius:999px;width:26px;height:26px;line-height:26px;text-align:center;margin-bottom:6px;}
+  .char-card.selected .char-num{background:var(--accent);}
+  .char-de{margin:0 0 2px;font-size:15px;font-weight:700;color:var(--ink);}
+  .char-en{margin:0 0 8px;font-size:14px;color:var(--ink-dim);font-style:italic;}
+  .char-badge{display:inline-block;font-size:14px;font-weight:700;padding:2px 8px;border-radius:999px;letter-spacing:.02em;}
+  .char-badge.unchanged{background:var(--card);color:var(--ink-dim);}
+  .char-badge.renamed{background:var(--amber-soft);color:var(--amber);}
+  .char-badge.new{background:var(--green-soft);color:var(--green);}
+
+  /* ---------- Detail-Panel (fest, kein Sliding) ---------- */
+  .detail-panel{border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:0 10px 26px rgba(15,23,42,.05);overflow:hidden;margin-bottom:26px;}
+  .detail-head{background:var(--ink);color:#fff;padding:18px 24px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .detail-head .p-name{margin:0;font-size:22px;font-weight:800;}
+  .detail-head .p-en{font-size:14px;color:#cbd5e1;font-style:italic;}
+  .detail-body{padding:22px 24px;}
+  .detail-def{font-size:15.5px;line-height:1.65;color:var(--ink);margin:0 0 18px;}
+  .sub-list{list-style:none;margin:0 0 20px;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px;}
+  .sub-list li{background:var(--card);border-radius:10px;padding:9px 12px;font-size:14px;line-height:1.5;}
+  .sub-name{font-weight:700;color:var(--ink);display:block;margin-bottom:2px;font-size:14px;}
+
+  .demo-split{display:grid;grid-template-columns:1fr 1fr;gap:16px;border-top:1px dashed var(--line);padding-top:18px;}
+  @media(max-width:760px){ .demo-split{grid-template-columns:1fr;} }
+  .demo-box{background:var(--card);border-radius:14px;padding:16px 18px;}
+  .demo-box .tag{display:block;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);margin-bottom:8px;}
+  .demo-box.us .tag{color:var(--blue);}
+  .nfa-text{font-size:16px;line-height:1.6;color:var(--ink);margin:0;}
+  .story-text{font-size:16px;line-height:1.55;color:var(--ink);margin:0 0 10px;font-style:italic;}
+  .ac-block{font-family:var(--mono);font-size:14px;line-height:1.75;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 12px;}
+  .ac-block b{color:var(--blue);}
+
+  .source-note{margin-top:30px;font-size:14px;color:var(--ink-dim);}
+  .source-note a{color:var(--accent);font-weight:700;text-decoration:none;}
+  .source-note a:hover{text-decoration:underline;}
+
+  @media(max-width:640px){
+    .app{padding:16px}
+    .hero{padding:24px 20px 20px}
+    .topbar{flex-direction:column}
+  }
+
+  /* ================= BEAMER-MODUS (vierstufig, kumulativ) ================= */
+  html.beamer{ --ink-dim:#3D4A5C; }
+  html.beamer .back-link{ display:none; }
+
+  html.beamer .hero p.lead, html.beamer .detail-def,
+  html.beamer .sub-list li, html.beamer .nfa-text, html.beamer .story-text,
+  html.beamer .ac-block, html.beamer .fa-display p, html.beamer p.section-sub,
+  html.beamer .fa-chip, html.beamer .char-de{ font-size:22px; }
+  html.beamer .hero h1{ font-size:44px; }
+  html.beamer .detail-head .p-name{ font-size:44px; }
+  html.beamer .char-en, html.beamer .detail-head .p-en, html.beamer .sub-name{ font-size:26px; }
+  html.beamer .eyebrow, html.beamer .char-badge, html.beamer .char-num,
+  html.beamer .demo-box .tag, html.beamer .fa-display .tag{ font-size:15px; }
+
+  html.beamer-xl .hero p.lead, html.beamer-xl .detail-def,
+  html.beamer-xl .sub-list li, html.beamer-xl .nfa-text, html.beamer-xl .story-text,
+  html.beamer-xl .ac-block, html.beamer-xl .fa-display p, html.beamer-xl p.section-sub,
+  html.beamer-xl .fa-chip, html.beamer-xl .char-de{ font-size:28px; }
+  html.beamer-xl .hero h1{ font-size:54px; }
+  html.beamer-xl .detail-head .p-name{ font-size:54px; }
+  html.beamer-xl .char-en, html.beamer-xl .detail-head .p-en, html.beamer-xl .sub-name{ font-size:32px; }
+  html.beamer-xl .eyebrow, html.beamer-xl .char-badge, html.beamer-xl .char-num,
+  html.beamer-xl .demo-box .tag, html.beamer-xl .fa-display .tag{ font-size:18px; }
+
+  html.beamer-xxl .hero p.lead, html.beamer-xxl .detail-def,
+  html.beamer-xxl .sub-list li, html.beamer-xxl .nfa-text, html.beamer-xxl .story-text,
+  html.beamer-xxl .ac-block, html.beamer-xxl .fa-display p, html.beamer-xxl p.section-sub,
+  html.beamer-xxl .fa-chip, html.beamer-xxl .char-de{ font-size:34px; }
+  html.beamer-xxl .hero h1{ font-size:64px; }
+  html.beamer-xxl .detail-head .p-name{ font-size:64px; }
+  html.beamer-xxl .char-en, html.beamer-xxl .detail-head .p-en, html.beamer-xxl .sub-name{ font-size:38px; }
+  html.beamer-xxl .eyebrow, html.beamer-xxl .char-badge, html.beamer-xxl .char-num,
+  html.beamer-xxl .demo-box .tag, html.beamer-xxl .fa-display .tag{ font-size:21px; }
+  @media (max-width:900px){html body{padding-top:55px;}}
+
+/* ---- Qualitätsring (Grafik) ---- */
+.iso-fig{margin:6px auto 22px;max-width:580px;text-align:center;}
+.iso-svg{width:100%;height:auto;display:block;}
+.iso-seg{cursor:pointer;outline:none;}
+.iso-seg path{stroke:#fff;stroke-width:3;transition:opacity .15s;}
+.iso-seg:hover path,.iso-seg:focus path{opacity:.82;}
+.iso-seg.sel path{stroke:#111827;stroke-width:4;}
+.iso-seg:focus path{stroke:var(--accent);stroke-width:4;}
+.iso-num{fill:#fff;font:700 28px Georgia,serif;pointer-events:none;}
+.iso-lab{fill:#1f2937;font:600 15px system-ui,sans-serif;pointer-events:none;}
+.iso-seg.sel .iso-lab{font-weight:800;fill:#000;}
+.iso-mk{fill:#fcd34d;stroke:#92400e;stroke-width:2;pointer-events:none;}
+.iso-mkt{fill:#92400e;font:800 14px system-ui,sans-serif;pointer-events:none;}
+.iso-core{fill:#fff;stroke:#d9e1ea;stroke-width:3;}
+.iso-core-t{fill:#1f2937;font:700 17px system-ui,sans-serif;}
+.iso-fig figcaption{font-size:15px;color:#4b5563;margin-top:6px;}
+.iso-legend{display:inline-block;width:18px;height:18px;line-height:16px;border-radius:50%;background:#fcd34d;border:2px solid #92400e;color:#92400e;font-weight:800;font-size:12px;}
+html.beamer .iso-fig{max-width:700px;} html.beamer .iso-fig figcaption{font-size:19px;}
+html.beamer-xl .iso-fig{max-width:820px;} html.beamer-xl .iso-fig figcaption{font-size:23px;}
+html.beamer-xxl .iso-fig{max-width:960px;} html.beamer-xxl .iso-fig figcaption{font-size:28px;}
+
+/* ---- Layout mit linker Navigation ---- */
+.layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:26px;align-items:start;}
+.side{position:sticky;top:16px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 6px 16px rgba(15,23,42,.04);}
+.side-title{display:block;font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);margin:2px 6px 10px;}
+.side-btn{display:block;width:100%;text-align:left;background:transparent;border:2px solid transparent;border-radius:12px;padding:11px 12px;margin-bottom:6px;cursor:pointer;color:var(--ink);font-size:16px;font-weight:700;line-height:1.35;min-height:48px;}
+.side-btn small{display:block;font-weight:500;color:var(--ink-dim);font-size:14px;margin-top:2px;}
+.side-btn:hover{border-color:var(--line);}
+.side-btn.active{border-color:var(--accent);background:var(--accent-soft);}
+.side-btn .num{display:inline-block;font-family:var(--mono);font-size:14px;font-weight:700;color:#fff;background:var(--ink);border-radius:999px;min-width:24px;height:24px;line-height:24px;text-align:center;margin-right:8px;}
+.side-btn.active .num{background:var(--accent);}
+.content{min-width:0;}
+.step[hidden]{display:none;}
+.step h2.section-title{margin-top:4px;scroll-margin-top:12px;}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr;}
+  .side{position:static;}
+}
+
+/* ---- Schritt 1 ---- */
+h3.sub-title{font-size:18px;margin:32px 0 6px;}
+.vb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:8px;}
+.vb-card{border:2px solid var(--line);border-top-width:6px;border-radius:16px;background:#fff;padding:16px 18px;box-shadow:0 6px 16px rgba(15,23,42,.03);}
+.vb-card p{margin:0 0 8px;font-size:16px;line-height:1.55;color:var(--ink);}
+.vb-muss{border-top-color:var(--accent);} .vb-soll{border-top-color:#b45309;} .vb-kann{border-top-color:var(--teal);}
+.vb-word{display:inline-block;font-family:var(--mono);font-size:24px;font-weight:800;margin-bottom:2px;}
+.vb-muss .vb-word{color:var(--accent);} .vb-soll .vb-word{color:#b45309;} .vb-kann .vb-word{color:var(--teal);}
+.vb-card p.vb-role{font-size:14px;font-weight:700;color:var(--ink-dim);margin-bottom:10px;}
+.vb-ex{background:var(--card);border-radius:8px;padding:8px 10px;}
+.vb-q{border-top:1px dashed var(--line);margin-top:10px;padding-top:8px;}
+.vb-q-tag{display:block;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin-bottom:4px;}
+.vb-q ul{margin:0;padding-left:18px;}
+.vb-q li{font-size:14px;line-height:1.5;margin-bottom:4px;font-style:italic;}
+
+.schablone{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:6px 0 4px;}
+.sb{background:#fff;border:2px solid var(--line);border-radius:12px;padding:10px 14px;font-size:16px;font-weight:700;}
+.sb small{display:block;font-weight:500;color:var(--ink-dim);font-size:14px;}
+.sb-opt{border-style:dashed;color:var(--ink-dim);}
+.sb-verb{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-family:var(--mono);}
+
+.verb-picker{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.verb-btn{background:#fff;border:2px solid var(--line);border-radius:12px;padding:10px 22px;font-family:var(--mono);font-size:17px;font-weight:800;cursor:pointer;min-height:44px;}
+.verb-btn.v-muss{color:var(--accent);} .verb-btn.v-soll{color:#b45309;} .verb-btn.v-kann{color:var(--teal);}
+.verb-btn:hover{border-color:var(--ink);}
+.verb-btn.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.fa-display p b.v-muss{color:var(--accent);} .fa-display p b.v-soll{color:#b45309;} .fa-display p b.v-kann{color:var(--teal);}
+
+.solution-row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;margin:0 0 6px;}
+.reveal-btn,.next-btn{background:#fff;border:2px solid var(--ink);color:var(--ink);border-radius:999px;padding:9px 18px;font-size:14px;font-weight:700;cursor:pointer;min-height:42px;}
+.reveal-btn:hover{background:var(--ink);color:#fff;}
+.next-btn{background:var(--accent);border-color:var(--accent);color:#fff;}
+.next-btn:hover{background:#991b1b;}
+.back-btn{background:#fff;border:2px solid var(--ink);color:var(--ink);border-radius:999px;padding:9px 18px;font-size:14px;font-weight:700;cursor:pointer;min-height:42px;}
+.back-btn:hover{background:var(--ink);color:#fff;}
+.solution{flex:1 1 320px;margin:0;background:var(--green-soft);border-left:5px solid var(--green);border-radius:6px;padding:10px 14px;font-size:16px;line-height:1.55;}
+.solution[hidden]{display:none;}
+
+.msc-list{display:grid;gap:10px;margin-bottom:12px;}
+.msc-item{border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px 14px;}
+.msc-text{margin:0 0 8px;font-size:16px;font-weight:700;}
+.msc-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.msc-btn{background:#fff;border:2px solid var(--line);border-radius:10px;padding:7px 16px;font-family:var(--mono);font-size:15px;font-weight:800;cursor:pointer;min-height:40px;}
+.msc-btn:hover{border-color:var(--ink);}
+.msc-btn.picked{background:var(--ink);color:#fff;border-color:var(--ink);}
+.msc-btn.right{background:var(--green);color:#fff;border-color:var(--green);}
+.msc-btn.wrong{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);}
+.msc-fb{margin:8px 0 0;font-size:16px;line-height:1.5;color:var(--ink);}
+.msc-fb[hidden]{display:none;}
+.msc-score{align-self:center;font-weight:700;color:var(--ink-dim);font-size:14px;}
+
+.group-q,.note-box{border-left:6px solid var(--blue);background:var(--card);border-radius:4px;padding:14px 18px;margin:20px 0;}
+.group-q .tag,.note-box .tag{display:block;font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:6px;}
+.group-q p,.note-box p{margin:0 0 8px;font-size:16px;line-height:1.55;}
+.note-box{border-left-color:#b45309;} .note-box .tag{color:#b45309;}
+.group-q .solution{margin:8px 0;}
+
+.step-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:26px 0 4px;flex-wrap:wrap;}
+
+/* ---- Beamer-Erweiterung für Schritt 1 + Navigation ---- */
+html.beamer .vb-card p,html.beamer .vb-q li,html.beamer .sb,html.beamer .msc-text,html.beamer .msc-fb,html.beamer .solution,html.beamer .group-q p,html.beamer .note-box p,html.beamer .side-btn{font-size:21px;}
+html.beamer .vb-word{font-size:34px;} html.beamer h3.sub-title{font-size:28px;}
+html.beamer .vb-card p.vb-role,html.beamer .vb-q-tag,html.beamer .sb small,html.beamer .side-btn small,html.beamer .side-title,html.beamer .group-q .tag,html.beamer .note-box .tag,html.beamer .msc-score{font-size:15px;}
+html.beamer .verb-btn,html.beamer .msc-btn,html.beamer .reveal-btn,html.beamer .next-btn,html.beamer .back-btn{font-size:20px;}
+html.beamer-xl .vb-card p,html.beamer-xl .vb-q li,html.beamer-xl .sb,html.beamer-xl .msc-text,html.beamer-xl .msc-fb,html.beamer-xl .solution,html.beamer-xl .group-q p,html.beamer-xl .note-box p,html.beamer-xl .side-btn{font-size:26px;}
+html.beamer-xl .vb-word{font-size:42px;} html.beamer-xl h3.sub-title{font-size:34px;}
+html.beamer-xl .verb-btn,html.beamer-xl .msc-btn,html.beamer-xl .reveal-btn,html.beamer-xl .next-btn,html.beamer-xl .back-btn{font-size:24px;}
+html.beamer-xxl .vb-card p,html.beamer-xxl .vb-q li,html.beamer-xxl .sb,html.beamer-xxl .msc-text,html.beamer-xxl .msc-fb,html.beamer-xxl .solution,html.beamer-xxl .group-q p,html.beamer-xxl .note-box p,html.beamer-xxl .side-btn{font-size:31px;}
+html.beamer-xxl .vb-word{font-size:50px;} html.beamer-xxl h3.sub-title{font-size:40px;}
+html.beamer-xxl .verb-btn,html.beamer-xxl .msc-btn,html.beamer-xxl .reveal-btn,html.beamer-xxl .next-btn,html.beamer-xxl .back-btn{font-size:28px;}
+html.beamer-xl .layout,html.beamer-xxl .layout{grid-template-columns:1fr;}
+html.beamer-xl .side,html.beamer-xxl .side{position:static;}
+
+/* ---- Lindenfeld-FA-neun-Spuren: Ergänzungen ---- */
+.ctrls{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto;margin-right:230px;}
+.lang-btn{background:transparent;border:1.5px solid var(--line);color:var(--ink-dim);font-size:14px;font-weight:700;padding:9px 18px;border-radius:999px;cursor:pointer;min-height:40px;}
+.lang-btn:hover{border-color:var(--accent);color:var(--ink);}
+@media(max-width:900px){.ctrls{margin-right:0;}}
+html.beamer .lang-btn,html.beamer-xl .lang-btn,html.beamer-xxl .lang-btn{font-size:15px;}
+html.beamer .lang-btn{color:var(--ink);}
+
+/* Einzelfrage-Stepper (Z1/Z2) */
+.q-card{border:1px solid var(--line);border-radius:16px;background:#fff;padding:16px 18px;box-shadow:0 6px 16px rgba(15,23,42,.03);}
+.q-count{display:block;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px;}
+.q-text{margin:0 0 12px;font-size:18px;font-weight:700;line-height:1.45;}
+.q-opts{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+.q-opt{background:#fff;border:2px solid var(--line);border-radius:12px;padding:9px 22px;font-family:var(--mono);font-size:17px;font-weight:800;cursor:pointer;min-height:44px;}
+.q-opt:hover{border-color:var(--ink);}
+.q-opt.is-ok{background:var(--green);color:#fff;border-color:var(--green);}
+.q-opt.is-alt{background:var(--amber-soft);color:var(--amber);border-color:var(--amber);}
+.q-opt.is-bad{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);}
+.q-opt.is-right{box-shadow:0 0 0 3px var(--green-soft);border-color:var(--green);}
+.q-fb{margin:12px 0 0;border-left:5px solid var(--line);border-radius:4px;background:var(--card);padding:10px 14px;font-size:16px;line-height:1.55;}
+.q-fb[hidden]{display:none;}
+.q-fb.is-ok{border-left-color:var(--green);} .q-fb.is-alt{border-left-color:var(--amber);} .q-fb.is-bad{border-left-color:var(--accent);}
+.q-fb .q-verdict{display:block;font-weight:800;margin-bottom:4px;}
+.q-fb .q-line{display:block;margin-top:4px;}
+.q-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap;}
+.q-nav button{background:#fff;border:2px solid var(--ink);color:var(--ink);border-radius:12px;padding:9px 18px;font-size:16px;font-weight:700;cursor:pointer;min-height:44px;}
+.q-nav button:hover:not(:disabled){background:var(--ink);color:#fff;}
+.q-nav button:disabled{opacity:.4;cursor:default;}
+.q-summary{font-weight:700;color:var(--ink-dim);}
+html.beamer .q-text,html.beamer .q-fb{font-size:22px;} html.beamer .q-opt,html.beamer .q-nav button{font-size:20px;} html.beamer .q-count,html.beamer .q-summary{font-size:15px;}
+html.beamer-xl .q-text,html.beamer-xl .q-fb{font-size:28px;} html.beamer-xl .q-opt,html.beamer-xl .q-nav button{font-size:24px;} html.beamer-xl .q-count,html.beamer-xl .q-summary{font-size:18px;}
+html.beamer-xxl .q-text,html.beamer-xxl .q-fb{font-size:34px;} html.beamer-xxl .q-opt,html.beamer-xxl .q-nav button{font-size:28px;} html.beamer-xxl .q-count,html.beamer-xxl .q-summary{font-size:21px;}
+
+/* Footer-Standard */
+footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);}
+.footer-sig{font-size:14px;color:var(--ink-dim);margin:0 0 16px;line-height:1.6;}
+.footer-sig a{color:var(--accent);text-decoration:none;font-weight:600;}
+.footer-details{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:start;}
+.footer-box{border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden;}
+.footer-box[open]{grid-column:1/-1;}
+.footer-summary{cursor:pointer;padding:12px 16px;font-weight:700;font-size:16px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:44px;}
+.footer-summary::-webkit-details-marker{display:none;}
+.footer-summary:after{content:"+";color:var(--accent);font-size:18px;}
+.footer-box[open] .footer-summary:after{content:"\2013";}
+.footer-content{padding:0 16px 16px;}
+.footer-mono{font-family:var(--mono);font-size:14px;line-height:1.55;}
+.footer-mono div{white-space:pre-wrap;overflow-wrap:anywhere;}
+.footer-sans{font-size:16px;line-height:1.6;}
+.footer-table{width:100%;border-collapse:collapse;font-size:16px;}
+.footer-table td,.footer-table th{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top;}
+.footer-glossary{margin:0;}
+.footer-glossary dt{font-weight:700;color:var(--ink);font-size:16px;margin-top:12px;}
+.footer-glossary dt:first-child{margin-top:0;}
+.footer-glossary dd{margin:2px 0 0;color:var(--ink-dim);font-size:14px;line-height:1.5;}
+.skript-step{margin-bottom:14px;}
+@media(max-width:900px){.footer-details{grid-template-columns:1fr;}}
+html.beamer footer,html.beamer-xl footer,html.beamer-xxl footer{display:none;}
+.app, .content, .step{overflow-wrap:anywhere;}
+
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <a class="back-link" href="../index.html" data-i18n-en="← Back to home page">← Zurück zur Startseite</a>
+    <div class="ctrls">
+      <button class="beamer-btn" id="beamerBtn" type="button">☀ Beamer</button>
+      <button class="lang-btn" id="langBtn" type="button" lang="en">EN</button>
+    </div>
+  </header>
+  <a class="signature" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer"><strong>Michaela Kühn</strong><span>www.michaela-kuehn.com</span></a>
+
+  <section class="hero">
+    <span class="eyebrow" data-i18n-en="ISO/IEC 25010:2023 · Case Lindenfeld Lunch">ISO/IEC 25010:2023 · Fall Lindenfeld Lunch</span>
+    <h1 data-i18n-en="Lindenfeld Lunch: One FR, nine tracks">Lindenfeld Lunch: Eine FA, neun Spuren</h1>
+    <p class="lead" data-i18n-en="Two steps on the case of the cafeteria app Lindenfeld Lunch (Lindenfeld Systemtechnik GmbH): first formulate a functional requirement (FR) with a binding level of must, should or may, then see how the very same FR gives rise to nine non-functional tracks under ISO/IEC 25010:2023, each with an NFR, a user story and an acceptance criterion.">Zwei Schritte am Fall der Cafeteria-App Lindenfeld Lunch (Lindenfeld Systemtechnik GmbH): Erst eine funktionale Anforderung (FA) mit muss, soll oder kann verbindlich formulieren, dann sehen, wie aus ein und derselben FA neun nicht-funktionale Spuren nach ISO/IEC 25010:2023 entstehen, jeweils mit NFA, User Story und Akzeptanzkriterium.</p>
+  </section>
+
+  <div class="layout">
+    <nav class="side sidebar" aria-label="Schritte">
+      <span class="side-title" data-i18n-en="Steps">Schritte</span>
+      <button type="button" class="side-btn" data-goto="1"><span class="num">1</span><span data-i18n-en="Formulate a requirement">Anforderung formulieren</span><small><span data-i18n-en="must · should · may">muss · soll · kann</span></small></button>
+      <button type="button" class="side-btn" data-goto="2"><span class="num">2</span><span data-i18n-en="One FR, nine tracks">Eine FA, neun Spuren</span><small><span data-i18n-en="ISO/IEC 25010:2023 demonstrator">ISO/IEC 25010:2023 Demonstrator</span></small></button>
+    </nav>
+    <main class="content">
+    <section class="step" id="schritt-1" aria-labelledby="h-schritt-1">
+      <h2 class="section-title" id="h-schritt-1"><span data-i18n-en="Step 1: Formulate a requirement (must, should, may)">Schritt 1: Anforderung formulieren (muss, soll, kann)</span></h2>
+      <p class="section-sub" data-i18n-en="Before a FR turns into nine quality tracks it has to be clearly formulated: who gets what, and how binding is it? The modal verb in the sentence answers the second question.">Bevor aus einer FA neun Qualitätsspuren werden, muss sie klar formuliert sein: Wer bekommt was, und wie verbindlich ist das? Das Modalverb im Satz beantwortet die zweite Frage.</p>
+
+      <div class="vb-grid">
+        <div class="vb-card vb-muss">
+          <span class="vb-word">muss</span>
+          <p class="vb-role" data-i18n-en="binding · equivalent to &lt;em&gt;shall / MUST&lt;/em&gt;">verbindlich · entspricht <em>shall / MUST</em></p>
+          <p data-i18n-en="Without this requirement there is no acceptance and no go-live. Typical sources: law, contract, standard, works agreement, core purpose of the product.">Ohne diese Anforderung gibt es keine Abnahme und kein Go-live. Typische Quellen: Gesetz, Vertrag, Norm, Betriebsvereinbarung, Kernzweck des Produkts.</p>
+          <p class="vb-ex"><b>Lindenfeld:</b> <span data-i18n-en="The system &lt;b&gt;must&lt;/b&gt; show the allergens for each dish.">Das System <b>muss</b> je Gericht die Allergene anzeigen.</span></p>
+          <div class="vb-q"><span class="vb-q-tag" data-i18n-en="Sample questions">Beispielfragen</span>
+            <ul>
+              <li data-i18n-en="“Who prescribes this: law, contract, works agreement or a wish?”">„Wer schreibt das vor: Gesetz, Vertrag, Betriebsvereinbarung oder ein Wunsch?“</li>
+              <li data-i18n-en="“What happens if this is missing on the start day?”">„Was passiert, wenn das am Starttag fehlt?“</li>
+              <li data-i18n-en="“Would we go live at all without this requirement?”">„Würden wir ohne diese Anforderung überhaupt live gehen?“</li>
+            </ul></div>
+        </div>
+        <div class="vb-card vb-soll">
+          <span class="vb-word">soll</span>
+          <p class="vb-role" data-i18n-en="strongly recommended · equivalent to &lt;em&gt;should / SHOULD&lt;/em&gt;">dringend empfohlen · entspricht <em>should / SHOULD</em></p>
+          <p data-i18n-en="Important, but dispensable for good reason. Whoever deviates decides this deliberately and justifies it. Leaving it out is not a side issue.">Wichtig, aber mit gutem Grund verzichtbar. Wer abweicht, entscheidet das bewusst und begründet es. Das Weglassen ist keine Nebensache.</p>
+          <p class="vb-ex"><b>Lindenfeld:</b> <span data-i18n-en="The system &lt;b&gt;should&lt;/b&gt; remind users of open orders before the cut-off time.">Das System <b>soll</b> vor Bestellschluss an offene Bestellungen erinnern.</span></p>
+          <div class="vb-q"><span class="vb-q-tag" data-i18n-en="Sample questions">Beispielfragen</span>
+            <ul>
+              <li data-i18n-en="“What harm is done if we leave this out of the first release?”">„Welchen Schaden hat es, wenn wir das im ersten Release weglassen?“</li>
+              <li data-i18n-en="“Who decides on leaving it out, and with what justification?”">„Wer entscheidet über das Weglassen, und mit welcher Begründung?“</li>
+              <li data-i18n-en="“How do we tell that ‘should’ is meant honestly and is not a politely packaged ‘must’?”">„Woran erkennen wir, dass ‚soll‘ ehrlich gemeint ist und nicht ein höflich verpacktes ‚muss‘?“</li>
+            </ul></div>
+        </div>
+        <div class="vb-card vb-kann">
+          <span class="vb-word">kann</span>
+          <p class="vb-role" data-i18n-en="optional · equivalent to &lt;em&gt;may / MAY&lt;/em&gt;">optional · entspricht <em>may / MAY</em></p>
+          <p data-i18n-en="Nice to have. If it drops out, there are no consequences for acceptance or operation. Only implemented if time and budget are left over.">Schön zu haben. Fällt es weg, hat das keine Folgen für Abnahme oder Betrieb. Wird nur umgesetzt, wenn Zeit und Budget übrig sind.</p>
+          <p class="vb-ex"><b>Lindenfeld:</b> <span data-i18n-en="The system &lt;b&gt;may&lt;/b&gt; remember favourite dishes.">Das System <b>kann</b> Lieblingsgerichte merken.</span></p>
+          <div class="vb-q"><span class="vb-q-tag" data-i18n-en="Sample questions">Beispielfragen</span>
+            <ul>
+              <li data-i18n-en="“Who would miss this, and how specifically?”">„Wer würde das vermissen, und wie konkret?“</li>
+              <li data-i18n-en="“What would we leave out for it?”">„Was würden wir dafür weglassen?“</li>
+              <li data-i18n-en="“Is this really optional, or has nobody taken it seriously yet?”">„Ist das wirklich optional, oder hat es nur noch niemand ernst genommen?“</li>
+            </ul></div>
+        </div>
+      </div>
+
+      <h3 class="sub-title"><span data-i18n-en="The sentence template">Die Satzschablone</span></h3>
+      <p class="section-sub" data-i18n-en="A well-formulated requirement is a complete sentence with fixed building blocks. The modal verb is always in the same place.">Eine gut formulierte Anforderung ist ein vollständiger Satz mit festen Bausteinen. Das Modalverb steht immer an derselben Stelle.</p>
+      <div class="schablone" role="group" data-aria-en="Sentence template" aria-label="Satzschablone">
+        <span class="sb sb-opt" data-i18n-en="Condition &lt;small&gt;(optional)&lt;/small&gt;">Bedingung <small>(optional)</small></span>
+        <span class="sb" data-i18n-en="The system">Das System</span>
+        <span class="sb sb-verb" id="sbVerb">muss / soll / kann</span>
+        <span class="sb" data-i18n-en="whom &lt;small&gt;(actor)&lt;/small&gt;">wem <small>(Akteur)</small></span>
+        <span class="sb" data-i18n-en="provide the ability to">die Möglichkeit bieten,</span>
+        <span class="sb" data-i18n-en="object + process verb &lt;small&gt;(what)&lt;/small&gt;">Objekt + Prozesswort <small>(was)</small></span>
+      </div>
+
+      <h3 class="sub-title"><span data-i18n-en="Formulate it yourself">Selbst formulieren</span></h3>
+      <p class="section-sub" data-i18n-en="Choose a FR and a binding level. The finished sentence goes into the demonstrator in step 2 as the starting FR.">Wähle eine FA und eine Verbindlichkeit. Der fertige Satz geht in Schritt 2 als Ausgangs-FA in den Demonstrator.</p>
+      <div class="fa-picker" id="s1Picker"></div>
+      <div class="verb-picker" id="s1Verbs" role="group" aria-label="Verbindlichkeit">
+        <button type="button" class="verb-btn v-muss" data-verb="muss">muss</button>
+        <button type="button" class="verb-btn v-soll" data-verb="soll">soll</button>
+        <button type="button" class="verb-btn v-kann" data-verb="kann">kann</button>
+      </div>
+      <div class="fa-display">
+        <span class="tag" data-i18n-en="Formulated requirement">Formulierte Anforderung</span>
+        <p id="s1Sentence">—</p>
+      </div>
+      <div class="solution-row">
+        <button type="button" class="reveal-btn" id="s1Reveal" aria-expanded="false">Lösung zeigen</button>
+        <p class="solution" id="s1Why" hidden></p>
+      </div>
+
+      <h3 class="sub-title"><span data-i18n-en="Exercise: must, should or may?">Übung: muss, soll oder kann?</span></h3>
+      <p class="section-sub" data-i18n-en="Classify each wish from the Lindenfeld Lunch project. What matters is not only the classification but the reasoning. One question per view; the solution appears after your choice.">Ordne jeden Wunsch aus dem Lindenfeld-Lunch-Projekt ein. Entscheidend ist nicht nur die Einordnung, sondern die Begründung. Eine Frage pro Ansicht, die Lösung erscheint nach deiner Auswahl.</p>
+      <div class="q-card" id="qCard">
+        <span class="q-count" id="qCount" aria-live="polite"></span>
+        <p class="q-text" id="qText"></p>
+        <div class="q-opts" id="qOpts" role="group"></div>
+        <div class="q-fb" id="qFb" hidden aria-live="polite"></div>
+        <div class="q-nav">
+          <button type="button" id="qPrev">← Zurück</button>
+          <span class="q-summary" id="qSummary"></span>
+          <button type="button" id="qNext">Weiter →</button>
+        </div>
+      </div>
+
+      <div class="group-q">
+        <span class="tag" data-i18n-en="Question for the group">Frage an die Gruppe</span>
+        <p data-i18n-en="Two colleagues classify the same wish differently. How do we resolve this, and which question do we ask first?">Zwei Kolleg:innen ordnen denselben Wunsch unterschiedlich ein. Wie klären wir das, und welche Frage stellen wir zuerst?</p>
+        <p class="solution" id="groupSol" hidden><span data-i18n-en="&lt;b&gt;Solution:&lt;/b&gt; Do not argue about the word, argue about the consequence: “What happens if this is missing, and who bears it?” The answer shows whether an obligation (must), a legitimate wish (should) or an extra (may) lies behind it."><b>Lösung:</b> Nicht über das Wort streiten, sondern über die Folge: „Was passiert, wenn das fehlt, und wer trägt das?“ Die Antwort zeigt, ob eine Pflicht (muss), ein berechtigter Wunsch (soll) oder ein Extra (kann) dahintersteckt.</span></p>
+        <button type="button" class="reveal-btn" id="groupReveal" aria-expanded="false">Lösung zeigen</button>
+      </div>
+
+      <div class="note-box">
+        <span class="tag" data-i18n-en="Pitfall: binding level in the sentence ≠ priority">Stolperfalle: Verbindlichkeit im Satz ≠ Priorität</span>
+        <p data-i18n-en="The modal verb says &lt;em&gt;how binding&lt;/em&gt; a requirement is. The &lt;em&gt;priority&lt;/em&gt; (order of implementation, e.g. in the backlog) is a planning attribute and changes more often. If both are in the sentence, the requirement text has to be touched with every re-prioritisation. That is why some experts prefer priority as an attribute rather than in the wording. For binding level (law, contract, standard), however, the modal verb is common and sensible.">Das Modalverb sagt, <em>wie verbindlich</em> eine Anforderung ist. Die <em>Priorität</em> (Reihenfolge der Umsetzung, z. B. im Backlog) ist ein Planungsmerkmal und ändert sich öfter. Steht beides im Satz, muss bei jeder Umpriorisierung der Anforderungstext angefasst werden. Deshalb sehen manche Fachleute die Priorität lieber als Attribut statt im Wortlaut. Für die Verbindlichkeit (Gesetz, Vertrag, Norm) ist das Modalverb dagegen üblich und sinnvoll.</p>
+        <p class="note-q" data-i18n-en="&lt;b&gt;Sample question:&lt;/b&gt; “Is this a question of binding level here, or only of order?”"><b>Beispielfrage:</b> „Ist das hier eine Frage der Verbindlichkeit oder nur der Reihenfolge?“</p>
+      </div>
+
+      <div class="step-nav">
+        <span></span>
+        <button type="button" class="next-btn" data-goto="2" data-i18n-en="Continue to step 2: nine tracks →">Weiter zu Schritt 2: Neun Spuren →</button>
+      </div>
+
+      <p class="source-note"><span data-i18n-en="Sources:">Quellen:</span> <a href="https://re-magazine.ireb.org/articles/sharing-my-doubts-on-shall-should-will" target="_blank" rel="noopener noreferrer">IREB RE Magazine: Sharing my doubts on shall, should, will</a> <span data-i18n-en="(meaning of shall, should, will in the IREB book by Pohl/Rupp, and criticism of priority in the sentence)">(Bedeutung von shall, should, will im IREB-Buch von Pohl/Rupp und Kritik an Priorität im Satz)</span> · <a href="https://www.rfc-editor.org/rfc/rfc2119" target="_blank" rel="noopener noreferrer">IETF RFC 2119</a> <span data-i18n-en="(MUST, SHOULD, MAY)">(MUST, SHOULD, MAY)</span></p>
+    </section>
+
+    <section class="step" id="schritt-2" aria-labelledby="h-schritt-2" hidden>
+      <h2 class="section-title" id="h-schritt-2"><span data-i18n-en="Step 2: One FR, nine tracks">Schritt 2: Eine FA, neun Spuren</span></h2>
+      <p class="section-sub" data-i18n-en="The requirement formulated in step 1 is the starting FR. Choose a FR (and change its binding level in step 1 if needed), then a quality characteristic. The panel below shows the definition, sub-characteristics and the NFR derived from it, together with a user story.">Die in Schritt 1 formulierte Anforderung ist die Ausgangs-FA. Wähle eine FA (und ändere bei Bedarf in Schritt 1 ihre Verbindlichkeit), dann ein Qualitätsmerkmal. Das Panel darunter zeigt Definition, Untermerkmale und die daraus abgeleitete NFA samt User Story.</p>
+
+      <div class="fa-picker" id="faPicker"></div>
+      <div class="fa-display">
+        <span class="tag" data-i18n-en="Starting FR">Ausgangs-FA</span>
+        <p id="faText">—</p>
+      </div>
+
+      <figure class="iso-fig">
+    <svg class="iso-svg" viewBox="0 0 580 500" role="group" aria-label="Qualitätsring ISO/IEC 25010:2023 mit neun Merkmalen">
+      <g class="iso-seg" data-char="fs" role="button" tabindex="0"><title>1. Funktionale Angemessenheit</title><path d="M231.2,88.4 A172,172 0 0 1 348.8,88.4 L316.7,176.7 A78,78 0 0 0 263.3,176.7 Z" style="fill:#0f766e"/><text x="290.0" y="134.0" class="iso-num" text-anchor="middle">1</text><text x="290.0" y="58.0" class="iso-lab" text-anchor="middle"><tspan x="290.0" dy="0">Funktionale</tspan><tspan x="290.0" dy="16">Angemessenheit</tspan></text></g><g class="iso-seg" data-char="pe" role="button" tabindex="0"><title>2. Leistungseffizienz</title><path d="M348.8,88.4 A172,172 0 0 1 439.0,164.0 L357.5,211.0 A78,78 0 0 0 316.7,176.7 Z" style="fill:#1d4ed8"/><text x="370.3" y="163.2" class="iso-num" text-anchor="middle">2</text><text x="408.3" y="101.0" class="iso-lab" text-anchor="start"><tspan x="408.3" dy="0">Leistungs-</tspan><tspan x="408.3" dy="16">effizienz</tspan></text></g><g class="iso-seg" data-char="co" role="button" tabindex="0"><title>3. Kompatibilität</title><path d="M439.0,164.0 A172,172 0 0 1 459.4,279.9 L366.8,263.5 A78,78 0 0 0 357.5,211.0 Z" style="fill:#7e22ce"/><text x="413.1" y="237.3" class="iso-num" text-anchor="middle">3</text><text x="471.2" y="222.0" class="iso-lab" text-anchor="start"><tspan x="471.2" dy="0">Kompatibilität</tspan></text></g><g class="iso-seg" data-char="ic" role="button" tabindex="0"><title>4. Interaktionsfähigkeit (neu benannt)</title><path d="M459.4,279.9 A172,172 0 0 1 400.6,381.8 L340.1,309.8 A78,78 0 0 0 366.8,263.5 Z" style="fill:#be123c"/><text x="398.3" y="321.5" class="iso-num" text-anchor="middle">4</text><circle cx="426.8" cy="329.0" r="9" class="iso-mk"/><text x="426.8" y="333.5" class="iso-mkt" text-anchor="middle">!</text><text x="449.3" y="339.0" class="iso-lab" text-anchor="start"><tspan x="449.3" dy="0">Interaktions-</tspan><tspan x="449.3" dy="16">fähigkeit</tspan></text></g><g class="iso-seg" data-char="re" role="button" tabindex="0"><title>5. Zuverlässigkeit</title><path d="M400.6,381.8 A172,172 0 0 1 290.0,422.0 L290.0,328.0 A78,78 0 0 0 340.1,309.8 Z" style="fill:#b45309"/><text x="332.8" y="376.5" class="iso-num" text-anchor="middle">5</text><text x="352.9" y="434.9" class="iso-lab" text-anchor="start"><tspan x="352.9" dy="0">Zuverlässigkeit</tspan></text></g><g class="iso-seg" data-char="se" role="button" tabindex="0"><title>6. Sicherheit (Security)</title><path d="M290.0,422.0 A172,172 0 0 1 179.4,381.8 L239.9,309.8 A78,78 0 0 0 290.0,328.0 Z" style="fill:#15803d"/><text x="247.2" y="376.5" class="iso-num" text-anchor="middle">6</text><text x="227.1" y="434.9" class="iso-lab" text-anchor="end"><tspan x="227.1" dy="0">Sicherheit</tspan></text></g><g class="iso-seg" data-char="ma" role="button" tabindex="0"><title>7. Wartbarkeit</title><path d="M179.4,381.8 A172,172 0 0 1 120.6,279.9 L213.2,263.5 A78,78 0 0 0 239.9,309.8 Z" style="fill:#0e7490"/><text x="181.7" y="321.5" class="iso-num" text-anchor="middle">7</text><text x="130.7" y="346.0" class="iso-lab" text-anchor="end"><tspan x="130.7" dy="0">Wartbarkeit</tspan></text></g><g class="iso-seg" data-char="fl" role="button" tabindex="0"><title>8. Flexibilität (neu benannt)</title><path d="M120.6,279.9 A172,172 0 0 1 141.0,164.0 L222.5,211.0 A78,78 0 0 0 213.2,263.5 Z" style="fill:#a21caf"/><text x="166.9" y="237.3" class="iso-num" text-anchor="middle">8</text><circle cx="134.4" cy="222.6" r="9" class="iso-mk"/><text x="134.4" y="227.1" class="iso-mkt" text-anchor="middle">!</text><text x="108.8" y="222.0" class="iso-lab" text-anchor="end"><tspan x="108.8" dy="0">Flexibilität</tspan></text></g><g class="iso-seg" data-char="sa" role="button" tabindex="0"><title>9. Safety (neu 2023)</title><path d="M141.0,164.0 A172,172 0 0 1 231.2,88.4 L263.3,176.7 A78,78 0 0 0 222.5,211.0 Z" style="fill:#475569"/><text x="209.7" y="163.2" class="iso-num" text-anchor="middle">9</text><circle cx="188.4" cy="129.0" r="9" class="iso-mk"/><text x="188.4" y="133.5" class="iso-mkt" text-anchor="middle">!</text><text x="171.7" y="107.0" class="iso-lab" text-anchor="end"><tspan x="171.7" dy="0">Safety</tspan></text></g>
+      <circle cx="290" cy="250" r="72" class="iso-core"/>
+      <text x="290" y="244" class="iso-core-t" text-anchor="middle">ISO/IEC</text>
+      <text x="290" y="266" class="iso-core-t" text-anchor="middle">25010</text>
+    </svg>
+    <figcaption><span data-i18n-en="Nine equal quality characteristics.">Neun gleichrangige Qualitätsmerkmale.</span> <span class="iso-legend">!</span> <span data-i18n-en="= change compared with 2011 (renamed or new). A click on a segment selects the characteristic in the demonstrator.">= Änderung gegenüber 2011 (umbenannt oder neu). Ein Klick auf ein Segment wählt das Merkmal im Demonstrator.</span></figcaption>
+      </figure>
+      <div class="char-grid" id="charGrid"></div>
+
+      <div class="detail-panel">
+        <div class="detail-head">
+          <span class="p-name" id="detailName">—</span>
+          <span class="p-en" id="detailEn"></span>
+        </div>
+        <div class="detail-body">
+          <p class="detail-def" id="detailDef"></p>
+          <ul class="sub-list" id="detailSubs"></ul>
+          <div class="demo-split">
+            <div class="demo-box nfa">
+              <span class="tag" data-i18n-en="→ Derived NFR">→ Abgeleitete NFA</span>
+              <p class="nfa-text" id="detailNfa"></p>
+            </div>
+            <div class="demo-box us">
+              <span class="tag" data-i18n-en="→ User story with acceptance criterion">→ User Story mit Akzeptanzkriterium</span>
+              <p class="story-text" id="detailStory"></p>
+              <div class="ac-block" id="detailAc"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button type="button" class="back-btn" data-goto="1" data-i18n-en="← Back to step 1: formulate">← Zurück zu Schritt 1: Formulieren</button>
+        <span></span>
+      </div>
+
+      <div class="crosslink">
+        <span data-i18n-en="Related DenkRaum tools on this topic:">Verwandte Denkraum-Tools zu diesem Thema:</span>
+        <ul>
+          <li><a href="./iso-25010-kompendium.html">ISO/IEC 25010:2023 Kompendium</a> <span data-i18n-en="— reference work with a 2011/2023 comparison table and the customer portal case; here, by contrast, Lindenfeld throughout, with an upstream step on binding levels.">— Nachschlagewerk mit Vergleichstabelle 2011/2023 und dem Fall Kundenportal; hier dagegen durchgehend Lindenfeld, mit vorgeschaltetem Schritt zur Verbindlichkeit.</span></li>
+          <li><a href="./fa-nfa-rollen-spuren.html">FA → NFA: Die Spuren einer Anforderung</a> <span data-i18n-en="— breaks a requirement into six legal and quality tracks and reads it from a role view; here the nine characteristics of ISO/IEC 25010 are at the centre.">— zerlegt eine Anforderung in sechs Rechts- und Qualitätsspuren und liest sie aus Rollensicht; hier stehen die neun Merkmale der ISO/IEC 25010 im Mittelpunkt.</span></li>
+          <li><a href="./user-story-puzzle.html">User Story Puzzle</a> <span data-i18n-en="— assembling stories from building blocks; here the story is derived from a quality characteristic.">— Stories aus Bausteinen zusammensetzen; hier wird die Story aus einem Qualitätsmerkmal abgeleitet.</span></li>
+          <li><a href="./lindenfeld-projektauftrag-pflichtenheft.html">Lindenfeld Lunch: Projektauftrag und Pflichtenheft</a> <span data-i18n-en="— the case from the side of obligations and dates; here the quality of the lunch app.">— der Fall von der Seite der Pflichten und Termine; hier die Qualität der Lunch-App.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    </main>
+  </div>
+
+  <footer>
+    <p class="footer-sig"><strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a> · ISO/IEC 25010:2023 · IETF RFC 2119 · IREB RE Magazine · WCAG 2.2</p>
+    <div class="footer-details">
+<details class="footer-box"><summary class="footer-summary">⚙️ <span data-i18n-en="System prompt">Systemprompt</span></summary><div class="footer-content footer-mono"><div data-i18n-en="ROLE
+You build an interactive single-file HTML tool for Michaela Kühn (www.michaela-kuehn.com) in the DenkRaum repo. The tool belongs in the solution room (thread RE), case world “Lindenfeld Lunch” (cafeteria app of the fictional Lindenfeld Systemtechnik GmbH). Audience: participants in RE/BA seminars, from beginners to advanced.
+
+GOAL
+Experience two steps: (1) formulate a functional requirement (FR) with a binding level of must / should / may, (2) see how the same FR gives rise to nine non-functional tracks under ISO/IEC 25010:2023 (NFR, user story, acceptance criterion in Given/When/Then).
+
+STRUCTURE
+- One HTML file, no server, no external resources (font, script, image), white background, colour scheme light.
+- Left sidebar with two steps; content on the right, single column, in presentation order. Back link to the start page, fixed signature top right, DE/EN language button, four-level beamer button.
+- Step 1 “Formulate a requirement”: three cards (must, should, may) with meaning, equivalent (shall/should/may), Lindenfeld example and three sample questions; sentence template (“condition – the system – must/should/may – whom – provide the ability – object + process verb”); builder: pick one of three FRs, pick the binding level, see the finished sentence, reasoning on click; single-question exercise with six wishes; question for the group; pitfall “binding level in the sentence is not priority”.
+- Step 2 “One FR, nine tracks”: the FR formulated in step 1 as the starting point (shared state), quality ring as inline SVG with nine segments, card grid with the nine characteristics, detail panel with definition, sub-characteristics, derived NFR, user story and Given/When/Then.
+- Three scenarios: login, pre-order lunch, monthly statement as PDF. Each scenario has, for all nine characteristics, a measurable NFR with a number and measuring condition, a user story and an acceptance criterion.
+
+CONTENT PER TRACK (order of the standard)
+1 Functional Suitability, 2 Performance Efficiency, 3 Compatibility, 4 Interaction Capability (formerly Usability), 5 Reliability, 6 Security (new: Resistance), 7 Maintainability, 8 Flexibility (formerly Portability), 9 Safety (new in 2023). Per characteristic: definition, sub-characteristics with a short explanation, badge “unchanged / renamed / new”.
+Safety in the case: allergens (LMIV) and a wrong deduction total; Security in the case: data protection and co-determination. Figures and legal references are example values of the case and must be checked before real use.
+
+DESIGN
+- Structure tokens: cards 16 px radius with a subtle shadow, buttons 12 px, beamer/badges as pill (999 px), quote boxes 4 px. Own colour world (warm red accent, blue/green/teal secondary colours), minimum type size 16 px body, 14 px secondary text, touch targets at least 44 px.
+- Beamer in four levels via classes beamer, beamer-xl, beamer-xxl on html; label shows the next action; footer hidden from level 1; signature stays visible.
+- Language switch without reload: static texts via data-i18n-en, dynamic content from bilingual data objects; language and beamer level in sessionStorage with try/catch.
+- Exercise as a single-question stepper: counter “Question x of 6”, back/next, no auto-advance; right after the choice an icon (✔ / ≈ / ✘), the correct answer, “Also defensible” where applicable, an explanation; correct answer not systematically at position 1.
+- Footer with five collapsible boxes (system prompt, handbook, talk script, standards register, glossary); stacked below 900 px.
+
+DO NOT
+- Do not mix priority into the requirement sentence (binding level is not priority).
+- Do not claim ISO/IEC/IEEE 29148 as the source of the modal verbs; the sources are RFC 2119 and the IREB article.
+- No real company or personal data, no invented standard citations, no external images, fonts or scripts.
+- No time agenda in the tool (clock times belong in the talk script; times within the case such as the 14:00 cut-off are subject matter).
+- No automatic advance in the exercise, no colour as the only carrier of meaning.
+- No position:static for the signature, not even on a smartphone.
+
+CHECK
+Two widths (1300 and 390 px), no horizontal scrolling, all four beamer levels, both languages, special characters in a screenshot, straight ASCII quotation marks in all href attributes.">ROLLE
+Du baust ein interaktives Einzeldatei-HTML-Tool für Michaela Kühn (www.michaela-kuehn.com) im DenkRaum-Repo. Das Tool gehört in den Lösungsraum (Faden RE), Fallwelt „Lindenfeld Lunch“ (Cafeteria-App der fiktiven Lindenfeld Systemtechnik GmbH). Zielgruppe: Teilnehmende in RE-/BA-Seminaren, Einsteigende bis Fortgeschrittene.
+
+ZIEL
+In zwei Schritten erleben: (1) eine funktionale Anforderung (FA) mit muss / soll / kann verbindlich formulieren, (2) sehen, wie aus derselben FA neun nicht-funktionale Spuren nach ISO/IEC 25010:2023 entstehen (NFA, User Story, Akzeptanzkriterium in Given/When/Then).
+
+STRUKTUR
+- Eine HTML-Datei, kein Server, keine externen Ressourcen (Schrift, Skript, Bild), weißer Hintergrund, color-scheme light.
+- Linke Seitenleiste mit zwei Schritten; rechts der Inhalt, einspaltig, in Vortragsreihenfolge. Zurück-Link zur Startseite, feste Signatur oben rechts, Sprach-Button DE/EN, vierstufiger Beamer-Button.
+- Schritt 1 „Anforderung formulieren“: drei Karten (muss, soll, kann) mit Bedeutung, Entsprechung (shall/should/may), Lindenfeld-Beispiel und drei Beispielfragen; Satzschablone („Bedingung – Das System – muss/soll/kann – wem – die Möglichkeit bieten – Objekt + Prozesswort“); Baukasten: eine von drei FAs wählen, Verbindlichkeit wählen, fertigen Satz sehen, Begründung per Klick; Einzelfrage-Übung mit sechs Wünschen; Frage an die Gruppe; Stolperfalle „Verbindlichkeit im Satz ist nicht Priorität“.
+- Schritt 2 „Eine FA, neun Spuren“: die in Schritt 1 formulierte FA als Ausgangspunkt (gemeinsamer Zustand), Qualitätsring als Inline-SVG mit neun Segmenten, Kartenraster mit den neun Merkmalen, Detail-Panel mit Definition, Untermerkmalen, abgeleiteter NFA, User Story und Given/When/Then.
+- Drei Szenarien: Login, Mittagessen vorbestellen, Monatsabrechnung als PDF. Jedes Szenario hat für alle neun Merkmale eine messbare NFA mit Zahl und Messbedingung, eine User Story und ein Akzeptanzkriterium.
+
+INHALT PRO SPUR (Reihenfolge der Norm)
+1 Funktionale Angemessenheit, 2 Leistungseffizienz, 3 Kompatibilität, 4 Interaktionsfähigkeit (vormals Usability), 5 Zuverlässigkeit, 6 Sicherheit (Security, neu: Resistance), 7 Wartbarkeit, 8 Flexibilität (vormals Portability), 9 Safety (neu 2023). Je Merkmal: Definition, Untermerkmale mit Kurzerklärung, Badge „unverändert / umbenannt / neu“.
+Safety am Fall: Allergene (LMIV) und falsche Abzugssumme; Security am Fall: Datenschutz und Mitbestimmung. Zahlen und Rechtsbezüge sind Beispielwerte des Falls und vor realem Einsatz zu prüfen.
+
+DESIGN
+- Strukturtokens: Karten 16 px Radius mit dezentem Schatten, Buttons 12 px, Beamer/Badges als Pill (999 px), Zitat-Boxen 4 px. Eigene Farbwelt (warmes Rot als Akzent, Blau/Grün/Teal als Sekundärfarben), Mindestschrift 16 px Fließtext, 14 px Sekundärtext, Touch-Ziele mindestens 44 px.
+- Beamer vierstufig über Klassen beamer, beamer-xl, beamer-xxl auf html; Label zeigt die nächste Aktion; ab Stufe 1 Footer ausgeblendet; Signatur bleibt sichtbar.
+- Sprachumschaltung ohne Reload: statische Texte über data-i18n-en, dynamische Inhalte aus zweisprachigen Datenobjekten; Sprache und Beamer-Stufe in sessionStorage mit try/catch.
+- Übung als Einzelfrage-Stepper: Zähler „Frage x von 6“, Zurück/Weiter, kein Auto-Weiter; nach der Auswahl sofort Symbol (✔ / ≈ / ✘), richtige Antwort, „Ebenfalls vertretbar“ falls vorhanden, Erklärung; richtige Antwort nicht systematisch an Position 1.
+- Footer mit fünf Aufklapp-Boxen (Systemprompt, Handbuch, Vortrags-Skript, Normen-Register, Glossar); unter 900 px gestapelt.
+
+NICHT TUN
+- Keine Priorität im Anforderungssatz vermischen (Verbindlichkeit ist nicht Priorität).
+- ISO/IEC/IEEE 29148 nicht als Quelle der Modalverben behaupten; Quellen sind RFC 2119 und der IREB-Artikel.
+- Keine echten Firmen- oder Personendaten, keine erfundenen Normzitate, keine externen Bilder, Schriften oder Skripte.
+- Keine Zeitagenda im Tool (Uhrzeiten gehören ins Sprecher-Skript; Uhrzeiten im Fall wie 14:00 Bestellschluss sind Fachinhalt).
+- Kein automatisches Weiterspringen in der Übung, keine Farbe als alleiniger Bedeutungsträger.
+- Kein position:static für die Signatur, auch nicht auf dem Smartphone.
+
+PRÜFEN
+Zwei Breiten (1300 und 390 px), kein seitliches Scrollen, alle vier Beamer-Stufen, beide Sprachen, Sonderzeichen im Screenshot, gerade ASCII-Anführungszeichen in allen href-Attributen.</div></div></details>
+<details class="footer-box"><summary class="footer-summary">📘 <span data-i18n-en="Handbook">Handbuch</span></summary><div class="footer-content footer-sans"><div data-i18n-en="&lt;p&gt;&lt;b&gt;Framework: RISEN&lt;/b&gt; (role, instructions, steps, end goal, narrowing). It fits because the tool has a fixed sequence: first formulate, then derive the nine tracks, with a clear end product (a FR with a binding level, plus NFR, story and acceptance criterion).&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;The five dimensions in the tool.&lt;/b&gt; &lt;b&gt;Role:&lt;/b&gt; a trainer who shows with one continuous case how language and quality are connected. &lt;b&gt;Task:&lt;/b&gt; formulate a FR and unfold it into nine quality tracks. &lt;b&gt;Context:&lt;/b&gt; the Lindenfeld Lunch case, three scenarios. &lt;b&gt;Format:&lt;/b&gt; two steps, cards, single-question exercise, quality ring, detail panel. &lt;b&gt;Narrowing:&lt;/b&gt; no prioritisation, no standard citations that are not backed up.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Central learning point.&lt;/b&gt; The modal verb says how binding a requirement is, not how urgent. And: a single FR carries nine quality questions. Whoever writes only the first sentence still has the second half of the work ahead.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Why no depth toggle (K22)?&lt;/b&gt; The tool is a demonstrator with an exercise, not a compendium with running-text explanations. The core paragraphs are short and carry the interaction; a second, detailed version would lengthen the flow in the seminar rather than deepen it. The depth comes from the linked tools (ISO 25010 compendium).&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;The three binding levels in detail.&lt;/b&gt; “must” is justified by law, contract, standard, works agreement or core purpose. “should” means: leaving it out is possible, but a deliberate, justified decision. “may” has no consequences for acceptance and operation. The equivalence to shall / should / may comes from the IREB article and from RFC 2119; ISO/IEC/IEEE 29148 is deliberately not claimed as the source here.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Rebuild tip.&lt;/b&gt; Write the data (characteristics, scenarios, exercise questions) first as bilingual objects, then the presentation. Keep the shared state (chosen FR, chosen modal verb) in one object so that step 2 takes over the sentence from step 1. Always give numbers in the NFRs a measuring condition (P95, test cases, spot check).&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Distinction from related tools.&lt;/b&gt; &lt;i&gt;ISO 25010 compendium&lt;/i&gt;: reference work with a 2011/2023 comparison table, customer portal case. &lt;i&gt;FR → NFR: The tracks of a requirement&lt;/i&gt;: six legal and quality tracks and role views. &lt;i&gt;User Story Puzzle&lt;/i&gt;: assembling stories. This tool: Lindenfeld throughout, with the upstream step on binding levels.&lt;/p&gt;"><p><b>Framework: RISEN</b> (Rolle, Anweisungen, Schritte, Endziel, Eingrenzung). Es passt, weil das Tool eine feste Abfolge hat: erst formulieren, dann die neun Spuren ableiten, mit einem klaren Endprodukt (verbindlich formulierte FA mit NFA, Story und Akzeptanzkriterium).</p>
+<p><b>Die fünf Dimensionen im Tool.</b> <b>Rolle:</b> Trainerin, die an einem durchgehenden Fall zeigt, wie Sprache und Qualität zusammenhängen. <b>Aufgabe:</b> eine FA formulieren und in neun Qualitätsspuren aufziehen. <b>Kontext:</b> Fall Lindenfeld Lunch, drei Szenarien. <b>Format:</b> zwei Schritte, Karten, Einzelfrage-Übung, Qualitätsring, Detail-Panel. <b>Eingrenzung:</b> keine Priorisierung, keine Normzitate, die nicht belegt sind.</p>
+<p><b>Zentraler Lernhinweis.</b> Das Modalverb sagt, wie verbindlich eine Anforderung ist, nicht wie dringlich. Und: Eine einzige FA trägt neun Qualitätsfragen. Wer nur den ersten Satz schreibt, hat die zweite Hälfte der Arbeit noch vor sich.</p>
+<p><b>Warum kein Vertiefungs-Toggle (K22)?</b> Das Tool ist ein Demonstrator mit Übung, kein Kompendium mit Fließtext-Erklärungen. Die Kernabsätze sind kurz und tragen die Interaktion; eine zweite, ausführliche Fassung würde den Ablauf im Seminar verlängern, nicht vertiefen. Die Tiefe liefern die verlinkten Tools (ISO-25010-Kompendium).</p>
+<p><b>Zwei Verbindlichkeitsregeln im Detail.</b> „muss“ wird mit Gesetz, Vertrag, Norm, Betriebsvereinbarung oder Kernzweck begründet. „soll“ bedeutet: Weglassen ist möglich, aber eine bewusste, begründete Entscheidung. „kann“ ist ohne Folgen für Abnahme und Betrieb. Die Entsprechung zu shall / should / may stammt aus dem IREB-Artikel und aus RFC 2119; ISO/IEC/IEEE 29148 wird hier bewusst nicht als Quelle behauptet.</p>
+<p><b>Nachbau-Tipp.</b> Zuerst die Daten (Merkmale, Szenarien, Übungsfragen) als zweisprachige Objekte schreiben, danach die Darstellung. Gemeinsamen Zustand (gewählte FA, gewähltes Modalverb) in einem Objekt halten, damit Schritt 2 den Satz aus Schritt 1 übernimmt. Zahlen in den NFAs immer mit Messbedingung versehen (P95, Testfälle, Stichprobe).</p>
+<p><b>Abgrenzung zu verwandten Tools.</b> <i>ISO-25010-Kompendium</i>: Nachschlagewerk mit Vergleichstabelle 2011/2023, Fall Kundenportal. <i>FA → NFA: Die Spuren einer Anforderung</i>: sechs Rechts- und Qualitätsspuren und Rollensichten. <i>User Story Puzzle</i>: Stories zusammensetzen. Dieses Tool: durchgehend Lindenfeld, mit dem vorgeschalteten Schritt zur Verbindlichkeit.</p></div></div></details>
+<details class="footer-box"><summary class="footer-summary">🎤 <span data-i18n-en="Talk script">Vortrags-Skript</span></summary><div class="footer-content footer-sans"><div class="skript-step"><b><span data-i18n-en="Introduction">Einstieg</span></b><br><i>(<span data-i18n-en="Top of the page, show hero and step 1; switch beamer on if needed">Seite oben, Hero und Schritt 1 zeigen; Beamer bei Bedarf einschalten</span>)</i><br><span data-i18n-en="“Lindenfeld Lunch: the cafeteria app is to go live. Before we talk about quality we have to clarify what is binding at all. A single word in the sentence decides that.”">„Lindenfeld Lunch: Die Cafeteria-App soll live gehen. Bevor wir über Qualität reden, müssen wir klären, was überhaupt verbindlich ist. Das entscheidet ein einziges Wort im Satz.“</span><br><span data-i18n-en="Transition: “Three words, three levels of obligation. Let us look at them.”">Übergang: „Drei Wörter, drei Verbindlichkeiten. Schauen wir sie uns an.“</span></div><div class="skript-step"><b><span data-i18n-en="The three cards">Die drei Karten</span></b><br><i>(<span data-i18n-en="Show the cards must, should, may one after the other">Karten muss, soll, kann nacheinander zeigen</span>)</i><br><span data-i18n-en="“Must: without this requirement, no go-live. Should: important, but can be left out with a deliberate justification. May: nice to have, no consequences. Careful: this is binding level, not urgency.” Ask one sample question per card out loud.">„Muss: ohne diese Anforderung kein Go-live. Soll: wichtig, aber mit bewusster Begründung verzichtbar. Kann: nett, ohne Folgen. Achtung: Das ist Verbindlichkeit, nicht Dringlichkeit.“ Eine Beispielfrage je Karte laut stellen.</span><br><span data-i18n-en="Transition: “And what does such a sentence look like?”">Übergang: „Und wie sieht so ein Satz aus?“</span></div><div class="skript-step"><b><span data-i18n-en="Sentence template">Satzschablone</span></b><br><i>(<span data-i18n-en="Show the template">Schablone zeigen</span>)</i><br><span data-i18n-en="“Condition, the system, the modal verb, whom, provide the ability, what. The modal verb is always in the same place. That is how you find it when reading and when checking.”">„Bedingung, Das System, das Modalverb, wem, die Möglichkeit bieten, was. Das Modalverb steht immer an derselben Stelle. So findet man es beim Lesen und beim Prüfen.“</span><br><span data-i18n-en="Transition: “Now we formulate ourselves.”">Übergang: „Jetzt formulieren wir selbst.“</span></div><div class="skript-step"><b><span data-i18n-en="Formulate it yourself">Selbst formulieren</span></b><br><i>(<span data-i18n-en="Pick an FR (login), click through the binding levels, “Show solution”">FA wählen (Login), Verbindlichkeit durchklicken, „Lösung zeigen“</span>)</i><br><span data-i18n-en="“Login: try must, should, may. What does Lindenfeld say? Must, because without login there is no order that can be assigned. And the monthly statement as PDF? Here the project proposes should. Have the reasoning shown and feel free to disagree.”">„Login: muss, soll, kann ausprobieren. Was sagt Lindenfeld? Muss, weil ohne Anmeldung keine zuordenbare Bestellung. Und die Monatsabrechnung als PDF? Hier schlägt das Projekt soll vor. Lassen Sie sich die Begründung zeigen und widersprechen Sie gern.“</span><br><span data-i18n-en="Transition: “Now it is your turn: six wishes, six classifications.”">Übergang: „Jetzt sind Sie dran: sechs Wünsche, sechs Einordnungen.“</span></div><div class="skript-step"><b><span data-i18n-en="Exercise: must, should or may?">Übung: muss, soll oder kann?</span></b><br><i>(<span data-i18n-en="Single-question stepper; for each question let people vote first, then tap">Einzelfrage-Stepper; je Frage erst abstimmen lassen, dann antippen</span>)</i><br><span data-i18n-en="“Question by question. Show of hands first, then the solution. Look at the symbol: tick, approximately-equal or cross. For the reminder and the PDF there is a second defensible answer. That is intended.”">„Frage für Frage. Erst Handzeichen, dann die Lösung. Achten Sie auf das Symbol: Häkchen, Ungefähr-gleich oder Kreuz. Bei Erinnerung und PDF gibt es eine zweite vertretbare Antwort. Das ist gewollt.“</span><br><span data-i18n-en="Transition: “Two colleagues classify the same thing differently. What do we do?”">Übergang: „Zwei Kolleginnen ordnen dasselbe unterschiedlich ein. Was tun wir?“</span></div><div class="skript-step"><b><span data-i18n-en="Question for the group">Frage an die Gruppe</span></b><br><i>(<span data-i18n-en="Read the question aloud, let the group answer, then reveal the solution">Frage vorlesen, Gruppe antworten lassen, dann Lösung aufdecken</span>)</i><br><span data-i18n-en="“Do not argue about the word, argue about the consequence: what happens if it is missing, and who bears that? The answer shows whether it is an obligation, a wish or an extra.”">„Nicht über das Wort streiten, sondern über die Folge: Was passiert, wenn das fehlt, und wer trägt das? Die Antwort zeigt, ob es eine Pflicht, ein Wunsch oder ein Extra ist.“</span><br><span data-i18n-en="Transition: “One pitfall to finish.”">Übergang: „Eine Falle zum Schluss.“</span></div><div class="skript-step"><b><span data-i18n-en="Pitfall">Stolperfalle</span></b><br><i>(<span data-i18n-en="Show the box “Binding level in the sentence is not priority”">Box „Verbindlichkeit im Satz ist nicht Priorität“ zeigen</span>)</i><br><span data-i18n-en="“The modal verb says how binding. Priority is a planning attribute and changes more often. If both are in the sentence, you touch the requirement text with every re-prioritisation. Some experts therefore prefer priority as an attribute.” Optionally point to the IREB article.">„Das Modalverb sagt, wie verbindlich. Die Priorität ist ein Planungsmerkmal und ändert sich öfter. Steht beides im Satz, fassen Sie bei jeder Umpriorisierung den Anforderungstext an. Manche Fachleute sehen die Priorität deshalb lieber als Attribut.“ Optional auf den IREB-Artikel verweisen.</span><br><span data-i18n-en="Transition: “Now we take one sentence and ask: what quality is hidden in it?” Click “Continue to step 2”.">Übergang: „Jetzt nehmen wir einen Satz und fragen: Welche Qualität steckt darin?“ Auf „Weiter zu Schritt 2“ klicken.</span></div><div class="skript-step"><b><span data-i18n-en="Step 2: One FR, nine tracks">Schritt 2: Eine FA, neun Spuren</span></b><br><i>(<span data-i18n-en="Show the starting FR (takes over the sentence from step 1), show the quality ring">Ausgangs-FA zeigen (übernimmt den Satz aus Schritt 1), Qualitätsring zeigen</span>)</i><br><span data-i18n-en="“This is the same sentence as before. The ring shows the nine quality characteristics of ISO/IEC 25010 in the 2023 edition. Marked with an exclamation mark: new or renamed.”">„Das ist derselbe Satz wie eben. Der Ring zeigt die neun Qualitätsmerkmale der ISO/IEC 25010 in der Fassung von 2023. Mit Ausrufezeichen markiert: neu oder umbenannt.“</span><br><span data-i18n-en="Transition: “We click through, starting with Functional Suitability.”">Übergang: „Wir klicken uns durch, beginnend bei Funktionaler Angemessenheit.“</span></div><div class="skript-step"><b><span data-i18n-en="Click through the characteristics">Merkmale durchklicken</span></b><br><i>(<span data-i18n-en="Click characteristics 1 to 9; read NFR, story and acceptance criterion aloud for each">Merkmale 1 bis 9 anklicken; je Merkmal NFA, Story und Akzeptanzkriterium laut lesen</span>)</i><br><span data-i18n-en="“Performance efficiency: not fast, but 95 percent within one second, with 400 simultaneous logins. Safety: at Lindenfeld that means the allergens. Security: data protection and the works council. Every track has a number, a measuring condition, a story and an acceptance criterion.” Switch scenario: pre-order lunch, monthly statement.">„Leistungseffizienz: nicht schnell, sondern 95 Prozent innerhalb einer Sekunde, bei 400 gleichzeitigen Anmeldungen. Safety: bei Lindenfeld sind das die Allergene. Security: Datenschutz und Betriebsrat. Jede Spur hat Zahl, Messbedingung, Story und Akzeptanzkriterium.“ Szenario wechseln: Mittagessen vorbestellen, Monatsabrechnung.</span><br><span data-i18n-en="Transition: “And what do you take away?”">Übergang: „Und was nehmen Sie mit?“</span></div><div class="skript-step"><b><span data-i18n-en="Wrap-up">Abschluss</span></b><br><i>(<span data-i18n-en="Back to step 1 or the top of the page">Zurück zu Schritt 1 oder Seite oben</span>)</i><br><span data-i18n-en="“Two things: the modal verb clarifies the binding level, not the priority. And a single FR carries nine quality questions. Both pay into your requirements before a line of code is written.”">„Zwei Dinge: Das Modalverb klärt die Verbindlichkeit, nicht die Priorität. Und eine einzige FA trägt neun Qualitätsfragen. Beides zahlt auf Ihre Anforderungen ein, bevor eine Zeile Code entsteht.“</span></div><p><b><span data-i18n-en="Direction notes: depending on the group the tool takes 20 to 40 minutes; the exercise alone about 10 minutes. Do not start with the ring, start with the binding level: the word has to be right first, then comes quality. Figures and legal references in the case are example values; for questions about the standard point to the ISO 25010 compendium. Set the beamer level at the start; the footer is hidden from level 1. The script is also delivered as the file Sprecher-Skript_Lindenfeld-FA-neun-Spuren.md.">Regie-Hinweise: Das Tool braucht je nach Gruppe 20 bis 40 Minuten; die Übung allein etwa 10 Minuten. Nicht mit dem Ring beginnen, sondern mit der Verbindlichkeit: Erst muss das Wort sitzen, dann kommt die Qualität. Zahlen und Rechtsbezüge im Fall sind Beispielwerte; bei Rückfragen nach der Norm auf das ISO-25010-Kompendium verweisen. Beamer-Stufe zu Beginn einstellen, der Footer ist ab Stufe 1 ausgeblendet. Das Skript ist auch als Datei Sprecher-Skript_Lindenfeld-FA-neun-Spuren.md mitgeliefert.</span></b></p></div></details>
+<details class="footer-box"><summary class="footer-summary">⚖️ <span data-i18n-en="Standards register">Normen-Register</span></summary><div class="footer-content footer-sans"><table class="footer-table"><thead><tr><th><span data-i18n-en="Framework / source">Framework / Quelle</span></th><th><span data-i18n-en="Version / status">Fassung / Status</span></th><th><span data-i18n-en="Use in the tool">Bezug im Tool</span></th></tr></thead><tbody><tr><td><span data-i18n-en="ISO/IEC 25010:2023">ISO/IEC 25010:2023</span></td><td><span data-i18n-en="2023 edition, current (checked 5 Nov 2026)">Ausgabe 2023, aktuell (geprüft 05.11.2026)</span></td><td><span data-i18n-en="Product quality model with nine characteristics: basis of step 2 and the quality ring">Produktqualitätsmodell mit neun Merkmalen: Grundlage von Schritt 2 und des Qualitätsrings</span></td></tr><tr><td><span data-i18n-en="IETF RFC 2119">IETF RFC 2119</span></td><td><span data-i18n-en="March 1997, BCP 14">März 1997, BCP 14</span></td><td><span data-i18n-en="Meaning of MUST, SHOULD, MAY as equivalent to must, should, may (step 1)">Bedeutung von MUST, SHOULD, MAY als Entsprechung zu muss, soll, kann (Schritt 1)</span></td></tr><tr><td><span data-i18n-en="IREB RE Magazine: Sharing my doubts on shall, should, will">IREB RE Magazine: Sharing my doubts on shall, should, will</span></td><td><span data-i18n-en="online article">Online-Artikel</span></td><td><span data-i18n-en="Meaning of shall, should, will in the IREB book by Pohl/Rupp and criticism of priority in the sentence (pitfall)">Bedeutung von shall, should, will im IREB-Buch von Pohl/Rupp und Kritik an Priorität im Satz (Stolperfalle)</span></td></tr><tr><td><span data-i18n-en="Regulation (EU) No 1169/2011 (LMIV)">Verordnung (EU) Nr. 1169/2011 (LMIV)</span></td><td><span data-i18n-en="current version; example reference">geltende Fassung; Beispielbezug</span></td><td><span data-i18n-en="14 major allergens per dish, safety track in the case">14 Hauptallergene je Gericht, Safety-Spur im Fall</span></td></tr><tr><td><span data-i18n-en="GDPR Art. 5(1)(e); BetrVG § 87(1) no. 6">DSGVO Art. 5 Abs. 1 lit. e; BetrVG § 87 Abs. 1 Nr. 6</span></td><td><span data-i18n-en="current version; example reference">geltende Fassung; Beispielbezug</span></td><td><span data-i18n-en="Storage limitation and co-determination for technical monitoring, security track in the case">Speicherbegrenzung und Mitbestimmung bei technischer Überwachung, Security-Spur im Fall</span></td></tr><tr><td><span data-i18n-en="WCAG 2.2 (W3C)">WCAG 2.2 (W3C)</span></td><td><span data-i18n-en="2023 recommendation, current (checked 5 Nov 2026)">Empfehlung 2023, aktuell (geprüft 05.11.2026)</span></td><td><span data-i18n-en="Accessibility requirement in the interaction track of the case">Zugänglichkeitsanforderung in der Interaktionsspur des Falls</span></td></tr></tbody></table><p><span data-i18n-en="Status checked on 5 Nov 2026 for ISO/IEC 25010:2023 and WCAG 2.2. The legal references are example values of the case. Check again before use in new materials.">Stand geprüft am 05.11.2026 für ISO/IEC 25010:2023 und WCAG 2.2. Die Rechtsbezüge sind Beispielwerte des Falls. Vor dem Einsatz in neuen Materialien erneut prüfen.</span></p></div></details>
+<details class="footer-box"><summary class="footer-summary">📖 <span data-i18n-en="Glossary">Glossar</span></summary><div class="footer-content footer-sans"><dl class="footer-glossary"><dt><span data-i18n-en="FR (functional requirement)">FA (funktionale Anforderung)</span></dt><dd><span data-i18n-en="Describes what the system is to do.">Beschreibt, was das System tun soll.</span></dd><dt><span data-i18n-en="NFR (non-functional requirement)">NFA (nicht-funktionale Anforderung)</span></dt><dd><span data-i18n-en="Describes how well or under which conditions it is to do so. Formulated measurably.">Beschreibt, wie gut oder unter welchen Bedingungen es das tun soll. Messbar formuliert.</span></dd><dt><span data-i18n-en="Binding level">Verbindlichkeit</span></dt><dd><span data-i18n-en="How binding a requirement is: must, should or may. Not the same as priority.">Wie bindend eine Anforderung ist: muss, soll oder kann. Nicht dasselbe wie Priorität.</span></dd><dt><span data-i18n-en="Priority">Priorität</span></dt><dd><span data-i18n-en="Order of implementation, a planning attribute, e.g. in the backlog.">Reihenfolge der Umsetzung, ein Planungsmerkmal, z. B. im Backlog.</span></dd><dt><span data-i18n-en="User story">User Story</span></dt><dd><span data-i18n-en="Requirement from the user&#x27;s view: As a role I want goal so that benefit.">Anforderung aus Nutzersicht: Als Rolle möchte ich Ziel, damit Nutzen.</span></dd><dt><span data-i18n-en="Acceptance criterion">Akzeptanzkriterium</span></dt><dd><span data-i18n-en="Verifiable condition, here in Given / When / Then.">Prüfbare Bedingung, hier in Given / When / Then: gegeben, wenn, dann.</span></dd><dt><span data-i18n-en="P95">P95</span></dt><dd><span data-i18n-en="95th percentile: the stated value is met in 95 percent of cases.">95. Perzentil: In 95 Prozent der Fälle wird der genannte Wert eingehalten.</span></dd><dt><span data-i18n-en="SSO (single sign-on)">SSO (Single Sign-on)</span></dt><dd><span data-i18n-en="Log in once, use several applications.">Einmal anmelden, mehrere Anwendungen nutzen.</span></dd><dt><span data-i18n-en="LMIV">LMIV</span></dt><dd><span data-i18n-en="German implementation of the EU Food Information Regulation: duty to label allergens.">Lebensmittelinformationsverordnung: Pflicht zur Kennzeichnung von Allergenen.</span></dd><dt><span data-i18n-en="BetrVG">BetrVG</span></dt><dd><span data-i18n-en="German Works Constitution Act: regulates, among other things, co-determination by the works council.">Betriebsverfassungsgesetz: regelt u. a. die Mitbestimmung des Betriebsrats.</span></dd></dl></div></details>
+    </div>
+  </footer>
+
+</div>
+<script>
+(function(){
+  "use strict";
+
+  /* ================= Daten (Deutsch) ================= */
+  var CHARACTERISTICS = [
+    { id:"fs", num:1, de:"Funktionale Angemessenheit", en:"Functional Suitability", badge:"unchanged", badgeLabel:"unverändert",
+      def:"Ausmaß, in dem ein Produkt Funktionen bereitstellt, die die angegebenen und impliziten Bedürfnisse bei Nutzung unter festgelegten Bedingungen erfüllen.",
+      subs:[
+        {name:"Completeness (Vollständigkeit)", text:"Der Funktionsumfang deckt alle spezifizierten Aufgaben und Nutzerziele ab."},
+        {name:"Correctness (Korrektheit)", text:"Ergebnisse sind mit dem erforderlichen Genauigkeitsgrad richtig."},
+        {name:"Appropriateness (Angemessenheit)", text:"Die Funktionen erleichtern die vorgesehenen Aufgaben und Ziele."}
+      ]},
+    { id:"pe", num:2, de:"Leistungseffizienz", en:"Performance Efficiency", badge:"unchanged", badgeLabel:"unverändert",
+      def:"Leistung im Verhältnis zur Menge der eingesetzten Ressourcen unter festgelegten Bedingungen.",
+      subs:[
+        {name:"Time Behaviour (Zeitverhalten)", text:"Antwort-, Verarbeitungszeiten und Durchsatzraten bei der Aufgabenerfüllung."},
+        {name:"Resource Utilisation (Ressourcennutzung)", text:"Art und Menge genutzter Ressourcen wie CPU, Speicher, Netzwerk."},
+        {name:"Capacity (Kapazität)", text:"Maximale Grenzwerte eines Parameters, die eingehalten werden."}
+      ]},
+    { id:"co", num:3, de:"Kompatibilität", en:"Compatibility", badge:"unchanged", badgeLabel:"unverändert",
+      def:"Ausmaß, in dem ein Produkt Informationen mit anderen Produkten austauschen und/oder seine Funktionen erfüllen kann, während es dieselbe Hardware- oder Softwareumgebung nutzt.",
+      subs:[
+        {name:"Co-existence (Koexistenz)", text:"Kann seine Funktionen erfüllen, ohne andere Produkte in derselben Umgebung negativ zu beeinträchtigen."},
+        {name:"Interoperability (Interoperabilität)", text:"Kann mit anderen Produkten Informationen austauschen und diese nutzen."}
+      ]},
+    { id:"ic", num:4, de:"Interaktionsfähigkeit", en:"Interaction Capability", badge:"renamed", badgeLabel:"umbenannt von Usability",
+      def:"Ausmaß, in dem ein Produkt von festgelegten Nutzenden effektiv, effizient und zufriedenstellend genutzt werden kann.",
+      subs:[
+        {name:"Appropriateness Recognisability", text:"Nutzende erkennen sofort, ob das Produkt für ihre Zwecke geeignet ist."},
+        {name:"Learnability (Erlernbarkeit)", text:"Wie leicht lernen Nutzende die Bedienung."},
+        {name:"Operability (Bedienbarkeit)", text:"Eigenschaften, die die Bedienung erleichtern."},
+        {name:"User Error Protection", text:"Schutz vor Fehlbedienung durch Nutzende."},
+        {name:"Accessibility (Zugänglichkeit)", text:"Nutzbarkeit für Menschen mit unterschiedlichsten Fähigkeiten."},
+        {name:"User Engagement (neu)", text:"Gestaltet die Oberfläche einladend und motivierend zur Nutzung."},
+        {name:"Inclusivity (neu)", text:"Berücksichtigt unterschiedliche Bevölkerungsgruppen gleichermaßen."},
+        {name:"Self-Descriptiveness (neu)", text:"Das Produkt erklärt seinen Zweck ohne zusätzliche Anleitung."}
+      ]},
+    { id:"re", num:5, de:"Zuverlässigkeit", en:"Reliability", badge:"renamed", badgeLabel:"Untermerkmal umbenannt",
+      def:"Ausmaß, in dem ein System, Produkt oder eine Komponente festgelegte Funktionen unter festgelegten Bedingungen für einen festgelegten Zeitraum erfüllt.",
+      subs:[
+        {name:"Faultlessness (vormals Maturity)", text:"Das System erfüllt seine Funktionen unter normalem Betrieb fehlerfrei."},
+        {name:"Availability (Verfügbarkeit)", text:"Ist zum vorgesehenen Zeitpunkt betriebs- und zugriffsbereit."},
+        {name:"Fault Tolerance (Fehlertoleranz)", text:"Funktioniert trotz Hardware- oder Softwarefehlern weiter."},
+        {name:"Recoverability (Wiederherstellbarkeit)", text:"Kann nach einer Unterbrechung Daten und Zustand wiederherstellen."}
+      ]},
+    { id:"se", num:6, de:"Sicherheit (Security)", en:"Security", badge:"new-sub", badgeLabel:"+ Resistance",
+      def:"Ausmaß, in dem ein Produkt Informationen und Daten so schützt, dass Personen oder andere Produkte den ihrer Berechtigungsart angemessenen Zugriffsgrad haben.",
+      subs:[
+        {name:"Confidentiality (Vertraulichkeit)", text:"Daten sind nur autorisierten Personen zugänglich."},
+        {name:"Integrity (Integrität)", text:"Unautorisierte Änderung von Daten wird verhindert."},
+        {name:"Non-repudiation (Nichtabstreitbarkeit)", text:"Handlungen können nachträglich zweifelsfrei nachgewiesen werden."},
+        {name:"Authenticity (Authentizität)", text:"Die Identität eines Subjekts/einer Ressource kann nachgewiesen werden."},
+        {name:"Accountability (Nachvollziehbarkeit)", text:"Aktionen einer Entität lassen sich eindeutig zurückverfolgen."},
+        {name:"Resistance (neu)", text:"Widerstandsfähigkeit gegen Angriffe, die die Sicherheit gefährden."}
+      ]},
+    { id:"ma", num:7, de:"Wartbarkeit", en:"Maintainability", badge:"unchanged", badgeLabel:"unverändert",
+      def:"Ausmaß der Effektivität und Effizienz, mit der ein Produkt durch die vorgesehenen Wartenden geändert werden kann.",
+      subs:[
+        {name:"Modularity (Modularität)", text:"Änderungen an einer Komponente wirken sich minimal auf andere aus."},
+        {name:"Reusability (Wiederverwendbarkeit)", text:"Bestandteile lassen sich in mehr als einem System nutzen."},
+        {name:"Analysability (Analysierbarkeit)", text:"Auswirkungen einer geplanten Änderung lassen sich einschätzen."},
+        {name:"Modifiability (Modifizierbarkeit)", text:"Änderungen sind ohne neue Fehler oder Qualitätsverlust möglich."},
+        {name:"Testability (Testbarkeit)", text:"Testkriterien lassen sich festlegen und Tests durchführen."}
+      ]},
+    { id:"fl", num:8, de:"Flexibilität", en:"Flexibility", badge:"renamed", badgeLabel:"umbenannt von Portability",
+      def:"Ausmaß, in dem ein Produkt an veränderte Anforderungen, Kontexte oder Umgebungen angepasst werden kann.",
+      subs:[
+        {name:"Adaptability (Anpassungsfähigkeit)", text:"Anpassung an unterschiedliche Umgebungen ohne Codeänderung."},
+        {name:"Scalability (Skalierbarkeit, neu)", text:"Anpassung an wachsende oder schwankende Nutzungsanforderungen."},
+        {name:"Installability (Installierbarkeit)", text:"Kann in der vorgesehenen Umgebung installiert/deinstalliert werden."},
+        {name:"Replaceability (Austauschbarkeit)", text:"Kann eine andere Software für denselben Zweck ersetzen."}
+      ]},
+    { id:"sa", num:9, de:"Safety", en:"Safety", badge:"new", badgeLabel:"komplett neu 2023",
+      def:"Ausmaß, in dem ein Produkt unter definierten Bedingungen Zustände vermeidet, in denen Menschen, Wirtschaft, Software, Eigentum oder Umwelt gefährdet werden.",
+      subs:[
+        {name:"Operational Constraint", text:"Begrenzt den Betrieb auf sichere Bedingungen und Grenzwerte."},
+        {name:"Risk Identification", text:"Erkennt riskante Zustände oder Bedienfolgen frühzeitig."},
+        {name:"Fail Safe", text:"Geht bei einem Fehler in einen sicheren Zustand über, statt unkontrolliert zu versagen."},
+        {name:"Hazard Warning", text:"Warnt rechtzeitig vor Gefahren, bevor sie eintreten."},
+        {name:"Safe Integration", text:"Bleibt sicher, auch wenn es mit anderen Komponenten zusammenwirkt."}
+      ]}
+  ];
+
+  var SCENARIOS = [
+    { id:"login", label:"Login", fa:"Mitarbeitende können sich mit ihrem Firmenkonto in der Lindenfeld-Lunch-App anmelden.",
+      data:{
+        fs:{nfa:"Die App meldet Mitarbeitende mit gültigem Firmenkonto (Single Sign-on am Lindenfeld-Verzeichnisdienst) in 100 % der Testfälle an; bei ungültigen Zugangsdaten erscheint in 100 % der Fälle eine allgemeine Fehlermeldung, die nicht verrät, ob Benutzername oder Passwort falsch war (Schutz vor User-Enumeration).",
+          story:"Als Mitarbeiterin möchte ich mich mit meinem Firmenkonto anmelden, damit ich ohne zusätzliches Passwort mein Mittagessen bestellen kann.",
+          ac:["Given ein gültiges Firmenkonto","When ich mich in der App anmelde","Then sehe ich den Speiseplan für morgen"]},
+        pe:{nfa:"Die Anmeldung liefert bei 95 % der Versuche (P95) innerhalb von 1 Sekunde eine Rückmeldung (Erfolg oder Fehler), auch bei bis zu 400 gleichzeitigen Anmeldungen in der Spitzenzeit zwischen 11:00 und 11:30 Uhr.",
+          story:"Als Mitarbeiterin in der kurzen Mittagspause möchte ich nach dem Tippen auf ‚Anmelden' sofort eine Rückmeldung bekommen, damit ich nicht unsicher bin, ob die App reagiert hat.",
+          ac:["Given 400 gleichzeitige Anmeldungen um 11:15 Uhr","When ich mich anmelde","Then erhalte ich in ≤1 s (P95) eine Rückmeldung"]},
+        co:{nfa:"Die App läuft fehlerfrei auf den zwei jeweils aktuellen Hauptversionen von iOS und Android sowie in Chrome und Edge am Arbeitsplatz-PC und nutzt das bestehende Firmen-SSO, ohne dessen Session-Cookies anderer Anwendungen zu überschreiben.",
+          story:"Als Mitarbeiterin, die morgens schon im Intranet angemeldet ist, möchte ich mich in der Lunch-App ohne Konflikt anmelden können, damit ich nicht aus dem Intranet ausgeloggt werde.",
+          ac:["Given eine aktive SSO-Session im Intranet","When ich die Lunch-App öffne","Then bleibt die Intranet-Session erhalten und die Anmeldung gelingt"]},
+        ic:{nfa:"Die Anmeldeseite ist nach WCAG 2.2 AA bedienbar (u. a. vollständige Tastatur- und Screenreader-Bedienung, sichtbarer Fokus, Label-Zuordnung); mindestens 9 von 10 Testpersonen ohne Vorerfahrung melden sich im Usability-Test beim ersten Versuch ohne Hilfe an.",
+          story:"Als Mitarbeiterin mit Sehbehinderung möchte ich die Anmeldung vollständig mit dem Screenreader bedienen können, damit ich die App ohne fremde Hilfe nutzen kann.",
+          ac:["Given ein aktiver Screenreader","When ich durch die Anmeldeseite navigiere","Then wird jedes Feld mit Bezeichnung vorgelesen und der Fokus ist sichtbar"]},
+        re:{nfa:"Die Anmeldung ist an Werktagen zwischen 07:00 und 15:00 Uhr zu 99,5 % verfügbar; fällt einer von zwei SSO-Servern aus, übernimmt der zweite innerhalb von 15 Sekunden, ohne dass laufende Sitzungen verloren gehen.",
+          story:"Als Mitarbeiterin möchte ich mich auch bei einem Teilausfall der IT noch anmelden können, damit ein einzelner Serverausfall meine Bestellung vor Bestellschluss nicht verhindert.",
+          ac:["Given ein Ausfall von SSO-Server 1","When ich mich anmelde","Then übernimmt SSO-Server 2 innerhalb von 15 s ohne sichtbaren Fehler"]},
+        se:{nfa:"Die Anmeldung erfolgt über OpenID Connect am Firmenverzeichnis, die App speichert keine Passwörter; die Übertragung läuft nur über TLS 1.2+, Sitzungs-Token verfallen nach 8 Stunden, und nach 5 fehlgeschlagenen Versuchen wird die Anmeldung für 15 Minuten gesperrt.",
+          story:"Als IT-Sicherheit möchten wir, dass die Lunch-App keine eigenen Passwörter speichert, damit bei einem Datenleck keine Zugangsdaten der Belegschaft betroffen sind.",
+          ac:["Given die Datenbank der Lunch-App","When sie auf gespeicherte Zugangsdaten geprüft wird","Then enthält sie keine Passwörter oder Passwort-Hashes"]},
+        ma:{nfa:"Die Anmeldelogik ist ein eigenständiges Modul mit ≥85 % Unit-Test-Abdeckung, sodass ein Wechsel des Identity Providers ohne Änderung am Bestell- oder Abrechnungsmodul möglich ist.",
+          story:"Als Entwicklerteam möchten wir die Anmeldelogik isoliert testen können, damit ein Fehler dort nicht die gesamte App gefährdet.",
+          ac:["Given die Unit-Test-Suite des Anmeldemoduls","When die Tests laufen","Then liegt die Testabdeckung bei ≥85 %"]},
+        fl:{nfa:"Die Anmeldung ist mandantenfähig: Zwei weitere Standorte mit eigenem Verzeichnisdienst lassen sich allein per Konfiguration anbinden, ohne Codeänderung, bei unveränderter P95-Antwortzeit von ≤1 s.",
+          story:"Als Betriebsteam möchten wir weitere Lindenfeld-Standorte per Konfiguration anbinden können, damit wir die App nicht pro Werk neu entwickeln müssen.",
+          ac:["Given ein neuer Standort mit eigenem Verzeichnisdienst","When die Konfiguration eingespielt wird","Then melden sich dessen Mitarbeitende an, ohne dass Code geändert wurde"]},
+        sa:{nfa:"Eine Sperrung oder Neuanmeldung darf nie hinterlegte Allergie-Hinweise oder bereits bestätigte Vorbestellungen löschen: Das Allergen-Profil bleibt in 100 % der Testfälle erhalten und wird nach jeder Anmeldung wieder angewendet.",
+          story:"Als Mitarbeiterin mit Nussallergie möchte ich, dass mein Allergen-Profil nach einer Sperrung oder Neuanmeldung unverändert da ist, damit ich nie versehentlich ohne Warnung bestelle.",
+          ac:["Given ein gesperrtes und wieder entsperrtes Konto mit Allergen-Profil","When ich mich erneut anmelde","Then ist mein Allergen-Profil unverändert vorhanden und aktiv"]}
+      }},
+    { id:"order", label:"Mittagessen vorbestellen", fa:"Mitarbeitende können ein Gericht aus dem Tagesangebot für den Folgetag in der Lindenfeld-Lunch-App vorbestellen.",
+      data:{
+        fs:{nfa:"Die Bestellung erfasst Gericht, Menge und Abholzeitfenster und erzeugt eine eindeutige Bestellnummer; der Bestellschluss (14:00 Uhr am Vortag) wird in 100 % der Testfälle durchgesetzt, und der angezeigte Preis stimmt bei 100 % der Stichproben mit dem Speiseplan der Kantine überein.",
+          story:"Als Mitarbeiterin möchte ich ein Gericht für morgen vorbestellen und eine Bestellnummer erhalten, damit ich mein Essen zum Abholzeitpunkt sicher bekomme.",
+          ac:["Given ein Gericht auf dem Speiseplan von morgen vor 14:00 Uhr","When ich es bestelle","Then erhalte ich sofort eine Bestellnummer mit Abholzeitfenster"]},
+        pe:{nfa:"Die Bestellbestätigung erscheint bei 95 % der Bestellungen (P95) innerhalb von 2 Sekunden, auch in der Stoßzeit kurz vor Bestellschluss (13:45–14:00 Uhr) mit bis zu 400 gleichzeitigen Bestellungen.",
+          story:"Als Mitarbeiterin, die kurz vor Bestellschluss bestellt, möchte ich schnell eine Bestätigung sehen, damit ich weiß, dass meine Bestellung noch rechtzeitig angekommen ist.",
+          ac:["Given 400 gleichzeitige Bestellungen um 13:55 Uhr","When ich meine Bestellung absende","Then erhalte ich in ≤2 s (P95) die Bestätigung"]},
+        co:{nfa:"Bestellungen werden innerhalb von 1 Minute über die REST-API an das Kassensystem des Kantinenbetreibers übergeben, und der Speiseplan wird mindestens alle 5 Minuten aus dessen Warenwirtschaftssystem übernommen, ohne dass ein Gericht doppelt oder falsch zugeordnet wird.",
+          story:"Als Küchenteam des Kantinenbetreibers möchten wir die Vorbestellungen direkt in unserem Kassensystem sehen, damit wir nicht zwei Listen parallel pflegen müssen.",
+          ac:["Given eine neu bestätigte Bestellung in der App","When die Übergabe läuft","Then erscheint sie innerhalb von 1 Minute im Kassensystem mit korrektem Gericht und Menge"]},
+        ic:{nfa:"Ein Gericht lässt sich in höchstens 3 Schritten (Gericht wählen, Abholzeit wählen, bestätigen) bestellen; Allergen-Hinweise werden neben jedem Gericht als Text und Symbol angezeigt, nie allein über Farbe, und der Bestell-Button wird nach dem Absenden deaktiviert.",
+          story:"Als Mitarbeiterin am Smartphone möchte ich sehen, ob meine Bestellung abgesendet wurde, damit ich nicht aus Unsicherheit ein zweites Mal bestelle.",
+          ac:["Given ich tippe auf ‚Bestellen'","When die Bestellung verarbeitet wird","Then zeigt eine Ladeanzeige den Status und der Button ist deaktiviert"]},
+        re:{nfa:"Die Bestellfunktion hat eine Fehlerrate von unter 0,1 % pro Monat; fällt die Kassenschnittstelle aus, puffert die App bestätigte Bestellungen mindestens 24 Stunden und überträgt sie nach Wiederherstellung automatisch, sodass in 100 % der Testfälle keine Bestellung verloren geht.",
+          story:"Als Küchenteam möchten wir uns darauf verlassen, dass jede bestätigte Vorbestellung bei uns ankommt, damit wir morgen genau die richtige Menge kochen.",
+          ac:["Given ein Ausfall der Kassenschnittstelle nach einer bestätigten Bestellung","When die Schnittstelle wieder verfügbar ist","Then wird die Bestellung automatisch nachübertragen und ist im Kassensystem vorhanden"]},
+        se:{nfa:"Personenbezogene Bestelldaten sind nur rollenbasiert zugänglich: Die Küche sieht Bestellnummer und Gericht ohne Klarnamen, Auswertungen erfolgen nur aggregiert und nie pro Person; Bestelldaten werden nach 90 Tagen automatisch gelöscht (DSGVO Art. 5 Abs. 1 lit. e, Mitbestimmung nach § 87 Abs. 1 Nr. 6 BetrVG).",
+          story:"Als Betriebsrat möchten wir sicher sein, dass aus Bestelldaten keine Verhaltens- oder Leistungskontrolle einzelner Beschäftigter möglich ist.",
+          ac:["Given die Auswertungsfunktion der App","When ich Bestelldaten einzelner Personen abfragen will","Then werden nur aggregierte Zahlen ohne Personenbezug angezeigt"]},
+        ma:{nfa:"Speiseplan-Regeln (Preise, Bestellschluss, Tageskontingente) sind über eine zentrale Konfiguration pflegbar, sodass die Kantinenverwaltung den Bestellschluss ohne Code-Deployment in unter 1 Stunde ändern kann.",
+          story:"Als Kantinenverwaltung möchten wir den Bestellschluss selbst anpassen können, damit wir nicht für jede Änderung auf einen Release warten müssen.",
+          ac:["Given eine neue Bestellschluss-Zeit in der Konfiguration","When ich sie speichere","Then gilt sie innerhalb von 1 Stunde in der App ohne Code-Deployment"]},
+        fl:{nfa:"Die Bestelllogik unterstützt von einer Kantine auf drei Standorte mit jeweils eigenem Speiseplan, eigener Abholzeit und eigenem Bestellschluss, allein per Konfiguration und ohne Codeänderung; die P95-Bestätigungszeit bleibt ≤2 s.",
+          story:"Als Produktteam möchten wir die Lunch-App an weiteren Lindenfeld-Standorten einführen, damit wir die Bestellfunktion nicht je Standort neu bauen müssen.",
+          ac:["Given zwei zusätzliche Standorte mit eigenem Speiseplan","When sie konfiguriert werden","Then können dort Gerichte bestellt werden und die P95-Zeit bleibt ≤2 s"]},
+        sa:{nfa:"Alle 14 Hauptallergene nach LMIV (Verordnung (EU) Nr. 1169/2011) sind je Gericht verpflichtend gepflegt; ein Gericht ohne vollständige Allergenangabe ist in 100 % der Fälle nicht bestellbar, und Mitarbeitende mit hinterlegtem Allergen-Profil erhalten vor der Bestätigung einen Warnhinweis.",
+          story:"Als Mitarbeiterin mit Nussallergie möchte ich vor der Bestätigung gewarnt werden, wenn ein Gericht Nüsse enthält, damit ich nie unbemerkt etwas Gefährliches bestelle.",
+          ac:["Given mein Allergen-Profil ‚Nüsse' und ein Gericht mit Nüssen","When ich das Gericht bestellen will","Then erscheint vor der Bestätigung ein deutlicher Warnhinweis"]}
+      }},
+    { id:"statement", label:"Monatsabrechnung als PDF", fa:"Mitarbeitende können ihre Lunch-Monatsabrechnung in der Lindenfeld-Lunch-App als PDF herunterladen.",
+      data:{
+        fs:{nfa:"Die PDF enthält alle Bestellungen des Monats mit Datum, Gericht und Preis sowie die Gesamtsumme; Einzelpositionen und Summe stimmen bei 100 % der Stichproben mit den Werten im Kassensystem überein.",
+          story:"Als Mitarbeiterin möchte ich meine Monatsabrechnung als PDF herunterladen, damit ich den Abzug auf meiner Gehaltsabrechnung nachvollziehen kann.",
+          ac:["Given ein abgeschlossener Monat mit Bestellungen","When ich ‚Abrechnung als PDF herunterladen' wähle","Then enthält die Datei alle Bestellungen und eine korrekte Gesamtsumme"]},
+        pe:{nfa:"Die PDF einer Monatsabrechnung mit bis zu 25 Positionen wird bei 95 % der Abrufe (P95) innerhalb von 2 Sekunden erzeugt, auch am Monatsanfang mit bis zu 300 gleichzeitigen Abrufen.",
+          story:"Als Mitarbeiterin möchte ich die Abrechnung ohne spürbare Wartezeit erhalten, damit der Download meine Pause nicht verkürzt.",
+          ac:["Given 300 gleichzeitige Abrufe am 1. des Monats","When ich den Download starte","Then liegt die PDF in ≤2 s (P95) vor"]},
+        co:{nfa:"Die PDF entspricht PDF/A-2b und lässt sich in gängigen PDF-Readern (Adobe Reader, Browser, iOS- und Android-Vorschau) ohne Darstellungsfehler öffnen; zusätzlich steht dieselbe Abrechnung als CSV bereit, die die Lohnbuchhaltung ohne manuelle Nacharbeit importiert.",
+          story:"Als Lohnbuchhaltung möchten wir die Lunch-Abzüge direkt importieren können, damit wir die Beträge nicht manuell abtippen müssen.",
+          ac:["Given eine exportierte CSV der Monatsabrechnung","When sie in die Lohnbuchhaltung importiert wird","Then werden alle Abzugsbeträge korrekt erkannt"]},
+        ic:{nfa:"Der Download-Button trägt ein eindeutiges Label (‚Abrechnung als PDF herunterladen'), die Monatsauswahl ist per Tastatur bedienbar, und während der Erzeugung zeigt eine Ladeanzeige den Fortschritt, damit der Vorgang nicht doppelt ausgelöst wird.",
+          story:"Als Mitarbeiterin am Smartphone möchte ich erkennen, ob mein Download läuft, damit ich nicht mehrfach tippe.",
+          ac:["Given ich tippe auf ‚Herunterladen'","When die PDF erzeugt wird","Then zeigt eine Ladeanzeige den Fortschritt und der Button ist deaktiviert"]},
+        re:{nfa:"Der Abrechnungsdienst hat eine Fehlerrate von unter 0,1 % aller Abrufe eines Monats und startet bei einem fehlgeschlagenen Abruf automatisch einen Retry innerhalb von 3 Sekunden.",
+          story:"Als Mitarbeiterin möchte ich mich darauf verlassen können, dass der Download beim ersten Versuch klappt, damit ich nicht wiederholt klicken muss.",
+          ac:["Given ein fehlgeschlagener Abruf","When der automatische Retry greift","Then liegt die PDF innerhalb von 3 s doch noch vor"]},
+        se:{nfa:"Jede Mitarbeiterin kann ausschließlich ihre eigene Abrechnung abrufen; der Download-Link ist personenbezogen signiert und 5 Minuten gültig, und ein Zugriff auf die Abrechnung einer anderen Person wird in 100 % der Fälle mit HTTP 403 abgelehnt.",
+          story:"Als Mitarbeiterin möchte ich sicher sein, dass niemand sonst meine Bestellhistorie über einen erratenen Link einsehen kann.",
+          ac:["Given ein Link zu meiner Abrechnung","When ihn eine andere Person oder erst nach 5 Minuten aufruft","Then wird der Zugriff mit 403 abgelehnt"]},
+        ma:{nfa:"Die PDF-Erzeugung ist von der Abrechnungslogik getrennt (eigenes Rendering-Modul), sodass ein Layout-Wechsel ohne Änderung an der Summenberechnung möglich ist und in unter 3 Personentagen umsetzbar bleibt.",
+          story:"Als Entwicklerteam möchten wir das PDF-Layout unabhängig von der Abrechnungslogik ändern können, damit ein Design-Update die Berechnung nicht gefährdet.",
+          ac:["Given ein neues PDF-Layout","When es eingebaut wird","Then bleiben alle Berechnungs-Tests der Abrechnungslogik unverändert grün"]},
+        fl:{nfa:"Der Abrechnungsdienst nimmt weitere Ausgabeformate (z. B. eine standortspezifische Abzugsliste) über eine definierte Schnittstelle auf, ohne die bestehende PDF-Erzeugung zu verändern.",
+          story:"Als Produktteam möchten wir für neue Standorte eigene Abzugslisten anbieten können, ohne den bestehenden PDF-Export neu zu bauen.",
+          ac:["Given die definierte Export-Schnittstelle","When ein neues Format angebunden wird","Then bleibt der bestehende PDF-Export unverändert lauffähig"]},
+        sa:{nfa:"Eine fehlerhafte Erzeugung darf nie eine falsche Summe ausliefern: Weicht die Summe der Einzelpositionen vom Gesamtbetrag ab, wird in 100 % der Fälle kein Dokument ausgegeben, sondern eine Fehlermeldung mit Hinweis auf erneuten Versuch angezeigt.",
+          story:"Als Mitarbeiterin möchte ich niemals eine Abrechnung mit falschem Betrag erhalten, ohne es zu merken, damit mir nicht unbemerkt ein falscher Gehaltsabzug entsteht.",
+          ac:["Given eine Abweichung zwischen Einzelpositionen und Gesamtsumme","When die PDF erzeugt werden soll","Then wird kein Dokument ausgeliefert, sondern eine Fehlermeldung mit Hinweis auf erneuten Versuch"]}
+      }}
+  ];
+
+  /* ================= Englische Fassung (K20) ================= */
+  var EN = {
+    badge: { fs:"unchanged", pe:"unchanged", co:"unchanged", ic:"renamed from Usability", re:"sub-characteristic renamed", se:"+ Resistance", ma:"unchanged", fl:"renamed from Portability", sa:"entirely new in 2023" },
+    chars: {
+      fs:{ def:"Degree to which a product provides functions that meet stated and implied needs when used under specified conditions.",
+        subs:[["Completeness","The set of functions covers all specified tasks and user objectives."],["Correctness","Results are correct with the required degree of precision."],["Appropriateness","The functions facilitate the intended tasks and objectives."]] },
+      pe:{ def:"Performance relative to the amount of resources used under stated conditions.",
+        subs:[["Time Behaviour","Response and processing times and throughput rates when performing a task."],["Resource Utilisation","Type and amount of resources used, such as CPU, memory and network."],["Capacity","Maximum limits of a parameter that are met."]] },
+      co:{ def:"Degree to which a product can exchange information with other products and/or perform its functions while sharing the same hardware or software environment.",
+        subs:[["Co-existence","Can perform its functions without negatively affecting other products in the same environment."],["Interoperability","Can exchange information with other products and use it."]] },
+      ic:{ def:"Degree to which a product can be used by specified users effectively, efficiently and satisfactorily.",
+        subs:[["Appropriateness Recognisability","Users immediately recognise whether the product suits their purposes."],["Learnability","How easily users learn to operate the product."],["Operability","Properties that make operation easier."],["User Error Protection","Protection against operating errors by users."],["Accessibility","Usable by people with the widest range of abilities."],["User Engagement (new)","Designs the interface to be inviting and motivating to use."],["Inclusivity (new)","Takes different population groups equally into account."],["Self-Descriptiveness (new)","The product explains its purpose without additional instructions."]] },
+      re:{ def:"Degree to which a system, product or component performs specified functions under specified conditions for a specified period of time.",
+        subs:[["Faultlessness (formerly Maturity)","The system performs its functions without faults under normal operation."],["Availability","Is operational and accessible at the intended time."],["Fault Tolerance","Keeps working despite hardware or software faults."],["Recoverability","Can restore data and state after an interruption."]] },
+      se:{ def:"Degree to which a product protects information and data so that persons or other products have the degree of access appropriate to their type and level of authorization.",
+        subs:[["Confidentiality","Data is accessible only to authorised persons."],["Integrity","Unauthorised modification of data is prevented."],["Non-repudiation","Actions can be proven beyond doubt afterwards."],["Authenticity","The identity of a subject or resource can be proven."],["Accountability","Actions of an entity can be traced back uniquely."],["Resistance (new)","Resilience against attacks that endanger security."]] },
+      ma:{ def:"Degree of effectiveness and efficiency with which a product can be modified by the intended maintainers.",
+        subs:[["Modularity","Changes to one component have minimal impact on others."],["Reusability","Parts can be used in more than one system."],["Analysability","The impact of a planned change can be assessed."],["Modifiability","Changes are possible without introducing new faults or loss of quality."],["Testability","Test criteria can be defined and tests can be carried out."]] },
+      fl:{ def:"Degree to which a product can be adapted to changed requirements, contexts or environments.",
+        subs:[["Adaptability","Adaptation to different environments without code changes."],["Scalability (new)","Adaptation to growing or fluctuating usage demands."],["Installability","Can be installed and uninstalled in the intended environment."],["Replaceability","Can replace other software for the same purpose."]] },
+      sa:{ def:"Degree to which a product avoids, under defined conditions, states in which people, business, software, property or the environment are endangered.",
+        subs:[["Operational Constraint","Limits operation to safe conditions and limits."],["Risk Identification","Detects risky states or operating sequences early."],["Fail Safe","Moves to a safe state on a fault instead of failing in an uncontrolled way."],["Hazard Warning","Warns of hazards in good time before they occur."],["Safe Integration","Stays safe even when it interacts with other components."]] }
+    },
+    scen: {
+      login:{ label:"Login", data:{
+        fs:{nfa:"The app logs in employees with a valid company account (single sign-on at the Lindenfeld directory service) in 100 % of test cases; for invalid credentials a generic error message appears in 100 % of cases that does not reveal whether the user name or the password was wrong (protection against user enumeration).",
+          story:"As an employee I want to log in with my company account so that I can order my lunch without an additional password.",
+          ac:["Given a valid company account","When I log in to the app","Then I see tomorrow's menu"]},
+        pe:{nfa:"For 95 % of attempts (P95), login gives feedback (success or error) within 1 second, even with up to 400 simultaneous logins at the peak time between 11:00 and 11:30.",
+          story:"As an employee on a short lunch break I want immediate feedback after tapping 'Log in' so that I am not unsure whether the app has responded.",
+          ac:["Given 400 simultaneous logins at 11:15","When I log in","Then I receive feedback in ≤1 s (P95)"]},
+        co:{nfa:"The app runs without errors on the two current major versions of iOS and Android as well as in Chrome and Edge on the office PC, and uses the existing company SSO without overwriting the session cookies of other applications.",
+          story:"As an employee who is already logged in to the intranet in the morning I want to log in to the lunch app without conflict so that I am not logged out of the intranet.",
+          ac:["Given an active SSO session in the intranet","When I open the lunch app","Then the intranet session is kept and the login succeeds"]},
+        ic:{nfa:"The login page can be operated in line with WCAG 2.2 AA (including full keyboard and screen reader operation, visible focus, label association); at least 9 out of 10 test persons without prior experience log in on the first attempt without help in the usability test.",
+          story:"As an employee with a visual impairment I want to operate the login completely with a screen reader so that I can use the app without outside help.",
+          ac:["Given an active screen reader","When I navigate through the login page","Then every field is read aloud with its label and the focus is visible"]},
+        re:{nfa:"On working days between 07:00 and 15:00, login is 99.5 % available; if one of two SSO servers fails, the second takes over within 15 seconds without losing running sessions.",
+          story:"As an employee I want to be able to log in even during a partial IT outage so that a single server failure does not prevent my order before the cut-off time.",
+          ac:["Given a failure of SSO server 1","When I log in","Then SSO server 2 takes over within 15 s without a visible error"]},
+        se:{nfa:"Login uses OpenID Connect against the company directory, the app stores no passwords; transmission only uses TLS 1.2+, session tokens expire after 8 hours, and after 5 failed attempts login is blocked for 15 minutes.",
+          story:"As IT security we want the lunch app not to store its own passwords so that no workforce credentials are affected in a data breach.",
+          ac:["Given the database of the lunch app","When it is checked for stored credentials","Then it contains no passwords or password hashes"]},
+        ma:{nfa:"The login logic is a standalone module with ≥85 % unit test coverage, so that the identity provider can be replaced without any change to the ordering or billing module.",
+          story:"As a development team we want to be able to test the login logic in isolation so that a fault there does not endanger the whole app.",
+          ac:["Given the unit test suite of the login module","When the tests run","Then test coverage is ≥85 %"]},
+        fl:{nfa:"Login is multi-tenant: two further sites with their own directory service can be connected by configuration alone, without code changes, with an unchanged P95 response time of ≤1 s.",
+          story:"As an operations team we want to connect further Lindenfeld sites by configuration so that we do not have to redevelop the app for each plant.",
+          ac:["Given a new site with its own directory service","When the configuration is deployed","Then its employees log in without any code having been changed"]},
+        sa:{nfa:"A lock-out or new login must never delete stored allergy information or already confirmed pre-orders: the allergen profile is retained in 100 % of test cases and is applied again after every login.",
+          story:"As an employee with a nut allergy I want my allergen profile to be unchanged after a lock-out or new login so that I never order by mistake without a warning.",
+          ac:["Given a locked and unlocked account with an allergen profile","When I log in again","Then my allergen profile is still there and active"]}
+      }},
+      order:{ label:"Pre-order lunch", data:{
+        fs:{nfa:"The order captures dish, quantity and pick-up time window and generates a unique order number; the cut-off time (14:00 on the previous day) is enforced in 100 % of test cases, and the displayed price matches the canteen menu in 100 % of spot checks.",
+          story:"As an employee I want to pre-order a dish for tomorrow and receive an order number so that I reliably get my meal at pick-up time.",
+          ac:["Given a dish on tomorrow's menu before 14:00","When I order it","Then I immediately receive an order number with a pick-up time window"]},
+        pe:{nfa:"The order confirmation appears for 95 % of orders (P95) within 2 seconds, even at the peak just before the cut-off time (13:45–14:00) with up to 400 simultaneous orders.",
+          story:"As an employee ordering just before the cut-off I want to see a confirmation quickly so that I know my order arrived in time.",
+          ac:["Given 400 simultaneous orders at 13:55","When I submit my order","Then I receive the confirmation in ≤2 s (P95)"]},
+        co:{nfa:"Orders are handed over to the canteen operator's till system via the REST API within 1 minute, and the menu is taken over from its merchandise management system at least every 5 minutes, without any dish being assigned twice or wrongly.",
+          story:"As the canteen operator's kitchen team we want to see the pre-orders directly in our till system so that we do not have to maintain two lists in parallel.",
+          ac:["Given a newly confirmed order in the app","When the hand-over runs","Then it appears in the till system within 1 minute with the correct dish and quantity"]},
+        ic:{nfa:"A dish can be ordered in at most 3 steps (choose dish, choose pick-up time, confirm); allergen information is shown next to every dish as text and symbol, never by colour alone, and the order button is disabled after submitting.",
+          story:"As an employee on a smartphone I want to see whether my order has been submitted so that I do not order a second time out of uncertainty.",
+          ac:["Given I tap 'Order'","When the order is being processed","Then a loading indicator shows the status and the button is disabled"]},
+        re:{nfa:"The ordering function has an error rate below 0.1 % per month; if the till interface fails, the app buffers confirmed orders for at least 24 hours and transmits them automatically after recovery, so that no order is lost in 100 % of test cases.",
+          story:"As a kitchen team we want to rely on every confirmed pre-order reaching us so that we cook exactly the right quantity tomorrow.",
+          ac:["Given a failure of the till interface after a confirmed order","When the interface is available again","Then the order is retransmitted automatically and is present in the till system"]},
+        se:{nfa:"Personal order data is accessible by role only: the kitchen sees order number and dish without real names, evaluations are aggregated only and never per person; order data is deleted automatically after 90 days (GDPR Art. 5(1)(e), co-determination under § 87(1) no. 6 BetrVG, the German Works Constitution Act).",
+          story:"As a works council we want to be sure that order data cannot be used to monitor the behaviour or performance of individual employees.",
+          ac:["Given the evaluation function of the app","When I want to query order data of individuals","Then only aggregated figures without personal reference are displayed"]},
+        ma:{nfa:"Menu rules (prices, cut-off time, daily quotas) can be maintained through a central configuration, so that canteen administration can change the cut-off time in under 1 hour without a code deployment.",
+          story:"As canteen administration we want to adjust the cut-off time ourselves so that we do not have to wait for a release for every change.",
+          ac:["Given a new cut-off time in the configuration","When I save it","Then it applies in the app within 1 hour without a code deployment"]},
+        fl:{nfa:"The ordering logic scales from one canteen to three sites, each with its own menu, pick-up time and cut-off time, by configuration alone and without code changes; the P95 confirmation time stays ≤2 s.",
+          story:"As a product team we want to introduce the lunch app at further Lindenfeld sites so that we do not have to rebuild the ordering function for each site.",
+          ac:["Given two additional sites with their own menu","When they are configured","Then dishes can be ordered there and the P95 time stays ≤2 s"]},
+        sa:{nfa:"All 14 major allergens under the EU Food Information Regulation (Regulation (EU) No 1169/2011, LMIV in Germany) are mandatory for every dish; a dish without complete allergen information cannot be ordered in 100 % of cases, and employees with a stored allergen profile receive a warning before confirmation.",
+          story:"As an employee with a nut allergy I want to be warned before confirmation if a dish contains nuts so that I never unknowingly order something dangerous.",
+          ac:["Given my allergen profile 'nuts' and a dish containing nuts","When I want to order the dish","Then a clear warning appears before confirmation"]}
+      }},
+      statement:{ label:"Monthly statement as PDF", data:{
+        fs:{nfa:"The PDF contains all orders of the month with date, dish and price as well as the total; line items and total match the values in the till system in 100 % of spot checks.",
+          story:"As an employee I want to download my monthly statement as a PDF so that I can understand the deduction on my payslip.",
+          ac:["Given a completed month with orders","When I choose 'Download statement as PDF'","Then the file contains all orders and a correct total"]},
+        pe:{nfa:"The PDF of a monthly statement with up to 25 items is generated for 95 % of requests (P95) within 2 seconds, even at the start of the month with up to 300 simultaneous requests.",
+          story:"As an employee I want to receive the statement without noticeable waiting time so that the download does not shorten my break.",
+          ac:["Given 300 simultaneous requests on the 1st of the month","When I start the download","Then the PDF is available in ≤2 s (P95)"]},
+        co:{nfa:"The PDF conforms to PDF/A-2b and opens without display errors in common PDF readers (Adobe Reader, browser, iOS and Android preview); the same statement is also available as a CSV that payroll imports without manual rework.",
+          story:"As payroll accounting we want to import the lunch deductions directly so that we do not have to type the amounts in manually.",
+          ac:["Given an exported CSV of the monthly statement","When it is imported into payroll accounting","Then all deduction amounts are recognised correctly"]},
+        ic:{nfa:"The download button has an unambiguous label ('Download statement as PDF'), the month selection can be operated by keyboard, and during generation a loading indicator shows progress so that the action is not triggered twice.",
+          story:"As an employee on a smartphone I want to see whether my download is running so that I do not tap several times.",
+          ac:["Given I tap 'Download'","When the PDF is being generated","Then a loading indicator shows progress and the button is disabled"]},
+        re:{nfa:"The statement service has an error rate below 0.1 % of all requests in a month and automatically starts a retry within 3 seconds when a request fails.",
+          story:"As an employee I want to be able to rely on the download working on the first attempt so that I do not have to click repeatedly.",
+          ac:["Given a failed request","When the automatic retry takes effect","Then the PDF is still available within 3 s"]},
+        se:{nfa:"Every employee can retrieve only their own statement; the download link is signed per person and valid for 5 minutes, and access to another person's statement is rejected with HTTP 403 in 100 % of cases.",
+          story:"As an employee I want to be sure that nobody else can view my order history via a guessed link.",
+          ac:["Given a link to my statement","When another person opens it, or anyone after 5 minutes","Then access is rejected with 403"]},
+        ma:{nfa:"PDF generation is separated from the billing logic (own rendering module), so that a layout change is possible without touching the total calculation and remains feasible in under 3 person-days.",
+          story:"As a development team we want to change the PDF layout independently of the billing logic so that a design update does not endanger the calculation.",
+          ac:["Given a new PDF layout","When it is built in","Then all calculation tests of the billing logic stay green and unchanged"]},
+        fl:{nfa:"The statement service accepts further output formats (e.g. a site-specific deduction list) through a defined interface without changing the existing PDF generation.",
+          story:"As a product team we want to offer separate deduction lists for new sites without rebuilding the existing PDF export.",
+          ac:["Given the defined export interface","When a new format is connected","Then the existing PDF export remains fully functional"]},
+        sa:{nfa:"A faulty generation must never deliver a wrong total: if the sum of the line items deviates from the total amount, no document is issued in 100 % of cases, and an error message with a hint to try again is shown instead.",
+          story:"As an employee I never want to receive a statement with a wrong amount without noticing so that no wrong salary deduction arises unnoticed.",
+          ac:["Given a deviation between line items and total","When the PDF is to be generated","Then no document is delivered, but an error message with a hint to try again"]}
+      }}
+    },
+    form: {
+      login:{ rest:"give employees the option to log in to the Lindenfeld Lunch app with their company account.",
+        why:{ muss:"Lindenfeld proposal: must — without login there is no order that can be assigned to a person; the app cannot be accepted without this function.",
+              soll:"As 'should', login would become a matter for negotiation — that does not fit, because no further step works without it.",
+              kann:"As 'may', login would be optional — that contradicts the core purpose: orders must be assignable to a person." } },
+      order:{ rest:"give employees the option to pre-order a dish from the daily menu for the following day.",
+        why:{ muss:"Lindenfeld proposal: must — pre-ordering is the core purpose of the app; the kitchen plans purchasing and quantities with it.",
+              soll:"As 'should', the core purpose of the app would be dispensable — that is hard to justify.",
+              kann:"As 'may', the order function would be optional — then there is no reason for the app." } },
+      statement:{ rest:"give employees the option to download their lunch monthly statement as a PDF.",
+        why:{ muss:"As 'must', acceptance would have to fail without the PDF statement — that is too strict here, the amounts can also be traced in other ways.",
+              soll:"Lindenfeld proposal: should — important for traceability of the salary deduction, but not an acceptance criterion; the project decides deliberately on leaving it out.",
+              kann:"As 'may', traceability of the salary deduction would be optional — that underestimates the benefit for employees." } }
+    },
+    msc: [
+      { text:"The system shows the allergens for each dish.",
+        fb:"must — legal obligation (LMIV): allergens have to be declared. Writing 'should' here plays down a legal duty." },
+      { text:"Employees log in with their company account.",
+        fb:"must — core function: without login there is no order that can be assigned to a person." },
+      { text:"Orders are only possible until 14:00 on the previous day.",
+        fb:"must — the kitchen plans purchasing and quantities on the basis of this cut-off time. Without the rule the planning basis is missing." },
+      { text:"The app reminds users of open orders before the cut-off time.",
+        fb:"should — relieves the kitchen (fewer latecomers), but ordering also works without the reminder. Leaving it out is possible, but has to be decided deliberately." },
+      { text:"The monthly statement can be downloaded as a PDF.",
+        fb:"should — important for traceability of the salary deduction, but not an acceptance criterion. Context can change that (e.g. through a works agreement)." },
+      { text:"The app remembers favourite dishes.",
+        fb:"may — pleasant, but with no consequences for acceptance or operation. Implement only if time and budget are left over." }
+    ]
+  };
+
+  /* ================= Zustand ================= */
+  var state = { scenario: "login", char: "fs", verb: { login:"muss", order:"muss", statement:"soll" } };
+  var lang = "de";
+  var VW = { de:{ muss:"muss", soll:"soll", kann:"kann" }, en:{ muss:"must", soll:"should", kann:"may" } };
+  var UI = {
+    de:{ show:"Lösung zeigen", hide:"Lösung ausblenden", prev:"← Zurück", next:"Weiter →", frage:"Frage", von:"von",
+         right:"Richtig.", alt:"Ebenfalls vertretbar.", bad:"Nicht ganz.", correct:"Richtige Antwort:", alsoOk:"Ebenfalls vertretbar:",
+         expl:"Erklärung:", sumA:"richtig", sumOf:"von", sumDone:"beantwortet", ring:"Qualitätsring ISO/IEC 25010:2023 mit neun Merkmalen",
+         steps:"Schritte", verbs:"Verbindlichkeit", btnTitle:"Vergrößert die Darstellung für Präsentationen aus größerer Entfernung, mehrfach klicken für weitere Stufen",
+         lang:"EN", langTitle:"Switch to English", template:"Satzschablone", opts:"Antwortoptionen" },
+    en:{ show:"Show solution", hide:"Hide solution", prev:"← Back", next:"Next →", frage:"Question", von:"of",
+         right:"Correct.", alt:"Also defensible.", bad:"Not quite.", correct:"Correct answer:", alsoOk:"Also defensible:",
+         expl:"Explanation:", sumA:"correct", sumOf:"of", sumDone:"answered", ring:"Quality ring ISO/IEC 25010:2023 with nine characteristics",
+         steps:"Steps", verbs:"Binding level", btnTitle:"Enlarges the display for presentations from a distance, click several times for further levels",
+         lang:"DE", langTitle:"Auf Deutsch umschalten", template:"Sentence template", opts:"Answer options" }
+  };
+  function U(k){ return UI[lang][k]; }
+  function safeGet(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } }
+  function safeSet(k, v){ try { sessionStorage.setItem(k, v); } catch(e){} }
+
+  var FORM = {
+    login: { rest:"Mitarbeitenden die Möglichkeit bieten, sich mit ihrem Firmenkonto in der Lindenfeld-Lunch-App anzumelden.",
+      why:{ muss:"Vorschlag Lindenfeld: muss — ohne Anmeldung gibt es keine zuordenbare Bestellung; die App ist ohne diese Funktion nicht abnahmefähig.",
+            soll:"Als ‚soll‘ würde die Anmeldung zur Verhandlungssache — das passt nicht, denn ohne sie funktioniert kein weiterer Schritt.",
+            kann:"Als ‚kann‘ wäre die Anmeldung optional — das widerspricht dem Kernzweck: Bestellungen müssen einer Person zuordenbar sein." } },
+    order: { rest:"Mitarbeitenden die Möglichkeit bieten, ein Gericht aus dem Tagesangebot für den Folgetag vorzubestellen.",
+      why:{ muss:"Vorschlag Lindenfeld: muss — die Vorbestellung ist der Kernzweck der App; die Küche plant Einkauf und Mengen damit.",
+            soll:"Als ‚soll‘ wäre der Kernzweck der App verzichtbar — das lässt sich schwer begründen.",
+            kann:"Als ‚kann‘ wäre die Bestellfunktion optional — dann fehlt der Grund für die App." } },
+    statement: { rest:"Mitarbeitenden die Möglichkeit bieten, ihre Lunch-Monatsabrechnung als PDF herunterzuladen.",
+      why:{ muss:"Als ‚muss‘ müsste ohne PDF-Abrechnung die Abnahme scheitern — das ist hier zu streng, die Beträge lassen sich auch anders nachvollziehen.",
+            soll:"Vorschlag Lindenfeld: soll — wichtig für die Nachvollziehbarkeit des Gehaltsabzugs, aber kein Abnahmekriterium; über ein Weglassen entscheidet das Projekt bewusst.",
+            kann:"Als ‚kann‘ wäre die Nachvollziehbarkeit des Gehaltsabzugs optional — das unterschätzt den Nutzen für die Beschäftigten." } }
+  };
+  function formOf(id){ return lang === "en" ? EN.form[id] : FORM[id]; }
+
+  /* Übung: Reihenfolge und Optionsreihenfolge fest und reproduzierbar (Z3) */
+  var MSC_DE = [
+    { text:"Das System zeigt je Gericht die Allergene an.", answer:"muss", alt:null,
+      fb:"muss — gesetzliche Pflicht (LMIV): Allergene müssen angegeben werden. Wer hier ‚soll‘ schreibt, verharmlost eine Rechtspflicht." },
+    { text:"Mitarbeitende melden sich mit ihrem Firmenkonto an.", answer:"muss", alt:null,
+      fb:"muss — Kernfunktion: ohne Anmeldung gibt es keine zuordenbare Bestellung." },
+    { text:"Bestellungen sind nur bis 14:00 Uhr am Vortag möglich.", answer:"muss", alt:null,
+      fb:"muss — die Küche plant Einkauf und Mengen auf Basis dieses Bestellschlusses. Ohne die Regel fehlt die Planungsgrundlage." },
+    { text:"Die App erinnert vor Bestellschluss an offene Bestellungen.", answer:"soll", alt:"kann",
+      altNote:"wenn die Küche Nachzügler verkraftet und die Erinnerung reiner Komfort ist.",
+      fb:"soll — entlastet die Küche (weniger Nachzügler), aber die Bestellung funktioniert auch ohne Erinnerung. Weglassen ist möglich, muss aber bewusst entschieden werden." },
+    { text:"Die Monatsabrechnung lässt sich als PDF herunterladen.", answer:"soll", alt:"muss",
+      altNote:"wenn eine Betriebsvereinbarung den Nachweis des Abzugs vorschreibt.",
+      fb:"soll — wichtig für die Nachvollziehbarkeit des Gehaltsabzugs, aber kein Abnahmekriterium. Kontext kann das ändern (z. B. durch eine Betriebsvereinbarung)." },
+    { text:"Die App merkt sich Lieblingsgerichte.", answer:"kann", alt:null,
+      fb:"kann — angenehm, aber ohne Folgen für Abnahme oder Betrieb. Umsetzung nur, wenn Zeit und Budget übrig sind." }
+  ];
+  var EN_ALT = { 3:"if the kitchen can cope with latecomers and the reminder is pure convenience.", 4:"if a works agreement prescribes proof of the deduction." };
+  var QORDER = [3, 1, 5, 2, 4, 0];
+  var QOPTS = [["kann","soll","muss"], ["muss","soll","kann"], ["muss","soll","kann"], ["soll","muss","kann"], ["kann","muss","soll"], ["muss","soll","kann"]];
+  var QS = QORDER.map(function(i, n){ var q = MSC_DE[i]; return { src:i, text:q.text, answer:q.answer, alt:q.alt, altNote:q.altNote, fb:q.fb, opts:QOPTS[n] }; });
+  function qText(q){ return lang === "en" ? EN.msc[q.src].text : q.text; }
+  function qExpl(q){ return lang === "en" ? EN.msc[q.src].fb : q.fb; }
+  function qAltNote(q){ return lang === "en" ? EN_ALT[q.src] : q.altNote; }
+
+  /* ================= Elemente ================= */
+  var faPicker = document.getElementById("faPicker");
+  var faText = document.getElementById("faText");
+  var charGrid = document.getElementById("charGrid");
+  var detailName = document.getElementById("detailName");
+  var detailEn = document.getElementById("detailEn");
+  var detailDef = document.getElementById("detailDef");
+  var detailSubs = document.getElementById("detailSubs");
+  var detailNfa = document.getElementById("detailNfa");
+  var detailStory = document.getElementById("detailStory");
+  var detailAc = document.getElementById("detailAc");
+  var s1Picker = document.getElementById("s1Picker");
+  var s1Verbs = document.getElementById("s1Verbs");
+  var s1Sentence = document.getElementById("s1Sentence");
+  var s1Why = document.getElementById("s1Why");
+  var s1Reveal = document.getElementById("s1Reveal");
+  var groupReveal = document.getElementById("groupReveal");
+  var groupSol = document.getElementById("groupSol");
+  var sbVerb = document.getElementById("sbVerb");
+
+  function scenarioLabel(sc){ return lang === "en" ? EN.scen[sc.id].label : sc.label; }
+
+  function formalSentence(id){
+    var v = state.verb[id];
+    var lead = lang === "en" ? "The system " : "Das System ";
+    return lead + "<b class=\"v-" + v + "\">" + VW[lang][v] + "</b> " + formOf(id).rest;
+  }
+
+  /* Auswahl-Chips (beide Schritte) */
+  function makeChips(container, onPick){
+    SCENARIOS.forEach(function(sc){
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "fa-chip";
+      btn.dataset.id = sc.id;
+      btn.addEventListener("click", function(){ state.scenario = sc.id; onPick(); render(); });
+      container.appendChild(btn);
+    });
+  }
+  makeChips(faPicker, function(){});
+  makeChips(s1Picker, function(){ s1Why.hidden = true; s1Reveal.setAttribute("aria-expanded", "false"); updateRevealLabels(); });
+
+  CHARACTERISTICS.forEach(function(ch){
+    var card = document.createElement("button");
+    card.type = "button";
+    card.className = "char-card";
+    card.dataset.id = ch.id;
+    card.addEventListener("click", function(){ state.char = ch.id; render(); });
+    charGrid.appendChild(card);
+  });
+  function fillCards(){
+    Array.prototype.forEach.call(charGrid.children, function(card){
+      var ch = CHARACTERISTICS.filter(function(c){ return c.id === card.dataset.id; })[0];
+      var en = lang === "en";
+      card.innerHTML =
+        '<span class="char-num">' + ch.num + '</span>' +
+        '<p class="char-de">' + (en ? ch.en : ch.de) + '</p>' +
+        (en ? '' : '<span class="char-en">' + ch.en + '</span><br>') +
+        '<span class="char-badge ' + (ch.badge === "unchanged" ? "unchanged" : (ch.badge === "new" ? "new" : "renamed")) + '">' + (en ? EN.badge[ch.id] : ch.badgeLabel) + '</span>';
+    });
+  }
+
+  function render(){
+    var scenario = SCENARIOS.filter(function(s){ return s.id === state.scenario; })[0];
+    var ch = CHARACTERISTICS.filter(function(c){ return c.id === state.char; })[0];
+    var en = lang === "en";
+
+    Array.prototype.forEach.call(faPicker.children, function(btn){
+      var sc = SCENARIOS.filter(function(s){ return s.id === btn.dataset.id; })[0];
+      btn.textContent = scenarioLabel(sc);
+      btn.classList.toggle("active", btn.dataset.id === state.scenario);
+    });
+    Array.prototype.forEach.call(s1Picker.children, function(btn){
+      var sc = SCENARIOS.filter(function(s){ return s.id === btn.dataset.id; })[0];
+      btn.textContent = scenarioLabel(sc);
+      btn.classList.toggle("active", btn.dataset.id === state.scenario);
+    });
+    Array.prototype.forEach.call(charGrid.children, function(card){
+      card.classList.toggle("selected", card.dataset.id === state.char);
+    });
+    Array.prototype.forEach.call(s1Verbs.children, function(b){
+      b.textContent = VW[lang][b.dataset.verb];
+      b.classList.toggle("active", b.dataset.verb === state.verb[state.scenario]);
+    });
+    faText.innerHTML = formalSentence(scenario.id);
+    s1Sentence.innerHTML = formalSentence(scenario.id);
+    if(!s1Why.hidden){ showWhy(); }
+
+    detailName.textContent = ch.num + ". " + (en ? ch.en : ch.de);
+    detailEn.textContent = en ? "" : ch.en;
+    detailDef.textContent = en ? EN.chars[ch.id].def : ch.def;
+
+    detailSubs.innerHTML = "";
+    ch.subs.forEach(function(sub, i){
+      var li = document.createElement("li");
+      var nm = en ? EN.chars[ch.id].subs[i][0] : sub.name;
+      var tx = en ? EN.chars[ch.id].subs[i][1] : sub.text;
+      li.innerHTML = '<span class="sub-name">' + nm + '</span>' + tx;
+      detailSubs.appendChild(li);
+    });
+
+    var d = en ? EN.scen[scenario.id].data[ch.id] : scenario.data[ch.id];
+    detailNfa.textContent = d.nfa;
+    detailStory.textContent = d.story;
+    detailAc.innerHTML = d.ac.map(function(line){
+      var parts = line.split(" ");
+      var keyword = parts.shift();
+      return "<div><b>" + keyword + "</b> " + parts.join(" ") + "</div>";
+    }).join("");
+  }
+
+  /* ================= Schritt 1: Baukasten ================= */
+  Array.prototype.forEach.call(s1Verbs.querySelectorAll(".verb-btn"), function(b){
+    b.addEventListener("click", function(){
+      state.verb[state.scenario] = b.dataset.verb;
+      render();
+    });
+  });
+  function showWhy(){
+    s1Why.textContent = formOf(state.scenario).why[state.verb[state.scenario]];
+    s1Why.hidden = false;
+  }
+  function updateRevealLabels(){
+    s1Reveal.textContent = s1Why.hidden ? U("show") : U("hide");
+    groupReveal.textContent = groupSol.hidden ? U("show") : U("hide");
+  }
+  s1Reveal.addEventListener("click", function(){
+    if(s1Why.hidden){ showWhy(); s1Reveal.setAttribute("aria-expanded", "true"); }
+    else { s1Why.hidden = true; s1Reveal.setAttribute("aria-expanded", "false"); }
+    updateRevealLabels();
+  });
+  groupReveal.addEventListener("click", function(){
+    groupSol.hidden = !groupSol.hidden;
+    groupReveal.setAttribute("aria-expanded", String(!groupSol.hidden));
+    updateRevealLabels();
+  });
+
+  /* ================= Schritt 1: Einzelfrage-Übung (Z1/Z2) ================= */
+  var qIdx = 0, qPicked = {};
+  var qCard = document.getElementById("qCard"), qCount = document.getElementById("qCount"), qTextEl = document.getElementById("qText");
+  var qOpts = document.getElementById("qOpts"), qFb = document.getElementById("qFb");
+  var qPrev = document.getElementById("qPrev"), qNext = document.getElementById("qNext"), qSummary = document.getElementById("qSummary");
+
+  function renderQ(){
+    var q = QS[qIdx], picked = qPicked[qIdx];
+    qCount.textContent = U("frage") + " " + (qIdx + 1) + " " + U("von") + " " + QS.length;
+    qTextEl.textContent = qText(q);
+    qOpts.setAttribute("aria-label", U("opts"));
+    qOpts.innerHTML = "";
+    q.opts.forEach(function(v){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "q-opt";
+      b.dataset.v = v;
+      b.dataset.ok = (v === q.answer) ? "1" : "0";
+      b.textContent = VW[lang][v];
+      b.addEventListener("click", function(){ qPicked[qIdx] = v; renderQ(); });
+      qOpts.appendChild(b);
+    });
+    if(picked){
+      var kind = picked === q.answer ? "ok" : (picked === q.alt ? "alt" : "bad");
+      Array.prototype.forEach.call(qOpts.children, function(b){
+        if(b.dataset.v === picked){ b.classList.add("is-" + kind); }
+        if(b.dataset.v === q.answer){ b.classList.add("is-right"); }
+      });
+      var sym = kind === "ok" ? "✔" : (kind === "alt" ? "≈" : "✘");
+      var verdict = kind === "ok" ? U("right") : (kind === "alt" ? U("alt") : U("bad"));
+      var html = '<span class="q-verdict">' + sym + ' ' + verdict + '</span>' +
+        '<span class="q-line"><b>' + U("correct") + '</b> ' + VW[lang][q.answer] + '</span>';
+      if(q.alt){ html += '<span class="q-line"><b>' + U("alsoOk") + '</b> ' + VW[lang][q.alt] + ' — ' + qAltNote(q) + '</span>'; }
+      html += '<span class="q-line"><b>' + U("expl") + '</b> ' + qExpl(q) + '</span>';
+      qFb.className = "q-fb is-" + kind;
+      qFb.innerHTML = html;
+      qFb.hidden = false;
+    } else {
+      qFb.hidden = true;
+      qFb.className = "q-fb";
+      qFb.innerHTML = "";
+    }
+    qPrev.textContent = U("prev"); qNext.textContent = U("next");
+    qPrev.disabled = qIdx === 0;
+    qNext.disabled = qIdx === QS.length - 1;
+    var done = Object.keys(qPicked).length, ok = 0;
+    Object.keys(qPicked).forEach(function(k){ if(qPicked[k] === QS[k].answer){ ok++; } });
+    qSummary.textContent = done ? (ok + " " + U("sumOf") + " " + done + " " + U("sumA")) : "";
+  }
+  qPrev.addEventListener("click", function(){ if(qIdx > 0){ qIdx--; renderQ(); } });
+  qNext.addEventListener("click", function(){ if(qIdx < QS.length - 1){ qIdx++; renderQ(); } });
+
+  /* ================= Sprache (K20) ================= */
+  var deCache = new WeakMap();
+  function applyStatic(){
+    Array.prototype.forEach.call(document.querySelectorAll("[data-i18n-en]"), function(el){
+      if(!deCache.has(el)){ deCache.set(el, el.innerHTML); }
+      el.innerHTML = (lang === "en") ? el.getAttribute("data-i18n-en") : deCache.get(el);
+    });
+  }
+  var ringSegs = document.querySelectorAll(".iso-seg");
+  var ringDe = {};
+  Array.prototype.forEach.call(ringSegs, function(s){
+    var id = s.getAttribute("data-char");
+    var tspans = s.querySelectorAll("tspan");
+    ringDe[id] = { title: s.querySelector("title").textContent, lines: Array.prototype.map.call(tspans, function(t){ return t.textContent; }) };
+  });
+  var RING_EN = { fs:["Functional","Suitability"], pe:["Performance","Efficiency"], co:["Compatibility"], ic:["Interaction","Capability"], re:["Reliability"], se:["Security"], ma:["Maintainability"], fl:["Flexibility"], sa:["Safety"] };
+  function applyRing(){
+    Array.prototype.forEach.call(ringSegs, function(s){
+      var id = s.getAttribute("data-char");
+      var ch = CHARACTERISTICS.filter(function(c){ return c.id === id; })[0];
+      s.querySelector("title").textContent = ch.num + ". " + (lang === "en" ? ch.en : ch.de);
+      var tspans = s.querySelectorAll("tspan");
+      var lines = lang === "en" ? RING_EN[id] : ringDe[id].lines;
+      Array.prototype.forEach.call(tspans, function(t, i){
+        if(i < tspans.length - 1) { t.textContent = lines[i] !== undefined ? lines[i] : ""; }
+        else { t.textContent = lines.slice(i).join(" "); }
+      });
+    });
+    document.querySelector(".iso-svg").setAttribute("aria-label", U("ring"));
+  }
+  var langBtn = document.getElementById("langBtn");
+  function applyLang(){
+    document.documentElement.lang = lang;
+    langBtn.textContent = U("lang");
+    langBtn.title = U("langTitle");
+    applyStatic();
+    applyRing();
+    fillCards();
+    sbVerb.textContent = [VW[lang].muss, VW[lang].soll, VW[lang].kann].join(" / ");
+    s1Verbs.setAttribute("aria-label", U("verbs"));
+    document.querySelector(".schablone").setAttribute("aria-label", U("template"));
+    document.querySelector(".side").setAttribute("aria-label", U("steps"));
+    beamerBtn.title = U("btnTitle");
+    updateRevealLabels();
+    render();
+    renderQ();
+    fixSprung();
+  }
+  function fixSprung(){
+    var box = document.querySelector(".dr-sprung");
+    if(!box){ return; }
+    var map = lang === "en" ? [["Zurück zu Start","Back to start"],["Zurück zum Seminar","Back to seminar"]] : [["Back to start","Zurück zu Start"],["Back to seminar","Zurück zum Seminar"]];
+    var w = document.createTreeWalker(box, NodeFilter.SHOW_TEXT), n;
+    while((n = w.nextNode())){ map.forEach(function(m){ if(n.nodeValue.indexOf(m[0]) > -1){ n.nodeValue = n.nodeValue.replace(m[0], m[1]); } }); }
+  }
+  window.addEventListener("load", function(){ setTimeout(fixSprung, 300); });
+  langBtn.addEventListener("click", function(){
+    lang = (lang === "de") ? "en" : "de";
+    safeSet("lindenfeldFaLang", lang);
+    applyLang();
+  });
+
+  /* ================= Schritte (linke Navigation) ================= */
+  var steps = { "1": document.getElementById("schritt-1"), "2": document.getElementById("schritt-2") };
+  var sideBtns = document.querySelectorAll(".side-btn");
+  function showStep(n, scroll){
+    Object.keys(steps).forEach(function(k){ steps[k].hidden = (k !== String(n)); });
+    Array.prototype.forEach.call(sideBtns, function(b){
+      var on = b.dataset.goto === String(n);
+      b.classList.toggle("active", on);
+      if(on){ b.setAttribute("aria-current", "step"); } else { b.removeAttribute("aria-current"); }
+    });
+    try { history.replaceState(null, "", "#schritt-" + n); } catch(e){}
+    if(scroll){ steps[n].querySelector("h2").scrollIntoView({ block:"start" }); }
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-goto]"), function(b){
+    b.addEventListener("click", function(){ showStep(b.dataset.goto, true); });
+  });
+  showStep(location.hash === "#schritt-2" ? 2 : 1, false);
+
+  /* ================= BEAMER-MODUS ================= */
+  var BEAMER_LEVELS = [
+    { classes: [],                                    label: "☀ Beamer" },
+    { classes: ["beamer"],                             label: "☀ Beamer XL" },
+    { classes: ["beamer", "beamer-xl"],                label: "☀ Beamer XXL" },
+    { classes: ["beamer", "beamer-xl", "beamer-xxl"],  label: "☀ Normal" }
+  ];
+  var beamerLevel = 0;
+  var savedLevel = parseInt(safeGet("lindenfeldFaBeamer"), 10);
+  if(!isNaN(savedLevel) && savedLevel >= 0 && savedLevel < BEAMER_LEVELS.length){ beamerLevel = savedLevel; }
+  var beamerBtn = document.getElementById("beamerBtn");
+  function applyBeamerLevel(){
+    document.documentElement.classList.remove("beamer", "beamer-xl", "beamer-xxl");
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    beamerBtn.textContent = BEAMER_LEVELS[beamerLevel].label;
+  }
+  beamerBtn.addEventListener("click", function(){
+    beamerLevel = (beamerLevel + 1) % 4;
+    applyBeamerLevel();
+    safeSet("lindenfeldFaBeamer", String(beamerLevel));
+  });
+  applyBeamerLevel();
+
+  var savedLang = safeGet("lindenfeldFaLang");
+  if(savedLang === "en"){ lang = "en"; }
+  applyLang();
+
+})();
+</script>
+<script>
+/* Qualitätsring: Klick/Tastatur wählt Merkmal im Demonstrator; Auswahl wird zurückgespiegelt */
+(function(){
+  var segs=document.querySelectorAll(".iso-seg"), grid=document.getElementById("charGrid");
+  function pick(id){ var c=grid.querySelector('.char-card[data-id="'+id+'"]'); if(c){ c.click(); } }
+  function sync(){ var s=grid.querySelector(".char-card.selected"); for(var i=0;i<segs.length;i++){ segs[i].classList.toggle("sel", !!s && s.dataset.id===segs[i].getAttribute("data-char")); } }
+  for(var i=0;i<segs.length;i++){ (function(s){
+    s.addEventListener("pointerup",function(){ pick(s.getAttribute("data-char")); });
+    s.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); pick(s.getAttribute("data-char")); } });
+  })(segs[i]); }
+  new MutationObserver(sync).observe(grid,{subtree:true,attributes:true,attributeFilter:["class"]});
+  sync();
+})();
+</script>
+<script src="../register/zurueck.js" defer></script>
+</body>
+</html>
