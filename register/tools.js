@@ -4,7 +4,7 @@
  * Als Skript-Datei (nicht .json), damit sie auch offline per file:// lädt.
  */
 window.DENKRAUM_REGISTER = {
-  "stand": "2026-11-01",
+  "stand": "2026-11-05",
   "denkraeume": [
     {
       "id": "moeglichkeit",
@@ -5392,6 +5392,70 @@ window.DENKRAUM_REGISTER = {
       ],
       "geprueft": false,
       "notiz": "Neu am 27.10.2026. Firmenneutral, keine Fallwelt. Moderationsleitfäden für 90 Minuten und halben Tag im Vortrags-Skript. Erstaudit 27.10.2026 nach Checkliste v2.1 (K1–K22, Z1–Z9): ⭐ Zertifiziert mit Auszeichnung, siehe tools/Audit-Protokoll_Zeit-Konflikt-Kompendium.md. Am 28.10.2026 18 Comics (Galerie, Comicknopf links in der Navigation und in jeder Methodenkarte) ergänzt, Nachprüfung im Audit-Protokoll."
+    },
+    {
+      "id": "lindenfeld-fa-neun-spuren",
+      "datei": "tools/lindenfeld-fa-neun-spuren.html",
+      "titel": "Lindenfeld Lunch: Eine FA, neun Spuren",
+      "kurztitel": "Lindenfeld: FA, neun Spuren",
+      "kurz": "Zwei Schritte am Fall der Cafeteria-App: erst eine funktionale Anforderung mit muss, soll oder kann verbindlich formulieren, dann sehen, wie aus derselben FA neun nicht-funktionale Spuren nach ISO/IEC 25010:2023 entstehen, je mit NFA, User Story und Akzeptanzkriterium. Mit Einzelfrage-Übung, Qualitätsring und DE/EN-Umschalter.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "FA/NFA, User Stories & Traceability",
+      "aufStartseite": true,
+      "zweck": [
+        "Demonstrator",
+        "Übung"
+      ],
+      "denkraum": "loesung",
+      "faeden": [
+        "re",
+        "ba"
+      ],
+      "dauer": null,
+      "haufeSeminare": [
+        "9368",
+        "31693",
+        "3744"
+      ],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "Fallwelt",
+        "ISO 25010",
+        "Anforderungen formulieren",
+        "muss soll kann",
+        "FA/NFA",
+        "User Story",
+        "Akzeptanzkriterium"
+      ],
+      "standards": [
+        "ISO 25010:2023",
+        "IREB"
+      ],
+      "siegel": {
+        "status": "Offene Punkte",
+        "letztesAudit": "2026-11-05",
+        "auditZeileImTool": null,
+        "offen": [
+          "Erstaudit durch Michaela steht aus (Selbstprüfung am Bautag: K1, K18, K20, K21, Z1 bis Z4 im Browser geprüft)",
+          "K14 (Audit-Zeile fehlt)"
+        ]
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/iso-25010-kompendium.html",
+        "tools/fa-nfa-rollen-spuren.html",
+        "tools/user-story-puzzle.html",
+        "tools/lindenfeld-projektauftrag-pflichtenheft.html"
+      ],
+      "geprueft": false,
+      "notiz": "Neu am 05.11.2026, entstanden aus dem Demonstrator-Kapitel des ISO-25010-Kompendiums, auf Lindenfeld Lunch angepasst und um Schritt 1 (muss/soll/kann) erweitert. Zahlen und Rechtsbezüge im Fall sind Beispielwerte. K22 entfällt (Demonstrator), im Handbuch begründet."
     }
   ]
 };
