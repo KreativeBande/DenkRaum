@@ -5190,13 +5190,13 @@ window.DENKRAUM_REGISTER = {
       "siegel": {
         "status": "Auditiert & zertifiziert",
         "letztesAudit": "2026-11-01",
-        "auditZeileImTool": "Zuletzt geprüft: 01.11.2026 · Status: ✅ Zertifiziert",
+        "auditZeileImTool": null,
         "offen": [
           "Kann-Kriterien K11 (Design-System-Radien), K12, K13 nicht vollständig"
         ]
       },
       "beamer": "4-stufig",
-      "sprecherSkript": false,
+      "sprecherSkript": true,
       "verwandt": [
         "tools/change-schleuse.html",
         "tools/ba-re-case-lindenfeld-lunch.html",
@@ -5204,7 +5204,7 @@ window.DENKRAUM_REGISTER = {
         "tools/denkraeume-navigator.html"
       ],
       "geprueft": false,
-      "notiz": "Am 01.11.2026 gemeinsam mit Michaela entwickelt, noch nicht nach K1–K22 auditiert. Fachlicher Stand: 90 Minuten gelten für CR-01 (BA/RE-Case, genehmigt mit Bedingung); Steckbrief, Projektauftrag und Gateplan wurden am 01.11.2026 angeglichen, der 75-Minuten-Kompromiss ist dort nur noch die Alternative. Drohnen = Stakeholder mit Idee oder Regelbruch, Drohnenticket mit sieben Feldern. Einträge mit „Gedankenspiel“ oder „zu prüfen“ sind im Fall nicht belegt. Am 01.11.2026 um elf Dokumente aus dem Eisberg (Strategiepapier, Vision Statement, Roadmap, Machbarkeitsstudie, Projektauftrag, Lastenheft, Pflichtenheft, Product Backlog, Projektstrukturplan, Terminplan, Kostenplan) und die Flughöhe je Raum ergänzt; Artefakt des Umsetzungsraums heißt jetzt Lauffähiger Liefergegenstand. Die neuen Dokumente haben noch keine Musterlösung aus dem Fall. Störraum-Bild \"Der Eisberg kippt\" (vier Bilder, DE/EN, mit Beispielfragen und Lösung) in der Raumansicht des Störraums, Stand 01.11.2026. Fußboxen (Systemprompt, Handbuch, Vortrags-Skript) nennen das Drohnenticket; Normen-Register am 01.11.2026 geprüft (29148 Ausgabe 2 gilt weiter, BABOK v3, IREB-Lehrplan 3.3)."
+      "notiz": "Am 06.11.2026 ergänzt: Mini-Demo (ca. 5 Minuten, CR-01 mit Rückverfolgung ab BR-1), Ansicht-Schalter (EN, Beamer, Teilnehmende) in der linken Navigation, Nacharbeit-Checkliste, antippbare Fall-IDs. Audit-Zeile aus dem Fuß entfernt (K14-Verfall), Re-Audit nach K1–K22 offen. Am 01.11.2026 gemeinsam mit Michaela entwickelt, noch nicht nach K1–K22 auditiert. Fachlicher Stand: 90 Minuten gelten für CR-01 (BA/RE-Case, genehmigt mit Bedingung); Steckbrief, Projektauftrag und Gateplan wurden am 01.11.2026 angeglichen, der 75-Minuten-Kompromiss ist dort nur noch die Alternative. Drohnen = Stakeholder mit Idee oder Regelbruch, Drohnenticket mit sieben Feldern. Einträge mit „Gedankenspiel“ oder „zu prüfen“ sind im Fall nicht belegt. Am 01.11.2026 um elf Dokumente aus dem Eisberg (Strategiepapier, Vision Statement, Roadmap, Machbarkeitsstudie, Projektauftrag, Lastenheft, Pflichtenheft, Product Backlog, Projektstrukturplan, Terminplan, Kostenplan) und die Flughöhe je Raum ergänzt; Artefakt des Umsetzungsraums heißt jetzt Lauffähiger Liefergegenstand. Die neuen Dokumente haben noch keine Musterlösung aus dem Fall. Störraum-Bild \"Der Eisberg kippt\" (vier Bilder, DE/EN, mit Beispielfragen und Lösung) in der Raumansicht des Störraums, Stand 01.11.2026. Fußboxen (Systemprompt, Handbuch, Vortrags-Skript) nennen das Drohnenticket; Normen-Register am 01.11.2026 geprüft (29148 Ausgabe 2 gilt weiter, BABOK v3, IREB-Lehrplan 3.3)."
     },
     {
       "id": "lindenfeld-projektauftrag-pflichtenheft Die elf Dokumente haben seit 01.11.2026 Musterlösungen aus dem Fall Lindenfeld Lunch, mit Herkunftsmarke (Fall, Abgeleitet, Gedankenspiel). Am 01.11.2026 entschieden: Horizontraum fragt „Wohin schauen wir?“, User Story ist Übergabeartefakt (Lösung zu Umsetzung), Cynefin im Analyseraum, Abnahmeprotokoll im Umsetzungsraum, Projektabschlussbericht im Störraum (Board jetzt 45 Karten, 32 Dokumente).",
