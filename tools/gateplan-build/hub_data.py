@@ -121,7 +121,7 @@ CELLS = {
  ('Messweg für EM-1 und GZ in den Abnahmekriterien vorbereitet', 'Measurement path for EM-1 and GZ prepared in the acceptance criteria', 'A'),
  ('Ausgangswerte vor Go-Live festhalten: 33 % Abfall, 65 Minuten', 'Record baselines before go-live: 33% waste, 65 minutes', 'R'),
  ('Zwischenwerte der Key Results KR1.1 bis KR3.2', 'Interim values of the key results KR1.1 to KR3.2', 'F'),
- ('Ampel-Vorschlag: KR1.2 mindestens 0,70 (35 % Nutzung) und KR2.1 mindestens 0,50 (höchstens 26,5 % Abfall)', 'Traffic-light proposal: KR1.2 at least 0.70 (35% usage) and KR2.1 at least 0.50 (at most 26.5% waste)', 'F'),
+ ('Ampel-Vorschlag: KR1.2 mindestens 0,70 (35 % Nutzung), KR2.1 mindestens 0,50 (höchstens 26,5 % Abfall) und GZ-4 mindestens 770 Gäste pro Tag', 'Traffic-light proposal: KR1.2 at least 0.70 (35% usage), KR2.1 at least 0.50 (at most 26.5% waste) and GZ-4 at least 770 guests per day', 'F'),
 ],
 }
 
@@ -137,7 +137,7 @@ BRIEF = [
   (('Entscheidung', 'Decision'), ('Projekt mit 380.000 EUR Investition für Release 1 starten', 'Start the project with EUR 380,000 investment for release 1'), 'F', '1'),
   (('Wer entscheidet', 'Who decides'), ('Heike Brandl unterschreibt; die Projektleitung wird noch benannt (OP-05)', 'Heike Brandl signs; the project manager is still to be named (OP-05)'), 'A', 'OP-05'),
   (('Go-Kriterien', 'Go criteria'), ('Ziele messbar, Umfang mit Ausschlüssen, Zielkonflikt GZ-2 offen ausgewiesen (37.800 EUR)', 'Goals measurable, scope with exclusions, GZ-2 conflict stated openly (EUR 37,800)'), 'R', 'PA 1'),
-  (('Warnsignal', 'Warning sign'), ('Projektleitung, GZ-1-Zwischenwert und Reserve noch offen (OP-04, OP-05, OP-11)', 'Project manager, GZ-1 interim value and contingency still open (OP-04, OP-05, OP-11)'), 'A', 'PA 4'),
+  (('Warnsignal', 'Warning sign'), ('Projektleitung und Reserve noch offen (OP-05, OP-11)', 'Project manager and contingency still open (OP-05, OP-11)'), 'A', 'PA 4'),
  ],
  [ # G2
   (('Entscheidung', 'Decision'), ('Anforderungsbasis v1.0 ist Grundlage für Pflichtenheft und Test', 'Requirements baseline v1.0 is the basis for specification and test'), 'A', 'PA 1'),
@@ -166,8 +166,8 @@ BRIEF = [
  [ # G6
   (('Entscheidung', 'Decision'), ('Release 2 freigeben, um ein Quartal vertagen oder nicht starten', 'Approve release 2, postpone by one quarter or do not start'), 'F', '9'),
   (('Wer entscheidet', 'Who decides'), ('Heike Brandl, auf Basis gemessener Werte', 'Heike Brandl, based on measured values'), 'F', '1, PA 1'),
-  (('Go-Kriterien', 'Go criteria'), ('EM-1 und GZ-1-Zwischenwert erreicht. Ampel-Vorschlag: Grün bei KR1.2 mindestens 0,70 und KR2.1 mindestens 0,50', 'EM-1 and GZ-1 interim value reached. Traffic-light proposal: green at KR1.2 at least 0.70 and KR2.1 at least 0.50'), 'F', '1, 9'),
-  (('Warnsignal', 'Warning sign'), ('Gelb oder Rot bei einem der beiden Key Results; die Ampel allein entscheidet nicht, Abweichungen begründet die Sponsorin schriftlich', 'Yellow or red on one of the two key results; the traffic light alone does not decide, the sponsor justifies deviations in writing'), 'F', '9'),
+  (('Go-Kriterien', 'Go criteria'), ('EM-1 (mindestens 35 %), GZ-1 (höchstens 26,5 %) und GZ-4 (mindestens 770 Gäste pro Tag) erreicht. Ampel-Vorschlag: Grün bei KR1.2 mindestens 0,70, KR2.1 mindestens 0,50 und GZ-4 mindestens 770', 'EM-1 (at least 35%), GZ-1 (at most 26.5%) and GZ-4 (at least 770 guests per day) reached. Traffic-light proposal: green at KR1.2 at least 0.70, KR2.1 at least 0.50 and GZ-4 at least 770'), 'F', '1, 9'),
+  (('Warnsignal', 'Warning sign'), ('Gelb oder Rot bei einem der beiden Key Results oder GZ-4 unter 770; eine ungeklärte Beschwerde über Leistungs- oder Verhaltenskontrolle (L-3) verhindert Grün; die Ampel allein entscheidet nicht, Abweichungen begründet die Sponsorin schriftlich', 'Yellow or red on one of the two key results or GZ-4 below 770; an unresolved complaint about performance or behaviour monitoring (L-3) prevents green; the traffic light alone does not decide, the sponsor justifies deviations in writing'), 'F', '9'),
  ],
 ]
 
@@ -202,8 +202,8 @@ GROUPQ = [
  (('Beim Check-in liegt die Nutzungsquote erst bei 30 % statt bei 50 %. Was ist der erste Schritt?', 'At the check-in the usage rate is only 30% instead of 50%. What is the first step?'),
   [('Laut Fall: Hürden im Anmeldeweg und in der Bedienung suchen und Ömer Yıldız interviewen, der nur zwei Tage pro Woche vor Ort ist und den Smartphone-Zugang braucht. Erst Ursache, dann Funktion.', 'According to the case: look for hurdles in the login path and in operation and interview Ömer Yıldız, who is on site only two days a week and needs smartphone access. Cause first, then feature.'),
    ('Beispielfrage: Beschreiben Sie Ihre letzte Bestellung vom Anfang bis zum Essen. Wo haben Sie gezögert?', 'Sample question: Describe your last order from start to meal. Where did you hesitate?')]),
- (('EM-1 ist erreicht, der GZ-1-Zwischenwert nicht. Wird Release 2 freigegeben?', 'EM-1 is reached, the GZ-1 interim value is not. Is release 2 approved?'),
-  [('Nein, nicht automatisch: Release 2 wird nur freigegeben, wenn EM-1 und der GZ-1-Zwischenwert erreicht sind. Der Ampel-Vorschlag im Fall: Gelb heißt erst Ursache klären und die Entscheidung um ein Quartal vertagen, Rot heißt kein Release 2 (Lösung ändern, nicht das Ziel). Die Sponsorin entscheidet und begründet Abweichungen schriftlich.', 'No, not automatically: release 2 is approved only if EM-1 and the GZ-1 interim value are reached. The traffic-light proposal in the case: yellow means clarify the cause first and postpone the decision by one quarter, red means no release 2 (change the solution, not the goal). The sponsor decides and justifies deviations in writing.'),
+ (('EM-1 ist erreicht, die GZ-1-Freigabeschwelle (höchstens 26,5 %) nicht. Wird Release 2 freigegeben?', 'EM-1 is reached, the GZ-1 threshold (at most 26.5%) is not. Is release 2 approved?'),
+  [('Nein, nicht automatisch: Release 2 wird nur freigegeben, wenn EM-1 (mindestens 35 %), die GZ-1-Freigabeschwelle (höchstens 26,5 %) und der GZ-4-Zwischenwert (mindestens 770 Gäste pro Tag) erreicht sind. Eine ungeklärte Beschwerde über Leistungs- oder Verhaltenskontrolle (L-3) verhindert ebenfalls Grün. Der Ampel-Vorschlag im Fall: Gelb heißt erst Ursache klären und die Entscheidung um ein Quartal vertagen, Rot heißt kein Release 2 (Lösung ändern, nicht das Ziel). Die Sponsorin entscheidet und begründet Abweichungen schriftlich.', 'No, not automatically: release 2 is approved only if EM-1 (at least 35%), the GZ-1 threshold (at most 26.5%) and the GZ-4 interim value (at least 770 guests per day) are reached. An unresolved complaint about performance or behaviour monitoring (L-3) also prevents green. The traffic-light proposal in the case: yellow means clarify the cause first and postpone the decision by one quarter, red means no release 2 (change the solution, not the goal). The sponsor decides and justifies deviations in writing.'),
    ('Beispielfrage: Welche Ursache sehen Sie für die Abfallquote, und was haben wir noch nicht probiert?', 'Sample question: What cause do you see for the waste rate, and what have we not tried yet?')]),
 ]
 
