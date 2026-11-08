@@ -121,7 +121,7 @@ CELLS = {
  ('Messweg für EM-1 und GZ in den Abnahmekriterien vorbereitet', 'Measurement path for EM-1 and GZ prepared in the acceptance criteria', 'A'),
  ('Ausgangswerte vor Go-Live festhalten: 33 % Abfall, 65 Minuten', 'Record baselines before go-live: 33% waste, 65 minutes', 'R'),
  ('Zwischenwerte der Key Results KR1.1 bis KR3.2', 'Interim values of the key results KR1.1 to KR3.2', 'F'),
- ('Ampel-Vorschlag: KR1.2 mindestens 0,70 (35 % Nutzung), KR2.1 mindestens 0,50 (höchstens 26,5 % Abfall) und GZ-4 mindestens 770 Gäste pro Tag', 'Traffic-light proposal: KR1.2 at least 0.70 (35% usage), KR2.1 at least 0.50 (at most 26.5% waste) and GZ-4 at least 770 guests per day', 'F'),
+ ('Ampel-Vorschlag: KR1.2 mindestens 0,70 (35 % Nutzung), KR2.1 mindestens 0,50 (höchstens 26,5 % Abfall) und GZ-4 mindestens 770 Gäste pro Tag', 'Traffic-light proposal: KR1.2 at least 0.70 (35% usage), KR2.1 at least 0.50 (at most 26.5% waste) and GZ-4 at least 770 guests per day', 'A'),
 ],
 }
 
@@ -166,7 +166,8 @@ BRIEF = [
  [ # G6
   (('Entscheidung', 'Decision'), ('Release 2 freigeben, um ein Quartal vertagen oder nicht starten', 'Approve release 2, postpone by one quarter or do not start'), 'F', '9'),
   (('Wer entscheidet', 'Who decides'), ('Heike Brandl, auf Basis gemessener Werte', 'Heike Brandl, based on measured values'), 'F', '1, PA 1'),
-  (('Go-Kriterien', 'Go criteria'), ('EM-1 (mindestens 35 %), GZ-1 (höchstens 26,5 %) und GZ-4 (mindestens 770 Gäste pro Tag) erreicht. Ampel-Vorschlag: Grün bei KR1.2 mindestens 0,70, KR2.1 mindestens 0,50 und GZ-4 mindestens 770', 'EM-1 (at least 35%), GZ-1 (at most 26.5%) and GZ-4 (at least 770 guests per day) reached. Traffic-light proposal: green at KR1.2 at least 0.70, KR2.1 at least 0.50 and GZ-4 at least 770'), 'F', '1, 9'),
+  (('Go-Kriterien', 'Go criteria'), ('EM-1 (mindestens 35 %), GZ-1 (höchstens 26,5 %) und GZ-4 (mindestens 770 Gäste pro Tag) erreicht.', 'EM-1 (at least 35%), GZ-1 (at most 26.5%) and GZ-4 (at least 770 guests per day) reached.'), 'F', '1, 9'),
+  (('Ampel-Vorschlag', 'Traffic-light proposal'), ('Grün bei KR1.2 mindestens 0,70, KR2.1 mindestens 0,50 und GZ-4 mindestens 770', 'Green at KR1.2 at least 0.70, KR2.1 at least 0.50 and GZ-4 at least 770'), 'A', '9'),
   (('Warnsignal', 'Warning sign'), ('Gelb oder Rot bei einem der beiden Key Results oder GZ-4 unter 770; eine ungeklärte Beschwerde über Leistungs- oder Verhaltenskontrolle (L-3) verhindert Grün; die Ampel allein entscheidet nicht, Abweichungen begründet die Sponsorin schriftlich', 'Yellow or red on one of the two key results or GZ-4 below 770; an unresolved complaint about performance or behaviour monitoring (L-3) prevents green; the traffic light alone does not decide, the sponsor justifies deviations in writing'), 'F', '9'),
  ],
 ]
