@@ -103,7 +103,7 @@ CELLS = {
  ('Rechtsgrundlagen als offene Punkte; NFR nach ISO/IEC 25010:2023', 'Legal bases as open points; NFR per ISO/IEC 25010:2023', 'R'),
  ('Betriebsvereinbarung und Datenschutz-Dokumentation vor Go-Live', 'Works agreement and data protection documentation before go-live', 'F'),
  ('Pulsbefragung zum Vertrauen in die App (KR3.1); Klärungsdauer von Beschwerden (KR3.2)', 'Pulse survey on trust in the app (KR3.1); time to resolve complaints (KR3.2)', 'F'),
- ('KR3.2 ist verpflichtend: über 5 Tage Klärungsdauer heißt Freigabe nur mit Auflage', 'KR3.2 is mandatory: over 5 days resolution time means approval only with a condition', 'F'),
+ ('KR3.2 ist verpflichtend: über 5 Tage Klärungsdauer heißt Freigabe nur mit Auflage', 'KR3.2 is mandatory: over 5 days resolution time means approval only with a condition', 'A'),
 ],
 'Ce': [
  ('Annahmen offen als Annahmen führen; GZ-2 als Hypothese', 'Keep assumptions openly as assumptions; GZ-2 as hypothesis', 'R'),
