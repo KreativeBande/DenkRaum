@@ -3,229 +3,394 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light">
 <title>Requirements-to-Code Explorer</title>
 <style>
+html,body{color-scheme:light}
 :root{
   --blue:#1f3a6e; --blue2:#2e6db4; --light:#eef5fb; --line:#c9d7e8;
-  --text:#182433; --muted:#5d6b7a; --white:#fff; --amber:#f4b740; --red:#b3261e;
-  --green:#2d7a4b; --shadow:0 10px 30px rgba(31,58,110,.10);
+  --ink:#182433; --muted:#5d6b7a; --white:#fff; --amber:#f4b740; --red:#b3261e;
+  --green:#2d7a4b; --bg:#f6f8fb;
+  --mono:Consolas,"Courier New",ui-monospace,monospace;
+  --sans:Inter,"Segoe UI",Arial,sans-serif;
 }
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text);background:#f6f8fb}
-body{overflow:hidden}
-html[data-beamer="1"]{zoom:1.35}
-html[data-beamer="2"]{zoom:1.75}
-.app{height:100vh;display:grid;grid-template-rows:auto 1fr auto}
-header{background:linear-gradient(135deg,var(--blue),#173052);color:#fff;padding:18px 24px}
-.header-topbar{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin-bottom:10px}
-header h1{margin:0;font-size:clamp(24px,3vw,38px);line-height:1.05}
-header p{margin:7px 0 0;color:#dbe8f6;font-size:clamp(14px,1.6vw,19px)}
-.back-link{display:inline-block;color:#dbe8f6;font-size:13px;font-weight:700;text-decoration:none}
-.back-link:hover{color:#fff;text-decoration:underline}
-.header-actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
-.badge{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);padding:10px 14px;border-radius:12px;font-weight:700;white-space:nowrap}
-.beamer-btn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);color:#fff;padding:9px 13px;border-radius:12px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap}
-.beamer-btn:hover{background:rgba(255,255,255,.24)}
-.beamer-btn.active{background:var(--amber);color:#151d29;border-color:var(--amber)}
-main{min-height:0;display:grid;grid-template-columns:minmax(300px,36%) 1fr;gap:18px;padding:18px}
-.sidebar,.content{background:var(--white);border:1px solid #dce6f0;border-radius:18px;box-shadow:var(--shadow);min-height:0}
-.sidebar{display:grid;grid-template-rows:auto 1fr;overflow:hidden}
-.side-head{padding:18px;border-bottom:1px solid var(--line)}
+html,body{margin:0;padding:0;font-family:var(--sans);color:var(--ink);background:var(--bg);font-size:16px;line-height:1.5;overflow-wrap:break-word}
+button{font-family:var(--sans);touch-action:manipulation}
+
+/* K21: Signatur dauerhaft oben rechts fixiert, auf jeder Breite */
+.signature{position:fixed;top:14px;right:28px;z-index:1000;text-align:right;line-height:1.3;font-size:14px;background:rgba(255,255,255,.95);padding:4px 10px;border-radius:8px;max-width:70vw;box-shadow:0 2px 8px rgba(24,36,51,.08)}
+.signature strong{display:block;font-size:15px;color:var(--ink)}
+.signature a{font-size:14px;color:var(--blue2);text-decoration:none;font-weight:600}
+.signature a:hover{text-decoration:underline}
+
+.wrap{max-width:1440px;margin:0 auto;padding:76px 24px 32px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.back-link{font-size:15px;font-weight:700;color:var(--blue2);text-decoration:none}
+.back-link:hover{text-decoration:underline}
+.ctrls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-left:auto}
+.pill-info{font-size:14px;font-weight:700;color:var(--blue);background:#e4edf7;border-radius:999px;padding:8px 16px}
+.beamer-btn,.lang-btn{background:transparent;border:1.5px solid var(--line);color:var(--muted);font-size:15px;padding:10px 20px;border-radius:999px;cursor:pointer;min-height:44px}
+.beamer-btn:hover,.lang-btn:hover{border-color:var(--blue2)}
+html.beamer .beamer-btn,html.beamer-xl .beamer-btn,html.beamer-xxl .beamer-btn{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.hero{background:linear-gradient(135deg,var(--blue),#173052);color:#fff;border-radius:24px;box-shadow:0 16px 34px rgba(24,36,51,.08);padding:28px 32px;margin:0 0 18px}
+.eyebrow{display:block;font-size:14px;letter-spacing:.1em;font-weight:700;color:#bcd3ee;text-transform:uppercase;margin-bottom:8px}
+.hero h1{hyphens:auto;margin:0 0 8px;font-size:clamp(28px,3.4vw,42px);line-height:1.1}
+.hero .lead{margin:0;color:#dbe8f6;font-size:clamp(17px,1.6vw,20px);line-height:1.55}
+
+.layout{display:grid;grid-template-columns:minmax(280px,32%) minmax(0,1fr);gap:18px;align-items:start}
+.layout>*{min-width:0}
+.sidebar,.content{background:var(--white);border:1px solid #dce6f0;border-radius:16px;box-shadow:0 6px 16px rgba(24,36,51,.05)}
+.sidebar{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;padding:12px}
+.side-head{padding:6px 6px 12px;border-bottom:1px solid var(--line);margin-bottom:10px}
 .side-head h2{margin:0 0 6px;font-size:22px}
-.side-head p{margin:0;color:var(--muted);font-size:15px}
-.steps{overflow:auto;padding:12px}
-.step{width:100%;display:grid;grid-template-columns:42px 1fr auto;gap:11px;align-items:center;text-align:left;border:1px solid #d7e2ee;background:#fff;padding:12px;margin-bottom:9px;border-radius:14px;cursor:pointer;transition:.18s}
-.step:hover,.step:focus{transform:translateX(3px);border-color:var(--blue2);outline:none}
+.side-head p{margin:0;color:var(--muted);font-size:16px}
+.step{width:100%;display:grid;grid-template-columns:42px minmax(0,1fr) auto;overflow-wrap:anywhere;hyphens:auto;gap:11px;align-items:center;text-align:left;border:1px solid #d7e2ee;background:#fff;color:var(--ink);padding:12px;margin-bottom:9px;border-radius:12px;cursor:pointer;transition:.18s;min-height:44px}
+.step:hover,.step:focus-visible{transform:translateX(3px);border-color:var(--blue2);outline:none}
+.step:focus-visible{box-shadow:0 0 0 3px #ffb300}
 .step.active{background:var(--light);border-color:var(--blue2);box-shadow:inset 5px 0 0 var(--blue2)}
-.num{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#e4edf7;color:var(--blue);font-weight:800}
+.step.active .step-title{text-decoration:underline;text-underline-offset:3px}
+.num{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#e4edf7;color:var(--blue);font-weight:800;font-size:16px}
 .step.active .num{background:var(--blue2);color:#fff}
-.step-title{font-weight:800;font-size:16px;display:block}.step-sub{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.step-title{font-weight:800;font-size:16px;display:block}
+.step-sub{display:block;color:var(--muted);font-size:14px;margin-top:2px}
 .arrow{color:var(--blue2);font-size:20px}
-.content{overflow:auto;padding:24px}
+
+.content{padding:24px 26px;overflow-wrap:break-word;hyphens:auto}
 .panel{display:none}.panel.active{display:block}
-.kicker{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue2);font-weight:800}
-h2.panel-title{font-size:clamp(26px,3vw,40px);margin:7px 0 10px;color:var(--blue)}
-.lead{font-size:clamp(17px,1.7vw,22px);line-height:1.5;color:#33465a;margin:0 0 22px}
+.kicker{font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue2);font-weight:800}
+h2.panel-title{overflow-wrap:break-word;hyphens:auto;font-size:clamp(26px,3vw,38px);margin:7px 0 10px;color:var(--blue);line-height:1.15}
+.lead-p{font-size:clamp(17px,1.6vw,20px);line-height:1.55;color:#33465a;margin:0 0 20px}
 .card{border:1px solid #d6e1ec;border-radius:16px;padding:18px;background:#fff;margin:14px 0;box-shadow:0 6px 16px rgba(24,36,51,.03)}
-.card.blue{background:var(--light);border-color:#b8cee5}.card.warn{background:#fff8e8;border-color:#efd28a}.card.sec{background:#f5f0fb;border-color:#d5c4e8}.card.code{position:relative;color:#eaf2fb;border-color:#0b1220;font-family:Consolas,"Courier New",monospace;background-color:#0b1220;background-image:repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0px, rgba(255,255,255,.035) 1px, transparent 1px, transparent 3px)}
-.card h3{margin:0 0 10px;font-size:20px}.card p{margin:7px 0;line-height:1.5}
-.requirement{font-size:clamp(20px,2.2vw,30px);font-weight:800;color:var(--blue);line-height:1.35}
+.card.blue{background:var(--light);border-color:#b8cee5}.card.warn{background:#fff8e8;border-color:#efd28a}.card.sec{background:#f5f0fb;border-color:#d5c4e8}
+.card h3{margin:0 0 10px;font-size:20px}.card p{margin:7px 0;line-height:1.55;font-size:16px}
+.requirement{font-size:clamp(20px,2.1vw,28px);font-weight:800;color:var(--blue);line-height:1.35}
+.card p.requirement{font-size:clamp(20px,2.1vw,28px)}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.grid2>.card,.grid3>.card{margin:0}
 .question{font-weight:800;color:var(--blue)}
-.tag{display:inline-block;padding:5px 8px;border-radius:8px;background:#e7eff8;color:var(--blue);font-size:12px;font-weight:800;margin-right:6px}
+.tag{display:inline-block;padding:5px 10px;border-radius:999px;background:#e7eff8;color:var(--blue);font-size:14px;font-weight:800;margin-right:6px}
+.tag.norm{background:#fdf1d8;color:#6b4b00}
 .metric{font-weight:800;color:var(--green)}
-.norm-list{display:grid;gap:10px}.norm-item{border:1px solid #d8e2ed;border-radius:12px;padding:13px;background:#fff;cursor:pointer}.norm-item summary{font-weight:800;color:var(--blue);cursor:pointer}.norm-item p{margin:8px 0 0}
-.flow{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap}.flow-box{flex:1 1 145px;border:1px solid #cbd9e7;border-radius:12px;padding:13px;background:#fff;min-height:90px}.flow-box strong{color:var(--blue)}
+.norm-list{display:grid;gap:10px}
+.norm-item{border:1px solid #d8e2ed;border-radius:12px;padding:13px;background:#fff}
+.norm-item summary{font-weight:800;color:var(--blue);cursor:pointer;font-size:17px;min-height:28px}
+.norm-item p{margin:8px 0 0;font-size:16px;line-height:1.55}
+.flow{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap;margin:14px 0}
+.flow-box{flex:1 1 150px;border:1px solid #cbd9e7;border-radius:12px;padding:13px;background:#fff;min-height:90px}
+.flow-box strong{color:var(--blue);font-size:16px}.flow-box p{margin:6px 0 0;font-size:16px}
 .flow-arrow{display:grid;place-items:center;color:var(--blue2);font-size:24px;font-weight:800}
-ul.clean{padding-left:20px;margin:8px 0}ul.clean li{margin:7px 0;line-height:1.45}
-.code-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.code-btn{border:1px solid #60758c;background:#263344;color:#fff;padding:9px 13px;border-radius:9px;cursor:pointer;font-weight:700}.code-btn.active{background:#fff;color:#152235}
-pre{margin:0;white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.55;max-height:420px;overflow:auto}
+ul.clean{padding-left:20px;margin:8px 0}ul.clean li{margin:7px 0;line-height:1.45;font-size:16px}
+
+.card.code{position:relative;color:#eaf2fb;border-color:#0b1220;font-family:var(--mono);background-color:#0b1220;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0px,rgba(255,255,255,.035) 1px,transparent 1px,transparent 3px)}
+.code-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.code-btn{border:1px solid #60758c;background:#263344;color:#fff;padding:9px 16px;border-radius:12px;cursor:pointer;font-weight:700;font-size:15px;min-height:44px}
+.code-btn.active{background:#fff;color:#152235}
+pre{margin:0;white-space:pre-wrap;word-break:break-word;font-family:var(--mono);font-size:15px;line-height:1.55;max-height:460px;overflow:auto}
 .code-pane{display:none}.code-pane.active{display:block}
-.trace{width:100%;border-collapse:collapse;font-size:14px}.trace th,.trace td{border-bottom:1px solid #d9e3ed;padding:10px;text-align:left;vertical-align:top}.trace th{background:#eef4fa;color:var(--blue);position:sticky;top:0}.trace tr:hover td{background:#f8fbfe}
-.gherkin{font-family:Consolas,monospace;background:#18212d;color:#f3f7fb;padding:16px;border-radius:12px;line-height:1.6}
-.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.check{border-left:5px solid var(--green);background:#f2f8f4;padding:12px;border-radius:9px}
-footer{padding:10px 18px;background:#fff;border-top:1px solid #d8e2ed;display:flex;justify-content:space-between;align-items:center;gap:15px;font-size:13px;color:var(--muted)}
-.footer-sig{color:inherit;font-weight:700;text-decoration:none}
-.footer-sig:hover{color:var(--blue2);text-decoration:underline}
-.progress{height:8px;background:#e5edf5;border-radius:99px;overflow:hidden;min-width:220px}.progress span{display:block;height:100%;width:11.11%;background:var(--blue2);transition:.2s}
-@media(max-width:900px){body{overflow:auto}.app{height:auto;min-height:100vh}.app main{grid-template-columns:1fr}.sidebar{max-height:42vh}.content{min-height:58vh}header{align-items:flex-start;flex-wrap:wrap}.badge{display:none}.grid2,.grid3,.checks{grid-template-columns:1fr}.flow-arrow{transform:rotate(90deg);flex-basis:100%}footer{position:sticky;bottom:0;flex-wrap:wrap;justify-content:center;text-align:center;row-gap:6px}footer .footer-sig{order:1}footer #status{order:2}footer .progress{order:3;flex:1 1 100%;min-width:0}}
-
-.code-legend{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
-.legend-item,.req-tag{display:inline-block;padding:4px 8px;border-radius:6px;font-weight:800;font-size:12px}
-.req-fa{background:#dbeafe;color:#123f73}.req-use{background:#fef3c7;color:#6b4b00}
-.req-perf{background:#ffedd5;color:#7c2d12}.req-sec{background:#ede9fe;color:#4c1d95}
-.req-rel{background:#dcfce7;color:#14532d}.req-trace{background:#fce7f3;color:#831843}
-
 .terminal-bar{display:flex;align-items:center;gap:7px;padding-bottom:13px;margin-bottom:13px;border-bottom:1px solid #24354a}
 .terminal-bar .dot{width:11px;height:11px;border-radius:50%;display:inline-block}
 .terminal-bar .dot.red{background:#ff5f57}.terminal-bar .dot.yellow{background:#febc2e}.terminal-bar .dot.green{background:#28c840}
-.terminal-title{margin-left:6px;font-size:12px;color:#7d93ad;letter-spacing:.03em}
-
-.code-line{display:block;padding:2px 8px;margin:2px 0;border-left:5px solid transparent;border-radius:5px;font-size:13.5px}
-.code-line::before{display:inline-block;min-width:38px;margin-right:9px;padding:0 5px;border-radius:4px;font-size:9.5px;font-weight:800;letter-spacing:.03em;text-align:center;vertical-align:1px}
+.terminal-title{margin-left:6px;font-size:14px;color:#9fb3cb;letter-spacing:.03em}
+.code-line{display:block;padding:2px 8px;margin:2px 0;border-left:5px solid transparent;border-radius:5px;font-size:15px}
+.code-line::before{display:inline-block;min-width:58px;margin-right:9px;padding:0 6px;border-radius:4px;font-size:14px;font-weight:800;letter-spacing:.02em;text-align:center;vertical-align:1px;font-family:var(--sans)}
 .line-fa{background:rgba(56,189,248,.16);border-left-color:#7dd3fc}.line-fa::before{content:"FA";background:rgba(56,189,248,.32);color:#e0f6ff}
 .line-use{background:rgba(250,204,21,.14);border-left-color:#fde047}.line-use::before{content:"USE";background:rgba(250,204,21,.30);color:#fffbeb}
 .line-perf{background:rgba(251,146,60,.16);border-left-color:#fdba74}.line-perf::before{content:"PERF";background:rgba(251,146,60,.32);color:#fff3e8}
 .line-sec{background:rgba(167,139,250,.18);border-left-color:#c4b5fd}.line-sec::before{content:"SEC";background:rgba(167,139,250,.34);color:#f4f1ff}
 .line-rel{background:rgba(74,222,128,.16);border-left-color:#86efac}.line-rel::before{content:"REL";background:rgba(74,222,128,.32);color:#eafff1}
 .line-trace{background:rgba(244,114,182,.18);border-left-color:#f9a8d4}.line-trace::before{content:"TRACE";background:rgba(244,114,182,.34);color:#fff0f8}
-
+.code-legend{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.legend-item,.req-tag{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:800;font-size:14px}
+.req-fa{background:#dbeafe;color:#123f73}.req-use{background:#fef3c7;color:#6b4b00}
+.req-perf{background:#ffedd5;color:#7c2d12}.req-sec{background:#ede9fe;color:#4c1d95}
+.req-rel{background:#dcfce7;color:#14532d}.req-trace{background:#fce7f3;color:#831843}
 .mapping-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
-.mapping-card{border:1px solid #d7e1ec;border-radius:10px;padding:12px;background:#fff}
-.mapping-card p{margin:6px 0 0;font-size:14px}
-@media(max-width:760px){.mapping-grid{grid-template-columns:1fr}}
+.mapping-card{border:1px solid #d7e1ec;border-radius:12px;padding:12px;background:#fff}
+.mapping-card p{margin:6px 0 0;font-size:16px}
+.trace-wrap{overflow-x:auto}
+.trace{width:100%;border-collapse:collapse;font-size:16px}
+.trace th,.trace td{border-bottom:1px solid #d9e3ed;padding:10px;text-align:left;vertical-align:top}
+.trace th{background:#eef4fa;color:var(--blue)}
+.trace tr:hover td{background:#f8fbfe}
+.gherkin{font-family:var(--mono);background:#18212d;color:#f3f7fb;padding:16px;border-radius:12px;line-height:1.6;font-size:16px;margin:12px 0}
+.gherkin .kw{color:#fde68a;font-weight:700}
+.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.check{border-left:5px solid var(--green);background:#f2f8f4;padding:12px;border-radius:12px;font-size:16px}
 
-.crosslink{margin-top:16px;font-size:14px;color:var(--muted);}
-.crosslink a{color:var(--blue2);font-weight:700;text-decoration:none;}
-.crosslink a:hover{text-decoration:underline;}
-.crosslink ul{margin:8px 0 0;padding-left:20px;}
-.crosslink li{margin-bottom:4px;}
-</style>
-<style>
-/* K21: Signatur dauerhaft oben rechts fixiert, auch auf schmalen Viewports */
-.k21-sig{position:fixed;top:14px;right:28px;z-index:1000;margin:0;padding:4px 10px;background:rgba(255,255,255,.94);border-radius:8px;text-align:right;white-space:normal;line-height:1.3;font-size:14px;font-weight:700;color:#1f2430;text-decoration:none;max-width:70vw;box-shadow:0 2px 8px rgba(0,0,0,.08);}
-.k21-sig span{display:block;font-size:14px;font-weight:500;color:#4b5563;}
-.k21-sig:hover{text-decoration:underline;}
-body{padding-top:64px;}
-@media (max-width:900px){.k21-sig{top:6px;right:10px;padding:3px 8px;}body{padding-top:56px;}}
-  /* K4: helles Farbschema erzwingen, kein Dark Mode */
-  html{color-scheme:light;}
+.pager{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:24px;padding-top:16px;border-top:1px solid var(--line)}
+.pager-btn{background:var(--blue2);color:#fff;border:0;border-radius:12px;padding:11px 18px;font-size:16px;font-weight:700;cursor:pointer;min-height:44px}
+.pager-btn.ghost{background:#fff;color:var(--blue2);border:1.5px solid var(--blue2)}
+.pager-btn:disabled{opacity:.4;cursor:default}
+.pager-mid{flex:1 1 200px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.status{font-size:15px;font-weight:700;color:var(--muted)}
+.progress{height:8px;width:100%;max-width:320px;background:#e5edf5;border-radius:999px;overflow:hidden}
+.progress span{display:block;height:100%;width:11.11%;background:var(--blue2);transition:.2s}
+
+.crosslink{margin-top:20px;font-size:14px;color:var(--muted)}
+.crosslink a{color:var(--blue2);font-weight:700;text-decoration:none}
+.crosslink a:hover{text-decoration:underline}
+.crosslink ul{margin:8px 0 0;padding-left:20px}
+.crosslink li{margin-bottom:4px}
+
+footer{max-width:1440px;margin:28px auto 40px;padding:0 24px}
+.footer-sig{font-size:14px;color:var(--muted);margin:0 0 16px;line-height:1.6}
+.footer-sig a{color:var(--blue2);text-decoration:none;font-weight:600}
+.footer-sig .audit{display:block;margin-top:4px}
+.footer-details{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:start}
+.footer-box{border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden;box-shadow:0 6px 16px rgba(24,36,51,.03)}
+.footer-box[open]{grid-column:1/-1}
+.footer-summary{cursor:pointer;padding:12px 16px;font-weight:700;font-size:15px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:44px}
+.footer-summary::-webkit-details-marker{display:none}
+.footer-summary:after{content:"+";color:var(--blue2);font-size:18px}
+.footer-box[open] .footer-summary:after{content:"–"}
+.footer-content{padding:0 16px 16px}
+.footer-mono{font-family:var(--mono);font-size:14px;line-height:1.55}
+.footer-mono div{white-space:pre-wrap}
+.footer-sans{font-size:16px;line-height:1.6}
+.footer-sans h4{margin:14px 0 4px;font-size:17px}
+.footer-table{width:100%;border-collapse:collapse;font-size:15px}
+.footer-table td,.footer-table th{text-align:left;padding:6px;border-bottom:1px solid var(--line);vertical-align:top}
+.skript-step{margin-bottom:12px}
+.footer-glossary{margin:0}
+.footer-glossary dt{font-weight:700;color:var(--ink);font-size:15px;margin-top:12px}
+.footer-glossary dt:first-child{margin-top:0}
+.footer-glossary dd{margin:2px 0 0;color:var(--muted);font-size:14px;line-height:1.5}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .sidebar{position:static;max-height:none}
+  .grid2,.grid3,.checks,.mapping-grid{grid-template-columns:1fr}
+  .flow-arrow{transform:rotate(90deg);flex-basis:100%}
+  .footer-details{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .wrap{padding:64px 16px 28px}
+  .signature{top:6px;right:10px;padding:3px 8px;max-width:60vw}
+  .hero{padding:22px 18px}
+  .content{padding:18px 16px}
+  footer{padding:0 16px}
+  .pill-info{display:none}
+}
+
+/* K18: Beamer vierstufig, kumulativ (Normal → Beamer → Beamer XL → Beamer XXL) */
+html.beamer{--muted:#3D4A5C}
+html.beamer .lead-p,html.beamer .card p,html.beamer ul.clean li,html.beamer .flow-box p,html.beamer .flow-box strong,html.beamer .norm-item p,html.beamer .norm-item summary,html.beamer .gherkin,html.beamer .check,html.beamer .mapping-card p,html.beamer .trace,html.beamer .side-head p,html.beamer .step-title,html.beamer .hero .lead,html.beamer .card h3,html.beamer pre,html.beamer .code-line,html.beamer .pager-btn{font-size:22px}
+html.beamer .card p.requirement{font-size:30px}
+html.beamer h2.panel-title{font-size:44px}
+html.beamer .side-head h2{font-size:28px}
+html.beamer .hero h1{font-size:46px}
+html.beamer .kicker,html.beamer .tag,html.beamer .req-tag,html.beamer .legend-item,html.beamer .step-sub,html.beamer .code-line::before,html.beamer .terminal-title,html.beamer .status,html.beamer .eyebrow,html.beamer .code-btn,html.beamer .pill-info{font-size:15px}
+html.beamer footer{display:none}
+html.beamer .wrap{max-width:none}
+html.beamer pre{max-height:none}
+
+html.beamer-xl .lead-p,html.beamer-xl .card p,html.beamer-xl ul.clean li,html.beamer-xl .flow-box p,html.beamer-xl .flow-box strong,html.beamer-xl .norm-item p,html.beamer-xl .norm-item summary,html.beamer-xl .gherkin,html.beamer-xl .check,html.beamer-xl .mapping-card p,html.beamer-xl .trace,html.beamer-xl .side-head p,html.beamer-xl .step-title,html.beamer-xl .hero .lead,html.beamer-xl .card h3,html.beamer-xl pre,html.beamer-xl .code-line,html.beamer-xl .pager-btn{font-size:28px}
+html.beamer-xl .card p.requirement{font-size:36px}
+html.beamer-xl h2.panel-title{font-size:54px}
+html.beamer-xl .side-head h2{font-size:34px}
+html.beamer-xl .hero h1{font-size:54px}
+html.beamer-xl .kicker,html.beamer-xl .tag,html.beamer-xl .req-tag,html.beamer-xl .legend-item,html.beamer-xl .step-sub,html.beamer-xl .code-line::before,html.beamer-xl .terminal-title,html.beamer-xl .status,html.beamer-xl .eyebrow,html.beamer-xl .code-btn,html.beamer-xl .pill-info{font-size:18px}
+html.beamer-xl .layout{grid-template-columns:minmax(0,1fr)}
+html.beamer-xl .sidebar{position:static;max-height:none}
+html.beamer-xl .steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:9px}
+html.beamer-xl .step{margin:0}
+html.beamer-xl .grid3,html.beamer-xl .checks,html.beamer-xl .mapping-grid{grid-template-columns:1fr}
+
+html.beamer-xxl .lead-p,html.beamer-xxl .card p,html.beamer-xxl ul.clean li,html.beamer-xxl .flow-box p,html.beamer-xxl .flow-box strong,html.beamer-xxl .norm-item p,html.beamer-xxl .norm-item summary,html.beamer-xxl .gherkin,html.beamer-xxl .check,html.beamer-xxl .mapping-card p,html.beamer-xxl .trace,html.beamer-xxl .side-head p,html.beamer-xxl .step-title,html.beamer-xxl .hero .lead,html.beamer-xxl .card h3,html.beamer-xxl pre,html.beamer-xxl .code-line,html.beamer-xxl .pager-btn{font-size:34px}
+html.beamer-xxl .card p.requirement{font-size:42px}
+html.beamer-xxl h2.panel-title{font-size:64px}
+html.beamer-xxl .side-head h2{font-size:40px}
+html.beamer-xxl .hero h1{font-size:60px}
+html.beamer-xxl .kicker,html.beamer-xxl .tag,html.beamer-xxl .req-tag,html.beamer-xxl .legend-item,html.beamer-xxl .step-sub,html.beamer-xxl .code-line::before,html.beamer-xxl .terminal-title,html.beamer-xxl .status,html.beamer-xxl .eyebrow,html.beamer-xxl .code-btn,html.beamer-xxl .pill-info{font-size:21px}
+html.beamer-xxl .grid2{grid-template-columns:1fr}
+html.beamer-xxl .steps{grid-template-columns:repeat(auto-fill,minmax(min(380px,100%),1fr))}
+@media print{.topbar,.signature,footer,.pager{display:none}}
 </style>
 </head>
 <body>
-<a class="k21-sig" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn<span>www.michaela-kuehn.com</span></a>
+<div class="signature"><strong>Michaela Kühn</strong><a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a></div>
 
-<div class="app">
-<header>
-  <div class="header-topbar">
-    <a class="back-link" href="../index.html">← Zurück zur Startseite</a>
-    <div class="header-actions">
-      <div class="badge">Live-Demo · 9 Stufen</div>
-      <button class="beamer-btn" id="beamerToggle" title="Vergrößert die Darstellung für Präsentationen aus größerer Entfernung — mehrfach klicken für weitere Stufen">🔍 Beamer-Modus</button>
-    </div>
+<div class="wrap">
+<div class="topbar">
+  <a class="back-link" href="../index.html" data-i18n-en="← Back to home page">← Zurück zur Startseite</a>
+  <div class="ctrls">
+    <span class="pill-info" data-i18n-en="Live demo · 9 stages">Live-Demo · 9 Stufen</span>
+    <button type="button" class="beamer-btn" id="beamerBtn" title="Vergrößert die Darstellung in vier Stufen">☀ Beamer</button>
+    <button type="button" class="lang-btn" id="langBtn" aria-label="Sprache wechseln / switch language">EN</button>
   </div>
+</div>
+
+<header class="hero">
+  <span class="eyebrow" data-i18n-en="Round trip · one requirement, nine stages">Rundreise · eine Anforderung, neun Stufen</span>
   <h1>Requirements-to-Code Explorer</h1>
-  <p>Von der unscharfen Anforderung über ISO/IEC 25010:2023 und ISO/IEC 27001:2022 bis zu Code und Test.</p>
+  <p class="lead" data-i18n-en="From a vague requirement via ISO/IEC 25010:2023 and ISO/IEC 27001:2022 to code and test. One sentence travels through all stages, and at the end you can see which line of code serves which requirement and which test proves it.">Von der unscharfen Anforderung über ISO/IEC 25010:2023 und ISO/IEC 27001:2022 bis zu Code und Test. Ein einziger Satz wandert durch alle Stufen, und am Ende ist sichtbar, welche Codezeile welcher Anforderung dient und welcher Test sie nachweist.</p>
 </header>
-<main>
-<section class="sidebar">
-  <div class="side-head"><h2>Engineering-Reise</h2><p>Eine Stufe anklicken und den Reifegrad der Anforderung sichtbar machen.</p></div>
-  <div class="steps" id="steps">
-    <button class="step active" data-panel="p1"><span class="num">1</span><span><span class="step-title">Ausgangsanforderung</span><span class="step-sub">Wunsch sichtbar machen</span></span><span class="arrow">›</span></button>
-    <button class="step" data-panel="p2"><span class="num">2</span><span><span class="step-title">Stakeholder & Kontext</span><span class="step-sub">Wer, wann, wozu?</span></span><span class="arrow">›</span></button>
-    <button class="step" data-panel="p3"><span class="num">3</span><span><span class="step-title">Funktionale Anforderung</span><span class="step-sub">Was muss das System tun?</span></span><span class="arrow">›</span></button>
-    <button class="step" data-panel="p4"><span class="num">4</span><span><span class="step-title">ISO 25010</span><span class="step-sub">Neun Qualitätsbrillen</span></span><span class="arrow">›</span></button>
-    <button class="step" data-panel="p5"><span class="num">5</span><span><span class="step-title">ISO 27001</span><span class="step-sub">Risiken und Schutzbedarf</span></span><span class="arrow">›</span></button>
-    <button class="step" data-panel="p6"><span class="num">6</span><span><span class="step-title">Gesamtanforderung</span><span class="step-sub">Präzisiert und messbar</span></span><span class="arrow">›</span></button>
-    <button class="step" data-panel="p7"><span class="num">7</span><span><span class="step-title">Akzeptanzkriterien</span><span class="step-sub">Nachweis mit Gherkin</span></span><span class="arrow">›</span></button>
-    <button class="step" data-panel="p8"><span class="num">8</span><span><span class="step-title">Entwicklerübergabe</span><span class="step-sub">Refinement und Entscheidungen</span></span><span class="arrow">›</span></button>
-    <button class="step" data-panel="p9"><span class="num">9</span><span><span class="step-title">Code & Traceability</span><span class="step-sub">HTML, JavaScript, Python</span></span><span class="arrow">›</span></button>
-  </div>
-</section>
-<section class="content" id="content">
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="side-head"><h2 data-i18n-en="Engineering journey">Engineering-Reise</h2><p data-i18n-en="Click a stage to make the maturity of the requirement visible.">Eine Stufe anklicken und den Reifegrad der Anforderung sichtbar machen.</p></div>
+  <nav class="steps" id="steps" aria-label="Stufen">
+    <button type="button" class="step active" data-panel="p1" aria-current="step"><span class="num">1</span><span><span class="step-title" data-i18n-en="Initial requirement">Ausgangsanforderung</span><span class="step-sub" data-i18n-en="Make the wish visible">Wunsch sichtbar machen</span></span><span class="arrow">›</span></button>
+    <button type="button" class="step" data-panel="p2"><span class="num">2</span><span><span class="step-title" data-i18n-en="Stakeholders &amp; context">Stakeholder &amp; Kontext</span><span class="step-sub" data-i18n-en="Who, when, what for?">Wer, wann, wozu?</span></span><span class="arrow">›</span></button>
+    <button type="button" class="step" data-panel="p3"><span class="num">3</span><span><span class="step-title" data-i18n-en="Functional requirement">Funktionale Anforderung</span><span class="step-sub" data-i18n-en="What must the system do?">Was muss das System tun?</span></span><span class="arrow">›</span></button>
+    <button type="button" class="step" data-panel="p4"><span class="num">4</span><span><span class="step-title">ISO/IEC 25010</span><span class="step-sub" data-i18n-en="Nine quality lenses">Neun Qualitätsbrillen</span></span><span class="arrow">›</span></button>
+    <button type="button" class="step" data-panel="p5"><span class="num">5</span><span><span class="step-title">ISO/IEC 27001</span><span class="step-sub" data-i18n-en="Risks and protection needs">Risiken und Schutzbedarf</span></span><span class="arrow">›</span></button>
+    <button type="button" class="step" data-panel="p6"><span class="num">6</span><span><span class="step-title" data-i18n-en="Overall requirement">Gesamtanforderung</span><span class="step-sub" data-i18n-en="Precise and measurable">Präzisiert und messbar</span></span><span class="arrow">›</span></button>
+    <button type="button" class="step" data-panel="p7"><span class="num">7</span><span><span class="step-title" data-i18n-en="Acceptance criteria">Akzeptanzkriterien</span><span class="step-sub" data-i18n-en="Evidence with Gherkin">Nachweis mit Gherkin</span></span><span class="arrow">›</span></button>
+    <button type="button" class="step" data-panel="p8"><span class="num">8</span><span><span class="step-title" data-i18n-en="Developer handover">Entwicklerübergabe</span><span class="step-sub" data-i18n-en="Refinement and decisions">Refinement und Entscheidungen</span></span><span class="arrow">›</span></button>
+    <button type="button" class="step" data-panel="p9"><span class="num">9</span><span><span class="step-title" data-i18n-en="Code &amp; traceability">Code &amp; Traceability</span><span class="step-sub">HTML, JavaScript, Python</span></span><span class="arrow">›</span></button>
+  </nav>
+</aside>
+
+<main class="content" id="content">
   <article class="panel active" id="p1">
-    <div class="kicker">Stufe 1 · Ausgangspunkt</div><h2 class="panel-title">Ein Wunsch ist noch keine belastbare Anforderung</h2>
-    <p class="lead">Wir starten bewusst mit einem Satz, der verständlich klingt, aber viele Fragen offenlässt.</p>
-    <div class="card warn"><span class="tag">ROH</span><p class="requirement">„Das System soll Dokumente hochladen können."</p></div>
-    <div class="grid2"><div class="card"><h3>Schon erkennbar</h3><ul class="clean"><li>Es gibt ein System.</li><li>Dokumente sollen übertragen werden.</li><li>Eine Upload-Funktion wird erwartet.</li></ul></div><div class="card"><h3>Noch unklar</h3><ul class="clean"><li>Wer lädt was hoch?</li><li>Welche Formate und Größen?</li><li>Wie schnell und wie sicher?</li><li>Was gilt als erfolgreich?</li></ul></div></div>
-  </article>
-  <article class="panel" id="p2">
-    <div class="kicker">Stufe 2 · Nutzung verstehen</div><h2 class="panel-title">Stakeholder und Nutzungskontext</h2>
-    <p class="lead">Bevor wir die Funktion präzisieren, klären wir, wer sie in welcher Situation benötigt.</p>
-    <div class="grid3"><div class="card blue"><h3>Wer?</h3><p>Angemeldete Projektmitarbeitende mit Upload-Berechtigung.</p></div><div class="card blue"><h3>Wozu?</h3><p>Projektdokumente revisionssicher im zugeordneten Projektraum bereitstellen.</p></div><div class="card blue"><h3>Wann?</h3><p>Während der laufenden Projektarbeit über freigegebene Browser.</p></div></div>
-    <div class="card"><h3>Kontextsatz</h3><p class="requirement">„Eine berechtigte Projektmitarbeiterin lädt ein Projektdokument in den zugeordneten Projektraum hoch, damit das Team mit der aktuellen Fassung arbeiten kann."</p></div>
-  </article>
-  <article class="panel" id="p3">
-    <div class="kicker">Stufe 3 · Funktion klären</div><h2 class="panel-title">Funktionale Anforderung</h2>
-    <p class="lead">Die Funktion beschreibt das beobachtbare Systemverhalten – noch ohne technische Lösung vorzugeben.</p>
-    <div class="card blue"><span class="tag">FA-01</span><p class="requirement">Das System muss berechtigten Projektmitarbeitenden ermöglichen, eine Datei auszuwählen, dem aktiven Projekt zuzuordnen, zu prüfen, zu übertragen und nach erfolgreicher Verarbeitung im Projektraum bereitzustellen.</p></div>
-    <div class="flow"><div class="flow-box"><strong>Auswählen</strong><p>Datei aus lokalem Speicher wählen.</p></div><div class="flow-arrow">→</div><div class="flow-box"><strong>Prüfen</strong><p>Format, Größe und Berechtigung validieren.</p></div><div class="flow-arrow">→</div><div class="flow-box"><strong>Übertragen</strong><p>Datei kontrolliert an den Server senden.</p></div><div class="flow-arrow">→</div><div class="flow-box"><strong>Bereitstellen</strong><p>Erfolg bestätigen und Dokument anzeigen.</p></div></div>
-  </article>
-  <article class="panel" id="p4">
-    <div class="kicker">Stufe 4 · Produktqualität</div><h2 class="panel-title">ISO/IEC 25010:2023 als Qualitätsbrille</h2>
-    <p class="lead">Die Norm liefert keine fertigen Anforderungen. Sie hilft, systematisch die richtigen Qualitätsfragen zu stellen.</p>
-    <div class="norm-list">
-      <details class="norm-item" open><summary>1. Funktionale Eignung</summary><p><span class="question">Frage:</span> Unterstützt die Funktion den vollständigen fachlichen Ablauf?<br><span class="metric">NFA:</span> PDF-, DOCX- und XLSX-Dateien müssen akzeptiert werden.</p></details>
-      <details class="norm-item"><summary>2. Leistungseffizienz</summary><p><span class="question">Frage:</span> Wie schnell muss der Upload reagieren?<br><span class="metric">NFA:</span> Dateien bis 20 MB müssen unter Referenzbedingungen innerhalb von 5 Sekunden verarbeitet werden.</p></details>
-      <details class="norm-item"><summary>3. Kompatibilität</summary><p><span class="question">Frage:</span> In welchen Umgebungen muss die Funktion nutzbar sein?<br><span class="metric">NFA:</span> Der Upload muss in den freigegebenen Versionen von Chrome, Edge und Safari funktionieren.</p></details>
-      <details class="norm-item"><summary>4. Interaktionsfähigkeit</summary><p><span class="question">Frage:</span> Wie verständlich ist die Bedienung?<br><span class="metric">NFA:</span> Ablehnungsgründe müssen in verständlicher Sprache angezeigt werden.</p></details>
-      <details class="norm-item"><summary>5. Zuverlässigkeit</summary><p><span class="question">Frage:</span> Was passiert bei Abbruch oder Fehlern?<br><span class="metric">NFA:</span> Fehlgeschlagene Uploads dürfen keine unvollständigen Dateien erzeugen.</p></details>
-      <details class="norm-item"><summary>6. Sicherheit</summary><p><span class="question">Frage:</span> Wie werden Zugriff und Daten geschützt?<br><span class="metric">NFA:</span> Nur berechtigte Personen dürfen Dateien in das jeweilige Projekt übertragen.</p></details>
-      <details class="norm-item"><summary>7. Wartbarkeit</summary><p><span class="question">Frage:</span> Wie leicht lassen sich Regeln ändern?<br><span class="metric">NFA:</span> Dateiformate und Größenlimits müssen konfigurierbar sein.</p></details>
-      <details class="norm-item"><summary>8. Flexibilität</summary><p><span class="question">Frage:</span> Wie gut passt sich die Lösung neuen Rahmenbedingungen an?<br><span class="metric">NFA:</span> Weitere Speicherziele müssen über eine Schnittstelle ergänzt werden können.</p></details>
-      <details class="norm-item"><summary>9. Safety</summary><p><span class="question">Frage:</span> Welche schädlichen Auswirkungen müssen verhindert werden?<br><span class="metric">NFA:</span> Eine neue Datei darf eine bestehende Fassung nicht unbeabsichtigt überschreiben.</p></details>
+    <div class="kicker" data-i18n-en="Stage 1 · Starting point">Stufe 1 · Ausgangspunkt</div>
+    <h2 class="panel-title" data-i18n-en="A wish is not yet a reliable requirement">Ein Wunsch ist noch keine belastbare Anforderung</h2>
+    <p class="lead-p" data-i18n-en="We deliberately start with a sentence that sounds clear but leaves many questions open.">Wir starten bewusst mit einem Satz, der verständlich klingt, aber viele Fragen offenlässt.</p>
+    <div class="card warn"><span class="tag" data-i18n-en="RAW">ROH</span><p class="requirement" data-i18n-en="“The system shall be able to upload documents.”">„Das System soll Dokumente hochladen können.“</p></div>
+    <div class="grid2">
+      <div class="card"><h3 data-i18n-en="Already recognisable">Schon erkennbar</h3><ul class="clean"><li data-i18n-en="There is a system.">Es gibt ein System.</li><li data-i18n-en="Documents are to be transferred.">Dokumente sollen übertragen werden.</li><li data-i18n-en="An upload function is expected.">Eine Upload-Funktion wird erwartet.</li></ul></div>
+      <div class="card"><h3 data-i18n-en="Still unclear">Noch unklar</h3><ul class="clean"><li data-i18n-en="Who uploads what?">Wer lädt was hoch?</li><li data-i18n-en="Which formats and sizes?">Welche Formate und Größen?</li><li data-i18n-en="How fast and how secure?">Wie schnell und wie sicher?</li><li data-i18n-en="What counts as success?">Was gilt als erfolgreich?</li></ul></div>
     </div>
   </article>
+
+  <article class="panel" id="p2">
+    <div class="kicker" data-i18n-en="Stage 2 · Understand the use">Stufe 2 · Nutzung verstehen</div>
+    <h2 class="panel-title" data-i18n-en="Stakeholders and context of use">Stakeholder und Nutzungskontext</h2>
+    <p class="lead-p" data-i18n-en="Before we refine the function, we clarify who needs it and in which situation.">Bevor wir die Funktion präzisieren, klären wir, wer sie in welcher Situation benötigt.</p>
+    <div class="grid3">
+      <div class="card blue"><h3 data-i18n-en="Who?">Wer?</h3><p data-i18n-en="Logged-in project staff with upload permission.">Angemeldete Projektmitarbeitende mit Upload-Berechtigung.</p></div>
+      <div class="card blue"><h3 data-i18n-en="What for?">Wozu?</h3><p data-i18n-en="To provide project documents in the assigned project space in an audit-proof way.">Projektdokumente revisionssicher im zugeordneten Projektraum bereitstellen.</p></div>
+      <div class="card blue"><h3 data-i18n-en="When?">Wann?</h3><p data-i18n-en="During ongoing project work, via approved browsers.">Während der laufenden Projektarbeit über freigegebene Browser.</p></div>
+    </div>
+    <div class="card"><h3 data-i18n-en="Context sentence">Kontextsatz</h3><p class="requirement" data-i18n-en="“An authorised project member uploads a project document to the assigned project space so that the team can work with the current version.”">„Eine berechtigte Projektmitarbeiterin lädt ein Projektdokument in den zugeordneten Projektraum hoch, damit das Team mit der aktuellen Fassung arbeiten kann.“</p></div>
+  </article>
+
+  <article class="panel" id="p3">
+    <div class="kicker" data-i18n-en="Stage 3 · Clarify the function">Stufe 3 · Funktion klären</div>
+    <h2 class="panel-title" data-i18n-en="Functional requirement">Funktionale Anforderung</h2>
+    <p class="lead-p" data-i18n-en="The function describes observable system behaviour, without prescribing a technical solution yet.">Die Funktion beschreibt das beobachtbare Systemverhalten, noch ohne eine technische Lösung vorzugeben.</p>
+    <div class="card blue"><span class="tag">FA-01</span><p class="requirement" data-i18n-en="The system must enable authorised project staff to select a file, assign it to the active project, have it checked, transfer it and, after successful processing, provide it in the project space.">Das System muss berechtigten Projektmitarbeitenden ermöglichen, eine Datei auszuwählen, dem aktiven Projekt zuzuordnen, prüfen zu lassen, zu übertragen und nach erfolgreicher Verarbeitung im Projektraum bereitzustellen.</p></div>
+    <div class="flow">
+      <div class="flow-box"><strong data-i18n-en="Select">Auswählen</strong><p data-i18n-en="Choose a file from local storage.">Datei aus lokalem Speicher wählen.</p></div><div class="flow-arrow">→</div>
+      <div class="flow-box"><strong data-i18n-en="Check">Prüfen</strong><p data-i18n-en="Validate format, size and permission.">Format, Größe und Berechtigung validieren.</p></div><div class="flow-arrow">→</div>
+      <div class="flow-box"><strong data-i18n-en="Transfer">Übertragen</strong><p data-i18n-en="Send the file to the server in a controlled way.">Datei kontrolliert an den Server senden.</p></div><div class="flow-arrow">→</div>
+      <div class="flow-box"><strong data-i18n-en="Provide">Bereitstellen</strong><p data-i18n-en="Confirm success and display the document.">Erfolg bestätigen und Dokument anzeigen.</p></div>
+    </div>
+  </article>
+
+  <article class="panel" id="p4">
+    <div class="kicker" data-i18n-en="Stage 4 · Product quality">Stufe 4 · Produktqualität</div>
+    <h2 class="panel-title" data-i18n-en="ISO/IEC 25010:2023 as a quality lens">ISO/IEC 25010:2023 als Qualitätsbrille</h2>
+    <p class="lead-p" data-i18n-en="The standard does not deliver finished requirements. It helps to ask the right quality questions systematically, one per characteristic.">Die Norm liefert keine fertigen Anforderungen. Sie hilft, systematisch die richtigen Qualitätsfragen zu stellen, eine je Merkmal.</p>
+    <div class="norm-list">
+      <details class="norm-item" open><summary data-i18n-en="1. Functional suitability">1. Funktionale Eignung</summary><p><span class="question" data-i18n-en="Question:">Frage:</span> <span data-i18n-en="Does the function support the complete business process?">Unterstützt die Funktion den vollständigen fachlichen Ablauf?</span><br><span class="metric" data-i18n-en="NFR:">NFA:</span> <span data-i18n-en="PDF, DOCX and XLSX files must be accepted.">PDF-, DOCX- und XLSX-Dateien müssen akzeptiert werden.</span></p></details>
+      <details class="norm-item"><summary data-i18n-en="2. Performance efficiency">2. Leistungseffizienz</summary><p><span class="question" data-i18n-en="Question:">Frage:</span> <span data-i18n-en="How fast must the upload respond, and how much can it handle?">Wie schnell muss der Upload reagieren, und wie viel muss er verkraften?</span><br><span class="metric" data-i18n-en="NFR:">NFA:</span> <span data-i18n-en="Files up to 20 MB must be processed within 5 seconds under reference conditions (upload bandwidth 50 Mbit/s, up to 50 simultaneous uploads).">Dateien bis 20 MB müssen unter Referenzbedingungen (Upload-Bandbreite 50 Mbit/s, bis zu 50 gleichzeitige Uploads) innerhalb von 5 Sekunden verarbeitet werden.</span></p></details>
+      <details class="norm-item"><summary data-i18n-en="3. Compatibility">3. Kompatibilität</summary><p><span class="question" data-i18n-en="Question:">Frage:</span> <span data-i18n-en="In which environments must the function be usable?">In welchen Umgebungen muss die Funktion nutzbar sein?</span><br><span class="metric" data-i18n-en="NFR:">NFA:</span> <span data-i18n-en="The upload must work in the two most recent major versions of Chrome, Edge and Safari.">Der Upload muss in den jeweils zwei aktuellsten Hauptversionen von Chrome, Edge und Safari funktionieren.</span></p></details>
+      <details class="norm-item"><summary data-i18n-en="4. Interaction capability">4. Interaktionsfähigkeit</summary><p><span class="question" data-i18n-en="Question:">Frage:</span> <span data-i18n-en="How understandable is the operation?">Wie verständlich ist die Bedienung?</span><br><span class="metric" data-i18n-en="NFR:">NFA:</span> <span data-i18n-en="Reasons for rejection must be shown in plain language, together with a possible correction.">Ablehnungsgründe müssen in verständlicher Sprache und mit einer möglichen Korrektur angezeigt werden.</span></p></details>
+      <details class="norm-item"><summary data-i18n-en="5. Reliability">5. Zuverlässigkeit</summary><p><span class="question" data-i18n-en="Question:">Frage:</span> <span data-i18n-en="What happens on cancellation or errors?">Was passiert bei Abbruch oder Fehlern?</span><br><span class="metric" data-i18n-en="NFR:">NFA:</span> <span data-i18n-en="Failed uploads must not create incomplete files.">Fehlgeschlagene Uploads dürfen keine unvollständigen Dateien erzeugen.</span></p></details>
+      <details class="norm-item"><summary data-i18n-en="6. Security">6. Sicherheit (Security)</summary><p><span class="question" data-i18n-en="Question:">Frage:</span> <span data-i18n-en="How are access and data protected?">Wie werden Zugriff und Daten geschützt?</span><br><span class="metric" data-i18n-en="NFR:">NFA:</span> <span data-i18n-en="Only authorised persons may transfer files to the respective project.">Nur berechtigte Personen dürfen Dateien in das jeweilige Projekt übertragen.</span></p></details>
+      <details class="norm-item"><summary data-i18n-en="7. Maintainability">7. Wartbarkeit</summary><p><span class="question" data-i18n-en="Question:">Frage:</span> <span data-i18n-en="How easily can rules be changed?">Wie leicht lassen sich Regeln ändern?</span><br><span class="metric" data-i18n-en="NFR:">NFA:</span> <span data-i18n-en="File formats and size limits must be configurable without changing the code.">Dateiformate und Größenlimits müssen ohne Codeänderung konfigurierbar sein.</span></p></details>
+      <details class="norm-item"><summary data-i18n-en="8. Flexibility">8. Flexibilität</summary><p><span class="question" data-i18n-en="Question:">Frage:</span> <span data-i18n-en="How well does the solution adapt to new conditions?">Wie gut passt sich die Lösung neuen Rahmenbedingungen an?</span><br><span class="metric" data-i18n-en="NFR:">NFA:</span> <span data-i18n-en="Further storage targets must be addable via an interface.">Weitere Speicherziele müssen über eine Schnittstelle ergänzt werden können.</span></p></details>
+      <details class="norm-item"><summary data-i18n-en="9. Safety">9. Betriebssicherheit (Safety)</summary><p><span class="question" data-i18n-en="Question:">Frage:</span> <span data-i18n-en="Which harmful effects must be prevented?">Welche schädlichen Auswirkungen müssen verhindert werden?</span><br><span class="metric" data-i18n-en="NFR:">NFA:</span> <span data-i18n-en="A new file must not unintentionally overwrite an existing version.">Eine neue Datei darf eine bestehende Fassung nicht unbeabsichtigt überschreiben.</span></p></details>
+    </div>
+  </article>
+
   <article class="panel" id="p5">
-    <div class="kicker">Stufe 5 · Informationssicherheit</div><h2 class="panel-title">ISO/IEC 27001:2022: vom Risiko zur Sicherheitsanforderung</h2>
-    <p class="lead">Die Sicherheitsbetrachtung folgt einer nachvollziehbaren Kette: Informationswert, Bedrohung, Risiko, Maßnahme und Nachweis.</p>
-    <div class="flow"><div class="flow-box"><strong>Informationswert</strong><p>Vertrauliche Projektdokumente.</p></div><div class="flow-arrow">→</div><div class="flow-box"><strong>Bedrohung</strong><p>Unbefugter Zugriff oder manipulierte Datei.</p></div><div class="flow-arrow">→</div><div class="flow-box"><strong>Risiko</strong><p>Offenlegung, Veränderung oder Schadcode.</p></div><div class="flow-arrow">→</div><div class="flow-box"><strong>Maßnahme</strong><p>Autorisierung, Prüfung, Protokollierung.</p></div></div>
-    <div class="grid2"><div class="card sec"><h3>SEC-01 · Autorisierung</h3><p>Das System muss vor jedem Upload prüfen, ob die angemeldete Person für das Zielprojekt berechtigt ist.</p></div><div class="card sec"><h3>SEC-02 · Integrität</h3><p>Das System muss die vollständig übertragene Datei anhand eines Hashwerts überprüfen.</p></div><div class="card sec"><h3>SEC-03 · Schadsoftware</h3><p>Die Datei muss vor der endgültigen Bereitstellung auf Schadsoftware geprüft werden.</p></div><div class="card sec"><h3>SEC-04 · Audit</h3><p>Jeder Upload muss mit Nutzerkennung, Projekt, Zeitstempel und Ergebnis protokolliert werden.</p></div></div>
+    <div class="kicker" data-i18n-en="Stage 5 · Information security">Stufe 5 · Informationssicherheit</div>
+    <h2 class="panel-title" data-i18n-en="ISO/IEC 27001:2022: from risk to security requirement">ISO/IEC 27001:2022: vom Risiko zur Sicherheitsanforderung</h2>
+    <p class="lead-p" data-i18n-en="The security view follows a traceable chain: information asset, threat, risk, control and evidence. The controls refer to Annex A of the standard.">Die Sicherheitsbetrachtung folgt einer nachvollziehbaren Kette: Informationswert, Bedrohung, Risiko, Maßnahme und Nachweis. Die Maßnahmen verweisen auf Anhang A der Norm.</p>
+    <div class="flow">
+      <div class="flow-box"><strong data-i18n-en="Information asset">Informationswert</strong><p data-i18n-en="Confidential project documents.">Vertrauliche Projektdokumente.</p></div><div class="flow-arrow">→</div>
+      <div class="flow-box"><strong data-i18n-en="Threat">Bedrohung</strong><p data-i18n-en="Unauthorised access or a manipulated file.">Unbefugter Zugriff oder manipulierte Datei.</p></div><div class="flow-arrow">→</div>
+      <div class="flow-box"><strong data-i18n-en="Risk">Risiko</strong><p data-i18n-en="Disclosure, alteration or malicious code.">Offenlegung, Veränderung oder Schadcode.</p></div><div class="flow-arrow">→</div>
+      <div class="flow-box"><strong data-i18n-en="Control">Maßnahme</strong><p data-i18n-en="Authorisation, checking, logging.">Autorisierung, Prüfung, Protokollierung.</p></div>
+    </div>
+    <div class="grid2">
+      <div class="card sec"><h3 data-i18n-en="SEC-01 · Authorisation">SEC-01 · Autorisierung</h3><p data-i18n-en="Before every upload, the system must check whether the logged-in person is authorised for the target project.">Das System muss vor jedem Upload prüfen, ob die angemeldete Person für das Zielprojekt berechtigt ist.</p><p><span class="tag norm" data-i18n-en="Annex A 5.15 Access control">Anhang A 5.15 Zugangssteuerung</span></p></div>
+      <div class="card sec"><h3 data-i18n-en="SEC-02 · Integrity">SEC-02 · Integrität</h3><p data-i18n-en="The system must ensure that the file provided is bit-identical to the file transferred.">Das System muss sicherstellen, dass die bereitgestellte Datei bitgenau der übertragenen Datei entspricht.</p><p><span class="tag norm" data-i18n-en="Annex A 8.24 Use of cryptography">Anhang A 8.24 Verwendung von Kryptografie</span></p></div>
+      <div class="card sec"><h3 data-i18n-en="SEC-03 · Malware">SEC-03 · Schadsoftware</h3><p data-i18n-en="The file must be checked for malware before it is finally provided.">Die Datei muss vor der endgültigen Bereitstellung auf Schadsoftware geprüft werden.</p><p><span class="tag norm" data-i18n-en="⚖ Standard prescribes the means · Annex A 8.7">⚖ Norm schreibt Mittel vor · Anhang A 8.7</span></p></div>
+      <div class="card sec"><h3 data-i18n-en="SEC-04 · Audit">SEC-04 · Audit</h3><p data-i18n-en="Every upload must be logged with user ID, project, timestamp and result.">Jeder Upload muss mit Nutzerkennung, Projekt, Zeitstempel und Ergebnis protokolliert werden.</p><p><span class="tag norm" data-i18n-en="Annex A 8.15 Logging">Anhang A 8.15 Protokollierung</span></p></div>
+    </div>
   </article>
+
   <article class="panel" id="p6">
-    <div class="kicker">Stufe 6 · Konsolidierung</div><h2 class="panel-title">Die präzisierte Gesamtanforderung</h2>
-    <p class="lead">Funktionale, qualitative und sicherheitsbezogene Aussagen bilden nun ein belastbares Requirements-Paket.</p>
-    <div class="card blue"><span class="tag">FA-01</span><p>Das System muss berechtigten Projektmitarbeitenden ermöglichen, PDF-, DOCX- und XLSX-Dateien bis 20 MB einem aktiven Projekt zuzuordnen, zu übertragen und nach erfolgreicher Prüfung im Projektraum bereitzustellen.</p></div>
-    <div class="card"><span class="tag">NFA-PERF-01</span><p>Unter Referenzbedingungen muss die Verarbeitung einer Datei bis 20 MB innerhalb von 5 Sekunden abgeschlossen sein.</p></div>
-    <div class="card"><span class="tag">NFA-USE-01</span><p>Bei Ablehnung muss das System den konkreten Grund und eine mögliche Korrektur verständlich anzeigen.</p></div>
-    <div class="card"><span class="tag">SEC-01</span><p>Vor der Annahme muss das System Projektberechtigung, Dateityp und Dateigröße serverseitig prüfen.</p></div>
-    <div class="card"><span class="tag">REL-01</span><p>Fehlgeschlagene Uploads dürfen keine unvollständigen oder sichtbaren Dateien erzeugen.</p></div>
+    <div class="kicker" data-i18n-en="Stage 6 · Consolidation">Stufe 6 · Konsolidierung</div>
+    <h2 class="panel-title" data-i18n-en="The refined overall requirement">Die präzisierte Gesamtanforderung</h2>
+    <p class="lead-p" data-i18n-en="Functional, quality and security statements now form a reliable requirements package. Every ID reappears in stage 9 in the code and in the traceability table.">Funktionale, qualitative und sicherheitsbezogene Aussagen bilden nun ein belastbares Requirements-Paket. Jede Kennung taucht in Stufe 9 im Code und in der Traceability-Tabelle wieder auf.</p>
+    <div class="card blue"><span class="tag">FA-01</span><p data-i18n-en="The system must enable authorised project staff to assign PDF, DOCX and XLSX files up to 20 MB to an active project, transfer them and, after a successful check, provide them in the project space.">Das System muss berechtigten Projektmitarbeitenden ermöglichen, PDF-, DOCX- und XLSX-Dateien bis 20 MB einem aktiven Projekt zuzuordnen, zu übertragen und nach erfolgreicher Prüfung im Projektraum bereitzustellen.</p></div>
+    <div class="card"><span class="tag">NFA-PERF-01</span><p data-i18n-en="Under reference conditions (upload bandwidth 50 Mbit/s, up to 50 simultaneous uploads), processing of a file up to 20 MB must be completed within 5 seconds.">Unter Referenzbedingungen (Upload-Bandbreite 50 Mbit/s, bis zu 50 gleichzeitige Uploads) muss die Verarbeitung einer Datei bis 20 MB innerhalb von 5 Sekunden abgeschlossen sein.</p></div>
+    <div class="card"><span class="tag">NFA-USE-01</span><p data-i18n-en="On rejection, the system must display the specific reason and a possible correction in plain language.">Bei Ablehnung muss das System den konkreten Grund und eine mögliche Korrektur verständlich anzeigen.</p></div>
+    <div class="card"><span class="tag">NFA-REL-01</span><p data-i18n-en="Failed uploads must not create incomplete or visible files.">Fehlgeschlagene Uploads dürfen keine unvollständigen oder sichtbaren Dateien erzeugen.</p></div>
+    <div class="card"><span class="tag">SEC-01</span><p data-i18n-en="Before acceptance, the system must check project permission, file type and file size, independently of any check in the browser.">Vor der Annahme muss das System Projektberechtigung, Dateityp und Dateigröße prüfen, unabhängig von einer Prüfung im Browser.</p></div>
+    <div class="card"><span class="tag">SEC-03</span><p data-i18n-en="A file must only become visible in the project space after it has been checked for malware.">Eine Datei darf erst nach der Prüfung auf Schadsoftware im Projektraum sichtbar werden.</p></div>
+    <div class="card"><span class="tag">SEC-04</span><p data-i18n-en="Every upload, successful or rejected, must be logged with user ID, project, timestamp and result.">Jeder Upload, ob erfolgreich oder abgelehnt, muss mit Nutzerkennung, Projekt, Zeitstempel und Ergebnis protokolliert werden.</p></div>
   </article>
+
   <article class="panel" id="p7">
-    <div class="kicker">Stufe 7 · Prüfbarkeit</div><h2 class="panel-title">Akzeptanzkriterien mit Gherkin</h2>
-    <p class="lead">Jetzt wird sichtbar, woran Fachseite, Test und Entwicklung erkennen, dass die Anforderung erfüllt ist.</p>
-    <div class="gherkin">Szenario: Berechtigte Person lädt eine gültige Datei hoch<br><br>Angenommen die Projektmitarbeiterin ist angemeldet<br>Und sie besitzt Upload-Rechte für Projekt A<br>Und die Datei ist eine PDF-Datei mit 12 MB<br>Wenn sie die Datei Projekt A zuordnet und den Upload startet<br>Dann wird die Datei innerhalb von 5 Sekunden verarbeitet<br>Und im Projektraum bereitgestellt<br>Und der Upload wird mit Nutzerkennung und Zeitstempel protokolliert</div>
-    <div class="gherkin" style="margin-top:12px">Szenario: Datei überschreitet die zulässige Größe<br><br>Angenommen eine Datei ist größer als 20 MB<br>Wenn die Projektmitarbeiterin den Upload startet<br>Dann wird die Datei nicht gespeichert<br>Und das System nennt die Größenbegrenzung<br>Und es entsteht keine unvollständige Datei</div>
+    <div class="kicker" data-i18n-en="Stage 7 · Verifiability">Stufe 7 · Prüfbarkeit</div>
+    <h2 class="panel-title" data-i18n-en="Acceptance criteria with Gherkin">Akzeptanzkriterien mit Gherkin</h2>
+    <p class="lead-p" data-i18n-en="Now it becomes visible how business, test and development recognise that the requirement is met.">Jetzt wird sichtbar, woran Fachseite, Test und Entwicklung erkennen, dass die Anforderung erfüllt ist.</p>
+    <div class="gherkin"><span class="kw" data-i18n-en="Scenario:">Szenario:</span> <span data-i18n-en="Authorised person uploads a valid file">Berechtigte Person lädt eine gültige Datei hoch</span><br><br>
+<span class="kw" data-i18n-en="Given">Angenommen</span> <span data-i18n-en="the project member is logged in">die Projektmitarbeiterin ist angemeldet</span><br>
+<span class="kw" data-i18n-en="And">Und</span> <span data-i18n-en="she has upload rights for project A">sie besitzt Upload-Rechte für Projekt A</span><br>
+<span class="kw" data-i18n-en="And">Und</span> <span data-i18n-en="the file is a PDF file of 12 MB">die Datei ist eine PDF-Datei mit 12 MB</span><br>
+<span class="kw" data-i18n-en="When">Wenn</span> <span data-i18n-en="she assigns the file to project A and starts the upload">sie die Datei Projekt A zuordnet und den Upload startet</span><br>
+<span class="kw" data-i18n-en="Then">Dann</span> <span data-i18n-en="the file is processed within 5 seconds">wird die Datei innerhalb von 5 Sekunden verarbeitet</span><br>
+<span class="kw" data-i18n-en="And">Und</span> <span data-i18n-en="provided in the project space">im Projektraum bereitgestellt</span><br>
+<span class="kw" data-i18n-en="And">Und</span> <span data-i18n-en="the upload is logged with user ID and timestamp">der Upload wird mit Nutzerkennung und Zeitstempel protokolliert</span></div>
+    <div class="gherkin"><span class="kw" data-i18n-en="Scenario:">Szenario:</span> <span data-i18n-en="File exceeds the permitted size">Datei überschreitet die zulässige Größe</span><br><br>
+<span class="kw" data-i18n-en="Given">Angenommen</span> <span data-i18n-en="a file is larger than 20 MB">eine Datei ist größer als 20 MB</span><br>
+<span class="kw" data-i18n-en="When">Wenn</span> <span data-i18n-en="the project member starts the upload">die Projektmitarbeiterin den Upload startet</span><br>
+<span class="kw" data-i18n-en="Then">Dann</span> <span data-i18n-en="the file is not stored">wird die Datei nicht gespeichert</span><br>
+<span class="kw" data-i18n-en="And">Und</span> <span data-i18n-en="the system names the size limit">das System nennt die Größenbegrenzung</span><br>
+<span class="kw" data-i18n-en="And">Und</span> <span data-i18n-en="no incomplete file is created">es entsteht keine unvollständige Datei</span></div>
   </article>
+
   <article class="panel" id="p8">
-    <div class="kicker">Stufe 8 · Übergabebrücke</div><h2 class="panel-title">Was Entwickler mit der Anforderung tun</h2>
-    <p class="lead">Die Übergabe ist kein „Bitte programmieren". Im Refinement werden fachliche Aussagen in technische Entscheidungen und Arbeitspakete übersetzt.</p>
-    <div class="grid2"><div class="card"><h3>Frontend</h3><ul class="clean"><li>Dateiauswahl und Upload-Schaltfläche</li><li>Clientseitige Vorprüfung</li><li>Fortschritt und verständliche Fehlermeldungen</li></ul></div><div class="card"><h3>Backend</h3><ul class="clean"><li>Authentifizierung und Autorisierung</li><li>Serverseitige Validierung</li><li>Speicherung, Audit und Fehlerbehandlung</li></ul></div><div class="card"><h3>Architektur</h3><ul class="clean"><li>Speicherort und Schnittstellen</li><li>Temporäre Quarantäne</li><li>Virenscanner und Hashprüfung</li></ul></div><div class="card"><h3>Test</h3><ul class="clean"><li>Grenzwert- und Negativtests</li><li>Berechtigungs- und Sicherheitstests</li><li>Abbruch- und Performancetests</li></ul></div></div>
-    <div class="checks"><div class="check"><strong>Entscheidung 1:</strong> Welche Prüfung erfolgt im Browser und welche zwingend auf dem Server?</div><div class="check"><strong>Entscheidung 2:</strong> Wie werden temporäre Dateien vor Veröffentlichung behandelt?</div><div class="check"><strong>Entscheidung 3:</strong> Was gilt bei Namenskonflikten oder vorhandenen Versionen?</div><div class="check"><strong>Entscheidung 4:</strong> Welche Logs benötigen Betrieb und Revision?</div></div>
+    <div class="kicker" data-i18n-en="Stage 8 · Handover bridge">Stufe 8 · Übergabebrücke</div>
+    <h2 class="panel-title" data-i18n-en="What developers do with the requirement">Was Entwickler mit der Anforderung tun</h2>
+    <p class="lead-p" data-i18n-en="The handover is not a “please program this”. In refinement, business statements are translated into technical decisions and work packages.">Die Übergabe ist kein „Bitte programmieren“. Im Refinement werden fachliche Aussagen in technische Entscheidungen und Arbeitspakete übersetzt.</p>
+    <div class="grid2">
+      <div class="card"><h3>Frontend</h3><ul class="clean"><li data-i18n-en="File selection and upload button">Dateiauswahl und Upload-Schaltfläche</li><li data-i18n-en="Client-side pre-check">Clientseitige Vorprüfung</li><li data-i18n-en="Progress and understandable error messages">Fortschritt und verständliche Fehlermeldungen</li></ul></div>
+      <div class="card"><h3>Backend</h3><ul class="clean"><li data-i18n-en="Authentication and authorisation">Authentifizierung und Autorisierung</li><li data-i18n-en="Server-side validation">Serverseitige Validierung</li><li data-i18n-en="Storage, audit and error handling">Speicherung, Audit und Fehlerbehandlung</li></ul></div>
+      <div class="card"><h3 data-i18n-en="Architecture">Architektur</h3><ul class="clean"><li data-i18n-en="Storage location and interfaces">Speicherort und Schnittstellen</li><li data-i18n-en="Temporary quarantine">Temporäre Quarantäne</li><li data-i18n-en="Virus scanner and hash check (implements SEC-02 and SEC-03)">Virenscanner und Hashprüfung (setzen SEC-02 und SEC-03 um)</li></ul></div>
+      <div class="card"><h3>Test</h3><ul class="clean"><li data-i18n-en="Boundary value and negative tests">Grenzwert- und Negativtests</li><li data-i18n-en="Authorisation and security tests">Berechtigungs- und Sicherheitstests</li><li data-i18n-en="Cancellation and performance tests">Abbruch- und Performancetests</li></ul></div>
+    </div>
+    <div class="checks">
+      <div class="check"><strong data-i18n-en="Decision 1:">Entscheidung 1:</strong> <span data-i18n-en="Which check happens in the browser, and which must happen on the server?">Welche Prüfung erfolgt im Browser und welche zwingend auf dem Server?</span></div>
+      <div class="check"><strong data-i18n-en="Decision 2:">Entscheidung 2:</strong> <span data-i18n-en="How are temporary files handled before publication?">Wie werden temporäre Dateien vor Veröffentlichung behandelt?</span></div>
+      <div class="check"><strong data-i18n-en="Decision 3:">Entscheidung 3:</strong> <span data-i18n-en="What applies to name conflicts or existing versions?">Was gilt bei Namenskonflikten oder vorhandenen Versionen?</span></div>
+      <div class="check"><strong data-i18n-en="Decision 4:">Entscheidung 4:</strong> <span data-i18n-en="Which logs do operations and audit need?">Welche Logs benötigen Betrieb und Revision?</span></div>
+    </div>
   </article>
+
   <article class="panel" id="p9">
-    <div class="kicker">Stufe 9 · Umsetzung und Nachweis</div><h2 class="panel-title">Wo wird welche Anforderung technisch umgesetzt?</h2>
-    <p class="lead">Farbe und Kürzel verbinden Anforderung, Erklärung und Code eindeutig miteinander. So wird sichtbar: Eine Eigenschaft kann an mehreren technischen Stellen umgesetzt und abgesichert werden.</p>
+    <div class="kicker" data-i18n-en="Stage 9 · Implementation and evidence">Stufe 9 · Umsetzung und Nachweis</div>
+    <h2 class="panel-title" data-i18n-en="Where is which requirement implemented technically?">Wo wird welche Anforderung technisch umgesetzt?</h2>
+    <p class="lead-p" data-i18n-en="Colour and label connect requirement, explanation and code unambiguously. This makes it visible that one property can be implemented and safeguarded at several technical places.">Farbe und Kürzel verbinden Anforderung, Erklärung und Code eindeutig miteinander. So wird sichtbar: Eine Eigenschaft kann an mehreren technischen Stellen umgesetzt und abgesichert werden.</p>
     <div class="code-legend">
-      <span class="legend-item req-fa">FA · Funktion</span><span class="legend-item req-use">USE · Interaktion (ISO 25010)</span>
-      <span class="legend-item req-perf">PERF · Performance (ISO 25010)</span><span class="legend-item req-sec">SEC · Sicherheit (ISO 27001)</span>
-      <span class="legend-item req-rel">REL · Zuverlässigkeit (ISO 25010)</span><span class="legend-item req-trace">TRACE · Nachvollziehbarkeit</span>
+      <span class="legend-item req-fa" data-i18n-en="FA · Function">FA · Funktion</span><span class="legend-item req-use" data-i18n-en="USE · Interaction (ISO 25010)">USE · Interaktion (ISO 25010)</span>
+      <span class="legend-item req-perf" data-i18n-en="PERF · Performance (ISO 25010)">PERF · Leistung (ISO 25010)</span><span class="legend-item req-sec" data-i18n-en="SEC · Security (ISO 27001)">SEC · Sicherheit (ISO 27001)</span>
+      <span class="legend-item req-rel" data-i18n-en="REL · Reliability (ISO 25010)">REL · Zuverlässigkeit (ISO 25010)</span><span class="legend-item req-trace" data-i18n-en="TRACE · Traceability">TRACE · Nachvollziehbarkeit</span>
     </div>
     <div class="card code">
       <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title" id="terminalTitle">upload.html</span></div>
-      <div class="code-tabs"><button class="code-btn active" data-code="htmlcode">HTML</button><button class="code-btn" data-code="jscode">JavaScript</button><button class="code-btn" data-code="pycode">Python</button></div>
-      <div class="code-pane active" id="htmlcode"><pre><span class="code-line line-use">&lt;label for="file"&gt;Projektdokument auswählen&lt;/label&gt;</span>
+      <div class="code-tabs"><button type="button" class="code-btn active" data-code="htmlcode">HTML</button><button type="button" class="code-btn" data-code="jscode">JavaScript</button><button type="button" class="code-btn" data-code="pycode">Python</button></div>
+      <div class="code-pane active" id="htmlcode"><pre><span class="code-line line-use">&lt;label for="file"&gt;<span data-i18n-en="Select project document">Projektdokument auswählen</span>&lt;/label&gt;</span>
 <span class="code-line line-fa">&lt;input id="file" type="file" accept=".pdf,.docx,.xlsx"&gt;</span>
-<span class="code-line line-fa">&lt;button id="upload"&gt;Datei hochladen&lt;/button&gt;</span>
+<span class="code-line line-fa">&lt;button id="upload"&gt;<span data-i18n-en="Upload file">Datei hochladen</span>&lt;/button&gt;</span>
 <span class="code-line line-use">&lt;p id="message" role="status"&gt;&lt;/p&gt;</span></pre></div>
       <div class="code-pane" id="jscode"><pre><span class="code-line line-perf">const maxBytes = 20 * 1024 * 1024;</span>
 <span class="code-line line-sec">const allowed = ["pdf", "docx", "xlsx"];</span>
 
 <span class="code-line line-fa">function validate(file) {</span>
 <span class="code-line line-sec">  const ext = file.name.split(".").pop().toLowerCase();</span>
-<span class="code-line line-sec">  if (!allowed.includes(ext)) return "Dateiformat nicht zulässig.";</span>
-<span class="code-line line-perf">  if (file.size &gt; maxBytes) return "Datei ist größer als 20 MB.";</span>
-<span class="code-line line-rel">  return "";</span>
+<span class="code-line line-use">  if (!allowed.includes(ext)) return "<span data-i18n-en="Only PDF, DOCX or XLSX are allowed.">Nur PDF, DOCX oder XLSX sind zulässig.</span>";</span>
+<span class="code-line line-use">  if (file.size &gt; maxBytes) return "<span data-i18n-en="File is larger than 20 MB. Please reduce it.">Datei ist größer als 20 MB. Bitte verkleinern.</span>";</span>
+<span class="code-line line-fa">  return "";</span>
 <span class="code-line line-fa">}</span></pre></div>
       <div class="code-pane" id="pycode"><pre><span class="code-line line-sec">ALLOWED = {"pdf", "docx", "xlsx"}</span>
 <span class="code-line line-perf">MAX_BYTES = 20 * 1024 * 1024</span>
@@ -235,67 +400,230 @@ body{padding-top:64px;}
 <span class="code-line line-sec">    validate_extension(file, ALLOWED)</span>
 <span class="code-line line-perf">    validate_size(file, MAX_BYTES)</span>
 <span class="code-line line-rel">    temp_path = save_to_quarantine(file)</span>
+<span class="code-line line-sec">    verify_checksum(temp_path, file.sha256)</span>
 <span class="code-line line-sec">    scan_for_malware(temp_path)</span>
 <span class="code-line line-rel">    final_path = commit_file(temp_path, project)</span>
 <span class="code-line line-trace">    write_audit_log(user, project, final_path)</span>
 <span class="code-line line-fa">    return {"status": "uploaded"}</span></pre></div>
     </div>
     <div class="mapping-grid">
-      <div class="mapping-card"><span class="req-tag req-fa">FA · Datei hochladen</span><p>HTML stellt Auswahl und Aktion bereit. JavaScript prüft vorab; Python nimmt die Datei an und verarbeitet sie.</p></div>
-      <div class="mapping-card"><span class="req-tag req-use">Interaktionsfähigkeit</span><p>Beschriftung, Statusbereich und verständliche Fehlermeldungen machen die Funktion wahrnehmbar und bedienbar.</p></div>
-      <div class="mapping-card"><span class="req-tag req-perf">Performance Efficiency</span><p>Die 20-MB-Grenze wird im Browser und nochmals verbindlich auf dem Server geprüft.</p></div>
-      <div class="mapping-card"><span class="req-tag req-sec">ISO 27001 · Sicherheit</span><p>Berechtigung, zulässige Dateitypen, Quarantäne und Schadsoftwareprüfung schützen Zugriff, Integrität und Verarbeitung.</p></div>
-      <div class="mapping-card"><span class="req-tag req-rel">Reliability</span><p>Die Datei wird zunächst temporär gespeichert und erst nach erfolgreicher Prüfung endgültig übernommen.</p></div>
-      <div class="mapping-card"><span class="req-tag req-trace">Nachvollziehbarkeit</span><p>Das Audit-Log dokumentiert, wer welche Datei welchem Projekt hinzugefügt hat.</p></div>
+      <div class="mapping-card"><span class="req-tag req-fa" data-i18n-en="FA · Upload file">FA · Datei hochladen</span><p data-i18n-en="HTML provides selection and action. JavaScript checks in advance; Python accepts and processes the file.">HTML stellt Auswahl und Aktion bereit. JavaScript prüft vorab; Python nimmt die Datei an und verarbeitet sie.</p></div>
+      <div class="mapping-card"><span class="req-tag req-use" data-i18n-en="Interaction capability">Interaktionsfähigkeit</span><p data-i18n-en="Label, status area and specific error messages with a hint for correction make the function perceivable and operable.">Beschriftung, Statusbereich und konkrete Fehlermeldungen mit Korrekturhinweis machen die Funktion wahrnehmbar und bedienbar.</p></div>
+      <div class="mapping-card"><span class="req-tag req-perf" data-i18n-en="Performance efficiency">Leistungseffizienz</span><p data-i18n-en="The 20 MB limit (capacity) is checked in the browser and again, bindingly, on the server. Whether 5 seconds are met is shown by the load test.">Die 20-MB-Grenze (Kapazität) wird im Browser und nochmals verbindlich auf dem Server geprüft. Ob 5 Sekunden eingehalten werden, zeigt der Lasttest.</p></div>
+      <div class="mapping-card"><span class="req-tag req-sec" data-i18n-en="ISO 27001 · Security">ISO 27001 · Sicherheit</span><p data-i18n-en="Permission, permitted file types, checksum and malware scan protect access, integrity and processing.">Berechtigung, zulässige Dateitypen, Prüfsumme und Schadsoftwareprüfung schützen Zugriff, Integrität und Verarbeitung.</p></div>
+      <div class="mapping-card"><span class="req-tag req-rel" data-i18n-en="Reliability">Zuverlässigkeit</span><p data-i18n-en="The file is first stored temporarily and only taken over permanently after a successful check.">Die Datei wird zunächst temporär gespeichert und erst nach erfolgreicher Prüfung endgültig übernommen.</p></div>
+      <div class="mapping-card"><span class="req-tag req-trace" data-i18n-en="Traceability">Nachvollziehbarkeit</span><p data-i18n-en="The audit log documents who added which file to which project.">Das Audit-Log dokumentiert, wer welche Datei welchem Projekt hinzugefügt hat.</p></div>
     </div>
-    <div class="card" style="margin-top:14px"><h3>Traceability · von der Eigenschaft bis zum Test</h3><div style="overflow:auto"><table class="trace"><thead><tr><th>Eigenschaft</th><th>Technische Umsetzung</th><th>Nachweis</th></tr></thead><tbody>
-    <tr><td><span class="req-tag req-fa">FA-01</span> Datei hochladen</td><td>HTML-Auswahl und Python-Endpunkt</td><td>End-to-End-Test</td></tr>
-    <tr><td><span class="req-tag req-use">NFA-USE-01</span> verständliche Rückmeldung</td><td>Label, Statusbereich, konkrete Meldungen</td><td>Usability- und Accessibility-Test</td></tr>
-    <tr><td><span class="req-tag req-perf">NFA-PERF-01</span> maximal 20 MB</td><td>JavaScript- und Python-Prüfung</td><td>Grenzwerttest</td></tr>
-    <tr><td><span class="req-tag req-sec">SEC-01</span> nur Berechtigte</td><td>require_project_permission()</td><td>Autorisierungstest</td></tr>
-    <tr><td><span class="req-tag req-rel">NFA-REL-01</span> keine unvollständige Datei</td><td>Quarantäne und kontrollierter Commit</td><td>Abbruch- und Fehlertest</td></tr>
-    <tr><td><span class="req-tag req-trace">SEC-LOG-01</span> Upload protokollieren</td><td>write_audit_log()</td><td>Audit-Log-Prüfung</td></tr>
+    <div class="card" style="margin-top:14px"><h3 data-i18n-en="Traceability · from property to test">Traceability · von der Eigenschaft bis zum Test</h3><div class="trace-wrap"><table class="trace"><thead><tr><th data-i18n-en="Property">Eigenschaft</th><th data-i18n-en="Technical implementation">Technische Umsetzung</th><th data-i18n-en="Evidence">Nachweis</th></tr></thead><tbody>
+    <tr><td><span class="req-tag req-fa">FA-01</span> <span data-i18n-en="upload file">Datei hochladen</span></td><td data-i18n-en="HTML selection and Python endpoint">HTML-Auswahl und Python-Endpunkt</td><td data-i18n-en="End-to-end test (Gherkin scenario 1)">End-to-End-Test (Gherkin-Szenario 1)</td></tr>
+    <tr><td><span class="req-tag req-use">NFA-USE-01</span> <span data-i18n-en="understandable feedback">verständliche Rückmeldung</span></td><td data-i18n-en="label, status area, specific messages">Label, Statusbereich, konkrete Meldungen</td><td data-i18n-en="Usability and accessibility test">Usability- und Accessibility-Test</td></tr>
+    <tr><td><span class="req-tag req-perf">NFA-PERF-01</span> <span data-i18n-en="≤ 5 s up to 20 MB">≤ 5 s bis 20 MB</span></td><td data-i18n-en="size check in JavaScript and Python, quarantine pipeline">Größenprüfung in JavaScript und Python, Quarantäne-Ablauf</td><td data-i18n-en="Boundary value test (scenario 2) and load test">Grenzwerttest (Szenario 2) und Lasttest</td></tr>
+    <tr><td><span class="req-tag req-sec">SEC-01</span> <span data-i18n-en="authorised persons only">nur Berechtigte</span></td><td>require_project_permission()</td><td data-i18n-en="Authorisation test">Autorisierungstest</td></tr>
+    <tr><td><span class="req-tag req-sec">SEC-02</span> <span data-i18n-en="bit-identical file">bitgenaue Datei</span></td><td>verify_checksum()</td><td data-i18n-en="Integrity test with manipulated file">Integritätstest mit manipulierter Datei</td></tr>
+    <tr><td><span class="req-tag req-sec">SEC-03</span> <span data-i18n-en="no malware">keine Schadsoftware</span></td><td>scan_for_malware()</td><td data-i18n-en="Test with EICAR test file">Test mit EICAR-Testdatei</td></tr>
+    <tr><td><span class="req-tag req-rel">NFA-REL-01</span> <span data-i18n-en="no incomplete file">keine unvollständige Datei</span></td><td data-i18n-en="quarantine and controlled commit">Quarantäne und kontrollierter Commit</td><td data-i18n-en="Cancellation and error test">Abbruch- und Fehlertest</td></tr>
+    <tr><td><span class="req-tag req-trace">SEC-04</span> <span data-i18n-en="log upload">Upload protokollieren</span></td><td>write_audit_log()</td><td data-i18n-en="Audit log review">Audit-Log-Prüfung</td></tr>
     </tbody></table></div></div>
-    <div class="crosslink">
-      Verwandte Denkraum-Tools zu diesem Thema:
-      <ul>
-        <li><a href="./iso-25010-kompendium.html">ISO/IEC 25010:2023 Kompendium</a> — vertieft genau die Stufe 4 dieser Reise: alle neun Merkmale einzeln mit Definition, Untermerkmalen und eigenem FA/NFA-Demonstrator.</li>
-        <li><a href="./user-story-puzzle.html">User Story Puzzle</a> — vertieft die Gherkin-/Akzeptanzkriterien-Stufe (7) als eigenständige Übung mit fünf Levels.</li>
-        <li><a href="./re-waschmaschine.html">RE-Waschmaschine</a> — derselbe ISO-25010/27001-Weg, aber mit frei eingegebenen eigenen Anforderungen statt einem festen Fallbeispiel.</li>
-          <li><a href="./re-szenensammlung.html">RE-Szenensammlung — Eine Anforderung, drei Rollen</a> — zeigt in Szene 1 denselben Weg vom unscharfen Satz bis zu Code und Test, ergänzt um fünf weitere Szenen.</li>
-    </ul>
-    </div>
   </article>
-</section>
+
+  <div class="pager">
+    <button type="button" class="pager-btn ghost" id="prevBtn"><span data-i18n-en="← Back">← Zurück</span></button>
+    <div class="pager-mid"><span class="status" id="status">Stufe 1 von 9</span><div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="9" aria-valuenow="1" aria-label="Fortschritt"><span id="bar"></span></div></div>
+    <button type="button" class="pager-btn" id="nextBtn"><span data-i18n-en="Next →">Weiter →</span></button>
+  </div>
 </main>
-<footer><a class="footer-sig" href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">Michaela Kühn · www.michaela-kuehn.com</a><span class="footer-sig" style="margin-left:8px;">Referenzrahmen: ISO/IEC 25010:2023, ISO/IEC 27001:2022</span><div class="progress" aria-label="Fortschritt"><span id="bar"></span></div><span id="status">Stufe 1 von 9</span></footer>
 </div>
+
+<div class="crosslink">
+  <span data-i18n-en="Related Denkraum tools on this topic:">Verwandte Denkraum-Tools zu diesem Thema:</span>
+  <ul>
+    <li><a href="./iso-25010-kompendium.html" data-i18n-en="ISO/IEC 25010:2023 Compendium">ISO/IEC 25010:2023 Kompendium</a> — <span data-i18n-en="deepens exactly stage 4 of this journey: all nine characteristics individually with definition, sub-characteristics and their own FR/NFR demonstrator.">vertieft genau die Stufe 4 dieser Reise: alle neun Merkmale einzeln mit Definition, Untermerkmalen und eigenem FA/NFA-Demonstrator.</span></li>
+    <li><a href="./user-story-puzzle.html">User Story Puzzle</a> — <span data-i18n-en="deepens the Gherkin/acceptance criteria stage (7) as a stand-alone exercise with five levels.">vertieft die Gherkin-/Akzeptanzkriterien-Stufe (7) als eigenständige Übung mit fünf Levels.</span></li>
+    <li><a href="./re-waschmaschine.html" data-i18n-en="RE Washing Machine">RE-Waschmaschine</a> — <span data-i18n-en="the same ISO 25010/27001 path, but with your own freely entered requirements instead of a fixed example.">derselbe ISO-25010/27001-Weg, aber mit frei eingegebenen eigenen Anforderungen statt einem festen Fallbeispiel.</span></li>
+    <li><a href="./re-szenensammlung.html" data-i18n-en="RE Scene Collection — one requirement, three roles">RE-Szenensammlung — Eine Anforderung, drei Rollen</a> — <span data-i18n-en="shows the same path from vague sentence to code and test in scene 1, with roles speaking, plus five further scenes.">zeigt in Szene 1 denselben Weg vom unscharfen Satz bis zu Code und Test mit sprechenden Rollen, ergänzt um fünf weitere Szenen.</span></li>
+  </ul>
+</div>
+</div>
+
+<footer>
+<p class="footer-sig"><strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com" target="_blank" rel="noopener noreferrer">www.michaela-kuehn.com</a> · ISO/IEC 25010:2023 · ISO/IEC 27001:2022 <span data-i18n-en="(incl. Amd 1:2024)">(inkl. Amd 1:2024)</span> · IREB CPRE FL v3.3.0 · Gherkin (Cucumber)<span class="audit" data-i18n-en="Last checked: 10.11.2026 · Status: ⭐ Certified with distinction · Details see audit protocol">Zuletzt geprüft: 10.11.2026 · Status: ⭐ Zertifiziert mit Auszeichnung · Details siehe Audit-Protokoll</span></p>
+<div class="footer-details">
+
+<details class="footer-box"><summary class="footer-summary">⚙️ <span data-i18n-en="System prompt">Systemprompt</span></summary><div class="footer-content footer-mono"><div data-i18n-en="ROLE: You build an interactive single-file HTML training tool for Michaela Kühn (www.michaela-kuehn.com), trainer for requirements engineering, in the DenkRaum repo. Working title: Requirements-to-Code Explorer. Denkraum: round trip (passes through analysis, solution and implementation room).
+
+GOAL: Participants experience how ONE vague requirement (“The system shall be able to upload documents.”) matures in nine stages into a measurable requirements package, acceptance criteria and code, and how each line of code can be traced back to a requirement and forward to a test.
+
+STRUCTURE:
+- Fixed signature top right (name bold, website link below), position:fixed on every width.
+- Topbar: back link to ../index.html on the left; on the right a pill “Live demo · 9 stages”, a four-level beamer button and a DE/EN button.
+- Hero card in dark blue: eyebrow, H1, lead paragraph across the full width.
+- Below a two-column layout: left a sticky sidebar with nine step buttons (number, title, subtitle), right the content area with exactly one visible panel. At the bottom of the content area: Back/Next buttons, counter “Stage x of 9” and progress bar. Below 900 px everything in one column.
+- Crosslink block “Related tools” before the footer; footer with signature line and five boxes (system prompt, handbook, talk script, standards register, glossary).
+
+CONTENT PER STAGE:
+1 Initial requirement: raw sentence, “already recognisable” vs “still unclear”.
+2 Stakeholders and context: who, what for, when, plus a context sentence.
+3 Functional requirement FA-01 in the “The system must …” template, process select → check → transfer → provide.
+4 ISO/IEC 25010:2023: all nine characteristics (functional suitability, performance efficiency, compatibility, interaction capability, reliability, security, maintainability, flexibility, safety) as accordions, each with a question and a measurable NFR.
+5 ISO/IEC 27001:2022: chain information asset → threat → risk → control, SEC-01 to SEC-04 with a reference to Annex A (5.15, 8.24, 8.7, 8.15). Mark SEC-03 as “⚖ Standard prescribes the means”.
+6 Overall requirement: FA-01, NFA-PERF-01, NFA-USE-01, NFA-REL-01, SEC-01, SEC-03, SEC-04 with concrete values (20 MB, 5 s, reference conditions 50 Mbit/s and 50 simultaneous uploads).
+7 Two Gherkin scenarios (happy path, file too large), keywords highlighted.
+8 Developer handover: frontend, backend, architecture, test and four open decisions.
+9 Code in terminal look with tabs HTML / JavaScript / Python, each line colour-coded and labelled (FA, USE, PERF, SEC, REL, TRACE), mapping cards and a traceability table property → implementation → evidence. Every ID from stage 6 appears here.
+
+DESIGN: White and light blue surfaces, dark blue hero, accent #2e6db4. Radius 16 px for cards, 12 px for buttons, 999 px for pills. Body text at least 16 px, secondary text at least 14 px. Beamer in four levels via classes beamer / beamer-xl / beamer-xxl on html, footer hidden from level 1. DE/EN via data-i18n-en attributes on existing elements; the German text is in the HTML, so it remains readable without JavaScript. State (stage, beamer, language) in sessionStorage with try/catch.
+
+DO NOT:
+- no overflow:hidden on html/body, no fixed 100vh layout that hides the footer;
+- no zoom-based beamer mode;
+- no IDs in code or table that do not appear in stage 6;
+- no solution in the requirement without labelling (hash and quarantine belong in stages 8 and 9);
+- no external libraries, no fetch, no fonts from the web;
+- no 2011 terms (usability, portability) for ISO 25010.">ROLLE: Du baust für Michaela Kühn (www.michaela-kuehn.com), Trainerin für Requirements Engineering, ein interaktives Einzeldatei-HTML-Trainingstool im DenkRaum-Repo. Arbeitstitel: Requirements-to-Code Explorer. Denkraum: Rundreise (durchläuft Analyse-, Lösungs- und Umsetzungsraum).
+
+ZIEL: Teilnehmende erleben, wie EINE unscharfe Anforderung („Das System soll Dokumente hochladen können.“) in neun Stufen zu einem messbaren Requirements-Paket, Akzeptanzkriterien und Code reift, und wie sich jede Codezeile zurück zu einer Anforderung und vorwärts zu einem Test verfolgen lässt.
+
+STRUKTUR:
+- Signatur fest oben rechts (Name fett, darunter Website-Link), position:fixed auf jeder Breite.
+- Topbar: links Zurück-Link auf ../index.html, rechts eine Pille „Live-Demo · 9 Stufen“, ein vierstufiger Beamer-Button und ein DE/EN-Button.
+- Hero-Karte in Dunkelblau: Eyebrow, H1, Lead-Absatz über die volle Breite.
+- Darunter zweispaltig: links eine mitlaufende Seitenleiste mit neun Stufen-Buttons (Nummer, Titel, Untertitel), rechts der Inhaltsbereich mit genau einem sichtbaren Panel. Unten im Inhaltsbereich: Zurück/Weiter, Zähler „Stufe x von 9“ und Fortschrittsbalken. Unter 900 px alles einspaltig.
+- Crosslink-Block „Verwandte Tools“ vor dem Footer; Footer mit Signaturzeile und fünf Boxen (Systemprompt, Handbuch, Vortrags-Skript, Normen-Register, Glossar).
+
+INHALT JE STUFE:
+1 Ausgangsanforderung: Rohsatz, „Schon erkennbar“ und „Noch unklar“.
+2 Stakeholder und Kontext: Wer, wozu, wann, dazu ein Kontextsatz.
+3 Funktionale Anforderung FA-01 in der Schablone „Das System muss …“, Ablauf Auswählen → Prüfen → Übertragen → Bereitstellen.
+4 ISO/IEC 25010:2023: alle neun Merkmale (Funktionale Eignung, Leistungseffizienz, Kompatibilität, Interaktionsfähigkeit, Zuverlässigkeit, Sicherheit, Wartbarkeit, Flexibilität, Betriebssicherheit/Safety) als Aufklapper, je eine Frage und eine messbare NFA.
+5 ISO/IEC 27001:2022: Kette Informationswert → Bedrohung → Risiko → Maßnahme, SEC-01 bis SEC-04 mit Verweis auf Anhang A (5.15, 8.24, 8.7, 8.15). SEC-03 als „⚖ Norm schreibt Mittel vor“ kennzeichnen.
+6 Gesamtanforderung: FA-01, NFA-PERF-01, NFA-USE-01, NFA-REL-01, SEC-01, SEC-03, SEC-04 mit konkreten Werten (20 MB, 5 s, Referenzbedingungen 50 Mbit/s und 50 gleichzeitige Uploads).
+7 Zwei Gherkin-Szenarien (Gutfall, Datei zu groß), Schlüsselwörter hervorgehoben.
+8 Entwicklerübergabe: Frontend, Backend, Architektur, Test und vier offene Entscheidungen.
+9 Code im Terminal-Look mit Tabs HTML / JavaScript / Python, jede Zeile farbcodiert mit Kürzel (FA, USE, PERF, SEC, REL, TRACE), Zuordnungskarten und Traceability-Tabelle Eigenschaft → Umsetzung → Nachweis. Jede Kennung aus Stufe 6 taucht hier auf.
+
+DESIGN: Weiße und hellblaue Flächen, dunkelblauer Hero, Akzent #2e6db4. Radius 16 px für Karten, 12 px für Buttons, 999 px für Pillen. Fließtext mindestens 16 px, Sekundärtext mindestens 14 px. Beamer vierstufig über die Klassen beamer / beamer-xl / beamer-xxl auf html, Footer ab Stufe 1 ausgeblendet. DE/EN über data-i18n-en-Attribute an vorhandenen Elementen; der deutsche Text steht im HTML und bleibt ohne JavaScript lesbar. Zustand (Stufe, Beamer, Sprache) in sessionStorage mit try/catch.
+
+NICHT TUN:
+- kein overflow:hidden auf html/body, kein festes 100vh-Layout, das den Footer verschluckt;
+- kein Beamer über zoom;
+- keine Kennungen in Code oder Tabelle, die in Stufe 6 nicht vorkommen;
+- keine Lösung in der Anforderung ohne Kennzeichnung (Hash und Quarantäne gehören in Stufe 8 und 9);
+- keine externen Bibliotheken, kein fetch, keine Webfonts;
+- keine Begriffe der Fassung 2011 (Usability, Portability) für ISO 25010.</div></div></details>
+
+<details class="footer-box"><summary class="footer-summary">📘 <span data-i18n-en="Handbook">Handbuch</span></summary><div class="footer-content footer-sans">
+<p><b data-i18n-en="Framework: RISEN">Framework: RISEN</b><br><span data-i18n-en="Role, instructions, steps, end goal, narrowing. It fits because the tool has a fixed sequence of nine stages and a clear end product: a traceable chain from requirement to test.">Rolle, Instruktionen, Schritte, Endziel, Eingrenzung. Es passt, weil das Tool eine feste Abfolge von neun Stufen und ein klares Endprodukt hat: eine nachvollziehbare Kette von der Anforderung bis zum Test.</span></p>
+<table class="footer-table"><thead><tr><th data-i18n-en="Dimension">Dimension</th><th data-i18n-en="In this tool">In diesem Tool</th></tr></thead><tbody>
+<tr><td data-i18n-en="Role">Rolle</td><td data-i18n-en="The trainer as guide through the requirement's journey; participants take the view of business, test and development.">Die Trainerin als Reiseführerin durch die Anforderung; Teilnehmende nehmen die Sicht von Fachseite, Test und Entwicklung ein.</td></tr>
+<tr><td data-i18n-en="Task">Aufgabe</td><td data-i18n-en="Make visible how a vague sentence becomes measurable, verifiable and implementable.">Sichtbar machen, wie ein unscharfer Satz messbar, prüfbar und umsetzbar wird.</td></tr>
+<tr><td data-i18n-en="Context">Kontext</td><td data-i18n-en="A generic document upload in a project space, deliberately without a case world, so that everyone can transfer it to their own system.">Ein allgemeiner Dokument-Upload in einem Projektraum, bewusst ohne Fallwelt, damit alle ihn auf ihr eigenes System übertragen können.</td></tr>
+<tr><td data-i18n-en="Format">Format</td><td data-i18n-en="Nine panels with Back/Next, colour-coded code, traceability table.">Neun Panels mit Zurück/Weiter, farbcodierter Code, Traceability-Tabelle.</td></tr>
+<tr><td data-i18n-en="Narrowing">Eingrenzung</td><td data-i18n-en="One requirement only, no exercise with scoring, no own input. For own requirements, the RE Washing Machine is the right tool.">Nur eine Anforderung, keine Übung mit Wertung, keine eigene Eingabe. Für eigene Anforderungen ist die RE-Waschmaschine das passende Tool.</td></tr>
+</tbody></table>
+<h4 data-i18n-en="Central learning point">Zentraler Lernhinweis</h4>
+<p data-i18n-en="Quality does not come into the code at the end; it is already in the requirement. Anyone who can follow an ID such as SEC-03 from stage 5 to the line scan_for_malware() and on to the EICAR test has understood traceability.">Qualität kommt nicht am Ende in den Code, sie steht schon in der Anforderung. Wer eine Kennung wie SEC-03 von Stufe 5 bis zur Zeile scan_for_malware() und weiter bis zum EICAR-Test verfolgen kann, hat Traceability verstanden.</p>
+<h4 data-i18n-en="Design decisions">Gestaltungsentscheidungen</h4>
+<p data-i18n-en="Explorer type: the tool is a demonstrator with short statements per stage, not a compendium with flowing text. The depth toggle K22 is therefore omitted. Requirement and solution are separated: stages 3 to 6 contain no technology, hash and quarantine only appear in stages 8 and 9. The only exception, the malware scan, is marked as a means prescribed by the standard.">Explorer-Typ: Das Tool ist ein Demonstrator mit kurzen Aussagen je Stufe, kein Kompendium mit Fließtext. Der Vertiefungs-Toggle K22 entfällt deshalb. Anforderung und Lösung sind getrennt: Die Stufen 3 bis 6 enthalten keine Technik, Hash und Quarantäne tauchen erst in Stufe 8 und 9 auf. Die einzige Ausnahme, die Schadsoftwareprüfung, ist als von der Norm vorgegebenes Mittel gekennzeichnet.</p>
+<h4 data-i18n-en="Rebuild tip">Nachbau-Tipp</h4>
+<p data-i18n-en="Swap the upload for another function (search, export, login) and keep the nine stages. First write the table of IDs in stage 6, then the code and the traceability table. This way no ID gets lost.">Den Upload gegen eine andere Funktion tauschen (Suche, Export, Anmeldung) und die neun Stufen beibehalten. Zuerst die Kennungs-Tabelle in Stufe 6 schreiben, dann Code und Traceability-Tabelle. So geht keine Kennung verloren.</p>
+</div></details>
+
+<details class="footer-box"><summary class="footer-summary">🎤 <span data-i18n-en="Talk script">Vortrags-Skript</span></summary><div class="footer-content footer-sans">
+<div class="skript-step"><b data-i18n-en="Stage 1 · Initial requirement">Stufe 1 · Ausgangsanforderung</b><br><i data-i18n-en="(Show stage 1, read out the raw sentence)">(Stufe 1 zeigen, Rohsatz vorlesen)</i><br><span data-i18n-en="“This is how many requirements reach us: The system shall be able to upload documents. Everyone nods. And yet nobody knows what exactly is to be built. What is still missing here?”">„So erreichen uns viele Anforderungen: Das System soll Dokumente hochladen können. Alle nicken. Und trotzdem weiß niemand, was genau gebaut werden soll. Was fehlt hier noch?“</span><br><span data-i18n-en="Transition: “Before we refine, we ask who actually needs this.”">Übergang: „Bevor wir präzisieren, fragen wir, wer das überhaupt braucht.“</span></div>
+<div class="skript-step"><b data-i18n-en="Stage 2 · Stakeholders and context">Stufe 2 · Stakeholder und Kontext</b><br><i data-i18n-en="(Click Next, point to the three cards, then the context sentence)">(Weiter klicken, auf die drei Karten zeigen, dann auf den Kontextsatz)</i><br><span data-i18n-en="“Who, what for, when. With these three questions the sentence gets a person, a purpose and a situation. Note the end: so that the team can work with the current version. That is the benefit we will measure later.”">„Wer, wozu, wann. Mit diesen drei Fragen bekommt der Satz eine Person, einen Zweck und eine Situation. Achten Sie auf das Ende: damit das Team mit der aktuellen Fassung arbeiten kann. Das ist der Nutzen, den wir später messen.“</span><br><span data-i18n-en="Transition: “Now we write down what the system must do.”">Übergang: „Jetzt schreiben wir auf, was das System tun muss.“</span></div>
+<div class="skript-step"><b data-i18n-en="Stage 3 · Functional requirement">Stufe 3 · Funktionale Anforderung</b><br><i data-i18n-en="(Show FA-01, then the four flow boxes)">(FA-01 zeigen, danach die vier Ablaufkästen)</i><br><span data-i18n-en="“FA-01 describes behaviour, not technology. There is no word about servers or databases. Select, check, transfer, provide: that is observable from the outside.”">„FA-01 beschreibt Verhalten, keine Technik. Kein Wort über Server oder Datenbanken. Auswählen, prüfen, übertragen, bereitstellen: Das ist von außen beobachtbar.“</span><br><span data-i18n-en="Transition: “What does good mean here? For that we put on nine pairs of glasses.”">Übergang: „Was heißt hier gut? Dafür setzen wir neun Brillen auf.“</span></div>
+<div class="skript-step"><b data-i18n-en="Stage 4 · ISO/IEC 25010">Stufe 4 · ISO/IEC 25010</b><br><i data-i18n-en="(Open two or three characteristics, let the group choose which)">(Zwei bis drei Merkmale aufklappen, Gruppe wählen lassen, welche)</i><br><span data-i18n-en="“The standard does not give us requirements, it gives us questions. Which of these nine would you have forgotten? Usually it is safety: an upload must not overwrite an existing version.”">„Die Norm gibt uns keine Anforderungen, sie gibt uns Fragen. Welche dieser neun hätten Sie vergessen? Meist ist es die Betriebssicherheit: Ein Upload darf keine bestehende Fassung überschreiben.“</span><br><span data-i18n-en="Transition: “Security deserves a closer look.”">Übergang: „Die Sicherheit verdient einen genaueren Blick.“</span></div>
+<div class="skript-step"><b data-i18n-en="Stage 5 · ISO/IEC 27001">Stufe 5 · ISO/IEC 27001</b><br><i data-i18n-en="(Read the chain from left to right, then the four SEC cards)">(Kette von links nach rechts lesen, dann die vier SEC-Karten)</i><br><span data-i18n-en="“Security requirements come from risks, not from gut feeling. The label below each card shows the control in Annex A. With SEC-03 the standard itself prescribes the means, so we say so openly.”">„Sicherheitsanforderungen entstehen aus Risiken, nicht aus dem Bauchgefühl. Das Etikett unter jeder Karte zeigt die Maßnahme im Anhang A. Bei SEC-03 schreibt die Norm das Mittel selbst vor, deshalb sagen wir das offen.“</span><br><span data-i18n-en="Transition: “Now we put everything together.”">Übergang: „Jetzt legen wir alles zusammen.“</span></div>
+<div class="skript-step"><b data-i18n-en="Stage 6 · Overall requirement">Stufe 6 · Gesamtanforderung</b><br><i data-i18n-en="(Scroll through the cards, point to the IDs)">(Durch die Karten scrollen, auf die Kennungen zeigen)</i><br><span data-i18n-en="“Seven IDs, each with a number you can check: 20 MB, 5 seconds, 50 simultaneous uploads. Remember these IDs; we will meet them again in the code.”">„Sieben Kennungen, jede mit einer Zahl, die man prüfen kann: 20 MB, 5 Sekunden, 50 gleichzeitige Uploads. Merken Sie sich diese Kennungen, wir begegnen ihnen im Code wieder.“</span><br><span data-i18n-en="Transition: “How do we know it is done?”">Übergang: „Woran merken wir, dass es fertig ist?“</span></div>
+<div class="skript-step"><b data-i18n-en="Stage 7 · Acceptance criteria">Stufe 7 · Akzeptanzkriterien</b><br><i data-i18n-en="(Read scenario 1 aloud, then scenario 2)">(Szenario 1 laut vorlesen, danach Szenario 2)</i><br><span data-i18n-en="“Given, when, then. Business can read this, test can automate it. The second scenario is the more important one: it shows what must not happen.”">„Angenommen, wenn, dann. Die Fachseite kann das lesen, der Test kann es automatisieren. Das zweite Szenario ist das wichtigere: Es zeigt, was nicht passieren darf.“</span><br><span data-i18n-en="Transition: “What does development do with this?”">Übergang: „Was macht die Entwicklung damit?“</span></div>
+<div class="skript-step"><b data-i18n-en="Stage 8 · Developer handover">Stufe 8 · Entwicklerübergabe</b><br><i data-i18n-en="(Show the four cards, then let the group answer decision 1)">(Vier Karten zeigen, dann Entscheidung 1 von der Gruppe beantworten lassen)</i><br><span data-i18n-en="“Only now does technology appear: quarantine, hash check, virus scanner. These are decisions of the team, not of the requirement. Which check must take place on the server?”">„Erst hier taucht Technik auf: Quarantäne, Hashprüfung, Virenscanner. Das sind Entscheidungen des Teams, nicht der Anforderung. Welche Prüfung muss auf dem Server stattfinden?“</span><br><span data-i18n-en="Transition: “Now we look into the code.”">Übergang: „Jetzt schauen wir in den Code.“</span></div>
+<div class="skript-step"><b data-i18n-en="Stage 9 · Code and traceability">Stufe 9 · Code und Traceability</b><br><i data-i18n-en="(Switch tabs HTML, JavaScript, Python, then show the traceability table)">(Tabs HTML, JavaScript, Python durchschalten, danach die Traceability-Tabelle zeigen)</i><br><span data-i18n-en="“Each line has a colour and a label. Follow SEC-03 with me: card in stage 5, line scan_for_malware(), test with the EICAR file. That is traceability: from the sentence to the evidence.”">„Jede Zeile hat eine Farbe und ein Kürzel. Verfolgen Sie mit mir SEC-03: Karte in Stufe 5, Zeile scan_for_malware(), Test mit der EICAR-Datei. Das ist Traceability: vom Satz bis zum Nachweis.“</span><br><span data-i18n-en="Transition: point to the RE Washing Machine for own requirements.">Übergang: Verweis auf die RE-Waschmaschine für eigene Anforderungen.</span></div>
+<p data-i18n-en="Stage directions: Full run about 30 minutes, short version (stages 1, 6, 9) about 10 minutes. Do not start with the standards; start with the raw sentence and let the group find the gaps. Do not show the code first; it only works once the IDs from stage 6 are known. The beamer button enlarges in three levels; from level XL the stages are shown above the content.">Regie-Hinweise: Voller Durchlauf etwa 30 Minuten, Kurzfassung (Stufen 1, 6, 9) etwa 10 Minuten. Nicht mit den Normen beginnen, sondern mit dem Rohsatz, und die Gruppe die Lücken finden lassen. Den Code nicht zuerst zeigen; er wirkt erst, wenn die Kennungen aus Stufe 6 bekannt sind. Der Beamer-Button vergrößert in drei Stufen; ab Stufe XL stehen die Stufen über dem Inhalt.</p>
+</div></details>
+
+<details class="footer-box"><summary class="footer-summary">⚖️ <span data-i18n-en="Standards register">Normen-Register</span></summary><div class="footer-content footer-sans"><table class="footer-table"><thead><tr><th data-i18n-en="Framework / source">Framework / Quelle</th><th data-i18n-en="Version / status">Fassung / Status</th><th data-i18n-en="Use in the tool">Bezug im Tool</th></tr></thead><tbody>
+<tr><td>ISO/IEC 25010</td><td data-i18n-en="Edition 2, 2023-11, in force; replaces the 2011 edition (checked 10.11.2026)">Edition 2, 2023-11, gültig; ersetzt die Fassung 2011 (geprüft 10.11.2026)</td><td data-i18n-en="Nine product quality characteristics in stage 4, NFR in stage 6, colour codes USE, PERF, REL in stage 9">Neun Produktqualitätsmerkmale in Stufe 4, NFA in Stufe 6, Farbcodes USE, PERF, REL in Stufe 9</td></tr>
+<tr><td>ISO/IEC 27001</td><td data-i18n-en="2022 edition with Amd 1:2024 (climate action), in force; no newer edition (checked 10.11.2026)">Fassung 2022 mit Amd 1:2024 (Klimaschutz), gültig; keine neuere Fassung (geprüft 10.11.2026)</td><td data-i18n-en="Risk chain and SEC-01 to SEC-04 in stage 5 with Annex A controls 5.15, 8.7, 8.15, 8.24">Risikokette und SEC-01 bis SEC-04 in Stufe 5 mit den Anhang-A-Maßnahmen 5.15, 8.7, 8.15, 8.24</td></tr>
+<tr><td>IREB CPRE Foundation Level</td><td data-i18n-en="Syllabus v3.3.0 (1 April 2026)">Lehrplan v3.3.0 (1. April 2026)</td><td data-i18n-en="Functional and quality requirements, template “The system must …”, traceability (stages 3, 6, 9)">Funktionale und Qualitätsanforderungen, Schablone „Das System muss …“, Nachverfolgbarkeit (Stufen 3, 6, 9)</td></tr>
+<tr><td>Gherkin (Cucumber)</td><td data-i18n-en="Language reference at cucumber.io, German keywords Angenommen / Wenn / Dann / Und">Sprachreferenz auf cucumber.io, deutsche Schlüsselwörter Angenommen / Wenn / Dann / Und</td><td data-i18n-en="Acceptance criteria in stage 7">Akzeptanzkriterien in Stufe 7</td></tr>
+<tr><td data-i18n-en="EICAR test file">EICAR-Testdatei</td><td data-i18n-en="Industry standard test file for virus scanners (eicar.org)">Branchenübliche Testdatei für Virenscanner (eicar.org)</td><td data-i18n-en="Evidence for SEC-03 in the traceability table">Nachweis für SEC-03 in der Traceability-Tabelle</td></tr>
+</tbody></table><p data-i18n-en="Status checked on 10.11.2026. Check again before use in new materials.">Stand geprüft am 10.11.2026. Vor dem Einsatz in neuen Materialien erneut prüfen.</p></div></details>
+
+<details class="footer-box"><summary class="footer-summary">📖 <span data-i18n-en="Glossary">Glossar</span></summary><div class="footer-content footer-sans"><dl class="footer-glossary">
+<dt data-i18n-en="FR (FA) · functional requirement">FA · Funktionale Anforderung</dt><dd data-i18n-en="Describes what the system must do, here FA-01 for the upload.">Beschreibt, was das System tun muss, hier FA-01 für den Upload.</dd>
+<dt data-i18n-en="NFR (NFA) · non-functional requirement">NFA · Nicht-funktionale Anforderung</dt><dd data-i18n-en="Describes how well the system must do something, for example speed or comprehensibility.">Beschreibt, wie gut das System etwas tun muss, etwa Geschwindigkeit oder Verständlichkeit.</dd>
+<dt data-i18n-en="SEC · security requirement">SEC · Sicherheitsanforderung</dt><dd data-i18n-en="Requirement derived from a security risk according to ISO/IEC 27001.">Aus einem Sicherheitsrisiko nach ISO/IEC 27001 abgeleitete Anforderung.</dd>
+<dt data-i18n-en="PERF / USE / REL">PERF / USE / REL</dt><dd data-i18n-en="Short codes for performance efficiency, interaction capability and reliability according to ISO/IEC 25010.">Kürzel für Leistungseffizienz, Interaktionsfähigkeit und Zuverlässigkeit nach ISO/IEC 25010.</dd>
+<dt data-i18n-en="Reference conditions">Referenzbedingungen</dt><dd data-i18n-en="Agreed measuring situation under which a performance value applies, here 50 Mbit/s and up to 50 simultaneous uploads.">Vereinbarte Messsituation, unter der ein Leistungswert gilt, hier 50 Mbit/s und bis zu 50 gleichzeitige Uploads.</dd>
+<dt data-i18n-en="Gherkin">Gherkin</dt><dd data-i18n-en="Structured language for acceptance criteria with Given, When, Then.">Strukturierte Sprache für Akzeptanzkriterien mit Angenommen, Wenn, Dann.</dd>
+<dt data-i18n-en="Refinement">Refinement</dt><dd data-i18n-en="Joint clarification of a requirement by business and team before implementation.">Gemeinsame Klärung einer Anforderung durch Fachseite und Team vor der Umsetzung.</dd>
+<dt data-i18n-en="Quarantine">Quarantäne</dt><dd data-i18n-en="Temporary storage location in which a file waits until all checks have been passed.">Vorläufiger Speicherort, an dem eine Datei wartet, bis alle Prüfungen bestanden sind.</dd>
+<dt data-i18n-en="Checksum (hash)">Prüfsumme (Hash)</dt><dd data-i18n-en="Fingerprint of a file; if a single bit changes, the fingerprint changes.">Fingerabdruck einer Datei; ändert sich ein einziges Bit, ändert sich der Fingerabdruck.</dd>
+<dt data-i18n-en="Traceability">Traceability</dt><dd data-i18n-en="Traceability from requirement via code to test, in both directions.">Nachverfolgbarkeit von der Anforderung über den Code bis zum Test, in beide Richtungen.</dd>
+<dt data-i18n-en="EICAR">EICAR</dt><dd data-i18n-en="Harmless test file that every virus scanner recognises as a find.">Harmlose Testdatei, die jeder Virenscanner als Fund erkennt.</dd>
+</dl></div></details>
+
+</div>
+</footer>
+
 <script>
 (function(){
+  function safeSet(key, val){ try{ sessionStorage.setItem(key, val); }catch(e){ /* restriktiver WebView-Kontext, ignorieren */ } }
+  function safeGet(key){ try{ return sessionStorage.getItem(key); }catch(e){ return null; } }
+
+  var lang = safeGet('r2c_lang') === 'en' ? 'en' : 'de';
+
+  /* ---------- Stufen-Navigation ---------- */
   var steps = document.querySelectorAll('.step');
   var panels = document.querySelectorAll('.panel');
   var bar = document.getElementById('bar');
   var status = document.getElementById('status');
-  steps.forEach(function(step, index){
-    step.addEventListener('click', function(){
-      steps.forEach(function(s){s.classList.remove('active');});
-      panels.forEach(function(p){p.classList.remove('active');});
-      step.classList.add('active');
-      document.getElementById(step.getAttribute('data-panel')).classList.add('active');
-      bar.style.width = (((index + 1) / steps.length) * 100) + '%';
-      status.textContent = 'Stufe ' + (index + 1) + ' von ' + steps.length;
-      document.getElementById('content').scrollTop = 0;
-    });
-  });
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var progress = document.querySelector('.progress');
+  var current = Number(safeGet('r2c_step')) || 0;
+  if (current < 0 || current >= steps.length) current = 0;
 
+  function statusText(){
+    return (lang === 'en' ? 'Stage ' + (current + 1) + ' of ' : 'Stufe ' + (current + 1) + ' von ') + steps.length;
+  }
+  function show(index, scroll){
+    current = index;
+    steps.forEach(function(s, k){
+      s.classList.toggle('active', k === index);
+      if (k === index) s.setAttribute('aria-current', 'step'); else s.removeAttribute('aria-current');
+    });
+    panels.forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById(steps[index].getAttribute('data-panel')).classList.add('active');
+    bar.style.width = (((index + 1) / steps.length) * 100) + '%';
+    progress.setAttribute('aria-valuenow', String(index + 1));
+    status.textContent = statusText();
+    prevBtn.disabled = index === 0;
+    nextBtn.disabled = index === steps.length - 1;
+    safeSet('r2c_step', String(index));
+    if (scroll) {
+      var c = document.getElementById('content');
+      var top = c.getBoundingClientRect().top;
+      if (top < 0 || top > window.innerHeight * 0.6) {
+        try { c.scrollIntoView({behavior:'smooth', block:'start'}); } catch(e) { c.scrollIntoView(); }
+      }
+    }
+  }
+  steps.forEach(function(step, index){
+    step.addEventListener('click', function(){ show(index, true); });
+  });
+  prevBtn.addEventListener('click', function(){ if (current > 0) show(current - 1, true); });
+  nextBtn.addEventListener('click', function(){ if (current < steps.length - 1) show(current + 1, true); });
+
+  /* ---------- Code-Tabs ---------- */
   var TERMINAL_TITLES = {htmlcode:'upload.html', jscode:'validate.js', pycode:'upload_service.py'};
   var terminalTitle = document.getElementById('terminalTitle');
   var codeButtons = document.querySelectorAll('.code-btn');
   var codePanes = document.querySelectorAll('.code-pane');
   codeButtons.forEach(function(btn){
     btn.addEventListener('click', function(){
-      codeButtons.forEach(function(b){b.classList.remove('active');});
-      codePanes.forEach(function(p){p.classList.remove('active');});
+      codeButtons.forEach(function(b){ b.classList.remove('active'); });
+      codePanes.forEach(function(p){ p.classList.remove('active'); });
       btn.classList.add('active');
       var target = btn.getAttribute('data-code');
       document.getElementById(target).classList.add('active');
@@ -303,23 +631,51 @@ body{padding-top:64px;}
     });
   });
 
-  function safeSet(key, val){ try{ sessionStorage.setItem(key, val); }catch(e){ /* restriktiver WebView-Kontext, ignorieren */ } }
-  function safeGet(key){ try{ return sessionStorage.getItem(key); }catch(e){ return null; } }
-
-  var BEAMER_LABELS = ["🔍 Beamer-Modus", "🔍 Beamer: Groß", "🔍 Beamer: Sehr groß"];
-  function applyBeamerLevel(level){
-    document.documentElement.setAttribute("data-beamer", String(level));
-    var btn = document.getElementById("beamerToggle");
-    btn.textContent = BEAMER_LABELS[level];
-    btn.classList.toggle("active", level > 0);
+  /* ---------- K20: Sprache DE/EN ---------- */
+  var i18nEls = document.querySelectorAll('[data-i18n-en]');
+  var deCache = [];
+  i18nEls.forEach(function(el, n){ deCache[n] = el.innerHTML; });
+  function applyLang(){
+    i18nEls.forEach(function(el, n){
+      if (lang === 'en') el.textContent = el.getAttribute('data-i18n-en');
+      else el.innerHTML = deCache[n];
+    });
+    document.documentElement.lang = lang;
+    document.getElementById('langBtn').textContent = lang === 'en' ? 'DE' : 'EN';
+    document.getElementById('beamerBtn').title = lang === 'en' ? 'Enlarges the display in four levels' : 'Vergrößert die Darstellung in vier Stufen';
+    document.getElementById('steps').setAttribute('aria-label', lang === 'en' ? 'Stages' : 'Stufen');
+    progress.setAttribute('aria-label', lang === 'en' ? 'Progress' : 'Fortschritt');
+    status.textContent = statusText();
   }
-  document.getElementById('beamerToggle').addEventListener('click', function(){
-    var level = (Number(safeGet('r2c_beamer')) || 0) + 1;
-    if (level >= BEAMER_LABELS.length) level = 0;
-    safeSet('r2c_beamer', String(level));
-    applyBeamerLevel(level);
+  document.getElementById('langBtn').addEventListener('click', function(){
+    lang = lang === 'en' ? 'de' : 'en';
+    safeSet('r2c_lang', lang);
+    applyLang();
   });
-  applyBeamerLevel(Number(safeGet('r2c_beamer')) || 0);
+
+  /* ---------- K18: Beamer vierstufig ---------- */
+  var BEAMER_LEVELS = [
+    { classes: [],                                    label: '☀ Beamer' },
+    { classes: ['beamer'],                             label: '☀ Beamer XL' },
+    { classes: ['beamer', 'beamer-xl'],                label: '☀ Beamer XXL' },
+    { classes: ['beamer', 'beamer-xl', 'beamer-xxl'],  label: '☀ Normal' }
+  ];
+  var beamerLevel = Number(safeGet('r2c_beamer4')) || 0;
+  if (beamerLevel < 0 || beamerLevel > 3) beamerLevel = 0;
+  function applyBeamer(){
+    document.documentElement.classList.remove('beamer', 'beamer-xl', 'beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){ document.documentElement.classList.add(c); });
+    document.getElementById('beamerBtn').textContent = BEAMER_LEVELS[beamerLevel].label;
+  }
+  document.getElementById('beamerBtn').addEventListener('click', function(){
+    beamerLevel = (beamerLevel + 1) % 4;
+    safeSet('r2c_beamer4', String(beamerLevel));
+    applyBeamer();
+  });
+
+  applyBeamer();
+  applyLang();
+  show(current, false);
 })();
 </script>
 <script src="../register/zurueck.js" defer></script>
