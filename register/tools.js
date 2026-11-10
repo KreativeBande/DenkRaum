@@ -390,9 +390,9 @@ window.DENKRAUM_REGISTER = {
     {
       "id": "anforderungsreise",
       "datei": "tools/anforderungsreise.html",
-      "titel": "Anforderungs-Reise durch die Räume",
+      "titel": "Anforderungs-Reise durch die Räume (Lindenfeld Lunch)",
       "kurztitel": "Anforderungs-Reise",
-      "kurz": "Ein Demo-Tool, das eine einzelne Anforderung vom Horizontraum bis in den Testraum wandern lässt: Idee → Problem → Lösung mit FA/NFA und User Story → Meßkriterien/Parameter → Testfälle — am Ende steht ein exportierbares Reise-Log.",
+      "kurz": "Ein Demo-Tool am Fall Lindenfeld Lunch: Eine einzelne Anforderung wandert vom Horizontraum bis in den Testraum: Idee mit Geschäftsziel GZ-1 bis GZ-4 → Problem → Lösung mit FA/NFA und User Story → Messkriterien/Grenzwerte → Testfälle. Drei Beispiele aus dem Case (Lieferung ins Büro, Allergene, Lohnabzug), am Ende ein exportierbares Reise-Log.",
       "rubrik": "Requirements & Business-Analyse",
       "bereich": "Anforderungen erheben & schärfen",
       "aufStartseite": true,
@@ -409,26 +409,41 @@ window.DENKRAUM_REGISTER = {
         "9368",
         "31693"
       ],
-      "einsatzkontext": [],
-      "fallwelten": [],
-      "themen": [],
-      "standards": [],
+      "einsatzkontext": [
+        "Seminar",
+        "Workshop"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "FA/NFA",
+        "User Story",
+        "Akzeptanzkriterien",
+        "Testfälle",
+        "Rückverfolgbarkeit"
+      ],
+      "standards": [
+        "ISO 25010:2023",
+        "IREB",
+        "ISTQB"
+      ],
       "siegel": {
         "status": null,
         "letztesAudit": null,
         "auditZeileImTool": null,
-        "offen": "Noch nicht gegen K1-K19-Checkliste geprüft."
+        "offen": "Noch nicht gegen K1–K22 geprüft. Seit 10.11.2026: Fallwelt Lindenfeld Lunch, Comic entfernt, Schrift-Ebenen als Variablen, Beamer vierstufig, Footer mit vier Boxen plus Glossar, Sprecher-Skript."
       },
-      "comic": "Es ist doch nur eine kleine Änderung",
-      "beamer": "3-stufig (alt)",
-      "sprecherSkript": false,
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
       "verwandt": [
-        "tools/denkraum_v3_adaptive_engine.html",
+        "tools/ba-re-case-lindenfeld-lunch.html",
+        "tools/lindenfeld-lunch-steckbrief.html",
         "tools/iso-25010-kompendium.html",
         "tools/user-story-puzzle.html"
       ],
       "geprueft": false,
-      "notiz": ""
+      "notiz": "Fünfter Raum heißt im Tool weiterhin Testraum (nicht Störraum wie im Denkräume OS); bewusst unverändert, Entscheidung offen."
     },
     {
       "id": "ba-lifecycle-lernreise",
