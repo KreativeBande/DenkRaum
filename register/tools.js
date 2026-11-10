@@ -3518,7 +3518,7 @@ window.DENKRAUM_REGISTER = {
       "faeden": [
         "re"
       ],
-      "dauer": null,
+      "dauer": "30 min",
       "haufeSeminare": [
         "41851",
         "9368",
@@ -3531,20 +3531,26 @@ window.DENKRAUM_REGISTER = {
       "fallwelten": [],
       "themen": [
         "ISO 25010",
-        "Stakeholder"
+        "ISO 27001",
+        "Stakeholder",
+        "FA/NFA",
+        "Akzeptanzkriterien",
+        "Gherkin",
+        "Traceability"
       ],
       "standards": [
         "ISO 25010:2023",
-        "ISO 27001:2022"
+        "ISO 27001:2022",
+        "IREB"
       ],
       "siegel": {
         "status": "Auditiert & zertifiziert",
-        "letztesAudit": "2026-07-18",
-        "auditZeileImTool": null,
+        "letztesAudit": "2026-11-10",
+        "auditZeileImTool": "2026-11-10",
         "offen": null
       },
-      "beamer": "3-stufig (alt)",
-      "sprecherSkript": false,
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
       "verwandt": [
         "tools/iso-25010-kompendium.html",
         "tools/re-waschmaschine.html",
