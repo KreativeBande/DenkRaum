@@ -4,7 +4,7 @@
  * Als Skript-Datei (nicht .json), damit sie auch offline per file:// lädt.
  */
 window.DENKRAUM_REGISTER = {
-  "stand": "2026-11-05",
+  "stand": "2026-11-10",
   "denkraeume": [
     {
       "id": "moeglichkeit",
@@ -5478,6 +5478,130 @@ window.DENKRAUM_REGISTER = {
       ],
       "geprueft": false,
       "notiz": "Neu am 05.11.2026, entstanden aus dem Demonstrator-Kapitel des ISO-25010-Kompendiums, auf Lindenfeld Lunch angepasst und um Schritt 1 (muss/soll/kann) erweitert. Zahlen und Rechtsbezüge im Fall sind Beispielwerte. K22 entfällt (Demonstrator), im Handbuch begründet."
-    }
+    },
+    {
+        "id": "essensapp-vom-wirrwarr-zum-pflichtenheft",
+        "datei": "tools/essensapp-vom-wirrwarr-zum-pflichtenheft.html",
+        "titel": "Essensapp: vom Wirrwarr zum Pflichtenheft",
+        "kurztitel": "Essensapp: Wirrwarr zum Pflichtenheft",
+        "kurz": "Sketchnote-Reise am Beispiel einer Essensapp: fünf unordentliche Sätze aufräumen (14 Warnzeichen), dann Lastenheft-Sätze in fünf Schritten ins Pflichtenheft übersetzen, mit Rückverfolgung (satisfies) und Lücken-Übung. Dazu die Einordnung ins V-Modell und die neun Qualitätsmerkmale nach ISO/IEC 25010:2023 mit der Frage, wer welchen Satz schreibt. Mit Einzelschritt-Bedienung, Beamer, DE/EN.",
+        "rubrik": "Requirements & Business-Analyse",
+        "bereich": "Anforderungen erheben & schärfen",
+        "aufStartseite": true,
+        "zweck": [
+              "Demonstrator",
+              "Übung"
+        ],
+        "denkraum": "loesung",
+        "faeden": [
+              "re",
+              "ba"
+        ],
+        "dauer": null,
+        "haufeSeminare": [],
+        "einsatzkontext": [
+              "Workshop",
+              "Seminar"
+        ],
+        "fallwelten": [],
+        "standards": [
+              "ISO 25010:2023",
+              "IREB"
+        ],
+        "siegel": {
+              "status": "Offene Punkte",
+              "letztesAudit": null,
+              "auditZeileImTool": null,
+              "offen": [
+                    "Erstaudit durch Michaela steht aus",
+                    "K14 (Audit-Zeile fehlt)",
+                    "K16 (Sprecher-Skript fehlt)",
+                    "K18 (Beamer: eigenes Muster b1/b2/b3 statt beamer/beamer-xl/beamer-xxl)",
+                    "K19/K20 (Footer mit vier Boxen fehlt, stattdessen Impressum)"
+              ]
+        },
+        "beamer": "eigenes Muster",
+        "sprecherSkript": false,
+        "geprueft": false,
+        "themen": [
+              "Lastenheft",
+              "Pflichtenheft",
+              "Satzschablone",
+              "Rückverfolgbarkeit",
+              "satisfies",
+              "V-Modell",
+              "ISO 25010",
+              "Qualitätsanforderungen",
+              "Formulierung",
+              "Sketchnote"
+        ],
+        "verwandt": [
+              "tools/lastenheft-pflichtenheft-demo.html",
+              "tools/lindenfeld-projektauftrag-pflichtenheft.html",
+              "tools/lindenfeld-fa-neun-spuren.html",
+              "tools/iso-25010-kompendium.html"
+        ],
+        "notiz": "Neu am 10.11.2026. Beispielfall Essensapp mit Beispielwerten, keine eigene Fallwelt (fallwelten bewusst leer, Michaela entscheidet). Enthält die Übersetzungs-Demo aus tools/lastenheft-pflichtenheft-demo.html als Abschnitt. Quellen mit Fundstelle und Link im Abschnitt Quellen; Cover der MASTeR-Broschüre in der Navigation verlinkt auf das PDF bei SOPHIST. haufeSeminare noch leer, Zuordnung zu Seminarseiten offen. K22 entfällt (Demonstrator)."
+  },
+    {
+        "id": "lastenheft-pflichtenheft-demo",
+        "datei": "tools/lastenheft-pflichtenheft-demo.html",
+        "titel": "Lastenheft → Pflichtenheft: die Übersetzung",
+        "kurztitel": "Lastenheft zu Pflichtenheft",
+        "kurz": "Kompakte Demo am Beispiel einer Essensapp: vier Lastenheft-Sätze werden in fünf Schritten (Übernehmen, Fälle ergänzen, Messbar machen, Lösung wählen, Verknüpfen) zu Pflichtenheft-Sätzen, mit Rückverfolgungs-Matrix und Lücken-Übung (Lücke, Abweichung). Einzelschritt-Bedienung, Beamer, DE/EN.",
+        "rubrik": "Requirements & Business-Analyse",
+        "bereich": "Anforderungen erheben & schärfen",
+        "aufStartseite": true,
+        "zweck": [
+              "Demonstrator",
+              "Übung"
+        ],
+        "denkraum": "loesung",
+        "faeden": [
+              "re",
+              "ba"
+        ],
+        "dauer": null,
+        "haufeSeminare": [],
+        "einsatzkontext": [
+              "Workshop",
+              "Seminar"
+        ],
+        "fallwelten": [],
+        "standards": [
+              "ISO 25010:2023",
+              "IREB"
+        ],
+        "siegel": {
+              "status": "Offene Punkte",
+              "letztesAudit": null,
+              "auditZeileImTool": null,
+              "offen": [
+                    "Erstaudit durch Michaela steht aus",
+                    "K14 (Audit-Zeile fehlt)",
+                    "K16 (Sprecher-Skript fehlt)",
+                    "K18 (Beamer: eigenes Muster b1/b2/b3 statt beamer/beamer-xl/beamer-xxl)",
+                    "K19/K20 (Footer mit vier Boxen fehlt, stattdessen Impressum)"
+              ]
+        },
+        "beamer": "eigenes Muster",
+        "sprecherSkript": false,
+        "geprueft": false,
+        "themen": [
+              "Lastenheft",
+              "Pflichtenheft",
+              "Satzschablone",
+              "Rückverfolgbarkeit",
+              "satisfies",
+              "Lücken",
+              "Sketchnote"
+        ],
+        "verwandt": [
+              "tools/essensapp-vom-wirrwarr-zum-pflichtenheft.html",
+              "tools/lindenfeld-projektauftrag-pflichtenheft.html",
+              "tools/pflichtenheft-generator.html"
+        ],
+        "notiz": "Neu am 10.11.2026. Kurzfassung der Übersetzungs-Demo aus tools/essensapp-vom-wirrwarr-zum-pflichtenheft.html für einen einzelnen Seminarblock. Beispielwerte, keine eigene Fallwelt. haufeSeminare noch leer. K22 entfällt (Demonstrator)."
+  }
   ]
 };
