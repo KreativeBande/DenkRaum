@@ -2370,7 +2370,8 @@ window.DENKRAUM_REGISTER = {
         "tools/ba-steckbrief-business-case.html",
         "tools/lindenfeld-gateplan.html",
         "tools/ba-re-case-lindenfeld-lunch.html",
-        "tools/lindenfeld-projektauftrag-pflichtenheft.html"
+        "tools/lindenfeld-projektauftrag-pflichtenheft.html",
+        "tools/anforderungsreise.html"
       ],
       "geprueft": false,
       "notiz": "Fall BA/RE-Case Lindenfeld Lunch, Projektauftrag und Pflichtenheft sowie der Gateplan liegen seit 21.10.2026 im Repo und sind unten verlinkt. K11 dauerhaft offen (Kann), daher kein Auszeichnungs-Siegel. Kürzel (GZ, FR, OP, R, ADR, M …) sind anklickbar und öffnen ein Kontextfenster (Titel, Art, Sprung zur Fundstelle); Wörterbuch und Modul in tools/gateplan-build/ (idx_extract.py, idx_build.py), nach Änderung an Tabellen neu bauen (23.10.2026). Stand 07.11.2026: Zeilen Vision 2050 (Annahme) und Leitplanken L-1 bis L-4 im Faktenraster; nur L-3 ist im Fall nummeriert. Audit-Status nicht neu erhoben."
