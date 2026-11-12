@@ -5537,12 +5537,7 @@ window.DENKRAUM_REGISTER = {
               "Formulierung",
               "Sketchnote"
         ],
-        "verwandt": [
-              "tools/lastenheft-pflichtenheft-demo.html",
-              "tools/lindenfeld-projektauftrag-pflichtenheft.html",
-              "tools/lindenfeld-fa-neun-spuren.html",
-              "tools/iso-25010-kompendium.html"
-        ],
+        "verwandt": [],
         "notiz": "Neu am 10.11.2026. Beispielfall Essensapp mit Beispielwerten, keine eigene Fallwelt (fallwelten bewusst leer, Michaela entscheidet). Enthält die Übersetzungs-Demo aus tools/lastenheft-pflichtenheft-demo.html als Abschnitt. Quellen mit Fundstelle und Link im Abschnitt Quellen; Cover der MASTeR-Broschüre in der Navigation verlinkt auf das PDF bei SOPHIST. Seminar 9368 (Kachel hellgelb in Modul 1, 12.11.2026). K22 entfällt (Demonstrator)."
   },
     {
@@ -5600,11 +5595,7 @@ window.DENKRAUM_REGISTER = {
               "Lücken",
               "Sketchnote"
         ],
-        "verwandt": [
-              "tools/essensapp-vom-wirrwarr-zum-pflichtenheft.html",
-              "tools/lindenfeld-projektauftrag-pflichtenheft.html",
-              "tools/pflichtenheft-generator.html"
-        ],
+        "verwandt": [],
         "notiz": "Neu am 10.11.2026. Kurzfassung der Übersetzungs-Demo aus tools/essensapp-vom-wirrwarr-zum-pflichtenheft.html für einen einzelnen Seminarblock. Beispielwerte, keine eigene Fallwelt. Seminar 9368 (Kachel hellgelb in Modul 1, 12.11.2026). K22 entfällt (Demonstrator)."
   }
   ]
