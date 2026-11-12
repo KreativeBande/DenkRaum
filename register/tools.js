@@ -5564,7 +5564,9 @@ window.DENKRAUM_REGISTER = {
               "ba"
         ],
         "dauer": null,
-        "haufeSeminare": [],
+        "haufeSeminare": [
+        "9368"
+      ],
         "einsatzkontext": [
               "Workshop",
               "Seminar"
@@ -5603,7 +5605,7 @@ window.DENKRAUM_REGISTER = {
               "tools/lindenfeld-projektauftrag-pflichtenheft.html",
               "tools/pflichtenheft-generator.html"
         ],
-        "notiz": "Neu am 10.11.2026. Kurzfassung der Übersetzungs-Demo aus tools/essensapp-vom-wirrwarr-zum-pflichtenheft.html für einen einzelnen Seminarblock. Beispielwerte, keine eigene Fallwelt. haufeSeminare noch leer. K22 entfällt (Demonstrator)."
+        "notiz": "Neu am 10.11.2026. Kurzfassung der Übersetzungs-Demo aus tools/essensapp-vom-wirrwarr-zum-pflichtenheft.html für einen einzelnen Seminarblock. Beispielwerte, keine eigene Fallwelt. Seminar 9368 (Kachel hellgelb in Modul 1, 12.11.2026). K22 entfällt (Demonstrator)."
   }
   ]
 };
