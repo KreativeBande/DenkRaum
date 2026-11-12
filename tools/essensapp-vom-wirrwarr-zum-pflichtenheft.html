@@ -162,6 +162,15 @@ tr:nth-child(even) td{background:rgba(255,224,102,.18)}
 .prow.gap{border-style:dashed;background:#fff3f0}.chip.gap{background:#ffe3dc;border-color:#b42318;color:#b42318}.gnote{grid-column:1 / -1;font-weight:700;color:#b42318}
 .nogap .gcol{display:none}
 .copy{margin:2rem 0 1rem;padding-top:.8rem;border-top:2px dashed var(--ink);text-align:center;font-family:var(--hand);color:var(--mut)}.copy a{font-weight:700}
+
+/* Satzschablonen-Überblick */
+.ovgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin:.8rem 0}
+.card.ov{margin:0}
+.ovfm{font-family:ui-monospace,Menlo,Consolas,monospace!important;background:#fff;border:2px solid var(--ink);border-radius:8px;padding:.4rem .6rem;margin:.3rem 0;overflow-wrap:anywhere;font-size:.95rem!important}
+.ovbtn{display:inline-flex;align-items:center;text-decoration:none}
+.ovdl{display:grid;grid-template-columns:minmax(8rem,12rem) minmax(0,1fr);gap:.3rem .8rem}
+.ovdl dt{font-weight:800;font-family:var(--hand)}.ovdl dd{margin:0;overflow-wrap:anywhere}
+@media (max-width:900px){.ovgrid{grid-template-columns:minmax(0,1fr)}.ovdl{grid-template-columns:minmax(0,1fr)}.ovdl dt{margin-top:.5rem}}
 </style>
 </head>
 <body>
@@ -300,6 +309,32 @@ tr:nth-child(even) td{background:rgba(255,224,102,.18)}
   <button class="btn" id="mReset" type="button" data-r="0" data-i18n data-en="Reset">Zurücksetzen</button>
  </div>
  <p class="src" data-i18n data-en="Sources: who writes: Lastenheft = customer (CPRE Foundation Level v1.3.3, p. 79); Pflichtenheft = supplier (Requirements Modeling v2.2, p. 24). Using the checklist: RE@Agile v2.2, pp. 70–71; CPRE FL pp. 40–41, 97–98. Making vague quality requirements precise: RE@Agile pp. 73–74.">Quellen: Wer schreibt: Lastenheft = Kunde (CPRE Foundation Level v1.3.3, S. 79); Pflichtenheft = Auftragnehmer (Requirements Modeling v2.2, S. 24). Checkliste nutzen: RE@Agile v2.2, S. 70–71; CPRE FL S. 40–41, 97–98. Vage Qualitätsanforderungen präzisieren: RE@Agile S. 73–74.</p>
+</section>
+
+<section class="sec" id="schablonen" data-title="Satzschablonen" data-title-en="Phrase templates">
+ <h2>Satzschablonen im Überblick</h2>
+ <p class="lead">Acht Schablonen aus dem Handbuch des International Requirements Engineering Board (IREB), mit Beispiel aus der Essensapp. Beispiele und Zahlen sind Annahmen für die Übung.</p>
+ <div class="ovgrid">
+  <div class="card ov"><span class="tag">Grundschablone (ISO/IEC/IEEE 29148)</span><div class="ovfm">[&lt;Bedingung&gt;] &lt;Subjekt&gt; &lt;Aktion&gt; &lt;Objekte&gt; [&lt;Einschränkung&gt;].</div><p>Wenn der Gast die Bestellung abschickt, soll die Essensapp dem Gast eine Bestellnummer anzeigen, und zwar innerhalb von 3 Sekunden.</p></div>
+  <div class="card ov"><span class="tag">Allgegenwärtig (EARS)</span><div class="ovfm">Das &lt;Systemname&gt; soll &lt;Systemantwort&gt;.</div><p>Die Essensapp soll Preise in Euro mit zwei Nachkommastellen anzeigen.</p></div>
+  <div class="card ov"><span class="tag">Ereignisgesteuert (EARS)</span><div class="ovfm">SOBALD|NACHDEM &lt;optionale Vorbedingungen&gt; &lt;Auslöser&gt; soll das &lt;Systemname&gt; &lt;Systemantwort&gt;.</div><p>SOBALD der Gast „Abschicken“ antippt, soll die Essensapp dem Gast eine Bestellnummer anzeigen.</p></div>
+  <div class="card ov"><span class="tag">Unerwünschtes Verhalten (EARS)</span><div class="ovfm">WENN &lt;optionale Vorbedingungen&gt; &lt;Auslöser&gt;, DANN soll das &lt;Systemname&gt; &lt;Systemantwort&gt;.</div><p>WENN der Zahlungsdienstleister nicht antwortet, DANN soll die Essensapp die Bestellung nicht an die Küche senden.</p></div>
+  <div class="card ov"><span class="tag">Zustandsorientiert (EARS)</span><div class="ovfm">SOLANGE &lt;in einem bestimmten Zustand&gt; soll das &lt;Systemname&gt; &lt;Systemantwort&gt;.</div><p>SOLANGE die Küche geschlossen ist, soll die Essensapp den Hinweis „Küche geschlossen“ anzeigen.</p></div>
+  <div class="card ov"><span class="tag">Optionale Funktion (EARS)</span><div class="ovfm">FALLS &lt;Funktion enthalten ist&gt; soll das &lt;Systemname&gt; &lt;Systemantwort&gt;.</div><p>FALLS die Funktion „Lieferung“ im System enthalten ist, soll die Essensapp die Lieferadresse abfragen.</p></div>
+  <div class="card ov"><span class="tag">User Story</span><div class="ovfm">Als &lt;Rolle&gt; möchte ich &lt;Anforderung&gt;, damit &lt;Nutzen&gt;.</div><p>Als Gast möchte ich meine Bestellung vor dem Abschicken prüfen, damit ich keine falschen Gerichte bestelle.</p></div>
+  <div class="card ov"><span class="tag">Akzeptanzkriterium</span><div class="ovfm">Unter Voraussetzung, dass &lt;Vorbedingung&gt;, wenn &lt;Trigger&gt; dann &lt;Ergebnis&gt;.</div><p>Unter der Voraussetzung, dass der Warenkorb ein Gericht enthält, wenn der Gast „Abschicken“ antippt, dann zeigt die Essensapp eine Bestellnummer an.</p></div>
+ </div>
+ <p class="src">Fundstelle: CPRE Foundation Level Handbuch v1.3.3, S. 47–49; Akzeptanzkriterium: Requirements Management Handbuch v2.1, S. 210. Links siehe Quellen.</p>
+ <p><a class="btn ovbtn" href="./ireb-satzschablonen.html">Weiter zum Übungstool: Atlas, Satzbauer, Aufgaben mit Lösung</a></p>
+ <h3>Glossar</h3>
+ <dl class="ovdl">
+  <dt>Akzeptanzkriterium</dt><dd>Kriterium, das die Umsetzung einer User Story erfüllen muss, damit die Stakeholder sie akzeptieren.</dd>
+  <dt>EARS</dt><dd>Easy Approach to Requirements Syntax: eine Reihe von Satzschablonen für verschiedene Situationen (immer, Ereignis, Unerwünschtes, Zustand, optionale Funktion). Nach dem Handbuch vor allem für cyber-physische Systeme entworfen, auf andere Systeme anpassbar.</dd>
+  <dt>Hilfsverb</dt><dd>Muss, sollte, kann: kennzeichnet, wie verbindlich eine Anforderung ist. Die Bedeutung wird im Projekt vereinbart.</dd>
+  <dt>ISO/IEC/IEEE 29148</dt><dd>Norm der International Organization for Standardization, der International Electrotechnical Commission und des Institute of Electrical and Electronics Engineers. Von ihr stammt die Grundschablone. Normtext nicht im Projekt.</dd>
+  <dt>Satzschablone</dt><dd>Vorlage für den Aufbau eines Satzes, der eine einzelne Anforderung oder eine User Story ausdrückt.</dd>
+  <dt>User Story</dt><dd>Anforderung aus Sicht einer Rolle: Als &lt;Rolle&gt; möchte ich &lt;Anforderung&gt;, damit &lt;Nutzen&gt;.</dd>
+ </dl>
 </section>
 
 <section class="sec" id="quellen" data-title="Quellen" data-title-en="Sources">

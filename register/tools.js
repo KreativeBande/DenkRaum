@@ -5537,8 +5537,10 @@ window.DENKRAUM_REGISTER = {
               "Formulierung",
               "Sketchnote"
         ],
-        "verwandt": [],
-        "notiz": "Neu am 10.11.2026. Beispielfall Essensapp mit Beispielwerten, keine eigene Fallwelt (fallwelten bewusst leer, Michaela entscheidet). Nur Deutsch, ohne Beamer-Button und Umschalter (12.11.2026). Enthält die Übersetzungs-Demo aus tools/lastenheft-pflichtenheft-demo.html als Abschnitt. Quellen mit Fundstelle und Link im Abschnitt Quellen; Cover der MASTeR-Broschüre in der Navigation verlinkt auf das PDF bei SOPHIST. Seminar 9368 (Kachel hellgelb in Modul 1, 12.11.2026). K22 entfällt (Demonstrator)."
+        "verwandt": [
+        "tools/ireb-satzschablonen.html"
+      ],
+        "notiz": "Überblick der Satzschablonen mit Glossar und Link zu tools/ireb-satzschablonen.html (12.11.2026). Neu am 10.11.2026. Beispielfall Essensapp mit Beispielwerten, keine eigene Fallwelt (fallwelten bewusst leer, Michaela entscheidet). Nur Deutsch, ohne Beamer-Button und Umschalter (12.11.2026). Enthält die Übersetzungs-Demo aus tools/lastenheft-pflichtenheft-demo.html als Abschnitt. Quellen mit Fundstelle und Link im Abschnitt Quellen; Cover der MASTeR-Broschüre in der Navigation verlinkt auf das PDF bei SOPHIST. Seminar 9368 (Kachel hellgelb in Modul 1, 12.11.2026). K22 entfällt (Demonstrator)."
   },
     {
         "id": "lastenheft-pflichtenheft-demo",
@@ -5595,8 +5597,81 @@ window.DENKRAUM_REGISTER = {
               "Lücken",
               "Sketchnote"
         ],
-        "verwandt": [],
-        "notiz": "Neu am 10.11.2026. Kurzfassung der Übersetzungs-Demo aus tools/essensapp-vom-wirrwarr-zum-pflichtenheft.html für einen einzelnen Seminarblock. Beispielwerte, keine eigene Fallwelt. Seminar 9368 (Kachel hellgelb in Modul 1, 12.11.2026). K22 entfällt (Demonstrator)."
-  }
+        "verwandt": [
+        "tools/ireb-satzschablonen.html"
+      ],
+        "notiz": "Überblick der Satzschablonen mit Glossar und Link zu tools/ireb-satzschablonen.html (12.11.2026). Neu am 10.11.2026. Kurzfassung der Übersetzungs-Demo aus tools/essensapp-vom-wirrwarr-zum-pflichtenheft.html für einen einzelnen Seminarblock. Beispielwerte, keine eigene Fallwelt. Seminar 9368 (Kachel hellgelb in Modul 1, 12.11.2026). K22 entfällt (Demonstrator)."
+  },
+    {
+          "id": "ireb-satzschablonen",
+          "datei": "tools/ireb-satzschablonen.html",
+          "titel": "IREB-Satzschablonen: Atlas, Satzbauer, Übungen",
+          "kurztitel": "IREB-Satzschablonen",
+          "kurz": "Die Satzschablonen aus dem IREB-Handbuch an einer Stelle: Atlas mit zehn Vorlagen (Grundschablone nach ISO/IEC/IEEE 29148, fünf EARS-Formen, User Story, Akzeptanzkriterium, messbare Qualität, Use Case), Satzbauer zum Selbstfüllen, drei Quiz-Übungen und 41 Aufgaben mit Musterlösung, darunter zehn Rohtexte (Rahmen 2). Mit Glossar. Beispielwelt Essensapp, Sketchnote-Stil.",
+          "rubrik": "Requirements & Business-Analyse",
+          "bereich": "Anforderungen erheben & schärfen",
+          "aufStartseite": true,
+          "zweck": [
+                "Übung",
+                "Nachschlagewerk"
+          ],
+          "denkraum": "loesung",
+          "faeden": [
+                "re",
+                "ba"
+          ],
+          "dauer": null,
+          "haufeSeminare": [
+                "9368",
+                "31693",
+                "3744"
+          ],
+          "einsatzkontext": [
+                "Workshop",
+                "Seminar"
+          ],
+          "fallwelten": [],
+          "standards": [
+                "IREB"
+          ],
+          "siegel": {
+                "status": "Offene Punkte",
+                "letztesAudit": null,
+                "auditZeileImTool": null,
+                "offen": [
+                      "Erstaudit durch Michaela steht aus",
+                      "K14 (Audit-Zeile fehlt)",
+                      "K16 (Sprecher-Skript fehlt)",
+                      "K18 (kein Beamer-Button)",
+                      "K19/K20 (Footer mit vier Boxen fehlt, stattdessen ©-Zeile)",
+                      "K22 entfällt (Übungs- und Nachschlagetool), im Handbuch noch zu begründen"
+                ]
+          },
+          "beamer": "keiner",
+          "sprecherSkript": false,
+          "geprueft": false,
+          "themen": [
+                "Satzschablone",
+                "EARS",
+                "ISO 29148",
+                "User Story",
+                "Akzeptanzkriterien",
+                "Messbare Qualität",
+                "Formulierung",
+                "Schreibregeln",
+                "Stolpersteine",
+                "Rohtexte",
+                "Glossar",
+                "Sketchnote"
+          ],
+          "verwandt": [
+                "tools/essensapp-vom-wirrwarr-zum-pflichtenheft.html",
+                "tools/lastenheft-pflichtenheft-demo.html",
+                "tools/lindenfeld-fa-neun-spuren.html",
+                "tools/user-story-puzzle.html",
+                "tools/klarheits-sprint/index.html"
+          ],
+          "notiz": "Neu am 12.11.2026. Eigenständige Übungsseite zu den Satzschablonen des CPRE Foundation Level Handbuchs v1.3.3 (S. 45–51), ergänzt um Requirements Management Handbuch v2.1 (S. 210) und RE@Agile v2.2 (S. 55–56). Nur Deutsch, ohne Beamer-Button. Beispiele und Zahlen der Essensapp sind Annahmen. ISO-Normtext und EARS-Original nicht im Projekt (nur wie vom Handbuch zitiert). Rohtexte „Rahmen 2“ von Michaela vorgegeben. Die beiden Essensapp-Tools enthalten einen Überblick der Schablonen und verlinken hierher. Word-Übungsblatt Uebungsblatt-Satzschablonen.docx liegt als Companion bei Michaela. Seminare: 9368 (Modul 4), 31693 (Modul 4), 3744 (Modul 6)."
+    }
   ]
 };
