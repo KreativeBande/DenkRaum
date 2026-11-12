@@ -4,7 +4,7 @@
  * Als Skript-Datei (nicht .json), damit sie auch offline per file:// lädt.
  */
 window.DENKRAUM_REGISTER = {
-  "stand": "2026-11-10",
+  "stand": "2026-11-12",
   "denkraeume": [
     {
       "id": "moeglichkeit",
@@ -5498,7 +5498,9 @@ window.DENKRAUM_REGISTER = {
               "ba"
         ],
         "dauer": null,
-        "haufeSeminare": [],
+        "haufeSeminare": [
+        "9368"
+      ],
         "einsatzkontext": [
               "Workshop",
               "Seminar"
@@ -5541,7 +5543,7 @@ window.DENKRAUM_REGISTER = {
               "tools/lindenfeld-fa-neun-spuren.html",
               "tools/iso-25010-kompendium.html"
         ],
-        "notiz": "Neu am 10.11.2026. Beispielfall Essensapp mit Beispielwerten, keine eigene Fallwelt (fallwelten bewusst leer, Michaela entscheidet). Enthält die Übersetzungs-Demo aus tools/lastenheft-pflichtenheft-demo.html als Abschnitt. Quellen mit Fundstelle und Link im Abschnitt Quellen; Cover der MASTeR-Broschüre in der Navigation verlinkt auf das PDF bei SOPHIST. haufeSeminare noch leer, Zuordnung zu Seminarseiten offen. K22 entfällt (Demonstrator)."
+        "notiz": "Neu am 10.11.2026. Beispielfall Essensapp mit Beispielwerten, keine eigene Fallwelt (fallwelten bewusst leer, Michaela entscheidet). Enthält die Übersetzungs-Demo aus tools/lastenheft-pflichtenheft-demo.html als Abschnitt. Quellen mit Fundstelle und Link im Abschnitt Quellen; Cover der MASTeR-Broschüre in der Navigation verlinkt auf das PDF bei SOPHIST. Seminar 9368 (Kachel hellgelb in Modul 1, 12.11.2026). K22 entfällt (Demonstrator)."
   },
     {
         "id": "lastenheft-pflichtenheft-demo",
