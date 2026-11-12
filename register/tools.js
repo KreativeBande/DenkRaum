@@ -5484,7 +5484,7 @@ window.DENKRAUM_REGISTER = {
         "datei": "tools/essensapp-vom-wirrwarr-zum-pflichtenheft.html",
         "titel": "Essensapp: vom Wirrwarr zum Pflichtenheft",
         "kurztitel": "Essensapp: Wirrwarr zum Pflichtenheft",
-        "kurz": "Sketchnote-Reise am Beispiel einer Essensapp: fünf unordentliche Sätze aufräumen (14 Warnzeichen), dann Lastenheft-Sätze in fünf Schritten ins Pflichtenheft übersetzen, mit Rückverfolgung (satisfies) und Lücken-Übung. Dazu die Einordnung ins V-Modell und die neun Qualitätsmerkmale nach ISO/IEC 25010:2023 mit der Frage, wer welchen Satz schreibt. Mit Einzelschritt-Bedienung, Beamer, DE/EN.",
+        "kurz": "Sketchnote-Reise am Beispiel einer Essensapp: fünf unordentliche Sätze aufräumen (14 Warnzeichen), dann Lastenheft-Sätze in fünf Schritten ins Pflichtenheft übersetzen, mit Rückverfolgung (satisfies) und Lücken-Übung. Dazu die Einordnung ins V-Modell und die neun Qualitätsmerkmale nach ISO/IEC 25010:2023 mit der Frage, wer welchen Satz schreibt.",
         "rubrik": "Requirements & Business-Analyse",
         "bereich": "Anforderungen erheben & schärfen",
         "aufStartseite": true,
@@ -5518,11 +5518,11 @@ window.DENKRAUM_REGISTER = {
                     "Erstaudit durch Michaela steht aus",
                     "K14 (Audit-Zeile fehlt)",
                     "K16 (Sprecher-Skript fehlt)",
-                    "K18 (Beamer: eigenes Muster b1/b2/b3 statt beamer/beamer-xl/beamer-xxl)",
+                    "K18 (Beamer-Button bewusst entfernt, 12.11.2026)",
                     "K19/K20 (Footer mit vier Boxen fehlt, stattdessen Impressum)"
               ]
         },
-        "beamer": "eigenes Muster",
+        "beamer": "keiner",
         "sprecherSkript": false,
         "geprueft": false,
         "themen": [
@@ -5538,14 +5538,14 @@ window.DENKRAUM_REGISTER = {
               "Sketchnote"
         ],
         "verwandt": [],
-        "notiz": "Neu am 10.11.2026. Beispielfall Essensapp mit Beispielwerten, keine eigene Fallwelt (fallwelten bewusst leer, Michaela entscheidet). Enthält die Übersetzungs-Demo aus tools/lastenheft-pflichtenheft-demo.html als Abschnitt. Quellen mit Fundstelle und Link im Abschnitt Quellen; Cover der MASTeR-Broschüre in der Navigation verlinkt auf das PDF bei SOPHIST. Seminar 9368 (Kachel hellgelb in Modul 1, 12.11.2026). K22 entfällt (Demonstrator)."
+        "notiz": "Neu am 10.11.2026. Beispielfall Essensapp mit Beispielwerten, keine eigene Fallwelt (fallwelten bewusst leer, Michaela entscheidet). Nur Deutsch, ohne Beamer-Button und Umschalter (12.11.2026). Enthält die Übersetzungs-Demo aus tools/lastenheft-pflichtenheft-demo.html als Abschnitt. Quellen mit Fundstelle und Link im Abschnitt Quellen; Cover der MASTeR-Broschüre in der Navigation verlinkt auf das PDF bei SOPHIST. Seminar 9368 (Kachel hellgelb in Modul 1, 12.11.2026). K22 entfällt (Demonstrator)."
   },
     {
         "id": "lastenheft-pflichtenheft-demo",
         "datei": "tools/lastenheft-pflichtenheft-demo.html",
         "titel": "Lastenheft → Pflichtenheft: die Übersetzung",
         "kurztitel": "Lastenheft zu Pflichtenheft",
-        "kurz": "Kompakte Demo am Beispiel einer Essensapp: vier Lastenheft-Sätze werden in fünf Schritten (Übernehmen, Fälle ergänzen, Messbar machen, Lösung wählen, Verknüpfen) zu Pflichtenheft-Sätzen, mit Rückverfolgungs-Matrix und Lücken-Übung (Lücke, Abweichung). Einzelschritt-Bedienung, Beamer, DE/EN.",
+        "kurz": "Kompakte Demo am Beispiel einer Essensapp: vier Lastenheft-Sätze werden in fünf Schritten (Übernehmen, Fälle ergänzen, Messbar machen, Lösung wählen, Verknüpfen) zu Pflichtenheft-Sätzen, mit Rückverfolgungs-Matrix und Lücken-Übung (Lücke, Abweichung).",
         "rubrik": "Requirements & Business-Analyse",
         "bereich": "Anforderungen erheben & schärfen",
         "aufStartseite": true,
@@ -5579,11 +5579,11 @@ window.DENKRAUM_REGISTER = {
                     "Erstaudit durch Michaela steht aus",
                     "K14 (Audit-Zeile fehlt)",
                     "K16 (Sprecher-Skript fehlt)",
-                    "K18 (Beamer: eigenes Muster b1/b2/b3 statt beamer/beamer-xl/beamer-xxl)",
+                    "K18 (Beamer-Button bewusst entfernt, 12.11.2026)",
                     "K19/K20 (Footer mit vier Boxen fehlt, stattdessen Impressum)"
               ]
         },
-        "beamer": "eigenes Muster",
+        "beamer": "keiner",
         "sprecherSkript": false,
         "geprueft": false,
         "themen": [
