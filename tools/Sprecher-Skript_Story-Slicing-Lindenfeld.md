@@ -10,7 +10,7 @@ Gesamtdauer laut Zeitangaben: ca. 2 Std. 40 Min., wenn alle Abschnitte gezeigt w
 
 2. Fall und Personas (ca. 5 Min.): Die vier Personas vorlesen; fragen: „Wessen Bedarf fehlt?“
 
-3. Zerlegen, zuordnen, priorisieren (ca. 20 Min.): Zuerst den Block „Epic oder Use Case?“ abspielen: Epic = wozu und wofür, Use Case = wie, Schritt für Schritt; Sortierübung lösen lassen. Dann Epic antippen oder Stufe für Stufe vorgehen. Je Stufe die eingeblendete Frage stellen, Antworten sammeln, dann die Animation weiterlaufen lassen. Bei MoSCoW die Gruppe streiten lassen, bevor die Karten fliegen.
+3. Zerlegen, zuordnen, priorisieren (ca. 20 Min.): Das Epic antippen oder Stufe für Stufe vorgehen. Den Unterschied zwischen Epic (wozu und wofür) und Use Case (wie, Schritt für Schritt) kurz mündlich klären, bevor die Use Cases abgeleitet werden. Je Stufe die eingeblendete Frage stellen, Antworten sammeln, dann die Animation weiterlaufen lassen. Bei MoSCoW die Gruppe streiten lassen, bevor die Karten fliegen.
 
 3a. Use-Case-Werkstatt (ca. 15 Min.): Frage zeigen, Baustein für Baustein aufbauen, bei jedem Baustein die Gruppe raten lassen, wohin er wandert. Zum Schluss „Was, wenn sich etwas ändert?“ abspielen. Danach mit den Knöpfen den Dokumenttyp wechseln (Lastenheft, Stakeholder-Analyse, Business Case, Change Request) und fragen: Welche Spalte steuert welches Artefakt? Zuletzt die Sortierübung lösen.
 
