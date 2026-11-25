@@ -5484,7 +5484,7 @@ window.DENKRAUM_REGISTER = {
       "datei": "tools/story-slicing-lindenfeld.html",
       "titel": "Lindenfeld Lunch: Vom Epic zur fertigen Story",
       "kurztitel": "Lindenfeld: Epic zur Story",
-      "kurz": "Ein Epic der Cafeteria-App wird Schritt für Schritt zu fertigen Stories: über Use Cases und Verben zerlegen, mit SPIDR schneiden, Personas zuordnen, mit MoSCoW priorisieren, die Definition of Ready mit SMART und die Definition of Done mit INVEST prüfen. Dazu Qualität und Sicherheit nach ISO/IEC 25010 und 27001, Testfälle, Change Request, Wirkung, Refinement und ein Workflow in Claude Code bis zum Jira-Import. Mit Gruppenfragen, Einzelfrage-Übung und DE/EN.",
+      "kurz": "Ein Epic der Cafeteria-App wird Schritt für Schritt zu fertigen Stories: Epic und Use Case unterscheiden, in der Use-Case-Werkstatt sehen, welcher Eintrag welches Artefakt füllt (Use Case, Lastenheft, Stakeholder-Analyse, Business Case, Change Request), über Verben zerlegen, mit SPIDR schneiden, Personas zuordnen, mit MoSCoW priorisieren, die Definition of Ready mit SMART und die Definition of Done mit INVEST prüfen. Dazu Qualität und Sicherheit nach ISO/IEC 25010 und 27001, Testfälle, Change Request, Wirkung, Refinement und ein Workflow in Claude Code bis zum Jira-Import. Mit Gruppenfragen, Einzelfrage-Übung und DE/EN.",
       "rubrik": "Requirements & Business-Analyse",
       "bereich": "FA/NFA, User Stories & Traceability",
       "aufStartseite": true,
@@ -5518,6 +5518,11 @@ window.DENKRAUM_REGISTER = {
         "Fallwelt",
         "Epic",
         "Use Case",
+        "Use-Case-Werkstatt",
+        "Lastenheft",
+        "Stakeholder-Analyse",
+        "Business Case",
+        "Epic-Agent",
         "User Story",
         "Story Slicing",
         "SPIDR",
@@ -5550,15 +5555,103 @@ window.DENKRAUM_REGISTER = {
         "letztesAudit": "2026-11-25",
         "auditZeileImTool": "2026-11-25",
         "offen": [
-          "Erstaudit durch Michaela steht aus (Selbstprüfung am Bautag; die Audit-Zeile im Tool nennt ✅, ein Audit-Protokoll liegt noch nicht im Repo)",
-          "Vortrags-Skript: Regieanweisungen je Abschnitt vorhanden, wörtlicher Sprechtext und Übergangssätze fehlen noch"
+          "Erstaudit durch Michaela steht aus (Selbstprüfung am 25.11.2026, Protokoll: tools/Audit-Protokoll_Story-Slicing-Lindenfeld.md)",
+          "Fachliche Prüfung der Beispielinhalte in Station 3a durch Michaela",
+          "Epic-Agent (externes Artefakt) ohne DE/EN, vier Footer-Boxen und Audit"
         ]
       },
       "beamer": "4-stufig",
       "sprecherSkript": true,
       "verwandt": [],
       "geprueft": false,
-      "notiz": "Neu am 25.11.2026 (Upload von Michaela). Durchgängige Lindenfeld-Lunch-Reise vom Epic bis zum Jira-Import. K22 entfällt (Demonstrator mit Übungen), im Handbuch begründet. Keine Persistenz, kein localStorage. Station 3 (Zerlegen) am 25.11.2026 auf die schlanke Fassung zurückgestellt: Einleitung und Board „Vom Epic zum Todo“, ohne den Block „Epic oder Use Case“ und ohne Sortierübung."
+      "notiz": "Neu am 25.11.2026 (Upload von Michaela). Durchgängige Lindenfeld-Lunch-Reise vom Epic bis zum Jira-Import. K22 entfällt (Demonstrator mit Übungen), im Handbuch begründet. Keine Persistenz, kein localStorage. Station 3 (Zerlegen) wieder mit Block „Epic oder Use Case“ und Sortierübung; neu am 25.11.2026: Station 3a Use-Case-Werkstatt (animiert, Umschalter Use Case, Lastenheft, Stakeholder-Analyse, Business Case, Change Request: welcher Eintrag welches Artefakt füllt), feste Schalterleiste unten, Link zum Epic-Agenten (separates claude.ai-Artefakt, braucht Internet, noch ohne DE/EN, Footer und Audit). Inhalte der Beispiele (Betriebsrat, 30-Tage-Löschfrist, Zuschuss, Bestellschluss 10:00) sind Beispielwerte und von Michaela fachlich zu prüfen. Teilnehmendenversion: story-slicing-lindenfeld-teilnehmende.html. Audit-Protokoll: tools/Audit-Protokoll_Story-Slicing-Lindenfeld.md."
+    },
+    {
+      "id": "story-slicing-lindenfeld-teilnehmende",
+      "datei": "tools/story-slicing-lindenfeld-teilnehmende.html",
+      "titel": "Lindenfeld Lunch: Vom Epic zur fertigen Story (Teilnehmende)",
+      "kurztitel": "Epic zur Story (Teilnehmende)",
+      "kurz": "Teilnehmendenversion: ohne Footer, ohne „Alle auflösen“ und ohne Coaching-Fragen, zum Weitergeben an die Gruppe. Die Lösung nach Auswahl bleibt.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "FA/NFA, User Stories & Traceability",
+      "aufStartseite": false,
+      "zweck": [
+        "Demonstrator",
+        "Übung"
+      ],
+      "denkraum": "loesung",
+      "faeden": [
+        "re",
+        "ba",
+        "pm",
+        "ki"
+      ],
+      "dauer": "ca. 2 Std. 40 min komplett (einzelne Abschnitte 5–20 min)",
+      "haufeSeminare": [
+        "3744",
+        "9368",
+        "34000",
+        "3525",
+        "41851"
+      ],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "Fallwelt",
+        "Epic",
+        "Use Case",
+        "Use-Case-Werkstatt",
+        "Lastenheft",
+        "Stakeholder-Analyse",
+        "Business Case",
+        "Epic-Agent",
+        "User Story",
+        "Story Slicing",
+        "SPIDR",
+        "Persona",
+        "MoSCoW",
+        "Definition of Ready",
+        "Definition of Done",
+        "INVEST",
+        "SMART",
+        "Akzeptanzkriterium",
+        "Testfall",
+        "Change Request",
+        "Refinement",
+        "Story Map",
+        "Jira",
+        "Claude Code",
+        "Workflow-Automatisierung",
+        "ISO 25010",
+        "ISO 27001"
+      ],
+      "standards": [
+        "ISO 25010:2023",
+        "ISO 27001:2022",
+        "Scrum Guide",
+        "BABOK",
+        "IREB"
+      ],
+      "siegel": {
+        "status": "Offene Punkte",
+        "letztesAudit": "2026-11-25",
+        "auditZeileImTool": "2026-11-25",
+        "offen": [
+          "Erstaudit durch Michaela steht aus (Selbstprüfung am 25.11.2026, Protokoll: tools/Audit-Protokoll_Story-Slicing-Lindenfeld.md)",
+          "Fachliche Prüfung der Beispielinhalte in Station 3a durch Michaela",
+          "Epic-Agent (externes Artefakt) ohne DE/EN, vier Footer-Boxen und Audit"
+        ]
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": false,
+      "verwandt": [],
+      "geprueft": false,
+      "notiz": "Aus story-slicing-lindenfeld.html erzeugt (html.tn); nach Änderungen am Haupttool neu erzeugen."
     },
     {
         "id": "essensapp-vom-wirrwarr-zum-pflichtenheft",
