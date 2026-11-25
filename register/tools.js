@@ -4,7 +4,7 @@
  * Als Skript-Datei (nicht .json), damit sie auch offline per file:// lädt.
  */
 window.DENKRAUM_REGISTER = {
-  "stand": "2026-11-12",
+  "stand": "2026-11-25",
   "denkraeume": [
     {
       "id": "moeglichkeit",
@@ -5478,6 +5478,87 @@ window.DENKRAUM_REGISTER = {
       ],
       "geprueft": false,
       "notiz": "Neu am 05.11.2026, entstanden aus dem Demonstrator-Kapitel des ISO-25010-Kompendiums, auf Lindenfeld Lunch angepasst und um Schritt 1 (muss/soll/kann) erweitert. Zahlen und Rechtsbezüge im Fall sind Beispielwerte. K22 entfällt (Demonstrator), im Handbuch begründet."
+    },
+    {
+      "id": "story-slicing-lindenfeld",
+      "datei": "tools/story-slicing-lindenfeld.html",
+      "titel": "Lindenfeld Lunch: Vom Epic zur fertigen Story",
+      "kurztitel": "Lindenfeld: Epic zur Story",
+      "kurz": "Ein Epic der Cafeteria-App wird Schritt für Schritt zu fertigen Stories: über Use Cases und Verben zerlegen, mit SPIDR schneiden, Personas zuordnen, mit MoSCoW priorisieren, die Definition of Ready mit SMART und die Definition of Done mit INVEST prüfen. Dazu Qualität und Sicherheit nach ISO/IEC 25010 und 27001, Testfälle, Change Request, Wirkung, Refinement und ein Workflow in Claude Code bis zum Jira-Import. Mit Gruppenfragen, Einzelfrage-Übung und DE/EN.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "FA/NFA, User Stories & Traceability",
+      "aufStartseite": true,
+      "zweck": [
+        "Demonstrator",
+        "Übung"
+      ],
+      "denkraum": "loesung",
+      "faeden": [
+        "re",
+        "ba",
+        "pm",
+        "ki"
+      ],
+      "dauer": "ca. 2 Std. 40 min komplett (einzelne Abschnitte 5–20 min)",
+      "haufeSeminare": [
+        "3744",
+        "9368",
+        "34000",
+        "3525",
+        "41851"
+      ],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "Fallwelt",
+        "Epic",
+        "Use Case",
+        "User Story",
+        "Story Slicing",
+        "SPIDR",
+        "Persona",
+        "MoSCoW",
+        "Definition of Ready",
+        "Definition of Done",
+        "INVEST",
+        "SMART",
+        "Akzeptanzkriterium",
+        "Testfall",
+        "Change Request",
+        "Refinement",
+        "Story Map",
+        "Jira",
+        "Claude Code",
+        "Workflow-Automatisierung",
+        "ISO 25010",
+        "ISO 27001"
+      ],
+      "standards": [
+        "ISO 25010:2023",
+        "ISO 27001:2022",
+        "Scrum Guide",
+        "BABOK",
+        "IREB"
+      ],
+      "siegel": {
+        "status": "Offene Punkte",
+        "letztesAudit": "2026-11-25",
+        "auditZeileImTool": "2026-11-25",
+        "offen": [
+          "Erstaudit durch Michaela steht aus (Selbstprüfung am Bautag; die Audit-Zeile im Tool nennt ✅, ein Audit-Protokoll liegt noch nicht im Repo)",
+          "Vortrags-Skript: Regieanweisungen je Abschnitt vorhanden, wörtlicher Sprechtext und Übergangssätze fehlen noch"
+        ]
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [],
+      "geprueft": false,
+      "notiz": "Neu am 25.11.2026 (Upload von Michaela). Durchgängige Lindenfeld-Lunch-Reise vom Epic bis zum Jira-Import. K22 entfällt (Demonstrator mit Übungen), im Handbuch begründet. Keine Persistenz, kein localStorage."
     },
     {
         "id": "essensapp-vom-wirrwarr-zum-pflichtenheft",
