@@ -5558,7 +5558,7 @@ window.DENKRAUM_REGISTER = {
       "sprecherSkript": true,
       "verwandt": [],
       "geprueft": false,
-      "notiz": "Neu am 25.11.2026 (Upload von Michaela). Durchgängige Lindenfeld-Lunch-Reise vom Epic bis zum Jira-Import. K22 entfällt (Demonstrator mit Übungen), im Handbuch begründet. Keine Persistenz, kein localStorage."
+      "notiz": "Neu am 25.11.2026 (Upload von Michaela). Durchgängige Lindenfeld-Lunch-Reise vom Epic bis zum Jira-Import. K22 entfällt (Demonstrator mit Übungen), im Handbuch begründet. Keine Persistenz, kein localStorage. Station 3 (Zerlegen) am 25.11.2026 auf die schlanke Fassung zurückgestellt: Einleitung und Board „Vom Epic zum Todo“, ohne den Block „Epic oder Use Case“ und ohne Sortierübung."
     },
     {
         "id": "essensapp-vom-wirrwarr-zum-pflichtenheft",
