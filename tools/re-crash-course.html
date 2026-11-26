@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>RE Crash Course – Requirements Engineering von Foundation bis Advanced</title>
+<script>document.documentElement.className+=' js';</script>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#fbfaf7;--panel:#ffffff;--ink:#1d2330;--ink-dim:#4a5568;--muted:#5b6475;--line:#d9dde6;
+  --accent:#5b3cc4;--accent-bg:#eeeafb;--nav:#1d2330;
+  --fs:16px;--fs-h2:30px;--fs-sec:14px;--fs-nav:16px;--nav-w:300px;
+}
+html.beamer{--ink-dim:#3D4A5C;--fs:22px;--fs-h2:44px;--fs-sec:15px;--fs-nav:18px;--nav-w:340px;}
+html.beamer-xl{--fs:28px;--fs-h2:54px;--fs-sec:18px;--fs-nav:20px;--nav-w:380px;}
+html.beamer-xxl{--fs:34px;--fs-h2:64px;--fs-sec:21px;--fs-nav:22px;--nav-w:420px;}
+*{box-sizing:border-box;}
+html{overflow-x:hidden;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:var(--fs);line-height:1.55;overflow-x:hidden;}
+button{font-family:inherit;}
+
+/* Signatur (K21): immer fixed oben rechts */
+.signature{position:fixed;top:14px;right:28px;z-index:600;text-align:right;background:rgba(255,255,255,.94);padding:4px 10px;border-radius:8px;line-height:1.3;box-shadow:0 2px 8px rgba(29,35,48,.08);}
+.signature strong{display:block;font-size:14px;color:var(--ink);}
+.signature a{font-size:14px;color:var(--accent);text-decoration:none;font-weight:600;}
+.signature a:hover{text-decoration:underline;}
+
+/* Linke Navigation (N1) */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--nav-w);background:var(--nav);color:#fff;overflow-y:auto;padding:14px 12px 24px;z-index:500;font-size:var(--fs-nav);}
+.sidebar .nav-title{font-weight:700;font-size:var(--fs-nav);padding:6px 8px 10px;color:#fff;}
+.nav-group{margin:14px 0 4px;padding:2px 0 2px 10px;border-left:6px solid #fff;font-weight:700;font-size:14px;letter-spacing:.02em;color:#e6e9f2;}
+html.beamer .nav-group{font-size:15px;}
+.nav-item,.nav-link{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;text-align:left;background:transparent;color:#fff;border:0;border-left:4px solid transparent;border-radius:8px;padding:8px 10px;font-size:var(--fs-nav);cursor:pointer;}
+.nav-item:hover,.nav-link:hover{background:rgba(255,255,255,.12);}
+.nav-item .nn{flex:0 0 auto;min-width:28px;height:28px;border-radius:999px;background:#fff;color:var(--nav);font-weight:700;font-size:14px;display:inline-flex;align-items:center;justify-content:center;}
+.nav-item.on,.nav-link.on{background:rgba(255,255,255,.2);border-left-color:#fff;font-weight:700;}
+.nav-item .seen,.tile .seen{margin-left:auto;font-weight:700;}
+.nav-item .seen:empty{display:none;}
+.nav-sep{height:1px;background:rgba(255,255,255,.25);margin:12px 0;}
+.dr-sprung{background:#2b3345!important;border-color:#4a5568!important;}
+.dr-sprung a,.dr-sprung summary{color:#fff!important;}
+.dr-sprung a:hover,.dr-sprung summary:hover{background:rgba(255,255,255,.15)!important;}
+.dr-sprung small{color:#cbd2e0!important;font-size:14px!important;}
+
+main{margin-left:var(--nav-w);padding:78px 28px 40px;max-width:1500px;}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px;}
+.back-link{color:var(--accent);font-weight:600;text-decoration:none;font-size:16px;margin-right:auto;}
+.pill{min-height:44px;background:#fff;border:1.5px solid var(--line);color:var(--ink-dim);font-size:15px;padding:8px 18px;border-radius:999px;cursor:pointer;font-weight:600;}
+.pill:hover{background:var(--accent-bg);border-color:var(--accent);}
+.pill.active,.pill.primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.pill[aria-disabled="true"]{opacity:.5;cursor:not-allowed;}
+html.beamer .pill,html.beamer-xl .pill,html.beamer-xxl .pill{font-size:16px;}
+.beamer-btn{border-radius:999px;}
+html.beamer .beamer-btn,html.beamer-xl .beamer-btn,html.beamer-xxl .beamer-btn{background:var(--ink);color:#fff;border-color:var(--ink);}
+.menu-btn{display:none;}
+
+.hero{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:26px 28px;box-shadow:0 16px 34px rgba(29,35,48,.08);margin-bottom:22px;}
+.eyebrow{font-size:var(--fs-sec);font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;}
+.hero h1{margin:6px 0 10px;font-size:calc(var(--fs-h2) + 8px);line-height:1.15;}
+.hero p{margin:0;font-size:var(--fs);}
+
+.js body:not([data-view="tafel"]) .hero{display:none;}
+.view{display:block;}
+.js .view{display:none;}
+.js body[data-view="tafel"] #v-tafel,.js body[data-view="modul"] #v-modul,.js body[data-view="glossar"] #v-glossar{display:block;}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 16px;}
+.progress{margin-left:auto;font-size:var(--fs-sec);color:var(--muted);font-weight:600;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;}
+.tile{display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--panel);border:1.5px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 6px 16px rgba(29,35,48,.05);cursor:pointer;color:var(--ink);font-size:var(--fs);}
+.tile:hover{border-color:var(--accent);box-shadow:0 10px 22px rgba(91,60,196,.14);}
+.tile svg{width:100%;height:auto;display:block;background:#fcfbff;border-radius:8px;}
+.tile-top{display:flex;align-items:center;gap:8px;}
+.num{flex:0 0 auto;width:32px;height:32px;border-radius:999px;background:var(--ink);color:#fff;font-weight:700;display:inline-flex;align-items:center;justify-content:center;font-size:15px;}
+.tile-title{font-weight:700;line-height:1.3;}
+.tile-cap{font-size:var(--fs-sec);color:var(--ink-dim);}
+.tile.hide{display:none;}
+.stage{display:inline-block;border:1.5px solid;border-radius:999px;padding:2px 12px;font-size:var(--fs-sec);font-weight:700;line-height:1.5;}
+.tile .seen{color:#2d6a1f;font-size:var(--fs-sec);}
+svg text{font-size:14px;fill:#1d2330;font-family:inherit;}
+svg text.b{font-weight:700;}
+
+.mod{display:block;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 26px;box-shadow:0 6px 16px rgba(29,35,48,.05);}
+.js .mod{display:none;}
+.js .mod.on{display:block;}
+.mod-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.count{font-size:var(--fs-sec);color:var(--muted);font-weight:600;}
+.mod h2{font-size:var(--fs-h2);line-height:1.2;margin:10px 0 12px;outline:none;}
+.mod h3{font-size:calc(var(--fs) + 2px);margin:20px 0 8px;}
+.mod-fig{max-width:520px;margin:6px 0 14px;}
+.mod-fig svg{width:100%;height:auto;display:block;background:#fcfbff;border:1px solid var(--line);border-radius:12px;}
+.lead{margin:0 0 6px;}
+.belege,.fragen{margin:0;padding-left:22px;}
+.belege li,.fragen li{margin-bottom:8px;}
+.beleg{display:block;font-size:var(--fs-sec);color:var(--accent);font-weight:600;overflow-wrap:anywhere;}
+a{color:var(--accent);}
+.loesung{margin-top:14px;border:1.5px solid var(--accent);border-radius:12px;background:var(--accent-bg);}
+.loesung summary{cursor:pointer;min-height:44px;padding:10px 16px;font-weight:700;color:var(--accent);list-style:none;display:flex;align-items:center;}
+.loesung summary::-webkit-details-marker{display:none;}
+.loesung p{margin:0;padding:0 16px 14px;}
+.mod-nav{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;}
+.mod-nav .primary{margin-left:auto;}
+
+/* Vertiefung (K22) */
+.depth-full{display:none;}
+html.v-full .depth-short{display:none;}
+html.v-full .depth-full{display:inline;}
+html.beamer .depth-full,html.beamer-xl .depth-full,html.beamer-xxl .depth-full{display:none!important;}
+html.beamer .depth-short,html.beamer-xl .depth-short,html.beamer-xxl .depth-short{display:inline!important;}
+
+.glossar dt{font-weight:700;margin-top:14px;}
+.glossar dd{margin:2px 0 0;color:var(--ink-dim);}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 24px;box-shadow:0 6px 16px rgba(29,35,48,.05);margin-bottom:18px;}
+.panel h2{margin-top:0;font-size:calc(var(--fs) + 8px);}
+.quellen li{margin-bottom:6px;}
+
+/* Footer */
+.footer-sig{font-size:14px;color:var(--muted);margin:28px 0 12px;}
+.footer-details,.footer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.footer-box{background:var(--panel);border:1px solid var(--line);border-radius:16px;align-self:start;}
+.footer-summary{cursor:pointer;min-height:44px;padding:12px 14px;font-weight:700;list-style:none;display:flex;justify-content:space-between;align-items:center;font-size:16px;}
+.footer-summary::-webkit-details-marker{display:none;}
+.footer-summary::after{content:"+";font-size:18px;color:var(--muted);}
+details[open]>.footer-summary::after{content:"–";}
+.footer-content{padding:0 14px 14px;}
+.footer-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;white-space:pre-wrap;background:#fbfbfc;border:1px solid var(--line);border-radius:8px;padding:12px;max-height:340px;overflow-y:auto;overflow-wrap:anywhere;}
+.footer-sans{font-size:16px;}
+.footer-sans h4{margin:14px 0 4px;font-size:16px;}
+.footer-table{width:100%;border-collapse:collapse;font-size:16px;}
+.footer-table th,.footer-table td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top;overflow-wrap:anywhere;}
+.footer-table th{background:#f2f3f7;}
+.crosslink{margin-top:20px;font-size:14px;color:var(--ink-dim);}
+.crosslink a{color:var(--accent);font-weight:700;text-decoration:none;}
+.crosslink a:hover{text-decoration:underline;}
+.crosslink ul{margin:8px 0 0;padding-left:20px;}
+.crosslink li{margin-bottom:4px;}
+
+[data-lang="en"]{display:none;}
+html[lang="en"] [data-lang="en"]{display:block!important;}
+html[lang="en"] [data-lang="de"]{display:none!important;}
+html.beamer .footer-sig,html.beamer .footer-details,html.beamer .crosslink,
+html.beamer-xl .footer-sig,html.beamer-xl .footer-details,html.beamer-xl .crosslink,
+html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .crosslink{display:none;}
+
+@media (max-width:1100px){.footer-details,.footer-grid{grid-template-columns:1fr 1fr;}}
+@media (max-width:900px){
+  .sidebar{transform:translateX(-105%);transition:transform .2s;width:min(86vw,var(--nav-w));box-shadow:0 0 30px rgba(0,0,0,.3);}
+  html.nav-open .sidebar{transform:none;}
+  main{margin-left:0;padding:84px 14px 30px;}
+  .menu-btn{display:inline-flex;align-items:center;}
+  .signature{top:8px;right:8px;padding:2px 8px;}
+  .footer-details,.footer-grid{grid-template-columns:1fr;}
+  .hero{padding:18px;}
+  .mod{padding:16px;}
+  .back-link{flex-basis:100%;}
+}
+@media print{.sidebar,.signature,.toolbar{display:none}main{margin:0}}
+:focus-visible{outline:3px solid #ffb300;outline-offset:2px;}
+</style>
+</head>
+<body data-view="tafel">
+
+<div class="signature"><strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a></div>
+
+<nav class="sidebar" id="sidebar" aria-label="Navigation">
+  <div class="nav-title" data-en="RE Crash Course">RE Crash Course</div>
+  <button type="button" class="nav-link on" data-act="tafel" id="navTafel"><span data-en="Board">Tafel</span></button>
+<div class="nav-group" style="border-left-color:#5b3cc4" data-en="Foundation Level">Foundation Level</div>
+<button type="button" class="nav-item" data-act="open" data-i="0"><span class="nn">1</span><span data-en="What is Requirements Engineering?">Was ist Requirements Engineering?</span><span class="seen" aria-hidden="true"></span></button>
+<button type="button" class="nav-item" data-act="open" data-i="1"><span class="nn">2</span><span data-en="The nine principles of Requirements Engineering">Die neun Prinzipien des Requirements Engineering</span><span class="seen" aria-hidden="true"></span></button>
+<button type="button" class="nav-item" data-act="open" data-i="2"><span class="nn">3</span><span data-en="System context and system boundary">Systemkontext und Systemgrenze</span><span class="seen" aria-hidden="true"></span></button>
+<button type="button" class="nav-item" data-act="open" data-i="3"><span class="nn">4</span><span data-en="Stakeholders and sources of requirements">Stakeholder und Anforderungsquellen</span><span class="seen" aria-hidden="true"></span></button>
+<button type="button" class="nav-item" data-act="open" data-i="4"><span class="nn">5</span><span data-en="Eliciting: Kano model and elicitation techniques">Ermitteln: Kano-Modell und Erhebungstechniken</span><span class="seen" aria-hidden="true"></span></button>
+<button type="button" class="nav-item" data-act="open" data-i="5"><span class="nn">6</span><span data-en="Documenting: phrase templates">Dokumentieren: Satzschablonen</span><span class="seen" aria-hidden="true"></span></button>
+<button type="button" class="nav-item" data-act="open" data-i="6"><span class="nn">7</span><span data-en="Resolving conflicts about requirements">Konflikte in Anforderungen lösen</span><span class="seen" aria-hidden="true"></span></button>
+<button type="button" class="nav-item" data-act="open" data-i="7"><span class="nn">8</span><span data-en="Validating requirements">Anforderungen validieren</span><span class="seen" aria-hidden="true"></span></button>
+<button type="button" class="nav-item" data-act="open" data-i="8"><span class="nn">9</span><span data-en="Configuring the Requirements Engineering process">Den Prozess des Requirements Engineering konfigurieren</span><span class="seen" aria-hidden="true"></span></button>
+<button type="button" class="nav-item" data-act="open" data-i="9"><span class="nn">10</span><span data-en="Requirements Management and traceability">Requirements Management und Verfolgbarkeit</span><span class="seen" aria-hidden="true"></span></button>
+<div class="nav-group" style="border-left-color:#0f6f78" data-en="Advanced: Modeling">Advanced: Modeling</div>
+<button type="button" class="nav-item" data-act="open" data-i="10"><span class="nn">11</span><span data-en="Modeling requirements: views">Anforderungen modellieren: Sichten</span><span class="seen" aria-hidden="true"></span></button>
+<div class="nav-group" style="border-left-color:#8a5a00" data-en="Advanced: Management">Advanced: Management</div>
+<button type="button" class="nav-item" data-act="open" data-i="11"><span class="nn">12</span><span data-en="Prioritizing requirements">Anforderungen priorisieren</span><span class="seen" aria-hidden="true"></span></button>
+<button type="button" class="nav-item" data-act="open" data-i="12"><span class="nn">13</span><span data-en="Change management">Änderungsmanagement</span><span class="seen" aria-hidden="true"></span></button>
+<div class="nav-group" style="border-left-color:#3f6b12" data-en="Advanced: RE@Agile">Advanced: RE@Agile</div>
+<button type="button" class="nav-item" data-act="open" data-i="13"><span class="nn">14</span><span data-en="User stories, three-C model and INVEST">User Storys, Drei-C-Modell und INVEST</span><span class="seen" aria-hidden="true"></span></button>
+<button type="button" class="nav-item" data-act="open" data-i="14"><span class="nn">15</span><span data-en="Quality requirements and constraints in an agile environment">Qualitätsanforderungen und Randbedingungen im agilen Umfeld</span><span class="seen" aria-hidden="true"></span></button>
+  <div class="nav-sep"></div>
+  <button type="button" class="nav-link" data-act="glossar" id="navGlossar"><span data-en="Glossary and sources">Glossar und Quellen</span></button>
+</nav>
+
+<main id="main">
+  <div class="toolbar">
+    <a class="back-link" href="../index.html" data-en="← Back to the start page">← Zurück zur Startseite</a>
+    <button type="button" class="pill menu-btn" id="menuBtn" data-en="☰ Menu">☰ Menü</button>
+    <button type="button" class="pill beamer-btn" id="beamerBtn">☀ Beamer</button>
+    <button type="button" class="pill" id="langBtn">EN</button>
+    <button type="button" class="pill" id="vertBtn">Vertiefung: Kurz</button>
+    <button type="button" class="pill" id="resetBtn" data-en="Reset">Zurücksetzen</button>
+  </div>
+
+  <header class="hero">
+    <div class="eyebrow" data-en="Requirements Engineering · Foundation to Advanced">Requirements Engineering · Foundation bis Advanced</div>
+    <h1 data-en="RE Crash Course">RE Crash Course</h1>
+    <p data-en="Fifteen modules on one board: ten from the Foundation Level, one on modeling, two on requirements management and two on RE@Agile. Every module has a core paragraph, sources with chapter and page, questions for the group and a solution. All examples use an application portal.">Fünfzehn Module auf einer Tafel: zehn aus dem Foundation Level, eines zur Modellierung, zwei zum Requirements Management und zwei zu RE@Agile. Jedes Modul hat einen Kernabsatz, Belege mit Kapitel und Seite, Fragen an die Gruppe und eine Lösung. Alle Beispiele spielen an einem Bewerbungsportal.</p>
+  </header>
+
+  <div class="view" id="v-tafel">
+    <div class="filters" role="group" aria-label="Filter">
+      <button type="button" class="pill active" data-act="filter" data-f="all" data-en="All">Alle</button>
+      <button type="button" class="pill" data-act="filter" data-f="F" data-en="Foundation Level">Foundation Level</button>
+      <button type="button" class="pill" data-act="filter" data-f="M" data-en="Modeling">Modeling</button>
+      <button type="button" class="pill" data-act="filter" data-f="R" data-en="Management">Management</button>
+      <button type="button" class="pill" data-act="filter" data-f="A" data-en="RE@Agile">RE@Agile</button>
+      <span class="progress"><span data-en="Seen:">Gesehen:</span> <span id="seenCount">0</span> <span data-en="of 15">von 15</span></span>
+    </div>
+    <div class="grid" id="grid">
+<button type="button" class="tile" data-act="open" data-i="0" data-stage="F" aria-label="Was ist Requirements Engineering?">
+  <span class="tile-top"><span class="num">1</span><span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span><span class="seen" aria-hidden="true"></span></span>
+  <svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="aht1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="4" y="14" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="50.0" y="39.0" text-anchor="middle" data-en="Need">Bedürfnis</text><rect x="104" y="14" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="150.0" y="39.0" text-anchor="middle" data-en="Capability">Fähigkeit</text><rect x="204" y="14" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="250.0" y="39.0" text-anchor="middle" data-en="Document">Dokument</text><rect x="4" y="90" width="92" height="40" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="50.0" y="115.0" text-anchor="middle" data-en="Functional">Funktional</text><rect x="104" y="90" width="92" height="40" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="115.0" text-anchor="middle" data-en="Quality">Qualität</text><rect x="204" y="90" width="92" height="40" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="250.0" y="115.0" text-anchor="middle" data-en="Constraint">Constraint</text></svg>
+  <span class="tile-title" data-en="What is Requirements Engineering?">Was ist Requirements Engineering?</span>
+  <span class="tile-cap" data-en="Need, capability, document">Bedürfnis, Fähigkeit, Dokument</span>
+</button>
+<button type="button" class="tile" data-act="open" data-i="1" data-stage="F" aria-label="Die neun Prinzipien des Requirements Engineering">
+  <span class="tile-top"><span class="num">2</span><span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span><span class="seen" aria-hidden="true"></span></span>
+  <svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="aht2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><circle cx="20.0" cy="62" r="15" fill="#5b3cc4"/><text x="20.0" y="67" text-anchor="middle" fill="#fff" font-weight="700">1</text><circle cx="52.5" cy="62" r="15" fill="#5b3cc4"/><text x="52.5" y="67" text-anchor="middle" fill="#fff" font-weight="700">2</text><circle cx="85.0" cy="62" r="15" fill="#5b3cc4"/><text x="85.0" y="67" text-anchor="middle" fill="#fff" font-weight="700">3</text><circle cx="117.5" cy="62" r="15" fill="#5b3cc4"/><text x="117.5" y="67" text-anchor="middle" fill="#fff" font-weight="700">4</text><circle cx="150.0" cy="62" r="15" fill="#5b3cc4"/><text x="150.0" y="67" text-anchor="middle" fill="#fff" font-weight="700">5</text><circle cx="182.5" cy="62" r="15" fill="#5b3cc4"/><text x="182.5" y="67" text-anchor="middle" fill="#fff" font-weight="700">6</text><circle cx="215.0" cy="62" r="15" fill="#5b3cc4"/><text x="215.0" y="67" text-anchor="middle" fill="#fff" font-weight="700">7</text><circle cx="247.5" cy="62" r="15" fill="#5b3cc4"/><text x="247.5" y="67" text-anchor="middle" fill="#fff" font-weight="700">8</text><circle cx="280.0" cy="62" r="15" fill="#5b3cc4"/><text x="280.0" y="67" text-anchor="middle" fill="#fff" font-weight="700">9</text><text class="b" x="150" y="118" text-anchor="middle" data-en="Nine principles">Neun Prinzipien</text></svg>
+  <span class="tile-title" data-en="The nine principles of Requirements Engineering">Die neun Prinzipien des Requirements Engineering</span>
+  <span class="tile-cap" data-en="Nine guard rails">Neun Leitplanken</span>
+</button>
+<button type="button" class="tile" data-act="open" data-i="2" data-stage="F" aria-label="Systemkontext und Systemgrenze">
+  <span class="tile-top"><span class="num">3</span><span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span><span class="seen" aria-hidden="true"></span></span>
+  <svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="aht3" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><circle cx="150" cy="75" r="66" fill="none" stroke="#8a5a00" stroke-width="2" stroke-dasharray="5 4"/><circle cx="150" cy="75" r="36" fill="#5b3cc4"/><text x="150" y="80" text-anchor="middle" fill="#fff" font-weight="700" data-en="System">System</text><rect x="2" y="60" width="72" height="30" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="38.0" y="80.0" text-anchor="middle" data-en="User">Nutzer</text><rect x="226" y="60" width="72" height="30" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="262.0" y="80.0" text-anchor="middle" data-en="Neighbor">Nachbar</text><path d="M74 75H112" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#aht3)"/><path d="M226 75H188" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#aht3)"/></svg>
+  <span class="tile-title" data-en="System context and system boundary">Systemkontext und Systemgrenze</span>
+  <span class="tile-cap" data-en="Where does the system end?">Wo endet das System?</span>
+</button>
+<button type="button" class="tile" data-act="open" data-i="3" data-stage="F" aria-label="Stakeholder und Anforderungsquellen">
+  <span class="tile-top"><span class="num">4</span><span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span><span class="seen" aria-hidden="true"></span></span>
+  <svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="aht4" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="4" y="6" width="116" height="36" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="62.0" y="29.0" text-anchor="middle" data-en="Stakeholders">Stakeholder</text><rect x="4" y="57" width="116" height="36" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="62.0" y="80.0" text-anchor="middle" data-en="Documents">Dokumente</text><rect x="4" y="108" width="116" height="36" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="62.0" y="131.0" text-anchor="middle" data-en="Systems">Systeme</text><rect x="170" y="57" width="126" height="36" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="233.0" y="80.0" text-anchor="middle" data-en="Requirements">Anforderungen</text><path d="M120 24L170 64" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#aht4)"/><path d="M120 75H170" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#aht4)"/><path d="M120 126L170 86" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#aht4)"/></svg>
+  <span class="tile-title" data-en="Stakeholders and sources of requirements">Stakeholder und Anforderungsquellen</span>
+  <span class="tile-cap" data-en="Who knows what?">Wer weiß was?</span>
+</button>
+<button type="button" class="tile" data-act="open" data-i="4" data-stage="F" aria-label="Ermitteln: Kano-Modell und Erhebungstechniken">
+  <span class="tile-top"><span class="num">5</span><span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span><span class="seen" aria-hidden="true"></span></span>
+  <svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="aht5" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><path d="M20 8V128H292" stroke="#64748b" fill="none" stroke-width="1.5"/><path d="M22 118Q90 96 290 92" stroke="#64748b" stroke-width="2.5" fill="none"/><text class="b" x="240" y="112" text-anchor="middle" data-en="Basic">Basis</text><path d="M22 116L290 36" stroke="#8a5a00" stroke-width="2.5" fill="none"/><text class="b" x="236" y="80" text-anchor="middle" data-en="Performance">Leistung</text><path d="M22 92Q170 88 290 12" stroke="#5b3cc4" stroke-width="2.5" fill="none"/><text class="b" x="86" y="70" text-anchor="middle" data-en="Delight">Begeisterung</text></svg>
+  <span class="tile-title" data-en="Eliciting: Kano model and elicitation techniques">Ermitteln: Kano-Modell und Erhebungstechniken</span>
+  <span class="tile-cap" data-en="Basic, performance, delight">Basis, Leistung, Begeisterung</span>
+</button>
+<button type="button" class="tile" data-act="open" data-i="5" data-stage="F" aria-label="Dokumentieren: Satzschablonen">
+  <span class="tile-top"><span class="num">6</span><span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span><span class="seen" aria-hidden="true"></span></span>
+  <svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="aht6" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="4" y="8" width="140" height="34" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="74.0" y="30.0" text-anchor="middle" data-en="[condition]">[Bedingung]</text><rect x="156" y="8" width="140" height="34" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="226.0" y="30.0" text-anchor="middle" data-en="subject">Subjekt</text><rect x="4" y="54" width="140" height="34" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="74.0" y="76.0" text-anchor="middle" data-en="action">Aktion</text><rect x="156" y="54" width="140" height="34" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="226.0" y="76.0" text-anchor="middle" data-en="objects">Objekte</text><rect x="4" y="100" width="292" height="34" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="122.0" text-anchor="middle" data-en="[constraint]">[Einschränkung]</text></svg>
+  <span class="tile-title" data-en="Documenting: phrase templates">Dokumentieren: Satzschablonen</span>
+  <span class="tile-cap" data-en="Phrase unambiguously">Eindeutig formulieren</span>
+</button>
+<button type="button" class="tile" data-act="open" data-i="6" data-stage="F" aria-label="Konflikte in Anforderungen lösen">
+  <span class="tile-top"><span class="num">7</span><span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span><span class="seen" aria-hidden="true"></span></span>
+  <svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="aht7" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="4" y="14" width="94" height="50" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="51.0" y="44.0" text-anchor="middle" data-en="Factual">Sach</text><rect x="103" y="14" width="94" height="50" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="150.0" y="44.0" text-anchor="middle" data-en="Data">Daten</text><rect x="202" y="14" width="94" height="50" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="249.0" y="44.0" text-anchor="middle" data-en="Interest">Interessen</text><rect x="4" y="80" width="94" height="50" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="51.0" y="110.0" text-anchor="middle" data-en="Value">Werte</text><rect x="103" y="80" width="94" height="50" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="110.0" text-anchor="middle" data-en="Relation">Beziehung</text><rect x="202" y="80" width="94" height="50" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="249.0" y="110.0" text-anchor="middle" data-en="Structure">Struktur</text></svg>
+  <span class="tile-title" data-en="Resolving conflicts about requirements">Konflikte in Anforderungen lösen</span>
+  <span class="tile-cap" data-en="Six conflict types">Sechs Konflikttypen</span>
+</button>
+<button type="button" class="tile" data-act="open" data-i="7" data-stage="F" aria-label="Anforderungen validieren">
+  <span class="tile-top"><span class="num">8</span><span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span><span class="seen" aria-hidden="true"></span></span>
+  <svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="aht8" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="14" width="96" height="54" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="50.0" y="46.0" text-anchor="middle" data-en="Review">Review</text><rect x="102" y="14" width="96" height="54" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="46.0" text-anchor="middle" data-en="Exploration">Exploration</text><rect x="202" y="14" width="96" height="54" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="250.0" y="46.0" text-anchor="middle" data-en="Trial">Probe</text><text x="50" y="104" text-anchor="middle" data-en="static">statisch</text><text x="150" y="104" text-anchor="middle" data-en="dynamic">dynamisch</text><text x="250" y="104" text-anchor="middle" data-en="static">statisch</text></svg>
+  <span class="tile-title" data-en="Validating requirements">Anforderungen validieren</span>
+  <span class="tile-cap" data-en="Check before building">Prüfen, bevor gebaut wird</span>
+</button>
+<button type="button" class="tile" data-act="open" data-i="8" data-stage="F" aria-label="Den Prozess des Requirements Engineering konfigurieren">
+  <span class="tile-top"><span class="num">9</span><span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span><span class="seen" aria-hidden="true"></span></span>
+  <svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="aht9" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><text x="2" y="25" font-weight="700" data-en="Time">Zeit</text><path d="M72 20H290" stroke="#cbd5e1" stroke-width="5"/><circle cx="235.5" cy="20" r="8" fill="#5b3cc4"/><text x="72" y="42" text-anchor="start" data-en="linear">linear</text><text x="290" y="42" text-anchor="end" data-en="iterative">iterativ</text><text x="2" y="71" font-weight="700" data-en="Purpose">Zweck</text><path d="M72 66H290" stroke="#cbd5e1" stroke-width="5"/><circle cx="137.39999999999998" cy="66" r="8" fill="#5b3cc4"/><text x="72" y="88" text-anchor="start" data-en="prescriptive">präskriptiv</text><text x="290" y="88" text-anchor="end" data-en="exploratory">explorativ</text><text x="2" y="117" font-weight="700" data-en="Goal">Ziel</text><path d="M72 112H290" stroke="#cbd5e1" stroke-width="5"/><circle cx="202.79999999999998" cy="112" r="8" fill="#5b3cc4"/><text x="72" y="134" text-anchor="start" data-en="Client">Kunde</text><text x="290" y="134" text-anchor="end" data-en="Market">Markt</text></svg>
+  <span class="tile-title" data-en="Configuring the Requirements Engineering process">Den Prozess des Requirements Engineering konfigurieren</span>
+  <span class="tile-cap" data-en="Three facets">Drei Facetten</span>
+</button>
+<button type="button" class="tile" data-act="open" data-i="9" data-stage="F" aria-label="Requirements Management und Verfolgbarkeit">
+  <span class="tile-top"><span class="num">10</span><span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span><span class="seen" aria-hidden="true"></span></span>
+  <svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="aht10" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="52" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="48.0" y="77.0" text-anchor="middle" data-en="Source">Quelle</text><rect x="104" y="52" width="92" height="40" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="77.0" text-anchor="middle" data-en="Requirement">Anforderung</text><rect x="206" y="52" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="252.0" y="77.0" text-anchor="middle" data-en="Test">Test</text><path d="M94 72H104" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#aht10)"/><path d="M196 72H206" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#aht10)"/><text x="150" y="28" text-anchor="middle" data-en="forward →">vorwärts →</text><text x="150" y="128" text-anchor="middle" data-en="← backward">← rückwärts</text></svg>
+  <span class="tile-title" data-en="Requirements Management and traceability">Requirements Management und Verfolgbarkeit</span>
+  <span class="tile-cap" data-en="Manage and trace">Verwalten und verfolgen</span>
+</button>
+<button type="button" class="tile" data-act="open" data-i="10" data-stage="M" aria-label="Anforderungen modellieren: Sichten">
+  <span class="tile-top"><span class="num">11</span><span class="stage" style="color:#0f6f78;background:#e3f4f5;border-color:#0f6f78" data-en="Advanced: Modeling">Advanced: Modeling</span><span class="seen" aria-hidden="true"></span></span>
+  <svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="aht11" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="12" width="96" height="46" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="50.0" y="40.0" text-anchor="middle" data-en="Structure">Struktur</text><rect x="102" y="12" width="96" height="46" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="150.0" y="40.0" text-anchor="middle" data-en="Behavior">Verhalten</text><rect x="202" y="12" width="96" height="46" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="250.0" y="40.0" text-anchor="middle" data-en="Function">Funktion</text><rect x="20" y="76" width="60" height="56" rx="3" fill="none" stroke="#5b3cc4" stroke-width="2"/><path d="M20 94H80M20 112H80" stroke="#5b3cc4" stroke-width="2"/><circle cx="124" cy="104" r="14" fill="none" stroke="#5b3cc4" stroke-width="2"/><circle cx="176" cy="104" r="14" fill="#eeeafb" stroke="#5b3cc4" stroke-width="2"/><path d="M138 104H160" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#aht11)"/><rect x="224" y="86" width="56" height="36" rx="3" fill="none" stroke="#5b3cc4" stroke-width="2"/><path d="M236 104H268" stroke="#5b3cc4" stroke-width="2"/></svg>
+  <span class="tile-title" data-en="Modeling requirements: views">Anforderungen modellieren: Sichten</span>
+  <span class="tile-cap" data-en="Structure, behavior, function">Struktur, Verhalten, Funktion</span>
+</button>
+<button type="button" class="tile" data-act="open" data-i="11" data-stage="R" aria-label="Anforderungen priorisieren">
+  <span class="tile-top"><span class="num">12</span><span class="stage" style="color:#8a5a00;background:#fbf0d9;border-color:#8a5a00" data-en="Advanced: Management">Advanced: Management</span><span class="seen" aria-hidden="true"></span></span>
+  <svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="aht12" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><text class="b" x="60" y="18" text-anchor="middle" data-en="ad hoc">ad hoc</text><text class="b" x="222" y="18" text-anchor="middle" data-en="analytical">analytisch</text><rect x="12" y="50" width="22" height="80" fill="#8a5a00"/><rect x="42" y="76" width="22" height="54" fill="#8a5a00"/><rect x="72" y="64" width="22" height="66" fill="#8a5a00"/><rect x="102" y="94" width="22" height="36" fill="#8a5a00"/><rect x="170" y="32" width="32" height="28" fill="#5b3cc4" stroke="#5b3cc4"/><rect x="208" y="32" width="32" height="28" fill="#eeeafb" stroke="#5b3cc4"/><rect x="246" y="32" width="32" height="28" fill="#5b3cc4" stroke="#5b3cc4"/><rect x="170" y="66" width="32" height="28" fill="#eeeafb" stroke="#5b3cc4"/><rect x="208" y="66" width="32" height="28" fill="#5b3cc4" stroke="#5b3cc4"/><rect x="246" y="66" width="32" height="28" fill="#eeeafb" stroke="#5b3cc4"/><rect x="170" y="100" width="32" height="28" fill="#5b3cc4" stroke="#5b3cc4"/><rect x="208" y="100" width="32" height="28" fill="#eeeafb" stroke="#5b3cc4"/><rect x="246" y="100" width="32" height="28" fill="#5b3cc4" stroke="#5b3cc4"/></svg>
+  <span class="tile-title" data-en="Prioritizing requirements">Anforderungen priorisieren</span>
+  <span class="tile-cap" data-en="Ad hoc or analytical">Ad hoc oder analytisch</span>
+</button>
+<button type="button" class="tile" data-act="open" data-i="12" data-stage="R" aria-label="Änderungsmanagement">
+  <span class="tile-top"><span class="num">13</span><span class="stage" style="color:#8a5a00;background:#fbf0d9;border-color:#8a5a00" data-en="Advanced: Management">Advanced: Management</span><span class="seen" aria-hidden="true"></span></span>
+  <svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="aht13" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="56" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="48.0" y="81.0" text-anchor="middle" data-en="Request">Antrag</text><rect x="104" y="56" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="150.0" y="81.0" text-anchor="middle" data-en="Assessment">Bewertung</text><rect x="206" y="56" width="92" height="40" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="252.0" y="81.0" text-anchor="middle" data-en="Decision">Beschluss</text><path d="M94 76H104" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#aht13)"/><path d="M196 76H206" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#aht13)"/><text x="48" y="36" text-anchor="middle" data-en="Change request">Change Request</text></svg>
+  <span class="tile-title" data-en="Change management">Änderungsmanagement</span>
+  <span class="tile-cap" data-en="Steer changes">Änderungen steuern</span>
+</button>
+<button type="button" class="tile" data-act="open" data-i="13" data-stage="A" aria-label="User Storys, Drei-C-Modell und INVEST">
+  <span class="tile-top"><span class="num">14</span><span class="stage" style="color:#3f6b12;background:#e9f4dc;border-color:#3f6b12" data-en="Advanced: RE@Agile">Advanced: RE@Agile</span><span class="seen" aria-hidden="true"></span></span>
+  <svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="aht14" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="24" width="96" height="70" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="50.0" y="64.0" text-anchor="middle" data-en="Card">Karte</text><rect x="102" y="24" width="96" height="70" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="64.0" text-anchor="middle" data-en="Conversation">Diskussion</text><rect x="202" y="24" width="96" height="70" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="250.0" y="64.0" text-anchor="middle" data-en="Confirmation">Bestätigung</text><text class="b" x="150" y="128" text-anchor="middle" data-en="INVEST">INVEST</text></svg>
+  <span class="tile-title" data-en="User stories, three-C model and INVEST">User Storys, Drei-C-Modell und INVEST</span>
+  <span class="tile-cap" data-en="Card, conversation, confirmation">Karte, Diskussion, Bestätigung</span>
+</button>
+<button type="button" class="tile" data-act="open" data-i="14" data-stage="A" aria-label="Qualitätsanforderungen und Randbedingungen im agilen Umfeld">
+  <span class="tile-top"><span class="num">15</span><span class="stage" style="color:#3f6b12;background:#e9f4dc;border-color:#3f6b12" data-en="Advanced: RE@Agile">Advanced: RE@Agile</span><span class="seen" aria-hidden="true"></span></span>
+  <svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="aht15" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="52" width="92" height="44" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="48.0" y="79.0" text-anchor="middle" data-en="“fast”?">„schnell“?</text><rect x="178" y="12" width="120" height="44" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="238.0" y="39.0" text-anchor="middle" data-en="Add detail">Details</text><rect x="178" y="92" width="120" height="44" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="238.0" y="119.0" text-anchor="middle" data-en="≤ 2 seconds">≤ 2 Sekunden</text><path d="M94 66L178 40" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#aht15)"/><path d="M94 84L178 110" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#aht15)"/></svg>
+  <span class="tile-title" data-en="Quality requirements and constraints in an agile environment">Qualitätsanforderungen und Randbedingungen im agilen Umfeld</span>
+  <span class="tile-cap" data-en="Make vague quality precise">Vage Qualität präzisieren</span>
+</button>
+    </div>
+  </div>
+
+  <div class="view" id="v-modul">
+<section class="mod" id="m1" data-i="0" aria-labelledby="h1">
+  <div class="mod-head">
+    <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
+    <span class="count"><span data-en="Module">Modul</span> 1 <span data-en="of 15">von 15</span></span>
+  </div>
+  <h2 id="h1" tabindex="-1" data-en="What is Requirements Engineering?">Was ist Requirements Engineering?</h2>
+  <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="4" y="14" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="50.0" y="39.0" text-anchor="middle" data-en="Need">Bedürfnis</text><rect x="104" y="14" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="150.0" y="39.0" text-anchor="middle" data-en="Capability">Fähigkeit</text><rect x="204" y="14" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="250.0" y="39.0" text-anchor="middle" data-en="Document">Dokument</text><rect x="4" y="90" width="92" height="40" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="50.0" y="115.0" text-anchor="middle" data-en="Functional">Funktional</text><rect x="104" y="90" width="92" height="40" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="115.0" text-anchor="middle" data-en="Quality">Qualität</text><rect x="204" y="90" width="92" height="40" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="250.0" y="115.0" text-anchor="middle" data-en="Constraint">Constraint</text></svg></div>
+  <p class="lead"><span class="depth-short" data-en="A requirement is a need, a capability or its documentation. There are three kinds.">Eine Anforderung ist ein Bedürfnis, eine Fähigkeit oder ihre Dokumentation. Es gibt drei Arten.</span><span class="depth-full" data-en="Requirements Engineering asks what should be built before anything is built. The handbook distinguishes three meanings of “requirement”: the need perceived by a stakeholder, the capability or property a system shall have, and the documented representation of both. Requirements exist even if nobody writes them down; anyone who does not capture them still works with them, only unconsciously. There are three kinds: functional requirements (result or behavior), quality requirements (for example performance or security) and constraints that further limit the solution space. A practical aid for telling them apart is to ask which concern the requirement addresses.">Requirements Engineering fragt, was gebaut werden soll, bevor gebaut wird. Das Handbuch unterscheidet drei Bedeutungen von „Anforderung“: das von einem Stakeholder wahrgenommene Bedürfnis, die Fähigkeit oder Eigenschaft, die ein System haben soll, und die dokumentierte Darstellung von beidem. Anforderungen bestehen auch dann, wenn niemand sie aufschreibt; wer sie nicht erfasst, arbeitet trotzdem mit ihnen, nur unbewusst. Dazu kommen drei Arten: funktionale Anforderungen (Ergebnis oder Verhalten), Qualitätsanforderungen (zum Beispiel Leistung oder Sicherheit) und Randbedingungen, die den Lösungsraum zusätzlich einschränken. Eine praktische Trennhilfe ist die Frage nach dem Belang der Anforderung.</span></p>
+  <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
+  <ul class="belege">
+<li><span data-en="A requirement has three meanings: a need perceived by a stakeholder, a capability or property of a system, a documented representation of it.">Eine Anforderung hat drei Bedeutungen: von einem Stakeholder wahrgenommenes Bedürfnis, Fähigkeit oder Eigenschaft eines Systems, dokumentierte Darstellung davon.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, Definition 1.1, ch. 1.1, p. 11">Handbuch Foundation Level, Version 1.3.3, Definition 1.1, Kap. 1.1, S. 11</a></li>
+<li><span data-en="Requirements always exist, even if they are not captured or documented.">Anforderungen bestehen immer, auch wenn sie nicht erfasst oder dokumentiert werden.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 1.1, p. 11">Handbuch Foundation Level, Version 1.3.3, Kap. 1.1, S. 11</a></li>
+<li><span data-en="Three kinds: functional requirements, quality requirements and constraints.">Drei Arten: funktionale Anforderungen, Qualitätsanforderungen und Randbedingungen (Constraints).</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 1.1, p. 11">Handbuch Foundation Level, Version 1.3.3, Kap. 1.1, S. 11</a></li>
+<li><span data-en="Aid for telling them apart: ask for the concern. If it concerns results, behavior or interactions, it is a functional requirement.">Unterscheidungshilfe: nach dem Belang fragen. Betrifft er Ergebnisse, Verhalten oder Interaktionen, ist es eine funktionale Anforderung.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 1.1, p. 12">Handbuch Foundation Level, Version 1.3.3, Kap. 1.1, S. 12</a></li>
+  </ul>
+  <h3 data-en="Questions for the group">Fragen an die Gruppe</h3>
+  <ul class="fragen">
+    <li data-en="Is this a need, a system property or already documentation?">Ist das ein Bedürfnis, eine Systemeigenschaft oder schon eine Dokumentation?</li>
+    <li data-en="What is the concern: result and behavior, or quality?">Worauf bezieht sich der Belang: auf Ergebnis und Verhalten oder auf Qualität?</li>
+  </ul>
+  <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
+    <p data-en="Classify: “The portal stores applications” is functional. “The answer arrives within 2 seconds” is a quality requirement. “The system runs on the existing database” is a constraint.">Einordnen: „Das Portal speichert Bewerbungen“ ist funktional. „Die Antwort kommt in höchstens 2 Sekunden“ ist eine Qualitätsanforderung. „Das System läuft auf der vorhandenen Datenbank“ ist eine Randbedingung.</p>
+  </details>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the board">← Zurück zur Tafel</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
+</section>
+<section class="mod" id="m2" data-i="1" aria-labelledby="h2">
+  <div class="mod-head">
+    <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
+    <span class="count"><span data-en="Module">Modul</span> 2 <span data-en="of 15">von 15</span></span>
+  </div>
+  <h2 id="h2" tabindex="-1" data-en="The nine principles of Requirements Engineering">Die neun Prinzipien des Requirements Engineering</h2>
+  <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><circle cx="20.0" cy="62" r="15" fill="#5b3cc4"/><text x="20.0" y="67" text-anchor="middle" fill="#fff" font-weight="700">1</text><circle cx="52.5" cy="62" r="15" fill="#5b3cc4"/><text x="52.5" y="67" text-anchor="middle" fill="#fff" font-weight="700">2</text><circle cx="85.0" cy="62" r="15" fill="#5b3cc4"/><text x="85.0" y="67" text-anchor="middle" fill="#fff" font-weight="700">3</text><circle cx="117.5" cy="62" r="15" fill="#5b3cc4"/><text x="117.5" y="67" text-anchor="middle" fill="#fff" font-weight="700">4</text><circle cx="150.0" cy="62" r="15" fill="#5b3cc4"/><text x="150.0" y="67" text-anchor="middle" fill="#fff" font-weight="700">5</text><circle cx="182.5" cy="62" r="15" fill="#5b3cc4"/><text x="182.5" y="67" text-anchor="middle" fill="#fff" font-weight="700">6</text><circle cx="215.0" cy="62" r="15" fill="#5b3cc4"/><text x="215.0" y="67" text-anchor="middle" fill="#fff" font-weight="700">7</text><circle cx="247.5" cy="62" r="15" fill="#5b3cc4"/><text x="247.5" y="67" text-anchor="middle" fill="#fff" font-weight="700">8</text><circle cx="280.0" cy="62" r="15" fill="#5b3cc4"/><text x="280.0" y="67" text-anchor="middle" fill="#fff" font-weight="700">9</text><text class="b" x="150" y="118" text-anchor="middle" data-en="Nine principles">Neun Prinzipien</text></svg></div>
+  <p class="lead"><span class="depth-short" data-en="Nine principles carry the discipline, from value orientation to systematic work.">Neun Prinzipien tragen das Fach, von Wertorientierung bis zu systematischer Arbeit.</span><span class="depth-full" data-en="The nine principles are not a rulebook to tick off but guard rails for decisions. Value orientation asks whether a requirement achieves anything. Stakeholders and shared understanding concern the people. Context, the triple of problem, requirement and solution, and validation concern the subject matter. Evolution and innovation remind us that requirements change and more of the same is not enough. The ninth principle demands systematic and disciplined work. Typical project symptoms can almost always be traced back to a violated principle.">Die neun Prinzipien sind kein Regelwerk zum Abhaken, sondern Leitplanken für Entscheidungen. Wertorientierung fragt, ob eine Anforderung etwas bewirkt. Stakeholder und gemeinsames Verständnis betreffen die Menschen. Kontext, das Tripel aus Problem, Anforderung und Lösung sowie Validierung betreffen die Sache. Evolution und Innovation erinnern daran, dass sich Anforderungen ändern und mehr vom Gleichen nicht genügt. Das neunte Prinzip verlangt systematische und disziplinierte Arbeit. Typische Projektsymptome lassen sich fast immer auf ein verletztes Prinzip zurückführen.</span></p>
+  <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
+  <ul class="belege">
+<li><span data-en="Principle 1, value orientation: requirements are a means to an end, not an end in themselves.">Prinzip 1, Wertorientierung: Anforderungen sind ein Mittel zum Zweck, kein Selbstzweck.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 2.2.1, p. 19">Handbuch Foundation Level, Version 1.3.3, Kap. 2.2.1, S. 19</a></li>
+<li><span data-en="Principle 2, stakeholders: Requirements Engineering is about satisfying the wishes and needs of stakeholders.">Prinzip 2, Stakeholder: Im Requirements Engineering geht es darum, die Wünsche und Bedürfnisse der Stakeholder zu befriedigen.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 2.2.2, p. 21">Handbuch Foundation Level, Version 1.3.3, Kap. 2.2.2, S. 21</a></li>
+<li><span data-en="Principle 3, shared understanding: successful system development is not possible without a common basis.">Prinzip 3, Gemeinsames Verständnis: Ohne gemeinsame Basis ist erfolgreiche Systementwicklung nicht möglich.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 2.2.3, p. 23">Handbuch Foundation Level, Version 1.3.3, Kap. 2.2.3, S. 23</a></li>
+<li><span data-en="Principle 4, context: systems cannot be understood in isolation.">Prinzip 4, Kontext: Systeme lassen sich nicht isoliert verstehen.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 2.2.4, p. 25">Handbuch Foundation Level, Version 1.3.3, Kap. 2.2.4, S. 25</a></li>
+<li><span data-en="Principle 5, problem, requirement, solution: an inevitably interlocking triple.">Prinzip 5, Problem, Anforderung, Lösung: ein unausweichlich ineinandergreifendes Tripel.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 2.2.5, p. 28">Handbuch Foundation Level, Version 1.3.3, Kap. 2.2.5, S. 28</a></li>
+<li><span data-en="Principle 6, validation: requirements that are not validated are useless.">Prinzip 6, Validierung: Nicht validierte Anforderungen sind nutzlos.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 2.2.6, p. 29">Handbuch Foundation Level, Version 1.3.3, Kap. 2.2.6, S. 29</a></li>
+<li><span data-en="Principle 7, evolution: changing requirements are the normal case, not an accident.">Prinzip 7, Evolution: Sich ändernde Anforderungen sind der Normalfall, kein Unfall.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 2.2.7, p. 31">Handbuch Foundation Level, Version 1.3.3, Kap. 2.2.7, S. 31</a></li>
+<li><span data-en="Principle 8, innovation: more of the same is not enough.">Prinzip 8, Innovation: Mehr vom Gleichen ist nicht genug.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 2.2.8, p. 32">Handbuch Foundation Level, Version 1.3.3, Kap. 2.2.8, S. 32</a></li>
+<li><span data-en="Principle 9, systematic and disciplined work: indispensable in Requirements Engineering.">Prinzip 9, Systematische und disziplinierte Arbeit: im Requirements Engineering nicht verzichtbar.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 2.2.9, p. 33">Handbuch Foundation Level, Version 1.3.3, Kap. 2.2.9, S. 33</a></li>
+  </ul>
+  <h3 data-en="Questions for the group">Fragen an die Gruppe</h3>
+  <ul class="fragen">
+    <li data-en="What value does this requirement deliver, or is it an end in itself?">Welchen Wert liefert diese Anforderung, oder ist sie Selbstzweck?</li>
+    <li data-en="Who has validated it?">Wer hat sie validiert?</li>
+    <li data-en="Do all involved understand the same thing by it?">Verstehen alle Beteiligten dasselbe darunter?</li>
+  </ul>
+  <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
+    <p data-en="Symptom and principle: “The team builds a feature nobody uses” violates value orientation. “Two departments mean different things by ‘customer’” violates shared understanding. “No user has ever seen the requirement” violates validation.">Symptom und Prinzip: „Das Team baut ein Feature, das niemand nutzt“ verletzt die Wertorientierung. „Zwei Abteilungen meinen mit ‚Kunde‘ Verschiedenes“ verletzt das gemeinsame Verständnis. „Die Anforderung hat nie ein Nutzer gesehen“ verletzt die Validierung.</p>
+  </details>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the board">← Zurück zur Tafel</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
+</section>
+<section class="mod" id="m3" data-i="2" aria-labelledby="h3">
+  <div class="mod-head">
+    <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
+    <span class="count"><span data-en="Module">Modul</span> 3 <span data-en="of 15">von 15</span></span>
+  </div>
+  <h2 id="h3" tabindex="-1" data-en="System context and system boundary">Systemkontext und Systemgrenze</h2>
+  <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm3" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><circle cx="150" cy="75" r="66" fill="none" stroke="#8a5a00" stroke-width="2" stroke-dasharray="5 4"/><circle cx="150" cy="75" r="36" fill="#5b3cc4"/><text x="150" y="80" text-anchor="middle" fill="#fff" font-weight="700" data-en="System">System</text><rect x="2" y="60" width="72" height="30" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="38.0" y="80.0" text-anchor="middle" data-en="User">Nutzer</text><rect x="226" y="60" width="72" height="30" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="262.0" y="80.0" text-anchor="middle" data-en="Neighbor">Nachbar</text><path d="M74 75H112" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm3)"/><path d="M226 75H188" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm3)"/></svg></div>
+  <p class="lead"><span class="depth-short" data-en="The system boundary separates the system from its context. The context is documented.">Die Systemgrenze trennt das System von seinem Kontext. Der Kontext wird dokumentiert.</span><span class="depth-full" data-en="In Requirements Engineering the scope of the system is set: the system boundary determines what belongs to the system and what to the environment. The Requirements Modeling handbook names what should be documented about the context: which roles and people interact with the system, which other systems are connected in operation and what the interfaces look like. The more complex and critical the system, the more important this documentation. The RE@Agile handbook adds that the scope of the system will nevertheless change during the project.">Im Requirements Engineering wird der Umfang des Systems festgelegt: Die Systemgrenze bestimmt, was zum System gehört und was zur Umgebung. Das Handbuch Requirements Modeling nennt, was zum Kontext dokumentiert werden sollte: welche Rollen und Personen mit dem System interagieren, welche anderen Systeme im Betrieb zusammenhängen und wie die Schnittstellen beschaffen sind. Je komplexer und kritischer das System, desto wichtiger ist diese Dokumentation. Das Handbuch RE@Agile ergänzt, dass sich der Systemumfang im Projekt trotzdem ändern wird.</span></p>
+  <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
+  <ul class="belege">
+<li><span data-en="In Requirements Engineering the scope is set (system boundary) and the system is delimited from its context.">Im Requirements Engineering wird der Umfang festgelegt (Systemgrenze) und das System gegenüber seinem Kontext abgegrenzt.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-modeling" target="_blank" rel="noopener" data-en="Requirements Modeling Handbook (Advanced Level), version 2.2, ch. 2.1, p. 29">Handbuch Requirements Modeling (Advanced Level), Version 2.2, Kap. 2.1, S. 29</a></li>
+<li><span data-en="To be documented: which roles and people interact with the system, which other systems are connected in operation and what the interfaces look like.">Zu dokumentieren sind: welche Rollen und Personen mit dem System interagieren, welche anderen Systeme im Betrieb zusammenhängen und wie die Schnittstellen beschaffen sind.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-modeling" target="_blank" rel="noopener" data-en="Requirements Modeling Handbook (Advanced Level), version 2.2, ch. 2.1, p. 29">Handbuch Requirements Modeling (Advanced Level), Version 2.2, Kap. 2.1, S. 29</a></li>
+<li><span data-en="The more complex and critical the system, the more important the documentation of the context.">Je komplexer und kritischer das System, desto wichtiger die Dokumentation des Kontexts.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-modeling" target="_blank" rel="noopener" data-en="Requirements Modeling Handbook (Advanced Level), version 2.2, ch. 2.1, p. 29">Handbuch Requirements Modeling (Advanced Level), Version 2.2, Kap. 2.1, S. 29</a></li>
+<li><span data-en="Context is a principle of its own: systems cannot be understood in isolation.">Kontext ist ein eigenes Prinzip: Systeme lassen sich nicht isoliert verstehen.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 2.2.4, p. 25">Handbuch Foundation Level, Version 1.3.3, Kap. 2.2.4, S. 25</a></li>
+<li><span data-en="Setting the system boundary is part of the project start; changes to the scope are unavoidable.">Die Systemgrenze festzulegen ist Teil des Projektstarts; Änderungen des Systemumfangs sind unvermeidbar.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener" data-en="RE@Agile Handbook (Advanced Level), version 2.2, ch. 2.2 and 2.2.2, pp. 28 and 37">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 2.2 und 2.2.2, S. 28 und 37</a></li>
+  </ul>
+  <h3 data-en="Questions for the group">Fragen an die Gruppe</h3>
+  <ul class="fragen">
+    <li data-en="Who or what interacts with the system in operation?">Wer oder was interagiert im Betrieb mit dem System?</li>
+    <li data-en="Which neighboring systems exist, and through which interface?">Welche Nachbarsysteme gibt es, und über welche Schnittstelle?</li>
+    <li data-en="What is deliberately outside the system boundary?">Was liegt bewusst außerhalb der Systemgrenze?</li>
+  </ul>
+  <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
+    <p data-en="Example application portal: inside the boundary is the portal. Actors are the recruiter and the applicant. A neighboring system is the personnel master data management. Outside lies payroll.">Beispiel Bewerbungsportal: Innerhalb der Grenze liegt das Portal. Akteure sind Recruiterin und Bewerberin. Nachbarsystem ist die Personalstammdaten-Verwaltung. Außerhalb liegt die Gehaltsabrechnung.</p>
+  </details>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the board">← Zurück zur Tafel</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
+</section>
+<section class="mod" id="m4" data-i="3" aria-labelledby="h4">
+  <div class="mod-head">
+    <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
+    <span class="count"><span data-en="Module">Modul</span> 4 <span data-en="of 15">von 15</span></span>
+  </div>
+  <h2 id="h4" tabindex="-1" data-en="Stakeholders and sources of requirements">Stakeholder und Anforderungsquellen</h2>
+  <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm4" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="4" y="6" width="116" height="36" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="62.0" y="29.0" text-anchor="middle" data-en="Stakeholders">Stakeholder</text><rect x="4" y="57" width="116" height="36" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="62.0" y="80.0" text-anchor="middle" data-en="Documents">Dokumente</text><rect x="4" y="108" width="116" height="36" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="62.0" y="131.0" text-anchor="middle" data-en="Systems">Systeme</text><rect x="170" y="57" width="126" height="36" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="233.0" y="80.0" text-anchor="middle" data-en="Requirements">Anforderungen</text><path d="M120 24L170 64" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm4)"/><path d="M120 75H170" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm4)"/><path d="M120 126L170 86" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm4)"/></svg></div>
+  <p class="lead"><span class="depth-short" data-en="Requirements come from stakeholders, documents and other systems.">Anforderungen stammen von Stakeholdern, aus Dokumenten und aus anderen Systemen.</span><span class="depth-full" data-en="Requirements concern the wishes of the people and organizations that use a system, benefit from it or are affected by it. The handbook names three kinds of sources: stakeholders, documents and other systems. The RE@Agile handbook treats stakeholders at the project start: identify them, manage them and find sources other than stakeholders. Anyone who only asks people overlooks what lies in documents and legacy systems.">Anforderungen betreffen die Wünsche der Personen und Organisationen, die ein System nutzen, davon profitieren oder von ihm beeinflusst werden. Das Handbuch nennt drei Quellenarten: Stakeholder, Dokumente und andere Systeme. Das Handbuch RE@Agile behandelt Stakeholder im Projektstart: identifizieren, managen und weitere Quellen außer Stakeholdern finden. Wer nur Menschen befragt, übersieht, was in Dokumenten und Altsystemen steckt.</span></p>
+  <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
+  <ul class="belege">
+<li><span data-en="Requirements concern the wishes of the people or organizations that use the system, benefit from it or are affected by it.">Anforderungen betreffen die Wünsche der Personen oder Organisationen, die das System nutzen, davon profitieren oder von ihm beeinflusst werden.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 1.1, p. 11">Handbuch Foundation Level, Version 1.3.3, Kap. 1.1, S. 11</a></li>
+<li><span data-en="Three kinds of sources: stakeholders, documents, other systems.">Drei Quellenarten: Stakeholder, Dokumente, andere Systeme.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.1.1 to 4.1.3, pp. 87, 94 and 95">Handbuch Foundation Level, Version 1.3.3, Kap. 4.1.1 bis 4.1.3, S. 87, 94 und 95</a></li>
+<li><span data-en="Identify and manage stakeholders; further sources of requirements besides stakeholders.">Stakeholder identifizieren und managen; weitere Quellen für Anforderungen außer Stakeholdern.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener" data-en="RE@Agile Handbook (Advanced Level), version 2.2, ch. 2.3.2 to 2.3.4, pp. 38 to 42">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 2.3.2 bis 2.3.4, S. 38 bis 42</a></li>
+<li><span data-en="Principle 2: it is about satisfying the wishes and needs of stakeholders.">Prinzip 2: Es geht darum, Wünsche und Bedürfnisse der Stakeholder zu befriedigen.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 2.2.2, p. 21">Handbuch Foundation Level, Version 1.3.3, Kap. 2.2.2, S. 21</a></li>
+  </ul>
+  <h3 data-en="Questions for the group">Fragen an die Gruppe</h3>
+  <ul class="fragen">
+    <li data-en="Who uses the system, who benefits, who is affected?">Wer nutzt das System, wer profitiert, wer wird beeinflusst?</li>
+    <li data-en="Which documents or legacy systems contain requirements nobody mentions any more?">Welche Dokumente oder Altsysteme enthalten Anforderungen, die niemand mehr nennt?</li>
+  </ul>
+  <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
+    <p data-en="Source check application portal: stakeholders are the recruiter and the works council. The document is the existing works agreement. The other system is the legacy system of the HR department.">Quellen-Check Bewerbungsportal: Stakeholder sind Recruiterin und Betriebsrat. Dokument ist die bestehende Betriebsvereinbarung. Anderes System ist das Altsystem der Personalabteilung.</p>
+  </details>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the board">← Zurück zur Tafel</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
+</section>
+<section class="mod" id="m5" data-i="4" aria-labelledby="h5">
+  <div class="mod-head">
+    <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
+    <span class="count"><span data-en="Module">Modul</span> 5 <span data-en="of 15">von 15</span></span>
+  </div>
+  <h2 id="h5" tabindex="-1" data-en="Eliciting: Kano model and elicitation techniques">Ermitteln: Kano-Modell und Erhebungstechniken</h2>
+  <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm5" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><path d="M20 8V128H292" stroke="#64748b" fill="none" stroke-width="1.5"/><path d="M22 118Q90 96 290 92" stroke="#64748b" stroke-width="2.5" fill="none"/><text class="b" x="240" y="112" text-anchor="middle" data-en="Basic">Basis</text><path d="M22 116L290 36" stroke="#8a5a00" stroke-width="2.5" fill="none"/><text class="b" x="236" y="80" text-anchor="middle" data-en="Performance">Leistung</text><path d="M22 92Q170 88 290 12" stroke="#5b3cc4" stroke-width="2.5" fill="none"/><text class="b" x="86" y="70" text-anchor="middle" data-en="Delight">Begeisterung</text></svg></div>
+  <p class="lead"><span class="depth-short" data-en="The Kano model sorts features into basic, performance and delight factors.">Das Kano-Modell sortiert Merkmale in Basis-, Leistungs- und Begeisterungsfaktoren.</span><span class="depth-full" data-en="The Kano model helps choose the elicitation technique because it shows which kind of requirement one wants to uncover. Basic factors are so obvious that nobody mentions them; whoever overlooks them annoys the customers. Performance factors are demanded explicitly; more of them raises satisfaction but also costs more. Customers do not know delight factors; if they are missing nobody complains, if they are present they set the product apart. The elicitation techniques of the handbook fall into questioning, collaboration, observation and artifact-based techniques and mostly yield performance and basic factors.">Das Kano-Modell hilft bei der Wahl der Ermittlungstechnik, weil es zeigt, welche Art von Anforderung man aufdecken will. Basisfaktoren sind so selbstverständlich, dass niemand sie nennt; wer sie übersieht, verärgert die Kunden. Leistungsfaktoren werden ausdrücklich verlangt, mehr davon erhöht die Zufriedenheit, kostet aber auch mehr. Begeisterungsfaktoren kennen die Kunden nicht; fehlen sie, beschwert sich niemand, sind sie da, unterscheiden sie das Produkt. Die Erhebungstechniken des Handbuchs gliedern sich in Frage-, Kollaborations-, Beobachtungs- und artefaktbasierte Techniken und liefern überwiegend Leistungs- und Basisfaktoren.</span></p>
+  <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
+  <ul class="belege">
+<li><span data-en="The Kano model classifies features into three categories: delight, performance and basic factors.">Das Kano-Modell klassifiziert Merkmale in drei Kategorien: Begeisterungs-, Leistungs- und Basisfaktoren.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.2.1, p. 98">Handbuch Foundation Level, Version 1.3.3, Kap. 4.2.1, S. 98</a></li>
+<li><span data-en="Customers do not know delight factors; if they are missing nobody complains, if present they can be a differentiator.">Begeisterungsfaktoren kennen Kunden nicht; fehlen sie, beschwert sich niemand, vorhanden können sie ein Unterscheidungsmerkmal sein.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.2.1, p. 98">Handbuch Foundation Level, Version 1.3.3, Kap. 4.2.1, S. 98</a></li>
+<li><span data-en="Performance factors are demanded explicitly: more of them means higher satisfaction but also higher cost, hence a cost-benefit analysis.">Leistungsfaktoren werden ausdrücklich verlangt: mehr davon, höhere Zufriedenheit, aber auch höhere Kosten, daher eine Kosten-Nutzen-Analyse.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.2.1, pp. 98 to 99">Handbuch Foundation Level, Version 1.3.3, Kap. 4.2.1, S. 98 bis 99</a></li>
+<li><span data-en="Basic factors are so obvious that nobody asks for them; whoever overlooks them annoys the customers.">Basisfaktoren sind so selbstverständlich, dass niemand danach fragt; wer sie übersieht, verärgert die Kunden.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.2.1, p. 99">Handbuch Foundation Level, Version 1.3.3, Kap. 4.2.1, S. 99</a></li>
+<li><span data-en="Elicitation techniques come in four categories: questioning, collaboration, observation and artifact-based techniques.">Erhebungstechniken gibt es in vier Kategorien: Frage-, Kollaborations-, Beobachtungs- und artefaktbasierte Techniken.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.2.2, p. 101">Handbuch Foundation Level, Version 1.3.3, Kap. 4.2.2, S. 101</a></li>
+<li><span data-en="Interviews mostly yield performance factors because interviewees express conscious information.">Interviews liefern meist Leistungsfaktoren, weil Befragte bewusste Informationen äußern.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.2.2, p. 102">Handbuch Foundation Level, Version 1.3.3, Kap. 4.2.2, S. 102</a></li>
+  </ul>
+  <h3 data-en="Questions for the group">Fragen an die Gruppe</h3>
+  <ul class="fragen">
+    <li data-en="What do you take for granted without ever mentioning it?">Was nehmen Sie als selbstverständlich an, ohne es je zu erwähnen?</li>
+    <li data-en="What would pleasantly surprise you?">Was würde Sie positiv überraschen?</li>
+    <li data-en="Tell me how you do this today.">Erzählen Sie mir, wie Sie das heute tun.</li>
+  </ul>
+  <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
+    <p data-en="Classifying at the application portal: privacy-compliant storage is a basic factor. A result list within 2 seconds is a performance factor. An explanation of why a candidate is suggested can be a delight factor.">Einordnen am Bewerbungsportal: Datenschutzkonforme Speicherung ist ein Basisfaktor. Trefferliste in höchstens 2 Sekunden ist ein Leistungsfaktor. Eine Begründung, warum ein Kandidat vorgeschlagen wird, kann ein Begeisterungsfaktor sein.</p>
+  </details>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the board">← Zurück zur Tafel</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
+</section>
+<section class="mod" id="m6" data-i="5" aria-labelledby="h6">
+  <div class="mod-head">
+    <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
+    <span class="count"><span data-en="Module">Modul</span> 6 <span data-en="of 15">von 15</span></span>
+  </div>
+  <h2 id="h6" tabindex="-1" data-en="Documenting: phrase templates">Dokumentieren: Satzschablonen</h2>
+  <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm6" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="4" y="8" width="140" height="34" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="74.0" y="30.0" text-anchor="middle" data-en="[condition]">[Bedingung]</text><rect x="156" y="8" width="140" height="34" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="226.0" y="30.0" text-anchor="middle" data-en="subject">Subjekt</text><rect x="4" y="54" width="140" height="34" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="74.0" y="76.0" text-anchor="middle" data-en="action">Aktion</text><rect x="156" y="54" width="140" height="34" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="226.0" y="76.0" text-anchor="middle" data-en="objects">Objekte</text><rect x="4" y="100" width="292" height="34" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="122.0" text-anchor="middle" data-en="[constraint]">[Einschränkung]</text></svg></div>
+  <p class="lead"><span class="depth-short" data-en="Phrase templates give individual requirements a uniform structure.">Satzschablonen geben einzelnen Anforderungen eine einheitliche Struktur.</span><span class="depth-full" data-en="A phrase template is a basic structure with placeholders that one fills in to obtain uniform sentences. The handbook names the template of the standard ISO/IEC/IEEE 29148 with optional condition, subject, action, objects and optional constraint. The auxiliary verbs “must”, “should” and “may” mark obligation; without an agreement on them a definition belongs in the specification. The Easy Approach to Requirements Syntax (EARS) offers patterns for different situations, for example event-driven requirements and unwanted behavior.">Eine Satzschablone ist eine Grundstruktur mit Platzhaltern, die man ausfüllt, um einheitliche Sätze zu erhalten. Das Handbuch nennt die Vorlage der Norm ISO/IEC/IEEE 29148 mit optionaler Bedingung, Subjekt, Aktion, Objekten und optionaler Einschränkung. Die Hilfsverben „muss“, „sollte“ und „kann“ kennzeichnen Verbindlichkeit; ohne Vereinbarung darüber gehört eine Definition in die Spezifikation. Die Easy Approach to Requirements Syntax (EARS) bietet Muster für verschiedene Situationen, zum Beispiel ereignisgesteuerte Anforderungen und unerwünschtes Verhalten.</span></p>
+  <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
+  <ul class="belege">
+<li><span data-en="Phrase template: basic structure with placeholders for uniform, well-structured sentences, also for user stories.">Satzschablone: Grundstruktur mit Platzhaltern für einheitliche, gut strukturierte Sätze, auch für User Storys.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 3.3.1, p. 47">Handbuch Foundation Level, Version 1.3.3, Kap. 3.3.1, S. 47</a></li>
+<li><span data-en="Template per ISO/IEC/IEEE 29148: [condition] subject action objects [constraint].">Vorlage nach ISO/IEC/IEEE 29148: [Bedingung] Subjekt Aktion Objekte [Einschränkung].</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 3.3.1, p. 47">Handbuch Foundation Level, Version 1.3.3, Kap. 3.3.1, S. 47</a></li>
+<li><span data-en="Auxiliary verbs: “must” is mandatory, “should” strongly desired, “may” a suggestion, “will” a statement of fact without requirement.">Hilfsverben: „muss“ ist obligatorisch, „sollte“ stark erwünscht, „kann“ ein Vorschlag, „wird“ eine Sachaussage ohne Anforderung.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 3.3.1, pp. 47 to 48">Handbuch Foundation Level, Version 1.3.3, Kap. 3.3.1, S. 47 bis 48</a></li>
+<li><span data-en="The Easy Approach to Requirements Syntax offers patterns, among others ubiquitous, event-driven and unwanted behavior.">Die Easy Approach to Requirements Syntax bietet Muster, unter anderem allgegenwärtig, ereignisgesteuert und unerwünschtes Verhalten.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 3.3.1, p. 48">Handbuch Foundation Level, Version 1.3.3, Kap. 3.3.1, S. 48</a></li>
+<li><span data-en="If there is no agreed meaning of the auxiliary verbs, definitions belong in the requirements specification.">Gibt es keine vereinbarte Bedeutung der Hilfsverben, gehören Definitionen in die Anforderungsspezifikation.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 3.3.1, p. 48">Handbuch Foundation Level, Version 1.3.3, Kap. 3.3.1, S. 48</a></li>
+  </ul>
+  <h3 data-en="Questions for the group">Fragen an die Gruppe</h3>
+  <ul class="fragen">
+    <li data-en="Which event triggers the response?">Welches Ereignis löst die Reaktion aus?</li>
+    <li data-en="Which system exactly responds?">Welches System genau reagiert?</li>
+    <li data-en="Is this “must”, “should” or “may”, and has that been agreed?">Ist das „muss“, „sollte“ oder „kann“, und ist das vereinbart?</li>
+  </ul>
+  <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
+    <p data-en="Event-driven example: “As soon as an application arrives, the application portal shall send a confirmation of receipt within 5 seconds.” The handbook shows an example with a card and a prompt for the PIN (personal identification number) within 200 milliseconds (p. 47).">Beispiel ereignisgesteuert: „Sobald eine Bewerbung eingeht, soll das Bewerbungsportal innerhalb von 5 Sekunden eine Eingangsbestätigung versenden.“ Das Handbuch zeigt ein Beispiel mit Karte und Aufforderung zur PIN (persönliche Identifikationsnummer) innerhalb von 200 Millisekunden (S. 47).</p>
+  </details>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the board">← Zurück zur Tafel</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
+</section>
+<section class="mod" id="m7" data-i="6" aria-labelledby="h7">
+  <div class="mod-head">
+    <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
+    <span class="count"><span data-en="Module">Modul</span> 7 <span data-en="of 15">von 15</span></span>
+  </div>
+  <h2 id="h7" tabindex="-1" data-en="Resolving conflicts about requirements">Konflikte in Anforderungen lösen</h2>
+  <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm7" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="4" y="14" width="94" height="50" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="51.0" y="44.0" text-anchor="middle" data-en="Factual">Sach</text><rect x="103" y="14" width="94" height="50" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="150.0" y="44.0" text-anchor="middle" data-en="Data">Daten</text><rect x="202" y="14" width="94" height="50" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="249.0" y="44.0" text-anchor="middle" data-en="Interest">Interessen</text><rect x="4" y="80" width="94" height="50" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="51.0" y="110.0" text-anchor="middle" data-en="Value">Werte</text><rect x="103" y="80" width="94" height="50" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="110.0" text-anchor="middle" data-en="Relation">Beziehung</text><rect x="202" y="80" width="94" height="50" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="249.0" y="110.0" text-anchor="middle" data-en="Structure">Struktur</text></svg></div>
+  <p class="lead"><span class="depth-short" data-en="There are six conflict types. The type determines the suitable resolution technique.">Es gibt sechs Konflikttypen. Der Typ bestimmt die passende Lösungstechnik.</span><span class="depth-full" data-en="Whoever wants to resolve conflicts must understand their nature. The handbook distinguishes factual, data, interest, value, relationship and structural conflicts. In a factual conflict the parties really have different factual needs; first the facts are analyzed and documented. A data conflict arises from inconsistent data or different interpretation; communication is the key. An interest conflict rests on personal, group or role goals, and stakeholders often do not state their true motives.">Wer Konflikte lösen will, muss ihre Art verstehen. Das Handbuch unterscheidet Sach-, Daten-, Interessen-, Werte-, Beziehungs- und Strukturkonflikte. Bei einem Sachkonflikt haben die Parteien tatsächlich unterschiedliche sachliche Bedürfnisse; zuerst werden die Fakten analysiert und dokumentiert. Ein Datenkonflikt entsteht aus inkonsistenten Daten oder unterschiedlicher Interpretation; Kommunikation ist der Schlüssel. Ein Interessenkonflikt beruht auf persönlichen, Gruppen- oder Rollenzielen, und Stakeholder nennen dabei oft nicht ihre wahren Motive.</span></p>
+  <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
+  <ul class="belege">
+<li><span data-en="Six conflict types: factual, data, interest, value, relationship and structural conflict.">Sechs Konflikttypen: Sach-, Daten-, Interessen-, Werte-, Beziehungs- und Strukturkonflikt.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.3.2, pp. 114 to 116">Handbuch Foundation Level, Version 1.3.3, Kap. 4.3.2, S. 114 bis 116</a></li>
+<li><span data-en="The conflict type helps in selecting suitable conflict resolution techniques.">Der Konflikttyp hilft bei der Auswahl geeigneter Konfliktlösungstechniken.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.3.2, p. 114">Handbuch Foundation Level, Version 1.3.3, Kap. 4.3.2, S. 114</a></li>
+<li><span data-en="Factual conflict: really different factual needs; first analyze and document the facts.">Sachkonflikt: tatsächlich unterschiedliche sachliche Bedürfnisse; erst die Fakten analysieren und dokumentieren.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.3.2, p. 114">Handbuch Foundation Level, Version 1.3.3, Kap. 4.3.2, S. 114</a></li>
+<li><span data-en="Data conflict: inconsistent data or different interpretation; communication is the key.">Datenkonflikt: inkonsistente Daten oder andere Interpretation; Kommunikation ist der Schlüssel.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.3.2, p. 114">Handbuch Foundation Level, Version 1.3.3, Kap. 4.3.2, S. 114</a></li>
+<li><span data-en="Interest conflict: personal, group or role goals; stakeholders often do not reveal their true motives.">Interessenkonflikt: persönliche, Gruppen- oder Rollenziele; Stakeholder offenbaren oft nicht ihre wahren Motive.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.3.2, p. 115">Handbuch Foundation Level, Version 1.3.3, Kap. 4.3.2, S. 115</a></li>
+  </ul>
+  <h3 data-en="Questions for the group">Fragen an die Gruppe</h3>
+  <ul class="fragen">
+    <li data-en="Are we arguing about facts, data or interests?">Streiten wir über Fakten, über Daten oder über Interessen?</li>
+    <li data-en="What concern lies behind the stated position?">Welches Anliegen steckt hinter der genannten Position?</li>
+  </ul>
+  <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
+    <p data-en="Example: two departments give different numbers of applicants. This points to a data conflict; first the sources and the way of counting are clarified, then a decision is made.">Beispiel: Zwei Abteilungen nennen unterschiedliche Bewerberzahlen. Das deutet auf einen Datenkonflikt hin; zuerst werden Quellen und Zählweise geklärt, dann wird entschieden.</p>
+  </details>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the board">← Zurück zur Tafel</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
+</section>
+<section class="mod" id="m8" data-i="7" aria-labelledby="h8">
+  <div class="mod-head">
+    <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
+    <span class="count"><span data-en="Module">Modul</span> 8 <span data-en="of 15">von 15</span></span>
+  </div>
+  <h2 id="h8" tabindex="-1" data-en="Validating requirements">Anforderungen validieren</h2>
+  <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm8" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="14" width="96" height="54" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="50.0" y="46.0" text-anchor="middle" data-en="Review">Review</text><rect x="102" y="14" width="96" height="54" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="46.0" text-anchor="middle" data-en="Exploration">Exploration</text><rect x="202" y="14" width="96" height="54" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="250.0" y="46.0" text-anchor="middle" data-en="Trial">Probe</text><text x="50" y="104" text-anchor="middle" data-en="static">statisch</text><text x="150" y="104" text-anchor="middle" data-en="dynamic">dynamisch</text><text x="250" y="104" text-anchor="middle" data-en="static">statisch</text></svg></div>
+  <p class="lead"><span class="depth-short" data-en="Validation uses reviews, exploration and trial development.">Validierung nutzt Reviews, Exploration und Probe-Entwicklung.</span><span class="depth-full" data-en="Requirements that are not validated are useless. The handbook groups validation techniques into three categories: review techniques, exploration techniques and trial development. Reviews and trial development are static, they analyze the specification without running the system. Exploration is dynamic, it gathers feedback on real or simulated behavior. Reviews range from informal author-reviewer cycles to formal walkthroughs and inspections with detailed checklists. At the start of a project short, light feedback cycles fit; later effort and formality increase.">Nicht validierte Anforderungen sind nutzlos. Das Handbuch ordnet Validierungstechniken in drei Kategorien: Review-Techniken, Explorationstechniken und Probe-Entwicklung. Reviews und Probe-Entwicklung sind statisch, sie analysieren die Spezifikation ohne das System auszuführen. Exploration ist dynamisch, sie sammelt Feedback am echten oder simulierten Verhalten. Reviews reichen von informell mit Autor-Reviewer-Zyklus bis zu formalen Walkthroughs und Inspektionen mit detaillierten Checklisten. Zu Beginn eines Projekts passen kurze, leichte Feedbackzyklen, später nehmen Aufwand und Formalität zu.</span></p>
+  <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
+  <ul class="belege">
+<li><span data-en="Three categories: review techniques, exploration techniques and trial development.">Drei Kategorien: Review-Techniken, Explorationstechniken und Probe-Entwicklung.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.4.2, p. 123">Handbuch Foundation Level, Version 1.3.3, Kap. 4.4.2, S. 123</a></li>
+<li><span data-en="Review and trial development are static, exploration is dynamic (behavior of the real or simulated system).">Review und Probe-Entwicklung sind statisch, Exploration ist dynamisch (Verhalten des echten oder simulierten Systems).</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.4.2, pp. 123 to 124">Handbuch Foundation Level, Version 1.3.3, Kap. 4.4.2, S. 123 bis 124</a></li>
+<li><span data-en="Effort and formality mostly rise toward the end of the project; at the start short, light feedback cycles are preferred.">Aufwand und Formalität steigen meist zum Projektende; zu Beginn bevorzugt man kurze, leichte Feedbackzyklen.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.4.2, p. 123">Handbuch Foundation Level, Version 1.3.3, Kap. 4.4.2, S. 123</a></li>
+<li><span data-en="Informal reviews follow the author-reviewer cycle; documenting comments in a review register is good practice.">Informelle Reviews folgen dem Autor-Reviewer-Zyklus; Kommentare in einem Reviewregister zu dokumentieren ist gute Praxis.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.4.2, p. 124">Handbuch Foundation Level, Version 1.3.3, Kap. 4.4.2, S. 124</a></li>
+<li><span data-en="Formal reviews: walkthroughs and inspections; inspections are very formal and follow detailed checklists.">Formale Reviews: Walkthroughs und Inspektionen; Inspektionen sind sehr formell und orientieren sich an detaillierten Checklisten.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.4.2, p. 124">Handbuch Foundation Level, Version 1.3.3, Kap. 4.4.2, S. 124</a></li>
+<li><span data-en="Principle 6: requirements that are not validated are useless.">Prinzip 6: Nicht validierte Anforderungen sind nutzlos.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 2.2.6, p. 29">Handbuch Foundation Level, Version 1.3.3, Kap. 2.2.6, S. 29</a></li>
+  </ul>
+  <h3 data-en="Questions for the group">Fragen an die Gruppe</h3>
+  <ul class="fragen">
+    <li data-en="Which technique fits the risk and maturity of the system?">Welche Technik passt zu Risiko und Reifegrad des Systems?</li>
+    <li data-en="Have we gathered feedback on real or simulated behavior?">Haben wir Feedback am echten oder simulierten Verhalten eingeholt?</li>
+  </ul>
+  <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
+    <p data-en="Assignment: reading and commenting on a specification is a review and thus static. Showing a clickable draft to users is exploration and thus dynamic, because simulated behavior is experienced.">Zuordnung: Eine Spezifikation lesen und kommentieren ist ein Review und damit statisch. Einen klickbaren Entwurf Nutzern zeigen ist Exploration und damit dynamisch, weil simuliertes Verhalten erlebt wird.</p>
+  </details>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the board">← Zurück zur Tafel</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
+</section>
+<section class="mod" id="m9" data-i="8" aria-labelledby="h9">
+  <div class="mod-head">
+    <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
+    <span class="count"><span data-en="Module">Modul</span> 9 <span data-en="of 15">von 15</span></span>
+  </div>
+  <h2 id="h9" tabindex="-1" data-en="Configuring the Requirements Engineering process">Den Prozess des Requirements Engineering konfigurieren</h2>
+  <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm9" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><text x="2" y="25" font-weight="700" data-en="Time">Zeit</text><path d="M72 20H290" stroke="#cbd5e1" stroke-width="5"/><circle cx="235.5" cy="20" r="8" fill="#5b3cc4"/><text x="72" y="42" text-anchor="start" data-en="linear">linear</text><text x="290" y="42" text-anchor="end" data-en="iterative">iterativ</text><text x="2" y="71" font-weight="700" data-en="Purpose">Zweck</text><path d="M72 66H290" stroke="#cbd5e1" stroke-width="5"/><circle cx="137.39999999999998" cy="66" r="8" fill="#5b3cc4"/><text x="72" y="88" text-anchor="start" data-en="prescriptive">präskriptiv</text><text x="290" y="88" text-anchor="end" data-en="exploratory">explorativ</text><text x="2" y="117" font-weight="700" data-en="Goal">Ziel</text><path d="M72 112H290" stroke="#cbd5e1" stroke-width="5"/><circle cx="202.79999999999998" cy="112" r="8" fill="#5b3cc4"/><text x="72" y="134" text-anchor="start" data-en="Client">Kunde</text><text x="290" y="134" text-anchor="end" data-en="Market">Markt</text></svg></div>
+  <p class="lead"><span class="depth-short" data-en="The process is configured from three facets with two forms each.">Der Prozess wird aus drei Facetten mit je zwei Ausprägungen konfiguriert.</span><span class="depth-full" data-en="It is wasteful to reinvent the process for every endeavor. The handbook recommends configuring it from existing elements. For this it describes three facets with two forms each: time (linear or iterative), purpose (prescriptive or exploratory) and goal (customer-specific or market-oriented). The facets span a three-dimensional space of options. For each form there are selection criteria, but not all of them have to be met. The basis for the decision are the influencing factors of the project.">Es ist Verschwendung, den Prozess für jedes Vorhaben neu zu erfinden. Das Handbuch empfiehlt, ihn aus vorhandenen Elementen zu konfigurieren. Dafür beschreibt es drei Facetten mit je zwei Ausprägungen: Zeit (linear oder iterativ), Zweck (präskriptiv oder explorativ) und Ziel (kundenspezifisch oder marktorientiert). Die Facetten spannen einen dreidimensionalen Raum von Optionen auf. Für jede Ausprägung gibt es Auswahlkriterien, aber nicht alle müssen erfüllt sein. Grundlage der Entscheidung sind die Einflussfaktoren des Projekts.</span></p>
+  <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
+  <ul class="belege">
+<li><span data-en="The process is configured from existing elements instead of defining it anew each time.">Der Prozess wird aus vorhandenen Elementen konfiguriert, statt ihn jedes Mal neu zu definieren.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 5.2, p. 132">Handbuch Foundation Level, Version 1.3.3, Kap. 5.2, S. 132</a></li>
+<li><span data-en="Three facets with two forms each: time (linear or iterative), purpose (prescriptive or exploratory), goal (customer-specific or market-oriented).">Drei Facetten mit je zwei Ausprägungen: Zeit (linear oder iterativ), Zweck (präskriptiv oder explorativ), Ziel (kundenspezifisch oder marktorientiert).</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 5.2.1 to 5.2.3, pp. 133 to 134">Handbuch Foundation Level, Version 1.3.3, Kap. 5.2.1 bis 5.2.3, S. 133 bis 134</a></li>
+<li><span data-en="The facets span a three-dimensional space of configuration options.">Die Facetten spannen einen dreidimensionalen Raum von Konfigurationsoptionen auf.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 5.2, p. 132">Handbuch Foundation Level, Version 1.3.3, Kap. 5.2, S. 132</a></li>
+<li><span data-en="Not all selection criteria of a form have to be met.">Nicht alle Auswahlkriterien einer Ausprägung müssen erfüllt sein.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 5.2, p. 132">Handbuch Foundation Level, Version 1.3.3, Kap. 5.2, S. 132</a></li>
+<li><span data-en="Influencing factors and typical combinations of facets have chapters of their own.">Einflussfaktoren und typische Kombinationen von Facetten stehen in eigenen Kapiteln.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 5.1 and 5.3.1, pp. 129 and 136">Handbuch Foundation Level, Version 1.3.3, Kap. 5.1 und 5.3.1, S. 129 und 136</a></li>
+  </ul>
+  <h3 data-en="Questions for the group">Fragen an die Gruppe</h3>
+  <ul class="fragen">
+    <li data-en="Is the purpose prescriptive or exploratory?">Ist der Zweck präskriptiv oder explorativ?</li>
+    <li data-en="Are we developing for a client or for a market?">Entwickeln wir für einen Auftraggeber oder für einen Markt?</li>
+    <li data-en="Which influencing factors speak for what?">Welche Einflussfaktoren sprechen wofür?</li>
+  </ul>
+  <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
+    <p data-en="Example: a new product for the market with unclear wishes speaks rather for iterative, exploratory and market-oriented. The decision follows the influencing factors, not a rule of thumb.">Beispiel: Ein neues Produkt für den Markt mit unklaren Wünschen spricht eher für iterativ, explorativ und marktorientiert. Die Entscheidung folgt den Einflussfaktoren, nicht einer Faustregel.</p>
+  </details>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the board">← Zurück zur Tafel</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
+</section>
+<section class="mod" id="m10" data-i="9" aria-labelledby="h10">
+  <div class="mod-head">
+    <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
+    <span class="count"><span data-en="Module">Modul</span> 10 <span data-en="of 15">von 15</span></span>
+  </div>
+  <h2 id="h10" tabindex="-1" data-en="Requirements Management and traceability">Requirements Management und Verfolgbarkeit</h2>
+  <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm10" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="52" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="48.0" y="77.0" text-anchor="middle" data-en="Source">Quelle</text><rect x="104" y="52" width="92" height="40" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="77.0" text-anchor="middle" data-en="Requirement">Anforderung</text><rect x="206" y="52" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="252.0" y="77.0" text-anchor="middle" data-en="Test">Test</text><path d="M94 72H104" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm10)"/><path d="M196 72H206" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm10)"/><text x="150" y="28" text-anchor="middle" data-en="forward →">vorwärts →</text><text x="150" y="128" text-anchor="middle" data-en="← backward">← rückwärts</text></svg></div>
+  <p class="lead"><span class="depth-short" data-en="Requirements live and must be managed and kept traceable.">Anforderungen leben und müssen verwaltet und verfolgbar gehalten werden.</span><span class="depth-full" data-en="Requirements Management manages existing requirements and requirements-related work products: storing, changing and tracing. Requirements are alive; they are created, used, updated and deleted. How much management is needed depends on the number of requirements, stakeholders, lifetime, changes and standards. Without traceability one can neither prove that a requirement is implemented nor assess the effect of a change. Backward traceability asks for the origin of a requirement, forward traceability for its use.">Requirements Management verwaltet bestehende Anforderungen und anforderungsbezogene Arbeitsprodukte: speichern, ändern und verfolgen. Anforderungen sind lebendig, sie werden erstellt, verwendet, aktualisiert und gelöscht. Wie viel Verwaltung nötig ist, hängt von Zahl der Anforderungen, Stakeholdern, Lebensdauer, Änderungen und Normen ab. Ohne Verfolgbarkeit lässt sich weder nachweisen, dass eine Anforderung umgesetzt ist, noch die Wirkung einer Änderung abschätzen. Rückwärtsverfolgbarkeit fragt nach dem Ursprung einer Anforderung, Vorwärtsverfolgbarkeit nach ihrer Verwendung.</span></p>
+  <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
+  <ul class="belege">
+<li><span data-en="Requirements Management manages existing requirements and work products: storing, changing, tracing.">Requirements Management verwaltet bestehende Anforderungen und Arbeitsprodukte: Speichern, Ändern, Verfolgen.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 6.1, p. 144">Handbuch Foundation Level, Version 1.3.3, Kap. 6.1, S. 144</a></li>
+<li><span data-en="Requirements are alive: created, used, updated, deleted, across the whole life cycle.">Anforderungen sind lebendig: erstellt, verwendet, aktualisiert, gelöscht, über den gesamten Lebenszyklus.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 6.1, p. 144">Handbuch Foundation Level, Version 1.3.3, Kap. 6.1, S. 144</a></li>
+<li><span data-en="More effort is needed with more requirements, stakeholders, longer lifetime, more changes and stricter standards.">Mehr Aufwand ist nötig bei mehr Anforderungen, Stakeholdern, längerer Lebensdauer, mehr Änderungen und strengeren Normen.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 6.1, p. 144">Handbuch Foundation Level, Version 1.3.3, Kap. 6.1, S. 144</a></li>
+<li><span data-en="Without traceability: no proof of fulfillment, no conformity, no search for missing work products, no impact analysis.">Ohne Verfolgbarkeit: kein Nachweis der Erfüllung, keine Konformität, keine Suche nach fehlenden Arbeitsprodukten, keine Auswirkungsanalyse.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 6.6, p. 153">Handbuch Foundation Level, Version 1.3.3, Kap. 6.6, S. 153</a></li>
+<li><span data-en="Backward traceability asks for the origin of a requirement, forward traceability for its use.">Rückwärtsverfolgbarkeit fragt nach dem Ursprung einer Anforderung, Vorwärtsverfolgbarkeit nach ihrer Verwendung.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 6.6, p. 154">Handbuch Foundation Level, Version 1.3.3, Kap. 6.6, S. 154</a></li>
+<li><span data-en="Further topics: life cycle, version control, baselines, attributes and views, changes, prioritization.">Weitere Themen: Lebenszyklus, Versionskontrolle, Basislinien, Attribute und Sichten, Änderungen, Priorisierung.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 6.2 to 6.8, pp. 145 to 158">Handbuch Foundation Level, Version 1.3.3, Kap. 6.2 bis 6.8, S. 145 bis 158</a></li>
+  </ul>
+  <h3 data-en="Questions for the group">Fragen an die Gruppe</h3>
+  <ul class="fragen">
+    <li data-en="Who works with which version?">Wer arbeitet mit welcher Version?</li>
+    <li data-en="From which source does the requirement originate, and which tests concern it?">Aus welcher Quelle stammt die Anforderung, und welche Tests betreffen sie?</li>
+  </ul>
+  <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
+    <p data-en="Example of a trace: interview, then requirement A4, then test case T9. If A4 changes, the trace immediately shows test case T9 and the source.">Beispiel einer Spur: Interview, dann Anforderung A4, dann Testfall T9. Ändert sich A4, zeigt die Spur sofort Testfall T9 und die Quelle.</p>
+  </details>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the board">← Zurück zur Tafel</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
+</section>
+<section class="mod" id="m11" data-i="10" aria-labelledby="h11">
+  <div class="mod-head">
+    <span class="stage" style="color:#0f6f78;background:#e3f4f5;border-color:#0f6f78" data-en="Advanced: Modeling">Advanced: Modeling</span>
+    <span class="count"><span data-en="Module">Modul</span> 11 <span data-en="of 15">von 15</span></span>
+  </div>
+  <h2 id="h11" tabindex="-1" data-en="Modeling requirements: views">Anforderungen modellieren: Sichten</h2>
+  <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm11" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="12" width="96" height="46" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="50.0" y="40.0" text-anchor="middle" data-en="Structure">Struktur</text><rect x="102" y="12" width="96" height="46" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="150.0" y="40.0" text-anchor="middle" data-en="Behavior">Verhalten</text><rect x="202" y="12" width="96" height="46" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="250.0" y="40.0" text-anchor="middle" data-en="Function">Funktion</text><rect x="20" y="76" width="60" height="56" rx="3" fill="none" stroke="#5b3cc4" stroke-width="2"/><path d="M20 94H80M20 112H80" stroke="#5b3cc4" stroke-width="2"/><circle cx="124" cy="104" r="14" fill="none" stroke="#5b3cc4" stroke-width="2"/><circle cx="176" cy="104" r="14" fill="#eeeafb" stroke="#5b3cc4" stroke-width="2"/><path d="M138 104H160" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm11)"/><rect x="224" y="86" width="56" height="36" rx="3" fill="none" stroke="#5b3cc4" stroke-width="2"/><path d="M236 104H268" stroke="#5b3cc4" stroke-width="2"/></svg></div>
+  <p class="lead"><span class="depth-short" data-en="Models show requirements from specific views: structure, behavior, function.">Modelle zeigen Anforderungen aus bestimmten Sichten: Struktur, Verhalten, Funktion.</span><span class="depth-full" data-en="Models represent requirements from a particular perspective. The Foundation Level distinguishes three views for functional requirements: the static-structural view, the behavior view and the function view. The Requirements Modeling handbook divides further into context, information structure, dynamic, quality and constraints views and subdivides the dynamic view into use cases, data-flow and control-flow oriented views, state view and scenario view. Which model fits depends on the question to be answered.">Modelle stellen Anforderungen aus einer bestimmten Perspektive dar. Das Foundation Level unterscheidet für funktionale Anforderungen drei Sichten: die statisch-strukturelle Sicht, die Verhaltenssicht und die Funktionssicht. Das Handbuch Requirements Modeling gliedert weiter in Kontext-, Informationsstruktur-, dynamische, Qualitäts- und Constraints-Sicht und unterteilt die dynamische Sicht in Use Cases, datenfluss- und kontrollflussorientierte Sicht, Zustandssicht und Szenariosicht. Welches Modell passt, hängt von der Frage ab, die beantwortet werden soll.</span></p>
+  <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
+  <ul class="belege">
+<li><span data-en="The Foundation Level distinguishes three views of functional requirements: static-structural, behavior and function.">Das Foundation Level unterscheidet drei Sichten funktionaler Anforderungen: statisch-strukturell, Verhalten und Funktion.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-modeling" target="_blank" rel="noopener" data-en="Requirements Modeling Handbook (Advanced Level), version 2.2, ch. 1.5, pp. 17 to 18">Handbuch Requirements Modeling (Advanced Level), Version 2.2, Kap. 1.5, S. 17 bis 18</a></li>
+<li><span data-en="The handbook divides into context, information structure, dynamic, quality and constraints views.">Das Handbuch gliedert in Kontext-, Informationsstruktur-, dynamische, Qualitäts- und Constraints-Sicht.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-modeling" target="_blank" rel="noopener" data-en="Requirements Modeling Handbook (Advanced Level), version 2.2, ch. 1.5.1 to 1.5.5, pp. 17 to 20">Handbuch Requirements Modeling (Advanced Level), Version 2.2, Kap. 1.5.1 bis 1.5.5, S. 17 bis 20</a></li>
+<li><span data-en="The dynamic view comprises use case, data-flow, control-flow and state-oriented views as well as the scenario view.">Die dynamische Sicht umfasst Use Case, datenfluss-, kontrollfluss- und zustandsorientierte Sicht sowie die Szenariosicht.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-modeling" target="_blank" rel="noopener" data-en="Requirements Modeling Handbook (Advanced Level), version 2.2, ch. 1.6, pp. 20 to 22">Handbuch Requirements Modeling (Advanced Level), Version 2.2, Kap. 1.6, S. 20 bis 22</a></li>
+<li><span data-en="Deepening: use case modeling, state-oriented modeling and scenario modeling with sequence diagrams.">Vertiefung: Use-Case-Modellierung, zustandsorientierte Modellierung und Szenariomodellierung mit Sequenzdiagrammen.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-modeling" target="_blank" rel="noopener" data-en="Requirements Modeling Handbook (Advanced Level), version 2.2, ch. 4.2, 4.4 and 5.5, pp. 63, 88 and 117">Handbuch Requirements Modeling (Advanced Level), Version 2.2, Kap. 4.2, 4.4 und 5.5, S. 63, 88 und 117</a></li>
+  </ul>
+  <h3 data-en="Questions for the group">Fragen an die Gruppe</h3>
+  <ul class="fragen">
+    <li data-en="Which view answers my question: structure, flow or state?">Welche Sicht beantwortet meine Frage: Struktur, Ablauf oder Zustand?</li>
+    <li data-en="Who reads the model, and what should they be able to do afterwards?">Wer liest das Modell, und was soll er danach können?</li>
+  </ul>
+  <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
+    <p data-en="Question and view: “Which data belong to an application?” leads to information structure. “How does an application proceed?” leads to the dynamic view. “Which states does an application have?” leads to state-oriented modeling.">Frage und Sicht: „Welche Daten gehören zu einer Bewerbung?“ führt zur Informationsstruktur. „Wie läuft eine Bewerbung ab?“ führt zur dynamischen Sicht. „Welche Zustände hat eine Bewerbung?“ führt zur zustandsorientierten Modellierung.</p>
+  </details>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the board">← Zurück zur Tafel</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
+</section>
+<section class="mod" id="m12" data-i="11" aria-labelledby="h12">
+  <div class="mod-head">
+    <span class="stage" style="color:#8a5a00;background:#fbf0d9;border-color:#8a5a00" data-en="Advanced: Management">Advanced: Management</span>
+    <span class="count"><span data-en="Module">Modul</span> 12 <span data-en="of 15">von 15</span></span>
+  </div>
+  <h2 id="h12" tabindex="-1" data-en="Prioritizing requirements">Anforderungen priorisieren</h2>
+  <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm12" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><text class="b" x="60" y="18" text-anchor="middle" data-en="ad hoc">ad hoc</text><text class="b" x="222" y="18" text-anchor="middle" data-en="analytical">analytisch</text><rect x="12" y="50" width="22" height="80" fill="#8a5a00"/><rect x="42" y="76" width="22" height="54" fill="#8a5a00"/><rect x="72" y="64" width="22" height="66" fill="#8a5a00"/><rect x="102" y="94" width="22" height="36" fill="#8a5a00"/><rect x="170" y="32" width="32" height="28" fill="#5b3cc4" stroke="#5b3cc4"/><rect x="208" y="32" width="32" height="28" fill="#eeeafb" stroke="#5b3cc4"/><rect x="246" y="32" width="32" height="28" fill="#5b3cc4" stroke="#5b3cc4"/><rect x="170" y="66" width="32" height="28" fill="#eeeafb" stroke="#5b3cc4"/><rect x="208" y="66" width="32" height="28" fill="#5b3cc4" stroke="#5b3cc4"/><rect x="246" y="66" width="32" height="28" fill="#eeeafb" stroke="#5b3cc4"/><rect x="170" y="100" width="32" height="28" fill="#5b3cc4" stroke="#5b3cc4"/><rect x="208" y="100" width="32" height="28" fill="#eeeafb" stroke="#5b3cc4"/><rect x="246" y="100" width="32" height="28" fill="#5b3cc4" stroke="#5b3cc4"/></svg></div>
+  <p class="lead"><span class="depth-short" data-en="There are ad hoc and analytical prioritization techniques.">Es gibt ad-hoc und analytische Priorisierungstechniken.</span><span class="depth-full" data-en="The Requirements Management handbook distinguishes two types of prioritization techniques: ad hoc and analytical. Ad hoc techniques include triage, ranking, top ten, classification by one or two criteria, planning poker, the 100-dollar technique and the Kano classification. Analytical are the prioritization matrix by Wiegers and the Analytical Hierarchy Process. The techniques differ in effort, subjectivity and susceptibility to errors. Beforehand goals, criteria and the artifacts to be prioritized must be fixed, and only requirements of the same level of detail are compared.">Das Handbuch Requirements Management unterscheidet zwei Typen von Priorisierungstechniken: ad hoc und analytisch. Zu den ad-hoc-Techniken zählen Triage, Ranking, Top-Ten, Klassifikation nach einem oder zwei Kriterien, Planning Poker, die 100-Dollar-Technik und die Kano-Klassifikation. Analytisch sind die Priorisierungsmatrix nach Wiegers und der Analytical Hierarchy Process. Die Techniken unterscheiden sich in Aufwand, Subjektivität und Fehleranfälligkeit. Vorab müssen Ziele, Kriterien und die zu priorisierenden Artefakte feststehen, und nur Anforderungen derselben Detaillierungsebene werden verglichen.</span></p>
+  <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
+  <ul class="belege">
+<li><span data-en="Two types of techniques: ad hoc (ch. 4.5) and analytical (ch. 4.6); combination in ch. 4.7.">Zwei Typen von Techniken: ad hoc (Kap. 4.5) und analytisch (Kap. 4.6); Kombination in Kap. 4.7.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-management" target="_blank" rel="noopener" data-en="Requirements Management Handbook (Advanced Level), version 2.1, ch. 4.4 to 4.7, pp. 72 to 84">Handbuch Requirements Management (Advanced Level), Version 2.1, Kap. 4.4 bis 4.7, S. 72 bis 84</a></li>
+<li><span data-en="Ad hoc: triage, ranking, top ten, one- and two-criteria classification, planning poker, 100-dollar technique, Kano classification.">Ad hoc: Triage, Ranking, Top-Ten, Ein- und Zwei-Kriterien-Klassifikation, Planning Poker, 100-Dollar-Technik, Kano-Klassifikation.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-management" target="_blank" rel="noopener" data-en="Requirements Management Handbook (Advanced Level), version 2.1, ch. 4.5.1 to 4.5.8, pp. 72 to 80">Handbuch Requirements Management (Advanced Level), Version 2.1, Kap. 4.5.1 bis 4.5.8, S. 72 bis 80</a></li>
+<li><span data-en="Analytical: prioritization matrix by Wiegers and the Analytical Hierarchy Process.">Analytisch: Priorisierungsmatrix nach Wiegers und Analytical Hierarchy Process.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-management" target="_blank" rel="noopener" data-en="Requirements Management Handbook (Advanced Level), version 2.1, ch. 4.6.1 and 4.6.2, pp. 80 to 84">Handbuch Requirements Management (Advanced Level), Version 2.1, Kap. 4.6.1 und 4.6.2, S. 80 bis 84</a></li>
+<li><span data-en="Techniques differ in effort, subjectivity, susceptibility to errors and suitability.">Techniken unterscheiden sich in Aufwand, Subjektivität, Fehleranfälligkeit und Eignung.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-management" target="_blank" rel="noopener" data-en="Requirements Management Handbook (Advanced Level), version 2.1, ch. 4.4, p. 72">Handbuch Requirements Management (Advanced Level), Version 2.1, Kap. 4.4, S. 72</a></li>
+<li><span data-en="Fix goals, criteria and artifacts to be prioritized beforehand; compare only requirements on the same level of abstraction.">Ziele, Kriterien und zu priorisierende Artefakte vorab festlegen; nur Anforderungen derselben Abstraktionsebene vergleichen.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-management" target="_blank" rel="noopener" data-en="Requirements Management Handbook (Advanced Level), version 2.1, ch. 4.4, p. 72">Handbuch Requirements Management (Advanced Level), Version 2.1, Kap. 4.4, S. 72</a></li>
+  </ul>
+  <h3 data-en="Questions for the group">Fragen an die Gruppe</h3>
+  <ul class="fragen">
+    <li data-en="What is the goal of the prioritization, and which criteria apply?">Welches Ziel hat die Priorisierung, und welche Kriterien gelten?</li>
+    <li data-en="Are we comparing requirements on the same level?">Vergleichen wir Anforderungen auf derselben Ebene?</li>
+  </ul>
+  <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
+    <p data-en="Selection aid: with many requirements and little time an ad hoc technique fits better, for a far-reaching decision rather an analytical one. The team justifies the choice of technique based on goal and criteria.">Auswahlhilfe: Bei vielen Anforderungen und wenig Zeit passt eher eine ad-hoc-Technik, bei einer folgenreichen Entscheidung eher eine analytische. Die Wahl der Technik begründet das Team anhand von Ziel und Kriterien.</p>
+  </details>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the board">← Zurück zur Tafel</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
+</section>
+<section class="mod" id="m13" data-i="12" aria-labelledby="h13">
+  <div class="mod-head">
+    <span class="stage" style="color:#8a5a00;background:#fbf0d9;border-color:#8a5a00" data-en="Advanced: Management">Advanced: Management</span>
+    <span class="count"><span data-en="Module">Modul</span> 13 <span data-en="of 15">von 15</span></span>
+  </div>
+  <h2 id="h13" tabindex="-1" data-en="Change management">Änderungsmanagement</h2>
+  <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm13" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="56" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="48.0" y="81.0" text-anchor="middle" data-en="Request">Antrag</text><rect x="104" y="56" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="150.0" y="81.0" text-anchor="middle" data-en="Assessment">Bewertung</text><rect x="206" y="56" width="92" height="40" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="252.0" y="81.0" text-anchor="middle" data-en="Decision">Beschluss</text><path d="M94 76H104" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm13)"/><path d="M196 76H206" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm13)"/><text x="48" y="36" text-anchor="middle" data-en="Change request">Change Request</text></svg></div>
+  <p class="lead"><span class="depth-short" data-en="Changes run through a change request whose template is part of the plan.">Änderungen laufen über einen Änderungsantrag, dessen Vorlage im Plan steht.</span><span class="depth-full" data-en="Changes are the normal case; therefore a regulated path is needed. The Requirements Management handbook describes change requirements through a change request. The template for it belongs in the requirements management plan. The template contains, among other things, the project name and a consecutive request number. The handbook also covers causes, sources and points in time of changes, kinds of changes and the analysis of the stability of requirements.">Änderungen sind der Normalfall; deshalb braucht es einen geregelten Weg. Das Handbuch Requirements Management beschreibt Änderungsanforderungen durch einen Änderungsantrag, englisch Change Request. Die Vorlage dafür gehört in den Requirements-Management-Plan. Die Vorlage enthält unter anderem Projektname und eine fortlaufende Antragsnummer. Das Handbuch geht außerdem auf Ursachen, Quellen und Zeitpunkte von Änderungen ein, auf Arten von Änderungen und auf die Analyse der Stabilität von Anforderungen.</span></p>
+  <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
+  <ul class="belege">
+<li><span data-en="Changes are described by a change request.">Änderungen werden durch einen Änderungsantrag (Change Request) beschrieben.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-management" target="_blank" rel="noopener" data-en="Requirements Management Handbook (Advanced Level), version 2.1, ch. 5.3.1">Handbuch Requirements Management (Advanced Level), Version 2.1, Kap. 5.3.1</a></li>
+<li><span data-en="A template for the change request belongs in the requirements management plan.">Eine Vorlage für den Änderungsantrag gehört in den Requirements-Management-Plan.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-management" target="_blank" rel="noopener" data-en="Requirements Management Handbook (Advanced Level), version 2.1, ch. 5.3.1">Handbuch Requirements Management (Advanced Level), Version 2.1, Kap. 5.3.1</a></li>
+<li><span data-en="The template contains, among other things, the project name and a consecutive request number.">Die Vorlage enthält unter anderem den Projektnamen und eine fortlaufende Antragsnummer.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-management" target="_blank" rel="noopener" data-en="Requirements Management Handbook (Advanced Level), version 2.1, ch. 5.3.1, table 6">Handbuch Requirements Management (Advanced Level), Version 2.1, Kap. 5.3.1, Tabelle 6</a></li>
+<li><span data-en="Structured by causes, sources and points in time, kinds of changes and stability of requirements.">Gegliedert nach Ursachen, Quellen und Zeitpunkten, Arten von Änderungen und Stabilität der Anforderungen.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-management" target="_blank" rel="noopener" data-en="Requirements Management Handbook (Advanced Level), version 2.1, ch. 5.2.1 to 5.2.3">Handbuch Requirements Management (Advanced Level), Version 2.1, Kap. 5.2.1 bis 5.2.3</a></li>
+<li><span data-en="Changes are the normal case; changes to the scope are unavoidable.">Änderungen sind der Normalfall; Änderungen des Systemumfangs sind unvermeidbar.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 2.2.7, p. 31">Handbuch Foundation Level, Version 1.3.3, Kap. 2.2.7, S. 31</a></li>
+  </ul>
+  <h3 data-en="Questions for the group">Fragen an die Gruppe</h3>
+  <ul class="fragen">
+    <li data-en="Which goal does the change serve?">Welchem Ziel dient die Änderung?</li>
+    <li data-en="What effect does it have on effort, schedule and risk?">Welche Auswirkungen hat sie auf Aufwand, Termin und Risiko?</li>
+    <li data-en="Who decides?">Wer entscheidet?</li>
+  </ul>
+  <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
+    <p data-en="Sketch of a change request: request number, description, rationale, effects, decision. The handbook names the attributes of the template in table 6; project name and request number are explicitly listed there.">Skizze eines Änderungsantrags: Antragsnummer, Beschreibung, Begründung, Auswirkungen, Entscheidung. Das Handbuch nennt als Attribute der Vorlage Tabelle 6; Projektname und Antragsnummer stehen dort ausdrücklich.</p>
+  </details>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the board">← Zurück zur Tafel</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
+</section>
+<section class="mod" id="m14" data-i="13" aria-labelledby="h14">
+  <div class="mod-head">
+    <span class="stage" style="color:#3f6b12;background:#e9f4dc;border-color:#3f6b12" data-en="Advanced: RE@Agile">Advanced: RE@Agile</span>
+    <span class="count"><span data-en="Module">Modul</span> 14 <span data-en="of 15">von 15</span></span>
+  </div>
+  <h2 id="h14" tabindex="-1" data-en="User stories, three-C model and INVEST">User Storys, Drei-C-Modell und INVEST</h2>
+  <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm14" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="24" width="96" height="70" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="50.0" y="64.0" text-anchor="middle" data-en="Card">Karte</text><rect x="102" y="24" width="96" height="70" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="64.0" text-anchor="middle" data-en="Conversation">Diskussion</text><rect x="202" y="24" width="96" height="70" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="250.0" y="64.0" text-anchor="middle" data-en="Confirmation">Bestätigung</text><text class="b" x="150" y="128" text-anchor="middle" data-en="INVEST">INVEST</text></svg></div>
+  <p class="lead"><span class="depth-short" data-en="A user story is card, conversation and confirmation. INVEST checks their quality.">Eine User Story ist Karte, Diskussion und Bestätigung. INVEST prüft ihre Qualität.</span><span class="depth-full" data-en="In the agile environment the emphasis shifts from writing to talking. Ron Jeffries describes this with the three-C model: card, conversation, confirmation. The card does not contain all information, it only reminds of the requirement. The conversation can be more important than the text. The confirmation happens through the acceptance test. Bill Wake names six criteria of good backlog items, summarized as INVEST: Independent, Negotiable, Valuable, Estimated, Small and Testable.">Im agilen Umfeld wandert der Schwerpunkt vom Schreiben zum Sprechen. Ron Jeffries beschreibt das mit dem Drei-C-Modell: Card, Conversation, Confirmation, also Karte, Diskussion und Bestätigung. Die Karte enthält nicht alle Informationen, sie erinnert nur an die Anforderung. Die Diskussion kann wichtiger sein als der Text. Die Bestätigung geschieht durch den Abnahmetest. Bill Wake nennt sechs Kriterien guter Backlog Items, zusammengefasst als INVEST: Independent, Negotiable, Valuable, Estimated, Small und Testable.</span></p>
+  <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
+  <ul class="belege">
+<li><span data-en="Three-C model (Jeffries): card, conversation, confirmation.">Drei-C-Modell (Jeffries): Card, Conversation, Confirmation, also Karte, Diskussion, Bestätigung.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener" data-en="RE@Agile Handbook (Advanced Level), version 2.2, ch. 3.3.2, p. 57">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 3.3.2, S. 57</a></li>
+<li><span data-en="The card does not contain all information, it only reminds of the requirement; the conversation can be more important than the text.">Die Karte enthält nicht alle Informationen, sie erinnert nur an die Anforderung; die Diskussion kann wichtiger sein als der Text.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener" data-en="RE@Agile Handbook (Advanced Level), version 2.2, ch. 3.3.2, p. 57">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 3.3.2, S. 57</a></li>
+<li><span data-en="The confirmation happens through the acceptance test.">Die Bestätigung erfolgt durch den Abnahmetest.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener" data-en="RE@Agile Handbook (Advanced Level), version 2.2, ch. 3.3.2, p. 58">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 3.3.2, S. 58</a></li>
+<li><span data-en="INVEST (Wake): Independent, Negotiable, Valuable, Estimated, Small, Testable.">INVEST (Wake): Independent, Negotiable, Valuable, Estimated, Small, Testable.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener" data-en="RE@Agile Handbook (Advanced Level), version 2.2, ch. 3.3.3, p. 58">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 3.3.3, S. 58</a></li>
+<li><span data-en="Backlog items that are too large are split; a template for user stories is in ch. 3.3.1.">Zu große Backlog Items werden aufgeteilt; eine Vorlage für User Storys steht in Kap. 3.3.1.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener" data-en="RE@Agile Handbook (Advanced Level), version 2.2, ch. 3.3.1 and 3.4, pp. 55 and 59">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 3.3.1 und 3.4, S. 55 und 59</a></li>
+  </ul>
+  <h3 data-en="Questions for the group">Fragen an die Gruppe</h3>
+  <ul class="fragen">
+    <li data-en="Which conversation does this card need?">Welche Diskussion braucht diese Karte?</li>
+    <li data-en="With which acceptance test do we confirm it?">Mit welchem Abnahmetest bestätigen wir sie?</li>
+    <li data-en="Is it small enough for the next iteration?">Ist sie klein genug für die nächste Iteration?</li>
+  </ul>
+  <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
+    <p data-en="Example: “As a recruiter I want to filter candidates by qualification so that I get a shortlist faster.” Check with INVEST: Estimated and Small stay open until the team has estimated.">Beispiel: „Als Recruiterin möchte ich Kandidaten nach Qualifikation filtern, damit ich schneller eine Shortlist habe.“ Prüfung mit INVEST: Estimated und Small sind offen, bis das Team geschätzt hat.</p>
+  </details>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the board">← Zurück zur Tafel</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
+</section>
+<section class="mod" id="m15" data-i="14" aria-labelledby="h15">
+  <div class="mod-head">
+    <span class="stage" style="color:#3f6b12;background:#e9f4dc;border-color:#3f6b12" data-en="Advanced: RE@Agile">Advanced: RE@Agile</span>
+    <span class="count"><span data-en="Module">Modul</span> 15 <span data-en="of 15">von 15</span></span>
+  </div>
+  <h2 id="h15" tabindex="-1" data-en="Quality requirements and constraints in an agile environment">Qualitätsanforderungen und Randbedingungen im agilen Umfeld</h2>
+  <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm15" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="52" width="92" height="44" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="48.0" y="79.0" text-anchor="middle" data-en="“fast”?">„schnell“?</text><rect x="178" y="12" width="120" height="44" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="238.0" y="39.0" text-anchor="middle" data-en="Add detail">Details</text><rect x="178" y="92" width="120" height="44" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="238.0" y="119.0" text-anchor="middle" data-en="≤ 2 seconds">≤ 2 Sekunden</text><path d="M94 66L178 40" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm15)"/><path d="M94 84L178 110" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm15)"/></svg></div>
+  <p class="lead"><span class="depth-short" data-en="Vague quality requirements are broken down or derived into more precise requirements.">Vage Qualitätsanforderungen werden zerlegt oder in präzisere Anforderungen abgeleitet.</span><span class="depth-full" data-en="Quality requirements are often vague at first but must be communicated unambiguously and testably. The RE@Agile handbook names two ways: add more detail or break down, or derive more precise, also functional, requirements from the original one. The goal is the level of acceptance criteria. As an example “user-friendly” is broken down into partial requirements. Constraints limit the solution space beyond what is necessary to fulfill the functional and quality requirements.">Qualitätsanforderungen sind zu Beginn oft vage, müssen aber eindeutig und testbar kommuniziert werden. Das Handbuch RE@Agile nennt zwei Wege: mehr Details hinzufügen oder zerlegen, oder aus der ursprünglichen Anforderung präzisere, auch funktionale Anforderungen ableiten. Ziel ist die Stufe der Akzeptanzkriterien. Als Beispiel wird „benutzerfreundlich“ in Teilanforderungen zerlegt. Randbedingungen begrenzen den Lösungsraum über das hinaus, was zur Erfüllung der funktionalen und der Qualitätsanforderungen nötig ist.</span></p>
+  <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
+  <ul class="belege">
+<li><span data-en="Quality requirements are often vague at first but must be communicated unambiguously and testably.">Qualitätsanforderungen sind zu Beginn oft vage, müssen aber eindeutig und testbar kommuniziert werden.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener" data-en="RE@Agile Handbook (Advanced Level), version 2.2, ch. 4.2, p. 73">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 4.2, S. 73</a></li>
+<li><span data-en="Two ways: add more detail or break down, or derive more precise functional requirements.">Zwei Wege: mehr Details hinzufügen oder zerlegen, oder präzisere funktionale Anforderungen ableiten.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener" data-en="RE@Agile Handbook (Advanced Level), version 2.2, ch. 4.2, p. 74">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 4.2, S. 74</a></li>
+<li><span data-en="The goal is the level of acceptance criteria.">Ziel ist die Stufe der Akzeptanzkriterien.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener" data-en="RE@Agile Handbook (Advanced Level), version 2.2, ch. 4.2, p. 74">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 4.2, S. 74</a></li>
+<li><span data-en="The handbook breaks down “user-friendly” into partial requirements (category 11 of the Volere template).">Das Handbuch zerlegt „benutzerfreundlich“ in Teilanforderungen (Kategorie 11 der Vorlage Volere).</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener" data-en="RE@Agile Handbook (Advanced Level), version 2.2, ch. 4.2, p. 74">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 4.2, S. 74</a></li>
+<li><span data-en="Quality requirements concern, for example, performance, availability, security, reliability; constraints limit the solution space beyond what is necessary.">Qualitätsanforderungen betreffen zum Beispiel Leistung, Verfügbarkeit, Sicherheit, Zuverlässigkeit; Randbedingungen begrenzen den Lösungsraum über das Notwendige hinaus.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 1.1, p. 11">Handbuch Foundation Level, Version 1.3.3, Kap. 1.1, S. 11</a></li>
+<li><span data-en="Further: quality requirements and backlog, clarifying constraints.">Weiter: Qualitätsanforderungen und Backlog, Randbedingungen verdeutlichen.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener" data-en="RE@Agile Handbook (Advanced Level), version 2.2, ch. 4.3 and 4.4, pp. 79 and 81">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 4.3 und 4.4, S. 79 und 81</a></li>
+  </ul>
+  <h3 data-en="Questions for the group">Fragen an die Gruppe</h3>
+  <ul class="fragen">
+    <li data-en="How would we test that this is “fast”?">Wie würden wir testen, dass das „schnell“ ist?</li>
+    <li data-en="Can this be derived into functional requirements?">Lässt sich das in funktionale Anforderungen ableiten?</li>
+  </ul>
+  <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
+    <p data-en="Example for way 1, adding detail: “The portal shall be fast” becomes “The result list appears within 2 seconds for 95 percent of the requests.”">Beispiel für Weg 1, Details hinzufügen: „Das Portal soll schnell sein“ wird zu „Die Trefferliste erscheint bei 95 Prozent der Anfragen in höchstens 2 Sekunden.“</p>
+  </details>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the board">← Zurück zur Tafel</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
+</section>
+  </div>
+
+  <div class="view" id="v-glossar">
+    <div class="panel">
+      <h2 data-en="Glossary">Glossar</h2>
+      <div data-lang="de"><dl class="glossar">
+<dt>Anforderung</dt><dd>Bedürfnis eines Stakeholders, Fähigkeit oder Eigenschaft eines Systems oder deren dokumentierte Darstellung. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Handbuch Foundation Level, Version 1.3.3, Definition 1.1, S. 11</a></dd>
+<dt>Anforderungsspezifikation</dt><dd>Systematisch dargestellte Sammlung von Anforderungen, die vorgegebene Kriterien erfüllt. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Handbuch Foundation Level, Version 1.3.3, Kap. 1.1, S. 11</a></dd>
+<dt>Basisfaktor</dt><dd>Selbstverständliches Merkmal, nach dem Kunden nicht fragen; sein Fehlen verärgert. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Handbuch Foundation Level, Version 1.3.3, Kap. 4.2.1, S. 99</a></dd>
+<dt>Begeisterungsfaktor</dt><dd>Merkmal, das Kunden nicht kennen; vorhanden kann es ein Unterscheidungsmerkmal sein. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Handbuch Foundation Level, Version 1.3.3, Kap. 4.2.1, S. 98</a></dd>
+<dt>Change Request (Änderungsantrag)</dt><dd>Beschreibung einer Änderung; die Vorlage gehört in den Requirements-Management-Plan. <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-management" target="_blank" rel="noopener">Handbuch Requirements Management (Advanced Level), Version 2.1, Kap. 5.3.1</a></dd>
+<dt>Constraint (Randbedingung)</dt><dd>Anforderung, die den Lösungsraum über das Notwendige hinaus begrenzt. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Handbuch Foundation Level, Version 1.3.3, Kap. 1.1, S. 11</a></dd>
+<dt>Drei-C-Modell (Card, Conversation, Confirmation)</dt><dd>Karte, Diskussion und Bestätigung durch einen Abnahmetest. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 3.3.2, S. 57</a></dd>
+<dt>EARS (Easy Approach to Requirements Syntax)</dt><dd>Satzschablonen für verschiedene Situationen, zum Beispiel ereignisgesteuert. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Handbuch Foundation Level, Version 1.3.3, Kap. 3.3.1, S. 48</a></dd>
+<dt>Funktionale Anforderung</dt><dd>Betrifft ein Ergebnis oder Verhalten einer Systemfunktion, auch Daten oder Interaktion mit der Umgebung. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Handbuch Foundation Level, Version 1.3.3, Kap. 1.1, S. 11</a></dd>
+<dt>INVEST</dt><dd>Kriterien guter Backlog Items: Independent, Negotiable, Valuable, Estimated, Small, Testable. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 3.3.3, S. 58</a></dd>
+<dt>Leistungsfaktor</dt><dd>Ausdrücklich verlangtes Merkmal; mehr davon erhöht die Zufriedenheit und die Kosten. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Handbuch Foundation Level, Version 1.3.3, Kap. 4.2.1, S. 98</a></dd>
+<dt>Qualitätsanforderung</dt><dd>Bezieht sich auf Qualitätsaspekte wie Leistung, Verfügbarkeit, Sicherheit, Zuverlässigkeit. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Handbuch Foundation Level, Version 1.3.3, Kap. 1.1, S. 11</a></dd>
+<dt>Requirements Engineering</dt><dd>Fachgebiet, das Anforderungen an Systeme ermittelt, dokumentiert, prüft und verwaltet. Abgekürzt RE. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Handbuch Foundation Level, Version 1.3.3, Kap. 1, S. 11 bis 16</a></dd>
+<dt>Rückwärtsverfolgbarkeit</dt><dd>Frage nach dem Ursprung einer Anforderung. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Handbuch Foundation Level, Version 1.3.3, Kap. 6.6, S. 154</a></dd>
+<dt>Satzschablone</dt><dd>Grundstruktur mit Platzhaltern für einzelne Anforderungen oder User Storys. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Handbuch Foundation Level, Version 1.3.3, Definition 3.2, S. 47</a></dd>
+<dt>Vorwärtsverfolgbarkeit</dt><dd>Frage nach der Verwendung einer Anforderung. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Handbuch Foundation Level, Version 1.3.3, Kap. 6.6, S. 154</a></dd>
+</dl></div>
+      <div data-lang="en" style="display:none"><dl class="glossar">
+<dt>Backward traceability</dt><dd>Question about the origin of a requirement. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Foundation Level Handbook, version 1.3.3, ch. 6.6, p. 154</a></dd>
+<dt>Basic factor</dt><dd>Obvious feature nobody asks for; its absence annoys customers. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Foundation Level Handbook, version 1.3.3, ch. 4.2.1, p. 99</a></dd>
+<dt>Change request</dt><dd>Description of a change; the template belongs in the requirements management plan. <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-management" target="_blank" rel="noopener">Requirements Management Handbook (Advanced Level), version 2.1, ch. 5.3.1</a></dd>
+<dt>Constraint</dt><dd>Requirement that limits the solution space beyond what is necessary. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Foundation Level Handbook, version 1.3.3, ch. 1.1, p. 11</a></dd>
+<dt>Delight factor</dt><dd>Feature customers do not know; if present it can be a differentiator. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Foundation Level Handbook, version 1.3.3, ch. 4.2.1, p. 98</a></dd>
+<dt>EARS (Easy Approach to Requirements Syntax)</dt><dd>Phrase templates for different situations, for example event-driven. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Foundation Level Handbook, version 1.3.3, ch. 3.3.1, p. 48</a></dd>
+<dt>Forward traceability</dt><dd>Question about the use of a requirement. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Foundation Level Handbook, version 1.3.3, ch. 6.6, p. 154</a></dd>
+<dt>Functional requirement</dt><dd>Concerns a result or behavior of a system function, also data or interaction with the environment. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Foundation Level Handbook, version 1.3.3, ch. 1.1, p. 11</a></dd>
+<dt>INVEST</dt><dd>Criteria of good backlog items: Independent, Negotiable, Valuable, Estimated, Small, Testable. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener">RE@Agile Handbook (Advanced Level), version 2.2, ch. 3.3.3, p. 58</a></dd>
+<dt>Performance factor</dt><dd>Explicitly demanded feature; more of it raises satisfaction and cost. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Foundation Level Handbook, version 1.3.3, ch. 4.2.1, p. 98</a></dd>
+<dt>Phrase template</dt><dd>Basic structure with placeholders for individual requirements or user stories. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Foundation Level Handbook, version 1.3.3, definition 3.2, p. 47</a></dd>
+<dt>Quality requirement</dt><dd>Refers to quality aspects such as performance, availability, security, reliability. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Foundation Level Handbook, version 1.3.3, ch. 1.1, p. 11</a></dd>
+<dt>Requirement</dt><dd>Need of a stakeholder, capability or property of a system, or its documented representation. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Foundation Level Handbook, version 1.3.3, definition 1.1, p. 11</a></dd>
+<dt>Requirements Engineering</dt><dd>Discipline that elicits, documents, validates and manages requirements for systems. Abbreviated RE. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Foundation Level Handbook, version 1.3.3, ch. 1, pp. 11 to 16</a></dd>
+<dt>Requirements specification</dt><dd>Systematically represented collection of requirements that meets given criteria. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Foundation Level Handbook, version 1.3.3, ch. 1.1, p. 11</a></dd>
+<dt>Three-C model (card, conversation, confirmation)</dt><dd>Card, conversation and confirmation through an acceptance test. <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener">RE@Agile Handbook (Advanced Level), version 2.2, ch. 3.3.2, p. 57</a></dd>
+</dl></div>
+    </div>
+    <div class="panel">
+      <h2 data-en="Sources">Quellen</h2>
+      <div data-lang="de"><ul class="quellen">
+<li><a href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Handbuch Foundation Level, Version 1.3.3</a> · IREB</li>
+<li><a href="https://www.ireb.org/en/downloads/tag:advanced-level-modeling" target="_blank" rel="noopener">Handbuch Requirements Modeling (Advanced Level), Version 2.2</a> · IREB</li>
+<li><a href="https://www.ireb.org/en/downloads/tag:advanced-level-management" target="_blank" rel="noopener">Handbuch Requirements Management (Advanced Level), Version 2.1</a> · IREB</li>
+<li><a href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener">Handbuch RE@Agile (Advanced Level), Version 2.2</a> · IREB</li>
+</ul></div>
+      <div data-lang="en" style="display:none"><ul class="quellen">
+<li><a href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener">Foundation Level Handbook, version 1.3.3</a> · IREB</li>
+<li><a href="https://www.ireb.org/en/downloads/tag:advanced-level-modeling" target="_blank" rel="noopener">Requirements Modeling Handbook (Advanced Level), version 2.2</a> · IREB</li>
+<li><a href="https://www.ireb.org/en/downloads/tag:advanced-level-management" target="_blank" rel="noopener">Requirements Management Handbook (Advanced Level), version 2.1</a> · IREB</li>
+<li><a href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener">RE@Agile Handbook (Advanced Level), version 2.2</a> · IREB</li>
+</ul></div>
+    </div>
+    <div class="mod-nav"><button type="button" class="pill" data-act="tafel" data-en="← Back to the board">← Zurück zur Tafel</button></div>
+  </div>
+
+  <div class="crosslink">
+    <span data-en="Related Denkraum tools on this topic:">Verwandte Denkraum-Tools zu diesem Thema:</span>
+    <ul>
+      <li><a href="./re-kompendium.html">RE-Kompendium</a> — <span data-en="covers requirements engineering across IREB, BABOK and IEEE 29148 in more depth; the crash course keeps to the IREB handbooks and goes through them module by module.">behandelt Requirements Engineering übergreifend über IREB, BABOK und IEEE 29148 in der Tiefe; der Crash Course bleibt bei den IREB-Handbüchern und führt Modul für Modul hindurch.</span></li>
+      <li><a href="./ireb-kompendium.html">IREB-Kompendium</a> — <span data-en="the key statements of the Foundation Level as a learning journey; the crash course adds the Advanced Level and questions for the group.">die Kernaussagen des Foundation Levels als Lernreise; der Crash Course ergänzt den Advanced Level und Fragen an die Gruppe.</span></li>
+    </ul>
+  </div>
+
+  <footer>
+    <p class="footer-sig"><strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a> · IREB: Handbuch Foundation Level 1.3.3, Requirements Modeling 2.2, Requirements Management 2.1, RE@Agile 2.2 · ISO/IEC/IEEE 29148 · Zuletzt geprüft: 26.11.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</p>
+    <div class="footer-details">
+      <details class="footer-box">
+        <summary class="footer-summary" data-en="System prompt">Systemprompt</summary>
+        <div class="footer-content">
+          <div class="footer-mono" data-lang="de">MASTER-BAU-PROMPT — RE Crash Course (Requirements Engineering von Foundation bis Advanced)
+
+ROLLE
+Du bist Prompt-Engineering-Mentor und Instructional Designer für Requirements Engineering, Business Analyse und Projektmanagement. Du baust ein einzelnes, offline lauffähiges HTML-Lerntool für Trainerinnen und Teilnehmende in Seminaren.
+
+AUFGABE
+Baue eine „Crash-Course-Tafel“: fünfzehn Kacheln, jede Kachel ist ein Modul. Reihenfolge: 10 Module Foundation Level, 1 Modul Modeling, 2 Module Management, 2 Module RE@Agile. Aus einer Kachel öffnet sich die Modulansicht.
+
+STRUKTUR UND LAYOUT
+- Linke Seitenleiste (Navigation steht immer links) mit allen fünfzehn Modulen, nach Stufen gruppiert; zusätzlich „Tafel“ und „Glossar und Quellen“. Auf schmalen Bildschirmen öffnet ein Menü-Button die Leiste als linke Schublade.
+- Hauptbereich einspaltig. Hero mit Überschrift und Einleitung in voller Breite, darüber nur Werkzeugleiste (Zurück-Link, Menü, Beamer, Sprache, Vertiefung, Zurücksetzen).
+- Tafel: Raster aus Kacheln mit Nummer, Stufen-Pill, Inline-SVG-Skizze, Titel, Kurzzeile; Filter nach Stufe; Zähler „gesehen“.
+- Modulansicht: Stufen-Pill, Überschrift, Skizze, Kernabsatz, „Belege in den Handbüchern“, „Fragen an die Gruppe“, aufklappbare Lösung, Buttons „Zurück zur Tafel“, „Zurück“, „Weiter“. Beim Öffnen steht die Überschrift ohne Nachscrollen sichtbar oben; der Rückweg zur Tafel ist immer da.
+- Signatur fix oben rechts (Name fett, Link darunter), auch unter 900 px Breite.
+
+INHALT PRO MODUL
+Jede Fachaussage trägt Handbuch, Version, Kapitel und Seite als Link auf IREB (Foundation Level 1.3.3, Requirements Modeling 2.2, Requirements Management 2.1, RE@Agile 2.2). Keine Aussage aus dem Gedächtnis. Beispielfragen für die Gruppe und eine Lösung zu jeder Frage. Alle Beispiele am Fall Bewerbungsportal.
+
+KERNABSATZ ALS PAAR (Vertiefungs-Toggle)
+Je Modul zwei statische Texte: kurz (ein bis zwei Sätze) und voll (Definition, Beispiel, Kontext). Standard kurz, Zustand in sessionStorage mit try/catch, Beamer erzwingt kurz. Die volle Fassung entsteht zuerst, die kurze wird daraus destilliert.
+
+SPRACHE
+Deutsch ist der statische Grundzustand im HTML, Englisch steckt in data-en-Attributen; ein Umschalter tauscht nur den Text vorhandener Elemente. Keine Inhalte per Laufzeit-Generierung. Abkürzungen ausschreiben (Handbuchnamen voll, keine Kürzel). Glossar alphabetisch, je Sprache sortiert.
+
+DESIGN
+Helles Farbschema (color-scheme: light), Schrift 16 px Fließtext, mindestens 14 px sonst, Tippflächen mindestens 44 px, pointerup statt click, kein HTML5-Drag-and-drop. Stufenfarben: Violett, Petrol, Ocker, Grün; nie die fünf Raumfarben der Denkräume. Navigationsleiste neutral dunkel. Karten 16 px Radius, Buttons 12 px, Pills voll rund, dezente Schatten.
+
+BEAMER
+Vierstufig (Normal, Beamer, Beamer XL, Beamer XXL) über Klassen auf html; Label zeigt die nächste Aktion; Footer ab Stufe 1 ausgeblendet; Fließtext 16/22/28/34 px.
+
+FOOTER
+Vier Aufklapp-Boxen: Systemprompt (dieser Text), Handbuch, Vortrags-Skript, Normen-Register. Kanonische Klassen .footer-sig, .footer-details, .footer-box, .footer-summary, .footer-content, .footer-mono, .footer-sans, .footer-table.
+
+NICHT TUN
+Keine Fachaussage ohne Fundstelle. Keine Bemerkungen über die Herkunft der Aussagen im Tool-Text. Keine Raumfarben für Stufen. Keine externen Schriften, Bilder oder Skripte. Kein Auto-Weiter. Keine Visualisierung entfernen. Keine Uhrzeiten im Tool (nur im Vortrags-Skript).</div>
+          <div class="footer-mono" data-lang="en" style="display:none">MASTER BUILD PROMPT — RE Crash Course (Requirements Engineering from Foundation to Advanced)
+
+ROLE
+You are a prompt engineering mentor and instructional designer for Requirements Engineering, business analysis and project management. You build one offline-capable HTML learning tool for trainers and participants in seminars.
+
+TASK
+Build a “crash course board”: fifteen tiles, each tile is a module. Order: 10 Foundation Level modules, 1 Modeling module, 2 Management modules, 2 RE@Agile modules. A tile opens the module view.
+
+STRUCTURE AND LAYOUT
+- Left sidebar (navigation is always on the left) with all fifteen modules grouped by level; plus “Board” and “Glossary and sources”. On narrow screens a menu button opens the sidebar as a left drawer.
+- Main area single column. Hero with heading and introduction at full width, above it only a toolbar (back link, menu, beamer, language, depth, reset).
+- Board: grid of tiles with number, level pill, inline SVG sketch, title, short line; filter by level; “seen” counter.
+- Module view: level pill, heading, sketch, core paragraph, “Sources in the handbooks”, “Questions for the group”, collapsible solution, buttons “Back to the board”, “Previous”, “Next”. On opening, the heading is visible at the top without scrolling; the way back to the board is always there.
+- Signature fixed top right (name in bold, link below), also under 900 px width.
+
+CONTENT PER MODULE
+Every factual statement carries handbook, version, chapter and page as a link to IREB (Foundation Level 1.3.3, Requirements Modeling 2.2, Requirements Management 2.1, RE@Agile 2.2). No statement from memory. Example questions for the group and a solution for each question. All examples use the application portal case.
+
+CORE PARAGRAPH AS A PAIR (depth toggle)
+Two static texts per module: short (one to two sentences) and full (definition, example, context). Default short, state in sessionStorage with try/catch, beamer forces short. The full version is written first, the short one is distilled from it.
+
+LANGUAGE
+German is the static base state in the HTML, English sits in data-en attributes; a switch only swaps the text of existing elements. No content generated at runtime. Spell out abbreviations (full handbook names, no short codes). Glossary alphabetical, sorted per language.
+
+DESIGN
+Light color scheme (color-scheme: light), 16 px body text, at least 14 px otherwise, tap targets at least 44 px, pointerup instead of click, no HTML5 drag and drop. Level colors: violet, teal, ochre, green; never the five room colors of the thinking rooms. Navigation sidebar neutral dark. Cards 16 px radius, buttons 12 px, pills fully round, subtle shadows.
+
+BEAMER
+Four levels (Normal, Beamer, Beamer XL, Beamer XXL) through classes on html; the label shows the next action; footer hidden from level 1; body text 16/22/28/34 px.
+
+FOOTER
+Four collapsible boxes: system prompt (this text), manual, talk script, standards register. Canonical classes .footer-sig, .footer-details, .footer-box, .footer-summary, .footer-content, .footer-mono, .footer-sans, .footer-table.
+
+DO NOT
+No factual statement without a source. No remarks about where statements come from in the tool text. No room colors for levels. No external fonts, images or scripts. No auto-advance. Do not remove any visualization. No clock times in the tool (only in the talk script).</div>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary" data-en="Manual">Handbuch</summary>
+        <div class="footer-content footer-sans">
+          <div data-lang="de"><h4>Framework und Fünf Dimensionen</h4>
+<p>Gebaut nach dem Muster RTF mit Ergänzungen: <strong>Rolle</strong> (Mentor und Instructional Designer), <strong>Aufgabe</strong> (fünfzehn Module als Tafel), <strong>Kontext</strong> (Seminar, Beamer, Tablet, offline), <strong>Format</strong> (eine HTML-Datei, statisch zweisprachig) und <strong>Eingrenzung</strong> (nur Belegtes, keine Raumfarben, keine Zeiten im Tool).</p>
+<h4>Konstruktionslogik</h4>
+<p>Die Tafel ist das Inhaltsverzeichnis zum Anfassen: Wer eine Kachel öffnet, sieht Überschrift und Erklärung sofort und kommt mit einem Button zurück. Jedes Modul folgt demselben Ablauf: Kernabsatz, Belege, Fragen an die Gruppe, Lösung. So lässt sich der Ablauf im Seminar wiederholen, ohne neu zu erklären.</p>
+<h4>Warum Vertiefungs-Toggle, warum keine Quizfragen</h4>
+<p>Das Tool enthält Fließtext-Erklärungen und erfüllt daher das Kriterium K22: jeder Kernabsatz liegt als statisches Paar kurz/voll vor. Die Fragen an die Gruppe sind offene Impulse mit aufklappbarer Lösung, keine Auswahlfragen; die Übungs-Kriterien Z1 bis Z4 zur Einzelfrage mit Antwortoptionen greifen deshalb nicht.</p>
+<h4>Zentraler Lernhinweis</h4>
+<p>Anforderungen sind keine Wunschliste, sondern prüfbare Aussagen mit Herkunft. Darum trägt jede Aussage im Tool ihre Fundstelle.</p>
+<h4>Nachbau-Tipp</h4>
+<p>Erst die Belege je Modul sammeln, dann die volle Fassung schreiben, daraus die kurze destillieren, zuletzt die Skizze zeichnen. Die Skizzen sind Inline-SVG mit eigener Marker-ID je Grafik.</p></div>
+          <div data-lang="en" style="display:none"><h4>Framework and five dimensions</h4>
+<p>Built on the RTF pattern with additions: <strong>Role</strong> (mentor and instructional designer), <strong>Task</strong> (fifteen modules as a board), <strong>Context</strong> (seminar, projector, tablet, offline), <strong>Format</strong> (one HTML file, statically bilingual) and <strong>Constraints</strong> (only sourced content, no room colors, no times in the tool).</p>
+<h4>Construction logic</h4>
+<p>The board is the table of contents you can touch: whoever opens a tile sees heading and explanation at once and returns with one button. Every module follows the same sequence: core paragraph, sources, questions for the group, solution. The sequence can be repeated in a seminar without new explanation.</p>
+<h4>Why a depth toggle, why no quiz questions</h4>
+<p>The tool contains running-text explanations and therefore meets criterion K22: every core paragraph exists as a static short/full pair. The questions for the group are open prompts with a collapsible solution, not multiple choice; the exercise criteria Z1 to Z4 for single questions with answer options therefore do not apply.</p>
+<h4>Central learning note</h4>
+<p>Requirements are not a wish list but verifiable statements with an origin. That is why every statement in the tool carries its source.</p>
+<h4>Rebuild tip</h4>
+<p>First collect the sources per module, then write the full version, distill the short one from it, and draw the sketch last. The sketches are inline SVG with their own marker ID per graphic.</p></div>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary" data-en="Talk script">Vortrags-Skript</summary>
+        <div class="footer-content footer-sans">
+          <div data-lang="de"><p><strong>Vorbereitung.</strong> Tafel öffnen, Sprache wählen. Beamer-Button bei Bedarf einmal drücken (Beamer erzwingt die kurze Fassung).</p>
+<p><strong>Einstieg.</strong> <em>(Klick auf „Tafel“.)</em> Sprechtext: Das sind fünfzehn Kacheln, zehn für das Foundation Level, eine für Modeling, zwei für Management, zwei für RE@Agile. Zu jeder Kachel gibt es Belege mit Kapitel und Seite, eine Frage an Sie und eine Lösung. Übergang: Wir beginnen mit Kachel 1.</p>
+<p><strong>1. Was ist Requirements Engineering?</strong><br>Klick auf Kachel 1. Sprechtext: Bevor wir Techniken lernen, klären wir das Wort Anforderung. Es hat drei Bedeutungen, und es gibt drei Arten. Frage an die Gruppe: Was ist „Antwort in 2 Sekunden“? Lösung aufklappen. Übergang: Wer weiß, was Anforderungen sind, braucht Leitplanken: die neun Prinzipien.</p>
+<p><strong>2. Die neun Prinzipien des Requirements Engineering</strong><br>Klick auf Kachel 2. Sprechtext: Neun Prinzipien, ich lese nicht alle vor. Ich nenne ein Symptom, Sie nennen das Prinzip. Lösung aufklappen und Beispiele abgleichen. Übergang: Prinzip vier heißt Kontext, damit machen wir weiter.</p>
+<p><strong>3. Systemkontext und Systemgrenze</strong><br>Klick auf Kachel 3. Sprechtext: Wir zeichnen gemeinsam einen Kreis und fragen, wer außen steht. Frage an die Gruppe: Was liegt beim Bewerbungsportal außerhalb? Lösung aufklappen. Übergang: Wer außen steht, sind oft Stakeholder.</p>
+<p><strong>4. Stakeholder und Anforderungsquellen</strong><br>Klick auf Kachel 4. Sprechtext: Drei Quellen, nicht eine. Frage an die Gruppe: Welche Quelle vergessen wir am häufigsten? Lösung aufklappen. Übergang: Quellen kennen wir, jetzt ermitteln wir.</p>
+<p><strong>5. Ermitteln: Kano-Modell und Erhebungstechniken</strong><br>Klick auf Kachel 5. Sprechtext: Drei Kurven, drei Sorten von Wünschen. Ordnen Sie drei Merkmale zu, dann Lösung aufklappen. Übergang: Was wir ermittelt haben, müssen wir eindeutig aufschreiben.</p>
+<p><strong>6. Dokumentieren: Satzschablonen</strong><br>Klick auf Kachel 6. Sprechtext: Satz bauen wie Bausteine. Gruppe formuliert eine Anforderung ereignisgesteuert, dann Lösung aufklappen. Übergang: Ein geschriebener Satz ist noch nicht geprüft.</p>
+<p><strong>7. Konflikte in Anforderungen lösen</strong><br>Klick auf Kachel 7. Sprechtext: Nicht jeder Streit ist ein Interessenstreit. Gruppe ordnet das Beispiel ein, dann Lösung aufklappen. Übergang: Ein Konflikt gelöst heißt noch nicht validiert.</p>
+<p><strong>8. Anforderungen validieren</strong><br>Klick auf Kachel 8. Sprechtext: Drei Kategorien, zwei davon statisch. Gruppe ordnet zwei Aktivitäten zu, dann Lösung aufklappen. Übergang: Wie viel davon wir einsetzen, hängt vom Prozess ab.</p>
+<p><strong>9. Den Prozess des Requirements Engineering konfigurieren</strong><br>Klick auf Kachel 9. Sprechtext: Drei Regler, kein Standardprozess. Gruppe stellt die Regler für ein bekanntes Projekt, dann Lösung aufklappen. Übergang: Was wir erarbeitet haben, muss verwaltet werden.</p>
+<p><strong>10. Requirements Management und Verfolgbarkeit</strong><br>Klick auf Kachel 10. Sprechtext: Verfolgbarkeit ist eine Spur in zwei Richtungen. Gruppe nennt eine Frage je Richtung, dann Lösung aufklappen. Übergang: Ab hier beginnt der Advanced Level.</p>
+<p><strong>11. Anforderungen modellieren: Sichten</strong><br>Klick auf Kachel 11. Sprechtext: Ein Modell beantwortet eine Frage, nicht alle. Gruppe ordnet drei Fragen den Sichten zu, dann Lösung aufklappen. Übergang: Nicht alles ist gleich wichtig, also priorisieren wir.</p>
+<p><strong>12. Anforderungen priorisieren</strong><br>Klick auf Kachel 12. Sprechtext: Priorisieren heißt Kriterien vorher festlegen. Gruppe wählt eine Technik für eine Situation, dann Lösung aufklappen. Übergang: Prioritäten ändern sich, also brauchen wir Änderungsmanagement.</p>
+<p><strong>13. Änderungsmanagement</strong><br>Klick auf Kachel 13. Sprechtext: Ohne Vorlage kein Änderungsmanagement. Gruppe ergänzt Felder für einen Antrag, dann Lösung aufklappen. Übergang: Agile Projekte ändern ständig, dort sieht es anders aus.</p>
+<p><strong>14. User Storys, Drei-C-Modell und INVEST</strong><br>Klick auf Kachel 14. Sprechtext: Karte, Diskussion, Bestätigung. Gruppe prüft die Beispiel-Story mit INVEST, dann Lösung aufklappen. Übergang: Eine Story sagt wenig über Qualität.</p>
+<p><strong>15. Qualitätsanforderungen und Randbedingungen im agilen Umfeld</strong><br>Klick auf Kachel 15. Sprechtext: Ein vages Wort wird testbar. Gruppe präzisiert „einfach zu bedienen“, dann Lösung aufklappen. Abschluss: Sie haben den Weg von den Grundlagen bis in den agilen Alltag gesehen; jedes Modul hat seine Fundstelle.</p>
+<p><strong>Regie-Hinweise.</strong> Zeitrahmen: je Modul etwa sechs bis acht Minuten, die Tafel selbst zwei Minuten. Nicht zuerst sagen: die Lösung. Erst die Gruppe antworten lassen, dann „Lösung anzeigen“. Wer Zeit sparen will, überspringt die Module 11 bis 13 und geht von Kachel 10 direkt zu Kachel 14.</p></div>
+          <div data-lang="en" style="display:none"><p><strong>Preparation.</strong> Open the board, choose the language. Press the beamer button once if needed (beamer forces the short version).</p>
+<p><strong>Opening.</strong> <em>(Click “Board”.)</em> Script: These are fifteen tiles, ten for the Foundation Level, one for Modeling, two for Management, two for RE@Agile. Every tile has sources with chapter and page, a question for you and a solution. Transition: we start with tile 1.</p>
+<p><strong>1. What is Requirements Engineering?</strong><br>Click tile 1. Script: Before we learn techniques we clarify the word requirement. It has three meanings and three kinds. Question to the group: what is “answer in 2 seconds”? Reveal the solution. Transition: whoever knows what requirements are needs guard rails: the nine principles.</p>
+<p><strong>2. The nine principles of Requirements Engineering</strong><br>Click tile 2. Script: Nine principles, I will not read them all. I name a symptom, you name the principle. Reveal the solution and compare. Transition: principle four is context, so we continue with it.</p>
+<p><strong>3. System context and system boundary</strong><br>Click tile 3. Script: Together we draw a circle and ask who stands outside. Question to the group: what is outside for the application portal? Reveal the solution. Transition: those outside are often stakeholders.</p>
+<p><strong>4. Stakeholders and sources of requirements</strong><br>Click tile 4. Script: three sources, not one. Question to the group: which source do we forget most often? Reveal the solution. Transition: we know the sources, now we elicit.</p>
+<p><strong>5. Eliciting: Kano model and elicitation techniques</strong><br>Click tile 5. Script: three curves, three kinds of wishes. Assign three features, then reveal the solution. Transition: what we have elicited we must write down unambiguously.</p>
+<p><strong>6. Documenting: phrase templates</strong><br>Click tile 6. Script: build a sentence like building blocks. The group phrases an event-driven requirement, then reveal the solution. Transition: a written sentence is not yet checked.</p>
+<p><strong>7. Resolving conflicts about requirements</strong><br>Click tile 7. Script: not every dispute is a dispute of interests. The group classifies the example, then reveal the solution. Transition: a resolved conflict is not yet validated.</p>
+<p><strong>8. Validating requirements</strong><br>Click tile 8. Script: three categories, two of them static. The group assigns two activities, then reveal the solution. Transition: how much of it we use depends on the process.</p>
+<p><strong>9. Configuring the Requirements Engineering process</strong><br>Click tile 9. Script: three sliders, no standard process. The group sets the sliders for a known project, then reveal the solution. Transition: what we have developed must be managed.</p>
+<p><strong>10. Requirements Management and traceability</strong><br>Click tile 10. Script: traceability is a trail in two directions. The group names one question per direction, then reveal the solution. Transition: from here the Advanced Level begins.</p>
+<p><strong>11. Modeling requirements: views</strong><br>Click tile 11. Script: a model answers one question, not all. The group assigns three questions to the views, then reveal the solution. Transition: not everything is equally important, so we prioritize.</p>
+<p><strong>12. Prioritizing requirements</strong><br>Click tile 12. Script: prioritizing means fixing criteria beforehand. The group chooses a technique for a situation, then reveal the solution. Transition: priorities change, so we need change management.</p>
+<p><strong>13. Change management</strong><br>Click tile 13. Script: without a template no change management. The group adds fields for a request, then reveal the solution. Transition: agile projects change constantly, there it looks different.</p>
+<p><strong>14. User stories, three-C model and INVEST</strong><br>Click tile 14. Script: card, conversation, confirmation. The group checks the example story with INVEST, then reveal the solution. Transition: a story says little about quality.</p>
+<p><strong>15. Quality requirements and constraints in an agile environment</strong><br>Click tile 15. Script: a vague word becomes testable. The group makes “easy to use” precise, then reveal the solution. Closing: you have seen the way from the basics to agile everyday work; every module has its source.</p>
+<p><strong>Directing notes.</strong> Time frame: about six to eight minutes per module, the board itself two minutes. Do not say first: the solution. Let the group answer first, then “Show solution”. To save time skip modules 11 to 13 and go from tile 10 directly to tile 14.</p></div>
+        </div>
+      </details>
+      <details class="footer-box">
+        <summary class="footer-summary" data-en="Standards register">Normen-Register</summary>
+        <div class="footer-content footer-sans">
+          <div data-lang="de"><table class="footer-table"><tr><th>Framework / Quelle</th><th>Fassung / Status</th><th>Bezug im Tool</th></tr><tr><td>Handbuch Foundation Level (IREB)</td><td>Version 1.3.3</td><td>Module 1 bis 10 und Glossar</td></tr><tr><td>Handbuch Requirements Modeling, Advanced Level (IREB)</td><td>Version 2.2</td><td>Module 3, 11</td></tr><tr><td>Handbuch Requirements Management, Advanced Level (IREB)</td><td>Version 2.1</td><td>Module 12, 13</td></tr><tr><td>Handbuch RE@Agile, Advanced Level (IREB)</td><td>Version 2.2</td><td>Module 3, 4, 13, 14, 15</td></tr><tr><td>ISO/IEC/IEEE 29148</td><td>wie im Handbuch Foundation Level zitiert</td><td>Modul 6: Vorlage der Satzschablone</td></tr><tr><td>Kano-Modell</td><td>wie im Handbuch Foundation Level beschrieben</td><td>Modul 5</td></tr><tr><td>INVEST (Wake) und Drei-C-Modell (Jeffries)</td><td>wie im Handbuch RE@Agile beschrieben</td><td>Modul 14</td></tr></table><p>Hinweis: IREB führt für das Foundation Level den Lehrplan in Version 3.3.0 und für Requirements Management das Handbuch in Version 2.1.0. Den Stand vor dem Einsatz in neuen Materialien im IREB-Download-Bereich prüfen: <a href="https://www.ireb.org/en/downloads/" target="_blank" rel="noopener">www.ireb.org/en/downloads</a>.</p></div>
+          <div data-lang="en" style="display:none"><table class="footer-table"><tr><th>Framework / source</th><th>Version / status</th><th>Use in the tool</th></tr><tr><td>Foundation Level Handbook (IREB)</td><td>Version 1.3.3</td><td>Modules 1 to 10 and glossary</td></tr><tr><td>Requirements Modeling Handbook, Advanced Level (IREB)</td><td>Version 2.2</td><td>Modules 3, 11</td></tr><tr><td>Requirements Management Handbook, Advanced Level (IREB)</td><td>Version 2.1</td><td>Modules 12, 13</td></tr><tr><td>RE@Agile Handbook, Advanced Level (IREB)</td><td>Version 2.2</td><td>Modules 3, 4, 13, 14, 15</td></tr><tr><td>ISO/IEC/IEEE 29148</td><td>as cited in the Foundation Level handbook</td><td>Module 6: template of the phrase template</td></tr><tr><td>Kano model</td><td>as described in the Foundation Level handbook</td><td>Module 5</td></tr><tr><td>INVEST (Wake) and three-C model (Jeffries)</td><td>as described in the RE@Agile handbook</td><td>Module 14</td></tr></table><p>Note: IREB lists the Foundation Level syllabus in version 3.3.0 and the Requirements Management handbook in version 2.1.0. Check the current version in the IREB download area before using it in new materials: <a href="https://www.ireb.org/en/downloads/" target="_blank" rel="noopener">www.ireb.org/en/downloads</a>.</p></div>
+        </div>
+      </details>
+    </div>
+  </footer>
+</main>
+
+<script>
+(function(){
+  var doc=document.documentElement, body=document.body;
+  function sg(k){try{return sessionStorage.getItem(k)}catch(e){return null}}
+  function ss(k,v){try{sessionStorage.setItem(k,v)}catch(e){}}
+  var seen=[];try{seen=JSON.parse(sg('rcc_seen')||'[]')||[]}catch(e){seen=[]}
+  var lang=sg('rcc_lang')==='en'?'en':'de', vert=sg('rcc_vert')==='1';
+  var cur=0, view='tafel';
+  var BEAMER_LEVELS=[
+    {classes:[],label:'☀ Beamer'},
+    {classes:['beamer'],label:'☀ Beamer XL'},
+    {classes:['beamer','beamer-xl'],label:'☀ Beamer XXL'},
+    {classes:['beamer','beamer-xl','beamer-xxl'],label:'☀ Normal'}
+  ];
+  var beamerLevel=0;
+  var mods=[].slice.call(document.querySelectorAll('.mod'));
+  function $(id){return document.getElementById(id)}
+
+  function applyLang(){
+    doc.lang=lang;
+    [].forEach.call(document.querySelectorAll('[data-en]'),function(el){
+      if(!el.hasAttribute('data-de'))el.setAttribute('data-de',el.textContent);
+      el.textContent=lang==='en'?el.getAttribute('data-en'):el.getAttribute('data-de');
+    });
+    [].forEach.call(document.querySelectorAll('[data-lang]'),function(el){
+      el.style.display=(el.getAttribute('data-lang')===lang)?'':'none';
+    });
+    $('langBtn').textContent=lang==='en'?'DE':'EN';
+    $('langBtn').setAttribute('aria-label',lang==='en'?'Deutsch':'English');
+    updateVert();
+    document.title=lang==='en'?'RE Crash Course – Requirements Engineering from Foundation to Advanced':'RE Crash Course – Requirements Engineering von Foundation bis Advanced';
+  }
+  function updateVert(){
+    doc.classList.toggle('v-full',vert&&beamerLevel===0);
+    var b=$('vertBtn');
+    b.textContent=lang==='en'?('Depth: '+(vert?'full':'short')):('Vertiefung: '+(vert?'Voll':'Kurz'));
+    b.classList.toggle('active',vert&&beamerLevel===0);
+    b.setAttribute('aria-disabled',beamerLevel>0?'true':'false');
+  }
+  function updateSeen(){
+    var n=0;
+    [].forEach.call(document.querySelectorAll('.tile'),function(t){
+      var i=+t.getAttribute('data-i'),s=t.querySelector('.seen');
+      var on=seen.indexOf(i)>-1;if(on)n++;
+      s.textContent=on?(lang==='en'?'✓ seen':'✓ gesehen'):'';
+    });
+    [].forEach.call(document.querySelectorAll('.nav-item'),function(t){
+      var i=+t.getAttribute('data-i'),s=t.querySelector('.seen');
+      s.textContent=seen.indexOf(i)>-1?'✓':'';
+    });
+    $('seenCount').textContent=n;
+  }
+  function setNav(){
+    [].forEach.call(document.querySelectorAll('.nav-item'),function(t){
+      var on=view==='modul'&&+t.getAttribute('data-i')===cur;
+      t.classList.toggle('on',on);if(on)t.setAttribute('aria-current','page');else t.removeAttribute('aria-current');
+    });
+    $('navTafel').classList.toggle('on',view==='tafel');
+    $('navGlossar').classList.toggle('on',view==='glossar');
+  }
+  function show(v,i){
+    view=v;body.setAttribute('data-view',v);
+    if(v==='modul'){
+      cur=Math.max(0,Math.min(14,i));
+      mods.forEach(function(m){m.classList.toggle('on',+m.getAttribute('data-i')===cur)});
+      if(seen.indexOf(cur)<0){seen.push(cur);ss('rcc_seen',JSON.stringify(seen))}
+      var m=mods[cur];m.querySelectorAll('details').forEach(function(d){d.open=false});
+      var h=m.querySelector('h2');
+      window.scrollTo(0,0);
+      try{h.focus({preventScroll:true})}catch(e){}
+    }else{window.scrollTo(0,0)}
+    doc.classList.remove('nav-open');
+    updateSeen();setNav();
+  }
+  function setFilter(f){
+    [].forEach.call(document.querySelectorAll('.tile'),function(t){
+      t.classList.toggle('hide',f!=='all'&&t.getAttribute('data-stage')!==f);
+    });
+    [].forEach.call(document.querySelectorAll('[data-act="filter"]'),function(b){
+      b.classList.toggle('active',b.getAttribute('data-f')===f);
+    });
+  }
+  function act(el){
+    var a=el.getAttribute('data-act');
+    if(a==='open')show('modul',+el.getAttribute('data-i'));
+    else if(a==='tafel')show('tafel');
+    else if(a==='glossar')show('glossar');
+    else if(a==='prev'){if(cur>0)show('modul',cur-1);else show('tafel')}
+    else if(a==='next'){if(cur<14)show('modul',cur+1);else show('glossar')}
+    else if(a==='filter')setFilter(el.getAttribute('data-f'));
+  }
+  function tap(el,fn){
+    el.addEventListener('pointerup',function(ev){if(ev.pointerType==='mouse'&&ev.button!==0)return;fn(ev)});
+    el.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();fn(ev)}});
+  }
+  [].forEach.call(document.querySelectorAll('[data-act]'),function(el){tap(el,function(){act(el)})});
+  tap($('menuBtn'),function(){doc.classList.toggle('nav-open')});
+  tap($('beamerBtn'),function(){
+    beamerLevel=(beamerLevel+1)%4;
+    doc.classList.remove('beamer','beamer-xl','beamer-xxl');
+    BEAMER_LEVELS[beamerLevel].classes.forEach(function(c){doc.classList.add(c)});
+    $('beamerBtn').textContent=BEAMER_LEVELS[beamerLevel].label;
+    updateVert();
+  });
+  tap($('langBtn'),function(){lang=lang==='en'?'de':'en';ss('rcc_lang',lang);applyLang();updateSeen()});
+  tap($('vertBtn'),function(){if(beamerLevel>0)return;vert=!vert;ss('rcc_vert',vert?'1':'0');updateVert()});
+  tap($('resetBtn'),function(){seen=[];ss('rcc_seen','[]');vert=false;ss('rcc_vert','0');setFilter('all');updateVert();show('tafel')});
+
+  applyLang();updateSeen();setNav();setFilter('all');
+})();
+</script>
+<script src="../register/zurueck.js" defer></script>
+</body>
+</html>
