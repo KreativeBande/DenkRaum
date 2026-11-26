@@ -3470,6 +3470,60 @@ window.DENKRAUM_REGISTER = {
       "notiz": "Neu am 26.11.2026. Beispielfall Bewerbungsportal (keine eigene Fallwelt, fallwelten bewusst leer, Michaela entscheidet). Jede Fachaussage mit Handbuch, Version, Kapitel, Seite und IREB-Link; Handbücher Foundation Level 1.3.3, Requirements Modeling 2.2, Requirements Management 2.1, RE@Agile 2.2. K22 per Kurz-/Voll-Paar. Fragen an die Gruppe sind offene Impulse mit aufklappbarer Lösung, keine Auswahlfragen, daher entfallen Z1 bis Z4."
     },
     {
+      "id": "re-pausenspiel",
+      "datei": "tools/re-pausenspiel.html",
+      "titel": "RE-Pausenspiel — Techniken des Requirements Engineering raten und nachschlagen",
+      "kurztitel": "RE-Pausenspiel",
+      "kurz": "Fünfzehn RE-Techniken auf einem Spielfeld: Spotlight, Pause und Raten-Modus, bei dem nur die Skizze zu sehen ist. Jede Technik mit Kernabsatz (kurz oder voll), Belegen mit Handbuch, Kapitel, Seite und Link, Fragen, die man stellen könnte, und Lösung. Beispiele am Bewerbungsportal, Sprachschalter DE/EN.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Wissen & Nachschlagen",
+      "aufStartseite": true,
+      "zweck": [
+        "Spiel",
+        "Nachschlagewerk"
+      ],
+      "denkraum": "basislager",
+      "faeden": [
+        "re"
+      ],
+      "dauer": "10 min",
+      "haufeSeminare": [
+        "9368",
+        "31693"
+      ],
+      "einsatzkontext": [
+        "Seminar",
+        "Workshop"
+      ],
+      "fallwelten": [],
+      "themen": [
+        "Requirements Engineering Techniken",
+        "Pausenspiel",
+        "Stakeholder-Analyse",
+        "Priorisieren",
+        "Akzeptanzkriterien",
+        "User Storys"
+      ],
+      "standards": [
+        "IREB",
+        "IEEE 29148"
+      ],
+      "siegel": {
+        "status": "Auditiert & zertifiziert",
+        "letztesAudit": "2026-11-26",
+        "auditZeileImTool": "2026-11-26",
+        "offen": null
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/re-crash-course.html",
+        "tools/ireb-kompendium.html"
+      ],
+      "geprueft": false,
+      "notiz": "Neu am 26.11.2026, erstes Spiel im Regal Spiele auf der Startseite. Beispielfall Bewerbungsportal (fallwelten bewusst leer, Michaela entscheidet). Jede Fachaussage mit Handbuch, Version, Kapitel, Seite und IREB-Link. K22 per Kurz-/Voll-Paar. Fragen sind offene Impulse mit aufklappbarer Lösung, daher entfallen Z1 bis Z4. Überschneidung mit RE Crash Course, RE-Kompendium und IREB-Kompendium bekannt; Pausenform mit Spotlight und Raten-Modus."
+    },
+    {
       "id": "wissensuniversum-re-ba",
       "datei": "tools/wissensuniversum-re-ba.html",
       "titel": "Wissensuniversum RE & BA — das Begriffsnetz von IREB, BABOK v3 & ISO 29148",
