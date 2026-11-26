@@ -1421,7 +1421,7 @@ act($('#beamerBtn'),function(){
   beamerLabel();
 });
 act($('#menu'),function(){$('#side').classList.toggle('open')});
-$$('#side nav a').forEach(function(a){a.addEventListener('pointerup',function(){$('#side').classList.remove('open')})});
+$$('#side nav a').forEach(function(a){a.addEventListener('click',function(){setTimeout(function(){$('#side').classList.remove('open')},0)})});
 if('IntersectionObserver' in window){
   var io=new IntersectionObserver(function(es){
     es.forEach(function(e){
