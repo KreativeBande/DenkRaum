@@ -4,7 +4,7 @@
  * Als Skript-Datei (nicht .json), damit sie auch offline per file:// lädt.
  */
 window.DENKRAUM_REGISTER = {
-  "stand": "2026-11-05",
+  "stand": "2026-11-26",
   "denkraeume": [
     {
       "id": "moeglichkeit",
@@ -390,9 +390,9 @@ window.DENKRAUM_REGISTER = {
     {
       "id": "anforderungsreise",
       "datei": "tools/anforderungsreise.html",
-      "titel": "Anforderungs-Reise durch die Räume",
+      "titel": "Anforderungs-Reise durch die Räume (Lindenfeld Lunch)",
       "kurztitel": "Anforderungs-Reise",
-      "kurz": "Ein Demo-Tool, das eine einzelne Anforderung vom Horizontraum bis in den Testraum wandern lässt: Idee → Problem → Lösung mit FA/NFA und User Story → Meßkriterien/Parameter → Testfälle — am Ende steht ein exportierbares Reise-Log.",
+      "kurz": "Ein Demo-Tool am Fall Lindenfeld Lunch: Eine einzelne Anforderung wandert vom Horizontraum bis in den Testraum: Idee mit Geschäftsziel GZ-1 bis GZ-4 → Problem → Lösung mit FA/NFA und User Story → Messkriterien/Grenzwerte → Testfälle. Drei Beispiele aus dem Case (Lieferung ins Büro, Allergene, Lohnabzug), am Ende ein exportierbares Reise-Log.",
       "rubrik": "Requirements & Business-Analyse",
       "bereich": "Anforderungen erheben & schärfen",
       "aufStartseite": true,
@@ -409,26 +409,41 @@ window.DENKRAUM_REGISTER = {
         "9368",
         "31693"
       ],
-      "einsatzkontext": [],
-      "fallwelten": [],
-      "themen": [],
-      "standards": [],
+      "einsatzkontext": [
+        "Seminar",
+        "Workshop"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "FA/NFA",
+        "User Story",
+        "Akzeptanzkriterien",
+        "Testfälle",
+        "Rückverfolgbarkeit"
+      ],
+      "standards": [
+        "ISO 25010:2023",
+        "IREB",
+        "ISTQB"
+      ],
       "siegel": {
         "status": null,
         "letztesAudit": null,
         "auditZeileImTool": null,
-        "offen": "Noch nicht gegen K1-K19-Checkliste geprüft."
+        "offen": "Noch nicht gegen K1–K22 geprüft. Seit 10.11.2026: Fallwelt Lindenfeld Lunch, Comic entfernt, Schrift-Ebenen als Variablen, Beamer vierstufig, Footer mit vier Boxen plus Glossar, Sprecher-Skript."
       },
-      "comic": "Es ist doch nur eine kleine Änderung",
-      "beamer": "3-stufig (alt)",
-      "sprecherSkript": false,
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
       "verwandt": [
-        "tools/denkraum_v3_adaptive_engine.html",
+        "tools/ba-re-case-lindenfeld-lunch.html",
+        "tools/lindenfeld-lunch-steckbrief.html",
         "tools/iso-25010-kompendium.html",
         "tools/user-story-puzzle.html"
       ],
       "geprueft": false,
-      "notiz": ""
+      "notiz": "Fünfter Raum heißt im Tool weiterhin Testraum (nicht Störraum wie im Denkräume OS); bewusst unverändert, Entscheidung offen."
     },
     {
       "id": "ba-lifecycle-lernreise",
@@ -2355,7 +2370,8 @@ window.DENKRAUM_REGISTER = {
         "tools/ba-steckbrief-business-case.html",
         "tools/lindenfeld-gateplan.html",
         "tools/ba-re-case-lindenfeld-lunch.html",
-        "tools/lindenfeld-projektauftrag-pflichtenheft.html"
+        "tools/lindenfeld-projektauftrag-pflichtenheft.html",
+        "tools/anforderungsreise.html"
       ],
       "geprueft": false,
       "notiz": "Fall BA/RE-Case Lindenfeld Lunch, Projektauftrag und Pflichtenheft sowie der Gateplan liegen seit 21.10.2026 im Repo und sind unten verlinkt. K11 dauerhaft offen (Kann), daher kein Auszeichnungs-Siegel. Kürzel (GZ, FR, OP, R, ADR, M …) sind anklickbar und öffnen ein Kontextfenster (Titel, Art, Sprung zur Fundstelle); Wörterbuch und Modul in tools/gateplan-build/ (idx_extract.py, idx_build.py), nach Änderung an Tabellen neu bauen (23.10.2026). Stand 07.11.2026: Zeilen Vision 2050 (Annahme) und Leitplanken L-1 bis L-4 im Faktenraster; nur L-3 ist im Fall nummeriert. Audit-Status nicht neu erhoben."
@@ -3518,7 +3534,7 @@ window.DENKRAUM_REGISTER = {
       "faeden": [
         "re"
       ],
-      "dauer": null,
+      "dauer": "30 min",
       "haufeSeminare": [
         "41851",
         "9368",
@@ -3531,20 +3547,26 @@ window.DENKRAUM_REGISTER = {
       "fallwelten": [],
       "themen": [
         "ISO 25010",
-        "Stakeholder"
+        "ISO 27001",
+        "Stakeholder",
+        "FA/NFA",
+        "Akzeptanzkriterien",
+        "Gherkin",
+        "Traceability"
       ],
       "standards": [
         "ISO 25010:2023",
-        "ISO 27001:2022"
+        "ISO 27001:2022",
+        "IREB"
       ],
       "siegel": {
         "status": "Auditiert & zertifiziert",
-        "letztesAudit": "2026-07-18",
-        "auditZeileImTool": null,
+        "letztesAudit": "2026-11-10",
+        "auditZeileImTool": "2026-11-10",
         "offen": null
       },
-      "beamer": "3-stufig (alt)",
-      "sprecherSkript": false,
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
       "verwandt": [
         "tools/iso-25010-kompendium.html",
         "tools/re-waschmaschine.html",
@@ -5456,6 +5478,308 @@ window.DENKRAUM_REGISTER = {
       ],
       "geprueft": false,
       "notiz": "Neu am 05.11.2026, entstanden aus dem Demonstrator-Kapitel des ISO-25010-Kompendiums, auf Lindenfeld Lunch angepasst und um Schritt 1 (muss/soll/kann) erweitert. Zahlen und Rechtsbezüge im Fall sind Beispielwerte. K22 entfällt (Demonstrator), im Handbuch begründet."
-    }
+    },
+    {
+      "id": "story-slicing-lindenfeld",
+      "datei": "tools/story-slicing-lindenfeld.html",
+      "titel": "Lindenfeld Lunch: Vom Epic zur fertigen Story",
+      "kurztitel": "Lindenfeld: Epic zur Story",
+      "kurz": "Ein Epic der Cafeteria-App wird Schritt für Schritt zu fertigen Stories: Epic und Use Case unterscheiden, in der Use-Case-Werkstatt sehen, welcher Eintrag welches Artefakt füllt (Use Case, Lastenheft, Stakeholder-Analyse, Business Case, Change Request), über Verben zerlegen, mit SPIDR schneiden, Personas zuordnen, mit MoSCoW priorisieren, die Definition of Ready mit SMART und die Definition of Done mit INVEST prüfen. Dazu Qualität und Sicherheit nach ISO/IEC 25010 und 27001, Testfälle, Change Request, Wirkung, Refinement und ein Workflow in Claude Code bis zum Jira-Import. Mit Gruppenfragen, Einzelfrage-Übung und DE/EN.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "FA/NFA, User Stories & Traceability",
+      "aufStartseite": true,
+      "zweck": [
+        "Demonstrator",
+        "Übung"
+      ],
+      "denkraum": "loesung",
+      "faeden": [
+        "re",
+        "ba",
+        "pm",
+        "ki"
+      ],
+      "dauer": "ca. 2 Std. 40 min komplett (einzelne Abschnitte 5–20 min)",
+      "haufeSeminare": [
+        "3744",
+        "9368",
+        "34000",
+        "3525",
+        "41851"
+      ],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "Fallwelt",
+        "Epic",
+        "Use Case",
+        "Use-Case-Werkstatt",
+        "Lastenheft",
+        "Stakeholder-Analyse",
+        "Business Case",
+        "Epic-Agent",
+        "User Story",
+        "Story Slicing",
+        "SPIDR",
+        "Persona",
+        "MoSCoW",
+        "Definition of Ready",
+        "Definition of Done",
+        "INVEST",
+        "SMART",
+        "Akzeptanzkriterium",
+        "Testfall",
+        "Change Request",
+        "Refinement",
+        "Story Map",
+        "Jira",
+        "Claude Code",
+        "Workflow-Automatisierung",
+        "ISO 25010",
+        "ISO 27001"
+      ],
+      "standards": [
+        "ISO 25010:2023",
+        "ISO 27001:2022",
+        "Scrum Guide",
+        "BABOK",
+        "IREB"
+      ],
+      "siegel": {
+        "status": "Offene Punkte",
+        "letztesAudit": "2026-11-26",
+        "auditZeileImTool": "2026-11-26",
+        "offen": [
+          "Erstaudit durch Michaela steht aus (Selbstprüfung am 25.11.2026, Protokoll: tools/Audit-Protokoll_Story-Slicing-Lindenfeld.md)",
+          "Fachliche Prüfung der Beispielinhalte in Station 3a durch Michaela",
+          "Epic-Agent (externes Artefakt) ohne DE/EN, vier Footer-Boxen und Audit"
+        ]
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [],
+      "geprueft": false,
+      "notiz": "Neu am 25.11.2026 (Upload von Michaela). Durchgängige Lindenfeld-Lunch-Reise vom Epic bis zum Jira-Import. K22 entfällt (Demonstrator mit Übungen), im Handbuch begründet. Keine Persistenz, kein localStorage. Station 3 (Zerlegen) wieder mit Block „Epic oder Use Case“ und Sortierübung; neu am 25.11.2026: Station 3a Use-Case-Werkstatt (animiert, Umschalter Use Case, Lastenheft, Stakeholder-Analyse, Business Case, Change Request: welcher Eintrag welches Artefakt füllt), feste Schalterleiste unten, Link zum Epic-Agenten (separates claude.ai-Artefakt, braucht Internet, noch ohne DE/EN, Footer und Audit). Inhalte der Beispiele (Betriebsrat, 30-Tage-Löschfrist, Zuschuss, Bestellschluss 10:00) sind Beispielwerte und von Michaela fachlich zu prüfen. Teilnehmendenversion: story-slicing-lindenfeld-teilnehmende.html. Audit-Protokoll: tools/Audit-Protokoll_Story-Slicing-Lindenfeld.md. 26.11.2026: Station 3 auf Michaelas schlanke Variante zurückgestellt (ohne Block „Epic oder Use Case?“ und Sortierübung)."
+    },
+    {
+      "id": "story-slicing-lindenfeld-teilnehmende",
+      "datei": "tools/story-slicing-lindenfeld-teilnehmende.html",
+      "titel": "Lindenfeld Lunch: Vom Epic zur fertigen Story (Teilnehmende)",
+      "kurztitel": "Epic zur Story (Teilnehmende)",
+      "kurz": "Teilnehmendenversion: ohne Footer, ohne „Alle auflösen“ und ohne Coaching-Fragen, zum Weitergeben an die Gruppe. Die Lösung nach Auswahl bleibt.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "FA/NFA, User Stories & Traceability",
+      "aufStartseite": false,
+      "zweck": [
+        "Demonstrator",
+        "Übung"
+      ],
+      "denkraum": "loesung",
+      "faeden": [
+        "re",
+        "ba",
+        "pm",
+        "ki"
+      ],
+      "dauer": "ca. 2 Std. 40 min komplett (einzelne Abschnitte 5–20 min)",
+      "haufeSeminare": [
+        "3744",
+        "9368",
+        "34000",
+        "3525",
+        "41851"
+      ],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [
+        "Lindenfeld Lunch"
+      ],
+      "themen": [
+        "Fallwelt",
+        "Epic",
+        "Use Case",
+        "Use-Case-Werkstatt",
+        "Lastenheft",
+        "Stakeholder-Analyse",
+        "Business Case",
+        "Epic-Agent",
+        "User Story",
+        "Story Slicing",
+        "SPIDR",
+        "Persona",
+        "MoSCoW",
+        "Definition of Ready",
+        "Definition of Done",
+        "INVEST",
+        "SMART",
+        "Akzeptanzkriterium",
+        "Testfall",
+        "Change Request",
+        "Refinement",
+        "Story Map",
+        "Jira",
+        "Claude Code",
+        "Workflow-Automatisierung",
+        "ISO 25010",
+        "ISO 27001"
+      ],
+      "standards": [
+        "ISO 25010:2023",
+        "ISO 27001:2022",
+        "Scrum Guide",
+        "BABOK",
+        "IREB"
+      ],
+      "siegel": {
+        "status": "Offene Punkte",
+        "letztesAudit": "2026-11-26",
+        "auditZeileImTool": "2026-11-26",
+        "offen": [
+          "Erstaudit durch Michaela steht aus (Selbstprüfung am 25.11.2026, Protokoll: tools/Audit-Protokoll_Story-Slicing-Lindenfeld.md)",
+          "Fachliche Prüfung der Beispielinhalte in Station 3a durch Michaela",
+          "Epic-Agent (externes Artefakt) ohne DE/EN, vier Footer-Boxen und Audit"
+        ]
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": false,
+      "verwandt": [],
+      "geprueft": false,
+      "notiz": "Aus story-slicing-lindenfeld.html erzeugt (html.tn); nach Änderungen am Haupttool neu erzeugen."
+    },
+    {
+        "id": "essensapp-vom-wirrwarr-zum-pflichtenheft",
+        "datei": "tools/essensapp-vom-wirrwarr-zum-pflichtenheft.html",
+        "titel": "Essensapp: vom Wirrwarr zum Pflichtenheft",
+        "kurztitel": "Essensapp: Wirrwarr zum Pflichtenheft",
+        "kurz": "Sketchnote-Reise am Beispiel einer Essensapp: fünf unordentliche Sätze aufräumen (14 Warnzeichen), dann Lastenheft-Sätze in fünf Schritten ins Pflichtenheft übersetzen, mit Rückverfolgung (satisfies) und Lücken-Übung. Dazu die Einordnung ins V-Modell und die neun Qualitätsmerkmale nach ISO/IEC 25010:2023 mit der Frage, wer welchen Satz schreibt. Mit Einzelschritt-Bedienung, Beamer, DE/EN.",
+        "rubrik": "Requirements & Business-Analyse",
+        "bereich": "Anforderungen erheben & schärfen",
+        "aufStartseite": true,
+        "zweck": [
+              "Demonstrator",
+              "Übung"
+        ],
+        "denkraum": "loesung",
+        "faeden": [
+              "re",
+              "ba"
+        ],
+        "dauer": null,
+        "haufeSeminare": [
+        "9368"
+      ],
+        "einsatzkontext": [
+              "Workshop",
+              "Seminar"
+        ],
+        "fallwelten": [],
+        "standards": [
+              "ISO 25010:2023",
+              "IREB"
+        ],
+        "siegel": {
+              "status": "Offene Punkte",
+              "letztesAudit": null,
+              "auditZeileImTool": null,
+              "offen": [
+                    "Erstaudit durch Michaela steht aus",
+                    "K14 (Audit-Zeile fehlt)",
+                    "K16 (Sprecher-Skript fehlt)",
+                    "K18 (Beamer: eigenes Muster b1/b2/b3 statt beamer/beamer-xl/beamer-xxl)",
+                    "K19/K20 (Footer mit vier Boxen fehlt, stattdessen Impressum)"
+              ]
+        },
+        "beamer": "eigenes Muster",
+        "sprecherSkript": false,
+        "geprueft": false,
+        "themen": [
+              "Lastenheft",
+              "Pflichtenheft",
+              "Satzschablone",
+              "Rückverfolgbarkeit",
+              "satisfies",
+              "V-Modell",
+              "ISO 25010",
+              "Qualitätsanforderungen",
+              "Formulierung",
+              "Sketchnote"
+        ],
+        "verwandt": [
+              "tools/lastenheft-pflichtenheft-demo.html",
+              "tools/lindenfeld-projektauftrag-pflichtenheft.html",
+              "tools/lindenfeld-fa-neun-spuren.html",
+              "tools/iso-25010-kompendium.html"
+        ],
+        "notiz": "Neu am 10.11.2026. Beispielfall Essensapp mit Beispielwerten, keine eigene Fallwelt (fallwelten bewusst leer, Michaela entscheidet). Enthält die Übersetzungs-Demo aus tools/lastenheft-pflichtenheft-demo.html als Abschnitt. Quellen mit Fundstelle und Link im Abschnitt Quellen; Cover der MASTeR-Broschüre in der Navigation verlinkt auf das PDF bei SOPHIST. Seminar 9368 (Kachel hellgelb in Modul 1, 12.11.2026). K22 entfällt (Demonstrator)."
+  },
+    {
+        "id": "lastenheft-pflichtenheft-demo",
+        "datei": "tools/lastenheft-pflichtenheft-demo.html",
+        "titel": "Lastenheft → Pflichtenheft: die Übersetzung",
+        "kurztitel": "Lastenheft zu Pflichtenheft",
+        "kurz": "Kompakte Demo am Beispiel einer Essensapp: vier Lastenheft-Sätze werden in fünf Schritten (Übernehmen, Fälle ergänzen, Messbar machen, Lösung wählen, Verknüpfen) zu Pflichtenheft-Sätzen, mit Rückverfolgungs-Matrix und Lücken-Übung (Lücke, Abweichung). Einzelschritt-Bedienung, Beamer, DE/EN.",
+        "rubrik": "Requirements & Business-Analyse",
+        "bereich": "Anforderungen erheben & schärfen",
+        "aufStartseite": true,
+        "zweck": [
+              "Demonstrator",
+              "Übung"
+        ],
+        "denkraum": "loesung",
+        "faeden": [
+              "re",
+              "ba"
+        ],
+        "dauer": null,
+        "haufeSeminare": [
+        "9368"
+      ],
+        "einsatzkontext": [
+              "Workshop",
+              "Seminar"
+        ],
+        "fallwelten": [],
+        "standards": [
+              "ISO 25010:2023",
+              "IREB"
+        ],
+        "siegel": {
+              "status": "Offene Punkte",
+              "letztesAudit": null,
+              "auditZeileImTool": null,
+              "offen": [
+                    "Erstaudit durch Michaela steht aus",
+                    "K14 (Audit-Zeile fehlt)",
+                    "K16 (Sprecher-Skript fehlt)",
+                    "K18 (Beamer: eigenes Muster b1/b2/b3 statt beamer/beamer-xl/beamer-xxl)",
+                    "K19/K20 (Footer mit vier Boxen fehlt, stattdessen Impressum)"
+              ]
+        },
+        "beamer": "eigenes Muster",
+        "sprecherSkript": false,
+        "geprueft": false,
+        "themen": [
+              "Lastenheft",
+              "Pflichtenheft",
+              "Satzschablone",
+              "Rückverfolgbarkeit",
+              "satisfies",
+              "Lücken",
+              "Sketchnote"
+        ],
+        "verwandt": [
+              "tools/essensapp-vom-wirrwarr-zum-pflichtenheft.html",
+              "tools/lindenfeld-projektauftrag-pflichtenheft.html",
+              "tools/pflichtenheft-generator.html"
+        ],
+        "notiz": "Neu am 10.11.2026. Kurzfassung der Übersetzungs-Demo aus tools/essensapp-vom-wirrwarr-zum-pflichtenheft.html für einen einzelnen Seminarblock. Beispielwerte, keine eigene Fallwelt. Seminar 9368 (Kachel hellgelb in Modul 1, 12.11.2026). K22 entfällt (Demonstrator)."
+  }
   ]
 };
