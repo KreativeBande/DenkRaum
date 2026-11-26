@@ -10,18 +10,18 @@ CSS = '''
 @page{size:A4;margin:14mm 12mm 16mm}
 @page land{size:A4 landscape;margin:12mm 10mm 14mm}
 *{box-sizing:border-box}body{font:11.5pt/1.4 "Inter","Helvetica Neue",Arial,sans-serif;color:#1F2A3A;margin:0}
-h1{font-size:24pt;margin:0 0 4mm}h2{font-size:17pt;margin:0 0 2mm}h3{font-size:12pt;margin:5mm 0 2mm}
+h1{font-size:24pt;margin:0 0 4mm}h2{font-size:17pt;margin:0 0 2mm}h3{font-size:12pt;margin:4mm 0 2mm}
 .pg{break-before:page}.pg:first-child{break-before:auto}.land{page:land}
 .lead{font-size:12pt;margin:0 0 5mm}.sub{color:#4a5568;font-size:10pt}
 svg{width:100%;height:auto}.s14w{fill:#fff;font:700 14px sans-serif}.s15{font:15px sans-serif;fill:#1F2A3A}.s16{font:700 16px sans-serif;fill:#1F2A3A}
-table{border-collapse:collapse;width:100%;font-size:10pt}th,td{border:1px solid #cbd5e1;padding:1.5mm 2.5mm;text-align:left;vertical-align:top}th{background:#eef2f7}
+table{border-collapse:collapse;width:100%;font-size:10pt}th,td{border:1px solid #cbd5e1;padding:1.2mm 2.5mm;text-align:left;vertical-align:top}th{background:#eef2f7}
 tr{break-inside:avoid}
 .b{display:inline-block;min-width:5mm;text-align:center;border-radius:99px;font-size:9pt;font-weight:700;padding:0 2mm}
 .bF{background:#dcfce7;color:#166534}.bR{background:#dbeafe;color:#1e40af}.bA{background:#fef3c7;color:#92400e}
 .ldot{display:inline-block;width:6mm;height:6mm;line-height:6mm;border-radius:50%;color:#fff;text-align:center;font-weight:700;font-size:9pt;margin-right:2mm}
 .legend{display:grid;grid-template-columns:1fr 1fr;gap:2.5mm 6mm;margin:4mm 0}.legend div{border:1px solid #cbd5e1;border-radius:3mm;padding:2.5mm}
 .gh{display:flex;align-items:baseline;gap:4mm;border-bottom:3px solid #1F2A3A;padding-bottom:2mm;margin-bottom:3mm}.gh .c{font-size:26pt;font-weight:800}.gh .q{margin-left:auto;font-style:italic}
-.why{background:#eef6ff;border-left:1.5mm solid #1F5FBF;padding:3mm 4mm;font-size:12pt;margin-bottom:2mm}.think{margin-top:4mm;border:1px solid #cbd5e1;border-radius:3mm;padding:3mm 4mm;background:#fffbea}.how{border:1px solid #cbd5e1;border-radius:3mm;padding:3mm 5mm;margin-top:3mm}.how ol{margin:0 0 2mm;padding-left:5mm}.abbr{margin-top:4mm;font-size:9pt;color:#334155;border-top:1px solid #cbd5e1;padding-top:2mm}.notes{margin-top:3mm}.notes div{border-bottom:1px solid #94a3b8;height:7mm}
+.why{background:#eef6ff;border-left:1.5mm solid #1F5FBF;padding:3mm 4mm;font-size:12pt;margin-bottom:2mm}.think{margin-top:4mm;border:1px solid #cbd5e1;border-radius:3mm;padding:3mm 4mm;background:#fffbea}.how{border:1px solid #cbd5e1;border-radius:3mm;padding:3mm 5mm;margin-top:3mm}.how ol{margin:0 0 2mm;padding-left:5mm}.abbr{margin-top:3mm;font-size:9pt;color:#334155;border-top:1px solid #cbd5e1;padding-top:2mm}.notes{margin-top:3mm}.notes div{border-bottom:1px solid #94a3b8;height:6mm}
 .mx{table-layout:fixed}.mx th,.mx td{font-size:7pt;line-height:1.25;padding:.8mm;overflow-wrap:anywhere;hyphens:auto}.mx th:first-child,.mx td:first-child{width:24mm}.mx .b{font-size:7pt;padding:0 1.2mm}.mx .ldot{width:5mm;height:5mm;line-height:5mm;font-size:8pt;margin-right:1mm}
 dl{margin:0;font-size:9.5pt;line-height:1.3;columns:2;column-gap:8mm}dt,dd{break-inside:avoid}dt{font-weight:700;margin-top:2.5mm}dd{margin:0}
 .src li{margin-bottom:1.5mm;font-size:9pt}a{color:#1F5FBF}
