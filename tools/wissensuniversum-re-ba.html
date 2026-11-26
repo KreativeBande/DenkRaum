@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Wissensuniversum RE &amp; BA – Begriffsnetz IREB · BABOK · ISO 29148</title>
+<style>
+:root{--bg:#0a0f0d;--panel:#101916;--panel2:#15211c;--line:#22322c;--txt:#e6efe9;--mut:#93a99e;--acc:#5ad1a4}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{display:block;overflow-x:hidden}
+#app{display:flex;height:100dvh;min-height:560px;position:relative}
+button{font:inherit;color:inherit;cursor:pointer}
+#side{width:300px;flex:none;background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;padding:14px 12px 28px;z-index:30}
+#side h1{font-size:16px;margin:0 0 2px}
+#side .sub{color:var(--mut);font-size:12px;margin-bottom:10px}
+#q{width:100%;padding:9px 10px;border-radius:8px;border:1px solid var(--line);background:#0b1210;color:var(--txt);font-size:14px}
+#q:focus{outline:2px solid var(--acc);outline-offset:1px}
+details.sec{border-top:1px solid var(--line);margin-top:12px;padding-top:8px}
+details.sec>summary{cursor:pointer;font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:var(--mut);list-style:none;display:flex;justify-content:space-between;gap:8px;padding:4px 2px}
+details.sec>summary::-webkit-details-marker{display:none}
+.cnt{color:var(--acc);white-space:nowrap}
+ol.path{list-style:none;margin:6px 0 0;padding:0}
+ol.path li{display:flex;gap:8px;align-items:flex-start;padding:7px 8px;border-radius:8px;cursor:pointer;font-size:13px}
+ol.path li:hover{background:var(--panel2)}
+ol.path li.on{background:#173126;outline:1px solid var(--acc)}
+ol.path .num{flex:none;width:20px;height:20px;border-radius:50%;border:1px solid var(--acc);color:var(--acc);font-size:11px;display:grid;place-items:center}
+ol.path li.done .num{background:var(--acc);color:#04130c}
+.pathbtn{margin-top:8px;width:100%;padding:7px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);font-size:12px}
+.pathbtn[aria-pressed=true]{border-color:var(--acc);color:var(--acc)}
+.flt{display:flex;align-items:center;gap:8px;padding:4px;font-size:13px;cursor:pointer}
+.flt small{margin-left:auto;color:var(--mut)}
+.fh{font-size:11px;color:var(--mut);margin:8px 0 2px}
+.dot{width:11px;height:11px;border-radius:50%;flex:none}
+.leg{display:grid;gap:5px;margin-top:6px;font-size:12px;color:var(--mut)}
+.leg span{display:flex;gap:8px;align-items:center}
+#az{margin-top:6px;font-size:13px}
+#az h4{margin:10px 0 2px;color:var(--acc);font-size:12px}
+#az button{display:block;width:100%;text-align:left;background:none;border:0;padding:4px 6px;border-radius:6px}
+#az button:hover{background:var(--panel2)}
+#az button small{color:var(--mut)}
+.qa{margin:8px 0;font-size:13px}
+.qa details{margin-top:4px;background:var(--panel2);border-radius:8px;padding:6px 8px}
+.qa summary{cursor:pointer;color:var(--acc);font-size:12px}
+.qa .ans{margin-top:6px;font-size:13px}
+.chip{display:inline-block;margin:2px 3px 2px 0;padding:3px 9px;border-radius:99px;border:1px solid var(--line);background:#0d1613;font-size:12px}
+.chip:hover{border-color:var(--acc)}
+#stage{position:relative;flex:1;min-width:0}
+canvas{display:block;touch-action:none;cursor:grab}
+canvas.drag{cursor:grabbing}
+#hint{position:absolute;left:14px;top:12px;max-width:min(430px,60%);font-size:12px;color:var(--mut);background:rgba(10,15,13,.7);padding:6px 10px;border-radius:8px;border:1px solid var(--line);pointer-events:none}
+#tools{position:absolute;left:14px;bottom:14px;display:flex;gap:6px}
+#tools button{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:rgba(16,25,22,.92);font-size:17px}
+#tools button:hover{border-color:var(--acc)}
+#menu{display:none}
+#detail{position:absolute;right:12px;top:12px;width:350px;max-height:calc(100% - 24px);overflow:auto;background:rgba(16,25,22,.97);border:1px solid var(--line);border-radius:14px;padding:14px;display:none;z-index:20;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+#detail.show{display:block}
+#detail h2{margin:4px 0 6px;font-size:18px;line-height:1.25;padding-right:16px}
+#detail .badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;border:1px solid currentColor;margin-right:4px}
+#detail .cat{color:var(--mut);font-size:12px}
+#detail p{margin:8px 0}
+#detail h3{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--mut);margin:12px 0 4px}
+#detail .row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+#detail .row button,#detail .row a{padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);font-size:13px;text-decoration:none;color:var(--txt)}
+#detail .row .pri{border-color:var(--acc);color:var(--acc)}
+#detail .x{position:absolute;right:8px;top:6px;border:0;background:none;font-size:22px;color:var(--mut)}
+#detail a.src{color:var(--acc)}
+.station{margin-top:10px;padding:8px 10px;border-left:3px solid var(--acc);background:#12251d;border-radius:0 8px 8px 0}
+.station summary{cursor:pointer;color:var(--acc);font-size:13px}
+@media(max-width:760px){
+ #side{position:fixed;left:0;top:0;bottom:0;width:84vw;max-width:330px;transform:translateX(-102%);transition:transform .2s;box-shadow:6px 0 30px rgba(0,0,0,.6)}
+ #side.open{transform:none}
+ #menu{display:grid;position:absolute;left:10px;top:10px;z-index:25;width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:rgba(16,25,22,.95);place-items:center;font-size:20px}
+ #hint{left:58px;max-width:calc(100% - 70px)}
+ #detail{left:8px;right:8px;bottom:8px;top:auto;width:auto;max-height:52%}
+ #tools{bottom:auto;top:64px;flex-direction:column}
+}
+#welcome{position:absolute;inset:0;display:grid;place-items:center;background:rgba(6,10,8,.72);z-index:40;padding:14px}
+#welcome .card{max-width:520px;background:var(--panel);border:1px solid var(--acc);border-radius:16px;padding:20px 22px;box-shadow:0 10px 50px rgba(0,0,0,.6)}
+#welcome h2{margin:0 0 6px;font-size:20px}#welcome ul{margin:10px 0;padding:0;list-style:none;display:grid;gap:8px}
+#welcome li{display:flex;gap:10px;align-items:flex-start;font-size:14px}#welcome li b{color:var(--acc)}
+#welcome .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+#welcome .btns button,#tour button{padding:9px 14px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);font-size:14px}
+#welcome .btns .pri,#tour .pri{border-color:var(--acc);color:var(--acc);font-weight:600}
+#tour{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);width:min(560px,calc(100% - 24px));background:rgba(16,25,22,.98);border:1px solid var(--acc);border-radius:14px;padding:12px 14px;z-index:35;display:none;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+#tour.show{display:block}#tour .st{color:var(--acc);font-size:11px;letter-spacing:.8px;text-transform:uppercase}
+#tour p{margin:4px 0 10px;font-size:14px}#tour .r{display:flex;gap:8px;justify-content:space-between}
+#tip{position:absolute;pointer-events:none;background:rgba(16,25,22,.96);border:1px solid var(--line);border-radius:8px;padding:4px 9px;font-size:12px;display:none;z-index:15;white-space:nowrap}
+@media(max-width:760px){#tour{bottom:auto;top:64px}#detail{max-height:44%}}
+
+.signature{position:fixed;top:14px;right:28px;z-index:500;font-size:14px;line-height:1.3;text-align:right;color:var(--mut);background:rgba(10,15,13,.85);padding:4px 10px;border-radius:10px}
+.signature strong{display:block;color:var(--txt)}.signature .sep{display:none}.signature a{color:var(--acc);text-decoration:none}
+.beamer-btn{position:fixed;top:16px;right:260px;z-index:500;background:var(--panel);border:1.5px solid var(--line);color:var(--mut);font-size:15px;padding:8px 18px;font-family:inherit;font-weight:600;border-radius:999px;cursor:pointer}
+.beamer-btn:hover{border-color:var(--acc)}
+html.beamer .beamer-btn,html.beamer-xl .beamer-btn,html.beamer-xxl .beamer-btn{background:var(--txt);color:#0a0f0d;border-color:var(--txt)}
+#detail{top:70px;max-height:calc(100% - 82px);font-size:16px}
+#detail h2{font-size:20px}#detail h3,#detail .badge,#detail .cat,.chip,#side .sub,#hint,.flt,#side .fh,#side summary{font-size:14px}
+#side{font-size:14px}ol.path li,.qa,.qa summary{font-size:14px}
+.crosslink{margin:0;padding:18px 28px;font-size:14px;color:var(--mut);background:var(--bg);border-top:1px solid var(--line)}
+.crosslink a{color:var(--acc);font-weight:700;text-decoration:none}.crosslink a:hover{text-decoration:underline}
+.crosslink ul{margin:8px 0 0;padding-left:20px}.crosslink li{margin-bottom:4px}
+footer{background:var(--bg);color:var(--txt);padding:22px 28px 40px;border-top:1px solid var(--line)}
+.footer-sig{font-size:14px;color:var(--mut);margin-bottom:14px}.footer-sig strong{color:var(--txt)}.footer-sig a{color:var(--acc)}
+.footer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
+.footer-box{background:var(--panel);border:1px solid var(--line);border-radius:16px}
+.footer-summary{cursor:pointer;padding:14px;font-weight:700;display:flex;justify-content:space-between;list-style:none;font-size:15px}
+.footer-summary::-webkit-details-marker{display:none}.footer-summary::after{content:"+";font-size:18px;color:var(--mut)}
+details[open]>.footer-summary::after{content:"–"}
+.footer-content{padding:0 14px 14px}
+.footer-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;white-space:pre-wrap;background:#0b1210;border:1px solid var(--line);border-radius:8px;padding:12px;max-height:340px;overflow-y:auto}
+.footer-sans{font-size:16px}.footer-sans p{margin:8px 0}.footer-sans a{color:var(--acc)}
+.footer-table{width:100%;border-collapse:collapse;font-size:14px}.footer-table th,.footer-table td{border-bottom:1px solid var(--line);padding:6px 6px;text-align:left;vertical-align:top}
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.signature{right:8px;top:8px;font-size:11px;padding:2px 7px}.beamer-btn{right:8px;top:48px;font-size:12px;padding:5px 12px}#tour{top:140px}#detail{top:auto}#hint{top:92px}}
+html.beamer #side{font-size:15px;width:340px}html.beamer #detail{font-size:22px;width:440px}html.beamer #detail h2{font-size:44px}html.beamer #detail h3,html.beamer #detail .badge,html.beamer .chip,html.beamer #detail .cat{font-size:15px}html.beamer #hint{font-size:15px}html.beamer #tour p,html.beamer #welcome li{font-size:22px}html.beamer footer,html.beamer .crosslink{display:none}
+html.beamer-xl #side{font-size:18px;width:390px}html.beamer-xl #detail{font-size:28px;width:520px}html.beamer-xl #detail h2{font-size:54px}html.beamer-xl #detail h3,html.beamer-xl #detail .badge,html.beamer-xl .chip,html.beamer-xl #detail .cat{font-size:18px}html.beamer-xl #hint{font-size:18px}html.beamer-xl #tour p,html.beamer-xl #welcome li{font-size:28px}
+html.beamer-xxl #side{font-size:21px;width:440px}html.beamer-xxl #detail{font-size:34px;width:600px}html.beamer-xxl #detail h2{font-size:64px}html.beamer-xxl #detail h3,html.beamer-xxl #detail .badge,html.beamer-xxl .chip,html.beamer-xxl #detail .cat{font-size:21px}html.beamer-xxl #hint{font-size:21px}html.beamer-xxl #tour p,html.beamer-xxl #welcome li{font-size:34px}
+@media(max-width:760px){html.beamer #detail,html.beamer-xl #detail,html.beamer-xxl #detail{width:auto;font-size:18px}html.beamer #detail h2,html.beamer-xl #detail h2,html.beamer-xxl #detail h2{font-size:28px}html.beamer #tour p,html.beamer-xl #tour p,html.beamer-xxl #tour p,html.beamer #welcome li,html.beamer-xl #welcome li,html.beamer-xxl #welcome li{font-size:16px}html.beamer #side,html.beamer-xl #side,html.beamer-xxl #side{width:300px}}
+</style>
+</head>
+<body>
+<div class="signature"><strong>Michaela Kühn</strong><span class="sep"> · </span><a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a></div>
+<button class="beamer-btn" id="beamerBtn" type="button">☀ Beamer</button>
+<div id="app">
+<aside id="side" class="sidebar" aria-label="Navigation">
+  <h1 id="ttl">Wissensuniversum · RE &amp; BA</h1>
+  <div class="sub">Begriffsnetz: IREB CPRE · BABOK v3 · ISO/IEC/IEEE 29148</div>
+  <button class="pathbtn" id="help" style="margin:0 0 6px">❓ Hilfe und Tour</button>
+  <button class="pathbtn" id="lang" style="margin:0 0 8px">Sprache: Deutsch · Switch to English</button>
+  <input id="q" type="search" placeholder="Begriff finden, z. B. Traceability" aria-label="Punkt finden" autocomplete="off">
+
+  <details class="sec">
+    <summary><span id="pathTitle">Der Weg: Von Stakeholdern zur Änderung</span><span class="cnt" id="prog">0/10</span></summary>
+    <ol class="path" id="pathList"></ol>
+    <button class="pathbtn" id="pathToggle" aria-pressed="false">Weg in der Karte zeigen</button>
+  </details>
+
+  <details class="sec">
+    <summary><span>Entdeckerfragen</span></summary>
+    <div id="disc"></div>
+  </details>
+
+  <details class="sec">
+    <summary><span>Filter</span></summary>
+    <div class="fh">Wording (Farbe)</div><div id="fltCat"></div>
+    <div class="fh">Punkt-Typ</div><div id="fltType"></div>
+  </details>
+
+  <details class="sec">
+    <summary><span>Legende</span></summary>
+    <div class="leg" id="leg"></div>
+  </details>
+
+  <details class="sec">
+    <summary><span>A–Z Index</span><span class="cnt" id="azc"></span></summary>
+    <div id="az"></div>
+  </details>
+</aside>
+
+<main id="stage">
+  <button id="menu" aria-label="Navigation öffnen">☰</button>
+  <div id="hint"></div>
+  <canvas id="c" aria-label="Wissensnetz"></canvas>
+  <div id="tools">
+    <button id="zin" aria-label="Vergrößern">+</button>
+    <button id="zout" aria-label="Verkleinern">−</button>
+    <button id="zfit" aria-label="Alles zeigen">⌂</button>
+  </div>
+  <section id="detail" aria-live="polite"></section>
+  <div id="tip"></div>
+  <div id="tour" role="dialog" aria-live="polite"><div class="st" id="tourSt"></div><p id="tourTx"></p><div class="r"><button id="tourPrev">◂ Zurück</button><button id="tourEnd">Beenden</button><button class="pri" id="tourNext">Weiter ▸</button></div></div>
+  <div id="welcome"><div class="card"><h2>So liest du diese Karte</h2>
+   <p style="margin:0;color:var(--mut)">Sie zeigt, wie die Wörter aus Requirements Engineering (IREB) und Business-Analyse (BABOK) zusammenhängen. Du musst nichts vorher wissen.</p>
+   <ul>
+    <li><span>●</span><span><b>Ein Punkt</b> ist ein Begriff, z. B. „Stakeholder“.</span></li>
+    <li><span>—</span><span><b>Eine Linie</b> heißt: gehört zusammen. Türkise Linien verbinden zwei Wörter für denselben Gedanken.</span></li>
+    <li><span>🎨</span><span><b>Farbe:</b> grün = IREB, gelb = BABOK, türkis = beide nutzen den Begriff.</span></li>
+    <li><span>👆</span><span><b>Antippen</b> öffnet die Erklärung. <b>Ziehen</b> verschiebt, <b>zwei Finger oder Mausrad</b> zoomt.</span></li>
+   </ul>
+   <div class="btns"><button class="pri" id="wTour">Kurze Tour (1 Min.)</button><button id="wGo">Selbst erkunden</button></div></div></div>
+</main>
+</div>
+
+<script>
+/* ============ DATEN: handkuratiertes Begriffsnetz RE &amp; BA (build2.js) ============ */
+const DATA={"nodes":[{"id":"ireb","type":"fw","cat":"ireb","de":"IREB CPRE Foundation Level","en":"IREB CPRE Foundation Level","d":"Lehrplan des International Requirements Engineering Board für das Basiszertifikat im Requirements Engineering (Lehrplan 3.2 vom 26.02.2024)."},{"id":"babok","type":"fw","cat":"babok","de":"BABOK® Guide v3","en":"BABOK® Guide v3","d":"Standard des IIBA für Business-Analyse: 6 Wissensgebiete, 30 Aufgaben, 50 Techniken sowie Kernkonzepte, Kompetenzen und Perspektiven."},{"id":"iso29148","type":"fw","cat":"both","de":"ISO/IEC/IEEE 29148","en":"ISO/IEC/IEEE 29148","d":"Norm für Requirements Engineering in den Lebenszyklusprozessen von Systemen und Software (2. Ausgabe 2018); beschreibt u. a. Merkmale guter Anforderungen."},{"id":"a-erm","type":"bereich","cat":"ireb","de":"Anforderungsermittlung","en":"Requirements elicitation","d":"Anforderungsquellen finden, Anforderungen erheben und Konflikte zwischen Stakeholdern klären."},{"id":"a-dok","type":"bereich","cat":"ireb","de":"Anforderungsdokumentation","en":"Requirements documentation","d":"Anforderungen in geeigneter Form festhalten: Text, Schablonen, Modelle, Glossar."},{"id":"a-val","type":"bereich","cat":"ireb","de":"Anforderungsvalidierung","en":"Requirements validation","d":"Prüfen, ob Anforderungen den tatsächlichen Bedarf der Stakeholder treffen und gemeinsam verstanden werden."},{"id":"a-ver","type":"bereich","cat":"ireb","de":"Anforderungsverwaltung","en":"Requirements management","d":"Anforderungen über ihren Lebenszyklus pflegen: Attribute, Sichten, Versionen, Baselines, Änderungen, Rückverfolgbarkeit, Priorisierung."},{"id":"p1","type":"prinzip","cat":"ireb","de":"Prinzip 1: Wertorientierung","en":"Principle 1: Value orientation","d":"Anforderungen sind ein Mittel zum Zweck, kein Selbstzweck: Sie lohnen sich nur, wenn ihr Nutzen die Kosten übersteigt."},{"id":"p2","type":"prinzip","cat":"ireb","de":"Prinzip 2: Stakeholder","en":"Principle 2: Stakeholders","d":"Requirements Engineering dient dazu, die Wünsche und Bedürfnisse der Stakeholder zu erfüllen."},{"id":"p3","type":"prinzip","cat":"ireb","de":"Prinzip 3: Gemeinsames Verständnis","en":"Principle 3: Shared understanding","d":"Erfolgreiche Entwicklung braucht ein gemeinsames Verständnis zwischen Stakeholdern und Entwicklungsteam."},{"id":"p4","type":"prinzip","cat":"ireb","de":"Prinzip 4: Kontext","en":"Principle 4: Context","d":"Systeme lassen sich nicht isoliert verstehen; der Kontext bestimmt, was relevant ist."},{"id":"p5","type":"prinzip","cat":"ireb","de":"Prinzip 5: Problem – Anforderung – Lösung","en":"Principle 5: Problem, requirement, solution","d":"Problem, Anforderung und Lösung sind untrennbar miteinander verflochten."},{"id":"p6","type":"prinzip","cat":"ireb","de":"Prinzip 6: Validierung","en":"Principle 6: Validation","d":"Nicht-validierte Anforderungen sind nutzlos."},{"id":"p7","type":"prinzip","cat":"ireb","de":"Prinzip 7: Evolution","en":"Principle 7: Evolution","d":"Veränderung von Anforderungen ist normal und wird gesteuert, nicht verhindert."},{"id":"p8","type":"prinzip","cat":"ireb","de":"Prinzip 8: Innovation","en":"Principle 8: Innovation","d":"Mehr als das Offensichtliche: Anforderungen sollen auch Neues ermöglichen, nicht nur bekannte Wünsche abbilden."},{"id":"p9","type":"prinzip","cat":"ireb","de":"Prinzip 9: Systematische und disziplinierte Arbeit","en":"Principle 9: Systematic and disciplined work","d":"Systematisch und diszipliniert vorgehen, auch wenn Praktiken je nach Situation unterschiedlich stark ausgeprägt sind."},{"id":"req","type":"art","cat":"both","de":"Anforderung","en":"Requirement","d":"Von Stakeholdern wahrgenommenes Bedürfnis bzw. Fähigkeit oder Eigenschaft, die ein System haben soll. BABOK: nutzbare Darstellung eines Bedarfs."},{"id":"fa","type":"art","cat":"both","de":"Funktionale Anforderung","en":"Functional requirement","d":"Beschreibt, was das System tun soll: Funktionen, Daten, Verhalten."},{"id":"qa","type":"art","cat":"ireb","de":"Qualitätsanforderung","en":"Quality requirement","d":"Beschreibt, wie gut das System seine Funktionen erbringen soll, z. B. Performanz, Sicherheit, Gebrauchstauglichkeit."},{"id":"nfr","type":"art","cat":"babok","de":"Nicht-funktionale Anforderung","en":"Non-functional requirement","d":"Oberbegriff für Anforderungen an Qualitätseigenschaften einer Lösung (Quality of Service). Entspricht in IREB der Qualitätsanforderung."},{"id":"rb","type":"art","cat":"both","de":"Randbedingung","en":"Constraint","d":"Organisatorische oder technische Einschränkung des Lösungsraums, z. B. Gesetz, Budget, Plattformvorgabe."},{"id":"ziel","type":"art","cat":"both","de":"Ziel","en":"Goal / objective","d":"Vom Stakeholder gewünschtes Ergebnis. Anforderungen dienen dazu, Ziele zu erreichen (BABOK: Business Objectives)."},{"id":"reqclass","type":"bereich","cat":"babok","de":"Anforderungsklassifikation","en":"Requirements classification","d":"BABOK-Schema: Business, Stakeholder, Solution (funktional / nicht-funktional) und Transition."},{"id":"bizreq","type":"art","cat":"babok","de":"Business-Anforderung","en":"Business requirement","d":"Ziele, Zwecke und Ergebnisse, die das Unternehmen mit der Veränderung erreichen will."},{"id":"stkreq","type":"art","cat":"babok","de":"Stakeholder-Anforderung","en":"Stakeholder requirement","d":"Bedarfe von Stakeholdern, die eine Lösung erfüllen muss; Brücke zwischen Business- und Lösungsanforderungen."},{"id":"solreq","type":"art","cat":"babok","de":"Lösungsanforderung","en":"Solution requirement","d":"Fähigkeiten und Qualitäten einer Lösung, unterteilt in funktionale und nicht-funktionale Anforderungen."},{"id":"trareq","type":"art","cat":"babok","de":"Übergangsanforderung","en":"Transition requirement","d":"Fähigkeiten für den Wechsel vom Ist- in den Soll-Zustand, z. B. Datenmigration oder Schulung."},{"id":"design","type":"begriff","cat":"babok","de":"Design","en":"Design","d":"BABOK: nutzbare Darstellung einer Lösung. Anforderungen richten sich auf den Bedarf, Designs auf die Lösung."},{"id":"stakeholder","type":"begriff","cat":"both","de":"Stakeholder","en":"Stakeholder","d":"Person oder Gruppe, die Einfluss auf die Anforderungen eines Systems hat oder von ihm betroffen ist. Auch BABOK-Kernkonzept."},{"id":"quelle","type":"begriff","cat":"ireb","de":"Anforderungsquelle","en":"Requirements source","d":"Stakeholder, Dokumente oder Bestandssysteme, aus denen Anforderungen gewonnen werden."},{"id":"kontext","type":"begriff","cat":"ireb","de":"Systemkontext","en":"System context","d":"Der für Definition und Verständnis der Anforderungen relevante Teil der Umgebung eines Systems."},{"id":"sysgrenze","type":"begriff","cat":"ireb","de":"Systemgrenze","en":"System boundary","d":"Trennt das zu entwickelnde System von seiner Umgebung."},{"id":"ktxgrenze","type":"begriff","cat":"ireb","de":"Kontextgrenze","en":"Context boundary","d":"Trennt den relevanten Kontext von der irrelevanten Umgebung."},{"id":"umfang","type":"begriff","cat":"ireb","de":"Umfang (Scope)","en":"Scope","d":"Der Bereich, den das Vorhaben gestalten kann; Teil der Systemabgrenzung."},{"id":"kdiagr","type":"begriff","cat":"ireb","de":"Kontextdiagramm","en":"Context diagram","d":"Zeigt das System als Black Box mit seinen Schnittstellen zur Umgebung."},{"id":"kano","type":"begriff","cat":"ireb","de":"Kano-Modell","en":"Kano model","d":"Ordnet Anforderungen nach ihrer Wirkung auf die Zufriedenheit: Basis-, Leistungs- und Begeisterungsfaktoren."},{"id":"kano-b","type":"begriff","cat":"ireb","de":"Basisfaktoren","en":"Dissatisfiers (basic factors)","d":"Selbstverständliches; fällt nur auf, wenn es fehlt."},{"id":"kano-l","type":"begriff","cat":"ireb","de":"Leistungsfaktoren","en":"Satisfiers (performance factors)","d":"Je besser erfüllt, desto zufriedener die Stakeholder."},{"id":"kano-e","type":"begriff","cat":"ireb","de":"Begeisterungsfaktoren","en":"Delighters","d":"Unerwartetes, das begeistert; sein Fehlen wird nicht bemerkt."},{"id":"ermtech","type":"begriff","cat":"ireb","de":"Ermittlungstechniken","en":"Elicitation techniques","d":"Gruppiert u. a. in Zusammenarbeit, Befragung, Beobachtung, Kreativität, Dokumentenanalyse und Prototyping."},{"id":"konflikt","type":"begriff","cat":"ireb","de":"Konfliktlösung","en":"Conflict resolution","d":"Konflikte zwischen Stakeholdern erkennen, analysieren, lösen und die Lösung dokumentieren."},{"id":"k-einig","type":"begriff","cat":"ireb","de":"Einigung","en":"Agreement","d":"Die Stakeholder verständigen sich auf eine gemeinsam getragene Lösung."},{"id":"k-komp","type":"begriff","cat":"ireb","de":"Kompromiss","en":"Compromise","d":"Alle Seiten rücken ein Stück von ihrer Position ab."},{"id":"k-var","type":"begriff","cat":"ireb","de":"Variantenbildung","en":"Variant creation","d":"Der Konflikt wird durch Ausarbeiten von Alternativen aufgelöst."},{"id":"k-abst","type":"begriff","cat":"ireb","de":"Abstimmung","en":"Voting","d":"Entscheidung per Votum, gegebenenfalls mit Entscheidungsmatrix."},{"id":"doku-nat","type":"begriff","cat":"ireb","de":"Natürlichsprachliche Dokumentation","en":"Natural-language documentation","d":"Anforderungen als Text: flexibel, aber anfällig für Mehrdeutigkeit."},{"id":"schablone","type":"begriff","cat":"ireb","de":"Satzschablone","en":"Requirements template","d":"Vorgegebener Satzbau, der Mehrdeutigkeit verringert."},{"id":"modelle","type":"begriff","cat":"ireb","de":"Modellbasierte Dokumentation","en":"Model-based documentation","d":"Anforderungen in grafischen Modellen: Kontext-, Ziel-, Use-Case-, Aktivitäts-, Zustands- und Klassenmodelle."},{"id":"m-ziel","type":"begriff","cat":"ireb","de":"Zielmodell","en":"Goal model","d":"Zeigt Ziele, Teilziele und ihre Beziehungen."},{"id":"m-uc","type":"begriff","cat":"ireb","de":"Use-Case-Diagramm","en":"Use case diagram","d":"Zeigt Akteure und die Anwendungsfälle, die das System für sie bereitstellt."},{"id":"m-akt","type":"begriff","cat":"ireb","de":"Aktivitätsdiagramm","en":"Activity diagram","d":"Modelliert Abläufe mit Aktionen, Entscheidungen und Parallelität."},{"id":"m-zust","type":"begriff","cat":"ireb","de":"Zustandsdiagramm","en":"State machine diagram","d":"Modelliert Zustände eines Objekts und die Übergänge zwischen ihnen."},{"id":"m-klass","type":"begriff","cat":"ireb","de":"Klassendiagramm","en":"Class diagram","d":"Zeigt Konzepte bzw. Datenstrukturen und ihre Beziehungen."},{"id":"glossar","type":"begriff","cat":"both","de":"Glossar","en":"Glossary","d":"Definiert Fachbegriffe verbindlich und schafft gemeinsames Verständnis (BABOK-Technik „Glossary“)."},{"id":"walk","type":"begriff","cat":"ireb","de":"Walkthrough","en":"Walkthrough","d":"Autor führt Prüfende Schritt für Schritt durch die Anforderungen."},{"id":"insp","type":"begriff","cat":"ireb","de":"Inspektion","en":"Inspection","d":"Formales Review mit festgelegten Rollen und Prüfkriterien."},{"id":"pbr","type":"begriff","cat":"ireb","de":"Perspektivenbasiertes Lesen","en":"Perspective-based reading","d":"Prüfende lesen aus der Sicht einer Rolle, z. B. Nutzer, Tester, Entwickler."},{"id":"attribut","type":"begriff","cat":"ireb","de":"Attributierung","en":"Attributes","d":"Zusätzliche Metadaten je Anforderung, z. B. Status, Priorität, Verantwortliche."},{"id":"sicht","type":"begriff","cat":"ireb","de":"Sichten","en":"Views","d":"Zuschnitte des Anforderungsbestands für bestimmte Rollen oder Zwecke."},{"id":"version","type":"begriff","cat":"ireb","de":"Versionierung","en":"Versioning","d":"Verfolgt, wie sich Anforderungen über die Zeit verändern."},{"id":"baseline","type":"begriff","cat":"ireb","de":"Baseline","en":"Baseline","d":"Eingefrorener, freigegebener Stand eines Satzes von Anforderungen."},{"id":"aenderung","type":"begriff","cat":"ireb","de":"Änderungsmanagement","en":"Change management","d":"Änderungen an Anforderungen beantragen, bewerten und entscheiden."},{"id":"trace","type":"begriff","cat":"ireb","de":"Rückverfolgbarkeit","en":"Traceability","d":"Beziehungen zwischen Anforderungen und anderen Arbeitsergebnissen, z. B. Ziel → Anforderung → Test."},{"id":"lifecycle","type":"begriff","cat":"ireb","de":"Lebenszyklus von Arbeitsprodukten","en":"Work product life cycle","d":"Von der Erstellung über Änderung bis zur Verwerfung: temporär, sich entwickelnd oder dauerhaft."},{"id":"agil","type":"begriff","cat":"ireb","de":"Agiles RE","en":"RE in agile settings","d":"Anforderungen iterativ pflegen: Backlog, User Stories, Akzeptanzkriterien."},{"id":"mk-hub","type":"merkmal","cat":"both","de":"Merkmale einzelner Anforderungen","en":"Characteristics of individual requirements","d":"Neun Qualitätsmerkmale, die eine einzelne Anforderung erfüllen soll."},{"id":"mk-notw","type":"merkmal","cat":"both","de":"Notwendig","en":"Necessary","d":"Die Anforderung definiert eine wesentliche Fähigkeit, Eigenschaft oder Randbedingung."},{"id":"mk-angem","type":"merkmal","cat":"both","de":"Angemessen","en":"Appropriate","d":"Der Abstraktionsgrad passt; keine unnötigen Einschränkungen oder Implementierungsdetails."},{"id":"mk-eind","type":"merkmal","cat":"both","de":"Eindeutig","en":"Unambiguous","d":"Sie lässt nur eine Interpretation zu."},{"id":"mk-vollst","type":"merkmal","cat":"both","de":"Vollständig","en":"Complete","d":"Alle Informationen, die zum Verständnis nötig sind, stehen in der Anforderung."},{"id":"mk-einzeln","type":"merkmal","cat":"both","de":"Einzeln","en":"Singular","d":"Die Anforderung enthält genau eine Aussage."},{"id":"mk-real","type":"merkmal","cat":"both","de":"Realisierbar","en":"Feasible","d":"Mit den gegebenen Randbedingungen bei akzeptablem Risiko umsetzbar."},{"id":"mk-pruef","type":"merkmal","cat":"both","de":"Überprüfbar","en":"Verifiable","d":"Es gibt ein Verfahren, das nachweist, dass das System sie erfüllt."},{"id":"mk-korr","type":"merkmal","cat":"both","de":"Korrekt","en":"Correct","d":"Sie gibt den Bedarf genau wieder."},{"id":"mk-konf","type":"merkmal","cat":"both","de":"Normkonform","en":"Conforming","d":"Die Darstellung folgt einer vereinbarten Schablone oder Norm."},{"id":"ms-hub","type":"merkmal","cat":"both","de":"Merkmale eines Anforderungssatzes","en":"Characteristics of a set of requirements","d":"Fünf Merkmale, die eine Menge von Anforderungen insgesamt erfüllen soll."},{"id":"ms-vollst","type":"merkmal","cat":"both","de":"Vollständig (Satz)","en":"Complete (set)","d":"Der Satz deckt den gesamten Bedarf ab."},{"id":"ms-konsist","type":"merkmal","cat":"both","de":"Konsistent","en":"Consistent","d":"Keine Widersprüche zwischen den Anforderungen."},{"id":"ms-real","type":"merkmal","cat":"both","de":"Realisierbar (Satz)","en":"Feasible (set)","d":"Der Satz ist insgesamt im gegebenen Rahmen umsetzbar."},{"id":"ms-verst","type":"merkmal","cat":"both","de":"Verständlich","en":"Comprehensible","d":"Der Satz ist für die Zielgruppe nachvollziehbar."},{"id":"ms-valid","type":"merkmal","cat":"both","de":"Validierbar","en":"Able to be validated","d":"Der Satz lässt sich gegen den Bedarf der Stakeholder prüfen."},{"id":"baccm","type":"bereich","cat":"babok","de":"Kernkonzept-Modell (BACCM)","en":"Business Analysis Core Concept Model","d":"Sechs Kernkonzepte als gemeinsame Sprache der Business-Analyse."},{"id":"c-change","type":"kern","cat":"babok","de":"Veränderung","en":"Change","d":"Transformative Reaktion auf einen Bedarf."},{"id":"c-need","type":"kern","cat":"babok","de":"Bedarf","en":"Need","d":"Problem oder Chance, die angegangen werden soll."},{"id":"c-solution","type":"kern","cat":"babok","de":"Lösung","en":"Solution","d":"Konkrete Art, einen Bedarf im Kontext zu befriedigen."},{"id":"c-value","type":"kern","cat":"babok","de":"Wert","en":"Value","d":"Wert, Nutzen oder Nützlichkeit, den etwas für Stakeholder in einem Kontext hat."},{"id":"c-context","type":"kern","cat":"babok","de":"Kontext (BACCM)","en":"Context","d":"Umstände, die eine Veränderung beeinflussen, von ihr beeinflusst werden und sie verständlich machen."},{"id":"komp-hub","type":"bereich","cat":"babok","de":"Grundlegende Kompetenzen","en":"Underlying competencies","d":"Sechs Kompetenzfelder, die Business-Analysten für wirksame Arbeit brauchen."},{"id":"kp1","type":"komp","cat":"babok","de":"Analytisches Denken und Problemlösung","en":"Analytical thinking and problem solving","d":"Kreativität, Entscheidungsfindung, Lernen, Problemlösung, Systemdenken, konzeptionelles und visuelles Denken."},{"id":"kp2","type":"komp","cat":"babok","de":"Verhaltensmerkmale","en":"Behavioral characteristics","d":"Ethik, Verlässlichkeit, Vertrauenswürdigkeit, Organisation, Anpassungsfähigkeit."},{"id":"kp3","type":"komp","cat":"babok","de":"Geschäftswissen","en":"Business knowledge","d":"Branchen-, Organisations- und Lösungswissen sowie Methodenwissen."},{"id":"kp4","type":"komp","cat":"babok","de":"Kommunikationsfähigkeit","en":"Communication skills","d":"Verbale, nonverbale und schriftliche Kommunikation, aktives Zuhören."},{"id":"kp5","type":"komp","cat":"babok","de":"Interaktionsfähigkeit","en":"Interaction skills","d":"Moderation, Führung, Verhandlung, Konfliktlösung, Teamarbeit."},{"id":"kp6","type":"komp","cat":"babok","de":"Werkzeuge und Technologie","en":"Tools and technology","d":"Büro-, BA-Werkzeuge und Kommunikationstechnologie."},{"id":"persp-hub","type":"bereich","cat":"babok","de":"Perspektiven","en":"Perspectives","d":"Fünf Blickwinkel, aus denen Business-Analyse in unterschiedlichen Kontexten angewendet wird."},{"id":"pe-agil","type":"persp","cat":"babok","de":"Agile Perspektive","en":"Agile perspective","d":"BA in agilen Vorgehensweisen."},{"id":"pe-bi","type":"persp","cat":"babok","de":"Business-Intelligence-Perspektive","en":"Business intelligence perspective","d":"BA für Analyse- und Berichtssysteme."},{"id":"pe-it","type":"persp","cat":"babok","de":"IT-Perspektive","en":"Information technology perspective","d":"BA in IT-Vorhaben."},{"id":"pe-ba","type":"persp","cat":"babok","de":"Business-Architektur-Perspektive","en":"Business architecture perspective","d":"BA zur Ausrichtung auf Strategie und Unternehmensarchitektur."},{"id":"pe-bpm","type":"persp","cat":"babok","de":"Geschäftsprozessmanagement-Perspektive","en":"Business process management perspective","d":"BA im Kontext von Prozessverbesserung und -management."},{"id":"ka-bapm","type":"bereich","cat":"babok","de":"Planung und Überwachung der Business-Analyse","en":"Business Analysis Planning and Monitoring","d":"Organisiert und koordiniert die BA-Arbeit: Vorgehen, Stakeholder-Einbindung, Governance, Informationsmanagement, Leistung."},{"id":"ka-ec","type":"bereich","cat":"babok","de":"Ermittlung und Zusammenarbeit","en":"Elicitation and Collaboration","d":"Ermittlung vorbereiten, durchführen, Ergebnisse bestätigen und die Zusammenarbeit mit Stakeholdern pflegen."},{"id":"ka-rlcm","type":"bereich","cat":"babok","de":"Management des Anforderungslebenszyklus","en":"Requirements Life Cycle Management","d":"Anforderungen und Designs von der Entstehung bis zur Ausmusterung verwalten."},{"id":"ka-sa","type":"bereich","cat":"babok","de":"Strategieanalyse","en":"Strategy Analysis","d":"Strategie für eine Veränderung definieren: Ist-Zustand, Soll-Zustand, Risiken, Veränderungsstrategie."},{"id":"ka-radd","type":"bereich","cat":"babok","de":"Anforderungsanalyse und Lösungsdesign","en":"Requirements Analysis and Design Definition","d":"Anforderungen und Designs strukturieren, spezifizieren, prüfen; Lösungsoptionen definieren und eine Lösung empfehlen."},{"id":"ka-se","type":"bereich","cat":"babok","de":"Lösungsbewertung","en":"Solution Evaluation","d":"Leistung und Wert einer Lösung bewerten und Maßnahmen zur Wertsteigerung empfehlen."},{"id":"k1","type":"aufgabe","cat":"babok","de":"BA-Vorgehen planen","en":"Plan Business Analysis Approach","d":"Festlegen, wie die BA-Arbeit durchgeführt wird."},{"id":"k2","type":"aufgabe","cat":"babok","de":"Stakeholder-Einbindung planen","en":"Plan Stakeholder Engagement","d":"Planen, wie Stakeholder eingebunden und beteiligt werden."},{"id":"k3","type":"aufgabe","cat":"babok","de":"BA-Governance planen","en":"Plan Business Analysis Governance","d":"Festlegen, wie Entscheidungen über Anforderungen und Designs getroffen werden."},{"id":"k4","type":"aufgabe","cat":"babok","de":"BA-Informationsmanagement planen","en":"Plan Business Analysis Information Management","d":"Planen, wie BA-Informationen gespeichert, abgerufen und genutzt werden."},{"id":"k5","type":"aufgabe","cat":"babok","de":"BA-Leistung verbessern","en":"Identify Business Analysis Performance Improvements","d":"Die Wirksamkeit der BA-Arbeit bewerten und verbessern."},{"id":"k6","type":"aufgabe","cat":"babok","de":"Ermittlung vorbereiten","en":"Prepare for Elicitation","d":"Ermittlungsaktivitäten und nötige Ressourcen vorbereiten."},{"id":"k7","type":"aufgabe","cat":"babok","de":"Ermittlung durchführen","en":"Conduct Elicitation","d":"Informationen von Stakeholdern und anderen Quellen erheben."},{"id":"k8","type":"aufgabe","cat":"babok","de":"Ermittlungsergebnisse bestätigen","en":"Confirm Elicitation Results","d":"Erhobene Informationen mit den Stakeholdern abgleichen."},{"id":"k9","type":"aufgabe","cat":"babok","de":"BA-Informationen kommunizieren","en":"Communicate Business Analysis Information","d":"Informationen an Stakeholder weitergeben."},{"id":"k10","type":"aufgabe","cat":"babok","de":"Stakeholder-Zusammenarbeit steuern","en":"Manage Stakeholder Collaboration","d":"Die Zusammenarbeit mit Stakeholdern über die Zeit fördern."},{"id":"k11","type":"aufgabe","cat":"babok","de":"Anforderungen rückverfolgen","en":"Trace Requirements","d":"Beziehungen zwischen Anforderungen, Designs und Lösungskomponenten herstellen und pflegen."},{"id":"k12","type":"aufgabe","cat":"babok","de":"Anforderungen pflegen","en":"Maintain Requirements","d":"Anforderungen und Designs über den Lebenszyklus korrekt und aktuell halten."},{"id":"k13","type":"aufgabe","cat":"babok","de":"Anforderungen priorisieren","en":"Prioritize Requirements","d":"Relative Wichtigkeit von Anforderungen und Designs bestimmen."},{"id":"k14","type":"aufgabe","cat":"babok","de":"Anforderungsänderungen bewerten","en":"Assess Requirements Changes","d":"Auswirkungen vorgeschlagener Änderungen bewerten und entscheiden."},{"id":"k15","type":"aufgabe","cat":"babok","de":"Anforderungen freigeben","en":"Approve Requirements","d":"Zustimmung der Stakeholder zu Anforderungen und Designs einholen."},{"id":"k16","type":"aufgabe","cat":"babok","de":"Ist-Zustand analysieren","en":"Analyze Current State","d":"Den aktuellen Zustand des Unternehmens im Bezug auf den Bedarf verstehen."},{"id":"k17","type":"aufgabe","cat":"babok","de":"Soll-Zustand definieren","en":"Define Future State","d":"Den gewünschten Zustand und den erwarteten Wert festlegen."},{"id":"k18","type":"aufgabe","cat":"babok","de":"Risiken bewerten","en":"Assess Risks","d":"Unsicherheiten und ihre möglichen Auswirkungen auf Wert einer Veränderung bewerten."},{"id":"k19","type":"aufgabe","cat":"babok","de":"Veränderungsstrategie definieren","en":"Define Change Strategy","d":"Den Weg vom Ist- zum Soll-Zustand festlegen."},{"id":"k20","type":"aufgabe","cat":"babok","de":"Anforderungen spezifizieren und modellieren","en":"Specify and Model Requirements","d":"Anforderungen in Text und Modellen darstellen."},{"id":"k21","type":"aufgabe","cat":"babok","de":"Anforderungen verifizieren","en":"Verify Requirements","d":"Sicherstellen, dass Anforderungen den Qualitätsstandards genügen."},{"id":"k22","type":"aufgabe","cat":"babok","de":"Anforderungen validieren","en":"Validate Requirements","d":"Sicherstellen, dass Anforderungen den Bedarf der Stakeholder treffen und Wert liefern."},{"id":"k23","type":"aufgabe","cat":"babok","de":"Anforderungsarchitektur definieren","en":"Define Requirements Architecture","d":"Anforderungen zu einem stimmigen Ganzen strukturieren."},{"id":"k24","type":"aufgabe","cat":"babok","de":"Lösungsoptionen definieren","en":"Define Solution Options","d":"Lösungsansätze identifizieren und beschreiben."},{"id":"k25","type":"aufgabe","cat":"babok","de":"Wertpotenzial analysieren, Lösung empfehlen","en":"Analyze Potential Value and Recommend Solution","d":"Erwarteten Wert der Optionen bewerten und eine Lösung empfehlen."},{"id":"k26","type":"aufgabe","cat":"babok","de":"Lösungsleistung messen","en":"Measure Solution Performance","d":"Leistung einer Lösung mit geeigneten Kennzahlen messen."},{"id":"k27","type":"aufgabe","cat":"babok","de":"Leistungsmessungen analysieren","en":"Analyze Performance Measures","d":"Messergebnisse im Hinblick auf den Wert auswerten."},{"id":"k28","type":"aufgabe","cat":"babok","de":"Lösungsgrenzen bewerten","en":"Assess Solution Limitations","d":"Eigenschaften der Lösung bewerten, die ihren Wert begrenzen."},{"id":"k29","type":"aufgabe","cat":"babok","de":"Grenzen im Unternehmen bewerten","en":"Assess Enterprise Limitations","d":"Einflüsse im Unternehmen bewerten, die den Wert begrenzen."},{"id":"k30","type":"aufgabe","cat":"babok","de":"Maßnahmen zur Wertsteigerung empfehlen","en":"Recommend Actions to Increase Solution Value","d":"Maßnahmen empfehlen, um den Lösungswert zu erhöhen."},{"id":"t-acc","type":"technik","cat":"both","de":"Abnahme- und Bewertungskriterien","en":"Acceptance and Evaluation Criteria","d":"Legt fest, wann eine Anforderung oder Lösung als erfüllt gilt."},{"id":"t-backlog","type":"technik","cat":"both","de":"Backlog-Management","en":"Backlog Management","d":"Pflegt eine priorisierte Liste von Arbeitspunkten."},{"id":"t-bsc","type":"technik","cat":"babok","de":"Balanced Scorecard","en":"Balanced Scorecard","d":"Misst Leistung entlang mehrerer Perspektiven, z. B. Finanzen, Kunden, Prozesse."},{"id":"t-bench","type":"technik","cat":"babok","de":"Benchmarking und Marktanalyse","en":"Benchmarking and Market Analysis","d":"Vergleicht mit Wettbewerbern und Markt."},{"id":"t-brain","type":"technik","cat":"both","de":"Brainstorming","en":"Brainstorming","d":"Sammelt in der Gruppe viele Ideen ohne sofortige Bewertung."},{"id":"t-bcap","type":"technik","cat":"babok","de":"Fähigkeitsanalyse","en":"Business Capability Analysis","d":"Beschreibt, was das Unternehmen leisten kann, und wo Lücken sind."},{"id":"t-bcase","type":"technik","cat":"babok","de":"Business Case","en":"Business Cases","d":"Begründet eine Investition mit Nutzen, Kosten und Risiken."},{"id":"t-bmc","type":"technik","cat":"babok","de":"Business Model Canvas","en":"Business Model Canvas","d":"Beschreibt ein Geschäftsmodell auf einer Seite."},{"id":"t-brules","type":"technik","cat":"babok","de":"Geschäftsregelanalyse","en":"Business Rules Analysis","d":"Erhebt und strukturiert Regeln, die das Geschäft steuern."},{"id":"t-games","type":"technik","cat":"babok","de":"Kollaborative Spiele","en":"Collaborative Games","d":"Spielerische Formate, um Wissen gemeinsam zu erarbeiten."},{"id":"t-concept","type":"technik","cat":"babok","de":"Konzeptmodellierung","en":"Concept Modelling","d":"Organisiert Begriffe und ihre Beziehungen."},{"id":"t-dict","type":"technik","cat":"babok","de":"Datenwörterbuch","en":"Data Dictionary","d":"Beschreibt Datenelemente und ihre Eigenschaften."},{"id":"t-dfd","type":"technik","cat":"babok","de":"Datenflussdiagramme","en":"Data Flow Diagrams","d":"Zeigen, wie Daten durch ein System fließen."},{"id":"t-mining","type":"technik","cat":"babok","de":"Data Mining","en":"Data Mining","d":"Findet Muster in großen Datenbeständen."},{"id":"t-dmodel","type":"technik","cat":"babok","de":"Datenmodellierung","en":"Data Modelling","d":"Beschreibt Datenstrukturen und Beziehungen."},{"id":"t-decan","type":"technik","cat":"babok","de":"Entscheidungsanalyse","en":"Decision Analysis","d":"Bewertet Optionen strukturiert anhand von Kriterien."},{"id":"t-decmod","type":"technik","cat":"babok","de":"Entscheidungsmodellierung","en":"Decision Modelling","d":"Stellt Entscheidungslogik als Modell dar, z. B. als Entscheidungstabelle."},{"id":"t-doc","type":"technik","cat":"both","de":"Dokumentenanalyse","en":"Document Analysis","d":"Wertet bestehende Dokumente aus, um Anforderungen zu gewinnen."},{"id":"t-est","type":"technik","cat":"babok","de":"Schätzung","en":"Estimation","d":"Schätzt Aufwand, Kosten oder Dauer."},{"id":"t-fin","type":"technik","cat":"babok","de":"Finanzanalyse","en":"Financial Analysis","d":"Bewertet finanzielle Aspekte von Optionen."},{"id":"t-focus","type":"technik","cat":"babok","de":"Fokusgruppen","en":"Focus Groups","d":"Moderierte Gruppendiskussion ausgewählter Teilnehmender."},{"id":"t-decomp","type":"technik","cat":"babok","de":"Funktionale Dekomposition","en":"Functional Decomposition","d":"Zerlegt komplexe Funktionen in kleinere Teile."},{"id":"t-interface","type":"technik","cat":"babok","de":"Schnittstellenanalyse","en":"Interface Analysis","d":"Untersucht Schnittstellen zwischen Systemen, Personen und Prozessen."},{"id":"t-interview","type":"technik","cat":"both","de":"Interviews","en":"Interviews","d":"Befragt Stakeholder im Gespräch gezielt zu Bedarf und Anforderungen."},{"id":"t-item","type":"technik","cat":"babok","de":"Punkteverfolgung","en":"Item Tracking","d":"Verfolgt offene Punkte bis zur Klärung."},{"id":"t-lessons","type":"technik","cat":"babok","de":"Lessons Learned","en":"Lessons Learned","d":"Sichert Erkenntnisse aus abgeschlossener Arbeit."},{"id":"t-kpi","type":"technik","cat":"babok","de":"Kennzahlen und KPIs","en":"Metrics and Key Performance Indicators (KPIs)","d":"Misst Fortschritt und Zielerreichung."},{"id":"t-mind","type":"technik","cat":"babok","de":"Mind Mapping","en":"Mind Mapping","d":"Visualisiert Ideen und Zusammenhänge um ein Zentralthema."},{"id":"t-nfr","type":"technik","cat":"both","de":"Analyse nicht-funktionaler Anforderungen","en":"Non-Functional Requirements Analysis","d":"Beschreibt und prüft Qualitätseigenschaften wie Performanz oder Sicherheit."},{"id":"t-obs","type":"technik","cat":"both","de":"Beobachtung","en":"Observation","d":"Beobachtet Menschen bei der Arbeit, um reale Abläufe zu verstehen."},{"id":"t-org","type":"technik","cat":"babok","de":"Organisationsmodellierung","en":"Organizational Modelling","d":"Stellt Rollen, Zuständigkeiten und Strukturen dar."},{"id":"t-prio","type":"technik","cat":"both","de":"Priorisierung","en":"Prioritization","d":"Bringt Anforderungen nach Wichtigkeit in eine Reihenfolge."},{"id":"t-pana","type":"technik","cat":"babok","de":"Prozessanalyse","en":"Process Analysis","d":"Untersucht Prozesse auf Verbesserungspotenzial."},{"id":"t-pmod","type":"technik","cat":"babok","de":"Prozessmodellierung","en":"Process Modelling","d":"Stellt Abläufe grafisch dar, z. B. mit BPMN."},{"id":"t-proto","type":"technik","cat":"both","de":"Prototyping","en":"Prototyping","d":"Frühe, vereinfachte Version einer Lösung zum Ausprobieren und Feedback."},{"id":"t-review","type":"technik","cat":"both","de":"Reviews","en":"Reviews","d":"Prüfen Arbeitsergebnisse im Team auf Fehler und Verbesserungen."},{"id":"t-risk","type":"technik","cat":"babok","de":"Risikoanalyse und -management","en":"Risk Analysis and Management","d":"Identifiziert, bewertet und steuert Risiken."},{"id":"t-roles","type":"technik","cat":"babok","de":"Rollen-und-Rechte-Matrix","en":"Roles and Permissions Matrix","d":"Ordnet Rollen ihre Rechte und Aufgaben zu."},{"id":"t-rca","type":"technik","cat":"babok","de":"Ursachenanalyse","en":"Root Cause Analysis","d":"Sucht die Ursachen eines Problems statt seiner Symptome."},{"id":"t-scope","type":"technik","cat":"both","de":"Umfangsmodellierung","en":"Scope Modelling","d":"Beschreibt Grenzen des Betrachtungsgegenstands, z. B. mit Kontextdiagramm."},{"id":"t-seq","type":"technik","cat":"babok","de":"Sequenzdiagramme","en":"Sequence Diagrams","d":"Zeigen den zeitlichen Ablauf von Interaktionen."},{"id":"t-stake","type":"technik","cat":"both","de":"Stakeholder-Liste, -Landkarte oder Personas","en":"Stakeholder List, Map, or Personas","d":"Erfasst und ordnet Stakeholder; Personas beschreiben typische Nutzer."},{"id":"t-state","type":"technik","cat":"both","de":"Zustandsmodellierung","en":"State Modelling","d":"Beschreibt Zustände und Übergänge eines Objekts."},{"id":"t-survey","type":"technik","cat":"both","de":"Umfrage oder Fragebogen","en":"Survey or Questionnaire","d":"Erhebt Informationen von vielen Personen standardisiert."},{"id":"t-swot","type":"technik","cat":"babok","de":"SWOT-Analyse","en":"SWOT Analysis","d":"Bewertet Stärken, Schwächen, Chancen und Risiken."},{"id":"t-uc","type":"technik","cat":"both","de":"Use Cases und Szenarien","en":"Use Cases and Scenarios","d":"Beschreiben Interaktionen eines Akteurs mit dem System zur Zielerreichung."},{"id":"t-us","type":"technik","cat":"both","de":"User Stories","en":"User Stories","d":"Knappe Anforderung aus Nutzersicht: Rolle, Wunsch, Nutzen."},{"id":"t-vendor","type":"technik","cat":"babok","de":"Lieferantenbewertung","en":"Vendor Assessment","d":"Bewertet Lieferanten und ihre Angebote."},{"id":"t-ws","type":"technik","cat":"both","de":"Workshops","en":"Workshops","d":"Moderierte Gruppensitzung, um gemeinsam Ergebnisse zu erarbeiten."}],"edges":[["ireb","a-erm","hier"],["ireb","a-dok","hier"],["ireb","a-val","hier"],["ireb","a-ver","hier"],["ireb","p1","hier"],["ireb","p2","hier"],["ireb","p3","hier"],["ireb","p4","hier"],["ireb","p5","hier"],["ireb","p6","hier"],["ireb","p7","hier"],["ireb","p8","hier"],["ireb","p9","hier"],["ireb","req","hier"],["ireb","fa","hier"],["ireb","qa","hier"],["ireb","rb","hier"],["ireb","ziel","hier"],["ireb","stakeholder","hier"],["ireb","agil","hier"],["babok","ka-bapm","hier"],["babok","ka-ec","hier"],["babok","ka-rlcm","hier"],["babok","ka-sa","hier"],["babok","ka-radd","hier"],["babok","ka-se","hier"],["babok","baccm","hier"],["babok","reqclass","hier"],["babok","komp-hub","hier"],["babok","persp-hub","hier"],["babok","design","hier"],["iso29148","mk-hub","hier"],["iso29148","ms-hub","hier"],["a-erm","quelle","hier"],["a-erm","kano","hier"],["a-erm","ermtech","hier"],["a-erm","konflikt","hier"],["a-erm","kontext","hier"],["a-erm","umfang","hier"],["a-dok","doku-nat","hier"],["a-dok","schablone","hier"],["a-dok","modelle","hier"],["a-dok","glossar","hier"],["a-val","t-review","hier"],["a-val","t-proto","hier"],["a-val","t-acc","hier"],["a-ver","attribut","hier"],["a-ver","sicht","hier"],["a-ver","version","hier"],["a-ver","baseline","hier"],["a-ver","aenderung","hier"],["a-ver","trace","hier"],["a-ver","t-prio","hier"],["a-ver","lifecycle","hier"],["p2","stakeholder","hier"],["p3","glossar","hier"],["p4","kontext","hier"],["p6","a-val","hier"],["p7","aenderung","hier"],["p8","kano-e","hier"],["reqclass","bizreq","hier"],["reqclass","stkreq","hier"],["reqclass","solreq","hier"],["reqclass","trareq","hier"],["solreq","fa","hier"],["solreq","nfr","hier"],["stakeholder","quelle","hier"],["stakeholder","t-stake","hier"],["kontext","sysgrenze","hier"],["kontext","ktxgrenze","hier"],["kontext","kdiagr","hier"],["kano","kano-b","hier"],["kano","kano-l","hier"],["kano","kano-e","hier"],["ermtech","t-ws","hier"],["ermtech","t-interview","hier"],["ermtech","t-survey","hier"],["ermtech","t-obs","hier"],["ermtech","t-brain","hier"],["ermtech","t-doc","hier"],["ermtech","t-proto","hier"],["konflikt","k-einig","hier"],["konflikt","k-komp","hier"],["konflikt","k-var","hier"],["konflikt","k-abst","hier"],["modelle","kdiagr","hier"],["modelle","m-ziel","hier"],["modelle","m-uc","hier"],["modelle","m-akt","hier"],["modelle","m-zust","hier"],["modelle","m-klass","hier"],["agil","t-backlog","hier"],["agil","t-us","hier"],["agil","t-acc","hier"],["mk-hub","mk-notw","hier"],["mk-hub","mk-angem","hier"],["mk-hub","mk-eind","hier"],["mk-hub","mk-vollst","hier"],["mk-hub","mk-einzeln","hier"],["mk-hub","mk-real","hier"],["mk-hub","mk-pruef","hier"],["mk-hub","mk-korr","hier"],["mk-hub","mk-konf","hier"],["ms-hub","ms-vollst","hier"],["ms-hub","ms-konsist","hier"],["ms-hub","ms-real","hier"],["ms-hub","ms-verst","hier"],["ms-hub","ms-valid","hier"],["baccm","c-change","hier"],["baccm","c-need","hier"],["baccm","c-solution","hier"],["baccm","c-value","hier"],["baccm","c-context","hier"],["baccm","stakeholder","hier"],["komp-hub","kp1","hier"],["komp-hub","kp2","hier"],["komp-hub","kp3","hier"],["komp-hub","kp4","hier"],["komp-hub","kp5","hier"],["komp-hub","kp6","hier"],["persp-hub","pe-agil","hier"],["persp-hub","pe-bi","hier"],["persp-hub","pe-it","hier"],["persp-hub","pe-ba","hier"],["persp-hub","pe-bpm","hier"],["ka-bapm","k1","hier"],["ka-bapm","k2","hier"],["ka-bapm","k3","hier"],["ka-bapm","k4","hier"],["ka-bapm","k5","hier"],["ka-ec","k6","hier"],["ka-ec","k7","hier"],["ka-ec","k8","hier"],["ka-ec","k9","hier"],["ka-ec","k10","hier"],["ka-rlcm","k11","hier"],["ka-rlcm","k12","hier"],["ka-rlcm","k13","hier"],["ka-rlcm","k14","hier"],["ka-rlcm","k15","hier"],["ka-sa","k16","hier"],["ka-sa","k17","hier"],["ka-sa","k18","hier"],["ka-sa","k19","hier"],["ka-radd","k20","hier"],["ka-radd","k21","hier"],["ka-radd","k22","hier"],["ka-radd","k23","hier"],["ka-radd","k24","hier"],["ka-radd","k25","hier"],["ka-se","k26","hier"],["ka-se","k27","hier"],["ka-se","k28","hier"],["ka-se","k29","hier"],["ka-se","k30","hier"],["a-erm","ka-ec","bruecke"],["a-erm","k7","bruecke"],["a-dok","k20","bruecke"],["a-val","k22","bruecke"],["a-val","k21","bruecke"],["a-ver","ka-rlcm","bruecke"],["aenderung","k14","bruecke"],["trace","k11","bruecke"],["t-prio","k13","bruecke"],["p1","c-value","bruecke"],["p4","c-context","bruecke"],["p5","c-need","bruecke"],["p5","c-solution","bruecke"],["p2","stakeholder","bruecke"],["qa","nfr","bruecke"],["fa","solreq","bruecke"],["kdiagr","t-scope","bruecke"],["umfang","t-scope","bruecke"],["m-uc","t-uc","bruecke"],["m-akt","t-pmod","bruecke"],["m-zust","t-state","bruecke"],["m-klass","t-dmodel","bruecke"],["m-klass","t-concept","bruecke"],["agil","pe-agil","bruecke"],["ziel","bizreq","bruecke"],["baseline","k15","bruecke"],["lifecycle","ka-rlcm","bruecke"],["quelle","t-stake","bruecke"],["konflikt","kp5","bruecke"],["mk-pruef","k21","bruecke"],["k7","t-interview","bezug"],["k7","t-ws","bezug"],["k7","t-obs","bezug"],["k7","t-survey","bezug"],["k7","t-brain","bezug"],["k7","t-doc","bezug"],["k7","t-focus","bezug"],["k7","t-proto","bezug"],["k7","t-games","bezug"],["k7","t-mind","bezug"],["k2","t-stake","bezug"],["k1","t-est","bezug"],["k1","t-pmod","bezug"],["k5","t-lessons","bezug"],["k5","t-kpi","bezug"],["k5","t-rca","bezug"],["k13","t-prio","bezug"],["k13","t-backlog","bezug"],["k13","t-decan","bezug"],["k14","t-decan","bezug"],["k14","t-risk","bezug"],["k14","t-est","bezug"],["k20","t-acc","bezug"],["k20","t-uc","bezug"],["k20","t-us","bezug"],["k20","t-pmod","bezug"],["k20","t-state","bezug"],["k20","t-dmodel","bezug"],["k20","t-scope","bezug"],["k20","t-nfr","bezug"],["k20","t-brules","bezug"],["k20","t-dict","bezug"],["k20","t-dfd","bezug"],["k20","t-seq","bezug"],["k21","t-review","bezug"],["k22","t-review","bezug"],["k22","t-acc","bezug"],["k22","t-kpi","bezug"],["k16","t-swot","bezug"],["k16","t-pana","bezug"],["k16","t-rca","bezug"],["k16","t-bcap","bezug"],["k16","t-bench","bezug"],["k16","t-doc","bezug"],["k17","t-bmc","bezug"],["k17","t-scope","bezug"],["k17","t-bsc","bezug"],["k17","t-bcap","bezug"],["k18","t-risk","bezug"],["k18","t-decan","bezug"],["k19","t-est","bezug"],["k19","t-fin","bezug"],["k19","t-risk","bezug"],["k24","t-vendor","bezug"],["k24","t-bcase","bezug"],["k24","t-decan","bezug"],["k25","t-bcase","bezug"],["k25","t-fin","bezug"],["k25","t-decan","bezug"],["k26","t-kpi","bezug"],["k26","t-obs","bezug"],["k26","t-survey","bezug"],["k27","t-kpi","bezug"],["k27","t-decan","bezug"],["k20","glossar","bezug"],["t-review","walk","hier"],["t-review","insp","hier"],["t-review","pbr","hier"],["k16","t-mining","bezug"],["k27","t-mining","bezug"],["k20","t-decmod","bezug"],["k20","t-decomp","bezug"],["k20","t-interface","bezug"],["k10","t-item","bezug"],["k16","t-org","bezug"],["k20","t-roles","bezug"]]};
+
+const CATS={
+  ireb:{n:'IREB-Wording (CPRE)',c:'#5ad1a4'},
+  babok:{n:'BABOK-Wording (IIBA)',c:'#f2c14e'},
+  both:{n:'Gemeinsame Begriffe (beide Welten)',c:'#8fd6d0'}
+};
+const TYPES={fw:'Rahmenwerk',bereich:'Bereich / Wissensgebiet',prinzip:'IREB-Prinzip',kern:'BABOK-Kernkonzept',aufgabe:'BABOK-Aufgabe',technik:'Technik',art:'Anforderungsart',begriff:'Begriff',merkmal:'Qualitätsmerkmal (ISO 29148)',komp:'Kompetenz',persp:'Perspektive'};
+let lang='de',FS=1;
+const SRC={
+ ireb:[['IREB CPRE Foundation Level','https://www.ireb.org/en/cpre/foundation'],['Lehrplan DE v3.2 (PDF)','https://cockpit-v1.ireb.org/media/pages/downloads/cpre-foundation-level-syllabus/829790aebe-1733311657/cpre_foundationlevel_syllabus_de_v.3.2.pdf']],
+ babok:[['IIBA – BABOK Guide v3: Business Analysis Tasks','https://www.iiba.org/knowledgehub/the-business-analysis-standard/5-applying-business-analysis-tasks/5-1-business-analysis-tasks/']],
+ iso:[['ISO/IEC/IEEE 29148:2018','https://www.iso.org/standard/72089.html']]
+};
+const srcOf=n=>n.type==='merkmal'||n.id==='iso29148'?SRC.iso:n.cat==='ireb'?SRC.ireb:n.cat==='babok'?SRC.babok:SRC.ireb.slice(0,1).concat(SRC.babok);
+const NODES=[],byId={},EDGES=[],ADJ={},BR={};
+function addNode(o){o.deg=0;Object.defineProperty(o,'label',{get(){return lang==='de'?o.de:o.en},enumerable:true});NODES.push(o);byId[o.id]=o;ADJ[o.id]=new Set();BR[o.id]=new Set();return o}
+const seenE=new Set();
+function link(a,b,kind){if(!byId[a]||!byId[b]||a===b)return;const k=a<b?a+'|'+b:b+'|'+a;if(seenE.has(k))return;seenE.add(k);EDGES.push({a,b,kind});ADJ[a].add(b);ADJ[b].add(a);byId[a].deg++;byId[b].deg++;if(kind==='bruecke'){BR[a].add(b);BR[b].add(a)}}
+(function build(){
+  DATA.nodes.forEach(n=>addNode({id:n.id,type:n.type,cat:n.cat,de:n.de,en:n.en,desc:n.d}));
+  const rank={bruecke:0,hier:1,bezug:2};
+  DATA.edges.slice().sort((x,y)=>rank[x[2]]-rank[y[2]]).forEach(e=>link(e[0],e[1],e[2]));
+})();
+
+/* ============ LERNPFAD ============ */
+const PATH=[
+ {id:'stakeholder',q:'Wer gehört alles zu den Stakeholdern, und wer wird am häufigsten vergessen?',a:'Alle, die Einfluss auf das System haben oder von ihm betroffen sind, auch stille Betroffene wie Support, Betrieb oder Datenschutz. IREB-Prinzip 2 und BABOK-Kernkonzept Stakeholder meinen dasselbe.',ex:['Wer nutzt das System, wer bezahlt es, wer betreibt es?','Wer ist von den Folgen betroffen, ohne mitzureden?','Wer darf mitentscheiden, und wer muss nur informiert werden?']},
+ {id:'kontext',q:'Was gehört zum System, was nur zum Kontext?',a:'Die Systemgrenze trennt das System von der Umgebung, die Kontextgrenze den relevanten Kontext vom Irrelevanten. Das Kontextdiagramm zeigt die Schnittstellen; BABOK nennt die Technik Scope Modelling.',ex:['Was können wir selbst gestalten, was nicht?','Welche Nachbarsysteme, Personen und Gesetze wirken ein?','Was passiert an der Grenze: Was geht rein, was raus?']},
+ {id:'ziel',q:'Warum wollen wir das überhaupt, und welchen Wert hat es?',a:'Wertorientierung (IREB-Prinzip 1) entspricht dem BABOK-Kernkonzept Value: Anforderungen lohnen sich nur, wenn der Nutzen die Kosten übersteigt. Ziele führen zu Business-Anforderungen.',ex:['Welches Problem lösen wir, und für wen?','Woran erkennen wir, dass es gelöst ist?','Was passiert, wenn wir nichts tun?']},
+ {id:'t-interview',q:'Wie fragst du im Interview nach dem Bedarf statt nach Lösungswünschen?',a:'Offene Fragen zu Situation und Ziel, nachhaken, zusammenfassen und bestätigen lassen (BABOK-Aufgabe Confirm Elicitation Results).',ex:['Erzählen Sie mir vom letzten Mal, als Sie das gemacht haben.','Was hat Sie dabei gestört, und was wäre das ideale Ergebnis?','Habe ich Sie richtig verstanden, dass …?','Mit wem sollte ich noch sprechen?']},
+ {id:'kano',q:'Welche Art von Anforderung fällt erst auf, wenn sie fehlt?',a:'Basisfaktoren. Bei Leistungsfaktoren steigt die Zufriedenheit mit dem Erfüllungsgrad, Begeisterungsfaktoren sind unerwartet, ihr Fehlen fällt nicht auf.',ex:['Wie würden Sie reagieren, wenn die Funktion vorhanden ist?','Und wie, wenn sie fehlt?','Wäre das für Sie selbstverständlich oder eine Überraschung?']},
+ {id:'t-us',q:'Worin unterscheiden sich User Story und Use Case?',a:'Eine User Story ist eine knappe Anforderung aus Nutzersicht (Rolle, Wunsch, Nutzen) und wird durch Akzeptanzkriterien ergänzt. Ein Use Case beschreibt die Interaktion eines Akteurs mit dem System bis zum Ziel, mit Normalablauf und Alternativen.',ex:['Wer ist der Akteur, und was will er erreichen?','Was ist der Normalfall, welche Ausnahmen gibt es?','Woran sehen wir, dass die Story fertig ist?']},
+ {id:'qa',q:'Wie machst du „soll schnell sein“ prüfbar?',a:'Als Qualitätsanforderung (IREB) bzw. nicht-funktionale Anforderung (BABOK) mit Messgröße, Bedingung und Grenzwert. Beispiel: 95 % der Suchanfragen werden bei 500 gleichzeitigen Nutzern in unter 2 Sekunden beantwortet.',ex:['Wie schnell ist schnell, in Sekunden?','Unter welcher Last und in welchem Szenario?','Wie messen wir das, und wer prüft es?']},
+ {id:'schablone',q:'Welche Merkmale soll eine einzelne Anforderung nach ISO 29148 haben?',a:'Notwendig, angemessen, eindeutig, vollständig, einzeln, realisierbar, überprüfbar, korrekt und normkonform. Eine Satzschablone hilft vor allem bei der Eindeutigkeit.',ex:['Lässt der Satz nur eine Lesart zu?','Enthält er genau eine Aussage?','Wie würden wir ihn testen?']},
+ {id:'k21',q:'Verifizieren oder Validieren: Was ist der Unterschied?',a:'Verifizieren (BABOK) prüft, ob die Anforderung den Qualitätsstandards genügt: Ist sie richtig formuliert? Validieren prüft, ob sie den Bedarf der Stakeholder trifft: Ist es die richtige Anforderung? Nach IREB sind nicht-validierte Anforderungen nutzlos.',ex:['Ist die Anforderung klar, vollständig und prüfbar?','Löst sie wirklich das Problem von X?','Wer hat sie bestätigt?']},
+ {id:'trace',q:'Wozu Rückverfolgbarkeit, und was passiert bei einer Änderung?',a:'Sie verknüpft Ziel, Anforderung, Design und Test, sodass man bei einer Änderung sieht, was betroffen ist. BABOK: Trace Requirements und Assess Requirements Changes; IREB: Anforderungsverwaltung.',ex:['Welche Ziele und Tests hängen an dieser Anforderung?','Was kostet die Änderung, was passiert ohne sie?','Wer entscheidet über die Änderung?']}
+];
+PATH.forEach(p=>{if(!byId[p.id])console.error('Pfad-Station fehlt',p.id)});
+
+/* ============ LAYOUT ============ */
+const POS={ireb:[-460,200],both:[0,-340],babok:[460,200]};
+Object.keys(CATS).forEach(k=>{CATS[k].x=POS[k][0];CATS[k].y=POS[k][1]});
+(function layout(){
+  let s=7;const rnd=()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+  NODES.forEach(n=>{const c=CATS[n.cat];n.x=c.x+(rnd()-.5)*420;n.y=c.y+(rnd()-.5)*420;n.vx=0;n.vy=0});
+  const N=NODES.length,IT=420;
+  for(let it=0;it<IT;it++){
+    const al=1-it/IT;
+    for(let i=0;i<N;i++){const a=NODES[i];for(let j=i+1;j<N;j++){const b=NODES[j];
+      let dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy+.01;if(d2>90000)continue;
+      const d=Math.sqrt(d2);const f=(a.cat==='both'&&b.cat==='both'?5200:a.cat===b.cat?2600:2000)/d2*al+(d<26?(26-d)*.18:0);dx/=d;dy/=d;a.vx+=dx*f;a.vy+=dy*f;b.vx-=dx*f;b.vy-=dy*f}}
+    EDGES.forEach(e=>{const a=byId[e.a],b=byId[e.b];const dx=b.x-a.x,dy=b.y-a.y;const d=Math.sqrt(dx*dx+dy*dy)+.01;
+      const k=e.kind==='bruecke'?.0008:e.kind==='bezug'?.002:.01;const f=(d-70)*k;a.vx+=dx/d*f;a.vy+=dy/d*f;b.vx-=dx/d*f;b.vy-=dy/d*f});
+    NODES.forEach(n=>{const c=CATS[n.cat];const g=n.cat==='both'?.022:.013;n.vx+=(c.x-n.x)*g;n.vy+=(c.y-n.y)*g;n.x+=n.vx;n.y+=n.vy;n.vx*=.8;n.vy*=.8});
+  }
+  Object.keys(CATS).forEach(k=>{
+    const m=NODES.filter(n=>n.cat===k);if(!m.length){CATS[k].cx=0;CATS[k].cy=0;CATS[k].r=1;return}
+    const cx=m.reduce((a,n)=>a+n.x,0)/m.length,cy=m.reduce((a,n)=>a+n.y,0)/m.length;
+    const ds=m.map(n=>Math.hypot(n.x-cx,n.y-cy)).sort((a,b)=>a-b);
+    CATS[k].cx=cx;CATS[k].cy=cy;CATS[k].r=Math.max(90,ds[Math.floor(ds.length*.92)])+50;
+  });
+})();
+
+/* ============ ZUSTAND ============ */
+const $=id=>document.getElementById(id);
+const cv=$('c'),ctx=cv.getContext('2d'),stage=$('stage');
+let W=0,H=0,dpr=1,view={x:0,y:0,k:1},fitK=1;
+let sel=null,hiddenCat=new Set(),hiddenType=new Set(),query='',pathOn=false,hist=[];
+const visited=new Set();
+const BASE_R={fw:11,bereich:8,prinzip:5.5,kern:6,aufgabe:4.6,technik:4.2,art:5.5,begriff:3.8,merkmal:4.4,komp:5,persp:5};
+NODES.forEach(n=>{n.r=Math.min(BASE_R[n.type]+Math.sqrt(n.deg)*.4,15)});
+const hexA=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${n>>8&255},${n&255},${a})`};
+const mobile=()=>window.matchMedia('(max-width:760px)').matches;
+const colorOf=n=>CATS[n.cat].c;
+function matches(n){if(!query)return true;const toks=query.toLowerCase().split(/\s+/).filter(Boolean);const tx=(n.de+' '+n.en+' '+(n.desc||'')).toLowerCase();return toks.every(t=>tx.includes(t)||(t.length>4&&tx.includes(t.slice(0,-1))))}
+function visible(n){return !hiddenCat.has(n.cat)&&!hiddenType.has(n.type)}
+
+function resize(){const r=stage.getBoundingClientRect();dpr=window.devicePixelRatio||1;W=r.width;H=r.height;cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);cv.style.width=W+'px';cv.style.height=H+'px'}
+function fit(animate){
+  const xs=NODES.map(n=>n.x),ys=NODES.map(n=>n.y);
+  const x0=Math.min(...xs)-70,x1=Math.max(...xs)+70,y0=Math.min(...ys)-70,y1=Math.max(...ys)+70;
+  const k=Math.min(W/(x1-x0),H/(y1-y0));fitK=k;
+  const t={k,x:W/2-(x0+x1)/2*k,y:H/2-(y0+y1)/2*k};animate?tween(t):(view=t,draw());
+}
+let raf=0;
+function tween(t,ms=450){cancelAnimationFrame(raf);const s={...view},t0=performance.now();
+  const step=now=>{let p=Math.min(1,(now-t0)/ms);p=1-Math.pow(1-p,3);view={x:s.x+(t.x-s.x)*p,y:s.y+(t.y-s.y)*p,k:s.k+(t.k-s.k)*p};draw();if(p<1)raf=requestAnimationFrame(step)};raf=requestAnimationFrame(step)}
+function focusPoint(){return mobile()?{x:W/2,y:H*.25+10}:{x:(W-370)/2+10,y:H/2}}
+function centerOn(n,zoom){const k=Math.max(view.k,fitK*(zoom||2.4)),p=focusPoint();tween({k,x:p.x-n.x*k,y:p.y-n.y*k})}
+
+/* ============ ZEICHNEN ============ */
+function shape(n,r){
+  ctx.beginPath();
+  if(n.type==='fw'||n.type==='prinzip'||n.type==='kern'){ctx.moveTo(n.x,n.y-r*1.2);ctx.lineTo(n.x+r*1.2,n.y);ctx.lineTo(n.x,n.y+r*1.2);ctx.lineTo(n.x-r*1.2,n.y);ctx.closePath()}
+  else if(n.type==='aufgabe'||n.type==='art'){ctx.rect(n.x-r,n.y-r,2*r,2*r)}
+  else if(n.type==='merkmal'){ctx.moveTo(n.x,n.y-r*1.2);ctx.lineTo(n.x+r*1.1,n.y+r*.8);ctx.lineTo(n.x-r*1.1,n.y+r*.8);ctx.closePath()}
+  else ctx.arc(n.x,n.y,r,0,Math.PI*2);
+}
+function draw(){
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+  const nb=sel?ADJ[sel]:null,rel=view.k/fitK,sc=Math.sqrt(rel);const sibSet=new Set(sel?sibs(sel):[]);
+  const alphaOf=n=>{let a=1;if(!visible(n))a=.04;if(sel&&n.id!==sel&&!nb.has(n.id))a*=sibSet.has(n.id)?.7:.14;if(query&&!matches(n))a*=.1;return a};
+  ctx.save();ctx.translate(view.x,view.y);ctx.scale(view.k,view.k);
+  Object.keys(CATS).forEach(k=>{if(hiddenCat.has(k))return;const c=CATS[k];
+    const g=ctx.createRadialGradient(c.cx,c.cy,0,c.cx,c.cy,c.r);g.addColorStop(0,hexA(c.c,.09));g.addColorStop(.7,hexA(c.c,.045));g.addColorStop(1,hexA(c.c,0));
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(c.cx,c.cy,c.r,0,Math.PI*2);ctx.fill()});
+  /* Kanten */
+  EDGES.forEach(e=>{
+    const a=byId[e.a],b=byId[e.b];const on=sel&&(e.a===sel||e.b===sel);
+    let al=e.kind==='bruecke'?.4:e.kind==='bezug'?.09:.16;
+    if(sel)al=on?.85:.02;
+    if(!visible(a)||!visible(b))al*=.15;
+    if(query&&!matches(a)&&!matches(b))al*=.3;
+    if(al<.012)return;
+    const mx=(a.x+b.x)/2,my=(a.y+b.y)/2,dx=b.x-a.x,dy=b.y-a.y;
+    const src=on&&e.a===sel?b:a;
+    ctx.strokeStyle=e.kind==='bruecke'?hexA('#8fd6d0',al):hexA(colorOf(src),al);ctx.lineWidth=(on?1.7:e.kind==='bruecke'?1.3:.7)/sc;
+    ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.quadraticCurveTo(mx-dy*.08,my+dx*.08,b.x,b.y);ctx.stroke();
+  });
+  if(pathOn){ctx.strokeStyle='#5ad1a4';ctx.lineWidth=3.2/sc;ctx.setLineDash([9,6]);ctx.beginPath();
+    PATH.forEach((p,i)=>{const n=byId[p.id];i?ctx.lineTo(n.x,n.y):ctx.moveTo(n.x,n.y)});ctx.stroke();ctx.setLineDash([])}
+  NODES.forEach(n=>{
+    const a=alphaOf(n),c=colorOf(n),r=n.r;ctx.globalAlpha=a;
+    if(n.type==='fw'||n.type==='bereich'){ctx.strokeStyle=hexA(c,.5);ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(n.x,n.y,r+4,0,Math.PI*2);ctx.stroke()}
+    shape(n,r);
+    if(n.type==='bereich'){ctx.fillStyle='#0a0f0d';ctx.fill();ctx.strokeStyle=c;ctx.lineWidth=2.2;ctx.stroke()}
+    else{ctx.fillStyle=n.type==='begriff'||n.type==='technik'?hexA(c,.85):c;ctx.fill()}
+    if(n.id===sel){ctx.strokeStyle='#fff';ctx.lineWidth=2.4/Math.max(1,sc*.6);shape(n,r+3);ctx.stroke()}
+    ctx.globalAlpha=1;
+  });
+  ctx.restore();
+  /* Beschriftung (Bildschirmraum) */
+  ctx.textBaseline='middle';
+  Object.keys(CATS).forEach(k=>{if(hiddenCat.has(k))return;const c=CATS[k];
+    const sx=c.cx*view.k+view.x,sy=(c.cy-c.r+20)*view.k+view.y;
+    ctx.globalAlpha=sel?.4:.9;ctx.fillStyle=c.c;ctx.font='700 '+(mobile()?Math.max(8.5,Math.min(11,8.5*sc)):Math.max(10,Math.min(13,10*sc)))+'px system-ui,sans-serif';ctx.textAlign='center';
+    const lab=c.n.toUpperCase(),lw=ctx.measureText(lab).width/2+8;ctx.fillText(lab,Math.min(W-lw,Math.max(lw,sx)),sy);ctx.globalAlpha=1});
+  const rects=[];
+  const free=(x,y,w)=>!rects.some(r=>x<r[0]+r[2]&&x+w>r[0]&&Math.abs(y-r[1])<13);
+  const isEmph=n=>n.id===sel||sibSet.has(n.id)||(sel&&nb.has(n.id)&&nb.size<=24)||(query&&matches(n))||(pathOn&&PATH.some(p=>p.id===n.id));
+  const mob=mobile();
+  const thr={fw:.3,bereich:.7,prinzip:mob?1.2:.9,kern:mob?1.2:.9,art:mob?1.3:1,komp:mob?1.6:1.2,persp:mob?1.6:1.2,aufgabe:mob?2.2:1.6,merkmal:mob?2.2:1.6,begriff:mob?2.2:1.6,technik:mob?3:2.1};
+  const order=NODES.slice().sort((a,b)=>b.deg-a.deg);
+  [true,false].forEach(pass=>order.forEach(n=>{
+    const emph=isEmph(n);if(emph!==pass)return;
+    if(!(emph||rel>thr[n.type])||!visible(n)||(sel&&!emph))return;
+    const sx=n.x*view.k+view.x,sy=n.y*view.k+view.y;if(sx<-60||sx>W+60||sy<-20||sy>H+20)return;
+    ctx.font=(emph?'600 '+13*FS:'500 '+12*FS)+'px system-ui,sans-serif';ctx.textAlign='left';
+    const tx=sx+Math.min((n.r+6)*view.k,16),ty=sy,w=ctx.measureText(n.label).width;
+    if(!emph&&!free(tx,ty,w))return;rects.push([tx,ty,w]);
+    ctx.lineWidth=3.5;ctx.strokeStyle='rgba(10,15,13,.9)';ctx.strokeText(n.label,tx,ty);
+    ctx.fillStyle=emph?'#fff':'#c9d8cf';ctx.fillText(n.label,tx,ty);
+  }));
+  if(pathOn)PATH.forEach((p,i)=>{const n=byId[p.id];const sx=n.x*view.k+view.x-12,sy=n.y*view.k+view.y-14;
+    ctx.fillStyle='#5ad1a4';ctx.beginPath();ctx.arc(sx,sy,9,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#04130c';ctx.font='700 11px system-ui,sans-serif';ctx.textAlign='center';ctx.fillText(String(i+1),sx,sy+.5)});
+}
+
+/* ============ INTERAKTION ============ */
+function hit(px,py){let best=null,bd=1e9;
+  NODES.forEach(n=>{if(!visible(n))return;const sx=n.x*view.k+view.x,sy=n.y*view.k+view.y;const d=Math.hypot(sx-px,sy-py);
+    const lim=Math.max(n.r*view.k,9)+4;if(d<lim&&d<bd){bd=d;best=n}});return best}
+const ptrs=new Map();let drag=null,pinch=null;
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,{x:e.offsetX,y:e.offsetY});
+  if(ptrs.size===1)drag={x:e.offsetX,y:e.offsetY,vx:view.x,vy:view.y,moved:false};
+  if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),k:view.k,cx:(a.x+b.x)/2,cy:(a.y+b.y)/2,vx:view.x,vy:view.y};drag=null}
+  cancelAnimationFrame(raf)});
+cv.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId))return;ptrs.set(e.pointerId,{x:e.offsetX,y:e.offsetY});
+  if(pinch&&ptrs.size>=2){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);const k=Math.min(fitK*14,Math.max(fitK*.6,pinch.k*d/pinch.d));
+    const wx=(pinch.cx-pinch.vx)/pinch.k,wy=(pinch.cy-pinch.vy)/pinch.k;view.k=k;view.x=pinch.cx-wx*k;view.y=pinch.cy-wy*k;draw();return}
+  if(drag){const dx=e.offsetX-drag.x,dy=e.offsetY-drag.y;if(Math.abs(dx)+Math.abs(dy)>5)drag.moved=true;
+    if(drag.moved){cv.classList.add('drag');view.x=drag.vx+dx;view.y=drag.vy+dy;draw()}}});
+cv.addEventListener('pointerup',e=>{const was=drag&&drag.moved;ptrs.delete(e.pointerId);cv.classList.remove('drag');if(ptrs.size<2)pinch=null;
+  if(drag&&!was&&ptrs.size===0){const n=hit(e.offsetX,e.offsetY);if(n)select(n.id);else if(sel)clearSel()}
+  if(ptrs.size===0)drag=null});
+cv.addEventListener('pointercancel',e=>{ptrs.delete(e.pointerId);drag=null;pinch=null});
+cv.addEventListener('wheel',e=>{e.preventDefault();zoomAt(e.offsetX,e.offsetY,Math.exp(-e.deltaY*.0015))},{passive:false});
+function zoomAt(px,py,f){const k=Math.min(fitK*14,Math.max(fitK*.6,view.k*f));const wx=(px-view.x)/view.k,wy=(py-view.y)/view.k;view.k=k;view.x=px-wx*k;view.y=py-wy*k;draw()}
+$('zin').onclick=()=>zoomAt(W/2,H/2,1.35);$('zout').onclick=()=>zoomAt(W/2,H/2,1/1.35);
+$('zfit').onclick=()=>{sel=null;hist=[];renderDetail();updatePathUI();fit(true)};
+window.addEventListener('resize',()=>{resize();draw()});
+
+/* ============ AUSWAHL & DETAIL ============ */
+function select(id,opts){opts=opts||{};const n=byId[id];if(!n)return;
+  if(sel!==id)hist.push({sel:sel,view:{...view}});
+  sel=id;if(PATH.some(p=>p.id===id))visited.add(id);
+  if(mobile())$('side').classList.remove('open');
+  renderDetail();updatePathUI();centerOn(n,n.type==='fw'||n.type==='bereich'?1.4:2)}
+function back(){const h=hist.pop();if(!h)return;sel=h.sel;renderDetail();updatePathUI();tween(h.view)}
+function clearSel(){sel=null;renderDetail();updatePathUI();draw()}
+const chips=ids=>ids.map(i=>`<button class="chip" data-id="${i}" style="border-color:${hexA(colorOf(byId[i]),.6)}">${byId[i].label}</button>`).join('');
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function sibs(id){const m={};ADJ[id].forEach(nb=>ADJ[nb].forEach(x=>{if(x!==id&&!ADJ[id].has(x))m[x]=(m[x]||0)+1}));
+  return Object.keys(m).filter(x=>byId[x].type!=='fw').sort((a,b)=>m[b]-m[a]||byId[a].label.localeCompare(byId[b].label,'de')).slice(0,8)}
+function renderDetail(){
+  const d=$('detail');if(!sel){d.classList.remove('show');d.innerHTML='';return}
+  const n=byId[sel],c=colorOf(n);
+  const other=lang==='de'?n.en:n.de;
+  let h=`<button class="x" data-act="close" aria-label="Schließen">×</button>
+   <span class="badge" style="color:${c}">${TYPES[n.type]}</span><span class="badge" style="color:var(--mut)">${CATS[n.cat].n}</span>
+   <h2>${esc(n.label)}</h2><div class="cat">${lang==='de'?'EN':'DE'}: ${esc(other)}</div><p>${esc(n.desc||'')}</p>`;
+  const pi=PATH.findIndex(p=>p.id===sel);
+  if(pi>=0){const p=PATH[pi];
+    h+=`<div class="station"><b>Station ${pi+1} von ${PATH.length} – Der Weg</b><p style="margin:6px 0"><i>${p.q}</i></p><details><summary>Lösung und Beispielfragen zeigen</summary><p style="margin:6px 0 0">${p.a}</p><p style="margin:8px 0 2px"><b>Beispielfragen:</b></p><ul style="margin:0;padding-left:18px">${p.ex.map(x=>`<li>${x}</li>`).join('')}</ul></details></div>
+    <div class="row">${pi>0?`<button data-act="prev">◂ Station ${pi}</button>`:''}${pi<PATH.length-1?`<button class="pri" data-act="next">Station ${pi+2} ▸</button>`:''}</div>`}
+  const br=[...BR[sel]].sort((a,b)=>byId[a].label.localeCompare(byId[b].label,'de'));
+  if(br.length)h+=`<h3>Entspricht im anderen Wording (Brücke)</h3><div>${chips(br)}</div>`;
+  const rest=[...ADJ[sel]].filter(i=>!BR[sel].has(i)).map(i=>byId[i]).sort((a,b)=>a.label.localeCompare(b.label,'de'));
+  const groups={};rest.forEach(x=>(groups[x.type]=groups[x.type]||[]).push(x.id));
+  Object.keys(TYPES).forEach(t=>{if(groups[t])h+=`<h3>${TYPES[t]} (${groups[t].length})</h3><div>${chips(groups[t])}</div>`});
+  if(!ADJ[sel].size)h+=`<p style="color:var(--mut)">Noch keine Verbindungen.</p>`;
+  const sb=sibs(sel);if(sb.length)h+=`<h3>Liegt im gleichen Muster wie</h3><p style="margin:2px 0 4px;color:var(--mut);font-size:12px">Teilen mit diesem Begriff dieselben Oberbegriffe. Auf der Karte hell markiert.</p><div>${chips(sb)}</div>`;
+  h+=`<h3>Quellen</h3><p>${srcOf(n).map(s=>`<a class="src" href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join(' · ')}</p>`;
+  h+=`<div class="row">${hist.length?`<button data-act="back">← Zurück</button>`:''}<button data-act="center">Auf Karte zeigen</button></div>`;
+  d.innerHTML=h;d.classList.add('show');d.scrollTop=0;
+}
+$('detail').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.id){select(b.dataset.id);return}
+  const a=b.dataset.act,pi=PATH.findIndex(p=>p.id===sel);
+  if(a==='close')clearSel();else if(a==='back')back();else if(a==='center')centerOn(byId[sel],2);
+  else if(a==='next')select(PATH[pi+1].id);else if(a==='prev')select(PATH[pi-1].id)});
+
+/* ============ SIDEBAR ============ */
+function buildPath(){$('pathList').innerHTML=PATH.map((p,i)=>`<li data-id="${p.id}"><span class="num">${i+1}</span><span>${esc(byId[p.id].label)}</span></li>`).join('');updatePathUI()}
+function buildSide(){
+  buildPath();
+  $('pathList').onclick=e=>{const li=e.target.closest('li');if(li)select(li.dataset.id)};
+  $('pathToggle').onclick=()=>{pathOn=!pathOn;$('pathToggle').setAttribute('aria-pressed',pathOn);$('pathToggle').textContent=pathOn?'Weg in der Karte ausblenden':'Weg in der Karte zeigen';draw()};
+  $('fltCat').innerHTML=Object.keys(CATS).map(k=>`<label class="flt"><input type="checkbox" data-cat="${k}" checked><span class="dot" style="background:${CATS[k].c}"></span>${CATS[k].n}<small>${NODES.filter(n=>n.cat===k).length}</small></label>`).join('');
+  $('fltCat').onchange=e=>{const k=e.target.dataset.cat;e.target.checked?hiddenCat.delete(k):hiddenCat.add(k);draw()};
+  $('fltType').innerHTML=Object.keys(TYPES).map(t=>`<label class="flt"><input type="checkbox" data-type="${t}" checked>${TYPES[t]}<small>${NODES.filter(n=>n.type===t).length}</small></label>`).join('');
+  $('fltType').onchange=e=>{const k=e.target.dataset.type;e.target.checked?hiddenType.delete(k):hiddenType.add(k);draw()};
+  const ic=(t,c)=>(t==='fw'||t==='prinzip'||t==='kern')?`<svg width="14" height="14"><path d="M7 1l6 6-6 6-6-6z" fill="${c}"/></svg>`:(t==='aufgabe'||t==='art')?`<svg width="14" height="14"><rect x="2" y="2" width="10" height="10" fill="${c}"/></svg>`:t==='merkmal'?`<svg width="14" height="14"><path d="M7 1l6 11H1z" fill="${c}"/></svg>`:t==='bereich'?`<svg width="14" height="14"><circle cx="7" cy="7" r="5" fill="none" stroke="${c}" stroke-width="2"/></svg>`:`<svg width="14" height="14"><circle cx="7" cy="7" r="4.5" fill="${c}"/></svg>`;
+  $('leg').innerHTML=Object.keys(TYPES).map(t=>`<span>${ic(t,'#9fb4a8')}${TYPES[t]}</span>`).join('')+`<span style="margin-top:4px">Farbe = Wording: grün IREB, gelb BABOK, türkis in beiden Welten üblich. Helle türkise Linien sind Brücken: zwei Wörter, ein Gedanke.</span>`;
+  buildAZ();buildDisc();
+  $('hint').textContent=`${NODES.length} Begriffe, ${EDGES.length} Verbindungen. Klick einen Begriff an, folge den türkisen Brücken zwischen IREB und BABOK.`;
+}
+function buildAZ(){
+  const list=NODES.filter(matches).sort((a,b)=>a.label.localeCompare(b.label,lang,{sensitivity:'base'}));$('azc').textContent=list.length;
+  let h='',last='';list.forEach(n=>{const L=n.label.replace(/^[^A-Za-zÄÖÜäöüß0-9]+/,'')[0]||'#';const LL=L.toUpperCase();if(LL!==last){h+=`<h4>${LL}</h4>`;last=LL}
+    h+=`<button data-id="${n.id}">${esc(n.label)} <small>· ${TYPES[n.type]}</small></button>`});
+  $('az').innerHTML=h||'<p style="color:var(--mut)">Kein Treffer.</p>';
+}
+$('az').onclick=e=>{const b=e.target.closest('button');if(b)select(b.dataset.id)};
+function buildDisc(){
+  const cl=a=>a.length?chips(a):'Keine.';
+  const cnt=(id,t)=>[...ADJ[id]].filter(i=>byId[i].type===t).length;
+  const kas=NODES.filter(n=>n.id.startsWith('ka-')).map(n=>({n,c:cnt(n.id,'aufgabe')}));const km=Math.max(...kas.map(k=>k.c));
+  const brOf=(id,t)=>[...BR[id]].filter(i=>!t||byId[i].type===t);
+  const bothTech=NODES.filter(n=>n.cat==='both'&&n.type==='technik').map(n=>n.id);
+  const Qs=[
+    {q:'Welche Techniken und Begriffe kennen beide Welten unter demselben Namen?',a:()=>`${bothTech.length} Techniken, z. B.:<br>${cl(bothTech.slice(0,12))}<br><small>Filter „Gemeinsame Begriffe“ zeigt alle.</small>`},
+    {q:'Welches BABOK-Wissensgebiet hat die meisten Aufgaben?',a:()=>`${cl(kas.filter(k=>k.c===km).map(k=>k.n.id))}<br>mit ${km} Aufgaben.`},
+    {q:'Wie heißt „Rückverfolgbarkeit“ im BABOK?',a:()=>cl(brOf('trace'))},
+    {q:'Welches IREB-Prinzip entspricht dem BABOK-Kernkonzept „Value“?',a:()=>cl(brOf('c-value'))},
+    {q:'Welche vier Klassen von Anforderungen unterscheidet der BABOK?',a:()=>cl([...ADJ['reqclass']].filter(i=>byId[i].type==='art'))},
+    {q:'Welche BABOK-Aufgaben entsprechen den IREB-Tätigkeiten „Validierung“ und „Prüfen“?',a:()=>cl(brOf('a-val'))+`<br><small>Im BABOK sind Verifizieren (richtig formuliert?) und Validieren (richtiger Bedarf?) zwei getrennte Aufgaben.</small>`},
+    {q:'Welche Begriffe überbrücken beide Welten besonders oft (meiste Brücken)?',a:()=>{const rows=NODES.map(n=>({n,c:BR[n.id].size}));const m=Math.max(...rows.map(r=>r.c));return `${cl(rows.filter(r=>r.c===m).map(r=>r.n.id))}<br>mit ${m} Brücken.`}}
+  ];
+  $('disc').innerHTML=Qs.map(x=>`<div class="qa"><b>${x.q}</b><details><summary>Lösung zeigen</summary><div class="ans">${x.a()}</div></details></div>`).join('');
+  $('disc').onclick=e=>{const b=e.target.closest('button');if(b&&b.dataset.id)select(b.dataset.id)};
+}
+$('lang').onclick=()=>{lang=lang==='de'?'en':'de';$('lang').textContent=lang==='de'?'Sprache: Deutsch · Switch to English':'Language: English · Auf Deutsch wechseln';buildPath();buildAZ();buildDisc();renderDetail();draw()};
+function updatePathUI(){if(!$('pathList').children.length)return;$('prog').textContent=visited.size+'/'+PATH.length;
+  [...$('pathList').children].forEach(li=>{li.classList.toggle('done',visited.has(li.dataset.id));li.classList.toggle('on',li.dataset.id===sel)})}
+$('q').addEventListener('input',e=>{query=e.target.value.trim();buildAZ();draw()});
+const sc2=n=>{const q=query.toLowerCase(),L=(n.de+'|'+n.en).toLowerCase();return L.split('|').some(x=>x===q)?3:L.includes(q)||L.includes(q.slice(0,-1))?2:1};
+$('q').addEventListener('keydown',e=>{if(e.key==='Enter'){const m=NODES.filter(n=>visible(n)&&matches(n)).sort((a,b)=>sc2(b)-sc2(a)||b.deg-a.deg);if(m.length)select(m[0].id)}
+  if(e.key==='Escape'){e.target.value='';query='';buildAZ();draw()}});
+$('menu').onclick=()=>$('side').classList.toggle('open');
+window.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.activeElement!==$('q')){if(hist.length&&sel)back();else clearSel()}});
+
+buildSide();resize();fit(false);updatePathUI();
+const TOUR=[
+ {t:'Das Ganze',x:'Jeder Punkt ist ein Begriff, jede Linie eine Verbindung. Links grün das IREB-Wording, rechts gelb das BABOK-Wording, oben türkis, was beide gleich nennen.',f:()=>{clearSel();hist=[];fit(true)}},
+ {t:'Punkt antippen',x:'Es erscheint die Erklärung. Hier: „Rückverfolgbarkeit“ (IREB). Unter „Entspricht im anderen Wording“ steht der BABOK-Begriff Trace Requirements. Tippe auf den Chip, um hinüberzuspringen.',f:()=>select('trace')},
+ {t:'Oberbegriffe',x:'Große Ringe sind Oberbegriffe. Hier das BABOK-Wissensgebiet „Ermittlung und Zusammenarbeit“ mit seinen fünf Aufgaben. Mit „← Zurück“ im Fenster kommst du immer zurück.',f:()=>select('ka-ec')},
+ {t:'Der Weg',x:'Zehn Stationen von Stakeholder bis Rückverfolgbarkeit, jeweils mit Frage. Die Lösung klappst du im Fenster auf. Die gestrichelte Linie zeigt die Reihenfolge.',f:()=>{pathOn=true;$('pathToggle').setAttribute('aria-pressed','true');$('pathToggle').textContent='Weg in der Karte ausblenden';select(PATH[0].id)}},
+ {t:'Dein Start',x:'Links findest du Suche, Entdeckerfragen und das A–Z. Mit DE/EN wechselst du die Sprache der Begriffe. Hilfe und Tour holst du jederzeit zurück.',f:()=>{clearSel();hist=[];fit(true)}}
+];
+let ti=-1;
+function pathOff(){pathOn=false;$('pathToggle').setAttribute('aria-pressed','false');$('pathToggle').textContent='Weg in der Karte zeigen';draw()}
+function tour(i){ti=i;if(i<0||i>=TOUR.length){ti=-1;$('tour').classList.remove('show');if(pathOn)pathOff();return}
+  const t=TOUR[i];$('tourSt').textContent='Tour '+(i+1)+' von '+TOUR.length+' · '+t.t;$('tourTx').textContent=t.x;
+  $('tourPrev').style.visibility=i?'visible':'hidden';$('tourNext').textContent=i===TOUR.length-1?'Fertig ✓':'Weiter ▸';$('tour').classList.add('show');t.f()}
+$('tourNext').onclick=()=>tour(ti+1);$('tourPrev').onclick=()=>tour(ti-1);$('tourEnd').onclick=()=>tour(-1);
+$('wTour').onclick=()=>{$('welcome').style.display='none';tour(0)};
+$('wGo').onclick=()=>{$('welcome').style.display='none'};
+$('help').onclick=()=>{if(mobile())$('side').classList.remove('open');$('welcome').style.display='grid'};
+cv.addEventListener('pointermove',e=>{if(ptrs.size||e.pointerType==='touch'){$('tip').style.display='none';return}
+  const n=hit(e.offsetX,e.offsetY);const t=$('tip');if(!n){t.style.display='none';cv.style.cursor='';return}
+  cv.style.cursor='pointer';t.textContent=n.label+' · '+TYPES[n.type];t.style.left=Math.min(W-220,e.offsetX+14)+'px';t.style.top=(e.offsetY+16)+'px';t.style.display='block'});
+cv.addEventListener('pointerleave',()=>{$('tip').style.display='none'});
+
+window.__WU={NODES,EDGES,PATH,byId,ADJ};
+
+const BEAMER_LEVELS=[{classes:[],label:'☀ Beamer',fs:1},{classes:['beamer'],label:'☀ Beamer XL',fs:1.2},{classes:['beamer','beamer-xl'],label:'☀ Beamer XXL',fs:1.4},{classes:['beamer','beamer-xl','beamer-xxl'],label:'☀ Normal',fs:1.7}];
+let beamerLevel=0;
+$('beamerBtn').addEventListener('click',function(){beamerLevel=(beamerLevel+1)%4;
+  document.documentElement.classList.remove('beamer','beamer-xl','beamer-xxl');
+  BEAMER_LEVELS[beamerLevel].classes.forEach(c=>document.documentElement.classList.add(c));
+  this.textContent=BEAMER_LEVELS[beamerLevel].label;FS=BEAMER_LEVELS[beamerLevel].fs;resize();draw()});
+</script>
+
+<div class="crosslink">
+  Verwandte Denkraum-Tools zu diesem Thema:
+  <ul>
+    <li><a href="./re-kompendium.html">RE-Kompendium</a> — erklärt IREB, BABOK und ISO 29148 in zehn Kapiteln nebeneinander als Lesetext; das Wissensuniversum zeigt dieselben Begriffe als Netz mit Brücken.</li>
+    <li><a href="./ireb-kompendium.html">IREB CPRE Foundation Level Kompendium</a> — folgt dem Lehrplan Lerneinheit für Lerneinheit, mit Quiz; hier steht die Verbindung zum BABOK im Vordergrund.</li>
+    <li><a href="./babok-kompendium.html">BABOK-Kompendium</a> — vertieft Wissensgebiete, Aufgaben und Techniken des BABOK; das Netz hilft, sie dem IREB-Wording zuzuordnen.</li>
+  </ul>
+</div>
+<footer>
+<div class="footer-sig"><strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a> · Referenziert: IREB CPRE Foundation Level (Lehrplan 3.2, Abgleich mit 3.3.0 offen) · IIBA BABOK Guide v3 · ISO/IEC/IEEE 29148:2018</div>
+<div class="footer-grid">
+ <details class="footer-box"><summary class="footer-summary">Systemprompt</summary><div class="footer-content"><div class="footer-mono">MASTER-BAU-PROMPT: Wissensuniversum RE &amp; BA (Begriffsnetz)
+
+ROLLE
+Du bist Frontend-Entwickler:in und Didaktik-Designer:in für ein Trainingstool im Requirements Engineering (RE) und in der Business-Analyse (BA). Das Tool ist eine einzelne HTML-Datei ohne externe Abhängigkeiten, auch offline als file:// lauffähig.
+
+AUFGABE
+Baue eine interaktive Wissenslandkarte (Netz) ausschließlich aus RE- und BA-Wording: IREB CPRE Foundation Level, BABOK Guide v3 und ISO/IEC/IEEE 29148. Keine eigenen Tools oder Fallwelten als Knoten.
+
+DATEN
+- Knoten: id, Typ, Wording-Farbe (ireb / babok / both), deutsche und englische Bezeichnung, deutsche Ein-Satz-Erklärung.
+- Typen: Rahmenwerk, Bereich/Wissensgebiet, IREB-Prinzip, BABOK-Kernkonzept, Aufgabe, Technik, Anforderungsart, Begriff, Qualitätsmerkmal, Kompetenz, Perspektive.
+- Kanten: Hierarchie (hier), Bezug (typisch genutzte Technik je Aufgabe), Brücke (zwei Wörter für denselben Gedanken in IREB und BABOK).
+- Begriffe, die beide Welten gleich benennen, sind genau ein Knoten (Farbe both).
+
+DARSTELLUNG
+- Canvas mit deterministischem Kräfte-Layout, drei Cluster (IREB, gemeinsam, BABOK), Pan/Zoom/Pinch, Hover-Name, Label-Kollisionsvermeidung.
+- Form je Typ (Raute, Quadrat, Dreieck, Ring, Punkt), Brücken als helle türkise Linien.
+- Auswahl hebt Nachbarn hervor; „gleiches Muster“ = Begriffe mit gemeinsamen Oberbegriffen, hell markiert.
+
+NAVIGATION (links, MUSS)
+Seitenleiste links: Sprungmarken, Hilfe/Tour, Sprachschalter DE/EN, Suche (Enter wählt Treffer; Titeltreffer vor Beschreibungstreffer), Der Weg, Entdeckerfragen, Filter, Legende, A-Z-Index (alphabetisch nach aktueller Sprache). Mobil: Drawer.
+
+DIDAKTIK
+- Begrüßungskarte und fünfstufige Kurztour für Neulinge.
+- Der Weg: zehn Stationen mit Leitfrage, Lösung (aufklappbar) und Beispielfragen. Beim Start eingeklappt, Linie in der Karte aus.
+- Entdeckerfragen werden aus den Daten berechnet, jeweils mit Lösung.
+- Detailfenster: Erklärung, Brücken, Nachbarn nach Typ, gleiches Muster, Quellen mit Link, „← Zurück“, „Auf Karte zeigen“.
+
+KONVENTIONEN
+Signatur oben rechts fix, vierstufiger Beamer-Button (Normal, XL, XXL), Footer mit vier Boxen, Sprungmarken via register/zurueck.js, Raumfarben nicht verwenden.
+
+NICHT TUN
+Keine erfundenen Normaussagen. Keine Tool-Daten. Kein Auto-Scroll. Keine externen Fonts oder Skripte. Keine Visualisierung entfernen.</div></div></details>
+ <details class="footer-box"><summary class="footer-summary">Handbuch</summary><div class="footer-content footer-sans"><p><strong>Didaktische Konstruktionslogik.</strong> Das Tool ist ein Explorer, kein Lehrtext: Die Lernenden entdecken Begriffe über Verbindungen. Methodisch folgt es dem Prinzip „erst das Ganze, dann das Detail“ (Landkarte, Zoom, Detailfenster). Nach PromptSchule-Methodik: Rolle = Lernbegleiter:in, Aufgabe = Begriffe verorten, Kontext = IREB und BABOK, Format = Netz mit Weg, Eingrenzung = nur RE/BA-Wording.</p>
+<p><strong>Zentraler Lernhinweis.</strong> Zwei Normen, ein Gedanke: Die türkisen Brücken zeigen, dass unterschiedliche Wörter dasselbe meinen. Gleiches Muster = geteilte Oberbegriffe.</p>
+<p><strong>K22 (Vertiefungs-Toggle).</strong> Entfällt bei diesem Explorer-Tool. Es gibt keinen Fließtext mit Kurz-/Vollfassung, sondern ein Netz mit je einem Ein-Satz-Eintrag pro Begriff; die Tiefe steuert man über Zoom und Auswahl.</p>
+<p><strong>Nachbau-Tipp.</strong> Zuerst die Daten (Knoten, Kanten) fachlich prüfen, dann die Darstellung. Die Zuordnung Aufgabe → Technik ist eine typische Auswahl und gehört gegen BABOK Kapitel 10 abgeglichen. Inhalte basieren auf dem IREB-Lehrplan v3.2; vor Einsatz gegen v3.3.0 (1. April 2026) prüfen.</p></div></details>
+ <details class="footer-box"><summary class="footer-summary">Vortrags-Skript</summary><div class="footer-content footer-sans"><p><strong>1. Einstieg: Das Ganze (Willkommenskarte → „Kurze Tour“)</strong><br><em>(Karte öffnen, Willkommenskarte zeigen, auf „Kurze Tour“ klicken.)</em><br>„Das ist eine Landkarte der Wörter aus Requirements Engineering und Business-Analyse. Jeder Punkt ist ein Begriff, jede Linie sagt: gehört zusammen. Grün ist das Wording der IREB, gelb das des BABOK, türkis das, was beide gleich nennen.“<br><em>Übergang:</em> „Schauen wir uns an, wie die beiden Welten zusammenhängen.“</p><p><strong>2. Brücken zeigen</strong><br><em>(Suche: „Rückverfolgbarkeit“, Enter. Im Fenster auf den Chip unter „Entspricht im anderen Wording“ klicken; dann „← Zurück“.)</em><br>„IREB sagt Rückverfolgbarkeit, der BABOK sagt Trace Requirements. Zwei Wörter, ein Gedanke. Diese türkisen Linien nenne ich Brücken.“ Frage an die Gruppe: „Wie heißt Anforderungsverwaltung im BABOK?“ (Lösung: Requirements Life Cycle Management; Brücke von Anforderungsverwaltung.)<br><em>Übergang:</em> „Wenn wir die Brücken kennen, können wir mit Menschen aus beiden Welten sprechen.“</p><p><strong>3. Muster erkennen</strong><br><em>(Suche: „User Story“, Enter. Im Fenster „Liegt im gleichen Muster wie“ zeigen; auf der Karte die hell markierten Begriffe.)</em><br>„Ein Begriff steht nie allein. Die User Story hängt am agilen RE und an der Aufgabe Anforderungen spezifizieren und modellieren. Was dieselben Oberbegriffe teilt, liegt im gleichen Muster, hier zum Beispiel Akzeptanzkriterien und Backlog-Management.“<br><em>Übergang:</em> „Jetzt gehen wir den Weg einmal durch.“</p><p><strong>4. Der Weg: zehn Stationen</strong><br><em>(Seitenleiste: „Der Weg“ aufklappen, „Weg in der Karte zeigen“ einschalten, Station für Station. Leitfrage vorlesen, Gruppe antworten lassen, dann „Lösung und Beispielfragen zeigen“.)</em><br>Pro Station: Leitfrage stellen, Antworten sammeln, Lösung aufklappen, Beispielfragen als Rollenspiel nutzen (z. B. Station 4 Interview: „Erzählen Sie mir vom letzten Mal, als Sie das gemacht haben.“).<br><em>Übergang:</em> „Station für Station wird aus Begriffen ein Vorgehen.“</p><p><strong>5. Entdeckerfragen und Sprachwechsel</strong><br><em>(Seitenleiste „Entdeckerfragen“ aufklappen, eine Frage stellen, Lösung zeigen. Danach „Sprache“ umschalten.)</em><br>„Welches BABOK-Wissensgebiet hat die meisten Aufgaben?“ (Lösung steht hinter dem Knopf.) „Mit dem Sprachschalter sehen Sie dieselbe Karte mit den englischen Originalbegriffen, nützlich für die Prüfungsvorbereitung.“<br><em>Übergang:</em> „Zum Schluss: Wo war für Sie die überraschendste Brücke?“</p><p>Regie-Hinweise: Den Weg erst einschalten, wenn die Gruppe die Karte verstanden hat. Nicht mit den Details der 50 Techniken beginnen. Die Zuordnung „Aufgabe nutzt typischerweise Technik“ ist eine Auswahl, kein vollständiger Abgleich mit BABOK Kapitel 10. Beamer-Button für größere Schrift nutzen.</p></div></details>
+ <details class="footer-box"><summary class="footer-summary">Normen-Register</summary><div class="footer-content footer-sans"><table class="footer-table"><thead><tr><th>Framework / Quelle</th><th>Fassung / Status</th><th>Bezug im Tool</th></tr></thead><tbody><tr><td><a href="https://www.ireb.org/en/cpre/foundation" target="_blank" rel="noopener">IREB CPRE Foundation Level Syllabus</a></td><td>Inhalte nach Lehrplan v3.2 (26.02.2024) erarbeitet; aktueller Stand laut Repo v3.3.0 (1. April 2026), Abgleich offen</td><td>Vier Tätigkeiten, neun Prinzipien, Kano-Modell, Konfliktlösung, Modelle, Verwaltung</td></tr><tr><td><a href="https://www.iiba.org/knowledgehub/the-business-analysis-standard/5-applying-business-analysis-tasks/5-1-business-analysis-tasks/" target="_blank" rel="noopener">IIBA BABOK Guide v3</a></td><td>Version 3</td><td>Sechs Wissensgebiete, 30 Aufgaben, 50 Techniken, Kernkonzept-Modell, Kompetenzen, Perspektiven, Anforderungsklassifikation</td></tr><tr><td><a href="https://www.iso.org/standard/72089.html" target="_blank" rel="noopener">ISO/IEC/IEEE 29148</a></td><td>2018 (2. Ausgabe)</td><td>Neun Merkmale einzelner Anforderungen, fünf Merkmale eines Anforderungssatzes</td></tr></tbody></table><p>Stand der Normen vor Einsatz in neuen Materialien prüfen.</p></div></details>
+</div>
+</footer>
+<script src="../register/zurueck.js" defer></script>
+</body>
+</html>

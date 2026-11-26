@@ -3416,6 +3416,60 @@ window.DENKRAUM_REGISTER = {
       "notiz": ""
     },
     {
+      "id": "wissensuniversum-re-ba",
+      "datei": "tools/wissensuniversum-re-ba.html",
+      "titel": "Wissensuniversum RE & BA — das Begriffsnetz von IREB, BABOK v3 & ISO 29148",
+      "kurztitel": "Wissensuniversum RE & BA",
+      "kurz": "Interaktive Landkarte mit 185 Begriffen aus IREB, BABOK v3 und ISO/IEC/IEEE 29148: Brücken zeigen, welche Wörter in beiden Welten dasselbe meinen, die Suche zeigt Begriffe im gleichen Muster, Der Weg führt in zehn Stationen mit Lösung und Beispielfragen von Stakeholdern bis zur Änderung. Kurztour für Neulinge, Sprachschalter DE/EN.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Wissen & Nachschlagen",
+      "aufStartseite": true,
+      "zweck": [
+        "Nachschlagewerk",
+        "Lernreise"
+      ],
+      "denkraum": "basislager",
+      "faeden": [
+        "re",
+        "ba"
+      ],
+      "dauer": "15 min",
+      "haufeSeminare": [
+        "9368",
+        "31693"
+      ],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [],
+      "themen": [
+        "Begriffe IREB und BABOK",
+        "Wording-Brücken",
+        "Wissensgraph"
+      ],
+      "standards": [
+        "IREB",
+        "BABOK",
+        "IEEE 29148"
+      ],
+      "siegel": {
+        "status": "Offene Punkte",
+        "letztesAudit": null,
+        "auditZeileImTool": null,
+        "offen": "Noch nicht auditiert. Inhalte nach IREB-Lehrplan v3.2, Abgleich mit v3.3.0 offen; Aufgabe-Technik-Zuordnung gegen BABOK Kapitel 10 prüfen."
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/re-kompendium.html",
+        "tools/ireb-kompendium.html",
+        "tools/babok-kompendium.html"
+      ],
+      "geprueft": false,
+      "notiz": "Explorer-Tool: K22 entfällt (im Handbuch begründet)."
+    },
+    {
       "id": "re-szenensammlung",
       "datei": "tools/re-szenensammlung.html",
       "titel": "RE-Szenensammlung — Eine Anforderung, drei Rollen",
