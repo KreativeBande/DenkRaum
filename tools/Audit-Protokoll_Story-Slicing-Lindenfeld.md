@@ -80,3 +80,6 @@ Neue Station 3a „Use-Case-Werkstatt“: animierter Aufbau eines Use Case aus 1
 
 ## Nachtrag 25.11.2026 (3)
 Station 3a erweitert um Dokumenttyp-Umschalter: Use Case, Lastenheft, Stakeholder-Analyse, Business Case, Change Request (je 7–10 Bausteine, 7–9 Zielartefakte, Änderungsdurchlauf). Alle Varianten stehen statisch im HTML (K20), Umschalter per Tastatur und Tippen bedienbar (aria-pressed). Quizfrage 22 ergänzt, Z3 jetzt 5/6/6/5. Getestet bei 1300/390 px und mit reduzierter Bewegung, keine Seitenfehler, kein seitliches Scrollen. Inhalte der vier neuen Varianten sind eigener Szenariotext (Lindenfeld Lunch) und fachlich zu prüfen. Ergebnis unverändert ✅ Zertifiziert.
+
+## Nachtrag 26.11.2026
+Station 3 auf Michaelas Variante zurückgestellt: Einleitung und Board „Vom Epic zum Todo“, ohne den Block „Epic oder Use Case?“ und ohne die zugehörige Sortierübung (in Trainerinnen- und Teilnehmendenversion). Verwaister Skript-Teil entfernt, Systemprompt, Vortrags-Skript und Sprecher-Skript nachgezogen. Quizfrage 20 in der Übung bleibt. Getestet bei 1300/390 px und mit reduzierter Bewegung: Board läuft bis Stufe 8, keine Seitenfehler, kein seitliches Scrollen, Beamer und DE/EN ok. Ergebnis unverändert ✅ Zertifiziert.

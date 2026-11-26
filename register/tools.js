@@ -4,7 +4,7 @@
  * Als Skript-Datei (nicht .json), damit sie auch offline per file:// lädt.
  */
 window.DENKRAUM_REGISTER = {
-  "stand": "2026-11-25",
+  "stand": "2026-11-26",
   "denkraeume": [
     {
       "id": "moeglichkeit",
@@ -5552,8 +5552,8 @@ window.DENKRAUM_REGISTER = {
       ],
       "siegel": {
         "status": "Offene Punkte",
-        "letztesAudit": "2026-11-25",
-        "auditZeileImTool": "2026-11-25",
+        "letztesAudit": "2026-11-26",
+        "auditZeileImTool": "2026-11-26",
         "offen": [
           "Erstaudit durch Michaela steht aus (Selbstprüfung am 25.11.2026, Protokoll: tools/Audit-Protokoll_Story-Slicing-Lindenfeld.md)",
           "Fachliche Prüfung der Beispielinhalte in Station 3a durch Michaela",
@@ -5564,7 +5564,7 @@ window.DENKRAUM_REGISTER = {
       "sprecherSkript": true,
       "verwandt": [],
       "geprueft": false,
-      "notiz": "Neu am 25.11.2026 (Upload von Michaela). Durchgängige Lindenfeld-Lunch-Reise vom Epic bis zum Jira-Import. K22 entfällt (Demonstrator mit Übungen), im Handbuch begründet. Keine Persistenz, kein localStorage. Station 3 (Zerlegen) wieder mit Block „Epic oder Use Case“ und Sortierübung; neu am 25.11.2026: Station 3a Use-Case-Werkstatt (animiert, Umschalter Use Case, Lastenheft, Stakeholder-Analyse, Business Case, Change Request: welcher Eintrag welches Artefakt füllt), feste Schalterleiste unten, Link zum Epic-Agenten (separates claude.ai-Artefakt, braucht Internet, noch ohne DE/EN, Footer und Audit). Inhalte der Beispiele (Betriebsrat, 30-Tage-Löschfrist, Zuschuss, Bestellschluss 10:00) sind Beispielwerte und von Michaela fachlich zu prüfen. Teilnehmendenversion: story-slicing-lindenfeld-teilnehmende.html. Audit-Protokoll: tools/Audit-Protokoll_Story-Slicing-Lindenfeld.md."
+      "notiz": "Neu am 25.11.2026 (Upload von Michaela). Durchgängige Lindenfeld-Lunch-Reise vom Epic bis zum Jira-Import. K22 entfällt (Demonstrator mit Übungen), im Handbuch begründet. Keine Persistenz, kein localStorage. Station 3 (Zerlegen) wieder mit Block „Epic oder Use Case“ und Sortierübung; neu am 25.11.2026: Station 3a Use-Case-Werkstatt (animiert, Umschalter Use Case, Lastenheft, Stakeholder-Analyse, Business Case, Change Request: welcher Eintrag welches Artefakt füllt), feste Schalterleiste unten, Link zum Epic-Agenten (separates claude.ai-Artefakt, braucht Internet, noch ohne DE/EN, Footer und Audit). Inhalte der Beispiele (Betriebsrat, 30-Tage-Löschfrist, Zuschuss, Bestellschluss 10:00) sind Beispielwerte und von Michaela fachlich zu prüfen. Teilnehmendenversion: story-slicing-lindenfeld-teilnehmende.html. Audit-Protokoll: tools/Audit-Protokoll_Story-Slicing-Lindenfeld.md. 26.11.2026: Station 3 auf Michaelas schlanke Variante zurückgestellt (ohne Block „Epic oder Use Case?“ und Sortierübung)."
     },
     {
       "id": "story-slicing-lindenfeld-teilnehmende",
@@ -5639,8 +5639,8 @@ window.DENKRAUM_REGISTER = {
       ],
       "siegel": {
         "status": "Offene Punkte",
-        "letztesAudit": "2026-11-25",
-        "auditZeileImTool": "2026-11-25",
+        "letztesAudit": "2026-11-26",
+        "auditZeileImTool": "2026-11-26",
         "offen": [
           "Erstaudit durch Michaela steht aus (Selbstprüfung am 25.11.2026, Protokoll: tools/Audit-Protokoll_Story-Slicing-Lindenfeld.md)",
           "Fachliche Prüfung der Beispielinhalte in Station 3a durch Michaela",
