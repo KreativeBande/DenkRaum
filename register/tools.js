@@ -5406,6 +5406,63 @@ window.DENKRAUM_REGISTER = {
       "notiz": "Variante der Trainerversion, kein eigener Inhalt."
     },
     {
+      "id": "kreativitaetskompendium",
+      "datei": "tools/kreativitaetskompendium.html",
+      "titel": "Kreativitätskompendium",
+      "kurztitel": "Kreativität",
+      "kurz": "35 Kreativitäts- und Moderationsmethoden in sechs Farben (Weiten, Verstehen, Verengen, Team, Struktur, Warm-up): Methoden-Finder, Methodenkarten mit animierter Skizze, Schritten, Beispielfragen und aufdeckbarer Lösung, SCAMPER-Rad, Ablaufplaner, Selbsttest, Teilnehmendenansicht und Sprachumschalter Deutsch/Englisch.",
+      "rubrik": "Agiles Arbeiten & Projektmanagement",
+      "bereich": "Projektmanagement",
+      "aufStartseite": true,
+      "zweck": [
+        "Nachschlagewerk",
+        "Workshop-Canvas"
+      ],
+      "denkraum": "moeglichkeit",
+      "faeden": [
+        "ba",
+        "pm"
+      ],
+      "dauer": "90 min",
+      "haufeSeminare": [
+        "3744"
+      ],
+      "einsatzkontext": [
+        "Workshop",
+        "Seminar"
+      ],
+      "fallwelten": [],
+      "themen": [
+        "Kreativität",
+        "Brainstorming",
+        "Moderation",
+        "Workshop",
+        "Ideenfindung",
+        "Design Thinking",
+        "Retrospektive",
+        "Priorisierung"
+      ],
+      "standards": [],
+      "siegel": {
+        "status": "Offene Punkte",
+        "letztesAudit": null,
+        "auditZeileImTool": null,
+        "offen": [
+          "Erstaudit nach Checkliste v2.1 steht aus",
+          "K20: Englisch nur teilweise (Navigation, Überschriften, Bedienelemente); Methodentexte noch deutsch",
+          "K19: Master-Bau-Prompt im Footer ist kompakt gefasst"
+        ]
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/zeit-konflikt-kompendium.html",
+        "tools/projekt-werkzeugkoffer.html"
+      ],
+      "geprueft": false,
+      "notiz": "Neu am 26.11.2026. Firmenneutral, keine Fallwelt. Anlass: Teamworkshop Kreativität und Motivation (Egapark Erfurt). 35 Methoden mit Skizze und Lösungskarte, Ablaufplaner, Selbsttest. Kein Kompendium-Fließtext, daher K22 als Kurz/Voll-Toggle nur für Kernideen."
+    },
+    {
       "id": "zeit-konflikt-kompendium",
       "datei": "tools/zeit-konflikt-kompendium.html",
       "titel": "Zeit- und Konfliktkompendium",
