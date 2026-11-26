@@ -3416,6 +3416,60 @@ window.DENKRAUM_REGISTER = {
       "notiz": ""
     },
     {
+      "id": "re-crash-course",
+      "datei": "tools/re-crash-course.html",
+      "titel": "RE Crash Course — Requirements Engineering von Foundation bis Advanced in 15 Modulen",
+      "kurztitel": "RE Crash Course",
+      "kurz": "Eine Tafel mit 15 Kacheln führt durch die IREB-Handbücher: zehn Module Foundation Level, je eines zu Modellierung, Priorisieren und Änderungsmanagement sowie zwei zu RE@Agile. Jedes Modul hat Skizze, Kernabsatz (kurz oder voll), Belege mit Handbuch, Kapitel, Seite und Link, Fragen an die Gruppe mit Lösung. Beispiele am Bewerbungsportal, Sprachschalter DE/EN.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Wissen & Nachschlagen",
+      "aufStartseite": true,
+      "zweck": [
+        "Lernreise",
+        "Nachschlagewerk"
+      ],
+      "denkraum": "basislager",
+      "faeden": [
+        "re"
+      ],
+      "dauer": null,
+      "haufeSeminare": [
+        "9368",
+        "31693"
+      ],
+      "einsatzkontext": [
+        "Seminar",
+        "Workshop"
+      ],
+      "fallwelten": [],
+      "themen": [
+        "Requirements Engineering Grundlagen",
+        "IREB Foundation Level",
+        "IREB Advanced Level",
+        "Priorisieren",
+        "Verfolgbarkeit",
+        "User Storys"
+      ],
+      "standards": [
+        "IREB",
+        "IEEE 29148"
+      ],
+      "siegel": {
+        "status": "Auditiert & zertifiziert",
+        "letztesAudit": "2026-11-26",
+        "auditZeileImTool": "2026-11-26",
+        "offen": null
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/re-kompendium.html",
+        "tools/ireb-kompendium.html"
+      ],
+      "geprueft": false,
+      "notiz": "Neu am 26.11.2026. Beispielfall Bewerbungsportal (keine eigene Fallwelt, fallwelten bewusst leer, Michaela entscheidet). Jede Fachaussage mit Handbuch, Version, Kapitel, Seite und IREB-Link; Handbücher Foundation Level 1.3.3, Requirements Modeling 2.2, Requirements Management 2.1, RE@Agile 2.2. K22 per Kurz-/Voll-Paar. Fragen an die Gruppe sind offene Impulse mit aufklappbarer Lösung, keine Auswahlfragen, daher entfallen Z1 bis Z4."
+    },
+    {
       "id": "wissensuniversum-re-ba",
       "datei": "tools/wissensuniversum-re-ba.html",
       "titel": "Wissensuniversum RE & BA — das Begriffsnetz von IREB, BABOK v3 & ISO 29148",
