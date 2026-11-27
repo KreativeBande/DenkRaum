@@ -241,3 +241,13 @@ Jedes neue Tool und jede neue Seminarseite bindet `register/zurueck.js` ein (sie
 - **Farbe heißt nicht nur Farbe:** Aktiver Eintrag zusätzlich über Form oder Fettung kennzeichnen, Text-Kontrast mindestens 4,5 : 1 (K-Kriterien Beamer und Lesbarkeit), im Beamer-Modus bleibt die Leiste lesbar.
 - **Raumfarben gehören den Räumen.** Kategorien, Regale, Fäden und Akzente, die kein Denkraum sind (zum Beispiel Lindenfeld, Kompendien-Regale), nutzen diese fünf Werte nicht und auch nicht den Akzentton `#1565C0`. Prüfschritt bei jeder Seite: `grep -n -i "#E8720C\|#2E8B57\|#1565C0\|#7B2D8B\|#C2185B"` und bei jedem Treffer fragen, ob dort wirklich dieser Raum gemeint ist.
 - **Dokumente in Flieder** (`#EFE3F8` / `#9C6BC6`) sind keine Kategorie-Farbe und bleiben für Dokumente reserviert.
+
+## Entwurfs-Hinweise (N5)
+
+Regel vom 27.11.2026. Solange ein Tool im Entwurf ist, stehen Arbeitshinweise im Tool. Beim Einbau ins Repo entfallen sie, weil sie beim Präsentieren zu Diskussionen führen.
+
+- **Stufe 1, Entwurfs-Hinweise** („nicht geprüft“, „Rekonstruktion“, „fiktiv“, Vermerke über eigene Prüflücken im Normen-Register): in der Repo-Fassung entfernen. **Bedingung:** Der Hinweis fällt erst weg, wenn die Prüfung erledigt ist (zum Beispiel Kennungen und Werte gegen das Original in `tools/` abgleichen). Offene Prüfpunkte stehen in der Case-Bibel, Abschnitt 12.7.
+- **Stufe 2, Hinweise zur Sache** (didaktisches Modell gegenüber der Quelle, „Vorschlag“ bei Raum-Bezügen): bleiben, weil sie Teil der Aussage sind. Kürzer und positiver formulieren ist erlaubt.
+- **Stufe 3, Fiktiv-Hinweis zum Fall:** einmal pro Seminarseite (`kurse/`) oder im Impressum führen, nicht in jedem Tool.
+- **Bleibt immer:** die Spalte „Fassung/Status“ und der K17-Hinweis „Stand vor Einsatz prüfen“ im Normen-Register sowie die Audit-Status-Zeile (K14). Das sind Pflichtbausteine, keine Entwurfs-Hinweise.
+- **Prüfschritt beim Einbau:** `grep -n -i "nicht geprüft\|Rekonstruktion\|fiktiv" tools/<datei>.html` und jeden Treffer einer Stufe zuordnen.
