@@ -4,7 +4,7 @@
  * Als Skript-Datei (nicht .json), damit sie auch offline per file:// lädt.
  */
 window.DENKRAUM_REGISTER = {
-  "stand": "2026-11-26",
+  "stand": "2026-11-28",
   "denkraeume": [
     {
       "id": "moeglichkeit",
@@ -5527,7 +5527,8 @@ window.DENKRAUM_REGISTER = {
         "tools/ba-re-case-lindenfeld-lunch.html",
         "tools/lindenfeld-projektauftrag-pflichtenheft.html",
         "tools/lindenfeld-lunch-steckbrief.html",
-        "tools/stoerfall-labor.html"
+        "tools/stoerfall-labor.html",
+        "tools/hausmodell-denkraeume.html"
       ],
       "geprueft": false,
       "notiz": "Von Michaela am 01.11.2026 angeliefert. Audit am 01.11.2026 nach Checkliste v2.1 (K1–K22, Z1–Z9): Erstprüfung ❌ (K5 Kürzel-Knöpfe 12,96 px, K18 Beamer-Größen zu klein, K22-Begründung fehlte, K17 ISO/IEC 25010 ungeprüft), nach Korrektur ✅ Zertifiziert, siehe tools/Audit-Protokoll_Change-Schleuse.md. K20: Inhalt der Schritte entsteht per JavaScript; Michaela hat am 01.11.2026 entschieden, dass der Hinweis ohne JS für dieses Simulator-Tool genügt. Dauer im Tool nicht angegeben. CR-01 stammt aus dem Fall, CR-02 bis CR-06 sind Annahmen; Beispielwerte in Schritt 10 (Tagessätze, Zeitpuffer, Stunden je Punkt) sind Annahmen. Links „Dokument im Fall öffnen“ springen über statische ids zu den Einträgen in Steckbrief, Projektauftrag/Pflichtenheft (Teilnehmende) und BA/RE-Case (tools/gateplan-build/anchor_build.py). Nutzt weder Netz noch Speicher; Schritt 11 schreibt und liest eine Markdown-Datei. Stand 07.11.2026: Glossar „Stage Gate“ auf „sechs Monate nach Go-live (Projektmonat 12, M6)“ korrigiert. Audit-Status nicht neu erhoben. Neuer Beispiel-Antrag CR-07 „Zweite Sprache schon in Release 1“ (Annahme, Vision 2050, NFR-11); Erweiterung statt Souveränitätsfrage. Audit-Status nicht neu erhoben."
@@ -5577,6 +5578,74 @@ window.DENKRAUM_REGISTER = {
       ],
       "geprueft": false,
       "notiz": "Am 01.11.2026 gemeinsam mit Michaela entwickelt, Entwurfs-PR. Leitplanken dürfen öffentlich sein (Michaela, 01.11.2026). Verlinkt über die linke Leiste von index.html, nicht über ein Regal-Kachel. K22 entfällt (Kartentool). Inhalt v2 (01.11.2026): Einleitung, Gehört-hierher-Boxen und aufklappbare Karten mit Erklärung und Beispiel je Fach, Regal-Grafik und Fach-Kacheln, Stand des Denkräume-OS-Abgleichs (zwei neue Leitplanken, Eisberg kippt)."
+    },
+    {
+      "id": "hausmodell-denkraeume",
+      "datei": "tools/hausmodell-denkraeume.html",
+      "titel": "Hausmodell der Denkräume: fünf Räume, ein Eingangsflur, ein Prüfstand",
+      "kurztitel": "Hausmodell der Denkräume",
+      "kurz": "Die fünf Denkräume als Haus, Stockwerk für Stockwerk aufgebaut: Zeichnung und Grundriss mit antippbaren Räumen, Prüffragen, Beispielfragen und Gruppenfragen mit Lösung je Raum, Stördrohne, Gates und Schleusen als zwei getrennte Spuren. Eine Reiseroute führt durch 14 Stationen; Fall-Kennungen und Personen aus Lindenfeld Lunch sind antippbar.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Priorisierung & Änderungen",
+      "aufStartseite": true,
+      "zweck": [
+            "Lernreise",
+            "Demonstrator"
+      ],
+      "denkraum": "rundreise",
+      "faeden": [
+            "re",
+            "ba",
+            "pm"
+      ],
+      "dauer": null,
+      "haufeSeminare": [
+            "9368",
+            "31693",
+            "3744"
+      ],
+      "einsatzkontext": [
+            "Workshop",
+            "Seminar"
+      ],
+      "fallwelten": [
+            "Lindenfeld Lunch"
+      ],
+      "themen": [
+            "Denkräume OS",
+            "Hausmodell",
+            "Schleusen",
+            "Gates",
+            "Prüffragen",
+            "Stördrohne",
+            "Change Request",
+            "Testraum",
+            "Gute Fragen je Raum"
+      ],
+      "standards": [
+            "IREB"
+      ],
+      "siegel": {
+            "status": "Offene Punkte",
+            "letztesAudit": null,
+            "auditZeileImTool": null,
+            "offen": [
+                  "Noch nicht nach K1–K22 auditiert",
+                  "Fachliche Fundstellen der Methodenkarten in den Projektdokumenten noch nicht geprüft (im Tool als Hinweis geführt)",
+                  "K22 Vertiefungs-Toggle: Absatzpaare werden per Skript zugeordnet, nicht als statisches Paar"
+            ]
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+            "tools/raum-schleusen.html",
+            "tools/change-schleuse.html",
+            "tools/denkraeume-navigator.html",
+            "tools/lindenfeld-gateplan.html",
+            "tools/anforderungsreise.html"
+      ],
+      "geprueft": false,
+      "notiz": "Am 28.11.2026 gemeinsam mit Michaela entwickelt (Entwürfe 1 bis 30 in Chats), Einbau auf Michaelas Wunsch. Fünf Räume als Haus (Weg, Eingangsflur, Prüfstand als Sicht, Testraum als Anbau). Schleusen S1–S6 und Gates G0–G6 stehen getrennt, keine Abbildung zwischen beiden. Zahlen und Kennungen aus den Originalen in tools/ (Lindenfeld). Eigene Zeichnungen von Michaela (Drohnen-Weg, Gateplan, Comicfigur als Logo)."
     },
     {
       "id": "raum-schleusen",
@@ -5642,7 +5711,8 @@ window.DENKRAUM_REGISTER = {
         "tools/change-schleuse.html",
         "tools/ba-re-case-lindenfeld-lunch.html",
         "tools/lindenfeld-projektauftrag-pflichtenheft.html",
-        "tools/denkraeume-navigator.html"
+        "tools/denkraeume-navigator.html",
+        "tools/hausmodell-denkraeume.html"
       ],
       "geprueft": false,
       "notiz": "Am 06.11.2026 ergänzt: Mini-Demo (ca. 5 Minuten, CR-01 mit Rückverfolgung ab BR-1), Ansicht-Schalter (EN, Beamer, Teilnehmende) in der linken Navigation, Nacharbeit-Checkliste, antippbare Fall-IDs. Audit-Zeile aus dem Fuß entfernt (K14-Verfall), Re-Audit nach K1–K22 offen. Am 01.11.2026 gemeinsam mit Michaela entwickelt, noch nicht nach K1–K22 auditiert. Fachlicher Stand: 90 Minuten gelten für CR-01 (BA/RE-Case, genehmigt mit Bedingung); Steckbrief, Projektauftrag und Gateplan wurden am 01.11.2026 angeglichen, der 75-Minuten-Kompromiss ist dort nur noch die Alternative. Drohnen = Stakeholder mit Idee oder Regelbruch, Drohnenticket mit sieben Feldern. Einträge mit „Gedankenspiel“ oder „zu prüfen“ sind im Fall nicht belegt. Am 01.11.2026 um elf Dokumente aus dem Eisberg (Strategiepapier, Vision Statement, Roadmap, Machbarkeitsstudie, Projektauftrag, Lastenheft, Pflichtenheft, Product Backlog, Projektstrukturplan, Terminplan, Kostenplan) und die Flughöhe je Raum ergänzt; Artefakt des Umsetzungsraums heißt jetzt Lauffähiger Liefergegenstand. Die neuen Dokumente haben noch keine Musterlösung aus dem Fall. Störraum-Bild \"Der Eisberg kippt\" (vier Bilder, DE/EN, mit Beispielfragen und Lösung) in der Raumansicht des Störraums, Stand 01.11.2026. Fußboxen (Systemprompt, Handbuch, Vortrags-Skript) nennen das Drohnenticket; Normen-Register am 01.11.2026 geprüft (29148 Ausgabe 2 gilt weiter, BABOK v3, IREB-Lehrplan 3.3). Stand 07.11.2026: Kennungen der sechs Schleusen von G1–G6 auf S1–S6 umgestellt (Namensgleichheit mit den Gates G0–G6 des Gateplans vermieden); Sprecher-Skript angepasst. Audit-Status nicht neu erhoben."
