@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>RE-Pausenspiel – Techniken des Requirements Engineering</title>
+<div class="ctx-pop" id="ctxPop" role="dialog" aria-modal="false" aria-labelledby="ctxT" hidden>
+  <div class="r1" id="ctxT"></div><div class="r2" id="ctxD"></div><div class="r3" id="ctxF"></div>
+  <div class="acts"><button type="button" class="pill" id="ctxJump" data-en="Look up in glossary →">Im Glossar nachschlagen →</button><button type="button" class="pill" id="ctxClose" data-en="Close">Schließen</button></div>
+</div>
+<button type="button" class="pill" id="ctxBack" hidden></button>
 <script>document.documentElement.className+=' js';</script>
 <style>
 :root{
@@ -174,6 +179,28 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
 }
 @media print{.sidebar,.signature,.toolbar{display:none}main{margin:0}}
 :focus-visible{outline:3px solid #ffb300;outline-offset:2px;}
+
+.ctx{margin:10px 0 4px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.ctx-l{font-size:16px;font-weight:700;color:var(--ink-dim);}
+.ctx-chip{min-height:44px;padding:8px 14px;font:inherit;font-size:16px;border:1.5px dotted var(--accent);background:#fff;color:var(--accent);border-radius:12px;cursor:pointer;font-weight:700;}
+.ctx-chip:hover,.ctx-chip:focus-visible{background:var(--accent);color:#fff;}
+.ctx-pop{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:70;width:calc(100% - 24px);max-width:780px;background:#fff;border:3px solid var(--accent);border-radius:16px;box-shadow:0 16px 34px rgba(20,20,40,.18);padding:14px 18px 16px;font-size:16px;line-height:1.5;color:var(--ink);}
+.ctx-pop[hidden]{display:none;}
+.ctx-pop .r1{font-size:16px;color:var(--ink-dim);}
+.ctx-pop .r2{font-weight:700;font-size:18px;margin:4px 0;}
+.ctx-pop .r3{font-size:16px;color:var(--ink-dim);}
+.ctx-pop .r3 a{color:var(--accent);overflow-wrap:anywhere;}
+.ctx-pop .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+#ctxBack{position:fixed;left:14px;bottom:14px;z-index:65;box-shadow:0 8px 20px rgba(20,20,40,.18);background:#fff;}
+#ctxBack[hidden]{display:none;}
+dt.ctx-hit{background:#fff3c4;border-radius:4px;padding:2px 6px;scroll-margin-top:12px;}
+html.beamer .ctx-l,html.beamer .ctx-chip,html.beamer .ctx-pop,html.beamer .ctx-pop .r1,html.beamer .ctx-pop .r3{font-size:22px;}
+html.beamer .ctx-pop .r2{font-size:26px;}
+html.beamer-xl .ctx-l,html.beamer-xl .ctx-chip,html.beamer-xl .ctx-pop,html.beamer-xl .ctx-pop .r1,html.beamer-xl .ctx-pop .r3{font-size:28px;}
+html.beamer-xl .ctx-pop .r2{font-size:32px;}
+html.beamer-xxl .ctx-l,html.beamer-xxl .ctx-chip,html.beamer-xxl .ctx-pop,html.beamer-xxl .ctx-pop .r1,html.beamer-xxl .ctx-pop .r3{font-size:34px;}
+html.beamer-xxl .ctx-pop .r2{font-size:38px;}
+.mod-head+.mod-nav{margin:12px 0 16px;}
 </style>
 </head>
 <body data-view="tafel">
@@ -345,9 +372,15 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
     <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
     <span class="count"><span data-en="Technique">Technik</span> 1 <span data-en="of 15">von 15</span></span>
   </div>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
   <h2 id="h1" tabindex="-1" data-en="Stakeholder analysis">Stakeholder-Analyse</h2>
   <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="4" y="6" width="116" height="36" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="62.0" y="29.0" text-anchor="middle" data-en="Stakeholders">Stakeholder</text><rect x="4" y="57" width="116" height="36" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="62.0" y="80.0" text-anchor="middle" data-en="Documents">Dokumente</text><rect x="4" y="108" width="116" height="36" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="62.0" y="131.0" text-anchor="middle" data-en="Systems">Systeme</text><rect x="170" y="57" width="126" height="36" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="233.0" y="80.0" text-anchor="middle" data-en="Requirements">Anforderungen</text><path d="M120 24L170 64" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm1)"/><path d="M120 75H170" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm1)"/><path d="M120 126L170 86" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm1)"/></svg></div>
   <p class="lead"><span class="depth-short" data-en="Anyone who wants to collect requirements keeps a stakeholder list and keeps it up to date.">Wer Anforderungen sammeln will, führt eine Stakeholderliste und hält sie aktuell.</span><span class="depth-full" data-en="Requirements come from three kinds of sources: stakeholders, documents and other systems. For every stakeholder it matters what significance they have as a source, what attitude they have towards the project, what influence they have on it and what role they play. This information goes into a stakeholder list, for example with name, department, availability, role, influence and interest. The list must stay up to date, because contact with some stakeholders is intensive and close, with others rare and superficial.">Anforderungen kommen aus drei Quellenarten: Stakeholdern, Dokumenten und anderen Systemen. Zu jedem Stakeholder gehört, welche Bedeutung er als Quelle hat, welche Einstellung er zum Projekt hat, welchen Einfluss er darauf hat und welche Rolle er spielt. Diese Angaben stehen in einer Stakeholderliste, zum Beispiel mit Name, Abteilung, Erreichbarkeit, Rolle, Einfluss und Interesse. Die Liste muss aktuell bleiben, weil man mit manchen Stakeholdern intensiv und eng, mit anderen selten und oberflächlich in Kontakt bleibt.</span></p>
+  <div class="ctx"><span class="ctx-l" data-en="Terms in this topic:">Begriffe in diesem Thema:</span> <button type="button" class="ctx-chip" data-t="15" data-en="Stakeholder list">Stakeholderliste</button></div>
   <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
   <ul class="belege">
 <li><span data-en="Three kinds of sources: stakeholders, documents, other systems.">Drei Quellenarten: Stakeholder, Dokumente, andere Systeme.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.1.1 to 4.1.3, pp. 87, 94 and 95">Handbuch Foundation Level, Version 1.3.3, Kap. 4.1.1 bis 4.1.3, S. 87, 94 und 95</a></li>
@@ -363,16 +396,16 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
   <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
     <p data-en="At the application portal, applicants, human resources, the business department, the works council and data protection are stakeholders. The works council often has high influence with moderate interest: it belongs on the list, with availability and role, and is involved early.">Beim Bewerbungsportal sind Bewerberinnen, Personalabteilung, Fachabteilung, Betriebsrat und Datenschutz Stakeholder. Der Betriebsrat hat oft hohen Einfluss bei mäßigem Interesse: Er gehört in die Liste, mit Erreichbarkeit und Rolle, und wird früh einbezogen.</p>
   </details>
-  <div class="mod-nav">
-    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
-    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
-    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
-  </div>
 </section>
 <section class="mod" id="m2" data-i="1" aria-labelledby="h2">
   <div class="mod-head">
     <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
     <span class="count"><span data-en="Technique">Technik</span> 2 <span data-en="of 15">von 15</span></span>
+  </div>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
   </div>
   <h2 id="h2" tabindex="-1" data-en="System context">Systemkontext</h2>
   <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><circle cx="150" cy="75" r="66" fill="none" stroke="#8a5a00" stroke-width="2" stroke-dasharray="5 4"/><circle cx="150" cy="75" r="36" fill="#5b3cc4"/><text x="150" y="80" text-anchor="middle" fill="#fff" font-weight="700" data-en="System">System</text><rect x="2" y="60" width="72" height="30" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="38.0" y="80.0" text-anchor="middle" data-en="User">Nutzer</text><rect x="226" y="60" width="72" height="30" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="262.0" y="80.0" text-anchor="middle" data-en="Neighbor">Nachbar</text><path d="M74 75H112" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm2)"/><path d="M226 75H188" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm2)"/></svg></div>
@@ -392,20 +425,21 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
   <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
     <p data-en="In the context of the application portal there are applicants, human resources and the personnel administration system. Payroll may lie outside the boundary. If the boundary is drawn too narrow, interfaces are missing; too wide, the scope grows unplanned.">Im Kontext des Bewerbungsportals stehen Bewerberinnen, Personalabteilung und das Personalverwaltungssystem. Die Lohnabrechnung kann außerhalb der Grenze liegen. Zieht man die Grenze zu eng, fehlen Schnittstellen; zu weit, wächst der Umfang ungeplant.</p>
   </details>
-  <div class="mod-nav">
-    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
-    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
-    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
-  </div>
 </section>
 <section class="mod" id="m3" data-i="2" aria-labelledby="h3">
   <div class="mod-head">
     <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
     <span class="count"><span data-en="Technique">Technik</span> 3 <span data-en="of 15">von 15</span></span>
   </div>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
   <h2 id="h3" tabindex="-1" data-en="Interview">Interview</h2>
   <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm3" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="4" y="40" width="110" height="44" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="59.0" y="67.0" text-anchor="middle" data-en="Question">Frage</text><rect x="186" y="40" width="110" height="44" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="241.0" y="67.0" text-anchor="middle" data-en="Answer">Antwort</text><path d="M114 54H186" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm3)"/><path d="M186 74H114" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm3)"/><text class="b" x="150" y="122" text-anchor="middle" data-en="listen">zuhören</text></svg></div>
   <p class="lead"><span class="depth-short" data-en="Interviews are flexible and need no tools, but clear goals and good preparation.">Interviews sind flexibel und brauchen keine Werkzeuge, aber klare Ziele und gute Vorbereitung.</span><span class="depth-full" data-en="Elicitation techniques come in four categories: question-based, collaborative, observational and artifact-based techniques. Question techniques make stakeholders think; requirements can be derived from their answers. The interview is one of the most frequently used of them: it needs no special tools, yields general as well as very specific requirements and is usually a one-to-one conversation. Interviewees state conscious information, so mostly performance factors come out. Interviews need clear goals and good preparation and are time-consuming; they are less suitable for many stakeholders.">Erhebungstechniken gibt es in vier Kategorien: Frage-, Kollaborations-, Beobachtungs- und artefaktbasierte Techniken. Fragetechniken regen Stakeholder zum Nachdenken an; aus ihren Antworten lassen sich Anforderungen ableiten. Das Interview ist dafür eine der am häufigsten verwendeten Techniken: Es erfordert keine speziellen Werkzeuge, liefert allgemeine wie sehr spezifische Anforderungen und ist meist ein Einzelgespräch. Befragte äußern bewusste Informationen, deshalb kommen meist Leistungsfaktoren heraus. Interviews brauchen klare Ziele und gute Vorbereitung und sind zeitaufwendig; für viele Stakeholder eignen sie sich weniger.</span></p>
+  <div class="ctx"><span class="ctx-l" data-en="Terms in this topic:">Begriffe in diesem Thema:</span> <button type="button" class="ctx-chip" data-t="9" data-en="Performance factor">Leistungsfaktor</button></div>
   <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
   <ul class="belege">
 <li><span data-en="Four categories of elicitation techniques: question-based, collaborative, observational and artifact-based.">Vier Kategorien von Erhebungstechniken: Frage-, Kollaborations-, Beobachtungs- und artefaktbasierte Techniken.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.2.2, p. 101">Handbuch Foundation Level, Version 1.3.3, Kap. 4.2.2, S. 101</a></li>
@@ -421,20 +455,21 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
   <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
     <p data-en="Open questions like “Tell me how you review applications today” yield workflows and explicit wishes. Things taken for granted rarely come up: observation or the question about annoyances helps there.">Offene Fragen wie „Erzählen Sie mir, wie Sie Bewerbungen heute sichten“ liefern Abläufe und ausdrückliche Wünsche. Selbstverständliches kommt dabei selten: Dafür helfen Beobachtung oder die Frage nach Ärgernissen.</p>
   </details>
-  <div class="mod-nav">
-    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
-    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
-    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
-  </div>
 </section>
 <section class="mod" id="m4" data-i="3" aria-labelledby="h4">
   <div class="mod-head">
     <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
     <span class="count"><span data-en="Technique">Technik</span> 4 <span data-en="of 15">von 15</span></span>
   </div>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
   <h2 id="h4" tabindex="-1" data-en="Kano model">Kano-Modell</h2>
   <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm4" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><path d="M20 8V128H292" stroke="#64748b" fill="none" stroke-width="1.5"/><path d="M22 118Q90 96 290 92" stroke="#64748b" stroke-width="2.5" fill="none"/><text class="b" x="240" y="112" text-anchor="middle" data-en="Basic">Basis</text><path d="M22 116L290 36" stroke="#8a5a00" stroke-width="2.5" fill="none"/><text class="b" x="236" y="80" text-anchor="middle" data-en="Performance">Leistung</text><path d="M22 92Q170 88 290 12" stroke="#5b3cc4" stroke-width="2.5" fill="none"/><text class="b" x="86" y="70" text-anchor="middle" data-en="Delight">Begeisterung</text></svg></div>
   <p class="lead"><span class="depth-short" data-en="The Kano model sorts features into basic, performance and delight factors.">Das Kano-Modell sortiert Merkmale in Basis-, Leistungs- und Begeisterungsfaktoren.</span><span class="depth-full" data-en="The Kano model classifies features in three categories. Delight factors are unknown to customers: if they are missing, nobody complains, if present, they can be a differentiator. Performance factors are demanded explicitly: more of them brings higher satisfaction, but also higher cost. Basic factors are so obvious that nobody asks for them; anyone who overlooks them annoys customers.">Das Kano-Modell klassifiziert Merkmale in drei Kategorien. Begeisterungsfaktoren kennen Kunden nicht: Fehlen sie, beschwert sich niemand, sind sie vorhanden, können sie ein Unterscheidungsmerkmal sein. Leistungsfaktoren werden ausdrücklich verlangt: Mehr davon bringt höhere Zufriedenheit, aber auch höhere Kosten. Basisfaktoren sind so selbstverständlich, dass niemand danach fragt; wer sie übersieht, verärgert die Kunden.</span></p>
+  <div class="ctx"><span class="ctx-l" data-en="Terms in this topic:">Begriffe in diesem Thema:</span> <button type="button" class="ctx-chip" data-t="1" data-en="Basic factor">Basisfaktor</button><button type="button" class="ctx-chip" data-t="2" data-en="Delight factor">Begeisterungsfaktor</button><button type="button" class="ctx-chip" data-t="9" data-en="Performance factor">Leistungsfaktor</button></div>
   <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
   <ul class="belege">
 <li><span data-en="The Kano model classifies features in three categories: delight, performance and basic factors.">Das Kano-Modell klassifiziert Merkmale in drei Kategorien: Begeisterungs-, Leistungs- und Basisfaktoren.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 4.2.1, p. 98">Handbuch Foundation Level, Version 1.3.3, Kap. 4.2.1, S. 98</a></li>
@@ -450,20 +485,21 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
   <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
     <p data-en="At the application portal, privacy-compliant storage is a basic factor, a result list within 2 seconds a performance factor, and an explanation of why a candidate is suggested can be a delight factor.">Beim Bewerbungsportal ist datenschutzkonforme Speicherung ein Basisfaktor, eine Trefferliste in höchstens 2 Sekunden ein Leistungsfaktor und eine Begründung, warum ein Kandidat vorgeschlagen wird, kann ein Begeisterungsfaktor sein.</p>
   </details>
-  <div class="mod-nav">
-    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
-    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
-    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
-  </div>
 </section>
 <section class="mod" id="m5" data-i="4" aria-labelledby="h5">
   <div class="mod-head">
     <span class="stage" style="color:#3f6b12;background:#e9f4dc;border-color:#3f6b12" data-en="Advanced: RE@Agile">Advanced: RE@Agile</span>
     <span class="count"><span data-en="Technique">Technik</span> 5 <span data-en="of 15">von 15</span></span>
   </div>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
   <h2 id="h5" tabindex="-1" data-en="User story">User Story</h2>
   <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm5" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="24" width="96" height="70" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="50.0" y="64.0" text-anchor="middle" data-en="Card">Karte</text><rect x="102" y="24" width="96" height="70" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="64.0" text-anchor="middle" data-en="Conversation">Diskussion</text><rect x="202" y="24" width="96" height="70" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="250.0" y="64.0" text-anchor="middle" data-en="Confirmation">Bestätigung</text><text class="b" x="150" y="128" text-anchor="middle" data-en="INVEST">INVEST</text></svg></div>
   <p class="lead"><span class="depth-short" data-en="A user story says who wants what and why; the card reminds, the conversation clarifies.">Eine User Story sagt, wer was will und warum; die Karte erinnert, die Diskussion klärt.</span><span class="depth-full" data-en="User stories emphasize three aspects: who wants what and why, in the form “As a &lt;role/person&gt; I want &lt;goal/wish&gt; so that &lt;benefit&gt;”. The three-C model by Jeffries describes Card, Conversation and Confirmation: the card does not hold all information, it only reminds of the requirement; the conversation can be more important than the card; confirmation is done by the acceptance test. Good backlog items are checked with INVEST: Independent, Negotiable, Valuable, Estimated, Small, Testable.">User Storys betonen drei Aspekte: wer will was und warum, in der Form „Als &lt;Rolle/Person&gt; möchte ich &lt;Ziel/Wunsch&gt;, um &lt;Nutzen&gt;“. Das Drei-C-Modell nach Jeffries beschreibt Card, Conversation und Confirmation: Die Karte enthält nicht alle Informationen, sie erinnert nur an die Anforderung; die Diskussion kann wichtiger sein als die Karte; die Bestätigung erfolgt durch den Abnahmetest. Gute Backlog Items prüft man mit INVEST: Independent, Negotiable, Valuable, Estimated, Small, Testable.</span></p>
+  <div class="ctx"><span class="ctx-l" data-en="Terms in this topic:">Begriffe in diesem Thema:</span> <button type="button" class="ctx-chip" data-t="5" data-en="Three-C model (card, conversation, confirmation)">Drei-C-Modell (Card, Conversation, Confirmation)</button><button type="button" class="ctx-chip" data-t="17" data-en="User story">User Story</button></div>
   <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
   <ul class="belege">
 <li><span data-en="User stories emphasize who wants what and why (“As a &lt;role/person&gt; I want &lt;goal/wish&gt; so that &lt;benefit&gt;”).">User Storys betonen: wer will was und warum („Als &lt;Rolle/Person&gt; möchte ich &lt;Ziel/Wunsch&gt;, um &lt;Nutzen&gt;“).</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener" data-en="RE@Agile Handbook (Advanced Level), version 2.2, ch. 1.1, p. 13">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 1.1, S. 13</a></li>
@@ -479,20 +515,21 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
   <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
     <p data-en="“As an HR officer I want to filter applications by field so that I find suitable candidates faster.” Details such as permitted filter fields belong in the conversation; confirmation is done through the acceptance test.">„Als Personalerin möchte ich Bewerbungen nach Fachgebiet filtern, um passende Kandidaten schneller zu finden.“ Details wie erlaubte Filterfelder gehören in die Diskussion; die Bestätigung erfolgt über den Abnahmetest.</p>
   </details>
-  <div class="mod-nav">
-    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
-    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
-    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
-  </div>
 </section>
 <section class="mod" id="m6" data-i="5" aria-labelledby="h6">
   <div class="mod-head">
     <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
     <span class="count"><span data-en="Technique">Technik</span> 6 <span data-en="of 15">von 15</span></span>
   </div>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
   <h2 id="h6" tabindex="-1" data-en="Phrase template">Satzschablone</h2>
   <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm6" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="4" y="8" width="140" height="34" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="74.0" y="30.0" text-anchor="middle" data-en="[condition]">[Bedingung]</text><rect x="156" y="8" width="140" height="34" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="226.0" y="30.0" text-anchor="middle" data-en="subject">Subjekt</text><rect x="4" y="54" width="140" height="34" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="74.0" y="76.0" text-anchor="middle" data-en="action">Aktion</text><rect x="156" y="54" width="140" height="34" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="226.0" y="76.0" text-anchor="middle" data-en="objects">Objekte</text><rect x="4" y="100" width="292" height="34" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="122.0" text-anchor="middle" data-en="[constraint]">[Einschränkung]</text></svg></div>
   <p class="lead"><span class="depth-short" data-en="A phrase template gives requirements a fixed sentence structure with placeholders.">Eine Satzschablone gibt Anforderungen eine feste Satzstruktur mit Platzhaltern.</span><span class="depth-full" data-en="A phrase template is a basic structure with placeholders for uniform, well-structured sentences, also for user stories. The template according to ISO/IEC/IEEE 29148 reads: [condition] subject action objects [constraint]. Auxiliary verbs order the binding level: “shall” is mandatory, “should” strongly desired, “may” a suggestion, “will” a statement of fact. The Easy Approach to Requirements Syntax offers patterns, among others ubiquitous, event-driven and unwanted behavior. Pitfalls in technical writing are incomplete comparisons, passive voice without an acting subject and universal quantifiers such as “all”, “always” or “never”.">Eine Satzschablone ist eine Grundstruktur mit Platzhaltern für einheitliche, gut strukturierte Sätze, auch für User Storys. Die Vorlage nach ISO/IEC/IEEE 29148 lautet: [Bedingung] Subjekt Aktion Objekte [Einschränkung]. Hilfsverben ordnen die Verbindlichkeit: „muss“ ist obligatorisch, „sollte“ stark erwünscht, „kann“ ein Vorschlag, „wird“ eine Sachaussage. Die Easy Approach to Requirements Syntax bietet Muster, unter anderem allgegenwärtig, ereignisgesteuert und unerwünschtes Verhalten. Fallstricke beim fachlichen Schreiben sind unvollständige Vergleiche, Passiv ohne handelndes Subjekt und Universalquantoren wie „alle“, „immer“ oder „nie“.</span></p>
+  <div class="ctx"><span class="ctx-l" data-en="Terms in this topic:">Begriffe in diesem Thema:</span> <button type="button" class="ctx-chip" data-t="14" data-en="Phrase template">Satzschablone</button><button type="button" class="ctx-chip" data-t="17" data-en="User story">User Story</button></div>
   <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
   <ul class="belege">
 <li><span data-en="Phrase template: basic structure with placeholders for uniform, well-structured sentences, also for user stories.">Satzschablone: Grundstruktur mit Platzhaltern für einheitliche, gut strukturierte Sätze, auch für User Storys.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 3.3.1, p. 47">Handbuch Foundation Level, Version 1.3.3, Kap. 3.3.1, S. 47</a></li>
@@ -508,20 +545,21 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
   <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
     <p data-en="“Applications are displayed quickly” becomes: “The portal shall display the result list within 2 seconds after a filter is entered.” It names subject, action, object and a measurable constraint.">Aus „Bewerbungen werden schnell angezeigt“ wird: „Das Portal muss die Trefferliste nach Eingabe eines Filters in höchstens 2 Sekunden anzeigen.“ Es nennt Subjekt, Aktion, Objekt und eine messbare Einschränkung.</p>
   </details>
-  <div class="mod-nav">
-    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
-    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
-    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
-  </div>
 </section>
 <section class="mod" id="m7" data-i="6" aria-labelledby="h7">
   <div class="mod-head">
     <span class="stage" style="color:#3f6b12;background:#e9f4dc;border-color:#3f6b12" data-en="Advanced: RE@Agile">Advanced: RE@Agile</span>
     <span class="count"><span data-en="Technique">Technik</span> 7 <span data-en="of 15">von 15</span></span>
   </div>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
   <h2 id="h7" tabindex="-1" data-en="Acceptance criteria">Akzeptanzkriterien</h2>
   <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm7" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="4" y="6" width="292" height="36" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="150.0" y="29.0" text-anchor="middle" data-en="Given: precondition">Given: Vorbedingung</text><rect x="4" y="56" width="292" height="36" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="150.0" y="79.0" text-anchor="middle" data-en="When: action">When: Aktion</text><rect x="4" y="106" width="292" height="36" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="129.0" text-anchor="middle" data-en="Then: result">Then: Ergebnis</text></svg></div>
   <p class="lead"><span class="depth-short" data-en="Acceptance criteria say what must be met; Gherkin writes them as Given, When, Then.">Akzeptanzkriterien sagen, was erfüllt sein muss; Gherkin schreibt sie als Given, When, Then.</span><span class="depth-full" data-en="Acceptance criteria are criteria that a requirement must meet to be accepted by stakeholders; functional requirements as well as quality requirements can and should have them. They can be phrased in natural language and checked after implementation. Gherkin is a human-readable, domain-specific language that describes expected behavior. A scenario consists of Given (precondition), When (user action) and Then (testable result). Formally coded test cases are very precise but hard for product owners and business-oriented stakeholders to understand.">Akzeptanzkriterien sind Kriterien, die eine Anforderung erfüllen muss, um von den Stakeholdern akzeptiert zu werden; funktionale Anforderungen wie Qualitätsanforderungen können und sollen sie haben. Sie können in natürlicher Sprache formuliert und nach der Implementierung geprüft werden. Gherkin ist eine für Menschen lesbare, domänenspezifische Sprache, die erwartetes Verhalten beschreibt. Ein Szenario besteht aus Given (Vorbedingung), When (Benutzeraktion) und Then (testbares Ergebnis). Formal codierte Testfälle sind sehr präzise, aber für Product Owner und fachlich orientierte Stakeholder schwer zu verstehen.</span></p>
+  <div class="ctx"><span class="ctx-l" data-en="Terms in this topic:">Begriffe in diesem Thema:</span> <button type="button" class="ctx-chip" data-t="0" data-en="Acceptance criterion">Akzeptanzkriterium</button><button type="button" class="ctx-chip" data-t="6" data-en="Gherkin">Gherkin</button><button type="button" class="ctx-chip" data-t="12" data-en="Quality requirement">Qualitätsanforderung</button></div>
   <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
   <ul class="belege">
 <li><span data-en="Acceptance criteria are criteria that a requirement must meet to be accepted by stakeholders.">Akzeptanzkriterien sind Kriterien, die eine Anforderung erfüllen muss, um von den Stakeholdern akzeptiert zu werden.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener" data-en="RE@Agile Handbook (Advanced Level), version 2.2, ch. 4.3, p. 80">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 4.3, S. 80</a></li>
@@ -537,20 +575,21 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
   <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
     <p data-en="Scenario: filter by field. Given: five applications are stored, two in the field sales. When: the HR officer selects the filter sales. Then: the list shows exactly the two applications.">Scenario: Filter nach Fachgebiet. Given: Fünf Bewerbungen sind gespeichert, zwei im Fachgebiet Vertrieb. When: Die Personalerin wählt den Filter Vertrieb. Then: Die Liste zeigt genau die zwei Bewerbungen.</p>
   </details>
-  <div class="mod-nav">
-    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
-    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
-    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
-  </div>
 </section>
 <section class="mod" id="m8" data-i="7" aria-labelledby="h8">
   <div class="mod-head">
     <span class="stage" style="color:#3f6b12;background:#e9f4dc;border-color:#3f6b12" data-en="Advanced: RE@Agile">Advanced: RE@Agile</span>
     <span class="count"><span data-en="Technique">Technik</span> 8 <span data-en="of 15">von 15</span></span>
   </div>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
   <h2 id="h8" tabindex="-1" data-en="Quality requirements">Qualitätsanforderungen</h2>
   <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm8" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="52" width="92" height="44" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="48.0" y="79.0" text-anchor="middle" data-en="“fast”?">„schnell“?</text><rect x="178" y="12" width="120" height="44" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="238.0" y="39.0" text-anchor="middle" data-en="Add detail">Details</text><rect x="178" y="92" width="120" height="44" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="238.0" y="119.0" text-anchor="middle" data-en="≤ 2 seconds">≤ 2 Sekunden</text><path d="M94 66L178 40" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm8)"/><path d="M94 84L178 110" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm8)"/></svg></div>
   <p class="lead"><span class="depth-short" data-en="Quality requirements are often vague at first and must become unambiguous and testable.">Qualitätsanforderungen sind anfangs oft vage und müssen eindeutig und testbar werden.</span><span class="depth-full" data-en="Quality requirements concern, for example, performance, availability, security and reliability. At the beginning they are often vague but must be communicated unambiguously and testably. There are two ways: add more detail or decompose, or derive more precise functional requirements. The goal is the level of acceptance criteria. The handbook decomposes “user-friendly” into sub-requirements. Whenever possible, measurable values should be given.">Qualitätsanforderungen betreffen zum Beispiel Leistung, Verfügbarkeit, Sicherheit und Zuverlässigkeit. Zu Beginn sind sie oft vage, müssen aber eindeutig und testbar kommuniziert werden. Dafür gibt es zwei Wege: mehr Details hinzufügen oder zerlegen, oder präzisere funktionale Anforderungen ableiten. Ziel ist die Stufe der Akzeptanzkriterien. Das Handbuch zerlegt „benutzerfreundlich“ in Teilanforderungen. Wann immer möglich, sollten messbare Werte angegeben werden.</span></p>
+  <div class="ctx"><span class="ctx-l" data-en="Terms in this topic:">Begriffe in diesem Thema:</span> <button type="button" class="ctx-chip" data-t="0" data-en="Acceptance criterion">Akzeptanzkriterium</button><button type="button" class="ctx-chip" data-t="12" data-en="Quality requirement">Qualitätsanforderung</button></div>
   <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
   <ul class="belege">
 <li><span data-en="Quality requirements concern, for example, performance, availability, security, reliability.">Qualitätsanforderungen betreffen zum Beispiel Leistung, Verfügbarkeit, Sicherheit, Zuverlässigkeit.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 1.1, p. 11">Handbuch Foundation Level, Version 1.3.3, Kap. 1.1, S. 11</a></li>
@@ -566,20 +605,21 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
   <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
     <p data-en="“Search must be fast” becomes: “With up to 10,000 stored applications, the result list appears within 2 seconds.” That yields a testable acceptance criterion.">„Die Suche muss schnell sein“ wird zu: „Die Trefferliste erscheint bei bis zu 10.000 gespeicherten Bewerbungen in höchstens 2 Sekunden.“ Daraus entsteht ein testbares Akzeptanzkriterium.</p>
   </details>
-  <div class="mod-nav">
-    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
-    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
-    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
-  </div>
 </section>
 <section class="mod" id="m9" data-i="8" aria-labelledby="h9">
   <div class="mod-head">
     <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
     <span class="count"><span data-en="Technique">Technik</span> 9 <span data-en="of 15">von 15</span></span>
   </div>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
   <h2 id="h9" tabindex="-1" data-en="Glossary">Glossar</h2>
   <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm9" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="4" y="6" width="112" height="38" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="60.0" y="30.0" text-anchor="middle" data-en="Term">Begriff</text><rect x="130" y="6" width="166" height="38" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="213.0" y="30.0" text-anchor="middle" data-en="Definition">Definition</text><rect x="4" y="54" width="112" height="38" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="60.0" y="78.0" text-anchor="middle" data-en="Synonym">Synonym</text><rect x="130" y="54" width="166" height="38" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="213.0" y="78.0" text-anchor="middle" data-en="same thing">gleiche Sache</text><rect x="4" y="102" width="112" height="38" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="60.0" y="126.0" text-anchor="middle" data-en="Homonym">Homonym</text><rect x="130" y="102" width="166" height="38" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="213.0" y="126.0" text-anchor="middle" data-en="Ambiguous">Mehrdeutig</text></svg></div>
   <p class="lead"><span class="depth-short" data-en="A glossary creates a shared understanding of terms and is maintained centrally.">Ein Glossar schafft gemeinsames Verständnis der Begriffe und wird zentral gepflegt.</span><span class="depth-full" data-en="Glossaries are a central means of creating a shared understanding of terminology. They prevent participants from using the same terms differently. A good glossary defines all terms relevant to the system, including everyday terms with a special meaning, as well as all abbreviations. Synonyms are marked; homonyms should be avoided or at least marked as such. The glossary is maintained centrally, one person or a small group is responsible, stakeholders are involved, and its use is mandatory.">Glossare sind ein zentrales Mittel für ein gemeinsames Verständnis der Terminologie. Sie verhindern, dass Beteiligte dieselben Begriffe unterschiedlich verwenden. Ein gutes Glossar definiert alle für das System relevanten Begriffe, auch Alltagsbegriffe mit besonderer Bedeutung, sowie alle Abkürzungen. Synonyme werden gekennzeichnet; Homonyme sollten vermieden oder als solche gekennzeichnet werden. Das Glossar wird zentral gepflegt, eine Person oder kleine Gruppe ist verantwortlich, Stakeholder werden einbezogen, die Verwendung ist obligatorisch.</span></p>
+  <div class="ctx"><span class="ctx-l" data-en="Terms in this topic:">Begriffe in diesem Thema:</span> <button type="button" class="ctx-chip" data-t="7" data-en="Glossary">Glossar</button><button type="button" class="ctx-chip" data-t="8" data-en="Homonym">Homonym</button><button type="button" class="ctx-chip" data-t="16" data-en="Synonym">Synonym</button></div>
   <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
   <ul class="belege">
 <li><span data-en="Glossaries are a central means of creating a shared understanding of terminology.">Glossare sind ein zentrales Mittel zur Schaffung eines gemeinsamen Verständnisses der Terminologie.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 3.5, p. 78">Handbuch Foundation Level, Version 1.3.3, Kap. 3.5, S. 78</a></li>
@@ -595,20 +635,21 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
   <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
     <p data-en="“Candidate” at the application portal can mean applicant, shortlisted person or hired person: a homonym. The glossary fixes one meaning or marks the ambiguity.">„Kandidat“ kann beim Bewerbungsportal Bewerberin heißen, Person in der engeren Wahl oder eingestellte Person: ein Homonym. Das Glossar legt eine Bedeutung fest oder kennzeichnet die Mehrdeutigkeit.</p>
   </details>
-  <div class="mod-nav">
-    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
-    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
-    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
-  </div>
 </section>
 <section class="mod" id="m10" data-i="9" aria-labelledby="h10">
   <div class="mod-head">
     <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
     <span class="count"><span data-en="Technique">Technik</span> 10 <span data-en="of 15">von 15</span></span>
   </div>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
   <h2 id="h10" tabindex="-1" data-en="Prototype">Prototyp</h2>
   <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm10" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="14" width="96" height="54" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="50.0" y="46.0" text-anchor="middle" data-en="Wireframe">Wireframe</text><rect x="102" y="14" width="96" height="54" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="150.0" y="46.0" text-anchor="middle" data-en="Mock-up">Mock-up</text><rect x="202" y="14" width="96" height="54" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="250.0" y="46.0" text-anchor="middle" data-en="Native">Nativ</text><path d="M20 112H280" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm10)"/><text class="b" x="150" y="136" text-anchor="middle" data-en="Fidelity">Genauigkeit</text></svg></div>
   <p class="lead"><span class="depth-short" data-en="An exploratory prototype shows what stakeholders would get and helps them to formulate.">Ein explorativer Prototyp zeigt, was Stakeholder bekommen würden, und hilft beim Formulieren.</span><span class="depth-full" data-en="Prototypes serve three main purposes in software and systems engineering: exploratory, experimental and evolutionary. Requirements engineers primarily use exploratory prototypes for elicitation and validation. If stakeholders cannot express their wishes clearly, a prototype can show what they would get. There are three levels of detail: wireframes (paper, low fidelity), mock-ups (medium fidelity, real screens and click flows without functionality) and native prototypes (high fidelity, critical parts implemented).">Prototypen dienen im Software- und Systems Engineering drei Hauptzwecken: explorativ, experimentell und evolutionär. Requirements Engineers verwenden in erster Linie explorative Prototypen zur Ermittlung und Validierung. Wenn Stakeholder ihre Wünsche nicht klar ausdrücken können, kann ein Prototyp zeigen, was sie bekommen würden. Es gibt drei Detaillierungsgrade: Wireframes (Papier, geringe Genauigkeit), Mock-ups (mittlere Genauigkeit, reale Bildschirme und Klickfolgen ohne Funktionalität) und native Prototypen (hohe Genauigkeit, kritische Teile implementiert).</span></p>
+  <div class="ctx"><span class="ctx-l" data-en="Terms in this topic:">Begriffe in diesem Thema:</span> <button type="button" class="ctx-chip" data-t="10" data-en="Mock-up">Mock-up</button><button type="button" class="ctx-chip" data-t="19" data-en="Wireframe">Wireframe</button></div>
   <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
   <ul class="belege">
 <li><span data-en="Three main purposes of prototypes: exploratory, experimental, evolutionary; requirements engineers primarily use exploratory ones.">Drei Hauptzwecke von Prototypen: explorativ, experimentell, evolutionär; Requirements Engineers nutzen in erster Linie explorative.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 3.7, pp. 80 to 81">Handbuch Foundation Level, Version 1.3.3, Kap. 3.7, S. 80 bis 81</a></li>
@@ -624,16 +665,16 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
   <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
     <p data-en="For the portal’s result list a paper wireframe suffices to clarify columns and filters. If stakeholders want to experience the click path, a mock-up with real screens and no functionality helps.">Für die Trefferliste des Portals genügt ein Wireframe auf Papier, um Spalten und Filter zu klären. Wollen die Stakeholder den Klickweg erleben, hilft ein Mock-up mit realen Bildschirmen ohne Funktionalität.</p>
   </details>
-  <div class="mod-nav">
-    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
-    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
-    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
-  </div>
 </section>
 <section class="mod" id="m11" data-i="10" aria-labelledby="h11">
   <div class="mod-head">
     <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
     <span class="count"><span data-en="Technique">Technik</span> 11 <span data-en="of 15">von 15</span></span>
+  </div>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
   </div>
   <h2 id="h11" tabindex="-1" data-en="Requirements review">Anforderungs-Review</h2>
   <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm11" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="14" width="96" height="54" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="50.0" y="46.0" text-anchor="middle" data-en="Review">Review</text><rect x="102" y="14" width="96" height="54" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="46.0" text-anchor="middle" data-en="Exploration">Exploration</text><rect x="202" y="14" width="96" height="54" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="250.0" y="46.0" text-anchor="middle" data-en="Trial">Probe</text><text x="50" y="104" text-anchor="middle" data-en="static">statisch</text><text x="150" y="104" text-anchor="middle" data-en="dynamic">dynamisch</text><text x="250" y="104" text-anchor="middle" data-en="static">statisch</text></svg></div>
@@ -654,20 +695,21 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
   <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
     <p data-en="At the start of the project a short informal review of the portal requirements with human resources, including a review register, suffices. For the data protection part shortly before launch a formal inspection can be sensible.">Zu Projektbeginn genügt ein kurzer informeller Review der Portal-Anforderungen mit der Personalabteilung samt Reviewregister. Für den Datenschutz-Teil kurz vor dem Start kann eine formelle Inspektion sinnvoll sein.</p>
   </details>
-  <div class="mod-nav">
-    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
-    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
-    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
-  </div>
 </section>
 <section class="mod" id="m12" data-i="11" aria-labelledby="h12">
   <div class="mod-head">
     <span class="stage" style="color:#3f6b12;background:#e9f4dc;border-color:#3f6b12" data-en="Advanced: RE@Agile">Advanced: RE@Agile</span>
     <span class="count"><span data-en="Technique">Technik</span> 12 <span data-en="of 15">von 15</span></span>
   </div>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
   <h2 id="h12" tabindex="-1" data-en="MoSCoW">MoSCoW</h2>
   <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm12" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="4" y="8" width="142" height="56" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="75.0" y="41.0" text-anchor="middle" data-en="Must">Must</text><rect x="154" y="8" width="142" height="56" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="225.0" y="41.0" text-anchor="middle" data-en="Should">Should</text><rect x="4" y="78" width="142" height="56" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="75.0" y="111.0" text-anchor="middle" data-en="Could">Could</text><rect x="154" y="78" width="142" height="56" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="225.0" y="111.0" text-anchor="middle" data-en="Won’t">Won’t</text></svg></div>
   <p class="lead"><span class="depth-short" data-en="MoSCoW sorts requirements into four categories for the next delivery.">MoSCoW sortiert Anforderungen in vier Kategorien für die nächste Auslieferung.</span><span class="depth-full" data-en="MoSCoW was developed to reach a shared understanding with stakeholders of how much importance they attach to delivering each requirement. The four categories: must have is critical for the success of the current delivery timebox; should have is important but not necessary; could have is desirable but not necessary; won’t have (this time) is not scheduled for the next timebox and is either dropped or reconsidered later. A simpler scheme is high, medium and low.">MoSCoW wurde entwickelt, um mit Stakeholdern ein gemeinsames Verständnis zu erreichen, welche Bedeutung sie der Auslieferung der einzelnen Anforderungen beimessen. Die vier Kategorien: Must have ist für den Erfolg der aktuellen Auslieferungs-Timebox kritisch; Should have ist wichtig, aber nicht notwendig; Could have ist wünschenswert, aber nicht notwendig; Won’t have (dieses Mal) wird nicht in den Zeitplan der nächsten Timebox aufgenommen und entweder fallen gelassen oder später erneut betrachtet. Einfacher geht es mit hoch, mittel und niedrig.</span></p>
+  <div class="ctx"><span class="ctx-l" data-en="Terms in this topic:">Begriffe in diesem Thema:</span> <button type="button" class="ctx-chip" data-t="11" data-en="MoSCoW">MoSCoW</button></div>
   <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
   <ul class="belege">
 <li><span data-en="MoSCoW creates, with stakeholders, a shared understanding of the importance of delivering individual requirements.">MoSCoW schafft mit Stakeholdern ein gemeinsames Verständnis über die Bedeutung der Auslieferung einzelner Anforderungen.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook" target="_blank" rel="noopener" data-en="RE@Agile Handbook (Advanced Level), version 2.2, ch. 5.3, p. 90">Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 5.3, S. 90</a></li>
@@ -683,20 +725,21 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
   <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
     <p data-en="For the first delivery of the application portal “store application” is a must have, “filter by field” a should have, “explanation of candidate selection” a could have and “chat with applicants” a won’t have (this time).">Für die erste Auslieferung des Bewerbungsportals ist „Bewerbung speichern“ ein Must have, „Filter nach Fachgebiet“ ein Should have, „Begründung der Kandidatenauswahl“ ein Could have und „Chat mit Bewerbern“ ein Won’t have (dieses Mal).</p>
   </details>
-  <div class="mod-nav">
-    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
-    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
-    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
-  </div>
 </section>
 <section class="mod" id="m13" data-i="12" aria-labelledby="h13">
   <div class="mod-head">
     <span class="stage" style="color:#8a5a00;background:#fbf0d9;border-color:#8a5a00" data-en="Advanced: Management">Advanced: Management</span>
     <span class="count"><span data-en="Technique">Technik</span> 13 <span data-en="of 15">von 15</span></span>
   </div>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
   <h2 id="h13" tabindex="-1" data-en="100-dollar technique">100-Dollar-Technik</h2>
   <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm13" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="24" y="44" width="40" height="74" fill="#5b3cc4"/><text x="44" y="138" text-anchor="middle">A</text><rect x="90" y="78" width="40" height="40" fill="#5b3cc4"/><text x="110" y="138" text-anchor="middle">B</text><rect x="156" y="34" width="40" height="84" fill="#8a5a00"/><text x="176" y="138" text-anchor="middle">C</text><rect x="222" y="96" width="40" height="22" fill="#5b3cc4"/><text x="242" y="138" text-anchor="middle">D</text><text class="b" x="150" y="18" text-anchor="middle" data-en="100">100</text></svg></div>
   <p class="lead"><span class="depth-short" data-en="Each stakeholder distributes 100 units across the requirements; the most points win.">Jeder Stakeholder verteilt 100 Einheiten auf die Anforderungen; die meisten Punkte gewinnen.</span><span class="depth-full" data-en="The 100-dollar technique is particularly suitable for prioritization with several people who do not necessarily have to come together for a group discussion. Each stakeholder receives 100 imaginary units, for example money or time, to distribute across the requirements; a requirement worth twice as much gets twice as many points. At the end the points per requirement are summed up, and the requirement with the most points has the highest priority. With many requirements the technique is difficult; it is recommended above all for coarse requirements at a high level of abstraction.">Die 100-Dollar-Technik eignet sich besonders für die Priorisierung mit mehreren Personen, die nicht zu einer Gruppendiskussion zusammenkommen müssen. Jeder Stakeholder erhält 100 imaginäre Einheiten, zum Beispiel Geld oder Zeit, die er auf die Anforderungen verteilt; eine doppelt so wichtige Anforderung bekommt doppelt so viele Punkte. Am Ende werden die Punkte je Anforderung aufsummiert, und die Anforderung mit den meisten Punkten hat die höchste Priorität. Bei vielen Anforderungen ist die Technik schwierig; empfohlen wird sie vor allem für grobe Anforderungen mit hohem Abstraktionsniveau.</span></p>
+  <div class="ctx"><span class="ctx-l" data-en="Terms in this topic:">Begriffe in diesem Thema:</span> <button type="button" class="ctx-chip" data-t="20" data-en="100-dollar technique">100-Dollar-Technik</button></div>
   <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
   <ul class="belege">
 <li><span data-en="Particularly suitable for prioritization with several people who do not need to come together for a group discussion.">Eignet sich besonders für die Priorisierung mit mehreren Personen, die nicht zu einer Gruppendiskussion zusammenkommen müssen.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/tag:advanced-level-management" target="_blank" rel="noopener" data-en="Requirements Management Handbook (Advanced Level), version 2.1, ch. 4.5.7, p. 78">Handbuch Requirements Management (Advanced Level), Version 2.1, Kap. 4.5.7, S. 78</a></li>
@@ -712,20 +755,21 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
   <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
     <p data-en="Three stakeholders each distribute 100 points across four features of the portal. The points are summed per feature; the feature with the highest sum is implemented first. With two dozen individual requirements the technique becomes unwieldy.">Drei Stakeholder verteilen je 100 Punkte auf vier Features des Portals. Die Punkte werden je Feature summiert; das Feature mit der höchsten Summe wird zuerst umgesetzt. Bei zwei Dutzend Einzelanforderungen wird die Technik unhandlich.</p>
   </details>
-  <div class="mod-nav">
-    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
-    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
-    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
-  </div>
 </section>
 <section class="mod" id="m14" data-i="13" aria-labelledby="h14">
   <div class="mod-head">
     <span class="stage" style="color:#5b3cc4;background:#eeeafb;border-color:#5b3cc4" data-en="Foundation Level">Foundation Level</span>
     <span class="count"><span data-en="Technique">Technik</span> 14 <span data-en="of 15">von 15</span></span>
   </div>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
   <h2 id="h14" tabindex="-1" data-en="Traceability">Verfolgbarkeit</h2>
   <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm14" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="52" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="48.0" y="77.0" text-anchor="middle" data-en="Source">Quelle</text><rect x="104" y="52" width="92" height="40" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="150.0" y="77.0" text-anchor="middle" data-en="Requirement">Anforderung</text><rect x="206" y="52" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="252.0" y="77.0" text-anchor="middle" data-en="Test">Test</text><path d="M94 72H104" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm14)"/><path d="M196 72H206" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm14)"/><text x="150" y="28" text-anchor="middle" data-en="forward →">vorwärts →</text><text x="150" y="128" text-anchor="middle" data-en="← backward">← rückwärts</text></svg></div>
   <p class="lead"><span class="depth-short" data-en="Traceability shows the origin and the use of a requirement.">Verfolgbarkeit zeigt den Ursprung und die Verwendung einer Anforderung.</span><span class="depth-full" data-en="Requirements management administers existing requirements and work products: storing, changing, tracing. Without traceability there is no proof of fulfillment, no conformity and no search for missing work products. Backward traceability asks for the origin of a requirement, forward traceability for its use. More effort is needed with more requirements, more stakeholders, longer lifetime and more changes.">Requirements Management verwaltet bestehende Anforderungen und Arbeitsprodukte: Speichern, Ändern, Verfolgen. Ohne Verfolgbarkeit gibt es keinen Nachweis der Erfüllung, keine Konformität und keine Suche nach fehlenden Arbeitsprodukten. Rückwärtsverfolgbarkeit fragt nach dem Ursprung einer Anforderung, Vorwärtsverfolgbarkeit nach ihrer Verwendung. Mehr Aufwand ist nötig bei mehr Anforderungen, mehr Stakeholdern, längerer Lebensdauer und mehr Änderungen.</span></p>
+  <div class="ctx"><span class="ctx-l" data-en="Terms in this topic:">Begriffe in diesem Thema:</span> <button type="button" class="ctx-chip" data-t="13" data-en="Backward traceability">Rückwärtsverfolgbarkeit</button><button type="button" class="ctx-chip" data-t="18" data-en="Forward traceability">Vorwärtsverfolgbarkeit</button></div>
   <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
   <ul class="belege">
 <li><span data-en="Requirements management administers existing requirements and work products: storing, changing, tracing.">Requirements Management verwaltet bestehende Anforderungen und Arbeitsprodukte: Speichern, Ändern, Verfolgen.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 6.1, p. 144">Handbuch Foundation Level, Version 1.3.3, Kap. 6.1, S. 144</a></li>
@@ -741,20 +785,21 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
   <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
     <p data-en="The requirement “delete data after six months” leads backward to the data protection rule of the legal department and forward to test case and implementation. If the rule falls away, you see at once which parts are affected.">Die Anforderung „Daten nach sechs Monaten löschen“ führt rückwärts zur Datenschutzvorgabe der Rechtsabteilung und vorwärts zu Testfall und Umsetzung. Fällt die Vorgabe weg, sieht man sofort, welche Teile betroffen sind.</p>
   </details>
-  <div class="mod-nav">
-    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
-    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
-    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
-  </div>
 </section>
 <section class="mod" id="m15" data-i="14" aria-labelledby="h15">
   <div class="mod-head">
     <span class="stage" style="color:#8a5a00;background:#fbf0d9;border-color:#8a5a00" data-en="Advanced: Management">Advanced: Management</span>
     <span class="count"><span data-en="Technique">Technik</span> 15 <span data-en="of 15">von 15</span></span>
   </div>
+  <div class="mod-nav">
+    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
+    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
+    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
+  </div>
   <h2 id="h15" tabindex="-1" data-en="Change management">Änderungsmanagement</h2>
   <div class="mod-fig"><svg viewBox="0 0 300 150" role="img" aria-hidden="true" focusable="false"><defs><marker id="ahm15" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#5b3cc4"/></marker></defs><rect x="2" y="56" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="48.0" y="81.0" text-anchor="middle" data-en="Request">Antrag</text><rect x="104" y="56" width="92" height="40" rx="6" fill="#eeeafb" stroke="#5b3cc4" stroke-width="1.5"/><text x="150.0" y="81.0" text-anchor="middle" data-en="Assessment">Bewertung</text><rect x="206" y="56" width="92" height="40" rx="6" fill="#fbf0d9" stroke="#8a5a00" stroke-width="1.5"/><text x="252.0" y="81.0" text-anchor="middle" data-en="Decision">Beschluss</text><path d="M94 76H104" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm15)"/><path d="M196 76H206" stroke="#5b3cc4" stroke-width="2" fill="none" marker-end="url(#ahm15)"/><text x="48" y="36" text-anchor="middle" data-en="Change request">Change Request</text></svg></div>
   <p class="lead"><span class="depth-short" data-en="Changes arrive as a change request; a board decides after the impact analysis.">Änderungen kommen per Änderungsantrag; ein Gremium entscheidet nach der Auswirkungsanalyse.</span><span class="depth-full" data-en="Changes are the normal case; changes of the system scope are unavoidable. A change is described by a change request, whose template belongs in the requirements management plan. In the change process the change control board usually plays an important role: a group of people with different interests that decides for each request whether and when it is implemented. It makes the decision on the basis of the impact analysis: accept, reject or postpone.">Änderungen sind der Normalfall; Änderungen des Systemumfangs sind unvermeidbar. Eine Änderung wird durch einen Änderungsantrag (Change Request) beschrieben, dessen Vorlage in den Requirements-Management-Plan gehört. Im Änderungsprozess spielt meist das Change Control Board eine wichtige Rolle: eine Gruppe von Personen mit unterschiedlichen Interessen, die für jeden Antrag entscheidet, ob und wann er umgesetzt wird. Es trifft die Entscheidung aufgrund der Auswirkungsanalyse: annehmen, ablehnen oder verschieben.</span></p>
+  <div class="ctx"><span class="ctx-l" data-en="Terms in this topic:">Begriffe in diesem Thema:</span> <button type="button" class="ctx-chip" data-t="3" data-en="Change request">Change Request (Änderungsantrag)</button><button type="button" class="ctx-chip" data-t="4" data-en="Change control board">Change Control Board</button></div>
   <h3 data-en="Sources in the handbooks">Belege in den Handbüchern</h3>
   <ul class="belege">
 <li><span data-en="Changes are the normal case; changes of the system scope are unavoidable.">Änderungen sind der Normalfall; Änderungen des Systemumfangs sind unvermeidbar.</span> <a class="beleg" href="https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook" target="_blank" rel="noopener" data-en="Foundation Level Handbook, version 1.3.3, ch. 2.2.7, p. 31">Handbuch Foundation Level, Version 1.3.3, Kap. 2.2.7, S. 31</a></li>
@@ -770,11 +815,6 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
   <details class="loesung"><summary data-en="Show solution">Lösung anzeigen</summary>
     <p data-en="Human resources requests “also capture applications by e-mail”. The board examines effort, data protection and interfaces and decides: accept, reject or postpone to the next delivery.">Die Personalabteilung beantragt „Bewerbungen auch per E-Mail erfassen“. Das Board prüft Aufwand, Datenschutz und Schnittstellen und beschließt: annehmen, ablehnen oder auf die nächste Auslieferung verschieben.</p>
   </details>
-  <div class="mod-nav">
-    <button type="button" class="pill" data-act="tafel" data-en="← Back to the game board">← Zurück zum Spielfeld</button>
-    <button type="button" class="pill" data-act="prev" data-en="‹ Previous">‹ Zurück</button>
-    <button type="button" class="pill primary" data-act="next" data-en="Next ›">Weiter ›</button>
-  </div>
 </section>
   </div>
 
@@ -855,7 +895,7 @@ html.beamer-xxl .footer-sig,html.beamer-xxl .footer-details,html.beamer-xxl .cro
   </div>
 
   <footer>
-    <p class="footer-sig"><strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a> · IREB: Handbuch Foundation Level 1.3.3, Requirements Modeling 2.2, Requirements Management 2.1, RE@Agile 2.2 · ISO/IEC/IEEE 29148 · Gherkin, INVEST, MoSCoW · Zuletzt geprüft: 26.11.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</p>
+    <p class="footer-sig"><strong>Michaela Kühn</strong> · <a href="https://www.michaela-kuehn.com">www.michaela-kuehn.com</a> · IREB: Handbuch Foundation Level 1.3.3, Requirements Modeling 2.2, Requirements Management 2.1, RE@Agile 2.2 · ISO/IEC/IEEE 29148 · Gherkin, INVEST, MoSCoW · Zuletzt geprüft: 28.11.2026 · Status: ✅ Zertifiziert · Details siehe Audit-Protokoll</p>
     <div class="footer-details">
       <details class="footer-box">
         <summary class="footer-summary" data-en="System prompt">Systemprompt</summary>
@@ -1026,7 +1066,7 @@ No factual statement without a source. No remarks about where statements come fr
   function ss(k,v){try{sessionStorage.setItem(k,v)}catch(e){}}
   var seen=[];try{seen=JSON.parse(sg('rps_seen')||'[]')||[]}catch(e){seen=[]}
   var lang=sg('rps_lang')==='en'?'en':'de', vert=sg('rps_vert')==='1';
-  var cur=0, view='tafel', paused=sg('rps_paused')==='1', guess=false, spot=-1, timer=null;
+  var cur=0, view='tafel', paused=sg('rps_paused')==='1', guess=sg('rps_guess')==='1', spot=-1, timer=null;
   var reduce=false;try{reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
   if(sg('rps_paused')===null&&reduce)paused=true;
   var BEAMER_LEVELS=[
@@ -1093,6 +1133,7 @@ No factual statement without a source. No remarks about where statements come fr
       try{h.focus({preventScroll:true})}catch(e){}
     }else{window.scrollTo(0,0)}
     doc.classList.remove('nav-open');
+    if(v==='tafel'){[].forEach.call(document.querySelectorAll('.tile'),function(t){t.classList.remove('rev')})}
     updateSeen();setNav();
   }
   function setFilter(f){
@@ -1127,7 +1168,7 @@ No factual statement without a source. No remarks about where statements come fr
   });
   tap($('langBtn'),function(){lang=lang==='en'?'de':'en';ss('rps_lang',lang);applyLang();updateSeen();updatePause();updateGuess()});
   tap($('vertBtn'),function(){if(beamerLevel>0)return;vert=!vert;ss('rps_vert',vert?'1':'0');updateVert()});
-  tap($('resetBtn'),function(){seen=[];ss('rps_seen','[]');vert=false;ss('rps_vert','0');guess=false;updateGuess();setFilter('all');updateVert();show('tafel');setSpot(0)});
+  tap($('resetBtn'),function(){seen=[];ss('rps_seen','[]');vert=false;ss('rps_vert','0');guess=false;ss('rps_guess','0');updateGuess();setFilter('all');updateVert();show('tafel');setSpot(0)});
 
   function tiles(){return [].filter.call(document.querySelectorAll('.tile'),function(t){return !t.classList.contains('hide')})}
   function setSpot(n){
@@ -1146,13 +1187,52 @@ No factual statement without a source. No remarks about where statements come fr
     if(!guess)[].forEach.call(document.querySelectorAll('.tile'),function(t){t.classList.remove('rev')});
   }
   tap($('pauseBtn'),function(){paused=!paused;ss('rps_paused',paused?'1':'0');updatePause()});
-  tap($('guessBtn'),function(){guess=!guess;updateGuess()});
+  tap($('guessBtn'),function(){guess=!guess;ss('rps_guess',guess?'1':'0');updateGuess()});
   // Raten-Modus: erster Tipp deckt auf, zweiter öffnet (Capture, vor dem allgemeinen Öffnen)
   [].forEach.call(document.querySelectorAll('.tile'),function(t){
     function pre(ev){if(guess&&!t.classList.contains('rev')){ev.stopImmediatePropagation();t.classList.add('rev')}}
     t.addEventListener('pointerup',pre,true);
     t.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' ')pre(ev)},true);
   });
+
+  // Begriffs-Chips mit Kontextfenster
+  var CTX=[{"d": "Akzeptanzkriterium", "e": "Acceptance criterion", "dd": "Kriterium, das eine Anforderung erfüllen muss, um von den Stakeholdern akzeptiert zu werden.", "de": "Criterion that a requirement must meet to be accepted by stakeholders.", "f": "Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 4.3, S. 80", "fe": "RE@Agile Handbook (Advanced Level), version 2.2, ch. 4.3, p. 80", "u": "https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook"}, {"d": "Basisfaktor", "e": "Basic factor", "dd": "Selbstverständliches Merkmal, nach dem Kunden nicht fragen; sein Fehlen verärgert.", "de": "Obvious feature nobody asks for; its absence annoys customers.", "f": "Handbuch Foundation Level, Version 1.3.3, Kap. 4.2.1, S. 99", "fe": "Foundation Level Handbook, version 1.3.3, ch. 4.2.1, p. 99", "u": "https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook"}, {"d": "Begeisterungsfaktor", "e": "Delight factor", "dd": "Merkmal, das Kunden nicht kennen; vorhanden kann es ein Unterscheidungsmerkmal sein.", "de": "Feature customers do not know; if present it can be a differentiator.", "f": "Handbuch Foundation Level, Version 1.3.3, Kap. 4.2.1, S. 98", "fe": "Foundation Level Handbook, version 1.3.3, ch. 4.2.1, p. 98", "u": "https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook"}, {"d": "Change Request (Änderungsantrag)", "e": "Change request", "dd": "Beschreibung einer Änderung; die Vorlage gehört in den Requirements-Management-Plan.", "de": "Description of a change; the template belongs in the requirements management plan.", "f": "Handbuch Requirements Management (Advanced Level), Version 2.1, Kap. 5.3.1", "fe": "Requirements Management Handbook (Advanced Level), version 2.1, ch. 5.3.1", "u": "https://www.ireb.org/en/downloads/tag:advanced-level-management"}, {"d": "Change Control Board", "e": "Change control board", "dd": "Gruppe von Personen mit unterschiedlichen Interessen, die für jeden Änderungsantrag entscheidet, ob und wann er umgesetzt wird.", "de": "Group of people with different interests that decides for each change request whether and when it is implemented.", "f": "Handbuch Requirements Management (Advanced Level), Version 2.1, Kap. 5.3, S. 106 bis 107", "fe": "Requirements Management Handbook (Advanced Level), version 2.1, ch. 5.3, pp. 106 to 107", "u": "https://www.ireb.org/en/downloads/tag:advanced-level-management"}, {"d": "Drei-C-Modell (Card, Conversation, Confirmation)", "e": "Three-C model (card, conversation, confirmation)", "dd": "Karte, Diskussion und Bestätigung durch einen Abnahmetest.", "de": "Card, conversation and confirmation through an acceptance test.", "f": "Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 3.3.2, S. 57", "fe": "RE@Agile Handbook (Advanced Level), version 2.2, ch. 3.3.2, p. 57", "u": "https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook"}, {"d": "Gherkin", "e": "Gherkin", "dd": "Für Menschen lesbare, domänenspezifische Sprache zur Beschreibung erwarteten Verhaltens mit Given, When, Then.", "de": "Human-readable, domain-specific language for describing expected behavior with Given, When, Then.", "f": "Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 3.5, S. 64", "fe": "RE@Agile Handbook (Advanced Level), version 2.2, ch. 3.5, p. 64", "u": "https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook"}, {"d": "Glossar", "e": "Glossary", "dd": "Sammlung von Definitionen aller für das System relevanten Begriffe und Abkürzungen.", "de": "Collection of definitions of all terms and abbreviations relevant to the system.", "f": "Handbuch Foundation Level, Version 1.3.3, Kap. 3.5, S. 78", "fe": "Foundation Level Handbook, version 1.3.3, ch. 3.5, p. 78", "u": "https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook"}, {"d": "Homonym", "e": "Homonym", "dd": "Identischer Begriff, der unterschiedliche Dinge bezeichnet; vermeiden oder im Glossar kennzeichnen.", "de": "Identical term denoting different things; avoid or mark in the glossary.", "f": "Handbuch Foundation Level, Version 1.3.3, Kap. 3.5, S. 78", "fe": "Foundation Level Handbook, version 1.3.3, ch. 3.5, p. 78", "u": "https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook"}, {"d": "Leistungsfaktor", "e": "Performance factor", "dd": "Ausdrücklich verlangtes Merkmal; mehr davon erhöht die Zufriedenheit und die Kosten.", "de": "Explicitly demanded feature; more of it raises satisfaction and cost.", "f": "Handbuch Foundation Level, Version 1.3.3, Kap. 4.2.1, S. 98", "fe": "Foundation Level Handbook, version 1.3.3, ch. 4.2.1, p. 98", "u": "https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook"}, {"d": "Mock-up", "e": "Mock-up", "dd": "Prototyp mittlerer Genauigkeit mit realen Bildschirmen und Klickfolgen, aber ohne echte Funktionalität.", "de": "Prototype of medium fidelity with real screens and click flows but without real functionality.", "f": "Handbuch Foundation Level, Version 1.3.3, Kap. 3.7, S. 81", "fe": "Foundation Level Handbook, version 1.3.3, ch. 3.7, p. 81", "u": "https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook"}, {"d": "MoSCoW", "e": "MoSCoW", "dd": "Priorisierung in Must have, Should have, Could have und Won’t have (dieses Mal).", "de": "Prioritization into must have, should have, could have and won’t have (this time).", "f": "Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 5.3, S. 90", "fe": "RE@Agile Handbook (Advanced Level), version 2.2, ch. 5.3, p. 90", "u": "https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook"}, {"d": "Qualitätsanforderung", "e": "Quality requirement", "dd": "Bezieht sich auf Qualitätsaspekte wie Leistung, Verfügbarkeit, Sicherheit, Zuverlässigkeit.", "de": "Refers to quality aspects such as performance, availability, security, reliability.", "f": "Handbuch Foundation Level, Version 1.3.3, Kap. 1.1, S. 11", "fe": "Foundation Level Handbook, version 1.3.3, ch. 1.1, p. 11", "u": "https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook"}, {"d": "Rückwärtsverfolgbarkeit", "e": "Backward traceability", "dd": "Frage nach dem Ursprung einer Anforderung.", "de": "Question about the origin of a requirement.", "f": "Handbuch Foundation Level, Version 1.3.3, Kap. 6.6, S. 154", "fe": "Foundation Level Handbook, version 1.3.3, ch. 6.6, p. 154", "u": "https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook"}, {"d": "Satzschablone", "e": "Phrase template", "dd": "Grundstruktur mit Platzhaltern für einzelne Anforderungen oder User Storys.", "de": "Basic structure with placeholders for individual requirements or user stories.", "f": "Handbuch Foundation Level, Version 1.3.3, Definition 3.2, S. 47", "fe": "Foundation Level Handbook, version 1.3.3, definition 3.2, p. 47", "u": "https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook"}, {"d": "Stakeholderliste", "e": "Stakeholder list", "dd": "Liste mit Name, Abteilung, Erreichbarkeit, Rolle, Einfluss und Interesse der Stakeholder; muss aktuell gehalten werden.", "de": "List with name, department, availability, role, influence and interest of the stakeholders; must be kept up to date.", "f": "Handbuch Foundation Level, Version 1.3.3, Kap. 4.1.1, S. 90", "fe": "Foundation Level Handbook, version 1.3.3, ch. 4.1.1, p. 90", "u": "https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook"}, {"d": "Synonym", "e": "Synonym", "dd": "Verschiedene Begriffe, die dieselbe Sache bezeichnen; im Glossar als solche kennzeichnen.", "de": "Different terms denoting the same thing; mark as such in the glossary.", "f": "Handbuch Foundation Level, Version 1.3.3, Kap. 3.5, S. 78", "fe": "Foundation Level Handbook, version 1.3.3, ch. 3.5, p. 78", "u": "https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook"}, {"d": "User Story", "e": "User story", "dd": "Anforderung in der Form „Als <Rolle> möchte ich <Ziel>, um <Nutzen>“.", "de": "Requirement in the form “As a <role> I want <goal> so that <benefit>”.", "f": "Handbuch RE@Agile (Advanced Level), Version 2.2, Kap. 1.1, S. 13", "fe": "RE@Agile Handbook (Advanced Level), version 2.2, ch. 1.1, p. 13", "u": "https://www.ireb.org/en/downloads/#cpre-advanced-level-re-agile-handbook"}, {"d": "Vorwärtsverfolgbarkeit", "e": "Forward traceability", "dd": "Frage nach der Verwendung einer Anforderung.", "de": "Question about the use of a requirement.", "f": "Handbuch Foundation Level, Version 1.3.3, Kap. 6.6, S. 154", "fe": "Foundation Level Handbook, version 1.3.3, ch. 6.6, p. 154", "u": "https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook"}, {"d": "Wireframe", "e": "Wireframe", "dd": "Mit Papier oder einfachen Materialien gebauter Prototyp mit geringer Genauigkeit.", "de": "Prototype built with paper or simple materials at low fidelity.", "f": "Handbuch Foundation Level, Version 1.3.3, Kap. 3.7, S. 81", "fe": "Foundation Level Handbook, version 1.3.3, ch. 3.7, p. 81", "u": "https://www.ireb.org/en/downloads/#cpre-foundation-level-handbook"}, {"d": "100-Dollar-Technik", "e": "100-dollar technique", "dd": "Priorisierung, bei der jeder Stakeholder 100 Einheiten auf die Anforderungen verteilt.", "de": "Prioritization in which each stakeholder distributes 100 units across the requirements.", "f": "Handbuch Requirements Management (Advanced Level), Version 2.1, Kap. 4.5.7, S. 78", "fe": "Requirements Management Handbook (Advanced Level), version 2.1, ch. 4.5.7, p. 78", "u": "https://www.ireb.org/en/downloads/tag:advanced-level-management"}];
+  var ctxPop=$('ctxPop'),ctxCur=-1,ctxFrom=null,ctxOrigin=null;
+  function ctxClose(){ctxPop.hidden=true;if(ctxFrom){try{ctxFrom.focus({preventScroll:true})}catch(x){}}ctxFrom=null}
+  function ctxOpen(i,btn){
+    var c=CTX[i],en=lang==='en';ctxCur=i;ctxFrom=btn;
+    $('ctxT').innerHTML='<strong></strong>';
+    $('ctxT').firstChild.textContent=(en?c.e:c.d)+' · '+(en?'term':'Begriff');
+    $('ctxD').textContent=en?c.de:c.dd;
+    var fe=$('ctxF');fe.textContent=(en?'Source: ':'Fundstelle: ');
+    var a=document.createElement('a');a.href=c.u;a.target='_blank';a.rel='noopener';a.textContent=en?c.fe:c.f;fe.appendChild(a);
+    $('ctxJump').textContent=en?'Look up in glossary →':'Im Glossar nachschlagen →';
+    $('ctxClose').textContent=en?'Close':'Schließen';
+    ctxPop.hidden=false;
+  }
+  [].forEach.call(document.querySelectorAll('.ctx-chip'),function(b){tap(b,function(){ctxOpen(+b.getAttribute('data-t'),b)})});
+  tap($('ctxClose'),ctxClose);
+  document.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&!ctxPop.hidden)ctxClose()});
+  document.addEventListener('pointerup',function(ev){if(!ctxPop.hidden&&!ctxPop.contains(ev.target)&&!(ev.target.closest&&ev.target.closest('.ctx-chip')))ctxClose()});
+  var ctxBack=$('ctxBack');
+  function ctxBackUpdate(){
+    if(view==='glossar'&&ctxOrigin){ctxBack.hidden=false;ctxBack.textContent=(lang==='en'?'← Back to ':'← Zurück zu ')+'“'+ctxOrigin.t+'”'}else{ctxBack.hidden=true}
+  }
+  var ctxShow=show;
+  show=function(v,i){ctxShow(v,i);if(v!=='glossar')ctxOrigin=null;ctxBackUpdate()};
+  tap($('ctxJump'),function(){
+    var c=CTX[ctxCur],en=lang==='en',term=en?c.e:c.d;
+    var h=document.querySelector('.mod.on h2');
+    ctxOrigin={v:view,cur:cur,t:h?h.textContent:''};
+    ctxPop.hidden=true;ctxFrom=null;
+    show('glossar');ctxOrigin={v:'modul',cur:cur,t:ctxOrigin.t};
+    [].forEach.call(document.querySelectorAll('#v-glossar dt'),function(d){d.classList.remove('ctx-hit')});
+    var dts=[].filter.call(document.querySelectorAll('#v-glossar dt'),function(d){return d.offsetParent!==null&&d.textContent.trim()===term});
+    if(dts[0]){dts[0].classList.add('ctx-hit');dts[0].scrollIntoView({block:'start'})}
+    ctxBackUpdate();
+  });
+  tap(ctxBack,function(){var o=ctxOrigin;ctxOrigin=null;if(o)show('modul',o.cur);ctxBackUpdate()});
+  tap($('langBtn'),function(){if(!ctxPop.hidden)ctxClose();ctxBackUpdate()});
   timer=setInterval(tick,2600);
   applyLang();updatePause();updateGuess();updateSeen();setNav();setFilter('all');setSpot(0);
 })();

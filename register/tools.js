@@ -3510,18 +3510,275 @@ window.DENKRAUM_REGISTER = {
       ],
       "siegel": {
         "status": "Auditiert & zertifiziert",
-        "letztesAudit": "2026-11-26",
-        "auditZeileImTool": "2026-11-26",
+        "letztesAudit": "2026-11-28",
+        "auditZeileImTool": "2026-11-28",
         "offen": null
       },
       "beamer": "4-stufig",
       "sprecherSkript": true,
       "verwandt": [
         "tools/re-crash-course.html",
-        "tools/ireb-kompendium.html"
+        "tools/ireb-kompendium.html",
+        "tools/re-begriffe-memory.html",
+        "tools/ba-pausenspiel.html"
       ],
       "geprueft": false,
-      "notiz": "Neu am 26.11.2026, erstes Spiel im Regal Spiele auf der Startseite. Beispielfall Bewerbungsportal (fallwelten bewusst leer, Michaela entscheidet). Jede Fachaussage mit Handbuch, Version, Kapitel, Seite und IREB-Link. K22 per Kurz-/Voll-Paar. Fragen sind offene Impulse mit aufklappbarer Lösung, daher entfallen Z1 bis Z4. Überschneidung mit RE Crash Course, RE-Kompendium und IREB-Kompendium bekannt; Pausenform mit Spotlight und Raten-Modus."
+      "notiz": "Neu am 26.11.2026, erstes Spiel im Regal Spiele auf der Startseite. Beispielfall Bewerbungsportal (fallwelten bewusst leer, Michaela entscheidet). Jede Fachaussage mit Handbuch, Version, Kapitel, Seite und IREB-Link. K22 per Kurz-/Voll-Paar. Fragen sind offene Impulse mit aufklappbarer Lösung, daher entfallen Z1 bis Z4. Überschneidung mit RE Crash Course, RE-Kompendium und IREB-Kompendium bekannt; Pausenform mit Spotlight und Raten-Modus. 28.11.2026: Raten-Modus bleibt beim Wechsel zum Spielfeld gesetzt, Begriffs-Kontextfenster, Navigation oben in der Karte."
+    },
+    {
+      "id": "re-begriffe-memory",
+      "datei": "tools/re-begriffe-memory.html",
+      "titel": "RE-Begriffe-Memory — 24 Begriffe des Requirements Engineering zuordnen",
+      "kurztitel": "RE-Begriffe-Memory",
+      "kurz": "Memory mit 24 Paaren aus Begriff und Kurzerklärung des Requirements Engineering, auch als Teamspiel mit Punktestand. Jedes Paar mit Handbuch, Kapitel, Seite und Link, Sprachschalter DE/EN.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Wissen & Nachschlagen",
+      "aufStartseite": true,
+      "zweck": [
+        "Spiel",
+        "Übung"
+      ],
+      "denkraum": "basislager",
+      "faeden": [
+        "re"
+      ],
+      "dauer": "10 min",
+      "haufeSeminare": [
+        "9368",
+        "31693"
+      ],
+      "einsatzkontext": [
+        "Seminar",
+        "Workshop"
+      ],
+      "fallwelten": [],
+      "themen": [
+        "Requirements Engineering Begriffe",
+        "Memory",
+        "Pausenspiel",
+        "Glossar"
+      ],
+      "standards": [
+        "IREB"
+      ],
+      "siegel": {
+        "status": "Auditiert & zertifiziert",
+        "letztesAudit": "2026-11-28",
+        "auditZeileImTool": "2026-11-28",
+        "offen": null
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/re-pausenspiel.html",
+        "tools/wissensuniversum-re-ba.html"
+      ],
+      "geprueft": false,
+      "notiz": "Neu am 28.11.2026. Beispiele ohne eigene Fallwelt (fallwelten bewusst leer, Michaela entscheidet). Begriffe aus dem Glossar der IREB-Handbücher mit Fundstelle. Bei Spielen mit Auswahl entfallen K22 und Z1 bis Z4 nicht pauschal; Kurzerklärung je Paar statt Fließtext."
+    },
+    {
+      "id": "re-anforderung-einordnen",
+      "datei": "tools/re-anforderung-einordnen.html",
+      "titel": "RE-Anforderung einordnen — funktional, Qualität oder Randbedingung?",
+      "kurztitel": "Anforderung einordnen",
+      "kurz": "Zwölf Anforderungen werden als funktional, Qualitätsanforderung oder Randbedingung eingeordnet, mit Feedback, richtiger Antwort und Erklärung samt Fundstelle im IREB-Handbuch. Sprachschalter DE/EN.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Wissen & Nachschlagen",
+      "aufStartseite": true,
+      "zweck": [
+        "Spiel",
+        "Übung"
+      ],
+      "denkraum": "basislager",
+      "faeden": [
+        "re"
+      ],
+      "dauer": "10 min",
+      "haufeSeminare": [
+        "9368",
+        "31693"
+      ],
+      "einsatzkontext": [
+        "Seminar",
+        "Workshop"
+      ],
+      "fallwelten": [],
+      "themen": [
+        "Funktionale Anforderungen",
+        "Qualitätsanforderungen",
+        "Randbedingungen",
+        "Pausenspiel"
+      ],
+      "standards": [
+        "IREB"
+      ],
+      "siegel": {
+        "status": "Auditiert & zertifiziert",
+        "letztesAudit": "2026-11-28",
+        "auditZeileImTool": "2026-11-28",
+        "offen": null
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/re-pausenspiel.html",
+        "tools/re-begriffe-memory.html"
+      ],
+      "geprueft": false,
+      "notiz": "Neu am 28.11.2026. Fundstelle: Handbuch Foundation Level 1.3.3, Kap. 1.1, S. 11. Beispielsätze erfunden, ohne Fallwelt."
+    },
+    {
+      "id": "re-nebel-detektiv",
+      "datei": "tools/re-nebel-detektiv.html",
+      "titel": "RE-Nebel-Detektiv — Formulierungsfallen in Anforderungen aufspüren",
+      "kurztitel": "Nebel-Detektiv",
+      "kurz": "Zwölf Anforderungssätze, in denen Formulierungsfallen wie unklare Begriffe, Passiv oder Wunschwörter stecken. Spieler erkennen die Falle, bekommen die Lösung und die Fundstelle im IREB-Handbuch. Sprachschalter DE/EN.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Wissen & Nachschlagen",
+      "aufStartseite": true,
+      "zweck": [
+        "Spiel",
+        "Übung"
+      ],
+      "denkraum": "basislager",
+      "faeden": [
+        "re"
+      ],
+      "dauer": "10 min",
+      "haufeSeminare": [
+        "9368",
+        "31693"
+      ],
+      "einsatzkontext": [
+        "Seminar",
+        "Workshop"
+      ],
+      "fallwelten": [],
+      "themen": [
+        "Formulierungsfallen",
+        "Anforderungen formulieren",
+        "Pausenspiel"
+      ],
+      "standards": [
+        "IREB"
+      ],
+      "siegel": {
+        "status": "Auditiert & zertifiziert",
+        "letztesAudit": "2026-11-28",
+        "auditZeileImTool": "2026-11-28",
+        "offen": null
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/re-pausenspiel.html",
+        "tools/re-anforderung-einordnen.html"
+      ],
+      "geprueft": false,
+      "notiz": "Neu am 28.11.2026. Fundstellen: Handbuch Foundation Level 1.3.3, Kap. 3.2, S. 45 und 46 sowie Kap. 3.1.4, S. 41. Beispielsätze erfunden, ohne Fallwelt."
+    },
+    {
+      "id": "ba-pausenspiel",
+      "datei": "tools/ba-pausenspiel.html",
+      "titel": "BA-Pausenspiel — Techniken der Business-Analyse raten und nachschlagen",
+      "kurztitel": "BA-Pausenspiel",
+      "kurz": "Zwölf BA-Techniken aus dem BABOK Guide auf einem Spielfeld: Spotlight, Pause und Raten-Modus, Belege mit Kapitel, Seite und Link, Begriffe mit Kontextfenster, Fragen und Lösung. Sprachschalter DE/EN.",
+      "rubrik": "Requirements & Business-Analyse",
+      "bereich": "Wissen & Nachschlagen",
+      "aufStartseite": true,
+      "zweck": [
+        "Spiel",
+        "Nachschlagewerk"
+      ],
+      "denkraum": "basislager",
+      "faeden": [
+        "ba"
+      ],
+      "dauer": "10 min",
+      "haufeSeminare": [
+        "3744",
+        "9368"
+      ],
+      "einsatzkontext": [
+        "Seminar",
+        "Workshop"
+      ],
+      "fallwelten": [],
+      "themen": [
+        "Business-Analyse Techniken",
+        "BABOK",
+        "Pausenspiel",
+        "Stakeholderliste",
+        "Priorisierung"
+      ],
+      "standards": [
+        "BABOK v3"
+      ],
+      "siegel": {
+        "status": "Auditiert & zertifiziert",
+        "letztesAudit": "2026-11-28",
+        "auditZeileImTool": "2026-11-28",
+        "offen": null
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/babok-kompendium.html",
+        "tools/re-pausenspiel.html"
+      ],
+      "geprueft": false,
+      "notiz": "Neu am 28.11.2026. Beispielfall Seminar-Buchungsportal (fallwelten bewusst leer, Michaela entscheidet). BABOK Guide v3, Kap. 10, jede Aussage mit Seite und Link."
+    },
+    {
+      "id": "pm-pausenspiel",
+      "datei": "tools/pm-pausenspiel.html",
+      "titel": "PM-Pausenspiel — Grundsätze und Leistungsbereiche des Projektmanagements",
+      "kurztitel": "PM-Pausenspiel",
+      "kurz": "Sechs Grundsätze und sieben Leistungsbereiche des PMBOK Guide, 8. Auflage, auf einem Spielfeld: Spotlight, Pause und Raten-Modus, Filter, Belege mit Teil, Kapitel und Seite, Fragen und Lösung. Sprachschalter DE/EN.",
+      "rubrik": "Projektmanagement",
+      "bereich": "Wissen & Nachschlagen",
+      "aufStartseite": true,
+      "zweck": [
+        "Spiel",
+        "Nachschlagewerk"
+      ],
+      "denkraum": "basislager",
+      "faeden": [
+        "pm"
+      ],
+      "dauer": "10 min",
+      "haufeSeminare": [
+        "8932",
+        "5453"
+      ],
+      "einsatzkontext": [
+        "Seminar",
+        "Workshop"
+      ],
+      "fallwelten": [],
+      "themen": [
+        "Projektmanagement Grundsätze",
+        "Leistungsbereiche",
+        "PMBOK",
+        "Pausenspiel"
+      ],
+      "standards": [
+        "PMBOK Guide 8"
+      ],
+      "siegel": {
+        "status": "Auditiert & zertifiziert",
+        "letztesAudit": "2026-11-28",
+        "auditZeileImTool": "2026-11-28",
+        "offen": null
+      },
+      "beamer": "4-stufig",
+      "sprecherSkript": true,
+      "verwandt": [
+        "tools/ba-pausenspiel.html",
+        "tools/re-pausenspiel.html"
+      ],
+      "geprueft": false,
+      "notiz": "Neu am 28.11.2026. Beispielfall Seminar-Buchungsportal (fallwelten bewusst leer, Michaela entscheidet). Seitenzahlen je Teil (Standard bzw. Guide); an Seitenwechseln nennt der Beleg beide Seiten (Finanzen S. 58–59, Risiko S. 92–93)."
     },
     {
       "id": "wissensuniversum-re-ba",
