@@ -6322,6 +6322,84 @@ window.DENKRAUM_REGISTER = {
                 "tools/klarheits-sprint/index.html"
           ],
           "notiz": "Neu am 12.11.2026. Eigenständige Übungsseite zu den Satzschablonen des CPRE Foundation Level Handbuchs v1.3.3 (S. 45–51), ergänzt um Requirements Management Handbuch v2.1 (S. 210) und RE@Agile v2.2 (S. 55–56). Nur Deutsch, ohne Beamer-Button. Beispiele und Zahlen der Essensapp sind Annahmen. ISO-Normtext und EARS-Original nicht im Projekt (nur wie vom Handbuch zitiert). Rohtexte „Rahmen 2“ von Michaela vorgegeben. Die beiden Essensapp-Tools enthalten einen Überblick der Schablonen und verlinken hierher. Word-Übungsblatt Uebungsblatt-Satzschablonen.docx liegt als Companion bei Michaela. Seminare: 9368 (Modul 4), 31693 (Modul 4), 3744 (Modul 6)."
+    },
+    {
+          "id": "agile-werkbank-lindenfeld",
+          "datei": "tools/agile-werkbank-lindenfeld.html",
+          "titel": "Lindenfeld Lunch: Werkbank für erfahrene Product Owner",
+          "kurztitel": "Lindenfeld: Werkbank PO",
+          "kurz": "28 Kniffe für Refinement, Story Mapping, Planning und Sprint-Alltag am Fall der Cafeteria-App. Je Kniff ein Aha, ein Vorgehen für morgen und ein Beispiel am Fall, in der vollen Erklärung dazu \"Warum es wirkt\". Boards zum Ausprobieren (Example Mapping, Story Map, Kanban, Planning-Rechner, SPIDR, Hamburger, Definition of Ready, Nicht-Ziele), PRD als zentrales Dokument, Aha-Landkarte, roter Faden von der Idee zum Test, Quellenregister und Glossar. Mit Gruppenfragen samt Lösungen, Vertiefungs-Umschalter und DE/EN.",
+          "rubrik": "Agiles Arbeiten & Projektmanagement",
+          "bereich": null,
+          "aufStartseite": true,
+          "zweck": [
+                "Demonstrator",
+                "Übung"
+          ],
+          "denkraum": "umsetzung",
+          "faeden": [
+                "ba",
+                "pm"
+          ],
+          "dauer": "ca. 2 Std. komplett (einzelne Kniffe 5–15 min)",
+          "haufeSeminare": [
+                "3744",
+                "3525",
+                "34000"
+          ],
+          "einsatzkontext": [
+                "Workshop",
+                "Seminar"
+          ],
+          "fallwelten": [
+                "Lindenfeld Lunch"
+          ],
+          "themen": [
+                "Fallwelt",
+                "Refinement",
+                "Story Mapping",
+                "Planning",
+                "Sprint",
+                "Product Backlog",
+                "Example Mapping",
+                "SPIDR",
+                "Hamburger-Methode",
+                "Definition of Ready",
+                "Definition of Done",
+                "Kanban",
+                "Planguage",
+                "Gherkin",
+                "Sprintziel",
+                "Retrospektive",
+                "Review",
+                "PRD",
+                "Aha-Moment"
+          ],
+          "standards": [
+                "Scrum Guide",
+                "IREB",
+                "BABOK"
+          ],
+          "siegel": {
+                "status": "Offene Punkte",
+                "letztesAudit": null,
+                "auditZeileImTool": null,
+                "offen": [
+                      "Erstaudit durch Michaela steht aus",
+                      "Methodenaussagen stammen aus der Vorlage und sind nicht neu gegen die Quellen geprüft (Quellenregister im Tool nennt je Link den Prüfstand)",
+                      "Englische Fassung maschinell erzeugt und stichprobenartig geprüft, Feinschliff offen",
+                      "Abweichung NFR-01: Pflichtenheft nennt an anderer Stelle 210 statt 150 Nutzende, im Tool gilt 150 (Original); Pflege-Befund für Case-Bibel 12.7"
+                ]
+          },
+          "beamer": "4-stufig",
+          "sprecherSkript": true,
+          "verwandt": [
+                "story-slicing-lindenfeld",
+                "ba-re-case-lindenfeld-lunch",
+                "raum-schleusen"
+          ],
+          "geprueft": false,
+          "notiz": "Neu am 28.11.2026. Aus der Brillux-Werkbank auf den Fall Lindenfeld Lunch umgebaut (Fall, Zahlen, Dokumente, Boards), mit Vertiefungs-Umschalter (K22) und englischer Fassung. Beispielwerte und der 3-Sekunden-Timeout der Entgeltabrechnung sind im Tool als Annahme markiert. Zahlen aus den Repo-Originalen unter tools/."
     }
   ]
 };
