@@ -6396,6 +6396,9 @@ window.DENKRAUM_REGISTER = {
           "verwandt": [
                 "story-slicing-lindenfeld",
                 "ba-re-case-lindenfeld-lunch",
+                "lindenfeld-projektauftrag-pflichtenheft",
+                "lindenfeld-gateplan",
+                "lindenfeld-fa-neun-spuren",
                 "raum-schleusen"
           ],
           "geprueft": false,
